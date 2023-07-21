@@ -45,5 +45,5 @@ export const fromObjectSyncRunModelAndSyncWithObject = (
     };
   }
 
-  throw new Error('Unexpectedly corrupt sync run');
+  throw new Error('incorrectly configured sync for run');
 };

@@ -3988,11 +3988,28 @@
         ]
       },
       "sync": {
-        "allOf": [
+        "oneOf": [
           {
             "type": "object",
             "properties": {
               "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "object"
+                ]
+              },
+              "object_type": {
+                "type": "string",
+                "enum": [
+                  "common",
+                  "standard",
+                  "custom"
+                ]
+              },
+              "object": {
                 "type": "string"
               },
               "connection_id": {
@@ -4009,70 +4026,88 @@
             },
             "required": [
               "id",
+              "type",
+              "object_type",
+              "object",
               "connection_id",
               "sync_config_id",
               "paused"
             ]
           },
           {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "object"
-                    ]
-                  },
-                  "object_type": {
-                    "type": "string",
-                    "enum": [
-                      "common",
-                      "standard",
-                      "custom"
-                    ]
-                  },
-                  "object": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "type",
-                  "object_type",
-                  "object"
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity"
                 ]
               },
-              {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "entity"
-                    ]
-                  },
-                  "entity_id": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "type",
-                  "entity_id"
-                ]
+              "entity_id": {
+                "type": "string"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean"
               }
+            },
+            "required": [
+              "id",
+              "type",
+              "entity_id",
+              "connection_id",
+              "sync_config_id",
+              "paused"
             ]
           }
         ]
       },
       "sync_with_provider_and_customer": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/sync"
-          },
+        "oneOf": [
           {
             "type": "object",
             "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "object"
+                ]
+              },
+              "object_type": {
+                "type": "string",
+                "enum": [
+                  "common",
+                  "standard",
+                  "custom"
+                ]
+              },
+              "object": {
+                "type": "string"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean"
+              },
               "provider_name": {
                 "type": "string",
                 "example": "hubspot"
@@ -4083,6 +4118,59 @@
               }
             },
             "required": [
+              "id",
+              "type",
+              "object_type",
+              "object",
+              "connection_id",
+              "sync_config_id",
+              "paused",
+              "provider_name",
+              "customer_id"
+            ]
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity"
+                ]
+              },
+              "entity_id": {
+                "type": "string"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean"
+              },
+              "provider_name": {
+                "type": "string",
+                "example": "hubspot"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "my-customer-1"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "entity_id",
+              "connection_id",
+              "sync_config_id",
+              "paused",
               "provider_name",
               "customer_id"
             ]
@@ -4090,10 +4178,21 @@
         ]
       },
       "sync_run": {
-        "allOf": [
+        "oneOf": [
           {
             "type": "object",
             "properties": {
+              "object_type": {
+                "type": "string",
+                "enum": [
+                  "common",
+                  "standard",
+                  "custom"
+                ]
+              },
+              "object": {
+                "type": "string"
+              },
               "error_message": {
                 "type": "string",
                 "nullable": true
@@ -4144,6 +4243,8 @@
               }
             },
             "required": [
+              "object_type",
+              "object",
               "start_timestamp",
               "end_timestamp",
               "application_id",
@@ -4157,38 +4258,72 @@
             ]
           },
           {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "object_type": {
-                    "type": "string",
-                    "enum": [
-                      "common",
-                      "standard",
-                      "custom"
-                    ]
-                  },
-                  "object": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "object_type",
-                  "object"
+            "type": "object",
+            "properties": {
+              "entity_id": {
+                "type": "string"
+              },
+              "error_message": {
+                "type": "string",
+                "nullable": true
+              },
+              "start_timestamp": {
+                "type": "string",
+                "example": "2023-02-22T19:55:17.559Z"
+              },
+              "end_timestamp": {
+                "type": "string",
+                "nullable": true,
+                "example": "2023-02-22T20:55:17.559Z"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "974125fa-ffb6-47fc-b12f-44c566fc5da1"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "my-customer-1"
+              },
+              "provider_name": {
+                "type": "string",
+                "example": "hubspot"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "crm"
                 ]
               },
-              {
-                "type": "object",
-                "properties": {
-                  "entity_id": {
-                    "type": "string"
-                  }
-                },
-                "required": [
-                  "entity_id"
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "SUCCESS",
+                  "IN_PROGRESS",
+                  "FAILURE"
                 ]
+              },
+              "num_records_synced": {
+                "type": "number",
+                "nullable": true,
+                "example": 100
               }
+            },
+            "required": [
+              "entity_id",
+              "start_timestamp",
+              "end_timestamp",
+              "application_id",
+              "customer_id",
+              "status",
+              "error_message",
+              "provider_name",
+              "category",
+              "connection_id",
+              "num_records_synced"
             ]
           }
         ]
@@ -4859,25 +4994,26 @@
           "field_mappings": {
             "type": "array",
             "items": {
-              "allOf": [
-                {
-                  "$ref": "#/components/schemas/entity_field_mapping"
+              "type": "object",
+              "properties": {
+                "entity_field": {
+                  "type": "string"
                 },
-                {
-                  "type": "object",
-                  "properties": {
-                    "from": {
-                      "type": "string",
-                      "enum": [
-                        "developer",
-                        "customer"
-                      ]
-                    }
-                  },
-                  "required": [
-                    "from"
+                "mapped_field": {
+                  "type": "string"
+                },
+                "from": {
+                  "type": "string",
+                  "enum": [
+                    "developer",
+                    "customer"
                   ]
                 }
+              },
+              "required": [
+                "entity_field",
+                "mapped_field",
+                "from"
               ]
             }
           }

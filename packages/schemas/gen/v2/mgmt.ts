@@ -745,31 +745,64 @@ export interface components {
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */
     provider_name_engagement: "outreach";
-    sync: {
+    sync: OneOf<[{
       id: string;
-      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
-      connection_id: string;
-      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
-      sync_config_id: string;
-      paused: boolean;
-    } & (OneOf<[{
       /** @enum {string} */
       type: "object";
       /** @enum {string} */
       object_type: "common" | "standard" | "custom";
       object: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
+      sync_config_id: string;
+      paused: boolean;
     }, {
+      id: string;
       /** @enum {string} */
       type: "entity";
       entity_id: string;
-    }]>);
-    sync_with_provider_and_customer: components["schemas"]["sync"] & {
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
+      sync_config_id: string;
+      paused: boolean;
+    }]>;
+    sync_with_provider_and_customer: OneOf<[{
+      id: string;
+      /** @enum {string} */
+      type: "object";
+      /** @enum {string} */
+      object_type: "common" | "standard" | "custom";
+      object: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
+      sync_config_id: string;
+      paused: boolean;
       /** @example hubspot */
       provider_name: string;
       /** @example my-customer-1 */
       customer_id: string;
-    };
-    sync_run: ({
+    }, {
+      id: string;
+      /** @enum {string} */
+      type: "entity";
+      entity_id: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
+      sync_config_id: string;
+      paused: boolean;
+      /** @example hubspot */
+      provider_name: string;
+      /** @example my-customer-1 */
+      customer_id: string;
+    }]>;
+    sync_run: OneOf<[{
+      /** @enum {string} */
+      object_type: "common" | "standard" | "custom";
+      object: string;
       error_message: string | null;
       /** @example 2023-02-22T19:55:17.559Z */
       start_timestamp: string;
@@ -789,13 +822,28 @@ export interface components {
       status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
       /** @example 100 */
       num_records_synced: number | null;
-    }) & (OneOf<[{
-      /** @enum {string} */
-      object_type: "common" | "standard" | "custom";
-      object: string;
     }, {
       entity_id: string;
-    }]>);
+      error_message: string | null;
+      /** @example 2023-02-22T19:55:17.559Z */
+      start_timestamp: string;
+      /** @example 2023-02-22T20:55:17.559Z */
+      end_timestamp: string | null;
+      /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
+      application_id: string;
+      /** @example my-customer-1 */
+      customer_id: string;
+      /** @example hubspot */
+      provider_name: string;
+      /** @enum {string} */
+      category: "crm";
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @enum {string} */
+      status: "SUCCESS" | "IN_PROGRESS" | "FAILURE";
+      /** @example 100 */
+      num_records_synced: number | null;
+    }]>;
     create_update_customer: {
       /** @example your-customers-unique-application-id */
       customer_id: string;
@@ -974,10 +1022,12 @@ export interface components {
         /** @enum {string} */
         from: "developer" | "customer";
       });
-      field_mappings?: (components["schemas"]["entity_field_mapping"] & ({
+      field_mappings?: ({
+          entity_field: string;
+          mapped_field: string;
           /** @enum {string} */
           from: "developer" | "customer";
-        }))[];
+        })[];
     };
     entity_field_mapping: {
       entity_field: string;

@@ -40,7 +40,7 @@ export const fromSyncModel = (model: SyncModel): Sync => {
     } as Sync;
   }
 
-  throw new Error('Unexpectedly corrupt sync');
+  throw new Error('incorrectly configured sync');
 };
 
 export const fromSyncModelWithConnection = (model: SyncModel & { connection: ConnectionModel }): SyncDTO => {

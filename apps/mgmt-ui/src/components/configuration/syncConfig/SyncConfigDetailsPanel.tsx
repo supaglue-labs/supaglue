@@ -352,7 +352,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                     return entity?.name ?? option;
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Entities" helperText={'Use "enter" to add multiple objects.'} />
+                    <TextField {...params} label="Entities" helperText={'Use "enter" to add multiple entities.'} />
                   )}
                   onChange={(event: any, value: string[]) => {
                     setEntityIds(value.map((object) => object.trim()));
