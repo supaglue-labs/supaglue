@@ -62,7 +62,6 @@ export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {
       oauthClientSecret: process.env.ZOHO_CLIENT_SECRET || '',
     },
   },
-
   outreach: {
     oauthScopes: [
       'accounts.all',
@@ -78,6 +77,20 @@ export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {
     credentials: {
       oauthClientId: process.env.OUTREACH_CLIENT_ID || '',
       oauthClientSecret: process.env.OUTREACH_CLIENT_SECRET || '',
+    },
+  },
+  salesloft: {
+    oauthScopes: [],
+    credentials: {
+      oauthClientId: process.env.SALESLOFT_CLIENT_ID || '',
+      oauthClientSecret: process.env.SALESLOFT_CLIENT_SECRET || '',
+    },
+  },
+  gong: {
+    oauthScopes: ['api:calls:read:basic', 'api:calls:read:extensive', 'api:calls:read:transcript'],
+    credentials: {
+      oauthClientId: process.env.GONG_CLIENT_ID || '',
+      oauthClientSecret: process.env.GONG_CLIENT_SECRET || '',
     },
   },
 };
