@@ -72,7 +72,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   }
 }
 
-export function newClient(connection: ConnectionUnsafe<'outreach'>, provider: Provider): SalesloftClient {
+export function newClient(connection: ConnectionUnsafe<'salesloft'>, provider: Provider): SalesloftClient {
   return new SalesloftClient({
     ...connection.credentials,
     clientId: (provider as EngagementOauthProvider).config.oauth.credentials.oauthClientId,
