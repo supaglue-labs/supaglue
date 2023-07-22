@@ -37,7 +37,7 @@ get:
                   instance_url: https://app.hubspot.com/contacts/1234567
 post:
   operationId: createConnection
-  summary: Create connection
+  summary: Create a connection (for providers with API key authentication). Use Embedded Links for OAuth 2.0.
   tags:
     - Connections
   parameters: []
@@ -49,7 +49,6 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/create_connection.yaml
-          additionalProperties: true
   responses:
     '200':
       description: Connection created
