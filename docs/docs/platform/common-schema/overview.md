@@ -34,7 +34,26 @@ Upon a customer going through their Oauth flow using an [Embedded Link](../manag
 
 ## Writing
 
-Use the endpoints listed under the [CRM Actions API](../../api/v2/crm/supaglue-crm-api) or [Engagement Actions API](../../api/v2/engagement/supaglue-engagement-api).
+### Common Schema
+
+Write to objects that are standard in Providers using Supaglue's Common Schema with the endpoints listed under the [CRM Actions API](../../api/v2/crm/supaglue-crm-api) or [Engagement Actions API](../../api/v2/engagement/supaglue-engagement-api).
+
+### Custom Objects / Custom Object Records
+
+Define and then write to objects that are custom in Providers using Supaglue's Unified Custom Objects Actions API allows you to:
+
+- Create custom objects
+- Create custom object records
+- Create association types between objects
+- Create associations between records
+
+#### Example
+
+Suppose you want to store information about competitors relevant to a particular Salesforce Opportunity. You could use Supaglue's Custom Objects API to do the following:
+
+1. Create a custom object called `CompetitorInfo`.
+1. Create an association type between `Opportunity` and `CompetitorInfo`.
+1. When you create a new `Opportunity` record, find an existing `CompetitorInfo` record (or create a new one) and associate it with the `Opportunity` record.
 
 ## Schemas
 
