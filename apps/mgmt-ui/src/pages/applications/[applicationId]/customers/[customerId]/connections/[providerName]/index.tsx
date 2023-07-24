@@ -190,12 +190,14 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
         { entityField: '', mappedField: undefined, from: 'customer', isAdditional: true },
       ],
     });
+    setIsDirty(true);
   };
 
   const deleteFieldMapping = (idx: number) => {
     const newFieldMappings = [...mergedEntityMapping.fieldMappings];
     newFieldMappings.splice(idx, 1);
     setMergedEntityMapping({ ...mergedEntityMapping, fieldMappings: newFieldMappings });
+    setIsDirty(true);
   };
 
   const isValid =
