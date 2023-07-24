@@ -297,6 +297,8 @@ const config = {
               categoryLinkSource: 'tag',
               sidebarCollapsed: true,
             },
+            downloadUrl:
+              'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/crm/openapi.bundle.json',
           },
           engagement: {
             specPath: '../openapi/v2/engagement/openapi.bundle.json',
@@ -306,6 +308,8 @@ const config = {
               categoryLinkSource: 'tag',
               sidebarCollapsed: true,
             },
+            downloadUrl:
+              'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/engagement/openapi.bundle.json',
           },
           mgmt: {
             specPath: '../openapi/v2/mgmt/openapi.bundle.json',
@@ -315,6 +319,8 @@ const config = {
               categoryLinkSource: 'tag',
               sidebarCollapsed: true,
             },
+            downloadUrl:
+              'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/mgmt/openapi.bundle.json',
           },
         },
       },
