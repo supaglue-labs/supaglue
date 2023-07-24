@@ -8,7 +8,14 @@ import type {
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
+import { Histogram } from 'prom-client';
 import type { RemoteService } from '../../remote_service';
+
+const histogram = new Histogram({
+  name: 'remote_duration_seconds',
+  help: 'remote operation duration in seconds',
+  labelNames: ['operation', 'remote_name'],
+});
 
 // TODO: Should not be casting when getting RemoteClient
 
@@ -20,32 +27,58 @@ export class CrmCustomObjectService {
   }
 
   public async getObject(connectionId: string, id: string): Promise<CustomObject> {
-    const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    return await remoteClient.getCustomObject(id);
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connectionId);
+
+    const end = histogram.startTimer({ operation: 'get', remote_name: providerName });
+    const result = await remoteClient.getCustomObject(id);
+    end();
+
+    return result;
   }
 
   public async createObject(connectionId: string, params: CustomObjectCreateParams): Promise<string> {
-    const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    return await remoteClient.createCustomObject(params);
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connectionId);
+
+    const end = histogram.startTimer({ operation: 'create', remote_name: providerName });
+    const result = await remoteClient.createCustomObject(params);
+    end();
+
+    return result;
   }
 
   public async updateObject(connectionId: string, params: CustomObjectUpdateParams): Promise<void> {
-    const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connectionId);
+
+    const end = histogram.startTimer({ operation: 'update', remote_name: providerName });
     await remoteClient.updateCustomObject(params);
+    end();
   }
 
   public async getRecord(connectionId: string, objectId: string, id: string): Promise<CustomObjectRecord> {
-    const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    return await remoteClient.getCustomObjectRecord(objectId, id);
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connectionId);
+
+    const end = histogram.startTimer({ operation: 'get', remote_name: providerName });
+    const result = await remoteClient.getCustomObjectRecord(objectId, id);
+    end();
+
+    return result;
   }
 
   public async createRecord(connectionId: string, params: CustomObjectRecordCreateParams): Promise<string> {
-    const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
-    return await remoteClient.createCustomObjectRecord(params);
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connectionId);
+
+    const end = histogram.startTimer({ operation: 'create', remote_name: providerName });
+    const result = await remoteClient.createCustomObjectRecord(params);
+    end();
+
+    return result;
   }
 
   public async updateRecord(connectionId: string, params: CustomObjectRecordUpdateParams): Promise<void> {
-    const remoteClient = await this.#remoteService.getCrmRemoteClient(connectionId);
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connectionId);
+
+    const end = histogram.startTimer({ operation: 'update', remote_name: providerName });
     await remoteClient.updateCustomObjectRecord(params);
+    end();
   }
 }

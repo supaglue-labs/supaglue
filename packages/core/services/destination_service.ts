@@ -243,13 +243,15 @@ export class DestinationService {
     return fromDestinationModelToSafe(model);
   }
 
-  public async getWriterByProviderId(providerId: string): Promise<DestinationWriter | null> {
+  public async getWriterByProviderId(
+    providerId: string
+  ): Promise<[DestinationWriter | null, DestinationUnsafeAny['type'] | null]> {
     const destination = await this.getDestinationUnsafeByProviderId(providerId);
     if (!destination) {
-      return null;
+      return [null, null];
     }
 
-    return this.getWriterByDestination(destination);
+    return [this.getWriterByDestination(destination), destination.type];
   }
 
   public async getWriterByDestinationId(destinationId: string): Promise<DestinationWriter | null> {
