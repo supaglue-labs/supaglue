@@ -2,6 +2,8 @@ type: object
 properties:
   entity_id:
     type: string
+  entity_name:
+    type: string
   object:
     allOf:
       - $ref: ./standard_or_custom_object.yaml
@@ -33,3 +35,4 @@ properties:
         - entity_field
 required:
   - entity_id
+  - entity_name

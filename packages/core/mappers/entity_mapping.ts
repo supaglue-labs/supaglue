@@ -60,6 +60,7 @@ export function mergeEntityMappingsList(
   // Start off with a skeleton
   const mergedEntityMappings: MergedEntityMapping[] = entities.map((entity) => ({
     entityId: entity.id,
+    entityName: entity.name,
     fieldMappings: entity.config.fields.map((field) => ({
       entityField: field.name,
     })),

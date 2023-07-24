@@ -4969,6 +4969,9 @@
           "entity_id": {
             "type": "string"
           },
+          "entity_name": {
+            "type": "string"
+          },
           "object": {
             "allOf": [
               {
@@ -5017,7 +5020,8 @@
           }
         },
         "required": [
-          "entity_id"
+          "entity_id",
+          "entity_name"
         ]
       },
       "entity_field_mapping": {
