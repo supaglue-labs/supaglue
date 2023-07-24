@@ -334,11 +334,12 @@ export class ConnectionService {
   public async listMergedEntityMappings(connectionId: string): Promise<MergedEntityMapping[]> {
     const connection = await this.getSafeById(connectionId);
     const provider = await this.#providerService.getById(connection.providerId);
+    const entities = await this.#entityService.list(connection.applicationId);
 
     const providerEntityMappings = provider.entityMappings ?? [];
     const connectionEntityMappings = connection.entityMappings ?? [];
 
-    return mergeEntityMappingsList(providerEntityMappings, connectionEntityMappings);
+    return mergeEntityMappingsList(entities, providerEntityMappings, connectionEntityMappings);
   }
 
   public async upsertEntityMapping(

@@ -5011,9 +5011,7 @@
                 }
               },
               "required": [
-                "entity_field",
-                "mapped_field",
-                "from"
+                "entity_field"
               ]
             }
           }
