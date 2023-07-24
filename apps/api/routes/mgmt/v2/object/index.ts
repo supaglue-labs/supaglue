@@ -26,7 +26,7 @@ export default function init(app: Router): void {
       if (req.customerConnection.category !== 'crm') {
         throw new BadRequestError('Only CRM connections are supported for this operation');
       }
-      const client = await remoteService.getCrmRemoteClient(req.customerConnection.id);
+      const [client] = await remoteService.getCrmRemoteClient(req.customerConnection.id);
       const objects = await client.listObjects();
       return res.status(200).send({ objects: objects.map(snakecaseKeys) });
     }
