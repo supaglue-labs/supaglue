@@ -65,7 +65,7 @@ export default function Home() {
     addNotification({ message: 'Successfully updated entity mapping', severity: 'success' });
     const idx = entityMappings.findIndex((entityMapping) => entityMapping.entityId === entityId);
     if (idx !== -1) {
-      mutate(
+      await mutate(
         toListEntityMappingsResponse([
           ...entityMappings.slice(0, idx),
           mergedEntityMapping,
