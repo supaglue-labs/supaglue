@@ -1,10 +1,17 @@
 import type { ConnectionSafeAny } from '@supaglue/types/connection';
 import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import { Histogram } from 'prom-client';
 import type { ConnectionService } from '../..';
 import { BadRequestError } from '../../../errors';
 import type { DestinationService } from '../../destination_service';
 import type { RemoteService } from '../../remote_service';
+
+const histogram = new Histogram({
+  name: 'remote_duration_seconds',
+  help: 'remote operation duration in seconds',
+  labelNames: ['operation', 'remote_name'],
+});
 
 export class CrmCommonObjectService {
   readonly #remoteService: RemoteService;
@@ -26,10 +33,14 @@ export class CrmCommonObjectService {
     connection: ConnectionSafeAny,
     id: string
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
-    const remoteClient = await this.#remoteService.getCrmRemoteClient(connection.id);
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
     const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
 
-    return await remoteClient.getCommonObjectRecord(objectName, id, fieldMappingConfig);
+    const end = histogram.startTimer({ operation: 'get', remote_name: providerName });
+    const obj = await remoteClient.getCommonObjectRecord(objectName, id, fieldMappingConfig);
+    end();
+
+    return obj;
   }
 
   public async create<T extends CRMCommonObjectType>(
@@ -37,16 +48,22 @@ export class CrmCommonObjectService {
     connection: ConnectionSafeAny,
     params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
-    const remoteClient = await this.#remoteService.getCrmRemoteClient(connection.id);
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
     const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
     const mappedParams = { ...params, customFields: mapCustomFields(fieldMappingConfig, params.customFields) };
+
+    const end = histogram.startTimer({ operation: 'create', remote_name: providerName });
     const id = await remoteClient.createCommonObjectRecord(objectName, mappedParams);
+    end();
 
     // If the associated provider has a destination, do cache invalidation
-    const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
+    const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await this.get(objectName, connection, id);
+
+      const end = histogram.startTimer({ operation: 'create', remote_name: destinationType! });
       await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, object);
+      end();
     }
 
     return id;
@@ -57,16 +74,22 @@ export class CrmCommonObjectService {
     connection: ConnectionSafeAny,
     params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<void> {
-    const remoteClient = await this.#remoteService.getCrmRemoteClient(connection.id);
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
     const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
     const mappedParams = { ...params, customFields: mapCustomFields(fieldMappingConfig, params.customFields) };
+
+    const end = histogram.startTimer({ operation: 'update', remote_name: providerName });
     await remoteClient.updateCommonObjectRecord(objectName, mappedParams);
+    end();
 
     // If the associated provider has a destination, do cache invalidation
-    const writer = await this.#destinationService.getWriterByProviderId(connection.providerId);
+    const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await this.get(objectName, connection, params.id);
+
+      const end = histogram.startTimer({ operation: 'update', remote_name: destinationType! });
       await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, object);
+      end();
     }
   }
 }
