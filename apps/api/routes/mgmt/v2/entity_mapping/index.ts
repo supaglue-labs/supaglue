@@ -40,7 +40,7 @@ export default function init(app: Router): void {
       res: Response<UpsertEntityMappingResponse>
     ) => {
       // TODO: shouldn't be asking user to pass in `entity_id` in both path and body
-      await connectionService.upsertEntityMapping(req.customerConnection.id, req.supaglueApplication.id, {
+      await connectionService.upsertEntityMapping(req.customerConnection.id, req.body.entity_id, {
         ...camelcaseKeys(req.body),
       });
       return res.status(200).send();
