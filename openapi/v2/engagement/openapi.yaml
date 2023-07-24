@@ -8,7 +8,7 @@ info:
     #### Introduction
     Welcome to the Supaglue Actions API (Engagement) documentation. You can use this API to write to third-party providers.
 
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://god.gw.postman.com/run-collection/18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D18172762-a211ef0f-e2e3-4ac0-b833-97125995c6f7%26entityType%3Dcollection%26workspaceId%3D4d2a33f3-a9f9-41f4-ac2e-5ad4db4a5edb)
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
     #### Reading data
     To read data from third-party providers, refer to Supaglue's [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.
