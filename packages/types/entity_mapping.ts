@@ -1,13 +1,18 @@
 import type { StandardOrCustomObject } from './standard_or_custom_object';
 
-type From = {
-  from: 'developer' | 'customer';
-};
-
 export type MergedEntityMapping = {
   entityId: string;
-  object?: StandardOrCustomObject & From;
-  fieldMappings?: (EntityFieldMapping & From)[];
+  entityName: string;
+  object?: StandardOrCustomObject & {
+    from: 'developer' | 'customer';
+  };
+  fieldMappings: MergedEntityFieldMapping[];
+};
+
+export type MergedEntityFieldMapping = {
+  entityField: string;
+  mappedField?: string;
+  from?: 'developer' | 'customer';
 };
 
 export type EntityMapping = {

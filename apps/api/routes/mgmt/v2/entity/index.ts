@@ -81,8 +81,9 @@ export default function init(app: Router): void {
       req: Request<DeleteEntityPathParams, DeleteEntityResponse, DeleteEntityRequest>,
       res: Response<DeleteEntityResponse>
     ) => {
-      await entityService.delete(req.params.entity_id, req.supaglueApplication.id);
-      return res.status(204).send();
+      // TODO: Allow this when we actually clean up associated entity mappings
+      // when an entity is deleted.
+      throw new Error('Not implemented');
     }
   );
 

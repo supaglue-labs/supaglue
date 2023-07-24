@@ -1018,15 +1018,16 @@ export interface components {
     };
     merged_entity_mapping: {
       entity_id: string;
+      entity_name: string;
       object?: components["schemas"]["standard_or_custom_object"] & ({
         /** @enum {string} */
         from: "developer" | "customer";
       });
       field_mappings?: ({
           entity_field: string;
-          mapped_field: string;
+          mapped_field?: string;
           /** @enum {string} */
-          from: "developer" | "customer";
+          from?: "developer" | "customer";
         })[];
     };
     entity_field_mapping: {

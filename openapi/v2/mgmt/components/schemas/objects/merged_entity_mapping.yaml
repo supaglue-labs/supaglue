@@ -2,6 +2,8 @@ type: object
 properties:
   entity_id:
     type: string
+  entity_name:
+    type: string
   object:
     allOf:
       - $ref: ./standard_or_custom_object.yaml
@@ -31,7 +33,6 @@ properties:
             - customer
       required:
         - entity_field
-        - mapped_field
-        - from
 required:
   - entity_id
+  - entity_name
