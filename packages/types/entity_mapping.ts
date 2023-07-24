@@ -3,6 +3,7 @@ import type { StandardOrCustomObject } from './standard_or_custom_object';
 export type MergedEntityMapping = {
   entityId: string;
   entityName: string;
+  allowAdditionalFieldMappings: boolean;
   object?: StandardOrCustomObject & {
     from: 'developer' | 'customer';
   };

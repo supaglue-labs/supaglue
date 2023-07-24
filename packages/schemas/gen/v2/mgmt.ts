@@ -1019,6 +1019,7 @@ export interface components {
     merged_entity_mapping: {
       entity_id: string;
       entity_name: string;
+      allow_additional_field_mappings: boolean;
       object?: components["schemas"]["standard_or_custom_object"] & ({
         /** @enum {string} */
         from: "developer" | "customer";

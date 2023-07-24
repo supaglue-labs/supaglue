@@ -220,6 +220,7 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
             key={mergedEntityMapping.fieldMappings.length}
             customerId={customerId}
             entity={entity}
+            allowAdditionalFieldMappings={mergedEntityMapping.allowAdditionalFieldMappings}
             providerName={providerName}
             object={mergedEntityMapping.object}
             fieldMappings={mergedEntityMapping.fieldMappings}
@@ -301,6 +302,7 @@ type EntityFieldMappingsProps = {
   object?: StandardOrCustomObject & {
     from: 'developer' | 'customer';
   };
+  allowAdditionalFieldMappings: boolean;
   providerName: string;
   fieldMappings: MergedEntityFieldMapping[];
   setFieldMapping: (idx: number, entityField: string, mappedField: string | undefined, isAdditional: boolean) => void;
@@ -313,6 +315,7 @@ function EntityFieldMappings({
   providerName,
   object,
   fieldMappings,
+  allowAdditionalFieldMappings,
   setFieldMapping,
   addFieldMapping,
   deleteFieldMapping,
@@ -377,7 +380,7 @@ function EntityFieldMappings({
           </Grid>
         </>
       ))}
-      <Button onClick={addFieldMapping}>+ Add field mapping</Button>
+      {allowAdditionalFieldMappings && <Button onClick={addFieldMapping}>+ Add field mapping</Button>}
     </>
   );
 }
