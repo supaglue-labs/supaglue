@@ -1,13 +1,42 @@
----
-description: ''
-sidebar_position: 6
----
+import ThemedImage from '@theme/ThemedImage';
 
 # Common schema
 
-Supaglue applies a common schema to normalize [Standard Objects](standard-objects) and fields across providers within a single category. These are known as **Common Objects**.
+<ThemedImage
+alt="common schema"
+width="50%"
+sources={{
+      light: '/img/common-schema-diagram.png',
+      dark: '/img/common-schema-diagram.png',
+    }}
+/>
 
-### Common objects
+Supaglue applies a common schema to normalize [Standard Objects](../objects/overview#standard-object) and fields across providers within a single category. These are known as **Common Objects**. Common Objects have a 1-n relationship between your application and Provider objects.
+
+Common schema differs from [Objects](../objects/overview): Objects can only have a 1-1 relationship between your application and Provider objects, with no normalization.
+
+Common schema differs from [Entities](../entities/overview): With Entities, you, the developer, determine the normalization, while Supaglue determines the Common Schema normalization.
+
+## Syncing
+
+In the Management Portal, go to **Configuration --> Sync Config**. Under `Common Objects`, select the objects you want to be synced from `user`, `lead`, `contact`, `account`, or `opportunity`.
+
+<ThemedImage
+alt="common object sync config"
+width="50%"
+sources={{
+      light: '/img/common-object-sync-config.png',
+      dark: '/img/common-object-sync-config.png',
+    }}
+/>
+
+Upon a customer going through their Oauth flow using an [Embedded Link](../managed-auth#embedded-links), Supaglue will create a Connection and start syncing the configured Common Objects to your Destination.
+
+## Writing
+
+Use the endpoints listed under the [CRM Actions API](../../api/v2/crm/supaglue-crm-api) or [Engagement Actions API](../../api/v2/engagement/supaglue-engagement-api).
+
+## Schemas
 
 Supaglue syncs common objects across multiple providers and transforms them into a category-specific (e.g. CRM) normalized schema. There are three types of columns:
 

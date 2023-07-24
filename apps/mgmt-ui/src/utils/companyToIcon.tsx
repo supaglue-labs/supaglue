@@ -3,7 +3,7 @@ import ApolloIcon from '@/assets/connector_icons/apollo.webp';
 import CopperIcon from '@/assets/connector_icons/copper.png';
 import GongIcon from '@/assets/connector_icons/gong.webp';
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
-import MicrosoftDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.png';
+import MicrosoftDynamics365SalesIcon from '@/assets/connector_icons/ms_dynamics_365_sales.svg';
 import OutreachIcon from '@/assets/connector_icons/outreach.png';
 import PipedriveIcon from '@/assets/connector_icons/pipedrive.png';
 import SalesforceIcon from '@/assets/connector_icons/salesforce.png';

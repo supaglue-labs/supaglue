@@ -51,7 +51,7 @@ const config = {
             ...VERSIONS.reduce((acc, version) => ({ ...acc, [version]: { badge: false } }), {}),
             current: { badge: false },
           },
-          sidebarCollapsed: false,
+          sidebarCollapsed: true,
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
