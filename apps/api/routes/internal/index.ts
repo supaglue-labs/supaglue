@@ -8,6 +8,8 @@ import auth from './auth';
 import customer from './customer';
 import destination from './destination';
 import entity from './entity';
+import entityMapping from './entity_mapping';
+import property from './property';
 import provider from './provider';
 import schema from './schema';
 import sync from './sync';
@@ -51,6 +53,8 @@ export default function init(app: Router): void {
   syncConfig(internalApplicationScopedRouter);
   syncRun(internalApplicationScopedRouter);
   entity(internalApplicationScopedRouter);
+  entityMapping(internalApplicationScopedRouter);
+  property(internalApplicationScopedRouter);
 
   app.use('/internal', internalApplicationScopedRouter);
 }

@@ -30,13 +30,28 @@ export default function Home() {
   };
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', width: 300 },
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 300,
+      renderCell: (params) => {
+        return (
+          <Link
+            href={`/applications/${applicationId}/customers/${encodeURIComponent(activeCustomerId)}/connections/${
+              params.row.providerName
+            }`}
+          >
+            {params.row.id}
+          </Link>
+        );
+      },
+    },
     { field: 'category', headerName: 'Category', width: 100 },
     {
       field: 'providerName',
       headerName: 'Provider',
       width: 120,
-      renderCell: (params) => providerToIcon(params.value.providerName),
+      renderCell: (params) => providerToIcon(params.row.providerName),
     },
     { field: 'customerId', headerName: 'Customer ID', width: 180 },
     {

@@ -13,6 +13,7 @@ import BigQueryIcon from '@/assets/destination_icons/bigquery.png';
 import MongoDBIcon from '@/assets/destination_icons/mongodb.png';
 import PostgresIcon from '@/assets/destination_icons/postgres.png';
 import S3Icon from '@/assets/destination_icons/s3.png';
+import SupaglueIcon from '@/assets/supaglue.png';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
 
@@ -35,6 +36,7 @@ export default function getIcon(name: string, size = 25): ReactNode {
     gong: <Image key={name} alt={name} src={GongIcon} width={size} height={size} />,
     apollo: <Image key={name} alt={name} src={ApolloIcon} width={size} height={size} />,
     salesloft: <Image key={name} alt={name} src={SalesloftIcon} width={size} height={size} />,
+    supaglue: <Image key={name} alt={name} src={SupaglueIcon} width={size} height={size} />,
   };
 
   return companyToIconMap[name];
