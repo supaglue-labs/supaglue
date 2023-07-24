@@ -106,7 +106,7 @@ export default function Home() {
               </Breadcrumbs>
               <Card>
                 <Typography variant="h6" component="h2" sx={{ p: 2 }}>
-                  Field Mappings
+                  Entity Mappings
                 </Typography>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                   <Tabs value={tab}>
