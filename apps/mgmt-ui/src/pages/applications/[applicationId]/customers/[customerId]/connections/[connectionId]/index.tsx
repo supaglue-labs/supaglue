@@ -2,6 +2,8 @@ import Spinner from '@/components/Spinner';
 import { TabPanel } from '@/components/TabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useActiveCustomerId } from '@/hooks/useActiveCustomerId';
+import { useEntityMappings } from '@/hooks/useEntityMappings';
+import { useProperties } from '@/hooks/useProperties';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { getStandardObjectOptions } from '@/utils/provider';
@@ -20,6 +22,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import type { EntityFieldMapping } from '@supaglue/types/entity_mapping';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -88,7 +91,7 @@ export default function Home() {
                 <Box component="main" sx={{ flex: 1, py: 6, px: 4 }}>
                   {ENTITIES.map((entity, idx) => (
                     <TabPanel value={tab} index={idx} key={idx} className="w-full">
-                      <EntityFieldMapping entity={entity} providerName="salesforce" />
+                      <EntityMapping customerId={customerId} entity={entity} providerName="salesforce" />
                     </TabPanel>
                   ))}
                 </Box>
@@ -102,13 +105,16 @@ export default function Home() {
 }
 
 type EntityMappingsProps = {
+  customerId: string;
   entity: string;
   providerName: string;
   object?: string;
 };
 
-function EntityMapping({ entity, providerName, object }: EntityMappingsProps) {
+function EntityMapping({ customerId, entity, providerName, object }: EntityMappingsProps) {
+  const { entityMappings, isLoading } = useEntityMappings(customerId, providerName);
   const [selectedObject, setSelectedObject] = useState<string | undefined>(object);
+  const [fieldMapping, setFieldMapping] = useState<EntityFieldMapping[]>([]);
   const objectOptions = getStandardObjectOptions(providerName);
   return (
     <>
@@ -123,6 +129,17 @@ function EntityMapping({ entity, providerName, object }: EntityMappingsProps) {
             providerName={providerName}
             object={object}
             setObject={setSelectedObject}
+          />
+          <EntityFieldMappings
+            customerId={customerId}
+            entity={entity}
+            providerName={providerName}
+            object={object ?? ''}
+            fields={[]}
+            setFieldMapping={(entityField, mappedField) => {
+              // eslint-disable-next-line no-console
+              console.log(entityField, mappedField);
+            }}
           />
         </Grid>
       </Box>
@@ -177,28 +194,37 @@ function EntityObjectMapping({ entity, providerName, object, setObject }: Entity
 }
 
 type EntityFieldMappingsProps = {
+  customerId: string;
   entity: string;
-  object?: string;
+  object: string;
   providerName: string;
-  fields: string[];
+  fields: EntityFieldMapping[];
+  setFieldMapping: (entityField: string, mappedField: string | undefined) => void;
 };
 
-function EntityFieldMappings({ entity, providerName, object, fields }: EntityFieldMappingsProps) {
-  const fieldOptions: string[] = [];
+function EntityFieldMappings({
+  customerId,
+  entity,
+  providerName,
+  object,
+  fields,
+  setFieldMapping,
+}: EntityFieldMappingsProps) {
+  const { properties, isLoading } = useProperties(customerId, providerName, 'standard', object);
   return (
     <>
-      {fields.map((field, idx) => (
+      {fields.map(({ entityField, mappedField }, idx) => (
         <>
           <Grid item xs={4}>
-            <Typography>{field}</Typography>
+            <Typography>{entityField}</Typography>
           </Grid>
           <Grid item xs={12}>
             <Autocomplete
-              disabled={!object}
+              disabled={!object || isLoading}
               size="small"
               id="entity-object-field"
-              options={fieldOptions}
-              // defaultValue={object}
+              options={properties ?? []}
+              defaultValue={mappedField}
               autoSelect
               renderTags={(value: readonly string[], getTagProps) =>
                 value.map((option: string, index: number) => (
@@ -208,12 +234,12 @@ function EntityFieldMappings({ entity, providerName, object, fields }: EntityFie
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Standard objects"
+                  label={`${providerName} field`}
                   helperText={`Available fields for ${object} in ${providerName}.`}
                 />
               )}
               onChange={(event: any, value: string | null) => {
-                console.log('hi');
+                setFieldMapping(entityField, value ?? undefined);
               }}
             />
           </Grid>
