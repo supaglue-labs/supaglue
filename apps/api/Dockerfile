@@ -1,7 +1,7 @@
 FROM node:18-bullseye-slim AS builder
 WORKDIR /app
 COPY . .
-RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo prune --scope=api --docker
+RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx -p turbo@1.10.9 turbo prune --scope=api --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:18-bullseye-slim AS installer
@@ -24,7 +24,7 @@ COPY tsconfig.json tsconfig.json
 
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace @supaglue/db prisma generate
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace api dlx -p ts-patch@2.1.0 ts-patch install -s
-RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx turbo run build --filter=api...
+RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx -p turbo@1.10.9 turbo run build --filter=api...
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspaces focus --production api
 
 FROM node:18-bullseye-slim AS runner

@@ -55,7 +55,7 @@ export function createSyncObjectRecords(
             const category = getCategoryForProvider(connection.providerName);
             switch (category) {
               case 'crm': {
-                const client = await remoteService.getCrmRemoteClient(connectionId);
+                const [client] = await remoteService.getCrmRemoteClient(connectionId);
                 const fieldMappingConfig = await connectionService.getFieldMappingConfig(
                   connectionId,
                   'common',
@@ -76,7 +76,7 @@ export function createSyncObjectRecords(
                 );
               }
               case 'engagement': {
-                const client = await remoteService.getEngagementRemoteClient(connectionId);
+                const [client] = await remoteService.getEngagementRemoteClient(connectionId);
                 const readable = await client.listCommonObjectRecords(
                   object as EngagementCommonObjectType,
                   updatedAfter

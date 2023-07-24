@@ -1,4 +1,4 @@
-import type { ConnectionUnsafe, OauthProvider } from '@supaglue/types';
+import type { ConnectionUnsafe, CRMProvider, EngagementProvider, OauthProvider } from '@supaglue/types';
 import type { ProviderService } from '.';
 import { InternalServerError } from '../errors';
 import { logger } from '../lib';
@@ -21,7 +21,7 @@ export class RemoteService {
 
   // TODO: Abstract some of the logic in these methods into a common method
 
-  public async getCrmRemoteClient(connectionId: string): Promise<CrmRemoteClient> {
+  public async getCrmRemoteClient(connectionId: string): Promise<[CrmRemoteClient, CRMProvider['name']]> {
     const connection = await this.#connectionService.getUnsafeById(connectionId);
     const provider = await this.#providerService.getById(connection.providerId);
 
@@ -37,10 +37,12 @@ export class RemoteService {
 
     const client = getCrmRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
     this.#persistRefreshedToken(connectionId, client);
-    return client;
+    return [client, provider.name];
   }
 
-  public async getEngagementRemoteClient(connectionId: string): Promise<EngagementRemoteClient> {
+  public async getEngagementRemoteClient(
+    connectionId: string
+  ): Promise<[EngagementRemoteClient, EngagementProvider['name']]> {
     const connection = await this.#connectionService.getUnsafeById(connectionId);
     const provider = await this.#providerService.getById(connection.providerId);
 
@@ -60,7 +62,7 @@ export class RemoteService {
 
     const client = getEngagementRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
     this.#persistRefreshedToken(connectionId, client);
-    return client;
+    return [client, provider.name];
   }
 
   public async getRemoteClient(connectionId: string): Promise<RemoteClient> {

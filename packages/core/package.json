@@ -32,6 +32,7 @@
     "pino-sentry": "^0.14.0",
     "pluralize": "^8.0.0",
     "posthog-node": "^3.1.1",
+    "prom-client": "^14.2.0",
     "svix": "^0.84.1",
     "uuid": "^9.0.0"
   },
