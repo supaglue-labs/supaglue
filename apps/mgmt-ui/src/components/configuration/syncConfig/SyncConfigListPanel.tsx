@@ -4,6 +4,7 @@ import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
+import { useEntities } from '@/hooks/useEntities';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import getIcon from '@/utils/companyToIcon';
@@ -20,10 +21,11 @@ export default function SyncConfigListPanel() {
   const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations = [], isLoading: isLoadingDestinations } = useDestinations();
+  const { entities = [], isLoading: isLoadingEntities } = useEntities();
   const applicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
 
-  if (isLoading || isLoadingProviders || isLoadingDestinations) {
+  if (isLoading || isLoadingProviders || isLoadingDestinations || isLoadingEntities) {
     return <Spinner />;
   }
 
@@ -102,9 +104,17 @@ export default function SyncConfigListPanel() {
     {
       field: 'objects',
       headerName: 'Objects',
-      width: 250,
+      width: 150,
       renderCell: (params) => {
         return <span className="whitespace-normal">{params.row.objects}</span>;
+      },
+    },
+    {
+      field: 'entities',
+      headerName: 'Entities',
+      width: 150,
+      renderCell: (params) => {
+        return <span className="whitespace-normal">{params.row.entities}</span>;
       },
     },
     {
@@ -136,6 +146,7 @@ export default function SyncConfigListPanel() {
     destination: syncConfig.destinationId,
     frequency: `every ${millisToHumanReadable(syncConfig.config.defaultConfig.periodMs)}`,
     objects: getObjectsString(syncConfig),
+    entities: getEntitiesString(entities, syncConfig),
   }));
 
   return (
@@ -238,4 +249,18 @@ function getObjectsString(syncConfig: SyncConfig): string {
     return `${objectsList.slice(0, 6).join(', ')}...`;
   }
   return objectsList.join(', ');
+}
+
+function getEntitiesString(allEntities: ReturnType<typeof useEntities>['entities'], syncConfig: SyncConfig): string {
+  return (
+    syncConfig.config.entities
+      ?.map((entity) => {
+        const matchingEntity = allEntities?.find((e) => e.id === entity.entityId);
+        if (!matchingEntity) {
+          return entity.entityId;
+        }
+        return matchingEntity.name;
+      })
+      ?.join(', ') ?? ''
+  );
 }
