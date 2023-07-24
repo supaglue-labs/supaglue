@@ -31,8 +31,11 @@ properties:
           enum:
             - developer
             - customer
+        is_additional:
+          type: boolean
       required:
         - entity_field
+        - is_additional
 required:
   - entity_id
   - entity_name

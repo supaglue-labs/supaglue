@@ -1028,6 +1028,7 @@ export interface components {
           mapped_field?: string;
           /** @enum {string} */
           from?: "developer" | "customer";
+          is_additional: boolean;
         })[];
     };
     entity_field_mapping: {

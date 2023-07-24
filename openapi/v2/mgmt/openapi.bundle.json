@@ -5011,10 +5011,14 @@
                     "developer",
                     "customer"
                   ]
+                },
+                "is_additional": {
+                  "type": "boolean"
                 }
               },
               "required": [
-                "entity_field"
+                "entity_field",
+                "is_additional"
               ]
             }
           }

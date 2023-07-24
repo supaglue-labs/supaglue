@@ -63,6 +63,7 @@ export function mergeEntityMappingsList(
     entityName: entity.name,
     fieldMappings: entity.config.fields.map((field) => ({
       entityField: field.name,
+      isAdditional: false,
     })),
   }));
 
@@ -99,6 +100,7 @@ export function mergeEntityMappingsList(
             existingEntityMapping.fieldMappings.push({
               ...fieldMapping,
               from,
+              isAdditional: true,
             });
           }
         }

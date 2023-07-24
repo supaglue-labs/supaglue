@@ -13,6 +13,7 @@ export type MergedEntityFieldMapping = {
   entityField: string;
   mappedField?: string;
   from?: 'developer' | 'customer';
+  isAdditional: boolean;
 };
 
 export type EntityMapping = {
