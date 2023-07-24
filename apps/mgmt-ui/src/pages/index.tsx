@@ -5,7 +5,7 @@ import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth';
 import { API_HOST, IS_CLOUD, ORGANIZATION_ID, SG_INTERNAL_TOKEN } from './api';
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res, resolvedUrl }) => {
   let session: Session | null = null;
 
   let orgId = ORGANIZATION_ID;
@@ -25,10 +25,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     }
   } else {
     const user = getAuth(req);
-
     if (!user.userId || !user.orgId) {
       return {
-        props: { session, signedIn: false },
+        redirect: {
+          destination: '/sign-in?redirect_url=' + resolvedUrl,
+          permanent: false,
+        },
       };
     }
     ({ orgId } = user);

@@ -1,7 +1,7 @@
 import { NotificationManager } from '@/context/notification';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
-import { ClerkProvider, useUser } from '@clerk/nextjs';
+import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut, useUser } from '@clerk/nextjs';
 import { Box, CssBaseline, StyledEngineProvider, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SessionProvider } from 'next-auth/react';
@@ -22,8 +22,15 @@ if (typeof window !== 'undefined') {
         posthog.debug();
       }
     },
+    api_host: process.env.FRONTEND_URL
+      ? `${process.env.FRONTEND_URL}/ingest`
+      : window.location.port === '3000'
+      ? `http://${window.location.hostname}:3000/ingest`
+      : `https://${window.location.hostname}/ingest`,
   });
 }
+
+const publicPages = ['/sign-in/[[...index]]', '/sign-up/[[...index]]'];
 
 // Note: from material-ui template. Eventually consolidate between styled props, sx, and tailwindcss
 export let theme = createTheme({
@@ -173,6 +180,8 @@ const drawerWidth = 256;
 
 export default function App({ Component, pageProps: { session, signedIn, ...pageProps } }: AppProps) {
   const router = useRouter();
+  const { pathname } = useRouter();
+  const isPublicPage = publicPages.includes(pathname);
 
   useEffect(() => {
     // Track page views
@@ -213,7 +222,18 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
             <ThemeProvider theme={theme}>
               <NotificationManager>
                 <InnerApp signedIn={signedIn}>
-                  <Component {...pageProps} />
+                  {isPublicPage ? (
+                    <Component {...pageProps} />
+                  ) : (
+                    <>
+                      <SignedIn>
+                        <Component {...pageProps} />
+                      </SignedIn>
+                      <SignedOut>
+                        <RedirectToSignIn />
+                      </SignedOut>
+                    </>
+                  )}
                 </InnerApp>
               </NotificationManager>
             </ThemeProvider>
