@@ -42,6 +42,8 @@ import type {
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
+import { SALESFORCE_OBJECTS } from '@supaglue/utils';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
@@ -243,6 +245,13 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       refreshToken,
       maxRequest: 10,
     });
+  }
+
+  public override async listObjects(): Promise<StandardOrCustomObject[]> {
+    return SALESFORCE_OBJECTS.map((object) => ({
+      type: 'standard',
+      name: object,
+    }));
   }
 
   async #listObjectsHelper(

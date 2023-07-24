@@ -61,8 +61,11 @@ export function createSyncEntityRecords(
           return await writer.writeEntityRecords(connection, entity.name, toHeartbeatingReadable(stream), heartbeat);
         }
         case 'custom': {
-          const stream = await client.listCustomObjectRecords(object.name, updatedAfter, heartbeat);
-          return await writer.writeEntityRecords(connection, entity.name, toHeartbeatingReadable(stream), heartbeat);
+          // TODO: We shouldn't support custom objects until we decide how to generally
+          // reference custom objects across our system (APIs, syncs, etc.)
+          throw ApplicationFailure.nonRetryable('Custom objects are not supported yet');
+          // const stream = await client.listCustomObjectRecords(object.name, updatedAfter, heartbeat);
+          // return await writer.writeEntityRecords(connection, entity.name, toHeartbeatingReadable(stream), heartbeat);
         }
       }
     }

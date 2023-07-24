@@ -13,11 +13,13 @@ import type {
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { Readable } from 'stream';
 import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
 export interface CrmRemoteClient extends RemoteClient {
+  listObjects(): Promise<StandardOrCustomObject[]>;
   listCommonProperties(object: CommonObjectDef): Promise<string[]>;
   listProperties(object: StandardOrCustomObjectDef): Promise<string[]>;
 
@@ -61,6 +63,9 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     super(...args);
   }
 
+  public listObjects(): Promise<StandardOrCustomObject[]> {
+    throw new Error('Not implemented');
+  }
   public listCommonProperties(object: CommonObjectDef): Promise<string[]> {
     throw new Error('Not implemented');
   }

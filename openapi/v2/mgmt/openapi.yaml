@@ -37,6 +37,8 @@ paths:
     $ref: paths/destinations@{destination_id}.yaml
   '/field_mappings':
     $ref: paths/field_mappings.yaml
+  '/objects':
+    $ref: paths/objects.yaml
   '/properties':
     $ref: paths/properties.yaml
   '/field_mappings/_update_object':
@@ -88,6 +90,8 @@ tags:
     description: A `Destination` is a place where to which data can be written.
   - name: Providers
     description: A `Provider` is a CRM or other system that we can connect to.
+  - name: Objects
+    description: An `Object` is an object in a Provider.
   - name: Properties
     description: A `Property` is a field in a Provider Object.
   - name: Schemas

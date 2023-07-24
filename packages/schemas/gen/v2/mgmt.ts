@@ -60,6 +60,16 @@ export interface paths {
       };
     };
   };
+  "/objects": {
+    /** List objects */
+    get: operations["listObjects"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/properties": {
     /** List properties */
     get: operations["listProperties"];
@@ -1201,6 +1211,25 @@ export interface operations {
       200: {
         content: {
           "application/json": (components["schemas"]["object_field_mapping_info"])[];
+        };
+      };
+    };
+  };
+  /** List objects */
+  listObjects: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description List of objects */
+      200: {
+        content: {
+          "application/json": {
+            objects: (components["schemas"]["standard_or_custom_object"])[];
+          };
         };
       };
     };

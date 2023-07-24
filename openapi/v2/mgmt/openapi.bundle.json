@@ -418,6 +418,51 @@
         }
       ]
     },
+    "/objects": {
+      "get": {
+        "operationId": "listObjects",
+        "summary": "List objects",
+        "tags": [
+          "Objects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "objects": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/standard_or_custom_object"
+                      }
+                    }
+                  },
+                  "required": [
+                    "objects"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/properties": {
       "get": {
         "operationId": "listProperties",
@@ -2631,6 +2676,10 @@
     {
       "name": "Providers",
       "description": "A `Provider` is a CRM or other system that we can connect to."
+    },
+    {
+      "name": "Objects",
+      "description": "An `Object` is an object in a Provider."
     },
     {
       "name": "Properties",

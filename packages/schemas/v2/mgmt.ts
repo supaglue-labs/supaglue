@@ -155,6 +155,12 @@ export type DeleteConnectionRequest = never;
 export type DeleteConnectionResponse =
   operations['deleteConnection']['responses'][keyof operations['deleteConnection']['responses']]['content']['application/json'];
 
+export type ListObjectsPathParams = never;
+export type ListObjectsRequest = never;
+export type ListObjectsQueryParams = never;
+export type ListObjectsResponse =
+  operations['listObjects']['responses'][keyof operations['listObjects']['responses']]['content']['application/json'];
+
 export type ListPropertiesPathParams = never;
 export type ListPropertiesRequest = never;
 export type ListPropertiesQueryParams = Required<operations['listProperties']>['parameters']['query'];

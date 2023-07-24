@@ -53,6 +53,7 @@ import type {
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
 import axios from 'axios';
@@ -847,6 +848,14 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       default:
         return await this.listPropertiesForRawObjectName(object.name);
     }
+  }
+
+  public override async listObjects(): Promise<StandardOrCustomObject[]> {
+    // TODO: support custom objects
+    return HUBSPOT_STANDARD_OBJECT_TYPES.map((objectType) => ({
+      type: 'standard',
+      name: objectType,
+    }));
   }
 
   public override async listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {

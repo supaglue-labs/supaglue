@@ -1,0 +1,24 @@
+get:
+  operationId: listObjects
+  summary: List objects
+  tags:
+    - Objects
+  security:
+    - x-api-key: []
+  responses:
+    '200':
+      description: List of objects
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              objects:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/standard_or_custom_object.yaml
+            required:
+              - objects
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml
