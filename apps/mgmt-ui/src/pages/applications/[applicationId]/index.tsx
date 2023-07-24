@@ -1,6 +1,6 @@
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { getAuth } from '@clerk/nextjs/server';
+import { buildClerkProps, getAuth } from '@clerk/nextjs/server';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { type GetServerSideProps } from 'next';
 import type { Session } from 'next-auth';
@@ -10,7 +10,7 @@ import { useState } from 'react';
 import { Svix } from 'svix';
 import { IS_CLOUD } from '../../api';
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res, query }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res, query, resolvedUrl }) => {
   let session: Session | null = null;
   const applicationId = query.applicationId as string;
 
@@ -26,11 +26,13 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
       };
     }
   } else {
-    const user = getAuth(req);
-
-    if (!user.userId || !user.orgId) {
+    const { userId } = getAuth(req);
+    if (!userId) {
       return {
-        props: { session, signedIn: false },
+        redirect: {
+          destination: '/sign-in?redirect_url=' + resolvedUrl,
+          permanent: false,
+        },
       };
     }
   }
@@ -42,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query }
   }
 
   return {
-    props: { session, signedIn: true, svixDashboardUrl },
+    props: { session, signedIn: true, svixDashboardUrl, ...buildClerkProps(req) },
   };
 };
 

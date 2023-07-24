@@ -58,4 +58,4 @@ const nonCloudMiddleware = async (request: NextRequest) => {
 
 export default IS_CLOUD ? cloudMiddleware : nonCloudMiddleware;
 
-export const config = { matcher: '/((?!_next/image|_next/static|favicon.ico|api/health).*)' };
+export const config = { matcher: '/((?!_next/image|_next/static|favicon.ico|api/health|ingest).*)' };
