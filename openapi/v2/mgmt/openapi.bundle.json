@@ -5021,7 +5021,8 @@
         },
         "required": [
           "entity_id",
-          "entity_name"
+          "entity_name",
+          "field_mappings"
         ]
       },
       "entity_field_mapping": {

@@ -1,8 +1,10 @@
+import { updateEntityMapping } from '@/client';
 import Spinner from '@/components/Spinner';
 import { TabPanel } from '@/components/TabPanel';
+import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useActiveCustomerId } from '@/hooks/useActiveCustomerId';
-import { useEntityMappings } from '@/hooks/useEntityMappings';
+import { toListEntityMappingsResponse, useEntityMappings } from '@/hooks/useEntityMappings';
 import { useProperties } from '@/hooks/useProperties';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
@@ -13,6 +15,7 @@ import {
   Autocomplete,
   Box,
   Breadcrumbs,
+  Button,
   Card,
   Chip,
   Grid,
@@ -22,31 +25,55 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import type { EntityFieldMapping } from '@supaglue/types/entity_mapping';
+import type { EntityFieldMapping, MergedEntityFieldMapping, MergedEntityMapping } from '@supaglue/types/entity_mapping';
+import { EntityMapping } from '@supaglue/types/entity_mapping';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import Head from 'next/head';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
-
-// TODO: Data drive this.
-const ENTITIES = ['contact', 'account', 'deal'];
-
-const FIELDS = {
-  contact: ['first_name', 'last_name', 'email'],
-  account: ['name', 'address', 'domain'],
-  deal: ['name', 'stage', 'custom_field'],
-};
 
 export { getServerSideProps };
 
 export default function Home() {
   const applicationId = useActiveApplicationId();
   const customerId = useActiveCustomerId();
+  const { providerName } = useRouter().query;
+  const { entityMappings = [], isLoading, mutate } = useEntityMappings(customerId, providerName as string);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const isLoading = false;
   const [tab, setTab] = useState(0);
+  const { addNotification } = useNotification();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+  };
+
+  const saveEntityMapping = async (mergedEntityMapping: MergedEntityMapping) => {
+    const { entityId, object, fieldMappings } = mergedEntityMapping;
+    const entityMapping: EntityMapping = {
+      entityId: entityId,
+      object: object?.from === 'customer' ? object : undefined,
+      fieldMappings: fieldMappings.filter(
+        (fieldMapping) => fieldMapping.from === 'customer' && fieldMapping.mappedField
+      ) as EntityFieldMapping[],
+    };
+    const response = await updateEntityMapping(applicationId, customerId, providerName as string, entityMapping);
+    if (!response.ok) {
+      addNotification({ message: response.errorMessage, severity: 'error' });
+      return;
+    }
+    addNotification({ message: 'Successfully updated entity mapping', severity: 'success' });
+    const idx = entityMappings.findIndex((entityMapping) => entityMapping.entityId === entityId);
+    if (idx !== -1) {
+      mutate(
+        toListEntityMappingsResponse([
+          ...entityMappings.slice(0, idx),
+          mergedEntityMapping,
+          ...entityMappings.slice(idx + 1),
+        ]),
+        false
+      );
+    }
   };
 
   return (
@@ -81,17 +108,23 @@ export default function Home() {
                 <Typography variant="h6" component="h2" sx={{ p: 2 }}>
                   Field Mappings
                 </Typography>
-                <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                  <Tabs value={tab} textColor="inherit">
-                    {ENTITIES.map((entity, idx) => (
-                      <Tab key={idx} label={entity} onClick={() => setTab(idx)} />
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <Tabs value={tab}>
+                    {entityMappings.map((mapping, idx) => (
+                      <Tab key={idx} label={mapping.entityName} onClick={() => setTab(idx)} />
                     ))}
                   </Tabs>
                 </Box>
                 <Box component="main" sx={{ flex: 1, py: 6, px: 4 }}>
-                  {ENTITIES.map((entity, idx) => (
+                  {entityMappings.map((mapping, idx) => (
                     <TabPanel value={tab} index={idx} key={idx} className="w-full">
-                      <EntityMapping customerId={customerId} entity={entity} providerName="salesforce" />
+                      <EntityMapping
+                        initialMapping={mapping}
+                        customerId={customerId}
+                        entity={mapping.entityName}
+                        providerName={providerName as string}
+                        saveEntityMapping={saveEntityMapping}
+                      />
                     </TabPanel>
                   ))}
                 </Box>
@@ -108,14 +141,52 @@ type EntityMappingsProps = {
   customerId: string;
   entity: string;
   providerName: string;
-  object?: string;
+  initialMapping: MergedEntityMapping;
+  saveEntityMapping: (mapping: MergedEntityMapping) => void;
 };
 
-function EntityMapping({ customerId, entity, providerName, object }: EntityMappingsProps) {
-  const { entityMappings, isLoading } = useEntityMappings(customerId, providerName);
-  const [selectedObject, setSelectedObject] = useState<string | undefined>(object);
-  const [fieldMapping, setFieldMapping] = useState<EntityFieldMapping[]>([]);
-  const objectOptions = getStandardObjectOptions(providerName);
+function EntityMapping({ customerId, entity, providerName, initialMapping, saveEntityMapping }: EntityMappingsProps) {
+  const [mergedEntityMapping, setMergedEntityMapping] = useState<MergedEntityMapping>(initialMapping);
+  const [isDirty, setIsDirty] = useState<boolean>(false);
+
+  const setObject = (selected: string | undefined) => {
+    setMergedEntityMapping({
+      ...mergedEntityMapping,
+      object: selected
+        ? {
+            type: 'standard',
+            name: selected,
+            from: 'customer',
+          }
+        : undefined,
+    });
+    setIsDirty(true);
+  };
+
+  const setFieldMapping = (entityField: string, mappedField: string | undefined) => {
+    const newFieldMappings = [...mergedEntityMapping.fieldMappings];
+    const idx = mergedEntityMapping.fieldMappings.findIndex((fieldMapping) => fieldMapping.entityField === entityField);
+    if (idx === -1) {
+      newFieldMappings.push({
+        entityField,
+        mappedField,
+        from: 'customer',
+      });
+    } else {
+      newFieldMappings[idx] = {
+        entityField,
+        mappedField,
+        from: 'customer',
+      };
+    }
+    setMergedEntityMapping({ ...mergedEntityMapping, fieldMappings: newFieldMappings });
+    setIsDirty(true);
+  };
+
+  const isValid =
+    !!mergedEntityMapping.object &&
+    mergedEntityMapping.fieldMappings.every((fieldMapping) => !!fieldMapping.mappedField);
+
   return (
     <>
       <Box
@@ -127,21 +198,31 @@ function EntityMapping({ customerId, entity, providerName, object }: EntityMappi
           <EntityObjectMapping
             entity={entity}
             providerName={providerName}
-            object={object}
-            setObject={setSelectedObject}
+            object={initialMapping.object}
+            setObject={setObject}
           />
           <EntityFieldMappings
             customerId={customerId}
             entity={entity}
             providerName={providerName}
-            object={object ?? ''}
-            fields={[]}
-            setFieldMapping={(entityField, mappedField) => {
-              // eslint-disable-next-line no-console
-              console.log(entityField, mappedField);
-            }}
+            object={mergedEntityMapping.object}
+            fieldMappings={initialMapping.fieldMappings}
+            setFieldMapping={setFieldMapping}
           />
         </Grid>
+        <Stack direction="row" className="gap-2 pt-4 items-center justify-end">
+          <Button
+            variant="contained"
+            color="primary"
+            disabled={!isValid || !isDirty}
+            onClick={() => {
+              saveEntityMapping(mergedEntityMapping);
+              setIsDirty(false);
+            }}
+          >
+            Save
+          </Button>
+        </Stack>
       </Box>
     </>
   );
@@ -150,7 +231,9 @@ function EntityMapping({ customerId, entity, providerName, object }: EntityMappi
 type EntityObjectMappingProps = {
   entity: string;
   providerName: string;
-  object?: string;
+  object?: StandardOrCustomObject & {
+    from: 'developer' | 'customer';
+  };
   setObject: (selected: string | undefined) => void;
 };
 function EntityObjectMapping({ entity, providerName, object, setObject }: EntityObjectMappingProps) {
@@ -170,10 +253,11 @@ function EntityObjectMapping({ entity, providerName, object, setObject }: Entity
         <Stack direction="row" className="gap-4 items-start">
           {providerToIcon(providerName, 40)}
           <Autocomplete
+            disabled={object?.from === 'developer'}
             size="small"
             id="entity-object"
             options={objectOptions}
-            defaultValue={object}
+            defaultValue={object?.name}
             autoSelect
             renderTags={(value: readonly string[], getTagProps) =>
               value.map((option: string, index: number) => (
@@ -196,31 +280,37 @@ function EntityObjectMapping({ entity, providerName, object, setObject }: Entity
 type EntityFieldMappingsProps = {
   customerId: string;
   entity: string;
-  object: string;
+  object?: StandardOrCustomObject & {
+    from: 'developer' | 'customer';
+  };
   providerName: string;
-  fields: EntityFieldMapping[];
+  fieldMappings: MergedEntityFieldMapping[];
   setFieldMapping: (entityField: string, mappedField: string | undefined) => void;
 };
 
 function EntityFieldMappings({
   customerId,
-  entity,
   providerName,
   object,
-  fields,
+  fieldMappings,
   setFieldMapping,
 }: EntityFieldMappingsProps) {
-  const { properties, isLoading } = useProperties(customerId, providerName, 'standard', object);
+  const { properties = [], isLoading } = useProperties(
+    customerId,
+    providerName,
+    object?.type ?? 'standard',
+    object?.name ?? ''
+  );
   return (
     <>
-      {fields.map(({ entityField, mappedField }, idx) => (
+      {fieldMappings.map(({ entityField, mappedField, from }) => (
         <>
           <Grid item xs={4}>
             <Typography>{entityField}</Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={8}>
             <Autocomplete
-              disabled={!object || isLoading}
+              disabled={!object || isLoading || from === 'developer'}
               size="small"
               id="entity-object-field"
               options={properties ?? []}
@@ -235,7 +325,7 @@ function EntityFieldMappings({
                 <TextField
                   {...params}
                   label={`${providerName} field`}
-                  helperText={`Available fields for ${object} in ${providerName}.`}
+                  helperText={object ? `Available fields for ${object?.name} in ${providerName}.` : undefined}
                 />
               )}
               onChange={(event: any, value: string | null) => {

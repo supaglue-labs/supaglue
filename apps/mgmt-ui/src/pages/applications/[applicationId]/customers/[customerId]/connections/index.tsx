@@ -37,8 +37,8 @@ export default function Home() {
       renderCell: (params) => {
         return (
           <Link
-            href={`/applications/${applicationId}/customers/${encodeURIComponent(params.id)}/connections/${
-              params.row.id
+            href={`/applications/${applicationId}/customers/${encodeURIComponent(activeCustomerId)}/connections/${
+              params.row.providerName
             }`}
           >
             {params.row.id}

@@ -1023,7 +1023,7 @@ export interface components {
         /** @enum {string} */
         from: "developer" | "customer";
       });
-      field_mappings?: ({
+      field_mappings: ({
           entity_field: string;
           mapped_field?: string;
           /** @enum {string} */

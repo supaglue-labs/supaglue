@@ -36,3 +36,4 @@ properties:
 required:
   - entity_id
   - entity_name
+  - field_mappings
