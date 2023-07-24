@@ -1,17 +1,11 @@
 import type { ConnectionSafeAny } from '@supaglue/types/connection';
 import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
-import { Histogram } from 'prom-client';
 import type { ConnectionService } from '../..';
 import { BadRequestError } from '../../../errors';
+import { remoteDuration } from '../../../lib/metrics';
 import type { DestinationService } from '../../destination_service';
 import type { RemoteService } from '../../remote_service';
-
-const histogram = new Histogram({
-  name: 'remote_duration_seconds',
-  help: 'remote operation duration in seconds',
-  labelNames: ['operation', 'remote_name'],
-});
 
 export class CrmCommonObjectService {
   readonly #remoteService: RemoteService;
@@ -36,7 +30,7 @@ export class CrmCommonObjectService {
     const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
     const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
 
-    const end = histogram.startTimer({ operation: 'get', remote_name: providerName });
+    const end = remoteDuration.startTimer({ operation: 'get', remote_name: providerName });
     const obj = await remoteClient.getCommonObjectRecord(objectName, id, fieldMappingConfig);
     end();
 
@@ -52,7 +46,7 @@ export class CrmCommonObjectService {
     const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
     const mappedParams = { ...params, customFields: mapCustomFields(fieldMappingConfig, params.customFields) };
 
-    const end = histogram.startTimer({ operation: 'create', remote_name: providerName });
+    const end = remoteDuration.startTimer({ operation: 'create', remote_name: providerName });
     const id = await remoteClient.createCommonObjectRecord(objectName, mappedParams);
     end();
 
@@ -61,7 +55,7 @@ export class CrmCommonObjectService {
     if (writer) {
       const object = await this.get(objectName, connection, id);
 
-      const end = histogram.startTimer({ operation: 'create', remote_name: destinationType! });
+      const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });
       await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, object);
       end();
     }
@@ -78,7 +72,7 @@ export class CrmCommonObjectService {
     const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
     const mappedParams = { ...params, customFields: mapCustomFields(fieldMappingConfig, params.customFields) };
 
-    const end = histogram.startTimer({ operation: 'update', remote_name: providerName });
+    const end = remoteDuration.startTimer({ operation: 'update', remote_name: providerName });
     await remoteClient.updateCommonObjectRecord(objectName, mappedParams);
     end();
 
@@ -87,7 +81,7 @@ export class CrmCommonObjectService {
     if (writer) {
       const object = await this.get(objectName, connection, params.id);
 
-      const end = histogram.startTimer({ operation: 'update', remote_name: destinationType! });
+      const end = remoteDuration.startTimer({ operation: 'update', remote_name: destinationType! });
       await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, object);
       end();
     }
