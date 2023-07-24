@@ -248,6 +248,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
   }
 
   public override async listObjects(): Promise<StandardOrCustomObject[]> {
+    // TODO: support custom objects
     return SALESFORCE_OBJECTS.map((object) => ({
       type: 'standard',
       name: object,
