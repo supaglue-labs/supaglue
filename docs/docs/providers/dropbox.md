@@ -1,11 +1,11 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/zendesk.png
-  category: 'Ticketing'
+  icon: /img/connector_icons/dropbox.png
+  category: 'File storage'
 description: ''
 ---
 
-# Zendesk
+# Dropbox
 
 ## Overview
 

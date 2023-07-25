@@ -1,11 +1,11 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/zendesk.png
-  category: 'Ticketing'
+  icon: /img/connector_icons/zoom.png
+  category: 'Communications'
 description: ''
 ---
 
-# Zendesk
+# Zoom
 
 ## Overview
 
@@ -14,5 +14,6 @@ description: ''
 | Auth                               | Yes       |
 | Managed syncs (standard objects)   | Yes       |
 | Managed syncs: incremental deletes | No        |
+| Point reads                        | No        |
 | Action API                         | No        |
 | Real-time events                   | No        |

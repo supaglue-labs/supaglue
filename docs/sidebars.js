@@ -106,7 +106,7 @@ const sidebars = {
     },
     {
       id: 'platform/passthrough',
-      label: 'Passthrough',
+      label: 'Passthrough API',
       type: 'doc',
     },
 
