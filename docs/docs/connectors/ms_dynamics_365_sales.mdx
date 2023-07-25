@@ -1,6 +1,6 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/ms_dynamics_365_sales.png
+  icon: /img/connector_icons/ms_dynamics_365_sales.svg
   category: 'CRM'
 description: ''
 ---
