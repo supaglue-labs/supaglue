@@ -1797,7 +1797,7 @@
       },
       "post": {
         "operationId": "createConnection",
-        "summary": "Create connection",
+        "summary": "Create a connection (for providers with API key authentication). Use Embedded Links for OAuth 2.0.",
         "tags": [
           "Connections"
         ],
@@ -1812,7 +1812,6 @@
           "content": {
             "application/json": {
               "schema": {
-                "additionalProperties": true,
                 "type": "object",
                 "properties": {
                   "provider_name": {

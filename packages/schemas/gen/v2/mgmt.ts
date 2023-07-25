@@ -199,7 +199,7 @@ export interface paths {
      * @description Get a list of connections
      */
     get: operations["getConnections"];
-    /** Create connection */
+    /** Create a connection (for providers with API key authentication). Use Embedded Links for OAuth 2.0. */
     post: operations["createConnection"];
     parameters: {
       path: {
@@ -1669,7 +1669,7 @@ export interface operations {
       };
     };
   };
-  /** Create connection */
+  /** Create a connection (for providers with API key authentication). Use Embedded Links for OAuth 2.0. */
   createConnection: {
     parameters: {
       path: {
@@ -1688,7 +1688,6 @@ export interface operations {
            * @example 123456
            */
           api_key: string;
-          [key: string]: unknown;
         };
       };
     };
