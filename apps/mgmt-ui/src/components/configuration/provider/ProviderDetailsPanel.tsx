@@ -48,6 +48,27 @@ export type ProviderDetailsPanelProps = {
 
 export default function ProviderDetailsPanel({ providerName, category, isLoading }: ProviderDetailsPanelProps) {
   const shouldAllowManagedOauth = ['salesforce', 'hubspot', 'gong', 'salesloft', 'outreach'].includes(providerName);
+  const notYetSupported = [
+    'asana',
+    'box',
+    'dropbox',
+    'gmail',
+    'google_calendar',
+    'google_drive',
+    'intercom',
+    'linkedin',
+    'marketo',
+    'messenger',
+    'onedrive',
+    'outlook',
+    'pardot',
+    'slack',
+    'ms_teams',
+    'whatsapp',
+    'zendesk',
+    'zoho',
+    'zoom',
+  ];
   const isOauth = category === 'crm' || providerName !== 'apollo';
   const activeApplicationId = useActiveApplicationId();
   const { schemas, isLoading: isLoadingSchemas } = useSchemas();
@@ -299,6 +320,10 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
               variant="contained"
               disabled={isSaving || isLoading}
               onClick={async () => {
+                if (notYetSupported.includes(providerName)) {
+                  addNotification({ message: 'Coming soon!', severity: 'success' });
+                  return;
+                }
                 setIsSaving(true);
                 const newProvider = await createOrUpdateProvider();
                 if (!newProvider) {
