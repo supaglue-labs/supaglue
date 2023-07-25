@@ -1,0 +1,10 @@
+type: object
+properties:
+  name:
+    type: string
+    example: my-schema
+  config:
+    $ref: ./objects/schema_config.yaml
+required:
+  - name
+  - config

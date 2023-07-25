@@ -1,0 +1,18 @@
+type: object
+properties:
+  fields:
+    type: array
+    items:
+      type: object
+      properties:
+        name:
+          type: string
+        mapped_name:
+          type: string
+      required:
+        - name
+  allow_additional_field_mappings:
+    type: boolean
+required:
+  - fields
+  - allow_additional_field_mappings
