@@ -1,7 +1,7 @@
 ---
 sidebar_custom_props:
   icon: /img/connector_icons/pardot.png
-  category: 'Messaging'
+  category: 'Marketing Automation'
 description: ''
 ---
 
