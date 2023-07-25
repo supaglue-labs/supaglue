@@ -152,7 +152,8 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           return Readable.from(
             response.value.map((result: any) => ({
               id: result[idkey],
-              rawData: toMappedProperties(result, fieldMappingConfig),
+              rawData: result,
+              mappedData: toMappedProperties(result, fieldMappingConfig),
               isDeleted: false,
               lastModifiedAt: new Date(result.modifiedon),
               emittedAt,

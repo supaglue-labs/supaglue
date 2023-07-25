@@ -16,7 +16,8 @@ import type {
   CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
-  NormalizedRawRecord,
+  ObjectRecord,
+  ObjectRecordRawDataOnly,
   Property,
   Provider,
   SendPassthroughRequestRequest,
@@ -244,7 +245,7 @@ type RecordsResponseWithFlattenedAssociations = {
 };
 
 type NormalizedRecordsResponseWithFlattenedAssociations = {
-  results: NormalizedRawRecord<RecordWithFlattenedAssociations>[];
+  results: ObjectRecordRawDataOnly<RecordWithFlattenedAssociations>[];
   paging?: HubSpotPaging;
 };
 
@@ -568,12 +569,24 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results),
+        createStreamFromPage: (response) =>
+          Readable.from(
+            response.results.map((result) => ({
+              ...result,
+              mappedData: null,
+            }))
+          ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(response.results),
+        createStreamFromPage: (response) =>
+          Readable.from(
+            response.results.map((result) => ({
+              ...result,
+              mappedData: null,
+            }))
+          ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -1935,16 +1948,19 @@ function normalizeResponse(
 
 // mapper
 function toMappedRecords(
-  records: NormalizedRawRecord<RecordWithFlattenedAssociations>[],
+  records: ObjectRecordRawDataOnly<RecordWithFlattenedAssociations>[],
   fieldMappingConfig: FieldMappingConfig
-): NormalizedRawRecord<RecordWithFlattenedAssociations>[] {
+): ObjectRecord<RecordWithFlattenedAssociations>[] {
   if (fieldMappingConfig.type === 'inherit_all_fields') {
-    return records;
+    return records.map((record) => ({
+      ...record,
+      mappedData: record.rawData,
+    }));
   }
 
   return records.map((record) => ({
     ...record,
-    rawData: {
+    mappedData: {
       ...record.rawData,
       properties: toMappedProperties(record.rawData.properties, fieldMappingConfig),
     },

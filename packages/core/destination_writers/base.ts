@@ -36,6 +36,13 @@ export interface DestinationWriter {
     heartbeat: () => void
   ): Promise<WriteCommonObjectRecordsResult>;
 
+  /**
+   *
+   * @param connection
+   * @param object
+   * @param stream this streams objects of type ObjectRecord<T>
+   * @param heartbeat
+   */
   writeObjectRecords(
     connection: ConnectionSafeAny,
     object: string,
@@ -43,6 +50,13 @@ export interface DestinationWriter {
     heartbeat: () => void
   ): Promise<WriteObjectRecordsResult>;
 
+  /**
+   *
+   * @param connection
+   * @param entityName
+   * @param stream this streams objects of type ObjectRecord<T>
+   * @param heartbeat
+   */
   writeEntityRecords(
     connection: ConnectionSafeAny,
     entityName: string,

@@ -68,6 +68,9 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 
+  /**
+   * @returns A stream of records of type ObjectRecord<T>
+   */
   public async listStandardObjectRecords(
     object: string,
     fieldMappingConfig: FieldMappingConfig,
@@ -77,6 +80,9 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     throw new Error('Not implemented');
   }
 
+  /**
+   * @returns A stream of records of type ObjectRecord<T>
+   */
   public async listCustomObjectRecords(
     object: string,
     modifiedAfter?: Date,

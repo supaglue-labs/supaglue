@@ -5,7 +5,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
-  NormalizedRawRecord,
+  ObjectRecord,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
@@ -202,7 +202,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
       inputStream,
       new Transform({
         objectMode: true,
-        transform: async (record: NormalizedRawRecord, encoding, callback) => {
+        transform: async (record: ObjectRecord, encoding, callback) => {
           try {
             numRecords++;
             const mappedRecord = {
@@ -212,6 +212,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
               _supaglue_emitted_at: record.emittedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
+              _supaglue_mapped_data: record.mappedData,
               id: record.id,
             };
             data.push(mappedRecord);
