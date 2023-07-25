@@ -15,8 +15,8 @@ Supaglue supports three APIs. The Management API creates customers, connections,
 
 ## Actions API
 
-- You can use the [CRM API V2](v2/crm/supaglue-crm-api) to read and write data from and to third-party CRM providers.
-- You can use the [Engagement API V2](v2/engagement/supaglue-engagement-api) (beta) to read and write data from and to third-party engagement providers.
+- You can use the [CRM API V2](v2/crm/supaglue-unified-crm-api) to read and write data from and to third-party CRM providers.
+- You can use the [Engagement API V2](v2/engagement/supaglue-unified-engagement-api) (beta) to read and write data from and to third-party engagement providers.
 
 ## API authentication
 

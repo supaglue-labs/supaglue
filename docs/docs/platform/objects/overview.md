@@ -20,7 +20,7 @@ Objects differ from [Entities](../entities/overview): Entities have a 1-n relati
 
 ## Standard object
 
-Supaglue Standard Objects are pre-defined objects in third-party providers, e.g. Contacts, Accounts, and Leads are pre-defined objects in Salesforce and are Standard Objects in Supaglue.
+Supaglue Standard Objects are pre-defined objects in third-party providers, e.g. `Contacts`, `Accounts`, and `Leads` are pre-defined objects in Salesforce and are Standard Objects in Supaglue.
 
 You can use Standard Objects as part of [Managed Syncs](../../integration-patterns/managed-syncs) and [Actions API](../../integration-patterns/actions-api).
 
@@ -122,30 +122,21 @@ The Actions API for Custom Objects is under construction.
 
 Use the Actions API to write [Common Objects](../common-schema/overview) to your customer's third-party Provider.
 
-Supaglue's unified Custom Objects Actions API allows you to:
+## Field mapping
 
-- Create custom objects
-- Create custom object records
-- Create association types between objects
-- Create associations between records
+Use a Schema to unify Standard Objects and their fields between third-party Providers. You can apply field mappings to the Schema or have your customers set them.
 
-#### Example
-
-Suppose you want to store information about competitors relevant to a particular Salesforce Opportunity. You could use Supaglue's Custom Objects API to do the following:
-
-1. Create a custom object called `CompetitorInfo`.
-1. Create an association type between `Opportunity` and `CompetitorInfo`.
-1. When you create a new `Opportunity` record, find an existing `CompetitorInfo` record (or create a new one) and associate it with the `Opportunity` record.
-
-# Field mapping
-
-Using a Schema, unify Standard Objects, as well as their fields, between third-party Providers. You can apply field mappings to the Schema or have your customers set them.
-
-## Schemas
+### Schemas
 
 You, the developer, define schemas.
 
-### Configuring Schemas
+:::tip
+**Schemas** allow you to use Field Mappings on a single Provider object.
+
+Use **[Entities](../entities/overview)** instead to map multiple Provider objects along with Field Mappings.
+:::
+
+#### Configuring Schemas
 
 The shape of a Schema looks like the following:
 

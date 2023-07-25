@@ -2,11 +2,11 @@
   "openapi": "3.0.3",
   "info": {
     "version": "0.12.9",
-    "title": "Supaglue Engagement API",
+    "title": "Supaglue Unified Engagement API",
     "contact": {
       "name": "Supaglue"
     },
-    "description": "#### Introduction\nWelcome to the Supaglue Actions API (Engagement) documentation. You can use this API to write to third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Reading data\nTo read data from third-party providers, refer to Supaglue's [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/engagement/v2\n```\n"
+    "description": "#### Introduction\nWelcome to the Supaglue Unified Actions API (Engagement) documentation. You can use this API to write to third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Reading data\nTo read data from third-party providers, refer to Supaglue's [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/engagement/v2\n```\n"
   },
   "servers": [
     {
