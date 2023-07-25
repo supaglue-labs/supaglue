@@ -55,7 +55,7 @@ Suppose you want to store information about competitors relevant to a particular
 1. Create an association type between `Opportunity` and `CompetitorInfo`.
 1. When you create a new `Opportunity` record, find an existing `CompetitorInfo` record (or create a new one) and associate it with the `Opportunity` record.
 
-## Schemas
+## Supported Common Objects
 
 Supaglue syncs common objects across multiple providers and transforms them into a category-specific (e.g. CRM) normalized schema. There are three types of columns:
 
