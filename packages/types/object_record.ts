@@ -12,4 +12,4 @@ export type ObjectRecord<T = Record<string, any>> = ObjectRecordRawDataOnly<T> &
   mappedData: T | null;
 };
 
-export type SnakecasedKeysNormalizedRawRecord<T = Record<string, any>> = SnakecasedKeys<ObjectRecord<T>>;
+export type SnakecasedKeysObjectRecord<T = Record<string, any>> = SnakecasedKeys<ObjectRecord<T>>;
