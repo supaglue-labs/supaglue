@@ -7,6 +7,7 @@ import type {
   ConnectionUnsafe,
   CRMProvider,
   NormalizedRawRecord,
+  Property,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -275,14 +276,15 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  async getStandardPropertiesToFetch(object: string, fieldMappingConfig?: FieldMappingConfig): Promise<string[]> {
+  async getStandardPropertyIdsToFetch(object: string, fieldMappingConfig?: FieldMappingConfig): Promise<string[]> {
     const sobject = capitalizeString(object);
     const allProperties = await this.getSObjectProperties(sobject);
+    const allPropertyIds = allProperties.map(({ id }) => id);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
-      return allProperties;
+      return allPropertyIds;
     }
     return intersection(
-      allProperties,
+      allPropertyIds,
       fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField)
     );
   }
@@ -293,7 +295,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    const propertiesToFetch = await this.getStandardPropertiesToFetch(object, fieldMappingConfig);
+    const propertiesToFetch = await this.getStandardPropertyIdsToFetch(object, fieldMappingConfig);
     const stream = await this.#listObjectsHelper(object, propertiesToFetch, modifiedAfter, heartbeat);
 
     return pipeline(
@@ -344,10 +346,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   ): Promise<string[]> {
     const sobject = capitalizeString(commonObjectType);
     const allProperties = await this.getSObjectProperties(sobject);
+    const allPropertyIds = allProperties.map(({ id }) => id);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
-      return allProperties;
+      return allPropertyIds;
     }
-    return intersection(allProperties, [
+    return intersection(allPropertyIds, [
       ...propertiesForCommonObject[commonObjectType],
       ...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField),
     ]);
@@ -1189,17 +1192,17 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     ]);
   }
 
-  public override async listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+  public override async listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
     const sobject = capitalizeString(object.name);
     return await this.getSObjectProperties(sobject);
   }
 
-  public override async listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
     const sobject = object.type === 'custom' ? capitalizeString(`${object.name}__c`) : capitalizeString(object.name);
     return await this.getSObjectProperties(sobject);
   }
 
-  private async getSObjectProperties(sobject: string): Promise<string[]> {
+  private async getSObjectProperties(sobject: string): Promise<Property[]> {
     const response = await this.#fetch(`/services/data/v57.0/sobjects/${sobject}/describe`, {
       method: 'GET',
       headers: {
@@ -1209,7 +1212,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const responseJson = await response.json();
     return responseJson.fields
       .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
-      .map((field: { name: string; type: string }) => field.name);
+      .map((field: { name: string; type: string; label: string }) => ({ id: field.name, label: field.label }));
   }
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {

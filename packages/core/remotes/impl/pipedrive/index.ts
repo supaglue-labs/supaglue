@@ -2,6 +2,7 @@ import type {
   CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
+  Property,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -62,27 +63,27 @@ const DEFAULT_LIST_PARAMS = {
   sort: 'id',
 };
 
-const PIPEDRIVE_USER_FIELDS = [
-  'id',
-  'name',
-  'email',
-  'active_flag',
-  'created',
-  'modified',
-  'default_currency',
-  'locale',
-  'lang',
-  'phone',
-  'activated',
-  'last_login',
-  'has_created_company',
-  'access',
-  'timezone_name',
-  'timezone_offset',
-  'role_id',
-  'icon_url',
-  'is_you',
-] as const;
+const PIPEDRIVE_USER_FIELDS: Property[] = [
+  { id: 'id', label: 'id' },
+  { id: 'name', label: 'name' },
+  { id: 'email', label: 'email' },
+  { id: 'active_flag', label: 'active_flag' },
+  { id: 'created', label: 'created' },
+  { id: 'modified', label: 'modified' },
+  { id: 'default_currency', label: 'default_currency' },
+  { id: 'locale', label: 'locale' },
+  { id: 'lang', label: 'lang' },
+  { id: 'phone', label: 'phone' },
+  { id: 'activated', label: 'activated' },
+  { id: 'last_login', label: 'last_login' },
+  { id: 'has_created_company', label: 'has_created_company' },
+  { id: 'access', label: 'access' },
+  { id: 'timezone_name', label: 'timezone_name' },
+  { id: 'timezone_offset', label: 'timezone_offset' },
+  { id: 'role_id', label: 'role_id' },
+  { id: 'icon_url', label: 'icon_url' },
+  { id: 'is_you', label: 'is_you' },
+];
 
 type PipedriveObjectSupportingCustomFields = 'person' | 'lead' | 'deal' | 'organization';
 
@@ -506,7 +507,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return objectName;
   }
 
-  public override async listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+  public override async listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
     switch (object.name) {
       case 'contact':
         return await this.listPropertiesForRawObjectName('person');
@@ -517,17 +518,17 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'account':
         return await this.listPropertiesForRawObjectName('organization');
       case 'user':
-        return PIPEDRIVE_USER_FIELDS as unknown as string[];
+        return PIPEDRIVE_USER_FIELDS;
       default:
         throw new Error(`Common object ${object} not supported`);
     }
   }
 
-  public override async listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
     return await this.listPropertiesForRawObjectName(object.name);
   }
 
-  public async listPropertiesForRawObjectName(objectName: string): Promise<string[]> {
+  public async listPropertiesForRawObjectName(objectName: string): Promise<Property[]> {
     return await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       // TODO: Handle pagination. We're assuming that by not passing in a limit param, we get all the fields.
@@ -541,7 +542,9 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         }
       );
       // Note: For custom fields, we reference using the label.
-      return response.data.data.map(({ key, name, edit_flag }) => (edit_flag ? name : key));
+      return response.data.data.map(({ key, name, edit_flag }) =>
+        edit_flag ? { id: name, label: name } : { id: key, label: name }
+      );
     });
   }
 
