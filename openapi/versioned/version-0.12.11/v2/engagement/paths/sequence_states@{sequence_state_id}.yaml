@@ -1,0 +1,25 @@
+get:
+  operationId: getSequenceState
+  summary: Get sequence state
+  tags:
+    - Sequence States
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+  responses:
+    200:
+      description: Sequence State
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/sequence_state.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - name: sequence_state_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: ffb62704-addd-454e-bb86-ed0799703dc6
