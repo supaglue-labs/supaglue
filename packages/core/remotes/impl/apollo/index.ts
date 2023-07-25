@@ -15,6 +15,7 @@ import type {
 } from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
+import { BadRequestError } from '../../../errors';
 import { retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
@@ -82,7 +83,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       bodyJson['api_key'] = this.#apiKey;
       return await super.sendPassthroughRequest({ ...request, body: JSON.stringify(bodyJson) });
     }
-    throw new Error(`Method ${request.method} not supported for the Apollo passthrough API`);
+    throw new BadRequestError(`Method ${request.method} not supported for the Apollo passthrough API`);
   }
 
   public override async getCommonObjectRecord<T extends EngagementCommonObjectType>(
@@ -97,9 +98,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       case 'user':
       case 'mailbox':
       case 'sequence_state':
-        throw new Error(`Get operation not supported for common object ${commonObjectType}`);
+        throw new BadRequestError(`Get operation not supported for common object ${commonObjectType}`);
       default:
-        throw new Error(`Common object ${commonObjectType} not supported`);
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -329,9 +330,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       case 'sequence':
       case 'mailbox':
       case 'user':
-        throw new Error(`Create operation not supported for ${commonObjectType} object`);
+        throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
       default:
-        throw new Error(`Common object ${commonObjectType} not supported`);
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -343,7 +344,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.updateContact(params as ContactUpdateParams);
       default:
-        throw new Error(`Update not supported for common object ${commonObjectType}`);
+        throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
   }
 

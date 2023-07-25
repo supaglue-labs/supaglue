@@ -105,7 +105,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'sequence_state':
         return await this.getSequenceState(id);
       default:
-        throw new Error(`Common object ${commonObjectType} not supported`);
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -160,7 +160,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'sequence_state':
         return await this.listSequenceStates(updatedAfter);
       default:
-        throw new Error(`Common object ${commonObjectType} not supported`);
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -326,9 +326,9 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'sequence':
       case 'mailbox':
       case 'user':
-        throw new Error(`Create operation not supported for ${commonObjectType} object`);
+        throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
       default:
-        throw new Error(`Common object ${commonObjectType} not supported`);
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -364,7 +364,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.updateContact(params as ContactUpdateParams);
       default:
-        throw new Error(`Update not supported for common object ${commonObjectType}`);
+        throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
   }
 

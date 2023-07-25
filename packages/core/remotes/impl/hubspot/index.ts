@@ -1448,11 +1448,11 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async createLead(params: LeadCreateParams): Promise<Lead> {
-    throw new Error('Not supported');
+    throw new BadRequestError('Not supported');
   }
 
   public async updateLead(params: LeadUpdateParams): Promise<Lead> {
-    throw new Error('Not supported');
+    throw new BadRequestError('Not supported');
   }
 
   public async getUser(id: string, fieldMappingConfig: FieldMappingConfig): Promise<User> {
