@@ -1,6 +1,6 @@
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
-import { buildClerkProps, clerkClient, getAuth } from '@clerk/nextjs/server';
+import { buildClerkProps, getAuth } from '@clerk/nextjs/server';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { type GetServerSideProps } from 'next';
 import type { Session } from 'next-auth';
@@ -13,9 +13,6 @@ import { IS_CLOUD } from '../../api';
 export const getServerSideProps: GetServerSideProps = async ({ req, res, query, resolvedUrl }) => {
   let session: Session | null = null;
   const applicationId = query.applicationId as string;
-
-  let user = undefined;
-  let clerkProps = {};
 
   if (!IS_CLOUD) {
     session = await getServerSession(req, res, authOptions);
@@ -38,9 +35,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
         },
       };
     }
-
-    user = await clerkClient.users.getUser(userId);
-    clerkProps = buildClerkProps(req, { user });
   }
 
   let svixDashboardUrl: string | null = null;
@@ -50,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
   }
 
   return {
-    props: { session, signedIn: true, svixDashboardUrl, ...clerkProps },
+    props: { session, signedIn: true, svixDashboardUrl, ...buildClerkProps(req) },
   };
 };
 

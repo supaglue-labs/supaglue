@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
     }
   } else {
     const user = getAuth(req);
-    if (!user.userId) {
+    if (!user.userId || !user.orgId) {
       return {
         redirect: {
           destination: '/sign-in?redirect_url=' + resolvedUrl,
@@ -33,7 +33,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
         },
       };
     }
-    orgId = user.orgId!;
+    ({ orgId } = user);
   }
 
   // This is the same call as in apps/mgmt-ui/src/pages/api/internal/applications/index.ts
