@@ -426,7 +426,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'user':
         return await this.getUser(id, fieldMappingConfig);
       default:
-        throw new Error(`Common object ${commonObjectType} not supported`);
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -494,9 +494,9 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'account':
         return await this.createAccount(params);
       case 'user':
-        throw new Error('User creation is not supported');
+        throw new BadRequestError('User creation is not supported');
       default:
-        throw new Error(`Common object ${commonObjectType} not supported`);
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
@@ -520,7 +520,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'user':
         return PIPEDRIVE_USER_FIELDS;
       default:
-        throw new Error(`Common object ${object} not supported`);
+        throw new BadRequestError(`Common object ${object} not supported`);
     }
   }
 
@@ -630,9 +630,9 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       case 'account':
         return await this.updateAccount(params);
       case 'user':
-        throw new Error('User update is not supported');
+        throw new BadRequestError('User update is not supported');
       default:
-        throw new Error(`Common object ${commonObjectType} not supported`);
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 

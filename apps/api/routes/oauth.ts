@@ -131,11 +131,11 @@ export default function init(app: Router): void {
       const { code, state } = req.query;
 
       if (!code) {
-        throw new Error('No oauth code param provided');
+        throw new BadRequestError('No oauth code param provided');
       }
 
       if (!state) {
-        throw new Error('No oauth state param provided');
+        throw new BadRequestError('No oauth state param provided');
       }
 
       const {
@@ -155,7 +155,7 @@ export default function init(app: Router): void {
       } = JSON.parse(decodeURIComponent(state));
 
       if (!applicationId) {
-        throw new Error('No applicationId on state object');
+        throw new BadRequestError('No applicationId on state object');
       }
       // set the req.orgId so that we can use it in the posthog middleware
       req.orgId = (await applicationService.getById(applicationId)).orgId;
@@ -165,21 +165,21 @@ export default function init(app: Router): void {
         (!SUPPORTED_CRM_PROVIDERS.includes(providerName as CRMProviderName) &&
           !SUPPORTED_ENGAGEMENT_PROVIDERS.includes(providerName as EngagementProviderName))
       ) {
-        throw new Error('No providerName or supported providerName on state object');
+        throw new BadRequestError('No providerName or supported providerName on state object');
       }
 
       if (!scope) {
-        throw new Error('No scope on state object');
+        throw new BadRequestError('No scope on state object');
       }
 
       if (!customerId) {
-        throw new Error('No customerId on state object');
+        throw new BadRequestError('No customerId on state object');
       }
 
       const provider = await providerService.getByNameAndApplicationId(providerName, applicationId);
 
       if (provider.authType !== 'oauth2') {
-        throw new Error(`Oauth not supported for provider ${provider.name}`);
+        throw new BadRequestError(`Oauth not supported for provider ${provider.name}`);
       }
 
       const { oauthClientId, oauthClientSecret } = provider.config.oauth.credentials;

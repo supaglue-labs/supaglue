@@ -46,7 +46,7 @@ Supaglue offers 3 main ways to integrate with your customers' providers.
 
 ## Connectors
 
-See the [list of connectors](https://docs.supaglue.com/connectors) we currently support.
+See the [list of connectors](https://docs.supaglue.com/providers) we currently support.
 
 Continue on to the docs to go through our [quickstart](https://docs.supaglue.com/quickstart?ref=github-readme).
 

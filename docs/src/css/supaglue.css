@@ -27,18 +27,7 @@ li > a.menu__link {
   justify-content: flex-start;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/capsule"]::before {
-  padding-right: 0.25rem;
-  background-size: 20px 20px;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  content:"";
-  background-image: url(/static/img/connector_icons/capsule.png);
-  background-repeat: no-repeat;
-}
-
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/apollo"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/apollo"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -49,7 +38,7 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/hubspot"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/hubspot"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -60,18 +49,7 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/keap"]::before {
-  padding-right: 0.25rem;
-  background-size: 20px 20px;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  content:"";
-  background-image: url(/static/img/connector_icons/keap.png);
-  background-repeat: no-repeat;
-}
-
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/marketo"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/marketo"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -82,7 +60,7 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/ms_dynamics_365_sales"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/ms_dynamics_365_sales"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -93,7 +71,7 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/outreach"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/outreach"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -104,7 +82,7 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/pipedrive"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/pipedrive"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -115,7 +93,7 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/salesforce"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/salesforce"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -126,7 +104,7 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/salesloft"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/salesloft"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -137,18 +115,7 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/zendesk_sell"]::before {
-  padding-right: 0.25rem;
-  background-size: 20px 20px;
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  content:"";
-  background-image: url(/static/img/connector_icons/zendesk_sell.png);
-  background-repeat: no-repeat;
-}
-
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/zoho_crm"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/zoho_crm"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -159,7 +126,7 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/connectors/gong"]::before {
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/gong"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
@@ -167,6 +134,204 @@ li > a.menu__link {
   height: 20px;
   content:"";
   background-image: url(/static/img/connector_icons/gong.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/asana"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/asana.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/box"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/box.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/dropbox"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/dropbox.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/zoho"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/zoho_crm.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/gmail"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/gmail.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/google_calendar"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/gcal.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/google_drive"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/google_drive.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/intercom"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/intercom.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/linkedin"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/linkedin.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/messenger"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/messenger.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/onedrive"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/onedrive.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/outlook"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/outlook.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/pardot"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/pardot.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/slack"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/slack.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/teams"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/ms_teams.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/whatsapp"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/whatsapp.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/zendesk"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/zendesk.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[to$="/connectors/zoom"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/zoom.png);
   background-repeat: no-repeat;
 }
 

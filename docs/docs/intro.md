@@ -6,7 +6,7 @@ sidebar_label: Introduction
 
 # Supaglue: open source product integrations platform
 
-Supaglue is an open source platform that helps you build native product integrations with your customers' CRM and sales tools. It provides a suite of developer tools and APIs that lets you sync data into your application database or data warehouse, write directly to your customers' SaaS tools, and subscribe to change events in real-time.
+Supaglue is an open source platform that helps you build native product integrations with your customers' SaaS tools. It provides a suite of developer tools and APIs that lets you sync data into your application database or data warehouse, write directly to your customers' SaaS tools, and subscribe to change events in real-time.
 
 Supaglue comes out-of-the-box with managed authentication, monitoring and logging tools, and a growing library of extensible SaaS connectors.
 
@@ -35,7 +35,7 @@ You can [integrate Supaglue with your application](quickstart) in about 5 minute
 1. Create a Supaglue Cloud account or spin up Supaglue locally.
 2. Configure your integration scopes and OAuth credentials, or use one of our managed OAuth apps.
 3. Create a Supaglue customer.
-4. Connect an external CRM account to your app through a Supaglue-provided embedded link.
+4. Connect a customer's SaaS platform to your app through a Supaglue-provided embedded link.
 5. Access customer data using one of three integration patterns: managed syncs, actions API, or real-time events.
 
 ## FAQ
@@ -43,28 +43,21 @@ You can [integrate Supaglue with your application](quickstart) in about 5 minute
 <details>
   <summary>Who should use Supaglue?</summary>
   <div>
-    Supaglue is aimed at developers at B2B SaaS companies that provide integrations with their customers' CRM and sales engagement tools as part of their own products.
+    Supaglue is aimed at developers at B2B SaaS companies that provide native product integrations with their customers' SaaS tools in their own products.
   </div>
 </details>
 
 <details>
   <summary>Why is this better than building in-house?</summary>
   <div>
-    Supaglue helps you ship customer-facing CRM and Sales engagement integrations 10x faster:
+    Supaglue helps you ship product integrations 10x faster:
     <ul>
         <li>Supaglue fully manages your customer's authentication flow and handles refreshing access tokens.</li>
-        <li>Supaglue handles the rate limits, response errors, and other idiosyncrasies of different CRM providers so you don't have to.</li>
+        <li>Supaglue handles the rate limits, response errors, and other idiosyncrasies of different SaaS APIs so you don't have to.</li>
         <li>Supaglue normalizes responses across multiple providers so you don't have to build this abstraction layer yourself.</li>
-        <li>Supaglue gives you a unified API to read and write from CRMs.</li>
+        <li>Supaglue provides unified APIs and common schemas so you only have to do the integration work once.</li>
         <li>Supaglue comes out-of-the-box with tools for managing customers, configuring integrations, and monitoring connection health.</li>
     </ul>
-  </div>
-</details>
-
-<details>
-  <summary>Is there a hosted version of Supaglue?</summary>
-  <div>
-    Yes! You can start a free trial of Supaglue Cloud <a href="https://app.supaglue.io">here</a>!
   </div>
 </details>
 
