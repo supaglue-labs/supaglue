@@ -42,7 +42,7 @@ The screenshot above shows a Sync Config that specifies `OpportunityLineItem`, `
 
 Since Standard Objects vary by Provider, you need to select the Standard Objects separately for each Provider. The casing of the Standard Objects is also provider-specific, e.g. Standard Objects for Salesforce are "PascalCase".
 
-#### Data schema
+#### Destination data schema
 
 Supaglue will land the data in your Destination with the following schema:
 
@@ -94,7 +94,7 @@ The screenshot above shows a Sync Config that specifies `ContactBiannualMetric` 
 
 The casing of Custom Objects is provider-specific.
 
-#### Data schema
+#### Destination data schema
 
 Supaglue will land the data in your Destination with the following schema:
 
@@ -122,42 +122,52 @@ The Actions API for Custom Objects is under construction.
 
 Use the Actions API to write [Common Objects](../common-schema/overview) to your customer's third-party Provider.
 
-## Field mapping
+## Schemas
 
-Use a Schema to unify Standard Objects and their fields between third-party Providers. You can apply field mappings to the Schema or have your customers set them.
+**Schemas** let you normalize fields on your Objects for you, or your customers, to map to Provider objects' fields.
 
-### Schemas
+It serves two use cases:
 
-You, the developer, define schemas.
+1. It lets you sync a subset of fields and rename them.
+2. It lets you normalize fields for a Provider object across customers.
 
 :::tip
-**Schemas** allow you to use Field Mappings on a single Provider object.
+**Schemas** allow you to use field mappings on a single Provider object.
 
-Use **[Entities](../entities/overview)** instead to map multiple Provider objects along with Field Mappings.
+Use **[Entities](../entities/overview)** instead to map multiple Provider objects along with field mappings.
 :::
 
-#### Configuring Schemas
+### 1. Subset of fields
 
-The shape of a Schema looks like the following:
+To sync a subset of fields, first create a Schema. Go to **Configuration --> Schemas**.
+
+Then list out the fields you wish to sync. On the left side, specify the field names written to your Destination. On the right side, map the corresponding fields in your Provider.
+
+<ThemedImage
+alt="developer-defined schema"
+width="100%"
+sources={{
+      light: '/img/developer-schema.png',
+      dark: '/img/developer-schema.png',
+    }}
+/>
+
+The JSON for the Schema above looks like the following:
 
 ```json
 {
   "id": "...",
   "application_id": "...",
-  "name": "account",
+  "name": "my_application_contact",
   "config": {
     "fields": [
       {
-        "name": "name"
+        "name": "first_name",
+        "mapped_name": "FirstName"
       },
       {
-        "name": "industry"
-      },
-      {
-        "name": "description"
-      },
-      {
-        "name": "website"
+        "name": "last_name",
+        "mapped_name": "LastName"
       }
     ],
     "allow_additional_field_mappings": false
@@ -165,30 +175,27 @@ The shape of a Schema looks like the following:
 }
 ```
 
-The example above defines an `account` object in your application with the fields `name`, `industry`, `description`, and `website` to which you or your customer can choose to map third-party Provider fields.
+Finally, associate the Schema with its corresponding Provider:
 
-The `allow_additional_field_mappings` flag allows individual customers to provide optional supplemental data not explicitly required by your schema, which may be helpful for your product.
+- Go to **Configuration --> Providers**.
+- Click on the appropriate Provider (Salesforce for example).
+- Click "Standard Object" to find the appropriate object in Salesforce (`Contact` for our example).
+- Associate it with the Schema that we created above.
 
-You can use the Management Portal or Schemas API to create, update, and delete Schemas.
+<ThemedImage
+alt="developer-defined schema"
+width="100%"
+sources={{
+      light: '/img/developer-schema-2.png',
+      dark: '/img/developer-schema-2.png',
+    }}
+/>
 
-### Using Schemas
+### 2. Customer-set field mappings
 
-:::info
-This is under construction.
-:::
+To normalize fields for a single Provider object across customers, follow the same steps as the "[Subset of fields](#subset-of-fields)" section above, but with one difference: Don't specify the "Mapped Field" when defining your Schema. Instead your customers will do it.
 
-To use the Schema, you need to associate a Provider-object with it. Go to the **Configuration --> Provider** page in the Management Portal or use the Add Object API to configure this.
-
-## Customer-defined field mapping
-
-Use the [`Field Mappings API`](../../api/v2/mgmt/field-mappings) to render field mapping UI for your customers and save field mappings set by your customer.
-
-When a Schema exists, is associated with a Provider-object, and has field mappings defined, Supaglue will:
-
-- Apply the field mapping for Managed Syncs.
-- Use the reverse of the field mapping when making Actions API calls.
-
-### Example
+To allow them to do this you will need to build a field mappings UI similar to the one below:
 
 <ThemedImage
 alt="salesforce customer-defined field mapping ui"
@@ -199,7 +206,9 @@ sources={{
     }}
 />
 
-The screenshot above shows a field mapping UI for a `contact` Standard Object. It has an associated Schema with the following fields: `first_name`, `last_name`, `phone`, `address`. The UI uses the [List Field Mappings API](../../api/v2/mgmt/list-field-mappings) to fetch information to render it. The endpoint returns a response like the one below:
+Use the [`Field Mappings API`](../../api/v2/mgmt/field-mappings) to render field mapping UI for your customers and save field mappings set by your customer.
+
+The [List Field Mappings API](../../api/v2/mgmt/list-field-mappings) will return a JSON similar to the one below:
 
 ```js
 {
@@ -211,11 +220,13 @@ The screenshot above shows a field mapping UI for a `contact` Standard Object. I
     {
       "name": "first_name",
       "is_added_by_customer": false,
-
-      // Customer has mapped the Salesforce "FirstName" field to the Schema field "first_name"
-      "customer_mapped_name": "FirstName"
+      "customer_mapped_name": "FirstName" // Customer has mapped the Salesforce "FirstName" field to the Schema field "first_name"
     },
-    ...
+    {
+      "name": "last_name",
+      "is_added_by_customer": false,
+      // Omission of "customer_mapped_name" means they haven't mapped it yet
+    },
   ]
 }
 ```
@@ -235,20 +246,3 @@ Use the [Update Object Field Mappings API](../../api/v2/mgmt/update-object-field
   ]
 }
 ```
-
-## Developer-defined field mapping
-
-:::info
-Developer-defined field mapping is under construction.
-:::
-
-### Example
-
-<ThemedImage
-alt="salesforce developer-defined field mapping ui"
-width="50%"
-sources={{
-      light: '/img/developer-field-mappings.png',
-      dark: '/img/developer-field-mappings.png',
-    }}
-/>

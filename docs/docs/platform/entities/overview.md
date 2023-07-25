@@ -34,93 +34,145 @@ You can create/update Entities through the Management Portal and Management API.
 
 Use the **Configuration --> Entities** page in the Management Portal to define Entities.
 
-:::info
-Screenshot...
-:::
-
-You can also define Entities programmatically using the [Entities Management API](../../api/v2/mgmt/entities).
-
-#### Configuration json
-
-:::info
-Json example...
-:::
-
-## Entity Mapping
-
-An Entity Mapping is how you or your customer maps a Provider's object to your Entity.
-
-### Developer-set Entity Mappings
-
-Use the [Create Provider Management API](../../api/v2/mgmt/create-provider) and [Update Provider Management API](../../api/v2/mgmt/update-provider) to save Entity Mappings for your Entities using the `entity_mappings` field in the request.
-
-#### Example
-
-:::info
-Json example...
-:::
-
-### Customer-set Entity Mappings
-
-Use the [Entity Mappings Management API](../../api/v2/mgmt/entity-mappings) to save Entity Mappings that your customers set.
-
-Also, use these APIs to render the Entity and Entity Mappings for your customers.
-
-Here's a screenshot of an example implementation:
-
 <ThemedImage
-alt="common schema"
-width="50%"
+alt="entity sync config"
+width="80%"
 sources={{
-      light: '/img/customer-field-mappings.png',
-      dark: '/img/customer-field-mappings.png',
+      light: '/img/entity-config.png',
+      dark: '/img/entity-config.png',
     }}
 />
 
-#### Example
+You can also define Entities programmatically using the [Entities Management API](../../api/v2/mgmt/entities).
 
-:::info
-Json example...
-:::
+### Example
 
-## Example
+The example below defines an Entity named `contact` with two fields:`first_name` and `last_name`, both strings. Customers cannot specify additional fields outside of these two that you, the developer, defined.
 
-| Entity              | Customer1 mapping             | Customer2 mapping                | Customer3 mapping          |
+```
+{
+  "name": "contact",
+  "config": {
+    "fields": [
+      {
+        "first_name": "string"
+      },
+      {
+        "last_name": "string"
+      }
+    ],
+    "allow_additional_field_mappings": false
+  }
+}
+```
+
+## Entity Mapping
+
+An Entity Mapping defines how you or your customer maps a Provider's object and its fields to your Entity.
+
+It has two main components:
+
+1. A Provider object mapping
+2. A Provider object's field mappings
+
+### Customer-set Entity Mappings
+
+Most of the time, you want to allow your customers to map their Provider objects and fields to your Entities.
+
+Use the [Entity Mappings Management API](../../api/v2/mgmt/entity-mappings) to render Entity Mappings for your customers and to let them save them.
+
+### Example
+
+| Entity              | Customer1 Entity Mapping      | Customer2 Entity Mapping         | Customer3 Entity Mapping   |
 | ------------------- | ----------------------------- | -------------------------------- | -------------------------- |
 | Name: `contact`     | Salesforce object: `Contact`  | Salesforce object: `Contact__c`  | Hubspot object: `contact`  |
 | Field: `first_name` | Salesforce field: `FirstName` | Salesforce field: `FirstName__c` | Hubspot field: `firstname` |
 | Field: `last_name`  | Salesforce field: `LastName`  | Salesforce field: `LastName__c`  | Hubspot field: `lastname`  |
 
+The example below is a customer Entity Mapping that maps their Salesforce `Contact` standard object on an Entity `contact` that you, the developer, defined. They mapped their Salesforce's Contact's `FirstName` to `first_name` and `LastName` to `last_name` fields.
+
+```json
+{
+  "entity_id": "contact",
+  "object": {
+    "type": "standard",
+    "name": "Contact"
+  },
+  "field_mappings": [
+    {
+      "entity_field": "first_name",
+      "mapped_field": "FirstName"
+    },
+    {
+      "entity_field": "last_name",
+      "mapped_field": "LastName"
+    }
+  ]
+}
+```
+
+### Emulate: Customer Entity Mappings
+
+Use the Management Portal to view and save Entity Mappings for your customers. Go to **Customers --> Connections --> {ID}** and select the Entity you wish to view and optionally save.
+
+<ThemedImage
+alt="simulate customer entity mappings"
+width="75%"
+sources={{
+      light: '/img/simulate-customer-entity-mappings.png',
+      dark: '/img/simulate-customer-entity-mappings.png',
+    }}
+/>
+
+### Developer-set Entity Mappings
+
+Sometimes, you, the developer, know your Entity's best Provider object and field mappings. In that case, you can set the Entity Mapping yourself.
+
+Use the [Create Provider Management API](../../api/v2/mgmt/create-provider) and [Update Provider Management API](../../api/v2/mgmt/update-provider) to save Entity Mappings for your Entities using the `entity_mappings` field in the request.
+
+#### Example configuration json
+
+:::info
+This is under construction.
+:::
+
 ## Syncing
 
-You can sync Entities after defining them.
+You can sync Entities after defining them and their Entity Mappings.
 
 ### Configuration
 
 Use the **Configuration --> Sync Configs** page in the Management Portal to specify the Entities to sync to your Destination.
 
-:::info
-Screenshot...
-:::
+<ThemedImage
+alt="entity sync config"
+width="80%"
+sources={{
+      light: '/img/entity-sync-config.png',
+      dark: '/img/entity-sync-config.png',
+    }}
+/>
 
-### Data schema
+### Destination data schema
 
 Supaglue will land the data in your Destination with the schema below using the example from above.
 
 ```
+
 postgres=> \d "contact"
-                             Table "public.contact"
-          Column          |              Type              | Collation | Nullable | Default
+Table "public.contact"
+Column | Type | Collation | Nullable | Default
 --------------------------+--------------------------------+-----------+----------+---------
- _supaglue_application_id | text                           |           | not null |
- _supaglue_provider_name  | text                           |           | not null |
- _supaglue_customer_id    | text                           |           | not null |
- _supaglue_emitted_at     | timestamp(3) without time zone |           | not null |
- _supaglue_is_deleted     | boolean                        |           | not null |
- _supaglue_raw_data       | jsonb                          |           | not null |
- id                       | text                           |           | not null |
+_supaglue_application_id | text | | not null |
+_supaglue_provider_name | text | | not null |
+_supaglue_customer_id | text | | not null |
+_supaglue_emitted_at | timestamp(3) without time zone | | not null |
+_supaglue_is_deleted | boolean | | not null |
+_supaglue_raw_data | jsonb | | not null |
+id | text | | not null |
 Indexes:
-    "contact_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+"contact_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+
 ```
 
 A few things to note:
@@ -128,15 +180,17 @@ A few things to note:
 - `contact` is the Entity name and the table's name in Postgres.
 - The shape of `_supaglue_raw_data` corresponds to the fields you defined in your Entity.
 
-  ```
-  _supaglue_raw_data:
-      first_name
-      last_name
-  ```
+```
+
+_supaglue_raw_data:
+  first_name
+  last_name
+
+```
 
 ## Writing
 
-You can write Entities after defining them
+You can write Entities after defining them and their Entity Mappings.
 
 ### Configuration
 
