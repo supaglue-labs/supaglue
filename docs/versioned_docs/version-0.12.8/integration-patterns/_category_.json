@@ -1,9 +1,0 @@
-{
-    "label": "Integration patterns",
-    "position": 4,
-    "link": {
-      "type": "generated-index",
-      "description": "The different ways you can integrate your application with your customers' SaaS platforms via Supaglue."
-    }
-  }
-  
