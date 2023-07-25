@@ -288,7 +288,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       case 'sequence_state':
         return await this.#listSequenceStates(updatedAfter);
       default:
-        throw new Error(`Common object type ${commonObjectType} not supported for the Apollo API`);
+        throw new BadRequestError(`Common object type ${commonObjectType} not supported for the Apollo API`);
     }
   }
 
