@@ -89,7 +89,7 @@ li > a.menu__link {
   width: 20px;
   height: 20px;
   content:"";
-  background-image: url(/static/img/connector_icons/ms_dynamics_365_sales.png);
+  background-image: url(/static/img/connector_icons/ms_dynamics_365_sales.svg);
   background-repeat: no-repeat;
 }
 
