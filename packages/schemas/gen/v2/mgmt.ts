@@ -367,6 +367,18 @@ export interface components {
       type: "mongodb";
       config: components["schemas"]["mongodb_config_safe"];
     }]>;
+    property: {
+      /**
+       * @description The name of the property as it appears in the API. 
+       * @example first_name
+       */
+      id: string;
+      /**
+       * @description The human-readable name of the property. 
+       * @example First Name
+       */
+      label: string;
+    };
     s3_config_safe: {
       /** @example us-west-2 */
       region: string;
@@ -1224,7 +1236,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            properties: (string)[];
+            properties: (components["schemas"]["property"])[];
           };
         };
       };

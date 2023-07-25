@@ -1,4 +1,4 @@
-import type { CommonObjectDef, StandardOrCustomObjectDef } from '@supaglue/types';
+import type { CommonObjectDef, Property, StandardOrCustomObjectDef } from '@supaglue/types';
 import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
 import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/crm/association';
 import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
@@ -18,8 +18,8 @@ import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
 export interface CrmRemoteClient extends RemoteClient {
-  listCommonProperties(object: CommonObjectDef): Promise<string[]>;
-  listProperties(object: StandardOrCustomObjectDef): Promise<string[]>;
+  listCommonProperties(object: CommonObjectDef): Promise<Property[]>;
+  listProperties(object: StandardOrCustomObjectDef): Promise<Property[]>;
 
   listCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
@@ -61,10 +61,10 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     super(...args);
   }
 
-  public listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+  public listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
     throw new Error('Not implemented');
   }
-  public listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
+  public listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
     throw new Error('Not implemented');
   }
 

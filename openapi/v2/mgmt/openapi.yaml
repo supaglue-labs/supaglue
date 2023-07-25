@@ -119,6 +119,8 @@ components:
       $ref: ./components/schemas/objects/provider.yaml
     destination:
       $ref: ./components/schemas/objects/destination.yaml
+    property:
+      $ref: ./components/schemas/objects/property.yaml
     s3_config_safe:
       $ref: ./components/schemas/objects/s3_config_safe.yaml
     postgres_config_safe:

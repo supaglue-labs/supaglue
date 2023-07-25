@@ -465,7 +465,7 @@
                     "properties": {
                       "type": "array",
                       "items": {
-                        "type": "string"
+                        "$ref": "#/components/schemas/property"
                       }
                     }
                   },
@@ -2919,6 +2919,25 @@
               "config"
             ]
           }
+        ]
+      },
+      "property": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The name of the property as it appears in the API.",
+            "example": "first_name"
+          },
+          "label": {
+            "type": "string",
+            "description": "The human-readable name of the property.",
+            "example": "First Name"
+          }
+        },
+        "required": [
+          "id",
+          "label"
         ]
       },
       "s3_config_safe": {

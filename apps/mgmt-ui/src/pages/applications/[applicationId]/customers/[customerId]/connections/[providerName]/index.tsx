@@ -351,16 +351,13 @@ function EntityFieldMappings({
           <Grid item xs={7}>
             <Autocomplete
               disabled={!object || isLoading || from === 'developer'}
+              loading={isLoading}
+              key={properties.length}
               size="small"
               id="entity-object-field"
               options={properties ?? []}
-              defaultValue={mappedField}
+              value={properties.find(({ id }) => id === mappedField)}
               autoSelect
-              renderTags={(value: readonly string[], getTagProps) =>
-                value.map((option: string, index: number) => (
-                  <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-                ))
-              }
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -368,8 +365,8 @@ function EntityFieldMappings({
                   helperText={object ? `Available fields for ${object?.name} in ${providerName}.` : undefined}
                 />
               )}
-              onChange={(event: any, value: string | null) => {
-                setFieldMapping(idx, entityField, value ?? undefined, isAdditional);
+              onChange={(event: any, value) => {
+                setFieldMapping(idx, entityField, value?.id, isAdditional);
               }}
             />
           </Grid>

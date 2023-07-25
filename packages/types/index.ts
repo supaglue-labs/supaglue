@@ -12,6 +12,7 @@ export * as engagement from './engagement';
 export * from './field_mapping_info';
 export * from './oauth';
 export * from './passthrough';
+export * from './property';
 export * from './provider';
 export * from './raw_record';
 export * from './schema';

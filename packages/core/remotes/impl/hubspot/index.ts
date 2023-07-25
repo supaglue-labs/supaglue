@@ -17,6 +17,7 @@ import type {
   ConnectionUnsafe,
   CRMProvider,
   NormalizedRawRecord,
+  Property,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -91,6 +92,44 @@ import {
 
 const HUBSPOT_RECORD_LIMIT = 100;
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
+const hubspotUserProperties: Property[] = [
+  {
+    id: 'id',
+    label: 'Id',
+  },
+  {
+    id: 'email',
+    label: 'Email',
+  },
+  {
+    id: 'firstName',
+    label: 'First Name',
+  },
+  {
+    id: 'lastName',
+    label: 'Last Name',
+  },
+  {
+    id: 'userId',
+    label: 'User Id',
+  },
+  {
+    id: 'createdAt',
+    label: 'Created At',
+  },
+  {
+    id: 'updatedAt',
+    label: 'Updated At',
+  },
+  {
+    id: 'archived',
+    label: 'Archived',
+  },
+  {
+    id: 'teams',
+    label: 'Teams',
+  },
+];
 
 const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
   company: 'companies',
@@ -355,13 +394,17 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  private async getStandardPropertiesToFetch(objectType: string, fieldMappingConfig?: FieldMappingConfig) {
+  private async getStandardPropertyIdsToFetch(
+    objectType: string,
+    fieldMappingConfig?: FieldMappingConfig
+  ): Promise<string[]> {
     const availableProperties = await this.listPropertiesForRawObjectName(objectType);
+    const availablePropertyIds = availableProperties.map(({ id }) => id);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
-      return availableProperties;
+      return availablePropertyIds;
     }
     const properties = fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField);
-    return intersection(availableProperties, properties);
+    return intersection(availablePropertyIds, properties);
   }
 
   public override async listStandardObjectRecords(
@@ -371,7 +414,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     heartbeat?: () => void
   ): Promise<Readable> {
     const standardObjectType = toStandardObjectType(object);
-    const propertiesToFetch = await this.getStandardPropertiesToFetch(object, fieldMappingConfig);
+    const propertiesToFetch = await this.getStandardPropertyIdsToFetch(object, fieldMappingConfig);
     const associatedStandardObjectTypes = hubspotStandardObjectTypeToAssociatedStandardObjectTypes[standardObjectType];
 
     const normalPageFetcher = await this.#getListRecordsFetcher(
@@ -498,6 +541,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     // Look up the objectTypeId given the object name
     const objectTypeId = await this.#getObjectTypeIdByCustomObjectName(object);
     const propertiesToFetch = await this.listPropertiesForRawObjectName(objectTypeId);
+    const propertyIds = propertiesToFetch.map(({ id }) => id);
 
     // Find the associated object types for the object
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
@@ -505,7 +549,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
     const normalPageFetcher = await this.#getListRecordsFetcher(
       objectTypeId,
-      propertiesToFetch,
+      propertyIds,
       associatedStandardObjectTypes,
       associatedCustomObjectSchemas,
       /* archived */ false,
@@ -514,7 +558,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
     const archivedPageFetcher = await this.#getListRecordsFetcher(
       objectTypeId,
-      propertiesToFetch,
+      propertyIds,
       associatedStandardObjectTypes,
       associatedCustomObjectSchemas,
       /* archived */ true,
@@ -836,48 +880,49 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async listCommonProperties(object: CommonObjectDef): Promise<string[]> {
+  public override async listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
     switch (object.name) {
       case 'account':
         return await this.listPropertiesForRawObjectName('company');
       case 'lead':
         throw new Error('common object "lead" is not supported for hubspot');
       case 'user':
-        return ['id', 'email', 'firstName', 'lastName', 'userId', 'createdAt', 'updatedAt', 'archived', 'teams'];
+        return hubspotUserProperties;
       default:
         return await this.listPropertiesForRawObjectName(object.name);
     }
   }
 
-  public override async listProperties(object: StandardOrCustomObjectDef): Promise<string[]> {
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
     return await this.listPropertiesForRawObjectName(object.name);
   }
 
-  public async listPropertiesForRawObjectName(objectName: string): Promise<string[]> {
+  public async listPropertiesForRawObjectName(objectName: string): Promise<Property[]> {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const response = await this.#client.crm.properties.coreApi.getAll(objectName);
-      return response.results.map(({ name }) => name);
+      return response.results.map(({ name, label }) => ({ id: name, label }));
     });
   }
 
-  private async getCommonObjectPropertiesToFetch(
+  private async getCommonObjectPropertyIdsToFetch(
     objectType: HubSpotCommonObjectObjectType,
     fieldMappingConfig?: FieldMappingConfig
   ) {
     const availableProperties = await this.listPropertiesForRawObjectName(objectType);
+    const availablePropertyIds = availableProperties.map(({ id }) => id);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
-      return availableProperties;
+      return availablePropertyIds;
     }
     const properties = [...propertiesToFetch[objectType]];
     if (fieldMappingConfig?.type === 'defined') {
       properties.push(...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField));
     }
-    return intersection(availableProperties, properties);
+    return intersection(availablePropertyIds, properties);
   }
 
   public async listAccounts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonObjectPropertiesToFetch('company', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
     const normalPageFetcher = await this.#getListNormalAccountsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listAccountsFull(properties, /* archived */ true, after);
@@ -990,7 +1035,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
-    const properties = await this.getCommonObjectPropertiesToFetch('company');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('company');
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.getById(id, properties);
     return {
@@ -1035,7 +1080,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listOpportunities(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonObjectPropertiesToFetch('deal', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
@@ -1172,7 +1217,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const properties = await this.getCommonObjectPropertiesToFetch('deal');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('deal');
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.getById(
       id,
@@ -1215,7 +1260,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async listContacts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
-    const properties = await this.getCommonObjectPropertiesToFetch('contact', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     const normalPageFetcher = await this.#getListNormalContactsFetcher(properties, updatedAfter);
     const archivedPageFetcher = async (after?: string) => {
       const response = await this.#listContactsFull(properties, /* archived */ true, after);
@@ -1352,7 +1397,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
-    const properties = await this.getCommonObjectPropertiesToFetch('contact');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('contact');
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
       id,
