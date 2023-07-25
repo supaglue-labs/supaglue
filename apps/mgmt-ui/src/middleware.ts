@@ -36,14 +36,11 @@ const cloudMiddleware = authMiddleware({
       return NextResponse.redirect(signInUrl);
     }
 
-    // if the user is signed in but does not have an org, redirect them to create an org.
-    // (but don't redirect if the path is already `/create-organization`)
-    // TODO: figure out why sometimes there isn't an orgId even when the user does have an org
-    // if (!orgId && !isCloudCreateOrgPath(request.nextUrl.pathname)) {
-    //   const createOrgUrl = new URL('/create-organization', request.url);
-    //   createOrgUrl.searchParams.set('redirect_url', process.env.FRONTEND_URL ?? request.url);
-    //   return NextResponse.redirect(createOrgUrl);
-    // }
+    // redirect them to organization selection page
+    if (userId && !orgId && request.nextUrl.pathname !== '/switch-organization') {
+      const orgSwitcher = new URL('/switch-organization', request.url);
+      return NextResponse.redirect(orgSwitcher);
+    }
     return NextResponse.next();
   },
 });
