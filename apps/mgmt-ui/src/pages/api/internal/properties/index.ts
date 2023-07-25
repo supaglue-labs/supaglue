@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   switch (req.method) {
     case 'GET': {
       if (!req.query.name) {
-        res.status(200).json({ properties: [] });
+        return res.status(200).json({ properties: [] });
       }
       const result = await fetch(`${API_HOST}/internal/properties?type=${req.query.type}&name=${req.query.name}`, {
         method: 'GET',
