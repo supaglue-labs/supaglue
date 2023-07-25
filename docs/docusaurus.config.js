@@ -138,10 +138,6 @@ const config = {
                 to: 'quickstart',
               },
               {
-                label: 'Connectors',
-                to: 'connectors',
-              },
-              {
                 label: 'API Reference',
                 to: 'api/introduction',
               },
@@ -169,43 +165,43 @@ const config = {
             items: [
               {
                 label: 'Apollo',
-                href: '/connectors/apollo',
+                to: '/connectors/apollo',
               },
               {
                 label: 'Gong',
-                href: '/connectors/gong',
+                to: '/connectors/gong',
               },
               {
                 label: 'HubSpot',
-                href: '/connectors/hubspot',
+                to: '/connectors/hubspot',
               },
               {
                 label: 'Marketo',
-                href: '/connectors/marketo',
+                to: '/connectors/marketo',
               },
               {
                 label: 'Dynamics 365 Sales',
-                href: '/connectors/ms_dynamics_365_sales',
+                to: '/connectors/ms_dynamics_365_sales',
               },
               {
                 label: 'Outreach',
-                href: '/connectors/outreach',
+                to: '/connectors/outreach',
               },
               {
                 label: 'Pipedrive',
-                href: '/connectors/pipedrive',
+                to: '/connectors/pipedrive',
               },
               {
                 label: 'Salesforce',
-                href: '/connectors/salesforce',
+                to: '/connectors/salesforce',
               },
               {
                 label: 'Salesloft',
-                href: '/connectors/salesloft',
+                to: '/connectors/salesloft',
               },
               {
                 label: 'Zendesk Sell',
-                href: '/connectors/zendesk_sell',
+                to: '/connectors/zendesk_sell',
               },
             ],
           },

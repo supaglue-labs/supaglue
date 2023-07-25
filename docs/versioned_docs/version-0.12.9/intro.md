@@ -36,7 +36,7 @@ You can [integrate Supaglue with your application](quickstart) in about 5 minute
 2. Configure your integration scopes and OAuth credentials, or use one of our managed OAuth apps.
 3. Create a Supaglue customer.
 4. Connect an external CRM account to your app through a Supaglue-provided embedded link.
-5. Access customer data using one of three [integration patterns](category/integration-patterns): managed syncs, actions API, or real-time events.
+5. Access customer data using one of three integration patterns: managed syncs, actions API, or real-time events.
 
 ## FAQ
 
@@ -78,7 +78,7 @@ You can [integrate Supaglue with your application](quickstart) in about 5 minute
 <details>
   <summary>Are you planning to support X connector?</summary>
   <div>
-    We support the following <a href="./connectors">connectors</a> today and have many more on our roadmap. If there's a specific connector that's not on the list, let us know and we will try to prioritize!
+    We support several connectors today and have many more on our roadmap. If there's a specific connector that's not on the list, let us know and we will try to prioritize!
   </div>
 </details>
 

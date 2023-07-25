@@ -54,11 +54,11 @@ You can use the Management Portal or Schemas API to create, update, and delete S
 This is under construction.
 :::
 
-To use the Schema, you need to associate a Provider-object with it. Go to the **Configuration --> Provider** page in the Management Portal or use the [Provider Add Object API](../../api/v2/mgmt/add-object) to configure this.
+To use the Schema, you need to associate a Provider-object with it. Go to the **Configuration --> Provider** page in the Management Portal or use the [Provider Add Object API](../api/v2/mgmt/add-object) to configure this.
 
 ## Customer-defined field mappings
 
-Use the [`Field Mappings API`](../../api/v2/mgmt/field-mappings) to render field mapping UI for your customers and save field mappings set by your customer.
+Use the [`Field Mappings API`](../api/v2/mgmt/field-mappings) to render field mapping UI for your customers and save field mappings set by your customer.
 
 When a Schema exists, is associated with a Provider-object, and has field mappings defined, Supaglue will:
 
