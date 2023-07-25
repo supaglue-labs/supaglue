@@ -4972,6 +4972,9 @@
           "entity_name": {
             "type": "string"
           },
+          "allow_additional_field_mappings": {
+            "type": "boolean"
+          },
           "object": {
             "allOf": [
               {
@@ -5011,10 +5014,14 @@
                     "developer",
                     "customer"
                   ]
+                },
+                "is_additional": {
+                  "type": "boolean"
                 }
               },
               "required": [
-                "entity_field"
+                "entity_field",
+                "is_additional"
               ]
             }
           }
@@ -5022,6 +5029,7 @@
         "required": [
           "entity_id",
           "entity_name",
+          "allow_additional_field_mappings",
           "field_mappings"
         ]
       },

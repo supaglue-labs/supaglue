@@ -10,6 +10,7 @@ import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { getStandardObjectOptions } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
+import DeleteIcon from '@mui/icons-material/Delete';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import {
   Autocomplete,
@@ -19,6 +20,7 @@ import {
   Card,
   Chip,
   Grid,
+  IconButton,
   Stack,
   Tab,
   Tabs,
@@ -163,29 +165,44 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
     setIsDirty(true);
   };
 
-  const setFieldMapping = (entityField: string, mappedField: string | undefined) => {
+  const setFieldMapping = (
+    idx: number,
+    entityField: string,
+    mappedField: string | undefined,
+    isAdditional: boolean
+  ) => {
     const newFieldMappings = [...mergedEntityMapping.fieldMappings];
-    const idx = mergedEntityMapping.fieldMappings.findIndex((fieldMapping) => fieldMapping.entityField === entityField);
-    if (idx === -1) {
-      newFieldMappings.push({
-        entityField,
-        mappedField,
-        from: 'customer',
-      });
-    } else {
-      newFieldMappings[idx] = {
-        entityField,
-        mappedField,
-        from: 'customer',
-      };
-    }
+    newFieldMappings[idx] = {
+      entityField,
+      mappedField,
+      from: 'customer',
+      isAdditional,
+    };
+    setMergedEntityMapping({ ...mergedEntityMapping, fieldMappings: newFieldMappings });
+    setIsDirty(true);
+  };
+
+  const addFieldMapping = () => {
+    setMergedEntityMapping({
+      ...mergedEntityMapping,
+      fieldMappings: [
+        ...mergedEntityMapping.fieldMappings,
+        { entityField: '', mappedField: undefined, from: 'customer', isAdditional: true },
+      ],
+    });
+    setIsDirty(true);
+  };
+
+  const deleteFieldMapping = (idx: number) => {
+    const newFieldMappings = [...mergedEntityMapping.fieldMappings];
+    newFieldMappings.splice(idx, 1);
     setMergedEntityMapping({ ...mergedEntityMapping, fieldMappings: newFieldMappings });
     setIsDirty(true);
   };
 
   const isValid =
     !!mergedEntityMapping.object &&
-    mergedEntityMapping.fieldMappings.every((fieldMapping) => !!fieldMapping.mappedField);
+    mergedEntityMapping.fieldMappings.every((fieldMapping) => !!fieldMapping.mappedField && !!fieldMapping.entityField);
 
   return (
     <>
@@ -202,12 +219,16 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
             setObject={setObject}
           />
           <EntityFieldMappings
+            key={mergedEntityMapping.fieldMappings.length}
             customerId={customerId}
             entity={entity}
+            allowAdditionalFieldMappings={mergedEntityMapping.allowAdditionalFieldMappings}
             providerName={providerName}
             object={mergedEntityMapping.object}
-            fieldMappings={initialMapping.fieldMappings}
+            fieldMappings={mergedEntityMapping.fieldMappings}
             setFieldMapping={setFieldMapping}
+            addFieldMapping={addFieldMapping}
+            deleteFieldMapping={deleteFieldMapping}
           />
         </Grid>
         <Stack direction="row" className="gap-2 pt-4 items-center justify-end">
@@ -283,9 +304,12 @@ type EntityFieldMappingsProps = {
   object?: StandardOrCustomObject & {
     from: 'developer' | 'customer';
   };
+  allowAdditionalFieldMappings: boolean;
   providerName: string;
   fieldMappings: MergedEntityFieldMapping[];
-  setFieldMapping: (entityField: string, mappedField: string | undefined) => void;
+  setFieldMapping: (idx: number, entityField: string, mappedField: string | undefined, isAdditional: boolean) => void;
+  addFieldMapping: () => void;
+  deleteFieldMapping: (idx: number) => void;
 };
 
 function EntityFieldMappings({
@@ -293,7 +317,10 @@ function EntityFieldMappings({
   providerName,
   object,
   fieldMappings,
+  allowAdditionalFieldMappings,
   setFieldMapping,
+  addFieldMapping,
+  deleteFieldMapping,
 }: EntityFieldMappingsProps) {
   const { properties = [], isLoading } = useProperties(
     customerId,
@@ -303,12 +330,25 @@ function EntityFieldMappings({
   );
   return (
     <>
-      {fieldMappings.map(({ entityField, mappedField, from }) => (
+      {fieldMappings.map(({ entityField, mappedField, from, isAdditional }, idx) => (
         <>
           <Grid item xs={4}>
-            <Typography>{entityField}</Typography>
+            {isAdditional ? (
+              <TextField
+                required={true}
+                value={entityField}
+                size="small"
+                label="Field Name (must be unique)"
+                variant="outlined"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setFieldMapping(idx, event.target.value, mappedField, true);
+                }}
+              />
+            ) : (
+              <Typography>{entityField}</Typography>
+            )}
           </Grid>
-          <Grid item xs={8}>
+          <Grid item xs={7}>
             <Autocomplete
               disabled={!object || isLoading || from === 'developer'}
               size="small"
@@ -329,12 +369,20 @@ function EntityFieldMappings({
                 />
               )}
               onChange={(event: any, value: string | null) => {
-                setFieldMapping(entityField, value ?? undefined);
+                setFieldMapping(idx, entityField, value ?? undefined, isAdditional);
               }}
             />
           </Grid>
+          <Grid item xs={1}>
+            {isAdditional && (
+              <IconButton onClick={() => deleteFieldMapping(idx)}>
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </Grid>
         </>
       ))}
+      {allowAdditionalFieldMappings && <Button onClick={addFieldMapping}>+ Add field mapping</Button>}
     </>
   );
 }

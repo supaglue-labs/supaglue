@@ -4,6 +4,8 @@ properties:
     type: string
   entity_name:
     type: string
+  allow_additional_field_mappings:
+    type: boolean
   object:
     allOf:
       - $ref: ./standard_or_custom_object.yaml
@@ -31,9 +33,13 @@ properties:
           enum:
             - developer
             - customer
+        is_additional:
+          type: boolean
       required:
         - entity_field
+        - is_additional
 required:
   - entity_id
   - entity_name
+  - allow_additional_field_mappings
   - field_mappings
