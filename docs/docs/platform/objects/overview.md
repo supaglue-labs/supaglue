@@ -130,6 +130,12 @@ Use a Schema to unify Standard Objects and their fields between third-party Prov
 
 You, the developer, define schemas.
 
+:::tip
+**Schemas** allow you to use Field Mappings on a single Provider object.
+
+Use **[Entities](../entities/overview)** instead to map multiple Provider objects along with Field Mappings.
+:::
+
 #### Configuring Schemas
 
 The shape of a Schema looks like the following:

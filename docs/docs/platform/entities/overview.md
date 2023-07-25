@@ -17,15 +17,15 @@ Entities have a 1-n relationship between your application object and Provider ob
 
 Entities differ from [Objects](../objects/overview): Objects only have a 1-1 relationship between your application and Provider objects.
 
-Entities differ from [Common Schema](../common-schema/overview): While Common Schema objects have a 1-n relationship between your application and Provider objects, Supaglue determines the normalization.
+Entities differ from [Common Schema](../common-schema/overview): While Common Schema objects have a 1-n relationship between your application and Provider objects, Supaglue, and not you, determines the normalization.
 
 ## Entity
 
 When using Entities, you must define them. There must be corresponding Entity Mappings before you can sync or write to them. You will need to answer these questions to define your Entity:
 
 1. What do you want to call it?
-2. Do you want to map the Provider object or let your customers do it?
-3. What fields are on the Entity?
+2. What fields are on the Entity?
+3. Do you want to map the Provider object or let your customers do it?
 4. Do you want to map a Provider's object's fields or let your customers do it?
 
 ### Configuration
