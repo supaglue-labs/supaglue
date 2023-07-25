@@ -200,7 +200,7 @@ const config = {
                 to: '/connectors/salesloft',
               },
               {
-                label: 'Zendesk Sell',
+                label: 'Zendesk',
                 to: '/connectors/zendesk_sell',
               },
             ],

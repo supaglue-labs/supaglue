@@ -1,11 +1,11 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/zendesk.png
+  icon: /img/connector_icons/intercom.png
   category: 'Ticketing'
 description: ''
 ---
 
-# Zendesk
+# Intercom
 
 ## Overview
 

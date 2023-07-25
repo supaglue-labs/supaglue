@@ -1,11 +1,11 @@
 ---
 sidebar_custom_props:
-  icon: /img/connector_icons/zendesk.png
-  category: 'Ticketing'
+  icon: /img/connector_icons/ms_teams.png
+  category: 'Communications'
 description: ''
 ---
 
-# Zendesk
+# Microsoft Teams
 
 ## Overview
 
