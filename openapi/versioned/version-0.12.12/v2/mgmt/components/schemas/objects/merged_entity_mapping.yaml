@@ -1,0 +1,45 @@
+type: object
+properties:
+  entity_id:
+    type: string
+  entity_name:
+    type: string
+  allow_additional_field_mappings:
+    type: boolean
+  object:
+    allOf:
+      - $ref: ./standard_or_custom_object.yaml
+      - type: object
+        properties:
+          from:
+            type: string
+            enum:
+              - developer
+              - customer
+        required:
+          - from
+  field_mappings:
+    type: array
+    items:
+      # docs generation doesn't handle allOf with `./entity_field_mapping.yaml` correctly here, so we explicitly define it
+      type: object
+      properties:
+        entity_field:
+          type: string
+        mapped_field:
+          type: string
+        from:
+          type: string
+          enum:
+            - developer
+            - customer
+        is_additional:
+          type: boolean
+      required:
+        - entity_field
+        - is_additional
+required:
+  - entity_id
+  - entity_name
+  - allow_additional_field_mappings
+  - field_mappings
