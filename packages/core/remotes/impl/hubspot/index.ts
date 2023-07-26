@@ -573,7 +573,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           Readable.from(
             response.results.map((result) => ({
               ...result,
-              mappedData: null,
+              mappedData: result.rawData,
             }))
           ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
@@ -584,7 +584,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
           Readable.from(
             response.results.map((result) => ({
               ...result,
-              mappedData: null,
+              mappedData: result.rawData,
             }))
           ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,

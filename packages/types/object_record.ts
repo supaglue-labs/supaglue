@@ -9,7 +9,7 @@ export type ObjectRecordRawDataOnly<T = Record<string, any>> = {
 };
 
 export type ObjectRecord<T = Record<string, any>> = ObjectRecordRawDataOnly<T> & {
-  mappedData: T | null;
+  mappedData: T;
 };
 
 export type SnakecasedKeysObjectRecord<T = Record<string, any>> = SnakecasedKeys<ObjectRecord<T>>;

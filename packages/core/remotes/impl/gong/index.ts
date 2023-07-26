@@ -132,7 +132,7 @@ class GongClient extends AbstractEngagementRemoteClient {
           (call, emittedAt) => ({
             id: call.id,
             rawData: call,
-            mappedData: null,
+            mappedData: call,
             isDeleted: false,
             lastModifiedAt: new Date(call.started),
             emittedAt,
@@ -147,7 +147,7 @@ class GongClient extends AbstractEngagementRemoteClient {
           (detailedCall, emittedAt) => ({
             id: detailedCall.metaData.id,
             rawData: detailedCall,
-            mappedData: null,
+            mappedData: detailedCall,
             isDeleted: false,
             lastModifiedAt: new Date(detailedCall.metaData.started),
             emittedAt,
@@ -162,7 +162,7 @@ class GongClient extends AbstractEngagementRemoteClient {
           (transcript, emittedAt) => ({
             id: transcript.callId,
             rawData: transcript,
-            mappedData: null,
+            mappedData: transcript,
             isDeleted: false,
             // we don't know the last modified at time
             // TODO: figure out some way to address this.

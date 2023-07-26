@@ -285,7 +285,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
     return intersection(
       allPropertyIds,
-      fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField)
+      // we must pull these fields no matter what
+      [
+        'Id',
+        'IsDeleted',
+        'SystemModstamp',
+        ...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField),
+      ]
     );
   }
 
