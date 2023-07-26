@@ -3,12 +3,20 @@ import type { EntityMapping } from './entity_mapping';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
-type BaseApiKeyConnectionCredentialsDecrypted = {
+export type ConnectionType = 'api_key' | 'oauth2';
+
+export type ApiKeyConnectionCredentialsDecrypted = {
   type: 'api_key';
   apiKey: string;
 };
 
-type BaseOauthConnectionCredentialsDecrypted = {
+export type AccessKeySecretConnectionCredentialsDecrypted = {
+  type: 'access_key_secret';
+  accessKey: string;
+  accessKeySecret: string;
+};
+
+export type OauthConnectionCredentialsDecrypted = {
   type: 'oauth2';
   accessToken: string;
   refreshToken: string;
@@ -16,8 +24,10 @@ type BaseOauthConnectionCredentialsDecrypted = {
 };
 
 export type ConnectionCredentialsDecrypted<T extends ProviderName> = (T extends 'apollo'
-  ? BaseApiKeyConnectionCredentialsDecrypted
-  : BaseOauthConnectionCredentialsDecrypted) &
+  ? ApiKeyConnectionCredentialsDecrypted
+  : T extends 'gong'
+  ? AccessKeySecretConnectionCredentialsDecrypted | OauthConnectionCredentialsDecrypted
+  : OauthConnectionCredentialsDecrypted) &
   (T extends 'salesforce'
     ? {
         instanceUrl: string;

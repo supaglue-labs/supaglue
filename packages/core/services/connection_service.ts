@@ -5,6 +5,7 @@ import type {
   ConnectionUnsafe,
   ConnectionUnsafeAny,
   FieldMappingInfo,
+  OauthConnectionCredentialsDecrypted,
   ObjectFieldMappingInfo,
   ObjectFieldMappingUpdateParams,
   ProviderName,
@@ -311,13 +312,16 @@ export class ConnectionService {
       throw new BadRequestError(`${connection.providerName} does not support oauth connections`);
     }
 
-    const oldCredentialsUnsafe = JSON.parse(await decrypt(connection.credentials));
-    const newCredentials: ConnectionCredentialsDecryptedAny = {
-      ...(oldCredentialsUnsafe as ConnectionCredentialsDecryptedAny),
+    const oldCredentialsUnsafe: ConnectionCredentialsDecryptedAny = JSON.parse(await decrypt(connection.credentials));
+    if (oldCredentialsUnsafe.type !== 'oauth2') {
+      throw new BadRequestError(`Connection ${connectionId} is not an oauth connection`);
+    }
+    const newCredentials: OauthConnectionCredentialsDecrypted = {
+      ...(oldCredentialsUnsafe as OauthConnectionCredentialsDecrypted),
       accessToken,
       refreshToken: refreshToken ?? oldCredentialsUnsafe.refreshToken,
       expiresAt,
-    } as ConnectionCredentialsDecryptedAny;
+    };
 
     const updatedConnection = await this.#prisma.connection.update({
       where: {
