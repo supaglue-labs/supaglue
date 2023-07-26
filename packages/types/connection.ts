@@ -3,8 +3,6 @@ import type { EntityMapping } from './entity_mapping';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
-export type ConnectionType = 'api_key' | 'oauth2';
-
 export type ApiKeyConnectionCredentialsDecrypted = {
   type: 'api_key';
   apiKey: string;
