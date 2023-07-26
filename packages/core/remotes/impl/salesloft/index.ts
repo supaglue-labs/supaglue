@@ -5,10 +5,15 @@ import type {
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
+import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import axios from 'axios';
-import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
+import { Readable } from 'stream';
+import { BadRequestError } from '../../../errors';
+import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
+import { paginator } from '../../utils/paginator';
+import { fromSalesloftPersonToContact, fromSalesloftUserToUser } from './mappers';
 
 type Credentials = {
   accessToken: string;
@@ -16,6 +21,24 @@ type Credentials = {
   expiresAt: string | null; // ISO string
   clientId: string;
   clientSecret: string;
+};
+
+const SALESLOFT_RECORD_LIMIT = 100;
+
+const DEFAULT_LIST_PARAMS = {
+  per_page: SALESLOFT_RECORD_LIMIT,
+};
+
+type SalesloftPaginatedRecords = {
+  metadata: {
+    paging?: {
+      per_page: number;
+      current_page: number;
+      next_page: number | null;
+      prev_page: number | null;
+    };
+  };
+  data: Record<string, any>[];
 };
 
 class SalesloftClient extends AbstractEngagementRemoteClient {
@@ -70,6 +93,83 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     await this.maybeRefreshAccessToken();
     return await super.sendPassthroughRequest(request);
   }
+
+  #getListRecordsFetcher(endpoint: string, updatedAfter?: Date): (next?: string) => Promise<SalesloftPaginatedRecords> {
+    return async (next?: string) => {
+      return await retryWhenAxiosRateLimited(async () => {
+        await this.maybeRefreshAccessToken();
+        const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
+          params: updatedAfter
+            ? {
+                ...DEFAULT_LIST_PARAMS,
+                ...getUpdatedAfterPathParam(updatedAfter),
+                page: next ? parseInt(next) : undefined,
+              }
+            : DEFAULT_LIST_PARAMS,
+          headers: this.#headers,
+        });
+        return response.data;
+      });
+    };
+  }
+
+  private async listContacts(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/people`, updatedAfter);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data.map((result) => ({
+              record: fromSalesloftPersonToContact(result),
+              emittedAt,
+            }))
+          );
+        },
+        getNextCursorFromPage: (response) => response.metadata.paging?.next_page?.toString(),
+      },
+    ]);
+  }
+
+  private async listUsers(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/users`, updatedAfter);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data.map((result) => ({
+              record: fromSalesloftUserToUser(result),
+              emittedAt,
+            }))
+          );
+        },
+        getNextCursorFromPage: (response) => response.metadata.paging?.next_page?.toString(),
+      },
+    ]);
+  }
+
+  public override async listCommonObjectRecords(
+    commonObjectType: EngagementCommonObjectType,
+    updatedAfter?: Date
+  ): Promise<Readable> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.listContacts(updatedAfter);
+      case 'user':
+        return await this.listUsers(updatedAfter);
+      // case 'sequence':
+      //   return await this.listSequences(updatedAfter);
+      // case 'mailbox':
+      //   return await this.listMailboxes(updatedAfter);
+      // case 'sequence_state':
+      //   return await this.listSequenceStates(updatedAfter);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
 }
 
 export function newClient(connection: ConnectionUnsafe<'salesloft'>, provider: Provider): SalesloftClient {
@@ -87,3 +187,9 @@ export const authConfig: ConnectorAuthConfig = {
   authorizeHost: 'https://accounts.salesloft.com',
   authorizePath: '/oauth/authorize',
 };
+
+function getUpdatedAfterPathParam(updatedAfter: Date) {
+  return {
+    'updated_at[gt]': updatedAfter.toISOString(),
+  };
+}
