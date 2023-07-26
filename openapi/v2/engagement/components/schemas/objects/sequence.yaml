@@ -19,16 +19,9 @@ properties:
       type: string
   num_steps:
     type: number
-  schedule_count:
-    type: number
-  open_count:
-    type: number
-  opt_out_count:
-    type: number
-  reply_count:
-    type: number
-  click_count:
-    type: number
+  metrics:
+    type: object
+    additionalProperties: true
   created_at:
     type: string
     nullable: true

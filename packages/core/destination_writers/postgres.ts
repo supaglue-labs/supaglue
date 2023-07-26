@@ -741,11 +741,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "name" TEXT,
   "tags" JSONB,
   "num_steps" INTEGER NOT NULL,
-  "schedule_count" INTEGER NOT NULL,
-  "click_count" INTEGER NOT NULL,
-  "reply_count" INTEGER NOT NULL,
-  "open_count" INTEGER NOT NULL,
-  "opt_out_count" INTEGER NOT NULL,
+  "metrics" JSONB,
   "is_enabled" BOOLEAN NOT NULL,
   "raw_data" JSONB,
 
@@ -767,6 +763,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "sequence_id" TEXT,
   "contact_id" TEXT,
   "mailbox_id" TEXT,
+  "user_id" TEXT,
   "state" TEXT,
   "raw_data" JSONB,
 

@@ -872,6 +872,11 @@
             "type": "string",
             "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
           },
+          "user_id": {
+            "nullable": true,
+            "type": "string",
+            "example": "ab0530ef-61dd-4a99-b26b-6b5a61c7c62e"
+          },
           "sequence_id": {
             "nullable": true,
             "type": "string",
@@ -903,6 +908,7 @@
           "id",
           "state",
           "mailbox_id",
+          "user_id",
           "contact_id",
           "sequence_id",
           "created_at",
@@ -920,16 +926,20 @@
           },
           "mailbox_id": {
             "type": "string",
-            "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d"
+            "example": "39fd1fe0-094b-4a61-b47f-3e3ac033203d",
+            "description": "The ID of the mailbox to use for the sequence. Required for Apollo and Outreach. Unused for Salesloft."
           },
           "sequence_id": {
             "type": "string",
             "example": "b854e510-1c40-4ef6-ade4-8eb35f49d331"
+          },
+          "user_id": {
+            "type": "string",
+            "description": "The ID of the user who is performing the action. Required for Salesloft, optional for Apollo and Outreach."
           }
         },
         "required": [
           "contact_id",
-          "mailbox_id",
           "sequence_id"
         ]
       },
@@ -1066,20 +1076,9 @@
           "num_steps": {
             "type": "number"
           },
-          "schedule_count": {
-            "type": "number"
-          },
-          "open_count": {
-            "type": "number"
-          },
-          "opt_out_count": {
-            "type": "number"
-          },
-          "reply_count": {
-            "type": "number"
-          },
-          "click_count": {
-            "type": "number"
+          "metrics": {
+            "type": "object",
+            "additionalProperties": true
           },
           "created_at": {
             "type": "string",

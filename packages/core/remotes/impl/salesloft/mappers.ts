@@ -1,4 +1,5 @@
-import type { Contact, EmailAddress, PhoneNumber, User } from '@supaglue/types/engagement';
+import type { Contact, EmailAddress, PhoneNumber, Sequence, SequenceState, User } from '@supaglue/types/engagement';
+import { camelcaseKeys } from '@supaglue/utils';
 
 export const fromSalesloftPersonToContact = (record: Record<string, any>): Contact => {
   return {
@@ -83,7 +84,40 @@ export const fromSalesloftUserToUser = (record: Record<string, any>): User => {
     email: record.email ?? null,
     createdAt: new Date(record.created_at),
     updatedAt: new Date(record.updated_at),
-    lastModifiedAt: new Date(record.created_at),
+    lastModifiedAt: new Date(record.updated_at),
+    isDeleted: false,
+    rawData: record,
+  };
+};
+
+export const fromSalesloftCadenceToSequence = (record: Record<string, any>, stepCount: number): Sequence => {
+  return {
+    id: record.id.toString(),
+    name: record.name ?? null,
+    isEnabled: !record.draft,
+    numSteps: stepCount,
+    metrics: camelcaseKeys(record.counts),
+    tags: record.tags ?? [],
+    ownerId: record.owner?.id?.toString() ?? null,
+    createdAt: new Date(record.created_at),
+    updatedAt: new Date(record.updated_at),
+    lastModifiedAt: new Date(record.updated_at),
+    isDeleted: !!record.archived_at,
+    rawData: record,
+  };
+};
+
+export const fromSalesloftCadenceMembershipToSequenceState = (record: Record<string, any>): SequenceState => {
+  return {
+    id: record.id.toString(),
+    state: record.current_state ?? null,
+    contactId: record.person?.id?.toString() ?? null,
+    sequenceId: record.cadence?.id?.toString() ?? null,
+    mailboxId: null,
+    userId: record.user?.id?.toString() ?? null,
+    createdAt: new Date(record.created_at),
+    updatedAt: new Date(record.updated_at),
+    lastModifiedAt: new Date(record.updated_at),
     isDeleted: false,
     rawData: record,
   };

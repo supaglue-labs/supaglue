@@ -5,6 +5,7 @@ export const toSnakecasedKeysSequenceState = (sequenceState: SequenceState): Sna
     contact_id: sequenceState.contactId,
     sequence_id: sequenceState.sequenceId,
     mailbox_id: sequenceState.mailboxId,
+    user_id: sequenceState.userId,
     last_modified_at: sequenceState.lastModifiedAt,
     id: sequenceState.id,
     state: sequenceState.state,

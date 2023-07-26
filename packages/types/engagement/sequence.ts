@@ -9,11 +9,7 @@ type CoreSequence = {
   name: string | null;
   tags: string[];
   numSteps: number;
-  scheduleCount: number;
-  openCount: number;
-  optOutCount: number;
-  replyCount: number;
-  clickCount: number;
+  metrics: Record<string, number | null | undefined>;
   ownerId: string | null;
 };
 

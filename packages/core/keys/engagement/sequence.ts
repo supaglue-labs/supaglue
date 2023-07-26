@@ -15,11 +15,7 @@ export const keysOfSnakecasedSequenceWithTenant = arrayOfAllKeys<SnakecasedKeysS
   'name',
   'tags',
   'num_steps',
-  'schedule_count',
-  'click_count',
-  'reply_count',
-  'open_count',
-  'opt_out_count',
+  'metrics',
   'is_enabled',
   'raw_data',
 ]);

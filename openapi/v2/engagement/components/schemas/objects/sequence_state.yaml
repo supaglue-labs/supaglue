@@ -15,6 +15,10 @@ properties:
     nullable: true
     type: string
     example: 39fd1fe0-094b-4a61-b47f-3e3ac033203d
+  user_id:
+    nullable: true
+    type: string
+    example: ab0530ef-61dd-4a99-b26b-6b5a61c7c62e
   sequence_id:
     nullable: true
     type: string
@@ -40,6 +44,7 @@ required:
   - id
   - state
   - mailbox_id
+  - user_id
   - contact_id
   - sequence_id
   - created_at	

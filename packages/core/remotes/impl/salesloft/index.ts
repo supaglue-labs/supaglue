@@ -13,7 +13,12 @@ import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
-import { fromSalesloftPersonToContact, fromSalesloftUserToUser } from './mappers';
+import {
+  fromSalesloftCadenceMembershipToSequenceState,
+  fromSalesloftCadenceToSequence,
+  fromSalesloftPersonToContact,
+  fromSalesloftUserToUser,
+} from './mappers';
 
 type Credentials = {
   accessToken: string;
@@ -36,6 +41,22 @@ type SalesloftPaginatedRecords = {
       current_page: number;
       next_page: number | null;
       prev_page: number | null;
+      total_pages?: number;
+      total_count?: number;
+    };
+  };
+  data: Record<string, any>[];
+};
+
+type SalesloftPaginatedRecordsWithCount = {
+  metadata: {
+    paging: {
+      per_page: number;
+      current_page: number;
+      next_page: number | null;
+      prev_page: number | null;
+      total_pages: number;
+      total_count: number;
     };
   };
   data: Record<string, any>[];
@@ -151,6 +172,78 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
+  async #getCadenceStepCounts(): Promise<Record<string, number>> {
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/steps`);
+    const stream = await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => Readable.from(response.data),
+        getNextCursorFromPage: (response) => response.metadata.paging?.next_page?.toString(),
+      },
+    ]);
+    // Mapping from cadenceId => number of steps
+    const stepCountMapping: Record<string, number> = {};
+
+    for await (const step of stream) {
+      const cadenceId = step.cadence?.id?.toString();
+      if (!cadenceId) {
+        // This should never happen
+        continue;
+      }
+      if (stepCountMapping[cadenceId]) {
+        stepCountMapping[cadenceId] += 1;
+      } else {
+        stepCountMapping[cadenceId] = 1;
+      }
+    }
+    return stepCountMapping;
+  }
+
+  private async listSequences(updatedAfter?: Date): Promise<Readable> {
+    const stepCounts = await this.#getCadenceStepCounts();
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/cadences`, updatedAfter);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data.map((result) => {
+              return {
+                record: fromSalesloftCadenceToSequence(result, stepCounts[result.id?.toString()] ?? 0),
+                emittedAt,
+              };
+            })
+          );
+        },
+        getNextCursorFromPage: (response) => response.metadata.paging?.next_page?.toString(),
+      },
+    ]);
+  }
+
+  private async listSequenceStates(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/cadence_memberships`, updatedAfter);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.data.map((result) => ({
+              record: fromSalesloftCadenceMembershipToSequenceState(result),
+              emittedAt,
+            }))
+          );
+        },
+        getNextCursorFromPage: (response) => response.metadata.paging?.next_page?.toString(),
+      },
+    ]);
+  }
+
+  private async listMailboxes(updatedAfter?: Date): Promise<Readable> {
+    return Readable.from([]);
+  }
+
   public override async listCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date
@@ -160,14 +253,14 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
         return await this.listContacts(updatedAfter);
       case 'user':
         return await this.listUsers(updatedAfter);
-      // case 'sequence':
-      //   return await this.listSequences(updatedAfter);
-      // case 'mailbox':
-      //   return await this.listMailboxes(updatedAfter);
-      // case 'sequence_state':
-      //   return await this.listSequenceStates(updatedAfter);
+      case 'sequence':
+        return await this.listSequences(updatedAfter);
+      case 'mailbox':
+        return await this.listMailboxes(updatedAfter);
+      case 'sequence_state':
+        return await this.listSequenceStates(updatedAfter);
       default:
-        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+        throw new BadRequestError(`Common object ${commonObjectType} not supported for salesloft`);
     }
   }
 }
