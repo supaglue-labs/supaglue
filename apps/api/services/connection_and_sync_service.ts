@@ -180,6 +180,37 @@ export class ConnectionAndSyncService {
     return await this.create(params);
   }
 
+  public async createFromAccessKeySecret(
+    applicationId: string,
+    customerId: string,
+    category: ProviderCategory,
+    providerName: ProviderName,
+    accessKey: string,
+    accessKeySecret: string
+  ): Promise<ConnectionSafeAny> {
+    if (providerName !== 'gong') {
+      throw new BadRequestError(`Operation not supported for ${providerName}`);
+    }
+    if (category !== 'engagement') {
+      throw new BadRequestError(`Operation not supported for ${category}`);
+    }
+    const provider = await this.#providerService.getByNameAndApplicationId(providerName, applicationId);
+    const params: ConnectionCreateParams<'gong'> = {
+      applicationId,
+      providerName,
+      providerId: provider.id,
+      category,
+      customerId,
+      credentials: {
+        type: 'access_key_secret',
+        accessKey,
+        accessKeySecret,
+      },
+      instanceUrl: '',
+    };
+    return await this.create(params);
+  }
+
   public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
     const provider = await this.#providerService.getByNameAndApplicationId(params.providerName, params.applicationId);
     const syncConfig = await this.#syncConfigService.findByProviderId(provider.id);

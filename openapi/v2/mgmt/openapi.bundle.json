@@ -1812,30 +1812,65 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "provider_name": {
-                    "type": "string",
-                    "enum": [
-                      "apollo"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "provider_name": {
+                        "type": "string",
+                        "enum": [
+                          "apollo"
+                        ]
+                      },
+                      "category": {
+                        "type": "string",
+                        "enum": [
+                          "engagement"
+                        ]
+                      },
+                      "api_key": {
+                        "type": "string",
+                        "description": "API key for the connected customer.",
+                        "example": 123456
+                      }
+                    },
+                    "required": [
+                      "provider_name",
+                      "category",
+                      "api_key"
                     ]
                   },
-                  "category": {
-                    "type": "string",
-                    "enum": [
-                      "engagement"
+                  {
+                    "type": "object",
+                    "properties": {
+                      "provider_name": {
+                        "type": "string",
+                        "enum": [
+                          "gong"
+                        ]
+                      },
+                      "category": {
+                        "type": "string",
+                        "enum": [
+                          "engagement"
+                        ]
+                      },
+                      "access_key": {
+                        "type": "string",
+                        "description": "Access key for the connected customer."
+                      },
+                      "access_key_secret": {
+                        "type": "string",
+                        "description": "Access key secret for the connected customer."
+                      }
+                    },
+                    "required": [
+                      "provider_name",
+                      "category",
+                      "access_key",
+                      "access_key_secret"
                     ]
-                  },
-                  "api_key": {
-                    "type": "string",
-                    "description": "API key for the connected customer.",
-                    "example": 123456
                   }
-                },
-                "required": [
-                  "provider_name",
-                  "category",
-                  "api_key"
                 ]
               }
             }
