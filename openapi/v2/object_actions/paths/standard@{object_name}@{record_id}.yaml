@@ -1,0 +1,62 @@
+get:
+  operationId: getStandardObjectRecord
+  summary: Get Standard Object record
+  tags:
+    - ObjectRecords
+  security:
+    - x-api-key: []
+  responses:
+    200:
+      description: Standard object record
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/standard_object_record.yaml
+patch:
+  operationId: updateStandardObjectRecord
+  summary: Update Standard Object record
+  tags:
+    - ObjectRecords
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            record:
+              $ref: ../components/schemas/create_update_standard_object_record.yaml
+          required:
+            - record
+  responses:
+    200:
+      description: Standard object record updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              logs:
+                $ref: ../../../common/components/schemas/logs.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - name: standard_object_name
+    in: path
+    required: true
+    schema:
+      type: string
+      example: Opportunity
+  - name: record_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

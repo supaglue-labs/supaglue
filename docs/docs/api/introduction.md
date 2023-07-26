@@ -7,7 +7,7 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Introduction
 
-Supaglue supports three APIs. The Management API creates customers, connections, and configure managed syncs. The Actions API consists of two unified APIs, one for CRM connectors and one for sales engagement connectors.
+Supaglue supports five APIs. The Management API creates customers, connections, and configure managed syncs. The Actions API consists of four unified APIs, one for CRM connectors, one for sales engagement connectors, one for entities, and one for objects.
 
 ## Management API
 
@@ -17,6 +17,8 @@ Supaglue supports three APIs. The Management API creates customers, connections,
 
 - You can use the [CRM API V2](v2/crm/supaglue-unified-crm-api) to read and write data from and to third-party CRM providers.
 - You can use the [Engagement API V2](v2/engagement/supaglue-unified-engagement-api) (beta) to read and write data from and to third-party engagement providers.
+- You can use the [Entity Actions API V2](v2/entity_actions/supaglue-entity-actions-api) (beta) to read and write data for entities from and to third-party providers.
+- You can use the [Object Actions API V2](v2/object_actions/supaglue-object-actions-api) (beta) to read and write data for objects from and to third-party providers.
 
 ## API authentication
 
