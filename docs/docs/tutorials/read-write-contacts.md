@@ -7,6 +7,8 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Read and write contacts
 
+![code](https://img.shields.io/badge/Code%20Tutorial-0000a5)
+
 This tutorial will review how to read synced CRM contacts in your Postgres and create them in your customer's CRM.
 
 ## Prerequisites

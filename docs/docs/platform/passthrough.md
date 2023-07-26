@@ -1,8 +1,3 @@
----
-description: ''
-sidebar_position: 5
----
-
 # Passthrough API
 
 Sometimes your application will need access to provider-specifc features not supported by Managed Syncs or the Actions API.
