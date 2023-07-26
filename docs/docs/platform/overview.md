@@ -29,7 +29,7 @@ There are two core access patterns when using Supaglue:
 1. **Managed Syncs**: Syncing data from Providers to a database Destination in your cloud. Managed Syncs allows you to query third-party Provider data in your infrastructure.
 2. **Actions API**: Writing real-time data synchronously to Providers using modern HTTP APIs.
 
-Both access patterns operate on objects (lowercase objects).
+Both access patterns operate on objects.
 
 ## Data modeling
 

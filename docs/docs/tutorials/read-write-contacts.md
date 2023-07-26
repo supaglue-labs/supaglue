@@ -27,8 +27,8 @@ Upon completing Supaglue's Quickstart, you will have your customers' CRM data in
 1. Go through the [Prisma steps](https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases-typescript-postgresql) to install and introspect Supaglue tables in your database.
 2. In your Nextjs Server Component, use your generated Prisma client to read from the `crm_contacts` table and render it using React.
 
-   ```tsx
-   // app/people/page.tsx
+   ```jsx
+   // app/people/page.jsx
 
    const crmContacts = await prisma.crm_contacts.findMany({
      where: {
