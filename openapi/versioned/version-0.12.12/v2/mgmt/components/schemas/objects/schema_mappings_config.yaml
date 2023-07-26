@@ -1,0 +1,30 @@
+type: object
+properties:
+  common_objects:
+    type: array
+    items:
+      type: object
+      properties:
+        object:
+          type: string
+        field_mappings:
+          type: array
+          items:
+            $ref: ./field_mapping.yaml
+      required:
+        - object
+        - field_mappings
+  standard_objects:
+    type: array
+    items:
+      type: object
+      properties:
+        object:
+          type: string
+        field_mappings:
+          type: array
+          items:
+            $ref: ./field_mapping.yaml
+      required:
+        - object
+        - field_mappings

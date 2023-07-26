@@ -1,0 +1,52 @@
+post:
+  operationId: triggerSync
+  summary: Trigger sync
+  tags:
+    - Syncs
+  security:
+    - x-api-key: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          allOf:
+            - oneOf:
+              - type: object
+                properties:
+                  object_type:
+                    type: string
+                    enum:
+                      - common
+                      - standard
+                      - custom
+                    description: The object type to filter by
+                  object:
+                    type: string
+                    example: contact
+                    description: The object to filter by
+                required:
+                  - object_type
+                  - object
+              - type: object
+                properties:
+                  entity_id:
+                    type: string
+                    description: The entity id to filter by
+                required:
+                  - entity_id
+            - type: object
+              properties:
+                perform_full_refresh:
+                  type: boolean
+                  example: true
+  responses:
+    '200':
+      description: Sync triggered
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/sync.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

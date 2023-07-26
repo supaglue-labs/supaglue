@@ -1,0 +1,9 @@
+type: object
+properties:
+  entity_field:
+    type: string
+  mapped_field:
+    type: string
+required:
+  - entity_field
+  - mapped_field
