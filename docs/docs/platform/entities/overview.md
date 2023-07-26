@@ -158,21 +158,19 @@ sources={{
 Supaglue will land the data in your Destination with the schema below using the example from above.
 
 ```
-
 postgres=> \d "contact"
-Table "public.contact"
-Column | Type | Collation | Nullable | Default
+                             Table "public.contact"
+          Column          |              Type              | Collation | Nullable | Default
 --------------------------+--------------------------------+-----------+----------+---------
-_supaglue_application_id | text | | not null |
-_supaglue_provider_name | text | | not null |
-_supaglue_customer_id | text | | not null |
-_supaglue_emitted_at | timestamp(3) without time zone | | not null |
-_supaglue_is_deleted | boolean | | not null |
-_supaglue_raw_data | jsonb | | not null |
-id | text | | not null |
+ _supaglue_application_id | text                           |           | not null |
+ _supaglue_provider_name  | text                           |           | not null |
+ _supaglue_customer_id    | text                           |           | not null |
+ _supaglue_emitted_at     | timestamp(3) without time zone |           | not null |
+ _supaglue_is_deleted     | boolean                        |           | not null |
+ _supaglue_raw_data       | jsonb                          |           | not null |
+ id                       | text                           |           | not null |
 Indexes:
-"contact_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
-
+    "salesforce_contact_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 ```
 
 A few things to note:

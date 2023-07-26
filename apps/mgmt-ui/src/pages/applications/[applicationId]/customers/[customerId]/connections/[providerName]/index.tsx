@@ -358,6 +358,21 @@ function EntityFieldMappings({
               options={properties ?? []}
               value={properties.find(({ id }) => id === mappedField)}
               autoSelect
+              renderOption={(props, option) => (
+                <Box
+                  component="li"
+                  sx={{
+                    borderRadius: '8px',
+                    margin: '5px',
+                  }}
+                  {...props}
+                >
+                  <Stack direction="column">
+                    <Typography>{option.label}</Typography>
+                    <Typography variant="caption">{option.id}</Typography>
+                  </Stack>
+                </Box>
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}

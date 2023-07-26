@@ -273,6 +273,8 @@ const config = {
                 '../openapi/v2/mgmt/openapi.bundle.json',
                 '../openapi/v2/crm/openapi.bundle.json',
                 '../openapi/v2/engagement/openapi.bundle.json',
+                '../openapi/v2/entity_actions/openapi.bundle.json',
+                '../openapi/v2/object_actions/openapi.bundle.json',
               ],
             }),
           ],
@@ -317,6 +319,28 @@ const config = {
             },
             downloadUrl:
               'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/mgmt/openapi.bundle.json',
+          },
+          entity_actions: {
+            specPath: '../openapi/v2/entity_actions/openapi.bundle.json',
+            outputDir: 'docs/api/v2/entity_actions',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsed: true,
+            },
+            downloadUrl:
+              'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/entity_actions/openapi.bundle.json',
+          },
+          object_actions: {
+            specPath: '../openapi/v2/object_actions/openapi.bundle.json',
+            outputDir: 'docs/api/v2/object_actions',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsed: true,
+            },
+            downloadUrl:
+              'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/object_actions/openapi.bundle.json',
           },
         },
       },
