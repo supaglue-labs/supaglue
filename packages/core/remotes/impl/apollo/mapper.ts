@@ -126,7 +126,7 @@ export const fromApolloContactToSequenceStates = (record: Record<string, any>): 
   return record.contact_campaign_statuses.map((status: Record<string, any>) => ({
     id: status.id,
     sequenceId: status.emailer_campaign_id ?? null,
-    contactId: record.contact_id ?? null,
+    contactId: record.id ?? null,
     mailboxId: status.send_email_from_email_account_id ?? null,
     state: status.status ?? null,
     createdAt: new Date(status.added_at),

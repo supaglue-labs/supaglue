@@ -37,7 +37,10 @@ type GongCallTranscript = {
   // ... other fields that aren't needed in NormalizedRawRecord
 };
 
-type GongClientConfig = {
+type GongClientConfig = GongOAuthClientConfig | GongAccessKeySecretClientConfig;
+
+type GongOAuthClientConfig = {
+  type: 'oauth2';
   instanceUrl: string;
   accessToken: string;
   refreshToken: string;
@@ -46,21 +49,41 @@ type GongClientConfig = {
   clientSecret: string;
 };
 
+type GongAccessKeySecretClientConfig = {
+  type: 'access_key_secret';
+  accessKey: string;
+  accessKeySecret: string;
+};
+
 class GongClient extends AbstractEngagementRemoteClient {
   readonly #config: GongClientConfig;
 
   public constructor(config: GongClientConfig) {
-    super(config.instanceUrl);
+    super(config.type === 'oauth2' ? config.instanceUrl : 'https://api.gong.io');
     this.#config = config;
   }
 
-  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+  getAuthHeaders(): Record<string, string> {
+    if (this.#config.type === 'oauth2') {
+      return {
+        Authorization: `Bearer ${this.#config.accessToken}`,
+      };
+    }
     return {
-      Authorization: `Bearer ${this.#config.accessToken}`,
+      Authorization: `Basic ${Buffer.from(`${this.#config.accessKey}:${this.#config.accessKeySecret}`).toString(
+        'base64'
+      )}`,
     };
   }
 
+  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+    return this.getAuthHeaders();
+  }
+
   private async maybeRefreshAccessToken(): Promise<void> {
+    if (this.#config.type !== 'oauth2') {
+      return;
+    }
     if (!this.#config.expiresAt || Date.parse(this.#config.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS) {
       const { data } = await axios.post<{ access_token: string; refresh_token: string; expires_in: number }>(
         `${authConfig.tokenHost}${authConfig.tokenPath}`,
@@ -197,10 +220,8 @@ class GongClient extends AbstractEngagementRemoteClient {
     return async (cursor?: string) => {
       return await retryWhenAxiosRateLimited(async () => {
         await this.maybeRefreshAccessToken();
-        const { data } = await axios.get<GongPaginatedResponse<K, R>>(`${this.#config.instanceUrl}/${path}`, {
-          headers: {
-            Authorization: `Bearer ${this.#config.accessToken}`,
-          },
+        const { data } = await axios.get<GongPaginatedResponse<K, R>>(`${this.baseUrl}/${path}`, {
+          headers: this.getAuthHeaders(),
           params: {
             cursor,
             fromDateTime: modifiedAfter?.toISOString(),
@@ -220,7 +241,7 @@ class GongClient extends AbstractEngagementRemoteClient {
       return await retryWhenAxiosRateLimited(async () => {
         await this.maybeRefreshAccessToken();
         const { data } = await axios.post<GongPaginatedResponse<K, R>>(
-          `${this.#config.instanceUrl}/${path}`,
+          `${this.baseUrl}/${path}`,
           {
             cursor,
             filter: {
@@ -228,9 +249,7 @@ class GongClient extends AbstractEngagementRemoteClient {
             },
           },
           {
-            headers: {
-              Authorization: `Bearer ${this.#config.accessToken}`,
-            },
+            headers: this.getAuthHeaders(),
           }
         );
 
@@ -241,7 +260,15 @@ class GongClient extends AbstractEngagementRemoteClient {
 }
 
 export function newClient(connection: ConnectionUnsafe<'gong'>, provider: Provider): GongClient {
+  if (connection.credentials.type === 'access_key_secret') {
+    return new GongClient({
+      type: 'access_key_secret',
+      accessKey: connection.credentials.accessKey,
+      accessKeySecret: connection.credentials.accessKeySecret,
+    });
+  }
   return new GongClient({
+    type: 'oauth2',
     instanceUrl: connection.instanceUrl,
     accessToken: connection.credentials.accessToken,
     refreshToken: connection.credentials.refreshToken,

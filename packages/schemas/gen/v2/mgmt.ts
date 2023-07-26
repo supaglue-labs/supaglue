@@ -1678,7 +1678,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": {
+        "application/json": OneOf<[{
           /** @enum {string} */
           provider_name: "apollo";
           /** @enum {string} */
@@ -1688,7 +1688,16 @@ export interface operations {
            * @example 123456
            */
           api_key: string;
-        };
+        }, {
+          /** @enum {string} */
+          provider_name: "gong";
+          /** @enum {string} */
+          category: "engagement";
+          /** @description Access key for the connected customer. */
+          access_key: string;
+          /** @description Access key secret for the connected customer. */
+          access_key_secret: string;
+        }]>;
       };
     };
     responses: {

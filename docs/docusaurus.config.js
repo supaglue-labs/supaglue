@@ -165,43 +165,43 @@ const config = {
             items: [
               {
                 label: 'Apollo',
-                to: '/connectors/apollo',
+                to: '/providers/apollo',
               },
               {
                 label: 'Gong',
-                to: '/connectors/gong',
+                to: '/providers/gong',
               },
               {
                 label: 'HubSpot',
-                to: '/connectors/hubspot',
+                to: '/providers/hubspot',
               },
               {
                 label: 'Marketo',
-                to: '/connectors/marketo',
+                to: '/providers/marketo',
               },
               {
                 label: 'Dynamics 365 Sales',
-                to: '/connectors/ms_dynamics_365_sales',
+                to: '/providers/ms_dynamics_365_sales',
               },
               {
                 label: 'Outreach',
-                to: '/connectors/outreach',
+                to: '/providers/outreach',
               },
               {
                 label: 'Pipedrive',
-                to: '/connectors/pipedrive',
+                to: '/providers/pipedrive',
               },
               {
                 label: 'Salesforce',
-                to: '/connectors/salesforce',
+                to: '/providers/salesforce',
               },
               {
                 label: 'Salesloft',
-                to: '/connectors/salesloft',
+                to: '/providers/salesloft',
               },
               {
                 label: 'Zendesk',
-                to: '/connectors/zendesk_sell',
+                to: '/providers/zendesk',
               },
             ],
           },
