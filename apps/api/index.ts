@@ -55,6 +55,25 @@ app.use(
     },
     autoregister: false,
     metricsApp,
+    normalizePath: (req, opts) => {
+      let path = promBundle.normalizePath(req, opts);
+
+      const matched =
+        path.match(/^(\/crm\/v2\/accounts\/).+/) ||
+        path.match(/^(\/crm\/\/v2\/contacts\/).+/) ||
+        path.match(/^(\/crm\/\/v2\/leads\/).+/) ||
+        path.match(/^(\/crm\/\/v2\/opportunities\/).+/) ||
+        path.match(/^(\/crm\/v2\/users\/).+/) ||
+        path.match(/^(\/engagement\/v2\/contacts\/).+/) ||
+        path.match(/^(\/engagement\/v2\/mailboxes\/).+/) ||
+        path.match(/^(\/engagement\/v2\/sequence_states\/).+/) ||
+        path.match(/^(\/engagement\/v2\/users\/).+/);
+      if (matched) {
+        path = `${matched[1]}/#val`;
+      }
+
+      return path;
+    },
   })
 );
 
