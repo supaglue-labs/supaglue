@@ -7,6 +7,7 @@ import type {
   ConnectionUpsertParamsAny,
   CRMProvider,
   EngagementOauthProvider,
+  NoCategoryProvider,
   OauthProvider,
   ProviderName,
 } from '@supaglue/types';
@@ -14,6 +15,8 @@ import type { CRMProviderName } from '@supaglue/types/crm';
 import { SUPPORTED_CRM_PROVIDERS } from '@supaglue/types/crm';
 import type { EngagementProviderName } from '@supaglue/types/engagement';
 import { SUPPORTED_ENGAGEMENT_PROVIDERS } from '@supaglue/types/engagement';
+import type { NoCategoryProviderName } from '@supaglue/types/no_category';
+import { SUPPORTED_NO_CATEGORY_PROVIDERS } from '@supaglue/types/no_category';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 import type { AuthorizationMethod } from 'simple-oauth2';
@@ -63,7 +66,8 @@ export default function init(app: Router): void {
       try {
         provider = (await providerService.getByNameAndApplicationId(providerName, applicationId)) as
           | CRMProvider
-          | EngagementOauthProvider;
+          | EngagementOauthProvider
+          | NoCategoryProvider;
       } catch (err) {
         throw new BadRequestError(`Can't find provider with name: ${providerName}.`);
       }
@@ -107,15 +111,17 @@ export default function init(app: Router): void {
       // TODO: implement code_verifier/code_challenge when we implement sessions
       const additionalAuthParams: Record<string, string> = {};
 
+      const noScope = provider.name === 'salesloft' || provider.name === 'intercom';
+
       const authorizationUri = client.authorizeURL({
         redirect_uri: REDIRECT_URI,
-        scope: provider.name === 'salesloft' ? [] : oauthScopes,
+        scope: noScope ? [] : oauthScopes,
         state: JSON.stringify({
           returnUrl,
           applicationId,
           customerId,
           providerName,
-          scope: provider.name === 'salesloft' ? [] : oauthScopes, // TODO: this should be in a session
+          scope: noScope ? [] : oauthScopes, // TODO: this should be in a session
           loginUrl,
         }),
         ...additionalAuthParams,
@@ -163,6 +169,7 @@ export default function init(app: Router): void {
       if (
         !providerName ||
         (!SUPPORTED_CRM_PROVIDERS.includes(providerName as CRMProviderName) &&
+          !SUPPORTED_NO_CATEGORY_PROVIDERS.includes(providerName as NoCategoryProviderName) &&
           !SUPPORTED_ENGAGEMENT_PROVIDERS.includes(providerName as EngagementProviderName))
       ) {
         throw new BadRequestError('No providerName or supported providerName on state object');

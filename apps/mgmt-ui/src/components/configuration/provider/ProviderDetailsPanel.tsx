@@ -68,6 +68,8 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     'zoho',
     'zoom',
   ];
+  // These providers either don't allow you to pass in scopes or make you pass scopes another way.
+  const noScopes = ['salesloft', 'intercom', 'ms_dynamics_365_sales'].includes(providerName);
   const isOauth = category === 'crm' || providerName !== 'apollo';
   const activeApplicationId = useActiveApplicationId();
   const { schemas, isLoading: isLoadingSchemas } = useSchemas();
@@ -236,17 +238,19 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
                 setClientSecret(event.target.value);
               }}
             />
-            <TextField
-              disabled={useManagedOauth || providerName === 'ms_dynamics_365_sales' || providerName === 'salesloft'}
-              value={oauthScopes}
-              size="small"
-              label="OAuth2 scopes"
-              variant="outlined"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setOauthScopes(event.target.value);
-              }}
-              helperText="Comma separated values (without spaces)."
-            />
+            {!noScopes && (
+              <TextField
+                disabled={useManagedOauth}
+                value={oauthScopes}
+                size="small"
+                label="OAuth2 scopes"
+                variant="outlined"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setOauthScopes(event.target.value);
+                }}
+                helperText="Comma separated values (without spaces)."
+              />
+            )}
           </Stack>
         )}
         {supportsObjectToSchema && (

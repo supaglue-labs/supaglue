@@ -101,6 +101,13 @@ export const providerCardsInfo: ProviderCardInfo[] = [
     description: 'Configure your Salesloft provider.',
   },
   {
+    icon: <Image alt="intercom" src={IntercomIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+    name: 'Intercom',
+    providerName: 'intercom',
+    category: 'ticketing',
+    description: 'Configure your Intercom provider.',
+  },
+  {
     icon: <Image alt="asana" src={AsanaIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'Asana',
     providerName: 'asana',
@@ -143,13 +150,7 @@ export const providerCardsInfo: ProviderCardInfo[] = [
     category: 'file storage',
     description: 'Configure your Google Drive provider.',
   },
-  {
-    icon: <Image alt="intercom" src={IntercomIcon} width={ICON_SIZE} height={ICON_SIZE} />,
-    name: 'Intercom',
-    providerName: 'intercom',
-    category: 'ticketing',
-    description: 'Configure your Intercom provider.',
-  },
+
   {
     icon: <Image alt="linkedin" src={LinkedInIcon} width={ICON_SIZE} height={ICON_SIZE} />,
     name: 'LinkedIn',

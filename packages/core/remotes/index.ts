@@ -4,6 +4,7 @@ import * as apollo from './impl/apollo';
 import * as capsule from './impl/capsule';
 import * as gong from './impl/gong';
 import * as hubspot from './impl/hubspot';
+import * as intercom from './impl/intercom';
 import * as ms_dynamics_365_sales from './impl/ms_dynamics_365_sales';
 import * as outreach from './impl/outreach';
 import * as pipedrive from './impl/pipedrive';
@@ -32,6 +33,7 @@ const connectorConfigMap: {
   gong,
   apollo,
   salesloft,
+  intercom,
 };
 
 // `authConfig` to be used in simple-oauth2
@@ -88,9 +90,11 @@ export function getCategoryForProvider(providerName: ProviderName): ProviderCate
     case 'zoho_crm':
       return 'crm';
     case 'outreach':
-    case 'gong':
     case 'apollo':
     case 'salesloft':
       return 'engagement';
+    case 'gong':
+    case 'intercom':
+      return 'no_category';
   }
 }

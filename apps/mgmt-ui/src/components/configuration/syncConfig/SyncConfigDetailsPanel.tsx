@@ -245,6 +245,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 <Typography variant="subtitle1">Common objects</Typography>
                 <Autocomplete
                   size="small"
+                  disabled={selectedProvider?.category === 'no_category'}
                   key={providerId}
                   multiple
                   id="common-objects"

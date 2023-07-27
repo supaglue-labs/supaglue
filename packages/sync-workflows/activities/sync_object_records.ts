@@ -88,6 +88,11 @@ export function createSyncObjectRecords(
                   heartbeat
                 );
               }
+              case 'no_category': {
+                throw ApplicationFailure.nonRetryable(
+                  `Common objects not supported for provider ${connection.providerName}`
+                );
+              }
             }
           }
           break;

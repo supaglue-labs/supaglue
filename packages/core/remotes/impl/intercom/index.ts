@@ -26,10 +26,17 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
     this.#config = config;
   }
 
-  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+  #getAuthHeaders(): Record<string, string> {
     return {
+      'Intercom-Version': '2.9',
+      accept: 'application/json',
+      'content-type': 'application/json',
       Authorization: `Bearer ${this.#config.accessToken}`,
     };
+  }
+
+  protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
+    return this.#getAuthHeaders();
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {
@@ -86,6 +93,6 @@ export function newClient(connection: ConnectionUnsafe<'intercom'>, provider: Pr
 export const authConfig: ConnectorAuthConfig = {
   tokenHost: 'https://api.intercom.io',
   tokenPath: '/auth/eagle/token',
-  authorizeHost: 'https://api.intercom.io',
+  authorizeHost: 'https://app.intercom.io',
   authorizePath: '/oauth',
 };

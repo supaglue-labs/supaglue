@@ -218,7 +218,7 @@ const addObjectToProviderObjects = <T extends ProviderCategory>(
   type: ObjectType,
   schemaId?: string
 ): ProviderObjects<T> => {
-  function helper() {
+  function helper(): ProviderObjects<T> {
     switch (type) {
       case 'common':
         if (objects.common?.find((object) => object.name === name)) {
@@ -227,17 +227,17 @@ const addObjectToProviderObjects = <T extends ProviderCategory>(
         return {
           ...objects,
           common: [...(objects.common ?? []), { name: name as CommonObjectForCategory<T>, schemaId }],
-        };
+        } as ProviderObjects<T>;
       case 'standard':
         if (objects.standard?.find((object) => object.name === name)) {
           throw new BadRequestError(`Standard object with name: ${name} already exists in provider`);
         }
-        return { ...objects, standard: [...(objects.standard ?? []), { name, schemaId }] };
+        return { ...objects, standard: [...(objects.standard ?? []), { name, schemaId }] } as ProviderObjects<T>;
       case 'custom':
         if (objects.custom?.find((object) => object.name === name)) {
           throw new BadRequestError(`Custom object with name: ${name} already exists in provider`);
         }
-        return { ...objects, custom: [...(objects.custom ?? []), { name, schemaId }] };
+        return { ...objects, custom: [...(objects.custom ?? []), { name, schemaId }] } as ProviderObjects<T>;
       default:
         throw new BadRequestError(`Invalid type: ${type}`);
     }

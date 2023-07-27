@@ -191,7 +191,7 @@ export class ConnectionAndSyncService {
     if (providerName !== 'gong') {
       throw new BadRequestError(`Operation not supported for ${providerName}`);
     }
-    if (category !== 'engagement') {
+    if (category !== 'no_category') {
       throw new BadRequestError(`Operation not supported for ${category}`);
     }
     const provider = await this.#providerService.getByNameAndApplicationId(providerName, applicationId);

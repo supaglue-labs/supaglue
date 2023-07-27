@@ -1,6 +1,7 @@
 import type { ProviderCategory } from './common';
 import type { CRMCommonObjectType, CRMProviderCategory, CRMProviderName } from './crm';
 import type { EngagementCommonObjectType, EngagementProviderCategory, EngagementProviderName } from './engagement';
+import type { NoCategoryProviderName } from './no_category';
 
 export * from './application';
 export * from './common';
@@ -20,7 +21,6 @@ export * from './sg_user';
 export * from './sync_config';
 export * from './webhook';
 
-export type NoCategoryProviderName = 'intercom' | 'gong';
 export type ProviderName = CRMProviderName | EngagementProviderName | NoCategoryProviderName;
 export type CategoryOfProviderName<T extends ProviderName> = T extends CRMProviderName
   ? CRMProviderCategory
