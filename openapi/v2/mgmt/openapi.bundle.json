@@ -1852,7 +1852,7 @@
                       "category": {
                         "type": "string",
                         "enum": [
-                          "engagement"
+                          "no_category"
                         ]
                       },
                       "access_key": {
@@ -3740,7 +3740,8 @@
         "type": "string",
         "enum": [
           "crm",
-          "engagement"
+          "engagement",
+          "no_category"
         ]
       },
       "sync_config": {
@@ -4019,7 +4020,8 @@
           "outreach",
           "gong",
           "apollo",
-          "salesloft"
+          "salesloft",
+          "intercom"
         ]
       },
       "provider_name_crm": {
@@ -4037,7 +4039,16 @@
       "provider_name_engagement": {
         "type": "string",
         "enum": [
-          "outreach"
+          "outreach",
+          "apollo",
+          "salesloft"
+        ]
+      },
+      "provider_name_no_category": {
+        "type": "string",
+        "enum": [
+          "intercom",
+          "gong"
         ]
       },
       "sync": {
@@ -4481,6 +4492,24 @@
                   "category",
                   "name"
                 ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "no_category"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_crm"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
+                ]
               }
             ]
           }
@@ -4540,6 +4569,24 @@
                   },
                   "name": {
                     "$ref": "#/components/schemas/provider_name_engagement"
+                  }
+                },
+                "required": [
+                  "category",
+                  "name"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "category": {
+                    "type": "string",
+                    "enum": [
+                      "no_category"
+                    ]
+                  },
+                  "name": {
+                    "$ref": "#/components/schemas/provider_name_no_category"
                   }
                 },
                 "required": [

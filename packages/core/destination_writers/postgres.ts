@@ -53,7 +53,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     commonObjectType: T,
     record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
-    if (category === 'nocategory' || !commonObjectType) {
+    if (category === 'no_category' || !commonObjectType) {
       throw new Error(`Common objects not supported for provider: ${providerName}`);
     }
     const { schema } = this.#destination.config;

@@ -35,3 +35,14 @@ allOf:
         required:
           - category
           - name
+      - type: object
+        properties:
+          category:
+            type: string
+            enum:
+              - no_category 
+          name:
+            $ref: ./objects/provider_name_no_category.yaml
+        required:
+          - category
+          - name

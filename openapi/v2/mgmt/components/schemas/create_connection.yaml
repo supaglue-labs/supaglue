@@ -28,7 +28,7 @@ oneOf:
       category:
         type: string
         enum:
-          - engagement
+          - no_category
       access_key:
         type: string
         description: Access key for the connected customer.

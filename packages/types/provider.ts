@@ -34,7 +34,7 @@ export type CRMProvider = BaseOauthProvider & {
 
 export type EngagementOauthProvider = BaseOauthProvider & {
   category: 'engagement';
-  name: 'outreach' | 'gong' | 'salesloft';
+  name: 'outreach' | 'salesloft';
   objects?: ProviderObjects<'engagement'>;
 };
 
@@ -45,9 +45,9 @@ export type EngagementApiKeyProvider = BaseApiKeyProvider & {
 };
 
 export type NoCategoryProvider = BaseOauthProvider & {
-  category: 'nocategory';
-  name: 'intercom';
-  objects?: ProviderObjects<'nocategory'>;
+  category: 'no_category';
+  name: 'intercom' | 'gong';
+  objects?: ProviderObjects<'no_category'>;
 };
 
 // TODO: Template based on provider name

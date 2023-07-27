@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
-import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
+import { AbstractNoCategoryRemoteClient } from '../../categories/no_category/base';
 import { paginator } from '../../utils/paginator';
 import { toGongStandardObject } from './mappers';
 
@@ -55,7 +55,7 @@ type GongAccessKeySecretClientConfig = {
   accessKeySecret: string;
 };
 
-class GongClient extends AbstractEngagementRemoteClient {
+class GongClient extends AbstractNoCategoryRemoteClient {
   readonly #config: GongClientConfig;
 
   public constructor(config: GongClientConfig) {

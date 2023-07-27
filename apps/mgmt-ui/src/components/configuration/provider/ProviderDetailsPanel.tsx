@@ -104,7 +104,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
       );
     }
 
-    setCommonObjects(provider?.category === 'nocategory' ? [] : provider?.objects?.common ?? []);
+    setCommonObjects(provider?.category === 'no_category' ? [] : provider?.objects?.common ?? []);
     setStandardObjects(provider?.objects?.standard ?? []);
     setCustomObjects(provider?.objects?.custom ?? []);
   }, [provider?.id]);

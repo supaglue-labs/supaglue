@@ -6,5 +6,5 @@ import type { EngagementRemoteClient } from './engagement/base';
 export type RemoteClientForProviderCategory<P extends ProviderCategory> = {
   crm: CrmRemoteClient;
   engagement: EngagementRemoteClient;
-  nocategory: RemoteClient;
+  no_category: RemoteClient;
 }[P];
