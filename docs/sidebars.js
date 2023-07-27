@@ -121,11 +121,6 @@ const sidebars = {
       ],
     },
     {
-      id: 'platform/metadata',
-      label: 'Metadata API',
-      type: 'doc',
-    },
-    {
       id: 'platform/passthrough',
       label: 'Passthrough API',
       type: 'doc',
