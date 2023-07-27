@@ -1,4 +1,4 @@
-import type { ConnectionUnsafe, EngagementOauthProvider, NormalizedRawRecord, Provider } from '@supaglue/types';
+import type { ConnectionUnsafe, EngagementOauthProvider, ObjectRecord, Provider } from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -21,7 +21,7 @@ type GongPaginatedResponse<K extends string, R extends Record<string, unknown> =
 type GongCall = {
   id: string;
   started: string; // ISO string
-  // ... other fields that aren't needed in NormalizedRawRecord
+  // ... other fields that aren't needed in ObjectRecord
 };
 
 type GongDetailedCall = {
@@ -29,12 +29,12 @@ type GongDetailedCall = {
     id: string;
     started: string; // ISO string
   };
-  // ... other fields that aren't needed in NormalizedRawRecord
+  // ... other fields that aren't needed in ObjectRecord
 };
 
 type GongCallTranscript = {
   callId: string;
-  // ... other fields that aren't needed in NormalizedRawRecord
+  // ... other fields that aren't needed in ObjectRecord
 };
 
 type GongClientConfig = GongOAuthClientConfig | GongAccessKeySecretClientConfig;
@@ -132,6 +132,7 @@ class GongClient extends AbstractEngagementRemoteClient {
           (call, emittedAt) => ({
             id: call.id,
             rawData: call,
+            mappedData: call,
             isDeleted: false,
             lastModifiedAt: new Date(call.started),
             emittedAt,
@@ -146,6 +147,7 @@ class GongClient extends AbstractEngagementRemoteClient {
           (detailedCall, emittedAt) => ({
             id: detailedCall.metaData.id,
             rawData: detailedCall,
+            mappedData: detailedCall,
             isDeleted: false,
             lastModifiedAt: new Date(detailedCall.metaData.started),
             emittedAt,
@@ -160,6 +162,7 @@ class GongClient extends AbstractEngagementRemoteClient {
           (transcript, emittedAt) => ({
             id: transcript.callId,
             rawData: transcript,
+            mappedData: transcript,
             isDeleted: false,
             // we don't know the last modified at time
             // TODO: figure out some way to address this.
@@ -180,7 +183,7 @@ class GongClient extends AbstractEngagementRemoteClient {
   #getPaginatorByGet<K extends string, R extends Record<string, unknown>>(
     path: string,
     key: K,
-    mapper: (record: R, emittedAt: Date) => NormalizedRawRecord<R>,
+    mapper: (record: R, emittedAt: Date) => ObjectRecord<R>,
     modifiedAfter?: Date
   ): Promise<Readable> {
     return paginator([
@@ -198,7 +201,7 @@ class GongClient extends AbstractEngagementRemoteClient {
   #getPaginatorByPost<K extends string, R extends Record<string, unknown>>(
     path: string,
     key: K,
-    mapper: (record: R, emittedAt: Date) => NormalizedRawRecord<R>,
+    mapper: (record: R, emittedAt: Date) => ObjectRecord<R>,
     modifiedAfter?: Date
   ): Promise<Readable> {
     return paginator([

@@ -6,7 +6,7 @@ import type {
   CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
-  NormalizedRawRecord,
+  ObjectRecord,
   Property,
   Provider,
   SendPassthroughRequestRequest,
@@ -285,7 +285,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
     return intersection(
       allPropertyIds,
-      fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField)
+      // we must pull these fields no matter what
+      [
+        'Id',
+        'IsDeleted',
+        'SystemModstamp',
+        ...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField),
+      ]
     );
   }
 
@@ -306,9 +312,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
           // TODO: types
           const { record, emittedAt } = chunk;
           // not declaring this in-line so we have the opportunity to do type checking
-          const emittedRecord: NormalizedRawRecord = {
+          const emittedRecord: ObjectRecord = {
             id: record.Id,
-            rawData: toMappedProperties(record, fieldMappingConfig),
+            rawData: record,
+            mappedData: toMappedProperties(record, fieldMappingConfig),
             isDeleted: record.IsDeleted === 'true',
             lastModifiedAt: new Date(record.SystemModstamp),
             emittedAt: emittedAt,

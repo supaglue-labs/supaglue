@@ -7,7 +7,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
-  NormalizedRawRecord,
+  ObjectRecord,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
@@ -267,6 +267,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       '_supaglue_emitted_at',
       '_supaglue_is_deleted',
       '_supaglue_raw_data',
+      '_supaglue_mapped_data',
       'id',
     ];
     const columnsToUpdate = columns.filter(
@@ -310,7 +311,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       inputStream,
       new Transform({
         objectMode: true,
-        transform: (record: NormalizedRawRecord, encoding, callback) => {
+        transform: (record: ObjectRecord, encoding, callback) => {
           try {
             const mappedRecord = {
               _supaglue_application_id: applicationId,
@@ -319,6 +320,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
               _supaglue_emitted_at: record.emittedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
+              _supaglue_mapped_data: record.mappedData,
               id: record.id,
               // We're only writing this to the temp table so that we can deduplicate.
               _supaglue_last_modified_at: record.lastModifiedAt,
@@ -472,6 +474,11 @@ const getObjectSchema = (temp?: boolean): TableSchema => {
         name: '_supaglue_raw_data',
         type: 'JSON',
         mode: 'REQUIRED',
+      },
+      {
+        name: '_supaglue_mapped_data',
+        type: 'JSON',
+        mode: 'NULLABLE',
       },
       {
         name: 'id',

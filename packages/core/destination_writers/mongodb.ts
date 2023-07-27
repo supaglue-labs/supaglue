@@ -4,7 +4,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
-  NormalizedRawRecord,
+  ObjectRecord,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
@@ -229,13 +229,13 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       inputStream,
       new Transform({
         objectMode: true,
-        transform: (record: NormalizedRawRecord, encoding, callback) => {
-          // normalized fields are the same as raw fields for most providers, at least for now
-          // we really want this to only be the mapped fields
-          let normalized = record.rawData;
+        transform: (record: ObjectRecord, encoding, callback) => {
+          let normalized = record.mappedData;
+          // TODO: this should not be the responsibility of the destination writer
+          // we should do this in the sync_entity_records and sync_object_records temporal workflows
           if (providerName === 'hubspot') {
             // hubspot records have a nested properties key that we want to flatten
-            const { properties, ...rest } = record.rawData;
+            const { properties, ...rest } = record.mappedData;
             normalized = {
               ...properties,
               ...rest,
@@ -249,6 +249,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_emitted_at: record.emittedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
+              _supaglue_mapped_data: record.mappedData,
               id: record.id,
               ...normalized,
             };
