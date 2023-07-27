@@ -16,7 +16,7 @@ export default function ProviderCard({
   const router = useRouter();
   const applicationId = useActiveApplicationId();
 
-  const { icon, name, description, category, providerName } = providerInfo;
+  const { icon, name, description, displayCategory, category, providerName } = providerInfo;
 
   return (
     <Card
@@ -31,7 +31,7 @@ export default function ProviderCard({
             <Stack direction="row" className="justify-between">
               <Stack direction="column">
                 <Typography>{name}</Typography>
-                <Typography fontSize={12}>{category.toUpperCase()}</Typography>
+                <Typography fontSize={12}>{(displayCategory ?? category).toUpperCase()}</Typography>
               </Stack>
               <Typography color={provider ? '#22c55e' : undefined}>
                 {provider ? 'Connected' : 'Not Connected'}

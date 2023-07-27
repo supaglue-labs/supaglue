@@ -188,7 +188,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
           {providerToIcon(providerCardInfo.providerName, 35)}
           <Stack direction="column">
             <Typography variant="subtitle1">{providerCardInfo.name}</Typography>
-            <Typography fontSize={12}>{providerCardInfo.category.toUpperCase()}</Typography>
+            <Typography fontSize={12}>
+              {(providerCardInfo.displayCategory ?? providerCardInfo.category).toUpperCase()}
+            </Typography>
           </Stack>
         </Stack>
         <Stack className="gap-2">
