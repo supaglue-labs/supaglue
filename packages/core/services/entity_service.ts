@@ -59,30 +59,33 @@ export class EntityService {
   }
 
   public async create(entity: EntityCreateParams): Promise<Entity> {
+    validateEntityName(entity.name);
     const createdEntity = await this.#prisma.entity.create({
       data: toEntityModel(entity),
     });
     return fromEntityModel(createdEntity);
   }
 
-  public async update(id: string, applicationId: string, entity: EntityUpdateParams): Promise<Entity> {
+  public async update(id: string, applicationId: string, params: EntityUpdateParams): Promise<Entity> {
+    validateEntityName(params.name);
     const updatedEntity = await this.#prisma.entity.update({
       where: { id },
-      data: toEntityModel({ ...entity, applicationId }),
+      data: toEntityModel({ ...params, applicationId }),
     });
     return fromEntityModel(updatedEntity);
   }
 
-  public async upsert(entity: EntityCreateParams): Promise<Entity> {
+  public async upsert(params: EntityCreateParams): Promise<Entity> {
+    validateEntityName(params.name);
     const upsertedEntity = await this.#prisma.entity.upsert({
       where: {
         applicationId_name: {
-          applicationId: entity.applicationId,
-          name: entity.name,
+          applicationId: params.applicationId,
+          name: params.name,
         },
       },
-      create: toEntityModel(entity),
-      update: toEntityModel(entity),
+      create: toEntityModel(params),
+      update: toEntityModel(params),
     });
     return fromEntityModel(upsertedEntity);
   }
@@ -91,5 +94,11 @@ export class EntityService {
     await this.#prisma.entity.deleteMany({
       where: { id, applicationId },
     });
+  }
+}
+
+function validateEntityName(name: string): void {
+  if (!name.match(/^[a-zA-Z0-9_-]+$/)) {
+    throw new Error(`Invalid entity name: ${name}; must only contain letters, numbers, underscores, and dashes.`);
   }
 }
