@@ -64,11 +64,6 @@ const sidebars = {
       value: sidebarHeader('Integration Patterns'),
     },
     {
-      id: 'integration-patterns/overview',
-      label: 'Overview',
-      type: 'doc',
-    },
-    {
       id: 'integration-patterns/managed-syncs',
       label: 'Managed Syncs',
       type: 'doc',
@@ -152,13 +147,18 @@ const sidebars = {
       type: 'doc',
     },
     {
-      id: 'tutorials/unify-objects-with-entities',
-      label: 'Unify objects with entities',
+      id: 'tutorials/build-settings-page',
+      label: 'Build a settings page',
       type: 'doc',
     },
     {
-      id: 'tutorials/build-field-mappings',
-      label: 'Build field mappings',
+      id: 'tutorials/unify-objects-with-entities',
+      label: "Unify your customers' objects",
+      type: 'doc',
+    },
+    {
+      id: 'tutorials/build-field-mapping-ui',
+      label: 'Build field mapping UI',
       type: 'doc',
     },
     {

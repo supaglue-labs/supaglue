@@ -9,11 +9,11 @@ import ThemedImage from '@theme/ThemedImage';
 
 ![code](https://img.shields.io/badge/Code%20Tutorial-0000a5)
 
-This tutorial will review how to read synced CRM contacts in your Postgres and create them in your customer's CRM.
+This tutorial will go through how to read synced CRM contacts in your Postgres and create them in your customer's CRM.
 
 ## Prerequisites
 
-This tutorial assumes you have gone through Supaglue's Quickstart and will use the following technologies:
+This tutorial assumes you have gone through Supaglue's [Quickstart](../quickstart) and will use the following technologies:
 
 - Typescript
 - Nextjs 13
@@ -84,14 +84,14 @@ Let's add a button to a Nextjs Client Component that will use [SWR](https://swr.
 
 2. Use [SWR](https://swr.vercel.app/) to call the Nextjs [Route Handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers) we defined above in step 1:
 
-   ```tsx
-   // app/people/[...person]/page.tsx
+   ```jsx
+   // app/people/[...person]/page.jsx
 
    export default function Person() {
      const customerContext = useCustomerContext();
      const targetContact = getTargetContact();
 
-     const { trigger, error, data } = useSWRMutation(`/api/create-crm-contact`, async (url, { arg }: { arg: any }) => {
+     const { trigger, error, data } = useSWRMutation(`/api/create-crm-contact`, async (url, { arg }) => {
        return await fetch(url, {
          method: 'POST',
          headers: {
