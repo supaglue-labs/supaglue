@@ -12,6 +12,14 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/objects/entity_record.yaml
+          examples:
+            Example:
+              value:
+                id: 0258cbc6-6020-430a-848e-aafaccadf4ae
+                entity_name: appcontact
+                data:
+                  name: John Doe
+                  email: johndoe@gmail.com
 patch:
   operationId: updateEntityRecord
   summary: Update entity record
@@ -27,10 +35,14 @@ patch:
         schema:
           type: object
           properties:
-            record:
+            data:
               $ref: ../components/schemas/create_update_entity_record.yaml
           required:
-            - record
+            - data
+          example:
+            data:
+              name: John Doe
+              email: johndoe@gmail.com
   responses:
     200:
       description: Entity record updated
@@ -53,7 +65,7 @@ parameters:
     required: true
     schema:
       type: string
-      example: mycontact
+      example: appcontact
   - name: record_id
     in: path
     required: true

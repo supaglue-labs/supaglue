@@ -12,6 +12,14 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/objects/standard_object_record.yaml
+          examples:
+            Example:
+              value:
+                id: 001Fn00023f8oYYIA0
+                standard_object_name: Account
+                data:
+                  Name: Acme Corp
+                  Description: We create the best embedded integration platforms.
 patch:
   operationId: updateStandardObjectRecord
   summary: Update Standard Object record
@@ -27,10 +35,14 @@ patch:
         schema:
           type: object
           properties:
-            record:
+            data:
               $ref: ../components/schemas/create_update_standard_object_record.yaml
           required:
-            - record
+            - data
+          example:
+            data:
+              Name: Acme Corp
+              Description: We create the best embedded integration platforms.
   responses:
     200:
       description: Standard object record updated
@@ -48,12 +60,12 @@ patch:
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml
-  - name: standard_object_name
+  - name: object_name
     in: path
     required: true
     schema:
       type: string
-      example: Opportunity
+      example: Account
   - name: record_id
     in: path
     required: true
