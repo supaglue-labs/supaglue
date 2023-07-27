@@ -40,7 +40,7 @@ export default function init(app: Router): void {
       const schemas = await schemaService.getByIds(schemaIds);
       const out = [
         ...getObjectFieldMappingInfo(
-          objects?.common ?? [],
+          (objects?.common ?? []) as ProviderObject[],
           schemas,
           'common',
           req.customerConnection.schemaMappingsConfig?.commonObjects

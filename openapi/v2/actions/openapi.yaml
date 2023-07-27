@@ -1,0 +1,71 @@
+openapi: 3.0.3
+info:
+  version: 0.12.12
+  title: Supaglue Actions API
+  contact:
+    name: Supaglue
+  description: |
+    #### Introduction
+
+    Welcome to the Supaglue Actions API documentation. You can use this API to perform CRUD on Entity or Object records in third-party providers.
+
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
+
+    #### Base API URL
+    ```
+    https://api.supaglue.io/actions/v2
+    ```
+  # externalDocs:
+  #   description:
+  #   url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
+servers:
+  - url: 'https://api.supaglue.io/actions/v2'
+    description: Supaglue API
+paths:
+  '/entities/{entity_name}':
+    $ref: paths/entities/@{entity_name}.yaml
+  '/entities/{entity_name}/{record_id}':
+    $ref: paths/entities/@{entity_name}@{record_id}.yaml
+  '/objects/{object_name}':
+    $ref: paths/objects/standard@{object_name}.yaml
+  '/objects/{object_name}/{record_id}':
+    $ref: paths/objects/standard@{object_name}@{record_id}.yaml
+  '/passthrough':
+    $ref: paths/passthrough.yaml
+tags:
+  - name: EntityRecords
+    description: An `Entity Record` is a record of an `Entity`.
+  - name: ObjectRecords
+    description: An `Object Record` is a record of an `Object`.
+  - name: Passthrough
+    description: Passthrough operations to underlying providers.
+components:
+  securitySchemes:
+    x-api-key:
+      $ref: ../../common/components/securitySchemes/x-api-key.yaml
+  schemas:
+    entity_record:
+      $ref: ./components/schemas/objects/entity_record.yaml
+    simple_entity:
+      $ref: ./components/schemas/objects/simple_entity.yaml
+    standard_object_record:
+      $ref: ./components/schemas/objects/standard_object_record.yaml
+    create_update_entity_record:
+      $ref: ./components/schemas/create_update_entity_record.yaml
+    created_entity_record:
+      $ref: ./components/schemas/created_entity_record.yaml
+    create_update_object_record:
+      $ref: ./components/schemas/create_update_standard_object_record.yaml
+    created_object_record:
+      $ref: ./components/schemas/created_standard_object_record.yaml
+    logs:
+      $ref: ../../common/components/schemas/logs.yaml
+    errors:
+      $ref: ../../common/components/schemas/errors.yaml
+    warnings:
+      $ref: ../../common/components/schemas/warnings.yaml
+  parameters:
+    x-customer-id:
+      $ref: ../../common/components/parameters/header/x-customer-id.yaml
+    x-provider-name:
+      $ref: ./components/parameters/header/x-provider-name.yaml

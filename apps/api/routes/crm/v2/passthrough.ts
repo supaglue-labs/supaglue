@@ -12,6 +12,7 @@ const { passthroughService } = getDependencyContainer();
 export default function init(app: Router): void {
   const router = Router();
 
+  // Deprecated: Use /actions/v2/passthrough instead.
   router.post(
     '/',
     async (
