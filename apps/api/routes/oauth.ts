@@ -262,7 +262,6 @@ export default function init(app: Router): void {
         category: provider.category,
         applicationId,
         customerId,
-        // TODO: Delete
         providerId: provider.id,
         credentials: {
           type: 'oauth2' as const,
