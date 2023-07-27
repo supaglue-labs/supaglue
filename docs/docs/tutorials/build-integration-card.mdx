@@ -120,10 +120,10 @@ In the example above, we display "Connect" as the CTA. To check for existing con
 You will need a Supaglue API key to call the Management API. You can obtain one by following [these steps](../api/introduction#api-authentication).
 :::
 
-```tsx
-// fetch_active_connections.tsx
+```jsx
+// fetch_active_connections.jsx
 
-export async function fetchActiveConnection(providerName: string) {
+export async function fetchActiveConnection(providerName) {
   const connections = await fetch(`https://api.supaglue.io/mgmt/v2/customers/${CUSTOMER_ID}/connections`, {
     headers: {
       'Content-Type': 'application/json',

@@ -114,12 +114,12 @@ export async function POST(request: Request) {
 
 We will use [Client Component](https://nextjs.org/docs/getting-started/react-essentials#client-components) to handle the button's `onClick` and call the [Route Handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers). In this example, we are triggering a refresh on a [Common Object](../platform/common-schema/overview), `contact`.
 
-```tsx
+```jsx
 'use client';
 import useSWRMutation from 'swr/mutation';
 
 export default function SettingsPage({ providerName, customerId }) {
-  const { trigger } = useSWRMutation(`/api/trigger-sync`, async (url, { arg }: { arg: any }) => {
+  const { trigger } = useSWRMutation(`/api/trigger-sync`, async (url, { arg }) => {
     return await fetch(url, {
       method: 'POST',
       headers: {

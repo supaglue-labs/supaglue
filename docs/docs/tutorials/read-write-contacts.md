@@ -84,14 +84,14 @@ Let's add a button to a Nextjs Client Component that will use [SWR](https://swr.
 
 2. Use [SWR](https://swr.vercel.app/) to call the Nextjs [Route Handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers) we defined above in step 1:
 
-   ```tsx
-   // app/people/[...person]/page.tsx
+   ```jsx
+   // app/people/[...person]/page.jsx
 
    export default function Person() {
      const customerContext = useCustomerContext();
      const targetContact = getTargetContact();
 
-     const { trigger, error, data } = useSWRMutation(`/api/create-crm-contact`, async (url, { arg }: { arg: any }) => {
+     const { trigger, error, data } = useSWRMutation(`/api/create-crm-contact`, async (url, { arg }) => {
        return await fetch(url, {
          method: 'POST',
          headers: {
