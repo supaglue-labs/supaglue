@@ -55,7 +55,6 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     'gmail',
     'google_calendar',
     'google_drive',
-    'intercom',
     'linkedin',
     'marketo',
     'messenger',
@@ -69,6 +68,8 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     'zoho',
     'zoom',
   ];
+  // These providers either don't allow you to pass in scopes or make you pass scopes another way.
+  const noScopes = ['salesloft', 'intercom', 'ms_dynamics_365_sales'].includes(providerName);
   const isOauth = category === 'crm' || providerName !== 'apollo';
   const activeApplicationId = useActiveApplicationId();
   const { schemas, isLoading: isLoadingSchemas } = useSchemas();
@@ -105,7 +106,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
       );
     }
 
-    setCommonObjects(provider?.objects?.common ?? []);
+    setCommonObjects(provider?.category === 'no_category' ? [] : provider?.objects?.common ?? []);
     setStandardObjects(provider?.objects?.standard ?? []);
     setCustomObjects(provider?.objects?.custom ?? []);
   }, [provider?.id]);
@@ -187,7 +188,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
           {providerToIcon(providerCardInfo.providerName, 35)}
           <Stack direction="column">
             <Typography variant="subtitle1">{providerCardInfo.name}</Typography>
-            <Typography fontSize={12}>{providerCardInfo.category.toUpperCase()}</Typography>
+            <Typography fontSize={12}>
+              {(providerCardInfo.displayCategory ?? providerCardInfo.category).toUpperCase()}
+            </Typography>
           </Stack>
         </Stack>
         <Stack className="gap-2">
@@ -237,17 +240,19 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
                 setClientSecret(event.target.value);
               }}
             />
-            <TextField
-              disabled={useManagedOauth || providerName === 'ms_dynamics_365_sales' || providerName === 'salesloft'}
-              value={oauthScopes}
-              size="small"
-              label="OAuth2 scopes"
-              variant="outlined"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setOauthScopes(event.target.value);
-              }}
-              helperText="Comma separated values (without spaces)."
-            />
+            {!noScopes && (
+              <TextField
+                disabled={useManagedOauth}
+                value={oauthScopes}
+                size="small"
+                label="OAuth2 scopes"
+                variant="outlined"
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setOauthScopes(event.target.value);
+                }}
+                helperText="Comma separated values (without spaces)."
+              />
+            )}
           </Stack>
         )}
         {supportsObjectToSchema && (

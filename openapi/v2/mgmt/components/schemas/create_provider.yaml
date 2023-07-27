@@ -44,3 +44,14 @@ allOf:
         required:
           - category
           - name
+      - type: object
+        properties:
+          category:
+            type: string
+            enum:
+              - no_category 
+          name:
+            $ref: ./objects/provider_name_crm.yaml
+        required:
+          - category
+          - name

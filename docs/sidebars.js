@@ -234,17 +234,10 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Entity Actions API',
+      label: 'Actions API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: require('./docs/api/v2/entity_actions/sidebar.js'),
-    },
-    {
-      type: 'category',
-      label: 'Object Actions API',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      items: require('./docs/api/v2/object_actions/sidebar.js'),
+      items: require('./docs/api/v2/actions/sidebar.js'),
     },
   ],
 };

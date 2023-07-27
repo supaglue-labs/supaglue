@@ -631,7 +631,7 @@ export interface components {
       entity_mappings?: (components["schemas"]["entity_mapping"])[];
     };
     /** @enum {string} */
-    category: "crm" | "engagement";
+    category: "crm" | "engagement" | "no_category";
     sync_config: {
       /** @example 465fdcb7-26b4-4090-894c-67cab41022bb */
       id: string;
@@ -752,11 +752,13 @@ export interface components {
       };
     };
     /** @enum {string} */
-    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft";
+    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom";
     /** @enum {string} */
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */
-    provider_name_engagement: "outreach";
+    provider_name_engagement: "outreach" | "apollo" | "salesloft";
+    /** @enum {string} */
+    provider_name_no_category: "intercom" | "gong";
     sync: OneOf<[{
       id: string;
       /** @enum {string} */
@@ -880,6 +882,10 @@ export interface components {
       /** @enum {string} */
       category: "engagement";
       name: components["schemas"]["provider_name_engagement"];
+    }, {
+      /** @enum {string} */
+      category: "no_category";
+      name: components["schemas"]["provider_name_crm"];
     }]>;
     update_provider: {
       /** @enum {string} */
@@ -894,6 +900,10 @@ export interface components {
       /** @enum {string} */
       category: "engagement";
       name: components["schemas"]["provider_name_engagement"];
+    }, {
+      /** @enum {string} */
+      category: "no_category";
+      name: components["schemas"]["provider_name_no_category"];
     }]>;
     create_update_schema: {
       /** @example my-schema */
@@ -1692,7 +1702,7 @@ export interface operations {
           /** @enum {string} */
           provider_name: "gong";
           /** @enum {string} */
-          category: "engagement";
+          category: "no_category";
           /** @description Access key for the connected customer. */
           access_key: string;
           /** @description Access key secret for the connected customer. */

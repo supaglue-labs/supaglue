@@ -9,6 +9,7 @@ import type {
   ObjectFieldMappingInfo,
   ObjectFieldMappingUpdateParams,
   ProviderName,
+  ProviderObject,
   Schema,
   SchemaMappingsConfigForObject,
   SchemaMappingsConfigObjectFieldMapping,
@@ -286,11 +287,16 @@ export class ConnectionService {
     objectName: string,
     objectType: ObjectType
   ): Promise<Schema | undefined> {
+    if (connection.category === 'no_category' && objectType === 'common') {
+      return;
+    }
     const { objects } = await this.#providerService.getById(connection.providerId);
     if (!objects) {
       return;
     }
-    const schemaId = objects[objectType]?.find((object) => object.name === objectName)?.schemaId;
+    const schemaId = (objects[objectType] as ProviderObject[] | undefined)?.find(
+      (object: ProviderObject) => object.name === objectName
+    )?.schemaId;
     if (!schemaId) {
       return;
     }
@@ -421,7 +427,9 @@ export class ConnectionService {
   ): Promise<FieldMappingConfig> {
     const connection = await this.getSafeById(connectionId);
     const provider = await this.#providerService.getById(connection.providerId);
-    const schemaId = provider.objects?.[objectType]?.find((o) => o.name === objectName)?.schemaId;
+    const schemaId = (provider.objects?.[objectType] as ProviderObject[] | undefined)?.find(
+      (o) => o.name === objectName
+    )?.schemaId;
     const schema = schemaId ? await this.#schemaService.getById(schemaId) : undefined;
     let customerFieldMapping: SchemaMappingsConfigObjectFieldMapping[] | undefined = undefined;
     if (objectType === 'common') {

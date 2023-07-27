@@ -53,6 +53,9 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     commonObjectType: T,
     record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
+    if (category === 'no_category' || !commonObjectType) {
+      throw new Error(`Common objects not supported for provider: ${providerName}`);
+    }
     const mapper = getSnakecasedKeysMapper(category, commonObjectType);
 
     const mappedRecord = {

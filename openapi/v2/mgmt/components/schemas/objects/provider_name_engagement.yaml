@@ -1,3 +1,5 @@
 type: string
 enum:
   - outreach
+  - apollo
+  - salesloft

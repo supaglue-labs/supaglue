@@ -183,6 +183,8 @@ components:
       $ref: ./components/schemas/objects/provider_name_crm.yaml
     provider_name_engagement:
       $ref: ./components/schemas/objects/provider_name_engagement.yaml
+    provider_name_no_category:
+      $ref: ./components/schemas/objects/provider_name_no_category.yaml
     sync:
       $ref: ./components/schemas/objects/sync.yaml
     sync_with_provider_and_customer:
