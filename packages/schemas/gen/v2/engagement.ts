@@ -185,6 +185,8 @@ export interface components {
       contact_id: string | null;
       /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
       mailbox_id: string | null;
+      /** @example ab0530ef-61dd-4a99-b26b-6b5a61c7c62e */
+      user_id: string | null;
       /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
       sequence_id: string | null;
       /**
@@ -208,10 +210,15 @@ export interface components {
     create_sequence_state: {
       /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
       contact_id: string;
-      /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
-      mailbox_id: string;
+      /**
+       * @description The ID of the mailbox to use for the sequence. Required for Apollo and Outreach. Unused for Salesloft. 
+       * @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d
+       */
+      mailbox_id?: string;
       /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
       sequence_id: string;
+      /** @description The ID of the user who is performing the action. Required for Salesloft, optional for Apollo and Outreach. */
+      user_id?: string;
     };
     mailbox: {
       /** @example 54312 */
@@ -275,11 +282,9 @@ export interface components {
       name: string | null;
       tags: (string)[];
       num_steps: number;
-      schedule_count: number;
-      open_count: number;
-      opt_out_count: number;
-      reply_count: number;
-      click_count: number;
+      metrics?: {
+        [key: string]: unknown;
+      };
       /**
        * Format: date-time 
        * @example 2022-02-27T00:00:00Z

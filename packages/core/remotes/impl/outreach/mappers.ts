@@ -12,6 +12,7 @@ import type {
   User,
 } from '@supaglue/types/engagement';
 import type { OutreachRecord } from '.';
+import { BadRequestError } from '../../../errors';
 import { removeUndefinedValues } from '../../../lib';
 
 export const fromOutreachUserToUser = (record: OutreachRecord): User => {
@@ -37,11 +38,20 @@ export const fromOutreachSequenceToSequence = (record: OutreachRecord): Sequence
     isEnabled: attributes.enabled as boolean,
     numSteps: attributes.sequenceStepCount as number,
     tags: attributes.tags as string[],
-    scheduleCount: (attributes.scheduleCount as number) ?? 0,
-    openCount: (attributes.openCount as number) ?? 0,
-    optOutCount: (attributes.optOutCount as number) ?? 0,
-    clickCount: (attributes.clickCount as number) ?? 0,
-    replyCount: (attributes.replyCount as number) ?? 0,
+    metrics: {
+      scheduleCount: (attributes.scheduleCount as number) ?? 0,
+      openCount: (attributes.openCount as number) ?? 0,
+      optOutCount: (attributes.optOutCount as number) ?? 0,
+      clickCount: (attributes.clickCount as number) ?? 0,
+      replyCount: (attributes.replyCount as number) ?? 0,
+      deliverCount: (attributes.deliverCount as number) ?? 0,
+      failureCount: (attributes.failureCount as number) ?? 0,
+      neutralReplyCount: (attributes.neutralReplyCount as number) ?? 0,
+      negativeReplyCount: (attributes.negativeReplyCount as number) ?? 0,
+      positiveReplyCount: (attributes.positiveReplyCount as number) ?? 0,
+      numRepliedProspects: (attributes.numRepliedProspects as number) ?? 0,
+      numContactedProspects: (attributes.numContactedProspects as number) ?? 0,
+    },
     createdAt: new Date(attributes.createdAt as string),
     updatedAt: new Date(attributes.updatedAt as string),
     isDeleted: false,
@@ -72,6 +82,7 @@ export const fromOutreachSequenceStateToSequenceState = (record: OutreachRecord)
     state: attributes.state as string,
     sequenceId: relationships.sequence?.data?.id?.toString() ?? null,
     mailboxId: relationships.mailbox?.data?.id?.toString() ?? null,
+    userId: relationships.creator?.data?.id?.toString() ?? null,
     contactId: relationships.prospect?.data?.id?.toString() ?? null,
     createdAt: new Date(attributes.createdAt as string),
     updatedAt: new Date(attributes.updatedAt as string),
@@ -201,7 +212,11 @@ export const toOutreachSequenceStateCreateParams = ({
   mailboxId,
   sequenceId,
   contactId,
+  userId,
 }: SequenceStateCreateParams): Record<string, any> => {
+  if (!mailboxId) {
+    throw new BadRequestError('Mailbox ID is required for Outreach');
+  }
   return {
     data: {
       type: 'sequenceState',
@@ -224,6 +239,14 @@ export const toOutreachSequenceStateCreateParams = ({
             id: parseInt(mailboxId, 10),
           },
         },
+        creator: userId
+          ? {
+              data: {
+                type: 'user',
+                id: parseInt(userId, 10),
+              },
+            }
+          : undefined,
       },
     },
   };

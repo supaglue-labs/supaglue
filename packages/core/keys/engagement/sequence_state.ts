@@ -14,6 +14,7 @@ export const keysOfSnakecasedSequenceStateWithTenant = arrayOfAllKeys<Snakecased
   'sequence_id',
   'contact_id',
   'mailbox_id',
+  'user_id',
   'state',
   'raw_data',
 ]);

@@ -8,7 +8,10 @@ type CoreSequenceState = {
   state: string | null;
   contactId: string | null;
   sequenceId: string | null;
+  // Required for Apollo and Outreach.
   mailboxId: string | null;
+  // Required for Salesloft. Optional for Apollo.
+  userId: string | null;
 };
 
 export type SequenceState = BaseEngagementModel & CoreSequenceState;
@@ -16,7 +19,10 @@ export type SequenceState = BaseEngagementModel & CoreSequenceState;
 export type SequenceStateCreateParams = {
   contactId: string;
   sequenceId: string;
-  mailboxId: string;
+  // Required for Apollo and Outreach.
+  mailboxId?: string;
+  // Required for Salesloft. Optional for Apollo.
+  userId?: string;
 };
 
 export type RemoteSequenceStateTypes = {
