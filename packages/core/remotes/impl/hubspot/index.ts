@@ -18,6 +18,7 @@ import type {
   CRMProvider,
   ObjectRecord,
   ObjectRecordRawDataOnly,
+  PropertiesWithAdditionalFields,
   Property,
   Provider,
   SendPassthroughRequestRequest,
@@ -77,6 +78,7 @@ import {
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
+import { toMappedProperties } from '../../utils/properties';
 import {
   fromHubSpotCompanyToAccount,
   fromHubSpotContactToContact,
@@ -232,6 +234,16 @@ type HubSpotAPIV3ListResponse = {
 type RecordWithFlattenedAssociations = {
   id: string;
   properties: Record<string, string>;
+  createdAt: string;
+  updatedAt: string;
+  archived: boolean;
+  archivedAt?: string;
+  associations?: Record<string, string[]>;
+};
+
+type RecordWithPropertiesWithAdditionalFieldsAndFlattenedAssociations = {
+  id: string;
+  properties: PropertiesWithAdditionalFields;
   createdAt: string;
   updatedAt: string;
   archived: boolean;
@@ -404,7 +416,10 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
       return availablePropertyIds;
     }
-    const properties = fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField);
+    const properties = [
+      ...fieldMappingConfig.coreFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
+      ...fieldMappingConfig.additionalFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
+    ];
     return intersection(availablePropertyIds, properties);
   }
 
@@ -923,7 +938,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   private async getCommonObjectPropertyIdsToFetch(
     objectType: HubSpotCommonObjectObjectType,
     fieldMappingConfig?: FieldMappingConfig
-  ) {
+  ): Promise<string[]> {
     const availableProperties = await this.listPropertiesForRawObjectName(objectType);
     const availablePropertyIds = availableProperties.map(({ id }) => id);
     if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
@@ -931,7 +946,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
     const properties = [...propertiesToFetch[objectType]];
     if (fieldMappingConfig?.type === 'defined') {
-      properties.push(...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField));
+      properties.push(...fieldMappingConfig.coreFieldMappings.map((fieldMapping) => fieldMapping.mappedField));
+      properties.push(...fieldMappingConfig.additionalFieldMappings.map((fieldMapping) => fieldMapping.mappedField));
     }
     return intersection(availablePropertyIds, properties);
   }
@@ -1952,7 +1968,7 @@ function normalizeResponse(
 function toMappedRecords(
   records: ObjectRecordRawDataOnly<RecordWithFlattenedAssociations>[],
   fieldMappingConfig: FieldMappingConfig
-): ObjectRecord<RecordWithFlattenedAssociations, Record<string, string>>[] {
+): ObjectRecord<RecordWithPropertiesWithAdditionalFieldsAndFlattenedAssociations, PropertiesWithAdditionalFields>[] {
   if (fieldMappingConfig.type === 'inherit_all_fields') {
     return records.map((record) => ({
       ...record,
@@ -1972,17 +1988,4 @@ function toMappedRecords(
       mappedProperties,
     };
   });
-}
-
-function toMappedProperties(
-  properties: Record<string, any>,
-  fieldMappingConfig: FieldMappingConfig
-): Record<string, any> {
-  if (fieldMappingConfig.type === 'inherit_all_fields') {
-    return properties;
-  }
-
-  return Object.fromEntries(
-    fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
-  );
 }

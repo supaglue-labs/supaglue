@@ -24,3 +24,8 @@ export type ObjectRecord<
 export type SnakecasedKeysObjectRecord<T extends Record<string, unknown> = Record<string, unknown>> = SnakecasedKeys<
   ObjectRecord<T>
 >;
+
+export type PropertiesWithAdditionalFields = {
+  [key: string]: unknown;
+  additional_fields?: Record<string, unknown>;
+};

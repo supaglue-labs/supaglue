@@ -16,6 +16,10 @@ export const intersection = (listA: string[], listB: string[]): string[] => {
   return result;
 };
 
+export const union = (listA: string[], listB: string[]): string[] => {
+  return Array.from(new Set([...listA, ...listB]));
+};
+
 export const maxDate = (...dates: (Date | undefined | null)[]): Date => {
   const filteredDates = dates.filter((date) => date !== undefined && date !== null) as Date[];
   if (filteredDates.length === 0) {
