@@ -1,7 +1,2 @@
 type: object
-properties:
-  data:
-    type: object
-    additionalProperties: true
-required:
-  - data
+additionalProperties: true

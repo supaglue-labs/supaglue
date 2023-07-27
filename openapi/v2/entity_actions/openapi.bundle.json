@@ -35,13 +35,19 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "record": {
+                  "data": {
                     "$ref": "#/components/schemas/create_update_entity_record"
                   }
                 },
                 "required": [
-                  "record"
-                ]
+                  "data"
+                ],
+                "example": {
+                  "data": {
+                    "name": "John Doe",
+                    "email": "johndoe@gmail.com"
+                  }
+                }
               }
             }
           }
@@ -79,6 +85,15 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "entity_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "appcontact"
+          }
         }
       ]
     },
@@ -101,6 +116,18 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/entity_record"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "0258cbc6-6020-430a-848e-aafaccadf4ae",
+                      "entity_name": "appcontact",
+                      "data": {
+                        "name": "John Doe",
+                        "email": "johndoe@gmail.com"
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -126,13 +153,19 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "record": {
+                  "data": {
                     "$ref": "#/components/schemas/create_update_entity_record"
                   }
                 },
                 "required": [
-                  "record"
-                ]
+                  "data"
+                ],
+                "example": {
+                  "data": {
+                    "name": "John Doe",
+                    "email": "johndoe@gmail.com"
+                  }
+                }
               }
             }
           }
@@ -174,7 +207,7 @@
           "required": true,
           "schema": {
             "type": "string",
-            "example": "mycontact"
+            "example": "appcontact"
           }
         },
         {
@@ -242,15 +275,7 @@
       },
       "create_update_entity_record": {
         "type": "object",
-        "properties": {
-          "data": {
-            "type": "object",
-            "additionalProperties": true
-          }
-        },
-        "required": [
-          "data"
-        ]
+        "additionalProperties": true
       },
       "created_entity_record": {
         "type": "object",

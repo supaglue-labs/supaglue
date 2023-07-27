@@ -13,6 +13,9 @@ export interface paths {
         "x-customer-id": components["parameters"]["x-customer-id"];
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
+      path: {
+        entity_name: string;
+      };
     };
   };
   "/{entity_name}/{record_id}": {
@@ -49,9 +52,7 @@ export interface components {
       name: string;
     };
     create_update_entity_record: {
-      data: {
-        [key: string]: unknown;
-      };
+      [key: string]: unknown;
     };
     created_entity_record: {
       id: string;
@@ -161,11 +162,14 @@ export interface operations {
         "x-customer-id": components["parameters"]["x-customer-id"];
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
+      path: {
+        entity_name: string;
+      };
     };
     requestBody: {
       content: {
         "application/json": {
-          record: components["schemas"]["create_update_entity_record"];
+          data: components["schemas"]["create_update_entity_record"];
         };
       };
     };
@@ -219,7 +223,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          record: components["schemas"]["create_update_entity_record"];
+          data: components["schemas"]["create_update_entity_record"];
         };
       };
     };

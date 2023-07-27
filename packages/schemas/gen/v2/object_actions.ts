@@ -13,6 +13,9 @@ export interface paths {
         "x-customer-id": components["parameters"]["x-customer-id"];
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
+      path: {
+        object_name: string;
+      };
     };
   };
   "/standard/{object_name}/{record_id}": {
@@ -26,7 +29,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        standard_object_name: string;
+        object_name: string;
         record_id: string;
       };
     };
@@ -45,9 +48,7 @@ export interface components {
       };
     };
     create_update_standard_object_record: {
-      data: {
-        [key: string]: unknown;
-      };
+      [key: string]: unknown;
     };
     created_standard_object_record: {
       id: string;
@@ -157,11 +158,14 @@ export interface operations {
         "x-customer-id": components["parameters"]["x-customer-id"];
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
+      path: {
+        object_name: string;
+      };
     };
     requestBody: {
       content: {
         "application/json": {
-          record: components["schemas"]["create_update_standard_object_record"];
+          data: components["schemas"]["create_update_standard_object_record"];
         };
       };
     };
@@ -187,7 +191,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        standard_object_name: string;
+        object_name: string;
         record_id: string;
       };
     };
@@ -208,14 +212,14 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        standard_object_name: string;
+        object_name: string;
         record_id: string;
       };
     };
     requestBody: {
       content: {
         "application/json": {
-          record: components["schemas"]["create_update_standard_object_record"];
+          data: components["schemas"]["create_update_standard_object_record"];
         };
       };
     };

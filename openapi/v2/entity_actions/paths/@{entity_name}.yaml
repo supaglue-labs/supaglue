@@ -13,10 +13,14 @@ post:
         schema:
           type: object
           properties:
-            record:
+            data:
               $ref: ../components/schemas/create_update_entity_record.yaml
           required:
-            - record
+            - data
+          example:
+            data:
+              name: John Doe
+              email: 'johndoe@gmail.com'
   responses:
     '201':
       description: EntityRecord created
@@ -36,3 +40,9 @@ post:
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml
+  - name: entity_name
+    in: path
+    required: true
+    schema:
+      type: string
+      example: appcontact

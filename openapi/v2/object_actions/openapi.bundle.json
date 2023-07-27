@@ -35,13 +35,19 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "record": {
+                  "data": {
                     "$ref": "#/components/schemas/create_update_standard_object_record"
                   }
                 },
                 "required": [
-                  "record"
-                ]
+                  "data"
+                ],
+                "example": {
+                  "data": {
+                    "Name": "Acme Corp",
+                    "Description": "We create the best embedded integration platforms."
+                  }
+                }
               }
             }
           }
@@ -79,6 +85,15 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "object_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "Account"
+          }
         }
       ]
     },
@@ -101,6 +116,18 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/standard_object_record"
+                },
+                "examples": {
+                  "Example": {
+                    "value": {
+                      "id": "001Fn00023f8oYYIA0",
+                      "standard_object_name": "Account",
+                      "data": {
+                        "Name": "Acme Corp",
+                        "Description": "We create the best embedded integration platforms."
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -126,13 +153,19 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "record": {
+                  "data": {
                     "$ref": "#/components/schemas/create_update_standard_object_record"
                   }
                 },
                 "required": [
-                  "record"
-                ]
+                  "data"
+                ],
+                "example": {
+                  "data": {
+                    "Name": "Acme Corp",
+                    "Description": "We create the best embedded integration platforms."
+                  }
+                }
               }
             }
           }
@@ -169,12 +202,12 @@
           "$ref": "#/components/parameters/x-provider-name"
         },
         {
-          "name": "standard_object_name",
+          "name": "object_name",
           "in": "path",
           "required": true,
           "schema": {
             "type": "string",
-            "example": "Opportunity"
+            "example": "Account"
           }
         },
         {
@@ -227,15 +260,7 @@
       },
       "create_update_standard_object_record": {
         "type": "object",
-        "properties": {
-          "data": {
-            "type": "object",
-            "additionalProperties": true
-          }
-        },
-        "required": [
-          "data"
-        ]
+        "additionalProperties": true
       },
       "created_standard_object_record": {
         "type": "object",
