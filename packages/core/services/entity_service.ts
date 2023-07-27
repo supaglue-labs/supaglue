@@ -66,11 +66,11 @@ export class EntityService {
     return fromEntityModel(createdEntity);
   }
 
-  public async update(id: string, applicationId: string, enparamsity: EntityUpdateParams): Promise<Entity> {
-    validateEntityName(enparamsity.name);
+  public async update(id: string, applicationId: string, params: EntityUpdateParams): Promise<Entity> {
+    validateEntityName(params.name);
     const updatedEntity = await this.#prisma.entity.update({
       where: { id },
-      data: toEntityModel({ ...enparamsity, applicationId }),
+      data: toEntityModel({ ...params, applicationId }),
     });
     return fromEntityModel(updatedEntity);
   }
