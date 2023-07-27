@@ -574,6 +574,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             response.results.map((result) => ({
               ...result,
               mappedData: result.rawData,
+              mappedProperties: result.rawData.properties,
             }))
           ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
@@ -585,6 +586,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
             response.results.map((result) => ({
               ...result,
               mappedData: result.rawData,
+              mappedProperties: result.rawData.properties,
             }))
           ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
@@ -1950,21 +1952,26 @@ function normalizeResponse(
 function toMappedRecords(
   records: ObjectRecordRawDataOnly<RecordWithFlattenedAssociations>[],
   fieldMappingConfig: FieldMappingConfig
-): ObjectRecord<RecordWithFlattenedAssociations>[] {
+): ObjectRecord<RecordWithFlattenedAssociations, Record<string, string>>[] {
   if (fieldMappingConfig.type === 'inherit_all_fields') {
     return records.map((record) => ({
       ...record,
       mappedData: record.rawData,
+      mappedProperties: record.rawData.properties,
     }));
   }
 
-  return records.map((record) => ({
-    ...record,
-    mappedData: {
-      ...record.rawData,
-      properties: toMappedProperties(record.rawData.properties, fieldMappingConfig),
-    },
-  }));
+  return records.map((record) => {
+    const mappedProperties = toMappedProperties(record.rawData.properties, fieldMappingConfig);
+    return {
+      ...record,
+      mappedData: {
+        ...record.rawData,
+        properties: mappedProperties,
+      },
+      mappedProperties,
+    };
+  });
 }
 
 function toMappedProperties(
