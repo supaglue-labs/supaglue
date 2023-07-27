@@ -1,0 +1,222 @@
+import ThemedImage from '@theme/ThemedImage';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+# Managed authentication
+
+<ThemedImage
+  alt="managed auth"
+  width="50%"
+  sources={{
+    light: '/img/managed-auth-diagram.png',
+    dark: '/img/managed-auth-diagram.png',
+  }}
+/>
+
+Supaglue securely manages connections between your application and your customers' data sources. We manage access and refresh tokens on your behalf.
+
+## Oauth 2.0
+
+You can use Embedded Links for third-party providers that use OAuth 2.0 for authentication.
+
+### Embedded Link
+
+An **Embedded Link** is a URL that initiates an authentication flow in your customer's third-party provider to install your developer app. Once installed, a connection is created in Supaglue, allowing you to read from and write to your customers' SaaS provider. Embedded links allow customers to connect their SaaS providers to your application using Supaglue.
+
+Expose an Embedded Link in your application as a link or button so your customers can initiate an authentication flow with their third-party provider, e.g. Salesforce.
+
+### Link format
+
+An embedded link takes the following form:
+
+<Tabs>
+
+<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
+
+> `https://api.supaglue.io/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}`
+
+</TabItem>
+
+</Tabs>
+
+| Parameter       | Description                                                                                                                                                                                                                                                            | Required |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `applicationId` | The unique identifier for your Supaglue application                                                                                                                                                                                                                    | Yes      |
+| `customerId`    | The unique identifier for a customer in your application                                                                                                                                                                                                               | Yes      |
+| `providerName`  | The name of the third-party provider (`salesforce`, `hubspot`, `pipedrive`, `ms_dynamics_365_sales`, `outreach`, `gong`, `apollo`, `salesloft`)                                                                                                                        | Yes      |
+| `returnUrl`     | The URL to return to once the OAuth connection is complete.<br/> <b>NOTE:</b> this should be uriEncoded                                                                                                                                                                | Yes      |
+| `loginUrl`      | The Oauth2 hostname for authorize and token endpoints.<br/> Use this for Salesforce sandbox accounts. The value should be `https://test.salesforce.com` for that use case.<br/> <b>NOTE:</b> this should be uriEncoded                                                 | No       |
+| `scope`         | Required for Microsoft Dynamics 365 connections.<br/> This based on the customer's Dynamics 365 URL and should be in the form `<customer dynamics URL>.default` e.g.`scope=https://org8d6f84ed.crm.dynamics.com/.default`.<br/> <b>NOTE:</b> this should be uriEncoded | No       |
+
+export const IntegrationCard = ({ icon, provider, description, to }) => (
+  <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
+    <img src={icon} style={{ width: 'auto', height: '36px' }} />
+    <div className="font-semibold mt-4">{provider}</div>
+    <div className="text-xs mt-2">{description}</div>
+    <div
+      onClick={() => {
+        window.location.href = to;
+      }}
+      className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
+    >
+      Connect
+    </div>
+  </div>
+);
+
+### UI component
+
+Use Embedded Links in any UI components in your frontend application. For example, the two cards below are cards that your customer can click to connect to Salesforce and HubSpot:
+
+<div className="grid grid-cols-2 gap-4">
+
+<IntegrationCard
+  icon="/img/salesforce.svg"
+  provider="Salesforce"
+  description="Sync your leads in and out of Salesforce"
+  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-salesforce&providerName=salesforce&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
+/>
+
+<IntegrationCard
+  icon="/img/hubspot.svg"
+  provider="Hubspot"
+  description="Sync your leads in and out of HubSpot"
+  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
+/>
+</div>
+
+The code template for the cards above (using Typescript + React + Tailwindcss) is:
+
+```jsx
+const IntegrationCard = ({
+  icon,
+  provider,
+  description,
+  to,
+}: {
+  icon: ReactNode,
+  provider: string,
+  description: string,
+  to: string,
+}) => (
+  <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
+    <img src={icon} className="w-auto h-9" />
+    <div className="font-semibold mt-4">{provider}</div>
+    <div className="text-xs mt-2">{description}</div>
+    <div
+      onClick={() => {
+        window.location.href = to;
+      }}
+      className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
+    >
+      Connect
+    </div>
+  </div>
+);
+```
+
+export const ApiKeyIntegrationCard = ({ icon, provider, description, to, customerId }) => {
+  return (
+    <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
+      <img src={icon} style={{ width: 'auto', height: '36px' }} />
+      <div className="font-semibold mt-4">{provider}</div>
+      <div className="text-xs mt-2">{description}</div>
+      <div className="mt-4">
+        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+          API key
+        </label>
+        <div className="mt-2">
+          <input
+            type="password"
+            name="apiKey"
+            id="apiKey"
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            placeholder="JdPcdo76t01KCW3JA9jvfhcaZ6KA7IkP1GOFk+"
+          />
+        </div>
+      </div>
+      <div
+        onClick={async () => {
+          await fetch(YOUR_BACKEND_API, {
+            method: 'POST',
+            body: JSON.stringify({
+              provide_name: provider,
+              category: 'crm',
+              api_key: YOUR_CUSTOMERS_API_KEY,
+            }),
+          });
+        }}
+        className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
+      >
+        Connect
+      </div>
+    </div>
+  );
+};
+
+## API key
+
+### Create Connection API
+
+Use the [Create Connection Management API](../api/v2/mgmt/create-connection) to create a connection for your customer for third-party providers that do not offer OAuth 2.0 authentication.
+
+:::info
+Since the API above is a cross-original POST request, you must proxy the call through your backend server.
+:::
+
+### UI component
+
+Use an input field in your frontend application to prompt customers to provide their API key. See a reference UI component and code below:
+
+<div className="grid grid-cols-3 gap-4">
+
+<ApiKeyIntegrationCard
+  icon="/img/salesforce.svg"
+  provider="Salesforce"
+  description="Sync your leads in and out of Salesforce"
+  customerId="1"
+  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-salesforce&providerName=salesforce&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
+/>
+
+</div>
+
+```jsx
+const ApiKeyIntegrationCard = ({ icon, provider, description, to, customerId }) => {
+  return (
+    <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
+      <img src={icon} style={{ width: 'auto', height: '36px' }} />
+      <div className="font-semibold mt-4">{provider}</div>
+      <div className="text-xs mt-2">{description}</div>
+      <div className="mt-4">
+        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+          API key
+        </label>
+        <div className="mt-2">
+          <input
+            type="password"
+            name="apiKey"
+            id="apiKey"
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            placeholder="JdPcdo76t01KCW3JA9jvfhcaZ6KA7IkP1GOFk+"
+          />
+        </div>
+      </div>
+      <div
+        onClick={async () => {
+          await fetch(YOUR_BACKEND_API, {
+            method: 'POST',
+            body: JSON.stringify({
+              provide_name: provider,
+              category: 'crm',
+              api_key: YOUR_CUSTOMERS_API_KEY,
+            }),
+          });
+        }}
+        className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
+      >
+        Connect
+      </div>
+    </div>
+  );
+};
+```

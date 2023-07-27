@@ -1,0 +1,13 @@
+type: object
+properties:
+  id:
+    type: string
+  standard_object_name:
+    type: string
+  data:
+    type: object
+    additionalProperties: true
+required:
+  - id
+  - standard_object_name
+  - data
