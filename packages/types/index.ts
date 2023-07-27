@@ -20,14 +20,19 @@ export * from './sg_user';
 export * from './sync_config';
 export * from './webhook';
 
-export type ProviderName = CRMProviderName | EngagementProviderName;
+export type NoCategoryProviderName = 'intercom';
+export type ProviderName = CRMProviderName | EngagementProviderName | NoCategoryProviderName;
 export type CategoryOfProviderName<T extends ProviderName> = T extends CRMProviderName
   ? CRMProviderCategory
-  : EngagementProviderCategory;
+  : T extends EngagementProviderName
+  ? EngagementProviderCategory
+  : 'nocategory';
 
-export type CommonObjectForCategory<T extends ProviderCategory> = T extends 'crm'
-  ? CRMCommonObjectType
-  : EngagementCommonObjectType;
+export type CommonObjectForCategory<T extends ProviderCategory> = {
+  crm: CRMCommonObjectType;
+  engagement: EngagementCommonObjectType;
+  nocategory: null;
+}[T];
 
 export type CommonObjectDef = {
   type: 'common';

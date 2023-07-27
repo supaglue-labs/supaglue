@@ -44,10 +44,16 @@ export type EngagementApiKeyProvider = BaseApiKeyProvider & {
   objects?: ProviderObjects<'engagement'>;
 };
 
+export type NoCategoryProvider = BaseOauthProvider & {
+  category: 'nocategory';
+  name: 'intercom';
+  objects?: ProviderObjects<'nocategory'>;
+};
+
 // TODO: Template based on provider name
 export type EngagementProvider = EngagementOauthProvider | EngagementApiKeyProvider;
 
-export type OauthProvider = CRMProvider | EngagementOauthProvider;
+export type OauthProvider = CRMProvider | EngagementOauthProvider | NoCategoryProvider;
 
 export type ProviderObjects<T extends ProviderCategory> = {
   common?: ProviderCommonObject<T>[];
@@ -83,10 +89,19 @@ export type CRMProviderUpdateParams = Omit<CRMProvider, 'id' | 'applicationId'>;
 export type EngagementProviderCreateParams = Omit<EngagementProvider, 'id'>;
 export type EngagementProviderUpdateParams = Omit<EngagementProvider, 'id' | 'applicationId'>;
 
-export type Provider = CRMProvider | EngagementProvider;
+export type NoCategoryProviderCreateParams = Omit<NoCategoryProvider, 'id'>;
+export type NoCategoryProviderUpdateParams = Omit<NoCategoryProvider, 'id' | 'applicationId'>;
 
-export type ProviderCreateParams = CRMProviderCreateParams | EngagementProviderCreateParams;
-export type ProviderUpdateParams = CRMProviderUpdateParams | EngagementProviderUpdateParams;
+export type Provider = CRMProvider | EngagementProvider | NoCategoryProvider;
+
+export type ProviderCreateParams =
+  | CRMProviderCreateParams
+  | EngagementProviderCreateParams
+  | NoCategoryProviderCreateParams;
+export type ProviderUpdateParams =
+  | CRMProviderUpdateParams
+  | EngagementProviderUpdateParams
+  | NoCategoryProviderUpdateParams;
 
 export type ProviderConfigMapperArgs = {
   managedOauthConfig: OAuthConfigDecrypted;

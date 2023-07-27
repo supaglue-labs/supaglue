@@ -47,13 +47,16 @@ export type PaginatedResult<T> = {
   totalCount: number;
 };
 
-export type ProviderCategory = 'crm' | 'engagement';
+export type ProviderCategory = 'crm' | 'engagement' | 'nocategory';
 export type CommonObjectType = CRMCommonObjectType | EngagementCommonObjectType;
 export type CommonObjectTypeForCategory<P extends ProviderCategory> = {
   crm: CRMCommonObjectType;
   engagement: EngagementCommonObjectType;
+  nocategory: null;
 }[P];
 
-export type CommonObjectTypeMapForCategory<P extends ProviderCategory> = P extends 'crm'
-  ? CRMCommonObjectTypeMap<CRMCommonObjectType>
-  : EngagementCommonObjectTypeMap<EngagementCommonObjectType>;
+export type CommonObjectTypeMapForCategory<P extends ProviderCategory> = {
+  crm: CRMCommonObjectTypeMap<CRMCommonObjectType>;
+  engagement: EngagementCommonObjectTypeMap<EngagementCommonObjectType>;
+  nocategory: Record<string, never>;
+}[P];

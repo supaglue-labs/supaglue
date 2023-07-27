@@ -55,7 +55,6 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     'gmail',
     'google_calendar',
     'google_drive',
-    'intercom',
     'linkedin',
     'marketo',
     'messenger',
@@ -105,7 +104,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
       );
     }
 
-    setCommonObjects(provider?.objects?.common ?? []);
+    setCommonObjects(provider?.category === 'nocategory' ? [] : provider?.objects?.common ?? []);
     setStandardObjects(provider?.objects?.standard ?? []);
     setCustomObjects(provider?.objects?.custom ?? []);
   }, [provider?.id]);
