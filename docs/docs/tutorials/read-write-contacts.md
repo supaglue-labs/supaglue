@@ -9,11 +9,11 @@ import ThemedImage from '@theme/ThemedImage';
 
 ![code](https://img.shields.io/badge/Code%20Tutorial-0000a5)
 
-This tutorial will review how to read synced CRM contacts in your Postgres and create them in your customer's CRM.
+This tutorial will go through how to read synced CRM contacts in your Postgres and create them in your customer's CRM.
 
 ## Prerequisites
 
-This tutorial assumes you have gone through Supaglue's Quickstart and will use the following technologies:
+This tutorial assumes you have gone through Supaglue's [Quickstart](../quickstart) and will use the following technologies:
 
 - Typescript
 - Nextjs 13
