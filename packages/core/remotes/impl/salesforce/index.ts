@@ -312,10 +312,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
           // TODO: types
           const { record, emittedAt } = chunk;
           // not declaring this in-line so we have the opportunity to do type checking
+          const mappedProperties = toMappedProperties(record, fieldMappingConfig);
           const emittedRecord: ObjectRecord = {
             id: record.Id,
             rawData: record,
-            mappedData: toMappedProperties(record, fieldMappingConfig),
+            mappedData: mappedProperties,
+            mappedProperties,
             isDeleted: record.IsDeleted === 'true',
             lastModifiedAt: new Date(record.SystemModstamp),
             emittedAt: emittedAt,

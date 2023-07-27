@@ -233,17 +233,6 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       new Transform({
         objectMode: true,
         transform: (record: ObjectRecord, encoding, callback) => {
-          let normalized = record.mappedData;
-          // TODO: this should not be the responsibility of the destination writer
-          // we should do this in the sync_entity_records and sync_object_records temporal workflows
-          if (providerName === 'hubspot') {
-            // hubspot records have a nested properties key that we want to flatten
-            const { properties, ...rest } = record.mappedData;
-            normalized = {
-              ...properties,
-              ...rest,
-            };
-          }
           try {
             const mappedRecord = {
               _supaglue_application_id: applicationId,
@@ -254,7 +243,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_raw_data: record.rawData,
               _supaglue_mapped_data: record.mappedData,
               id: record.id,
-              ...normalized,
+              ...record.mappedProperties,
             };
 
             ++rowCount;
