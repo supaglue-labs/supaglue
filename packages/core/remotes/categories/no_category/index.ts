@@ -1,4 +1,5 @@
-import type { ConnectionUnsafe, NoCategoryProvider, NoCategoryProviderName } from '@supaglue/types';
+import type { ConnectionUnsafe, NoCategoryProvider } from '@supaglue/types';
+import type { NoCategoryProviderName } from '@supaglue/types/no_category';
 import type { ConnectorAuthConfig, RemoteClient } from '../../base';
 import * as gong from '../../impl/gong';
 import * as intercom from '../../impl/intercom';
