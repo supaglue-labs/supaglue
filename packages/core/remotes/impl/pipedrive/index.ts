@@ -39,6 +39,7 @@ import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
+import { toMappedProperties } from '../../utils/properties';
 import {
   fromPipedriveDealToOpportunity,
   fromPipedriveLeadToLead,
@@ -761,17 +762,4 @@ function filterForUpdatedAfter<
       return updatedAfter < new Date(record.updated_time);
     }),
   };
-}
-
-function toMappedProperties(
-  properties: Record<string, any>,
-  fieldMappingConfig: FieldMappingConfig
-): Record<string, any> {
-  if (fieldMappingConfig.type === 'inherit_all_fields') {
-    return properties;
-  }
-
-  return Object.fromEntries(
-    fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
-  );
 }

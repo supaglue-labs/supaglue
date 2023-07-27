@@ -9,7 +9,8 @@ export type InheritedFieldMappingConfig = {
 
 export type DefinedFieldMappingConfig = {
   type: 'defined';
-  fieldMappings: FieldMapping[];
+  coreFieldMappings: FieldMapping[];
+  additionalFieldMappings: FieldMapping[];
 };
 
 export type FieldMappingConfig = InheritedFieldMappingConfig | DefinedFieldMappingConfig;

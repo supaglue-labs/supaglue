@@ -56,10 +56,11 @@ import {
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
-import { ASYNC_RETRY_OPTIONS, intersection, logger } from '../../../lib';
+import { ASYNC_RETRY_OPTIONS, intersection, logger, union } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
+import { toMappedProperties } from '../../utils/properties';
 import {
   fromObjectToSalesforceObject,
   fromSalesforceAccountToAccount,
@@ -286,12 +287,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return intersection(
       allPropertyIds,
       // we must pull these fields no matter what
-      [
-        'Id',
-        'IsDeleted',
-        'SystemModstamp',
-        ...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField),
-      ]
+      union(
+        ['Id', 'IsDeleted', 'SystemModstamp'],
+        [
+          ...fieldMappingConfig.coreFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
+          ...fieldMappingConfig.additionalFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
+        ]
+      )
     );
   }
 
@@ -361,7 +363,8 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
     return intersection(allPropertyIds, [
       ...propertiesForCommonObject[commonObjectType],
-      ...fieldMappingConfig.fieldMappings.map((fieldMapping) => fieldMapping.mappedField),
+      ...fieldMappingConfig.coreFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
+      ...fieldMappingConfig.additionalFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
     ]);
   }
 
@@ -1380,17 +1383,4 @@ function capitalizeString(str: string): string {
     return str;
   }
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-function toMappedProperties(
-  properties: Record<string, any>,
-  fieldMappingConfig: FieldMappingConfig
-): Record<string, any> {
-  if (fieldMappingConfig.type === 'inherit_all_fields') {
-    return properties;
-  }
-
-  return Object.fromEntries(
-    fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
-  );
 }

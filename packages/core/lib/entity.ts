@@ -13,6 +13,9 @@ export function createFieldMappingConfigForEntity(
   // throw an error on that.
 
   // If there are any extra fields mapped, throw an error unless allowAdditionalFieldMappings is true
+  const coreFieldMappings = fieldMappings?.filter((field) =>
+    config.fields.find((entityField) => entityField.name === field.entityField)
+  );
   const additionalFieldMappings = fieldMappings?.filter(
     (field) => !config.fields.find((entityField) => entityField.name === field.entityField)
   );
@@ -22,8 +25,13 @@ export function createFieldMappingConfigForEntity(
 
   return {
     type: 'defined',
-    fieldMappings:
-      fieldMappings?.map(({ entityField, mappedField }) => ({
+    coreFieldMappings:
+      coreFieldMappings?.map(({ entityField, mappedField }) => ({
+        schemaField: entityField,
+        mappedField,
+      })) ?? [],
+    additionalFieldMappings:
+      additionalFieldMappings?.map(({ entityField, mappedField }) => ({
         schemaField: entityField,
         mappedField,
       })) ?? [],

@@ -100,7 +100,7 @@ const mapCustomFields = (
   }
 
   Object.entries(customFields).forEach(([key, value]) => {
-    const fieldMapping = fieldMappingConfig.fieldMappings.find(({ schemaField }) => schemaField === key);
+    const fieldMapping = fieldMappingConfig.coreFieldMappings.find(({ schemaField }) => schemaField === key);
     if (fieldMapping) {
       if (fieldMapping.mappedField !== key && customFields[fieldMapping.mappedField]) {
         throw new BadRequestError(

@@ -31,6 +31,7 @@ import {
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
+import { toMappedProperties } from '../../utils/properties';
 import {
   fromDynamicsAccountToRemoteAccount,
   fromDynamicsContactToRemoteContact,
@@ -45,7 +46,6 @@ import {
   toDynamicsLeadUpdateParams,
   toDynamicsOpportunityCreateParams,
   toDynamicsOpportunityUpdateParams,
-  toMappedProperties,
 } from './mappers';
 
 const MAX_PAGE_SIZE = 1000;

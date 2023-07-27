@@ -57,19 +57,22 @@ export function createFieldMappingConfig(
     throw new Error('Additional field mappings are not allowed');
   }
 
-  // Combine:
-  // 1. already-mapped schema fields
-  // 2. customer field mappings
   return {
     type: 'defined',
-    fieldMappings: [
+    coreFieldMappings: [
       ...mappedSchemaFields
         .filter(({ mappedName }) => !!mappedName)
         .map((field) => ({
           schemaField: field.name,
           mappedField: field.mappedName as string,
         })),
-      ...((customerFieldMappings?.filter(({ mappedField }) => !!mappedField) ?? []) as FieldMapping[]),
+      // customer-mapped fields that aren't already in mappedSchemaFields
+      ...((customerFieldMappings?.filter(
+        ({ schemaField, mappedField }) => !!mappedField && schema.fields.find((field) => field.name === schemaField)
+      ) ?? []) as FieldMapping[]),
     ],
+    additionalFieldMappings: (customerFieldMappings?.filter(
+      ({ schemaField, mappedField }) => !!mappedField && !schema.fields.find((field) => field.name === schemaField)
+    ) ?? []) as FieldMapping[],
   };
 }

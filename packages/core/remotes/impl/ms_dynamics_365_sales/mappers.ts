@@ -15,6 +15,7 @@ import type {
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import { toMappedProperties } from '../../utils/properties';
 
 const industryCodeToName = {
   1: 'Accounting',
@@ -807,16 +808,3 @@ const toDynamicsPhoneNumbers = (phoneNumbers: PhoneNumber[] | undefined): Record
     };
   }, {});
 };
-
-export function toMappedProperties(
-  properties: Record<string, any>,
-  fieldMappingConfig: FieldMappingConfig
-): Record<string, any> {
-  if (fieldMappingConfig.type === 'inherit_all_fields') {
-    return properties;
-  }
-
-  return Object.fromEntries(
-    fieldMappingConfig.fieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
-  );
-}
