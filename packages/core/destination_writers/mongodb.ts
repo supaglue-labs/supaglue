@@ -230,8 +230,6 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       new Transform({
         objectMode: true,
         transform: (record: ObjectRecord, encoding, callback) => {
-          // normalized fields are the same as raw fields for most providers, at least for now
-          // we really want this to only be the mapped fields
           let normalized = record.mappedData;
           // TODO: this should not be the responsibility of the destination writer
           // we should do this in the sync_entity_records and sync_object_records temporal workflows
