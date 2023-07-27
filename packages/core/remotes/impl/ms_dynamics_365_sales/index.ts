@@ -150,14 +150,18 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.value.map((result: any) => ({
-              id: result[idkey],
-              rawData: result,
-              mappedData: toMappedProperties(result, fieldMappingConfig),
-              isDeleted: false,
-              lastModifiedAt: new Date(result.modifiedon),
-              emittedAt,
-            }))
+            response.value.map((result: any) => {
+              const mappedProperties = toMappedProperties(result, fieldMappingConfig);
+              return {
+                id: result[idkey],
+                rawData: result,
+                mappedData: mappedProperties,
+                mappedProperties,
+                isDeleted: false,
+                lastModifiedAt: new Date(result.modifiedon),
+                emittedAt,
+              };
+            })
           );
         },
         getNextCursorFromPage: (response) => response['@odata.nextLink'],
