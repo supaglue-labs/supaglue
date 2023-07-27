@@ -1,6 +1,8 @@
 export type Entity = {
   id: string;
   applicationId: string;
+  // IMPORTANT: we use this in URLs for entity actions, so it is critical that this
+  // is comprised of only letters, numbers, underscores, and dashes.
   name: string;
   config: EntityConfig;
 };
