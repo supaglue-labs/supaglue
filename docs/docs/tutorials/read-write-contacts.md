@@ -1,7 +1,3 @@
----
-description: ''
----
-
 import BrowserWindow from '@site/src/components/BrowserWindow';
 import ThemedImage from '@theme/ThemedImage';
 
