@@ -124,7 +124,6 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
               id: record.id,
               rawData: record,
               mappedData: record,
-              mappedProperties: record,
               isDeleted: false,
               lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : undefined,
               emittedAt,
