@@ -26,7 +26,7 @@ Underlying everything is **[Managed Authentication](./managed-auth)**. We let yo
 
 There are two core access patterns when using Supaglue:
 
-1. **Managed sncs**: Syncing data from providers to a database Destination in your cloud. Managed Syncs allows you to query third-party Provider data in your infrastructure.
+1. **Managed syncs**: Syncing data from providers to a database Destination in your cloud. Managed Syncs allows you to query third-party Provider data in your infrastructure.
 2. **Actions API**: Write real-time data synchronously to Providers using modern HTTP APIs.
 
 Both access patterns operate on objects.

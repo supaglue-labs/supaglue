@@ -125,6 +125,11 @@ const sidebars = {
       label: 'Passthrough API',
       type: 'doc',
     },
+    {
+      id: 'platform/notification-webhooks',
+      label: 'Notification webhooks',
+      type: 'doc',
+    },
 
     // section
     {
