@@ -1,4 +1,4 @@
-import type { ConnectionUnsafe, NoCategoryProvider, ObjectRecord, Provider } from '@supaglue/types';
+import type { ConnectionUnsafe, ListedObjectRecord, NoCategoryProvider, Provider } from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -97,7 +97,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
   #getPaginator<K extends string>(
     path: string,
     key: K,
-    mapper: (record: IntercomRecord, emittedAt: Date) => ObjectRecord<IntercomRecord>,
+    mapper: (record: IntercomRecord, emittedAt: Date) => ListedObjectRecord<IntercomRecord>,
     modifiedAfter?: Date
   ): Promise<Readable> {
     return paginator([
