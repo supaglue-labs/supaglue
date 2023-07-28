@@ -7,6 +7,8 @@ import type {
   ConnectionUnsafe,
   CRMProvider,
   ListedObjectRecord,
+  ObjectRecord,
+  ObjectRecordUpsertData,
   Property,
   Provider,
   SendPassthroughRequestRequest,
@@ -43,6 +45,7 @@ import type {
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
@@ -459,6 +462,57 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         throw new Error('Cannot update users in Salesforce');
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
+    }
+  }
+
+  public override async getObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    fields: string[]
+  ): Promise<ObjectRecord> {
+    if (object.type === 'custom') {
+      throw new BadRequestError('Custom objects are not supported for Salesforce');
+    }
+
+    const record = await this.#client.retrieve(object.name, id, {
+      fields,
+    });
+    return {
+      id: record.Id as string,
+      data: record,
+    };
+  }
+
+  public override async createObjectRecord(
+    object: StandardOrCustomObject,
+    data: ObjectRecordUpsertData
+  ): Promise<string> {
+    if (object.type === 'custom') {
+      throw new BadRequestError('Custom objects are not supported for Salesforce');
+    }
+
+    const response = await this.#client.create(object.name, data);
+    if (!response.success) {
+      throw new Error(`Failed to create Salesforce ${object.name}`);
+    }
+    return response.id;
+  }
+
+  public override async updateObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    data: ObjectRecordUpsertData
+  ): Promise<void> {
+    if (object.type === 'custom') {
+      throw new BadRequestError('Custom objects are not supported for Salesforce');
+    }
+
+    const response = await this.#client.update(object.name, {
+      Id: id,
+      ...data,
+    });
+    if (!response.success) {
+      throw new Error(`Failed to update Salesforce ${object.name}: ${JSON.stringify(response)}`);
     }
   }
 
