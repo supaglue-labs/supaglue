@@ -24,7 +24,6 @@ Supported standard objects:
 - `company`
 - `contact`
 - `conversation`
-- `news_item`
 
 ## Provider setup
 
