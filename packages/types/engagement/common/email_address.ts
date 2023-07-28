@@ -4,5 +4,5 @@ export type SnakedcasedKeysEmailAddress = SnakecasedKeys<EmailAddress>;
 
 export type EmailAddress = {
   emailAddress: string;
-  emailAddressType: 'personal' | 'work' | null;
+  emailAddressType: 'primary' | 'personal' | 'work' | null;
 };

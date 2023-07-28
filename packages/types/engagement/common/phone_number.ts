@@ -7,4 +7,4 @@ export type PhoneNumber = {
   phoneNumberType: PhoneNumberType | null;
 };
 
-export type PhoneNumberType = 'work' | 'home' | 'mobile' | 'other';
+export type PhoneNumberType = 'primary' | 'work' | 'home' | 'mobile' | 'other';

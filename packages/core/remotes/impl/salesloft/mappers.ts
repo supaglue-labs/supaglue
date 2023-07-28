@@ -1,4 +1,13 @@
-import type { Contact, EmailAddress, PhoneNumber, Sequence, SequenceState, User } from '@supaglue/types/engagement';
+import type {
+  Contact,
+  ContactCreateParams,
+  EmailAddress,
+  PhoneNumber,
+  Sequence,
+  SequenceState,
+  SequenceStateCreateParams,
+  User,
+} from '@supaglue/types/engagement';
 import { camelcaseKeys } from '@supaglue/utils';
 
 export const fromSalesloftPersonToContact = (record: Record<string, any>): Contact => {
@@ -35,7 +44,7 @@ export const fromSalesloftPersonToEmailAddresses = (record: Record<string, any>)
   if (record.email_address) {
     out.push({
       emailAddress: record.email_address,
-      emailAddressType: 'work',
+      emailAddressType: 'primary',
     });
   }
   if (record.personal_email_address) {
@@ -58,7 +67,7 @@ export const fromSalesloftPersonToPhoneNumbers = (record: Record<string, any>): 
   if (record.phone) {
     out.push({
       phoneNumber: record.phone,
-      phoneNumberType: 'work',
+      phoneNumberType: 'primary',
     });
   }
   if (record.home_phone) {
@@ -120,5 +129,32 @@ export const fromSalesloftCadenceMembershipToSequenceState = (record: Record<str
     lastModifiedAt: new Date(record.updated_at),
     isDeleted: false,
     rawData: record,
+  };
+};
+
+export const toSalesloftContactCreateParams = (contact: ContactCreateParams): Record<string, unknown> => {
+  return {
+    first_name: contact.firstName,
+    last_name: contact.lastName,
+    title: contact.jobTitle,
+    city: contact.address?.city,
+    state: contact.address?.state,
+    country: contact.address?.country,
+    email_address: contact.emailAddresses?.find((e) => e.emailAddressType === 'primary')?.emailAddress,
+    personal_email_address: contact.emailAddresses?.find((e) => e.emailAddressType === 'personal')?.emailAddress,
+    phone: contact.phoneNumbers?.find((e) => e.phoneNumberType === 'primary')?.phoneNumber,
+    home_phone: contact.phoneNumbers?.find((e) => e.phoneNumberType === 'home')?.phoneNumber,
+    mobile_phone: contact.phoneNumbers?.find((e) => e.phoneNumberType === 'mobile')?.phoneNumber,
+    ...contact.customFields,
+  };
+};
+
+export const toSalesloftSequenceStateCreateParams = (
+  sequenceState: SequenceStateCreateParams
+): Record<string, unknown> => {
+  return {
+    cadence_id: sequenceState.sequenceId,
+    person_id: sequenceState.contactId,
+    user_id: sequenceState.userId,
   };
 };

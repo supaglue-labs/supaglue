@@ -7,10 +7,13 @@ import type {
 } from '@supaglue/types';
 import type {
   Contact,
+  ContactCreateParams,
+  ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
   Sequence,
   SequenceState,
+  SequenceStateCreateParams,
   User,
 } from '@supaglue/types/engagement';
 import axios from 'axios';
@@ -25,6 +28,8 @@ import {
   fromSalesloftCadenceToSequence,
   fromSalesloftPersonToContact,
   fromSalesloftUserToUser,
+  toSalesloftContactCreateParams,
+  toSalesloftSequenceStateCreateParams,
 } from './mappers';
 
 type Credentials = {
@@ -312,6 +317,69 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported for salesloft`);
     }
+  }
+
+  async createContact(params: ContactCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: { id: number } }>(
+      `${this.#baseURL}/v2/people`,
+      toSalesloftContactCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.data.id.toString();
+  }
+
+  async createSequenceState(params: SequenceStateCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: { id: number } }>(`${this.#baseURL}/v2/cadence_memberships`, undefined, {
+      headers: this.#headers,
+      params: toSalesloftSequenceStateCreateParams(params),
+    });
+    return response.data.data.id.toString();
+  }
+
+  public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['createParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'sequence_state':
+        return await this.createSequenceState(params as SequenceStateCreateParams);
+      case 'contact':
+        return await this.createContact(params as ContactCreateParams);
+      case 'sequence':
+      case 'mailbox':
+      case 'user':
+        throw new BadRequestError(`Create operation not supported for ${commonObjectType} object in Salesloft`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported for Salesloft`);
+    }
+  }
+
+  public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['updateParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.updateContact(params as ContactUpdateParams);
+      default:
+        throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
+    }
+  }
+
+  async updateContact(params: ContactUpdateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.put<{ data: { id: number } }>(
+      `${this.#baseURL}/v2/people/${params.id}`,
+      toSalesloftContactCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.data.id.toString();
   }
 }
 
