@@ -10,6 +10,7 @@ items:
       type: string
       nullable: true
       enum:
+        - primary
         - work
         - home
         - mobile

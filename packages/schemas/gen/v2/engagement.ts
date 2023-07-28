@@ -136,7 +136,7 @@ export interface components {
           /** @example +14151234567 */
           phone_number: string | null;
           /** @enum {string|null} */
-          phone_number_type: "work" | "home" | "mobile" | "other" | null;
+          phone_number_type: "primary" | "work" | "home" | "mobile" | "other" | null;
         })[];
       open_count: number;
       click_count: number;
@@ -347,7 +347,7 @@ export interface components {
         /** @example hello@supaglue.com */
         email_address: string;
         /** @enum {string|null} */
-        email_address_type: "personal" | "work" | null;
+        email_address_type: "primary" | "personal" | "work" | null;
       })[];
     /** @description Custom properties to be inserted that are not covered by the common object. Object keys must match exactly to the corresponding provider API. */
     custom_fields: {
