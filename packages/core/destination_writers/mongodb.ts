@@ -243,7 +243,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_raw_data: record.rawData,
               _supaglue_mapped_data: record.mappedData,
               id: record.id,
-              ...record.mappedProperties,
+              ...record.mappedData,
             };
 
             ++rowCount;

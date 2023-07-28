@@ -98,7 +98,7 @@ export class EntityService {
 }
 
 function validateEntityName(name: string): void {
-  if (!name.match(/^[a-zA-Z0-9_-]+$/)) {
-    throw new Error(`Invalid entity name: ${name}; must only contain letters, numbers, underscores, and dashes.`);
+  if (!name.match(/^[a-zA-Z0-9_]+$/)) {
+    throw new Error(`Invalid entity name: ${name}; must only contain letters, numbers, and underscores.`);
   }
 }
