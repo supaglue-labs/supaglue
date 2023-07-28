@@ -1,5 +1,5 @@
 import type { ConnectionUnsafe, ListedObjectRecord, NoCategoryProvider, Provider } from '@supaglue/types';
-import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import axios from 'axios';
 import { Readable } from 'stream';
 import { retryWhenAxiosRateLimited } from '../../../lib';
@@ -114,7 +114,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
 
   public override async listStandardObjectRecords(
     object: string,
-    fieldMappingConfig: FieldMappingConfig,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date | undefined,
     heartbeat?: (() => void) | undefined
   ): Promise<Readable> {
@@ -128,7 +128,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
           (record, emittedAt) => ({
             id: record.id,
             rawData: record,
-            mappedData: record,
+            rawProperties: record,
             isDeleted: false,
             lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
             emittedAt,
@@ -142,7 +142,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
           (record, emittedAt) => ({
             id: record.id,
             rawData: record,
-            mappedData: record,
+            rawProperties: record,
             isDeleted: false,
             lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
             emittedAt,
@@ -156,7 +156,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
           (record, emittedAt) => ({
             id: record.id,
             rawData: record,
-            mappedData: record,
+            rawProperties: record,
             isDeleted: false,
             lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
             emittedAt,
@@ -170,7 +170,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
           (record, emittedAt) => ({
             id: record.id,
             rawData: record,
-            mappedData: record,
+            rawProperties: record,
             isDeleted: false,
             lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
             emittedAt,
@@ -184,7 +184,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
           (record, emittedAt) => ({
             id: record.id,
             rawData: record,
-            mappedData: record,
+            rawProperties: record,
             isDeleted: false,
             lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
             emittedAt,

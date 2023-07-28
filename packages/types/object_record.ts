@@ -10,10 +10,18 @@ export type ListedObjectRecordRawDataOnly<D = Record<string, unknown>> = {
 
 export type ListedObjectRecord<D extends Record<string, unknown> = Record<string, unknown>> =
   ListedObjectRecordRawDataOnly<D> & {
-    // mapped data should only have properties
+    // rawProperties should only have properties
     // - in salesforce, this is easy
     // - in hubspot, we have to only record the data in `properties`
-    mappedData: D;
+    rawProperties: D;
+  };
+
+export type MappedListedObjectRecord<D extends Record<string, unknown> = Record<string, unknown>> =
+  ListedObjectRecordRawDataOnly<D> & {
+    // mappedProperties should only have properties
+    // - in salesforce, this is easy
+    // - in hubspot, we have to only record the data in `properties`
+    mappedProperties: D;
   };
 
 export type SnakecasedKeysObjectRecord<T extends Record<string, unknown> = Record<string, unknown>> = SnakecasedKeys<

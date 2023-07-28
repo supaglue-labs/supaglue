@@ -1,5 +1,5 @@
 import type { ConnectionUnsafe, EngagementOauthProvider, ListedObjectRecord, Provider } from '@supaglue/types';
-import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import axios from 'axios';
 import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
@@ -117,7 +117,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
 
   public override async listStandardObjectRecords(
     object: string,
-    fieldMappingConfig: FieldMappingConfig,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date | undefined,
     heartbeat?: (() => void) | undefined
   ): Promise<Readable> {
@@ -132,7 +132,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
           (call, emittedAt) => ({
             id: call.id,
             rawData: call,
-            mappedData: call,
+            rawProperties: call,
             isDeleted: false,
             lastModifiedAt: new Date(call.started),
             emittedAt,
@@ -147,7 +147,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
           (detailedCall, emittedAt) => ({
             id: detailedCall.metaData.id,
             rawData: detailedCall,
-            mappedData: detailedCall,
+            rawProperties: detailedCall,
             isDeleted: false,
             lastModifiedAt: new Date(detailedCall.metaData.started),
             emittedAt,
@@ -162,7 +162,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
           (transcript, emittedAt) => ({
             id: transcript.callId,
             rawData: transcript,
-            mappedData: transcript,
+            rawProperties: transcript,
             isDeleted: false,
             // we don't know the last modified at time
             // TODO: figure out some way to address this.

@@ -12,6 +12,7 @@ import type {
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
+import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { Readable } from 'stream';
 import type { RemoteClient } from '../../base';
@@ -73,7 +74,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
    */
   public async listStandardObjectRecords(
     object: string,
-    fieldMappingConfig: FieldMappingConfig,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {

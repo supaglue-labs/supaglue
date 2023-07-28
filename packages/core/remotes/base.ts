@@ -4,7 +4,7 @@ import type {
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
-import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import axios from 'axios';
 import { EventEmitter } from 'events';
@@ -24,7 +24,7 @@ export interface RemoteClient {
 
   listStandardObjectRecords(
     object: string,
-    fieldMappingConfig: FieldMappingConfig,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable>;
@@ -72,9 +72,9 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new Error('Not implemented');
   }
 
-  public listStandardObjectRecords(
+  public async listStandardObjectRecords(
     object: string,
-    fieldMappingConfig: FieldMappingConfig,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
