@@ -1,15 +1,21 @@
-import type { ConnectionUnsafe, NoCategoryProvider, Provider } from '@supaglue/types';
+import type { ConnectionUnsafe, NoCategoryProvider, ObjectRecord, Provider } from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { Readable } from 'stream';
+import { retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractNoCategoryRemoteClient } from '../../categories/no_category/base';
 import { paginator } from '../../utils/paginator';
-import { toIntercomEndpoint, toIntercomStandardObject } from './mappers';
+import { toIntercomStandardObject } from './mappers';
 
 const PAGINATION_LIMIT = 50;
 
-type IntercomPaginatedRecords = {
+type IntercomRecord = {
+  id: string;
+  updated_at?: number;
+};
+
+type IntercomPaginatedResponse<K extends string> = {
   pages?: {
     next?: {
       page: number;
@@ -21,8 +27,7 @@ type IntercomPaginatedRecords = {
     total_pages: number;
   };
   total_count: number;
-  data: Record<string, unknown>[];
-};
+} & Record<K, IntercomRecord[]>;
 
 type IntercomClientConfig = {
   accessToken: string;
@@ -50,47 +55,61 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
     return this.#getAuthHeaders();
   }
 
-  #getPaginatedListFetcherForEndpoint(
-    endpoint: string,
-    pageSize = PAGINATION_LIMIT
-  ): (cursor?: string) => Promise<IntercomPaginatedRecords> {
-    return async (cursor?: string): Promise<IntercomPaginatedRecords> => {
-      const { data } = await axios.get<IntercomPaginatedRecords>(endpoint, {
-        headers: this.#getAuthHeaders(),
-        params: {
-          per_page: pageSize,
-          starting_after: cursor,
-        },
+  #getPaginatedListFetcher<K extends string>(
+    path: string,
+    modifiedAfter?: Date
+  ): (cursor?: string) => Promise<IntercomPaginatedResponse<K>> {
+    const isSearch = path.includes('search');
+    return async (cursor?: string) => {
+      return await retryWhenAxiosRateLimited(async () => {
+        if (!isSearch) {
+          const { data } = await axios.get<IntercomPaginatedResponse<K>>(`${this.baseUrl}/${path}`, {
+            headers: this.#getAuthHeaders(),
+            params: {
+              per_page: PAGINATION_LIMIT,
+              starting_after: cursor,
+            },
+          });
+
+          return data;
+        }
+        const { data } = await axios.post<IntercomPaginatedResponse<K>>(
+          `${this.baseUrl}/${path}`,
+          {
+            query: {
+              operator: '>',
+              field: 'updated_at',
+              value: (modifiedAfter?.getTime() ?? 0) / 1000,
+            },
+            pagination: {
+              starting_after: cursor,
+            },
+          },
+          {
+            headers: this.#getAuthHeaders(),
+          }
+        );
+        return data;
       });
-      return data;
     };
   }
 
-  #getPaginatedSearchFetcherForEndpoint(
-    endpoint: string,
-    modifiedAfter?: Date,
-    pageSize = PAGINATION_LIMIT
-  ): (cursor?: string) => Promise<IntercomPaginatedRecords> {
-    return async (cursor?: string): Promise<IntercomPaginatedRecords> => {
-      const { data } = await axios.post<IntercomPaginatedRecords>(
-        endpoint,
-        {
-          query: {
-            operator: '>',
-            field: 'updated_at',
-            value: (modifiedAfter?.getTime() ?? 0) / 1000,
-          },
+  #getPaginator<K extends string>(
+    path: string,
+    key: K,
+    mapper: (record: IntercomRecord, emittedAt: Date) => ObjectRecord<IntercomRecord>,
+    modifiedAfter?: Date
+  ): Promise<Readable> {
+    return paginator([
+      {
+        pageFetcher: this.#getPaginatedListFetcher<K>(path, modifiedAfter),
+        createStreamFromPage: ({ [key]: records }) => {
+          const emittedAt = new Date();
+          return Readable.from(records.map((record) => mapper(record, emittedAt)));
         },
-        {
-          headers: this.#getAuthHeaders(),
-          params: {
-            per_page: pageSize,
-            starting_after: cursor,
-          },
-        }
-      );
-      return data;
-    };
+        getNextCursorFromPage: (response) => response.pages?.next?.starting_after,
+      },
+    ]);
   }
 
   public override async listStandardObjectRecords(
@@ -101,38 +120,78 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
   ): Promise<Readable> {
     const validatedObject = toIntercomStandardObject(object);
 
-    const pageFetcher = () => {
-      switch (validatedObject) {
-        case 'contact':
-        case 'conversation':
-          return this.#getPaginatedSearchFetcherForEndpoint(
-            `${toIntercomEndpoint(validatedObject)}/search`,
-            modifiedAfter
-          );
-        default:
-          return this.#getPaginatedListFetcherForEndpoint(toIntercomEndpoint(validatedObject));
-      }
-    };
-
-    return paginator([
-      {
-        pageFetcher: pageFetcher(),
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(
-            response.data.map((record) => ({
-              id: record.id,
-              rawData: record,
-              mappedData: record,
-              isDeleted: false,
-              lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : undefined,
-              emittedAt,
-            }))
-          );
-        },
-        getNextCursorFromPage: (response) => response.pages?.next?.starting_after,
-      },
-    ]);
+    switch (validatedObject) {
+      case 'contact':
+        return await this.#getPaginator<'data'>(
+          'contacts/search',
+          'data',
+          (record, emittedAt) => ({
+            id: record.id,
+            rawData: record,
+            mappedData: record,
+            isDeleted: false,
+            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            emittedAt,
+          }),
+          modifiedAfter
+        );
+      case 'conversation':
+        return await this.#getPaginator<'conversations'>(
+          'conversations/search',
+          'conversations',
+          (record, emittedAt) => ({
+            id: record.id,
+            rawData: record,
+            mappedData: record,
+            isDeleted: false,
+            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            emittedAt,
+          }),
+          modifiedAfter
+        );
+      case 'admin':
+        return await this.#getPaginator<'admins'>(
+          'admins',
+          'admins',
+          (record, emittedAt) => ({
+            id: record.id,
+            rawData: record,
+            mappedData: record,
+            isDeleted: false,
+            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            emittedAt,
+          }),
+          modifiedAfter
+        );
+      case 'article':
+        return await this.#getPaginator<'data'>(
+          'articles',
+          'data',
+          (record, emittedAt) => ({
+            id: record.id,
+            rawData: record,
+            mappedData: record,
+            isDeleted: false,
+            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            emittedAt,
+          }),
+          modifiedAfter
+        );
+      case 'company':
+        return await this.#getPaginator<'data'>(
+          'companies',
+          'data',
+          (record, emittedAt) => ({
+            id: record.id,
+            rawData: record,
+            mappedData: record,
+            isDeleted: false,
+            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            emittedAt,
+          }),
+          modifiedAfter
+        );
+    }
   }
 }
 
