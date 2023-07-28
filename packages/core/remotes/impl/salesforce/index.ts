@@ -1213,14 +1213,8 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   private async getSObjectProperties(sobject: string): Promise<Property[]> {
-    const response = await this.#fetch(`/services/data/v57.0/sobjects/${sobject}/describe`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    const responseJson = await response.json();
-    return responseJson.fields
+    const response = await this.#client.describe(sobject);
+    return response.fields
       .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
       .map((field: { name: string; type: string; label: string }) => ({ id: field.name, label: field.label }));
   }
