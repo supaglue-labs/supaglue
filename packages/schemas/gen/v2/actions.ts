@@ -86,6 +86,9 @@ export interface components {
       id: string;
       entity: components["schemas"]["simple_entity"];
       data: {
+        additional_properties?: {
+          [key: string]: unknown;
+        };
         [key: string]: unknown;
       };
     };

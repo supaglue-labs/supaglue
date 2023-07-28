@@ -7,6 +7,7 @@ import type {
 } from '@supaglue/schemas/v2/actions';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
+import entities from './entities';
 
 const { passthroughService } = getDependencyContainer();
 
@@ -24,6 +25,8 @@ export default function init(app: Router): void {
       return res.status(200).send(response);
     }
   );
+
+  entities(v2Router);
 
   app.use('/v2', v2Router);
 }

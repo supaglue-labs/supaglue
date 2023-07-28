@@ -17,6 +17,7 @@ import { CrmCommonObjectService } from './services/common_objects/crm/common_obj
 import { CrmCustomObjectService } from './services/common_objects/crm/custom_object_service';
 import { EngagementCommonObjectService } from './services/common_objects/engagement/common_object_service';
 import { DestinationService } from './services/destination_service';
+import { EntityRecordService } from './services/entity_record_service';
 import { EntityService } from './services/entity_service';
 import { SyncRunService } from './services/sync_run_service';
 import { SyncService } from './services/sync_service';
@@ -49,6 +50,8 @@ export type CoreDependencyContainer = {
 
   crmCustomObjectService: CrmCustomObjectService;
   crmAssociationService: CrmAssociationService;
+
+  entityRecordService: EntityRecordService;
 };
 
 // global
@@ -103,6 +106,14 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const syncService = new SyncService(prisma, connectionService);
   const syncRunService = new SyncRunService(prisma, connectionService);
 
+  const entityRecordService = new EntityRecordService(
+    prisma,
+    entityService,
+    connectionService,
+    remoteService,
+    destinationService
+  );
+
   return {
     pgPool,
     prisma,
@@ -125,6 +136,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     crmAssociationService,
     syncService,
     syncRunService,
+    entityRecordService,
   };
 }
 

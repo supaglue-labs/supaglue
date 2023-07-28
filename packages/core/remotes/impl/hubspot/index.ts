@@ -16,8 +16,10 @@ import type {
   CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
+  ListedObjectRecord,
+  ListedObjectRecordRawDataOnly,
   ObjectRecord,
-  ObjectRecordRawDataOnly,
+  ObjectRecordUpsertData,
   PropertiesWithAdditionalFields,
   Property,
   Provider,
@@ -56,6 +58,7 @@ import type {
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
 import axios from 'axios';
@@ -204,6 +207,22 @@ type HubSpotAPIV3ListSchemasResponse = {
   results: HubSpotCustomSchema[];
 };
 
+type HubSpotAPIV3CreateRecordResponse = {
+  id: string;
+  properties: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+  archived: boolean;
+};
+
+type HubSpotAPIV3GetRecordResponse = {
+  id: string;
+  properties: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+  archived: boolean;
+};
+
 type HubSpotPaging = {
   next?: {
     after?: string;
@@ -257,7 +276,7 @@ type RecordsResponseWithFlattenedAssociations = {
 };
 
 type NormalizedRecordsResponseWithFlattenedAssociations = {
-  results: ObjectRecordRawDataOnly<RecordWithFlattenedAssociations>[];
+  results: ListedObjectRecordRawDataOnly<RecordWithFlattenedAssociations>[];
   paging?: HubSpotPaging;
 };
 
@@ -906,6 +925,90 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
+  }
+
+  public override async getObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    fields: string[]
+  ): Promise<ObjectRecord> {
+    if (object.type === 'custom') {
+      throw new BadRequestError('Custom objects are not supported for HubSpot');
+    }
+
+    const objectType = object.name;
+
+    const response = await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      return await axios.get<HubSpotAPIV3GetRecordResponse>(`${this.baseUrl}/crm/v3/objects/${objectType}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${this.#config.accessToken}`,
+        },
+        params: {
+          properties: fields.join(','),
+        },
+      });
+    });
+
+    return {
+      id: response.data.id,
+      data: response.data.properties,
+    };
+  }
+
+  public override async createObjectRecord(
+    object: StandardOrCustomObject,
+    data: ObjectRecordUpsertData
+  ): Promise<string> {
+    if (object.type === 'custom') {
+      throw new BadRequestError('Custom objects are not supported for HubSpot');
+    }
+
+    const objectType = object.name;
+
+    const response = await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      return await axios.post<HubSpotAPIV3CreateRecordResponse>(
+        `${this.baseUrl}/crm/v3/objects/${objectType}`,
+        {
+          properties: data,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.#config.accessToken}`,
+          },
+        }
+      );
+    });
+
+    return response.data.id;
+  }
+
+  public override async updateObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    data: ObjectRecordUpsertData
+  ): Promise<void> {
+    if (object.type === 'custom') {
+      throw new BadRequestError('Custom objects are not supported for HubSpot');
+    }
+
+    const objectType = object.name;
+
+    await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      return await axios.patch<HubSpotAPIV3CreateRecordResponse>(
+        `${this.baseUrl}/crm/v3/objects/${objectType}/${id}`,
+        {
+          properties: data,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.#config.accessToken}`,
+          },
+        }
+      );
+    });
   }
 
   public override async listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
@@ -1964,9 +2067,9 @@ function normalizeResponse(
 
 // mapper
 function toMappedRecords(
-  records: ObjectRecordRawDataOnly<RecordWithFlattenedAssociations>[],
+  records: ListedObjectRecordRawDataOnly<RecordWithFlattenedAssociations>[],
   fieldMappingConfig: FieldMappingConfig
-): ObjectRecord<PropertiesWithAdditionalFields>[] {
+): ListedObjectRecord<PropertiesWithAdditionalFields>[] {
   if (fieldMappingConfig.type === 'inherit_all_fields') {
     return records.map((record) => ({
       ...record,
