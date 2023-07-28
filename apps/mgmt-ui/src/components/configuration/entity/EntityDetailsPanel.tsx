@@ -126,7 +126,7 @@ function EntityDetailsPanelImpl({ entityId }: EntityDetailsPanelImplProps) {
             <Typography variant="subtitle1">Name</Typography>
             <TextField
               required={true}
-              error={(!isNew && name === '') || (name && !isNameValid)}
+              error={(!isNew && name === '') || (!!name && !isNameValid)}
               value={name}
               size="small"
               label="Name (must be unique)"
