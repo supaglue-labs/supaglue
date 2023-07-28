@@ -43,7 +43,7 @@ Which data model you choose to adopt is based on the [integration patterns](../i
 
 ## Metadata APIs
 
-**[Metadata APIs](./metadata)** get used regardless of whether it's for syncing, writing, or how you data model objects. Examples of this include:
+Metadata APIs get used regardless of whether it's for syncing, writing, or how you data model objects. Examples of this include:
 
 - Properties API: Get all objects and fields available for a Provider.
 - Custom Objects API: Define and create custom objects for a Provider.
