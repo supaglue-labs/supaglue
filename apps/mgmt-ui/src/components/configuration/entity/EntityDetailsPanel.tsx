@@ -36,7 +36,9 @@ function EntityDetailsPanelImpl({ entityId }: EntityDetailsPanelImplProps) {
 
   const router = useRouter();
 
-  const isFormValid = name && fields.length > 0;
+  const isNameValid = name && name.match(/^[a-zA-Z0-9_]+$/);
+
+  const isFormValid = isNameValid && fields.length > 0;
 
   const entity = entities.find((s) => s.id === entityId);
 
@@ -124,11 +126,12 @@ function EntityDetailsPanelImpl({ entityId }: EntityDetailsPanelImplProps) {
             <Typography variant="subtitle1">Name</Typography>
             <TextField
               required={true}
-              error={!isNew && name === ''}
+              error={(!isNew && name === '') || (name && !isNameValid)}
               value={name}
               size="small"
               label="Name (must be unique)"
               variant="outlined"
+              helperText="Must only contain alphanumeric characters and underscores"
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 setName(event.target.value);
                 setIsDirty(true);
