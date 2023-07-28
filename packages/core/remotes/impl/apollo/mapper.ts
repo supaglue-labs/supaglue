@@ -29,7 +29,7 @@ export const fromApolloContactToContact = (record: Record<string, any>): Contact
     emailAddresses: [
       {
         emailAddress: record.email ?? null,
-        emailAddressType: null,
+        emailAddressType: 'primary',
       },
     ],
     phoneNumbers: fromApolloPhonesToPhoneNumbers(record.phone_numbers ?? []),

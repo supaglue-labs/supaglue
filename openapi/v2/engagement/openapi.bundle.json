@@ -740,6 +740,7 @@
                   "type": "string",
                   "nullable": true,
                   "enum": [
+                    "primary",
                     "work",
                     "home",
                     "mobile",
@@ -1205,6 +1206,7 @@
               "type": "string",
               "nullable": true,
               "enum": [
+                "primary",
                 "personal",
                 "work"
               ]

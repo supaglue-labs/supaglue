@@ -9,6 +9,7 @@ items:
       type: string
       nullable: true
       enum:
+        - primary
         - personal
         - work
   required:
