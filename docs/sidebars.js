@@ -65,17 +65,17 @@ const sidebars = {
     },
     {
       id: 'integration-patterns/managed-syncs',
-      label: 'Managed Syncs',
+      label: 'Managed syncs (reads)',
       type: 'doc',
     },
     {
       id: 'integration-patterns/actions-api',
-      label: 'Actions API',
+      label: 'Actions API (writes)',
       type: 'doc',
     },
     {
       id: 'integration-patterns/real-time-events',
-      label: 'Realtime Events',
+      label: 'Realtime events (webhooks)',
       type: 'doc',
     },
 
@@ -91,7 +91,7 @@ const sidebars = {
     },
     {
       id: 'platform/managed-auth',
-      label: 'Managed Auth',
+      label: 'Managed authentication',
       type: 'doc',
     },
     {
@@ -121,13 +121,13 @@ const sidebars = {
       ],
     },
     {
-      id: 'platform/metadata',
-      label: 'Metadata API',
+      id: 'platform/passthrough',
+      label: 'Passthrough API',
       type: 'doc',
     },
     {
-      id: 'platform/passthrough',
-      label: 'Passthrough API',
+      id: 'platform/notification-webhooks',
+      label: 'Notification webhooks',
       type: 'doc',
     },
 

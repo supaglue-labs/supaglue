@@ -3,6 +3,8 @@ post:
   tags:
     - Passthrough
   summary: Send passthrough request
+  security:
+    - x-api-key: []
   description: >-
     Send request directly to a provider
   requestBody:

@@ -11,11 +11,12 @@ description: ''
 
 | Feature                            | Available |
 | ---------------------------------- | --------- |
-| Auth                               | Yes       |
-| Managed syncs (standard objects)   | Yes       |
-| Managed syncs: incremental deletes | No        |
-| Action API                         | Yes       |
-| Real-time events                   | No        |
+| Authentication                     | Yes       |
+| Managed syncs                      | Yes       |
+| Actions API                        | Yes       |
+| Real-time events                   | Yes       |
+| Passthrough API                    | Yes       |
+
 
 *Note: Apollo does not support Oauth connections, so only API Key based connections are supported.
 **Note: Only full (non-incremental) syncs are supported.

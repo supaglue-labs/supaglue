@@ -13,11 +13,11 @@ Supaglue interfaces with the Gong V2 API.
 
 | Feature                            | Available |
 | ---------------------------------- | --------- |
-| Auth                               | Yes       |
-| Managed syncs (standard objects)   | Yes       |
-| Managed syncs: incremental deletes | No        |
-| Action API                         | No        |
+| Authentication                     | Yes       |
+| Managed syncs                      | Yes       |
+| Actions API                        | No        |
 | Real-time events                   | No        |
+| Passthrough API                    | Yes       |
 
 Supported standard objects:
 

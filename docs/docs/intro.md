@@ -8,7 +8,7 @@ sidebar_label: Introduction
 
 Supaglue is an open source platform that helps you build native product integrations with your customers' SaaS tools. It provides a suite of developer tools and APIs that lets you sync data into your application database or data warehouse, write directly to your customers' SaaS tools, and subscribe to change events in real-time.
 
-Supaglue comes out-of-the-box with managed authentication, monitoring and logging tools, and a growing library of extensible SaaS connectors.
+Supaglue works out-of-the-box with managed authentication, monitoring and logging tools, and a growing library of extensible SaaS connectors.
 
 <figure>
 
@@ -18,9 +18,11 @@ Supaglue comes out-of-the-box with managed authentication, monitoring and loggin
 
 ## Integration patterns
 
-- **Managed Syncs**: managed service that continuously syncs data from your customers' SaaS tools into your application database or data warehouse.
-- **Actions API**: single access point to perform common read and write operations against third-party providers.
-- **Real-time change events**: managed service that sends webhooks to a specified target when records are updated in your customers' SaaS tools.
+Supaglue provides 3 high-level patterns for building your product integration. These can be used independently or in combination:
+
+- **[Managed syncs](./integration-patterns/managed-syncs)** – sync data from your customers' SaaS tools into your application on a schedule.
+- **[Actions API](./integration-patterns/actions-api)** – create or update records in your customers' SaaS tools.
+- **[Real-time events](./integration-patterns/real-time-events)** – subscribe to real-time changes in your customers' SaaS tools as a webhook.
 
 ## Use cases
 
@@ -30,9 +32,10 @@ Supaglue comes out-of-the-box with managed authentication, monitoring and loggin
 
 ## How it works
 
-You can [integrate Supaglue with your application](quickstart) in about 5 minutes:
+You can integrate Supaglue with your application in about 5 minutes via our 
+[quickstart](/quickstart):
 
-1. Create a Supaglue Cloud account or spin up Supaglue locally.
+1. Create a Supaglue Cloud account [here](https://app.supaglue.io/sign-up).
 2. Configure your integration scopes and OAuth credentials, or use one of our managed OAuth apps.
 3. Create a Supaglue customer.
 4. Connect a customer's SaaS platform to your app through a Supaglue-provided embedded link.
@@ -69,9 +72,9 @@ You can [integrate Supaglue with your application](quickstart) in about 5 minute
 </details>
 
 <details>
-  <summary>Are you planning to support X connector?</summary>
+  <summary>Are you planning to support X integration?</summary>
   <div>
-    We support several connectors today and have many more on our roadmap. If there's a specific connector that's not on the list, let us know and we will try to prioritize!
+    We support several dozen providers today and have many more on our roadmap. If there's a specific provider that's not on the list, let us know and we will try to prioritize!
   </div>
 </details>
 

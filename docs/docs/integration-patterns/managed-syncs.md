@@ -1,10 +1,11 @@
 ---
 description: ''
+
 ---
 
 # Managed syncs (reads)
 
-Managed Syncs lets you sync data from your customers’ third-party Provider directly into your own application database or data warehouse.
+Managed syncs lets you sync data from your customers’ third-party provider directly into your own application database or data warehouse.
 ![managed_syncs_diagram](/img/managed-syncs-diagram-2.png 'managed syncs diagram')
 
 ## How it works
@@ -141,9 +142,3 @@ Supaglue adds a primary key database constraint on `(_supaglue_application_id, s
 ## Query patterns
 
 Refer to destination documentation for query patterns in each destination, e.g. [Postgres](../destinations/postgres#query-patterns).
-
-## Notification webhooks
-
-You can optionally set up a webhook so that Supaglue notifies you each time a sync completes. This can be configured via the management portal, or via the [management API](../api/v2/mgmt/webhooks).
-
-![webhook-config](/img/webhook_config.png)
