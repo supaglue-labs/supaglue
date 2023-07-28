@@ -1,4 +1,4 @@
-import type { ConnectionUnsafe, EngagementOauthProvider, ObjectRecord, Provider } from '@supaglue/types';
+import type { ConnectionUnsafe, EngagementOauthProvider, ListedObjectRecord, Provider } from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -183,7 +183,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
   #getPaginatorByGet<K extends string, R extends Record<string, unknown>>(
     path: string,
     key: K,
-    mapper: (record: R, emittedAt: Date) => ObjectRecord<R>,
+    mapper: (record: R, emittedAt: Date) => ListedObjectRecord<R>,
     modifiedAfter?: Date
   ): Promise<Readable> {
     return paginator([
@@ -201,7 +201,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
   #getPaginatorByPost<K extends string, R extends Record<string, unknown>>(
     path: string,
     key: K,
-    mapper: (record: R, emittedAt: Date) => ObjectRecord<R>,
+    mapper: (record: R, emittedAt: Date) => ListedObjectRecord<R>,
     modifiedAfter?: Date
   ): Promise<Readable> {
     return paginator([

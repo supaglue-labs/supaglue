@@ -7,7 +7,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
-  ObjectRecord,
+  ListedObjectRecord,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
@@ -311,7 +311,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       inputStream,
       new Transform({
         objectMode: true,
-        transform: (record: ObjectRecord, encoding, callback) => {
+        transform: (record: ListedObjectRecord, encoding, callback) => {
           try {
             const mappedRecord = {
               _supaglue_application_id: applicationId,

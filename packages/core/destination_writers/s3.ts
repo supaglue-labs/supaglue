@@ -5,7 +5,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
-  ObjectRecord,
+  ListedObjectRecord,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
@@ -202,7 +202,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
       inputStream,
       new Transform({
         objectMode: true,
-        transform: async (record: ObjectRecord, encoding, callback) => {
+        transform: async (record: ListedObjectRecord, encoding, callback) => {
           try {
             numRecords++;
             const mappedRecord = {

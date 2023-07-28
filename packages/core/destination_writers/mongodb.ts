@@ -4,7 +4,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
-  ObjectRecord,
+  ListedObjectRecord,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
@@ -232,7 +232,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       inputStream,
       new Transform({
         objectMode: true,
-        transform: (record: ObjectRecord, encoding, callback) => {
+        transform: (record: ListedObjectRecord, encoding, callback) => {
           try {
             const mappedRecord = {
               _supaglue_application_id: applicationId,

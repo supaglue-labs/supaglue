@@ -6,7 +6,7 @@ import type {
   CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
-  ObjectRecord,
+  ListedObjectRecord,
   Property,
   Provider,
   SendPassthroughRequestRequest,
@@ -314,7 +314,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
           // TODO: types
           const { record, emittedAt } = chunk;
           // not declaring this in-line so we have the opportunity to do type checking
-          const emittedRecord: ObjectRecord = {
+          const emittedRecord: ListedObjectRecord = {
             id: record.Id,
             rawData: record,
             mappedData: toMappedProperties(record, fieldMappingConfig),

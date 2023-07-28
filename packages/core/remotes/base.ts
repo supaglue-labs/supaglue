@@ -1,5 +1,11 @@
-import type { SendPassthroughRequestRequest, SendPassthroughRequestResponse } from '@supaglue/types';
+import type {
+  ObjectRecord,
+  ObjectRecordUpsertData,
+  SendPassthroughRequestRequest,
+  SendPassthroughRequestResponse,
+} from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import axios from 'axios';
 import { EventEmitter } from 'events';
 import type { Readable } from 'stream';
@@ -11,6 +17,10 @@ interface RemoteClientEvents {
 
 export interface RemoteClient {
   on<U extends keyof RemoteClientEvents>(event: U, listener: RemoteClientEvents[U]): this;
+
+  createObjectRecord(object: StandardOrCustomObject, data: ObjectRecordUpsertData): Promise<string>;
+  getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecord>;
+  updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
   listStandardObjectRecords(
     object: string,
@@ -44,6 +54,22 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
 
   public handleErr(err: unknown): unknown {
     return err;
+  }
+
+  public async createObjectRecord(object: StandardOrCustomObject, data: ObjectRecordUpsertData): Promise<string> {
+    throw new Error('Not implemented');
+  }
+
+  public async getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecord> {
+    throw new Error('Not implemented');
+  }
+
+  public async updateObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    data: ObjectRecordUpsertData
+  ): Promise<void> {
+    throw new Error('Not implemented');
   }
 
   public listStandardObjectRecords(
