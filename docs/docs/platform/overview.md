@@ -7,6 +7,8 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Overview
 
+Supaglue is designed to support a diverse range of product integration use cases.
+
 <ThemedImage
 alt="managed auth"
 width="85%"
@@ -16,18 +18,16 @@ sources={{
   }}
 />
 
-Supaglue offers several platform features to support a diverse range of integrations.
-
 ## Authentication
 
-Underlying everything is **[Managed Authentication](./managed-auth)**. We let your customers authenticate with various Providers using different authentication strategies (Oauth2, API key, access tokens), securely store the secrets, and maintain the authenticated sessions (refresh and access tokens for Oauth2).
+Underlying everything is **[Managed Authentication](./managed-auth)**. We let your customers authenticate with dozens of Providers using different authentication strategies (OAuth2, API key, access token), securely store the secrets, and maintain the authenticated sessions (refresh and access tokens for OAuth2).
 
-## Syncing and writing
+## Reading & writing data
 
 There are two core access patterns when using Supaglue:
 
-1. **Managed Syncs**: Syncing data from Providers to a database Destination in your cloud. Managed Syncs allows you to query third-party Provider data in your infrastructure.
-2. **Actions API**: Writing real-time data synchronously to Providers using modern HTTP APIs.
+1. **Managed sncs**: Syncing data from providers to a database Destination in your cloud. Managed Syncs allows you to query third-party Provider data in your infrastructure.
+2. **Actions API**: Write real-time data synchronously to Providers using modern HTTP APIs.
 
 Both access patterns operate on objects.
 
@@ -37,7 +37,7 @@ There are three ways to data model objects in Supaglue:
 
 1. **[Entities](./entities/overview)**: You, the developer, define the data models.
 2. **[Objects](./objects/overview)**: Let you take the Provider's data model as-is.
-3. **[Common Schema](./common-schema/overview)**: Lets Supaglue define the data model.
+3. **[Common schema](./common-schema/overview)**: Lets Supaglue define the data model.
 
 Which data model you choose to adopt is based on the [integration patterns](../integration-patterns/overview) you are building into your product.
 

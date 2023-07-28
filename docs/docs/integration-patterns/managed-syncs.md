@@ -1,10 +1,11 @@
 ---
 description: ''
+
 ---
 
 # Managed syncs (reads)
 
-Managed Syncs lets you sync data from your customers’ third-party Provider directly into your own application database or data warehouse.
+Managed syncs lets you sync data from your customers’ third-party provider directly into your own application database or data warehouse.
 ![managed_syncs_diagram](/img/managed-syncs-diagram-2.png 'managed syncs diagram')
 
 ## How it works
