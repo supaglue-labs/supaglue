@@ -53,7 +53,7 @@ Here are a few high-level best practices when working with tables that Supaglue 
 
 There are a few patterns (from simplest to more complex) for querying tables that Supaglue writes into your BigQuery dataset:
 
-### Pattern #1 - Direct Query
+### Pattern #1 - Direct query
 
 The simplest way to query data is to directly query the tables that Supaglue lands. This is well-suited for simple queries.
 
