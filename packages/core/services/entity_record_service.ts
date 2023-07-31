@@ -1,4 +1,3 @@
-import type { PrismaClient } from '@supaglue/db';
 import type { ConnectionSafeAny, ObjectRecordUpsertData } from '@supaglue/types';
 import type {
   CreatedEntityRecord,
@@ -13,20 +12,17 @@ import type { DestinationService } from './destination_service';
 import type { EntityService } from './entity_service';
 
 export class EntityRecordService {
-  readonly #prisma: PrismaClient;
   readonly #entityService: EntityService;
   readonly #connectionService: ConnectionService;
   readonly #remoteService: RemoteService;
   readonly #destinationService: DestinationService;
 
   public constructor(
-    prisma: PrismaClient,
     entityService: EntityService,
     connectionService: ConnectionService,
     remoteService: RemoteService,
     destinationService: DestinationService
   ) {
-    this.#prisma = prisma;
     this.#entityService = entityService;
     this.#connectionService = connectionService;
     this.#remoteService = remoteService;
@@ -130,10 +126,7 @@ function mapEntityToObjectFields(
   }
 }
 
-function mapObjectToEntityFields(
-  data: Record<string, unknown>,
-  fieldMappingConfig: FieldMappingConfig
-): EntityRecordData {
+function mapObjectToEntityFields(data: EntityRecordData, fieldMappingConfig: FieldMappingConfig): EntityRecordData {
   switch (fieldMappingConfig.type) {
     case 'inherit_all_fields':
       return data;

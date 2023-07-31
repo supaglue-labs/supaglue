@@ -26,3 +26,25 @@ export type UpdateEntityRecordRequestQueryParams = never;
 export type UpdateEntityRecordRequest = operations['updateEntityRecord']['requestBody']['content']['application/json'];
 export type UpdateEntityRecordResponse =
   operations['updateEntityRecord']['responses'][keyof operations['updateEntityRecord']['responses']]['content']['application/json'];
+
+export type CreateStandardObjectRecordPathParams = paths['/objects/standard/{object_name}']['parameters']['path'];
+export type CreateStandardObjectRecordRequestQueryParams = never;
+export type CreateStandardObjectRecordRequest =
+  operations['createStandardObjectRecord']['requestBody']['content']['application/json'];
+export type CreateStandardObjectRecordResponse =
+  operations['createStandardObjectRecord']['responses'][keyof operations['createStandardObjectRecord']['responses']]['content']['application/json'];
+
+export type GetStandardObjectRecordPathParams =
+  paths['/objects/standard/{object_name}/{record_id}']['parameters']['path'];
+export type GetStandardObjectRecordRequestQueryParams = never;
+export type GetStandardObjectRecordRequest = never;
+export type GetStandardObjectRecordResponse =
+  operations['getStandardObjectRecord']['responses'][keyof operations['getStandardObjectRecord']['responses']]['content']['application/json'];
+
+export type UpdateStandardObjectRecordPathParams =
+  paths['/objects/standard/{object_name}/{record_id}']['parameters']['path'];
+export type UpdateStandardObjectRecordRequestQueryParams = never;
+export type UpdateStandardObjectRecordRequest =
+  operations['updateStandardObjectRecord']['requestBody']['content']['application/json'];
+export type UpdateStandardObjectRecordResponse =
+  operations['updateStandardObjectRecord']['responses'][keyof operations['updateStandardObjectRecord']['responses']]['content']['application/json'];

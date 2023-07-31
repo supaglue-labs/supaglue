@@ -8,6 +8,7 @@ import type {
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 import entities from './entities';
+import objects from './objects';
 
 const { passthroughService } = getDependencyContainer();
 
@@ -27,6 +28,7 @@ export default function init(app: Router): void {
   );
 
   entities(v2Router);
+  objects(v2Router);
 
   app.use('/v2', v2Router);
 }

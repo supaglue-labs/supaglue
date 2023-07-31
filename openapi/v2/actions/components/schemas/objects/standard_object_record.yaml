@@ -6,6 +6,10 @@ properties:
     type: string
   data:
     type: object
+    properties:
+      additional_properties:
+        type: object
+        additionalProperties: true
     additionalProperties: true
 required:
   - id

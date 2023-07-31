@@ -34,9 +34,9 @@ export interface paths {
       };
     };
   };
-  "/objects/{object_name}": {
+  "/objects/standard/{object_name}": {
     /** Create Standard Object record */
-    post: operations["create"];
+    post: operations["createStandardObjectRecord"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -47,7 +47,7 @@ export interface paths {
       };
     };
   };
-  "/objects/{object_name}/{record_id}": {
+  "/objects/standard/{object_name}/{record_id}": {
     /** Get Standard Object record */
     get: operations["getStandardObjectRecord"];
     /** Update Standard Object record */
@@ -100,6 +100,9 @@ export interface components {
       id: string;
       standard_object_name: string;
       data: {
+        additional_properties?: {
+          [key: string]: unknown;
+        };
         [key: string]: unknown;
       };
     };
@@ -300,7 +303,7 @@ export interface operations {
     };
   };
   /** Create Standard Object record */
-  create: {
+  createStandardObjectRecord: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];

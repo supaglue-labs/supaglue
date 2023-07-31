@@ -1,4 +1,4 @@
-import type { CommonObjectDef, Property, StandardOrCustomObjectDef } from '@supaglue/types';
+import type { CommonObjectDef, Property } from '@supaglue/types';
 import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
 import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/crm/association';
 import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
@@ -12,7 +12,6 @@ import type {
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
-import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { Readable } from 'stream';
 import type { RemoteClient } from '../../base';
@@ -20,7 +19,6 @@ import { AbstractRemoteClient } from '../../base';
 
 export interface CrmRemoteClient extends RemoteClient {
   listCommonProperties(object: CommonObjectDef): Promise<Property[]>;
-  listProperties(object: StandardOrCustomObjectDef): Promise<Property[]>;
 
   listCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
@@ -63,32 +61,6 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
   }
 
   public listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
-    throw new Error('Not implemented');
-  }
-  public listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
-    throw new Error('Not implemented');
-  }
-
-  /**
-   * @returns A stream of records of type ObjectRecord<T>
-   */
-  public async listStandardObjectRecords(
-    object: string,
-    fieldsToFetch: FieldsToFetch,
-    modifiedAfter?: Date,
-    heartbeat?: () => void
-  ): Promise<Readable> {
-    throw new Error('Not implemented');
-  }
-
-  /**
-   * @returns A stream of records of type ObjectRecord<T>
-   */
-  public async listCustomObjectRecords(
-    object: string,
-    modifiedAfter?: Date,
-    heartbeat?: () => void
-  ): Promise<Readable> {
     throw new Error('Not implemented');
   }
 

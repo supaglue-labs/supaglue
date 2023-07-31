@@ -470,6 +470,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     });
     return {
       id: record.Id as string,
+      standardObjectName: object.name,
       data: record,
     };
   }
