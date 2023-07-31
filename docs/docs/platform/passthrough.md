@@ -4,4 +4,4 @@ Sometimes your application will need access to provider-specifc features not sup
 
 In these situations, Supaglue provides a passthrough API, which acts as a proxy and sends your requests directly to the provider's API and returns the original response from the provider.
 
-- [Passthrough API](../api/v2/actions/passthrough)
+- [Passthrough API](../api/v2/actions/send-passthrough-request)

@@ -36,7 +36,7 @@ Upon a customer going through their Oauth flow using an [Embedded Link](../manag
 
 ### Common Schema
 
-Write to objects that are standard in Providers using Supaglue's Common Schema with the endpoints listed under the [Unified CRM Actions API](../../api/v2/crm/supaglue-unified-crm-api) or [Unified Engagement Actions API](../../api/v2/engagement/supaglue-unified-engagement-api).
+Write to objects that are standard in Providers using Supaglue's Common Schema with the endpoints listed under the [Unified CRM Actions API](../../api/v2/crm/unified-crm-api) or [Unified Engagement Actions API](../../api/v2/engagement/unified-engagement-api).
 
 ### Custom Objects / Custom Object Records
 

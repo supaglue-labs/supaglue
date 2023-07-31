@@ -1,6 +1,5 @@
 ---
 description: ''
-
 ---
 
 # Managed syncs (reads)
@@ -12,7 +11,7 @@ Managed syncs lets you sync data from your customers’ third-party provider dir
 
 You can set up a managed sync in about 5 minutes.
 
-1. Configure the sync parameters (customers, providers, destination, sync configuration) using the [Management Portal](https://app.supaglue.io) or [Management API](../api/v2/mgmt/supaglue-management-api).
+1. Configure the sync parameters (customers, providers, destination, sync configuration) using the [Management Portal](https://app.supaglue.io) or [Management API](../api/v2/mgmt/management-api).
 2. Your customer connects via our [Managed Authentication](../platform/managed-auth) feature and optionally defines field mappings specific to their third-party Provider.
 3. Supaglue starts fetching data from your customers’ third-party Providers and landing them in your Destination (e.g. Postgres).
 
