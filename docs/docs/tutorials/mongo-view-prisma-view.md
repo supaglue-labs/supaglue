@@ -2,6 +2,10 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Use Mongo and Prisma Views
 
+![code](https://img.shields.io/badge/Code%20Tutorial-0000a5)
+
+**Tutorial length**: 10 mins.
+
 This tutorial will show how Mongo and Prisma Views can query unified data across collections without building a separate data pipeline.
 
 <ThemedImage
@@ -201,3 +205,13 @@ view OpportunityView {
 ### 3. Generate the Prisma client
 
 Finally, run `prisma generate` to regenerate your client with support for the view.
+
+Now you can use your Prisma client like you usually do, e.g.:
+
+```ts
+const results = await prismaClient.OpportunityView.findMany({
+  where: {
+    userId: 'customer-0',
+  },
+});
+```
