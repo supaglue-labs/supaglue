@@ -1,0 +1,87 @@
+post:
+  operationId: sendPassthroughRequest
+  tags:
+    - Passthrough
+  summary: Send passthrough request
+  security:
+    - x-api-key: []
+  description: >-
+    Send request directly to a provider
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            path:
+              type: string
+              description: The path to send the request to (do not pass the domain)
+            method:
+              type: string
+              enum: [GET, POST, PUT, PATCH, DELETE] 
+              example: GET
+            headers:
+              type: object
+              description: Headers to pass to downstream
+              additionalProperties:
+                type: string
+            query:
+              type: object
+              description: Query parameters to pass to downstream
+              additionalProperties:
+                type: string
+            body:
+              type: string
+              description: Body to pass to downstream
+          required:
+            - path
+            - method
+  responses:
+    '200':
+      description: Passthrough response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              url:
+                type: string
+                description: The full URL the request was went to
+                example: https://customcrm.com/api/cars
+              status:
+                type: number
+                description: Status code from the downstream
+                example: 200
+              headers:
+                type: object
+                description: The response headers from the downstream
+                additionalProperties:
+                  type: string
+              body:
+                anyOf:
+                  - type: string
+                  - type: number
+                  - type: integer
+                  - type: boolean
+                  - type: array
+                    items:
+                      additionalProperties: true
+                  - type: object
+                    additionalProperties: true
+                description: The body from the downstream
+            required:
+              - url
+              - status
+              - headers
+          examples:
+            Example:
+              value:
+                url: https://customcrm.com/api/cars
+                status: 200
+                headers:
+                  x-requests-limit: 96
+                body: []
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
