@@ -13,7 +13,7 @@ post:
       application/json:
         example:
           id: '0011t00000B0G6uAAF'
-          entityName: Account
+          entity_name: Account
           fields:
             Name: 'Acme'
         schema:
@@ -23,7 +23,7 @@ post:
               type: string
               description: The Salesforce ID of the record that was created
               example: '0011t00000B0G6uAAF'
-            entityName:
+            entity_name:
               type: string
               description: The name of the Salesforce object that the record belongs to
               example: Account
@@ -33,7 +33,7 @@ post:
               example: { Name: 'Acme' }
           required:
             - id
-            - entityName
+            - entity_name
             - fields
 
   responses:

@@ -246,6 +246,7 @@ components:
       $ref: ../../common/components/parameters/header/x-provider-name.yaml
     x-customer-id:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml
+# Some tooling expects x-webhooks, while other tooling expects webhooks
 x-webhooks: &x-webhooks
   salesforce_cdc.create:
     $ref: ./webhooks/salesforce_cdc.create.yaml

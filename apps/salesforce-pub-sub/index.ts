@@ -2,6 +2,7 @@ import { getCoreDependencyContainer } from '@supaglue/core';
 import { logger } from '@supaglue/core/lib/logger';
 import type { WebhookType } from '@supaglue/schemas/v2/mgmt';
 import type { CRMProvider } from '@supaglue/types';
+import { snakecaseKeys } from '@supaglue/utils';
 import * as jsforce from 'jsforce';
 import { createClient } from './client';
 import { ReplayPreset } from './gen/pubsub_api_pb';
@@ -154,14 +155,17 @@ const { connectionService, providerService, webhookService, applicationService }
               throw new Error(`Unknown changeType ${changeType}`);
           }
 
-          const webhookPayload = {
-            id: recordId,
-            entityName,
-            nulledFields,
-            changedFields,
-            diffFields,
-            fields,
-          };
+          const webhookPayload = snakecaseKeys(
+            {
+              id: recordId,
+              entityName,
+              nulledFields,
+              changedFields,
+              diffFields,
+              fields,
+            },
+            false
+          );
 
           await webhookService.sendMessage(eventName, webhookPayload, application, `${transactionKey}-${recordId}`);
 

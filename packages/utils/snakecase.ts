@@ -4,9 +4,9 @@ import { default as extSnakecaseKeys } from 'snakecase-keys';
  * @deprecated This function is really expensive. Try not to use it.
  * https://github.com/supaglue-labs/supaglue/issues/595
  */
-export function snakecaseKeys<T extends Record<string, unknown>>(inputObject: T) {
+export function snakecaseKeys<T extends Record<string, unknown>>(inputObject: T, deep = true) {
   return extSnakecaseKeys(inputObject, {
-    deep: true,
+    deep,
   });
 }
 

@@ -13,12 +13,12 @@ post:
       application/json:
         example:
           id: '0011t00000B0G6uAAF'
-          entityName: Account
+          entity_name: Account
           fields:
             Name: 'Acme'
-          nulledFields: []
-          changedFields: [Name]
-          diffFields: []
+          nulled_fields: []
+          changed_fields: [Name]
+          diff_fields: []
         schema:
           type: object
           properties:
@@ -26,23 +26,23 @@ post:
               type: string
               description: The Salesforce ID of the record that was updated
               example: '0011t00000B0G6uAAF'
-            entityName:
+            entity_name:
               type: string
               description: The name of the Salesforce object that the record belongs to
               example: Account
-            nulledFields:
+            nulled_fields:
               type: array
               description: The fields that were set to null when the record was updated
               example: [PhoneNumber2]
               items:
                 type: string
-            changedFields:
+            changed_fields:
               type: array
               description: The fields that were changed when the record was updated
               example: [Name]
               items:
                 type: string
-            diffFields:
+            diff_fields:
               type: array
               description: The fields that were changed when the record was updated and the value in the fields object is a diff to be applied to the existing value
               example: [Description]
@@ -53,11 +53,11 @@ post:
               description: The fields that were set when the record was created
           required:
             - id
-            - entityName
+            - entity_name
             - fields
-            - nulledFields
-            - changedFields
-            - diffFields
+            - nulled_fields
+            - changed_fields
+            - diff_fields
 
   responses:
     '200':
