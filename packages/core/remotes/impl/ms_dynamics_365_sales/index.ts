@@ -12,6 +12,7 @@ import type {
   Opportunity,
   User,
 } from '@supaglue/types/crm';
+import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { OHandler } from 'odata';
 import { o } from 'odata';
@@ -31,7 +32,6 @@ import {
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
-import { toMappedProperties } from '../../utils/properties';
 import {
   fromDynamicsAccountToRemoteAccount,
   fromDynamicsContactToRemoteContact,
@@ -139,7 +139,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   public override async listStandardObjectRecords(
     object: string,
-    fieldMappingConfig: FieldMappingConfig,
+    fieldsToFetch: FieldsToFetch,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
@@ -153,7 +153,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
             response.value.map((result: any) => ({
               id: result[idkey],
               rawData: result,
-              mappedData: toMappedProperties(result, fieldMappingConfig),
+              mappedData: result,
               isDeleted: false,
               lastModifiedAt: new Date(result.modifiedon),
               emittedAt,

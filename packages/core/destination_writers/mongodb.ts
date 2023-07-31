@@ -4,7 +4,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
-  ListedObjectRecord,
+  MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
 } from '@supaglue/types';
@@ -232,7 +232,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       inputStream,
       new Transform({
         objectMode: true,
-        transform: (record: ListedObjectRecord, encoding, callback) => {
+        transform: (record: MappedListedObjectRecord, encoding, callback) => {
           try {
             const mappedRecord = {
               _supaglue_application_id: applicationId,
@@ -241,9 +241,9 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_emitted_at: record.emittedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
-              _supaglue_mapped_data: record.mappedData,
+              _supaglue_mapped_data: record.mappedProperties,
               id: record.id,
-              ...record.mappedData,
+              ...record.mappedProperties,
             };
 
             ++rowCount;

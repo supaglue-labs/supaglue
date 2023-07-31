@@ -5,6 +5,13 @@ import type { ConnectionService, RemoteService, SyncConfigService } from '@supag
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
+import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type {
+  ListedObjectRecord,
+  MappedListedObjectRecord,
+  PropertiesWithAdditionalFields,
+} from '@supaglue/types/object_record';
 import type { ObjectType } from '@supaglue/types/sync';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import type { Readable } from 'stream';
@@ -100,8 +107,14 @@ export function createSyncObjectRecords(
           {
             const client = await remoteService.getRemoteClient(connectionId);
             const fieldMappingConfig = await connectionService.getFieldMappingConfig(connectionId, 'standard', object);
-            const stream = await client.listStandardObjectRecords(object, fieldMappingConfig, updatedAfter, heartbeat);
-            return await writer.writeObjectRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
+            const fieldsToFetch = getFieldsToFetch(fieldMappingConfig);
+            const stream = await client.listStandardObjectRecords(object, fieldsToFetch, updatedAfter, heartbeat);
+            return await writer.writeObjectRecords(
+              connection,
+              object,
+              toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
+              heartbeat
+            );
           }
           break;
         case 'custom': {
@@ -171,6 +184,67 @@ function toHeartbeatingReadable(readable: Readable): Readable {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     () => {}
   );
+}
+
+function toMappedPropertiesReadable(readable: Readable, fieldMappingConfig: FieldMappingConfig): Readable {
+  return pipeline(
+    readable,
+    new Transform({
+      objectMode: true,
+      transform: (chunk: ListedObjectRecord, encoding, callback) => {
+        try {
+          const mappedListedObjectRecord: MappedListedObjectRecord = {
+            ...chunk,
+            mappedProperties: toMappedProperties(chunk.rawProperties, fieldMappingConfig),
+          };
+          callback(null, mappedListedObjectRecord);
+        } catch (e: any) {
+          return callback(e);
+        }
+      },
+    }),
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    () => {}
+  );
+}
+
+function getFieldsToFetch(fieldMappingConfig: FieldMappingConfig): FieldsToFetch {
+  if (fieldMappingConfig.type === 'inherit_all_fields') {
+    return {
+      type: 'inherit_all_fields',
+    };
+  }
+
+  return {
+    type: 'defined',
+    fields: [
+      ...new Set([
+        ...fieldMappingConfig.coreFieldMappings.map(({ mappedField }) => mappedField),
+        ...fieldMappingConfig.additionalFieldMappings.map(({ mappedField }) => mappedField),
+      ]),
+    ],
+  };
+}
+
+function toMappedProperties(
+  properties: Record<string, any>,
+  fieldMappingConfig: FieldMappingConfig
+): PropertiesWithAdditionalFields {
+  if (fieldMappingConfig.type === 'inherit_all_fields') {
+    return properties;
+  }
+
+  return {
+    ...Object.fromEntries(
+      fieldMappingConfig.coreFieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
+    ),
+    additional_fields: Object.fromEntries(
+      fieldMappingConfig.additionalFieldMappings.map(({ schemaField, mappedField }) => [
+        schemaField,
+        properties[mappedField],
+      ])
+    ),
+  };
 }
 
 function heartbeat() {

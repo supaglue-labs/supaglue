@@ -44,6 +44,7 @@ import type {
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
+import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import retry from 'async-retry';
@@ -280,33 +281,23 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  async getStandardPropertyIdsToFetch(object: string, fieldMappingConfig?: FieldMappingConfig): Promise<string[]> {
+  async getStandardPropertyIdsToFetch(object: string, fieldsToFetch: FieldsToFetch): Promise<string[]> {
     const sobject = capitalizeString(object);
     const allProperties = await this.getSObjectProperties(sobject);
     const allPropertyIds = allProperties.map(({ id }) => id);
-    if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
+    if (fieldsToFetch.type === 'inherit_all_fields') {
       return allPropertyIds;
     }
-    return intersection(
-      allPropertyIds,
-      // we must pull these fields no matter what
-      union(
-        ['Id', 'IsDeleted', 'SystemModstamp'],
-        [
-          ...fieldMappingConfig.coreFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
-          ...fieldMappingConfig.additionalFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
-        ]
-      )
-    );
+    return intersection(allPropertyIds, union(['Id', 'IsDeleted', 'SystemModstamp'], fieldsToFetch.fields));
   }
 
   public override async listStandardObjectRecords(
     object: string,
-    fieldMappingConfig: FieldMappingConfig,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    const propertiesToFetch = await this.getStandardPropertyIdsToFetch(object, fieldMappingConfig);
+    const propertiesToFetch = await this.getStandardPropertyIdsToFetch(object, fieldsToFetch);
     const stream = await this.#listObjectsHelper(object, propertiesToFetch, modifiedAfter, heartbeat);
 
     return pipeline(
@@ -320,7 +311,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
           const emittedRecord: ListedObjectRecord = {
             id: record.Id,
             rawData: record,
-            mappedData: toMappedProperties(record, fieldMappingConfig),
+            rawProperties: record,
             isDeleted: record.IsDeleted === 'true',
             lastModifiedAt: new Date(record.SystemModstamp),
             emittedAt: emittedAt,

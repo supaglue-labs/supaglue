@@ -16,7 +16,6 @@ import type {
   CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
-  ListedObjectRecord,
   ListedObjectRecordRawDataOnly,
   ObjectRecord,
   ObjectRecordUpsertData,
@@ -57,6 +56,7 @@ import type {
   CustomObjectRecordCreateParams,
   CustomObjectRecordUpdateParams,
 } from '@supaglue/types/crm/custom_object_record';
+import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
@@ -426,30 +426,23 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
-  private async getStandardPropertyIdsToFetch(
-    objectType: string,
-    fieldMappingConfig?: FieldMappingConfig
-  ): Promise<string[]> {
+  private async getStandardPropertyIdsToFetch(objectType: string, fieldsToFetch: FieldsToFetch): Promise<string[]> {
     const availableProperties = await this.listPropertiesForRawObjectName(objectType);
     const availablePropertyIds = availableProperties.map(({ id }) => id);
-    if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
+    if (fieldsToFetch.type === 'inherit_all_fields') {
       return availablePropertyIds;
     }
-    const properties = [
-      ...fieldMappingConfig.coreFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
-      ...fieldMappingConfig.additionalFieldMappings.map((fieldMapping) => fieldMapping.mappedField),
-    ];
-    return intersection(availablePropertyIds, properties);
+    return intersection(availablePropertyIds, fieldsToFetch.fields);
   }
 
   public override async listStandardObjectRecords(
     object: string,
-    fieldMappingConfig: FieldMappingConfig,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
     const standardObjectType = toStandardObjectType(object);
-    const propertiesToFetch = await this.getStandardPropertyIdsToFetch(object, fieldMappingConfig);
+    const propertiesToFetch = await this.getStandardPropertyIdsToFetch(object, fieldsToFetch);
     const associatedStandardObjectTypes = hubspotStandardObjectTypeToAssociatedStandardObjectTypes[standardObjectType];
 
     const normalPageFetcher = await this.#getListRecordsFetcher(
@@ -473,7 +466,12 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     const normalFetcherAndHandler = {
       pageFetcher: normalPageFetcher,
       createStreamFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
-        Readable.from(toMappedRecords(response.results, fieldMappingConfig)),
+        Readable.from(
+          response.results.map((record) => ({
+            ...record,
+            rawProperties: record.rawData.properties,
+          }))
+        ),
       getNextCursorFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
         response.paging?.next?.after,
     };
@@ -487,7 +485,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       normalFetcherAndHandler,
       {
         pageFetcher: archivedPageFetcher,
-        createStreamFromPage: (response) => Readable.from(toMappedRecords(response.results, fieldMappingConfig)),
+        createStreamFromPage: (response) =>
+          Readable.from(
+            response.results.map((record) => ({
+              ...record,
+              rawProperties: record.rawData.properties,
+            }))
+          ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
     ]);
@@ -2063,22 +2067,4 @@ function normalizeResponse(
     })),
     paging: response.paging,
   };
-}
-
-// mapper
-function toMappedRecords(
-  records: ListedObjectRecordRawDataOnly<RecordWithFlattenedAssociations>[],
-  fieldMappingConfig: FieldMappingConfig
-): ListedObjectRecord<PropertiesWithAdditionalFields>[] {
-  if (fieldMappingConfig.type === 'inherit_all_fields') {
-    return records.map((record) => ({
-      ...record,
-      mappedData: record.rawData.properties,
-    }));
-  }
-
-  return records.map((record) => ({
-    ...record,
-    mappedData: toMappedProperties(record.rawData.properties, fieldMappingConfig),
-  }));
 }
