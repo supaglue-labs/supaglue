@@ -2,11 +2,13 @@
   "openapi": "3.0.3",
   "info": {
     "version": "0.13.0",
-    "title": "Supaglue Actions API",
+    "title": "Actions API",
     "contact": {
-      "name": "Supaglue"
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
     },
-    "description": "#### Introduction\n\nWelcome to the Supaglue Actions API documentation. You can use this API to perform CRUD on Entity or Object records in third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/actions/v2\n```\n"
+    "description": "#### Introduction\n\nWelcome to the Actions API documentation. You can use this API to perform CRUD on Entity or Object records in third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/actions/v2\n```\n"
   },
   "servers": [
     {

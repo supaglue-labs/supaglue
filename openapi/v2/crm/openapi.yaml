@@ -1,18 +1,20 @@
 openapi: 3.0.3
 info:
   version: 0.13.0
-  title: Supaglue Unified CRM API
+  title: Unified CRM API
   contact:
     name: Supaglue
+    email: docs@supaglue.com
+    url: 'https://supaglue.com'
   description: |
     #### Introduction
 
-    Welcome to the Supaglue Unified Actions API (CRM) documentation. You can use this API to write to third-party providers.
+    Welcome to the Unified Actions API (CRM) documentation. You can use this API to write to third-party providers.
 
     [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
     #### Reading data
-    To read data from third-party providers, refer to Supaglue's [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.
+    To read data from third-party providers, refer to the [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.
 
     #### Base API URL
     ```

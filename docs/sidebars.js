@@ -211,6 +211,12 @@ const sidebars = {
   ],
   api: [
     { type: 'doc', id: 'api/introduction' },
+
+    // section
+    {
+      type: 'html',
+      value: sidebarHeader('Management API'),
+    },
     {
       type: 'category',
       label: 'Management API',
@@ -218,26 +224,49 @@ const sidebars = {
       // @ts-ignore
       items: require('./docs/api/v2/mgmt/sidebar.js'),
     },
+
+    // section
     {
-      type: 'category',
-      label: 'CRM API',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      items: require('./docs/api/v2/crm/sidebar.js'),
+      type: 'html',
+      value: sidebarHeader('Actions API'),
     },
     {
       type: 'category',
-      label: 'Engagement API',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      items: require('./docs/api/v2/engagement/sidebar.js'),
-    },
-    {
-      type: 'category',
-      label: 'Actions API',
+      label: 'Entities/Objects',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/actions/sidebar.js'),
+    },
+    {
+      type: 'category',
+      label: 'Common Schema',
+      items: [
+        {
+          type: 'category',
+          label: 'CRM API',
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          items: require('./docs/api/v2/crm/sidebar.js'),
+        },
+        {
+          type: 'category',
+          label: 'Engagement API',
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          items: require('./docs/api/v2/engagement/sidebar.js'),
+        },
+      ],
+    },
+
+    // section
+    {
+      type: 'html',
+      value: sidebarHeader('Passthrough API'),
+    },
+    {
+      id: 'api/v2/actions/send-passthrough-request',
+      label: 'Passthrough API',
+      type: 'doc',
     },
   ],
 };

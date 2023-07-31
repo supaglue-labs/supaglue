@@ -5,9 +5,9 @@ description: "Delete webhook"
 sidebar_label: "Delete webhook"
 hide_title: true
 hide_table_of_contents: true
-api: {"operationId":"deleteWebhook","tags":["Webhooks"],"parameters":[],"security":[{"x-api-key":[]}],"responses":{"200":{"description":"Webhook deleted"}},"description":"Delete webhook","method":"delete","path":"/webhook","servers":[{"url":"https://api.supaglue.io/mgmt/v2","description":"Supaglue API"}],"securitySchemes":{"x-api-key":{"type":"apiKey","name":"x-api-key","in":"header","description":"API key to allow developers to access the API"}},"info":{"version":"0.13.0","title":"Supaglue Management API","contact":{"name":"Supaglue","email":"docs@supaglue.com","url":"https://supaglue.com"},"description":"#### Introduction\n\nWelcome to the Supaglue Management API documentation. You can use this API to manage customer integrations and connections.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/mgmt/v2\n```\n"},"postman":{"name":"Delete webhook","description":{"type":"text/plain"},"url":{"path":["webhook"],"host":["{{baseUrl}}"],"query":[],"variable":[]},"method":"DELETE","auth":{"type":"apikey","apikey":[{"type":"any","value":"x-api-key","key":"key"},{"type":"any","value":"<API Key>","key":"value"},{"type":"any","value":"header","key":"in"}]}}}
+api: {"operationId":"deleteWebhook","tags":["Webhooks"],"parameters":[],"security":[{"x-api-key":[]}],"responses":{"200":{"description":"Webhook deleted"}},"description":"Delete webhook","method":"delete","path":"/webhook","servers":[{"url":"https://api.supaglue.io/mgmt/v2","description":"Supaglue API"}],"securitySchemes":{"x-api-key":{"type":"apiKey","name":"x-api-key","in":"header","description":"API key to allow developers to access the API"}},"info":{"version":"0.13.0","title":"Management API","contact":{"name":"Supaglue","email":"docs@supaglue.com","url":"https://supaglue.com"},"description":"#### Introduction\n\nWelcome to the Management API documentation. You can use this API to manage customer integrations and connections.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/mgmt/v2\n```\n"},"postman":{"name":"Delete webhook","description":{"type":"text/plain"},"url":{"path":["webhook"],"host":["{{baseUrl}}"],"query":[],"variable":[]},"method":"DELETE","auth":{"type":"apikey","apikey":[{"type":"any","value":"x-api-key","key":"key"},{"type":"any","value":"<API Key>","key":"value"},{"type":"any","value":"header","key":"in"}]}}}
 sidebar_class_name: "delete api-method"
-info_path: api/v2/mgmt/supaglue-management-api
+info_path: api/v2/mgmt/management-api
 custom_edit_url: null
 ---
 
@@ -26,7 +26,7 @@ import TabItem from "@theme/TabItem";
 
 <MethodEndpoint method={"delete"} path={"/webhook"}></MethodEndpoint>
 
-<SecuritySchemes infoPath={"api/v2/mgmt/supaglue-management-api"}></SecuritySchemes>
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
 
 
 
