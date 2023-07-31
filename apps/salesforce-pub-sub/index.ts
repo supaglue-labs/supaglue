@@ -1,7 +1,7 @@
 import { getCoreDependencyContainer } from '@supaglue/core';
 import { logger } from '@supaglue/core/lib/logger';
+import type { WebhookType } from '@supaglue/schemas/v2/mgmt';
 import type { CRMProvider } from '@supaglue/types';
-import type { CDCWebhookPayload } from '@supaglue/types/cdc';
 import * as jsforce from 'jsforce';
 import { createClient } from './client';
 import { ReplayPreset } from './gen/pubsub_api_pb';
@@ -136,15 +136,32 @@ const { connectionService, providerService, webhookService, applicationService }
           continue;
         }
         for (const recordId of recordIds) {
-          const webhookPayload: CDCWebhookPayload = {
+          let eventName: WebhookType;
+          switch (changeType) {
+            case 'CREATE':
+              eventName = 'salesforce_cdc.create';
+              break;
+            case 'UPDATE':
+              eventName = 'salesforce_cdc.update';
+              break;
+            case 'DELETE':
+              eventName = 'salesforce_cdc.delete';
+              break;
+            case 'UNDELETE':
+              eventName = 'salesforce_cdc.undelete';
+              break;
+            default:
+              throw new Error(`Unknown changeType ${changeType}`);
+          }
+
+          const webhookPayload = {
             id: recordId,
+            entityName,
             nulledFields,
             changedFields,
             diffFields,
             fields,
           };
-
-          const eventName = `${entityName.toLowerCase()}.${changeType.toLowerCase()}`;
 
           await webhookService.sendMessage(eventName, webhookPayload, application, `${transactionKey}-${recordId}`);
 

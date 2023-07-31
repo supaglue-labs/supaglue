@@ -286,9 +286,55 @@ export interface paths {
 }
 
 export interface webhooks {
-  "webhook": {
-    /** Webhook */
-    post: operations["webhook"];
+  "salesforce_cdc.create": {
+    /**
+     * Salesforce record created (beta) 
+     * @description When a record is created in a customer's Salesforce (beta)
+     * 
+     * This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.
+     */
+    post: operations["salesforceCdcCreate"];
+  };
+  "salesforce_cdc.update": {
+    /**
+     * Salesforce record updated (beta) 
+     * @description When a record is updated in a customer's Salesforce (beta)
+     * 
+     * This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.
+     */
+    post: operations["salesforceCdcUpdate"];
+  };
+  "salesforce_cdc.delete": {
+    /**
+     * Salesforce record deleted (beta) 
+     * @description When a record is deleted from a customer's Salesforce (beta)
+     * 
+     * This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.
+     */
+    post: operations["salesforceCdcDelete"];
+  };
+  "salesforce_cdc.undelete": {
+    /**
+     * Salesforce record undeleted (beta) 
+     * @description When a record is undeleted in a customer's Salesforce (beta)
+     * 
+     * This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.
+     */
+    post: operations["salesforceCdcUndelete"];
+  };
+  "sync.complete": {
+    /**
+     * Sync completed 
+     * @description Notification of the completion of a sync
+     */
+    post: operations["syncComplete"];
+  };
+  "connection.create": {
+    /**
+     * Customer connection created 
+     * @description Notification of the creation of a connection for a customer
+     */
+    post: operations["connectionCreate"];
   };
 }
 
@@ -630,7 +676,10 @@ export interface components {
       };
       entity_mappings?: (components["schemas"]["entity_mapping"])[];
     };
-    /** @enum {string} */
+    /**
+     * @example crm 
+     * @enum {string}
+     */
     category: "crm" | "engagement" | "no_category";
     sync_config: {
       /** @example 465fdcb7-26b4-4090-894c-67cab41022bb */
@@ -751,7 +800,10 @@ export interface components {
         };
       };
     };
-    /** @enum {string} */
+    /**
+     * @example hubspot 
+     * @enum {string}
+     */
     provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom";
     /** @enum {string} */
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
@@ -1037,6 +1089,12 @@ export interface components {
         provider_name: "hubspot" | "salesforce";
       };
     }]>;
+    "salesforce_cdc.create": webhooks["salesforce_cdc.create"];
+    "salesforce_cdc.update": webhooks["salesforce_cdc.update"];
+    "salesforce_cdc.delete": webhooks["salesforce_cdc.delete"];
+    "salesforce_cdc.undelete": webhooks["salesforce_cdc.undelete"];
+    "sync.complete": webhooks["sync.complete"];
+    "connection.create": webhooks["connection.create"];
     standard_or_custom_object: {
       /** @enum {string} */
       type: "standard" | "custom";
@@ -1999,11 +2057,270 @@ export interface operations {
       };
     };
   };
-  /** Webhook */
-  webhook: {
+  /**
+   * Salesforce record created (beta) 
+   * @description When a record is created in a customer's Salesforce (beta)
+   * 
+   * This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.
+   */
+  salesforceCdcCreate: {
     requestBody?: {
       content: {
-        "application/json": components["schemas"]["webhook-payload"];
+        /**
+         * @example {
+         *   "id": "0011t00000B0G6uAAF",
+         *   "entityName": "Account",
+         *   "fields": {
+         *     "Name": "Acme"
+         *   }
+         * }
+         */
+        "application/json": {
+          /**
+           * @description The Salesforce ID of the record that was created 
+           * @example 0011t00000B0G6uAAF
+           */
+          id: string;
+          /**
+           * @description The name of the Salesforce object that the record belongs to 
+           * @example Account
+           */
+          entityName: string;
+          /**
+           * @description The fields that were set when the record was created 
+           * @example {
+           *   "Name": "Acme"
+           * }
+           */
+          fields: Record<string, never>;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Salesforce record updated (beta) 
+   * @description When a record is updated in a customer's Salesforce (beta)
+   * 
+   * This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.
+   */
+  salesforceCdcUpdate: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "id": "0011t00000B0G6uAAF",
+         *   "entityName": "Account",
+         *   "fields": {
+         *     "Name": "Acme"
+         *   },
+         *   "nulledFields": [],
+         *   "changedFields": [
+         *     "Name"
+         *   ],
+         *   "diffFields": []
+         * }
+         */
+        "application/json": {
+          /**
+           * @description The Salesforce ID of the record that was updated 
+           * @example 0011t00000B0G6uAAF
+           */
+          id: string;
+          /**
+           * @description The name of the Salesforce object that the record belongs to 
+           * @example Account
+           */
+          entityName: string;
+          /**
+           * @description The fields that were set to null when the record was updated 
+           * @example [
+           *   "PhoneNumber2"
+           * ]
+           */
+          nulledFields: (string)[];
+          /**
+           * @description The fields that were changed when the record was updated 
+           * @example [
+           *   "Name"
+           * ]
+           */
+          changedFields: (string)[];
+          /**
+           * @description The fields that were changed when the record was updated and the value in the fields object is a diff to be applied to the existing value 
+           * @example [
+           *   "Description"
+           * ]
+           */
+          diffFields: (string)[];
+          /** @description The fields that were set when the record was created */
+          fields: Record<string, never>;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Salesforce record deleted (beta) 
+   * @description When a record is deleted from a customer's Salesforce (beta)
+   * 
+   * This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.
+   */
+  salesforceCdcDelete: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "id": "0011t00000B0G6uAAF",
+         *   "entityName": "Account"
+         * }
+         */
+        "application/json": {
+          /**
+           * @description The Salesforce ID of the record that was deleted 
+           * @example 0011t00000B0G6uAAF
+           */
+          id: string;
+          /**
+           * @description The name of the Salesforce object that the record belongs to 
+           * @example Account
+           */
+          entityName: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Salesforce record undeleted (beta) 
+   * @description When a record is undeleted in a customer's Salesforce (beta)
+   * 
+   * This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.
+   */
+  salesforceCdcUndelete: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "id": "0011t00000B0G6uAAF",
+         *   "entityName": "Account",
+         *   "fields": {
+         *     "Name": "Acme"
+         *   }
+         * }
+         */
+        "application/json": {
+          /**
+           * @description The Salesforce ID of the record that was undeleted 
+           * @example 0011t00000B0G6uAAF
+           */
+          id: string;
+          /**
+           * @description The name of the Salesforce object that the record belongs to 
+           * @example Account
+           */
+          entityName: string;
+          /**
+           * @description The fields that were set when the record was undeleted 
+           * @example {
+           *   "Name": "Acme"
+           * }
+           */
+          fields: Record<string, never>;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Sync completed 
+   * @description Notification of the completion of a sync
+   */
+  syncComplete: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "provider_name": "salesforce",
+         *   "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+         *   "object_type": "standard",
+         *   "object": "contact",
+         *   "error_message": "Error message"
+         * }
+         */
+        "application/json": ({
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          connection_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          customer_id: string;
+          provider_name: components["schemas"]["provider_name"];
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          history_id: string;
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example 100 */
+          num_records_synced?: number;
+          /** @example Error message */
+          error_message?: string;
+        }) & (OneOf<[{
+          /** @enum {string} */
+          type: "object";
+          /** @enum {string} */
+          object_type: "common" | "standard" | "custom";
+          /** @example contact */
+          object: string;
+        }, {
+          /** @enum {string} */
+          type: "entity";
+          entity_id: string;
+        }]>);
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Customer connection created 
+   * @description Notification of the creation of a connection for a customer
+   */
+  connectionCreate: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
+         *   "category": "crm",
+         *   "provider_name": "salesforce",
+         *   "result": "SUCCESS"
+         * }
+         */
+        "application/json": {
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          customer_id: string;
+          /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
+          provider_id: string;
+          category: components["schemas"]["category"];
+          provider_name: components["schemas"]["provider_name"];
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+        };
       };
     };
     responses: {

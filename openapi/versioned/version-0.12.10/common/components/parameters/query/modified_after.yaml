@@ -1,7 +1,0 @@
-name: modified_after
-in: query
-schema:
-  type: string
-  format: date-time
-  example: 2023-02-23T00:00:00Z
-description: If provided, will only return objects modified after this datetime

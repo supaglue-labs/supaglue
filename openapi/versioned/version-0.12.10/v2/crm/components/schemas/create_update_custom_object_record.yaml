@@ -1,7 +1,0 @@
-type: object
-properties:
-  fields:
-    type: object
-    additionalProperties: true
-required:
-  - fields

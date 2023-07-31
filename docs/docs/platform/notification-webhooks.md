@@ -13,6 +13,6 @@ For example, you can configure a webhook to fire when new connections get create
 - Display appropriate UI upon connection success or failure
 - Trigger data transformation workflows are new data syncs to your database
 
-Configure webhook notifications via the Management Portal or using the [Webhooks Management API](../api/v2/mgmt/webhooks).
+Configure webhook notifications via the Management Portal.
 
 ![webhook-config](/img/webhook_config.png)

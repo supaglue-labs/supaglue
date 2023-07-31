@@ -1,0 +1,64 @@
+post:
+  summary: Salesforce record updated (beta)
+  description: |-
+    When a record is updated in a customer's Salesforce (beta)
+
+    This feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.
+  operationId: salesforceCdcUpdate
+  x-event-type: salesforce_cdc.update
+  tags:
+    - Webhook Events
+  requestBody:
+    content:
+      application/json:
+        example:
+          id: '0011t00000B0G6uAAF'
+          entityName: Account
+          fields:
+            Name: 'Acme'
+          nulledFields: []
+          changedFields: [Name]
+          diffFields: []
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+              description: The Salesforce ID of the record that was updated
+              example: '0011t00000B0G6uAAF'
+            entityName:
+              type: string
+              description: The name of the Salesforce object that the record belongs to
+              example: Account
+            nulledFields:
+              type: array
+              description: The fields that were set to null when the record was updated
+              example: [PhoneNumber2]
+              items:
+                type: string
+            changedFields:
+              type: array
+              description: The fields that were changed when the record was updated
+              example: [Name]
+              items:
+                type: string
+            diffFields:
+              type: array
+              description: The fields that were changed when the record was updated and the value in the fields object is a diff to be applied to the existing value
+              example: [Description]
+              items:
+                type: string
+            fields:
+              type: object
+              description: The fields that were set when the record was created
+          required:
+            - id
+            - entityName
+            - fields
+            - nulledFields
+            - changedFields
+            - diffFields
+
+  responses:
+    '200':
+      description: Return a 200 status to indicate that the data was received successfully
