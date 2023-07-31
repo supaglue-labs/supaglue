@@ -5259,7 +5259,7 @@
             "application/json": {
               "example": {
                 "id": "0011t00000B0G6uAAF",
-                "entityName": "Account",
+                "entity_name": "Account",
                 "fields": {
                   "Name": "Acme"
                 }
@@ -5272,7 +5272,7 @@
                     "description": "The Salesforce ID of the record that was created",
                     "example": "0011t00000B0G6uAAF"
                   },
-                  "entityName": {
+                  "entity_name": {
                     "type": "string",
                     "description": "The name of the Salesforce object that the record belongs to",
                     "example": "Account"
@@ -5287,7 +5287,7 @@
                 },
                 "required": [
                   "id",
-                  "entityName",
+                  "entity_name",
                   "fields"
                 ]
               }
@@ -5315,15 +5315,15 @@
             "application/json": {
               "example": {
                 "id": "0011t00000B0G6uAAF",
-                "entityName": "Account",
+                "entity_name": "Account",
                 "fields": {
                   "Name": "Acme"
                 },
-                "nulledFields": [],
-                "changedFields": [
+                "nulled_fields": [],
+                "changed_fields": [
                   "Name"
                 ],
-                "diffFields": []
+                "diff_fields": []
               },
               "schema": {
                 "type": "object",
@@ -5333,12 +5333,12 @@
                     "description": "The Salesforce ID of the record that was updated",
                     "example": "0011t00000B0G6uAAF"
                   },
-                  "entityName": {
+                  "entity_name": {
                     "type": "string",
                     "description": "The name of the Salesforce object that the record belongs to",
                     "example": "Account"
                   },
-                  "nulledFields": {
+                  "nulled_fields": {
                     "type": "array",
                     "description": "The fields that were set to null when the record was updated",
                     "example": [
@@ -5348,7 +5348,7 @@
                       "type": "string"
                     }
                   },
-                  "changedFields": {
+                  "changed_fields": {
                     "type": "array",
                     "description": "The fields that were changed when the record was updated",
                     "example": [
@@ -5358,7 +5358,7 @@
                       "type": "string"
                     }
                   },
-                  "diffFields": {
+                  "diff_fields": {
                     "type": "array",
                     "description": "The fields that were changed when the record was updated and the value in the fields object is a diff to be applied to the existing value",
                     "example": [
@@ -5375,11 +5375,11 @@
                 },
                 "required": [
                   "id",
-                  "entityName",
+                  "entity_name",
                   "fields",
-                  "nulledFields",
-                  "changedFields",
-                  "diffFields"
+                  "nulled_fields",
+                  "changed_fields",
+                  "diff_fields"
                 ]
               }
             }
@@ -5406,7 +5406,7 @@
             "application/json": {
               "example": {
                 "id": "0011t00000B0G6uAAF",
-                "entityName": "Account"
+                "entity_name": "Account"
               },
               "schema": {
                 "type": "object",
@@ -5416,7 +5416,7 @@
                     "description": "The Salesforce ID of the record that was deleted",
                     "example": "0011t00000B0G6uAAF"
                   },
-                  "entityName": {
+                  "entity_name": {
                     "type": "string",
                     "description": "The name of the Salesforce object that the record belongs to",
                     "example": "Account"
@@ -5424,7 +5424,7 @@
                 },
                 "required": [
                   "id",
-                  "entityName"
+                  "entity_name"
                 ]
               }
             }
@@ -5451,7 +5451,7 @@
             "application/json": {
               "example": {
                 "id": "0011t00000B0G6uAAF",
-                "entityName": "Account",
+                "entity_name": "Account",
                 "fields": {
                   "Name": "Acme"
                 }
@@ -5464,7 +5464,7 @@
                     "description": "The Salesforce ID of the record that was undeleted",
                     "example": "0011t00000B0G6uAAF"
                   },
-                  "entityName": {
+                  "entity_name": {
                     "type": "string",
                     "description": "The name of the Salesforce object that the record belongs to",
                     "example": "Account"
@@ -5479,7 +5479,7 @@
                 },
                 "required": [
                   "id",
-                  "entityName",
+                  "entity_name",
                   "fields"
                 ]
               }
@@ -5698,7 +5698,7 @@
             "application/json": {
               "example": {
                 "id": "0011t00000B0G6uAAF",
-                "entityName": "Account",
+                "entity_name": "Account",
                 "fields": {
                   "Name": "Acme"
                 }
@@ -5711,7 +5711,7 @@
                     "description": "The Salesforce ID of the record that was created",
                     "example": "0011t00000B0G6uAAF"
                   },
-                  "entityName": {
+                  "entity_name": {
                     "type": "string",
                     "description": "The name of the Salesforce object that the record belongs to",
                     "example": "Account"
@@ -5726,7 +5726,7 @@
                 },
                 "required": [
                   "id",
-                  "entityName",
+                  "entity_name",
                   "fields"
                 ]
               }
@@ -5754,15 +5754,15 @@
             "application/json": {
               "example": {
                 "id": "0011t00000B0G6uAAF",
-                "entityName": "Account",
+                "entity_name": "Account",
                 "fields": {
                   "Name": "Acme"
                 },
-                "nulledFields": [],
-                "changedFields": [
+                "nulled_fields": [],
+                "changed_fields": [
                   "Name"
                 ],
-                "diffFields": []
+                "diff_fields": []
               },
               "schema": {
                 "type": "object",
@@ -5772,12 +5772,12 @@
                     "description": "The Salesforce ID of the record that was updated",
                     "example": "0011t00000B0G6uAAF"
                   },
-                  "entityName": {
+                  "entity_name": {
                     "type": "string",
                     "description": "The name of the Salesforce object that the record belongs to",
                     "example": "Account"
                   },
-                  "nulledFields": {
+                  "nulled_fields": {
                     "type": "array",
                     "description": "The fields that were set to null when the record was updated",
                     "example": [
@@ -5787,7 +5787,7 @@
                       "type": "string"
                     }
                   },
-                  "changedFields": {
+                  "changed_fields": {
                     "type": "array",
                     "description": "The fields that were changed when the record was updated",
                     "example": [
@@ -5797,7 +5797,7 @@
                       "type": "string"
                     }
                   },
-                  "diffFields": {
+                  "diff_fields": {
                     "type": "array",
                     "description": "The fields that were changed when the record was updated and the value in the fields object is a diff to be applied to the existing value",
                     "example": [
@@ -5814,11 +5814,11 @@
                 },
                 "required": [
                   "id",
-                  "entityName",
+                  "entity_name",
                   "fields",
-                  "nulledFields",
-                  "changedFields",
-                  "diffFields"
+                  "nulled_fields",
+                  "changed_fields",
+                  "diff_fields"
                 ]
               }
             }
@@ -5845,7 +5845,7 @@
             "application/json": {
               "example": {
                 "id": "0011t00000B0G6uAAF",
-                "entityName": "Account"
+                "entity_name": "Account"
               },
               "schema": {
                 "type": "object",
@@ -5855,7 +5855,7 @@
                     "description": "The Salesforce ID of the record that was deleted",
                     "example": "0011t00000B0G6uAAF"
                   },
-                  "entityName": {
+                  "entity_name": {
                     "type": "string",
                     "description": "The name of the Salesforce object that the record belongs to",
                     "example": "Account"
@@ -5863,7 +5863,7 @@
                 },
                 "required": [
                   "id",
-                  "entityName"
+                  "entity_name"
                 ]
               }
             }
@@ -5890,7 +5890,7 @@
             "application/json": {
               "example": {
                 "id": "0011t00000B0G6uAAF",
-                "entityName": "Account",
+                "entity_name": "Account",
                 "fields": {
                   "Name": "Acme"
                 }
@@ -5903,7 +5903,7 @@
                     "description": "The Salesforce ID of the record that was undeleted",
                     "example": "0011t00000B0G6uAAF"
                   },
-                  "entityName": {
+                  "entity_name": {
                     "type": "string",
                     "description": "The name of the Salesforce object that the record belongs to",
                     "example": "Account"
@@ -5918,7 +5918,7 @@
                 },
                 "required": [
                   "id",
-                  "entityName",
+                  "entity_name",
                   "fields"
                 ]
               }

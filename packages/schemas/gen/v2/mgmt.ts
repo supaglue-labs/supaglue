@@ -2069,7 +2069,7 @@ export interface operations {
         /**
          * @example {
          *   "id": "0011t00000B0G6uAAF",
-         *   "entityName": "Account",
+         *   "entity_name": "Account",
          *   "fields": {
          *     "Name": "Acme"
          *   }
@@ -2085,7 +2085,7 @@ export interface operations {
            * @description The name of the Salesforce object that the record belongs to 
            * @example Account
            */
-          entityName: string;
+          entity_name: string;
           /**
            * @description The fields that were set when the record was created 
            * @example {
@@ -2113,15 +2113,15 @@ export interface operations {
         /**
          * @example {
          *   "id": "0011t00000B0G6uAAF",
-         *   "entityName": "Account",
+         *   "entity_name": "Account",
          *   "fields": {
          *     "Name": "Acme"
          *   },
-         *   "nulledFields": [],
-         *   "changedFields": [
+         *   "nulled_fields": [],
+         *   "changed_fields": [
          *     "Name"
          *   ],
-         *   "diffFields": []
+         *   "diff_fields": []
          * }
          */
         "application/json": {
@@ -2134,28 +2134,28 @@ export interface operations {
            * @description The name of the Salesforce object that the record belongs to 
            * @example Account
            */
-          entityName: string;
+          entity_name: string;
           /**
            * @description The fields that were set to null when the record was updated 
            * @example [
            *   "PhoneNumber2"
            * ]
            */
-          nulledFields: (string)[];
+          nulled_fields: (string)[];
           /**
            * @description The fields that were changed when the record was updated 
            * @example [
            *   "Name"
            * ]
            */
-          changedFields: (string)[];
+          changed_fields: (string)[];
           /**
            * @description The fields that were changed when the record was updated and the value in the fields object is a diff to be applied to the existing value 
            * @example [
            *   "Description"
            * ]
            */
-          diffFields: (string)[];
+          diff_fields: (string)[];
           /** @description The fields that were set when the record was created */
           fields: Record<string, never>;
         };
@@ -2178,7 +2178,7 @@ export interface operations {
         /**
          * @example {
          *   "id": "0011t00000B0G6uAAF",
-         *   "entityName": "Account"
+         *   "entity_name": "Account"
          * }
          */
         "application/json": {
@@ -2191,7 +2191,7 @@ export interface operations {
            * @description The name of the Salesforce object that the record belongs to 
            * @example Account
            */
-          entityName: string;
+          entity_name: string;
         };
       };
     };
@@ -2212,7 +2212,7 @@ export interface operations {
         /**
          * @example {
          *   "id": "0011t00000B0G6uAAF",
-         *   "entityName": "Account",
+         *   "entity_name": "Account",
          *   "fields": {
          *     "Name": "Acme"
          *   }
@@ -2228,7 +2228,7 @@ export interface operations {
            * @description The name of the Salesforce object that the record belongs to 
            * @example Account
            */
-          entityName: string;
+          entity_name: string;
           /**
            * @description The fields that were set when the record was undeleted 
            * @example {
