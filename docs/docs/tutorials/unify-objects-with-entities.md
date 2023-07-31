@@ -124,7 +124,7 @@ Login to your configured Destination (here, we will use Postgres) and inspect th
 Hubspot:
 
 ```sql
-postgres=> select * from crm_contacts where _supaglue_provider_name = 'hubspot' limit 1;
+postgres=> select * from apolla_contact where _supaglue_provider_name = 'hubspot' limit 1;
 -[ RECORD 1 ]------------+--------------------------------------------------------------------------------------------------------------------------------------------
 _supaglue_application_id | 4d9971de-773c-482c-b0a9-7545667dab46
 _supaglue_provider_name  | hubspot
@@ -138,7 +138,7 @@ id                       | 1
 Salesforce:
 
 ```sql
-postgres=> select * from crm_contacts where _supaglue_provider_name = 'salesforce' limit 1;
+postgres=> select * from apolla_contact where _supaglue_provider_name = 'salesforce' limit 1;
 -[ RECORD 1 ]------------+-----------------------------------------------------------------------
 _supaglue_application_id | 4d9971de-773c-482c-b0a9-7545667dab46
 _supaglue_provider_name  | salesforce
