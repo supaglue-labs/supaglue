@@ -33,9 +33,28 @@ export type PropertiesWithAdditionalFields = {
   additional_fields?: Record<string, unknown>;
 };
 
-export type ObjectRecord = {
+type BaseCreatedObjectRecord = {
   id: string;
-  data: Record<string, unknown>;
+};
+
+export type CreatedStandardObjectRecord = BaseCreatedObjectRecord & {
+  standardObjectName: string;
 };
 
 export type ObjectRecordUpsertData = Record<string, unknown>;
+
+export type ObjectRecordData = {
+  additionalFields?: Record<string, unknown>;
+  [key: string]: unknown;
+};
+
+type BaseObjectRecord = {
+  id: string;
+  data: ObjectRecordData;
+};
+
+export type StandardObjectRecord = BaseObjectRecord & {
+  standardObjectName: string;
+};
+
+export type ObjectRecord = StandardObjectRecord;

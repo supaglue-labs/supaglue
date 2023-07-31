@@ -26,9 +26,9 @@ paths:
     $ref: paths/entities/@{entity_name}.yaml
   '/entities/{entity_name}/{record_id}':
     $ref: paths/entities/@{entity_name}@{record_id}.yaml
-  '/objects/{object_name}':
+  '/objects/standard/{object_name}':
     $ref: paths/objects/standard@{object_name}.yaml
-  '/objects/{object_name}/{record_id}':
+  '/objects/standard/{object_name}/{record_id}':
     $ref: paths/objects/standard@{object_name}@{record_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml

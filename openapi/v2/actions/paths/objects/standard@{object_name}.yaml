@@ -1,5 +1,5 @@
 post:
-  operationId: create
+  operationId: createStandardObjectRecord
   summary: Create Standard Object record
   tags:
     - ObjectRecords

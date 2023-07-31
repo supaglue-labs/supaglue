@@ -956,6 +956,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
     return {
       id: response.data.id,
+      standardObjectName: object.name,
       data: response.data.properties,
     };
   }

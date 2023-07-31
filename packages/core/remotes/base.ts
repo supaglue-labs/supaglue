@@ -1,8 +1,10 @@
 import type {
   ObjectRecord,
   ObjectRecordUpsertData,
+  Property,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
+  StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
@@ -17,6 +19,8 @@ interface RemoteClientEvents {
 
 export interface RemoteClient {
   on<U extends keyof RemoteClientEvents>(event: U, listener: RemoteClientEvents[U]): this;
+
+  listProperties(object: StandardOrCustomObjectDef): Promise<Property[]>;
 
   createObjectRecord(object: StandardOrCustomObject, data: ObjectRecordUpsertData): Promise<string>;
   getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecord>;
@@ -54,6 +58,10 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
 
   public handleErr(err: unknown): unknown {
     return err;
+  }
+
+  public listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
+    throw new Error('Not implemented');
   }
 
   public async createObjectRecord(object: StandardOrCustomObject, data: ObjectRecordUpsertData): Promise<string> {

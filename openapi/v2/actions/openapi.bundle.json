@@ -221,9 +221,9 @@
         }
       ]
     },
-    "/objects/{object_name}": {
+    "/objects/standard/{object_name}": {
       "post": {
-        "operationId": "create",
+        "operationId": "createStandardObjectRecord",
         "summary": "Create Standard Object record",
         "tags": [
           "ObjectRecords"
@@ -303,7 +303,7 @@
         }
       ]
     },
-    "/objects/{object_name}/{record_id}": {
+    "/objects/standard/{object_name}/{record_id}": {
       "get": {
         "operationId": "getStandardObjectRecord",
         "summary": "Get Standard Object record",
@@ -651,6 +651,12 @@
           },
           "data": {
             "type": "object",
+            "properties": {
+              "additional_properties": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
             "additionalProperties": true
           }
         },
