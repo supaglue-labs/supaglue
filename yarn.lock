@@ -6833,7 +6833,7 @@ __metadata:
   dependencies:
     "@tsconfig/node18": ^1.0.1
     camelcase-keys: 7.0.2
-    snakecase-keys: ^5.4.5
+    snakecase-keys: ^5.4.6
     typescript: ^4.9.5
   languageName: unknown
   linkType: soft
@@ -20400,13 +20400,13 @@ __metadata:
     "@bufbuild/connect-node": ^0.8.6
     "@bufbuild/protobuf": ^1.2.0
     "@supaglue/core": "workspace:*"
-    "@supaglue/utils": "workspace:^"
     "@types/simple-oauth2": ^5
     avsc: ^5.7.7
     bigint-conversion: ^2.4.1
     jsforce: ^2.0.0-beta.20
     lru-cache: ^9.1.1
     simple-oauth2: ^5.0.0
+    snakecase-keys: ^5.4.6
     tsx: ^3.12.6
     typescript: ^4.9.5
   languageName: unknown
@@ -21059,14 +21059,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"snakecase-keys@npm:^5.4.5":
-  version: 5.4.5
-  resolution: "snakecase-keys@npm:5.4.5"
+"snakecase-keys@npm:^5.4.6":
+  version: 5.4.6
+  resolution: "snakecase-keys@npm:5.4.6"
   dependencies:
     map-obj: ^4.1.0
     snake-case: ^3.0.4
     type-fest: ^2.5.2
-  checksum: 9e591c95a58892fb07201813f61bd7cb908553bccfab910e0a03f7ea727d3c1d6b0a0a13fd413e91f5a77e6471773c309d9a7c28d60b4b71f45e1393c92c5dff
+  checksum: 992ec20490f576bfe620eaa4378a229b92be4c93595216deb5a27530e7f5608f1061333990b9d6e0fda369d9387553e96b02c9eb0f56f6b296444428182bf36d
   languageName: node
   linkType: hard
 

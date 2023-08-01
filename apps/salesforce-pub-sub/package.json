@@ -8,12 +8,12 @@
     "@bufbuild/connect-node": "^0.8.6",
     "@bufbuild/protobuf": "^1.2.0",
     "@supaglue/core": "workspace:*",
-    "@supaglue/utils": "workspace:^",
     "avsc": "^5.7.7",
     "bigint-conversion": "^2.4.1",
     "jsforce": "^2.0.0-beta.20",
     "lru-cache": "^9.1.1",
-    "simple-oauth2": "^5.0.0"
+    "simple-oauth2": "^5.0.0",
+    "snakecase-keys": "^5.4.6"
   },
   "scripts": {
     "generate": "buf generate https://github.com/supaglue-labs/salesforce-pub-sub-api.git",

@@ -2,8 +2,8 @@ import { getCoreDependencyContainer } from '@supaglue/core';
 import { logger } from '@supaglue/core/lib/logger';
 import type { WebhookType } from '@supaglue/schemas/v2/mgmt';
 import type { CRMProvider } from '@supaglue/types';
-import { snakecaseKeys } from '@supaglue/utils';
 import * as jsforce from 'jsforce';
+import { default as snakecaseKeys } from 'snakecase-keys';
 import { createClient } from './client';
 import { ReplayPreset } from './gen/pubsub_api_pb';
 
@@ -164,7 +164,7 @@ const { connectionService, providerService, webhookService, applicationService }
               diffFields,
               fields,
             },
-            false
+            { deep: false }
           );
 
           await webhookService.sendMessage(eventName, webhookPayload, application, `${transactionKey}-${recordId}`);
