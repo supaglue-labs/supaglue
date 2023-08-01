@@ -1,5 +1,6 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import ThemedImage from '@theme/ThemedImage';
 
 # Actions API (writes)
 
