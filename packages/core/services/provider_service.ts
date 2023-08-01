@@ -11,7 +11,7 @@ import type {
   ProviderUpdateParams,
   SyncConfig,
 } from '@supaglue/types';
-import type { EntityMapping } from '@supaglue/types/entity_mapping';
+import type { ProviderEntityMapping } from '@supaglue/types/entity_mapping';
 import type { ObjectType } from '@supaglue/types/sync';
 import { BadRequestError, NotFoundError } from '../errors';
 import { fromProviderModel, fromSyncConfigModel, toProviderModel, toSchemaModel, toSyncConfigModel } from '../mappers';
@@ -342,7 +342,7 @@ function validateObjects({ common, standard, custom }: ProviderObjects<ProviderC
   }
 }
 
-function validateEntityMappings(entityMappings: EntityMapping[]): void {
+function validateEntityMappings(entityMappings: ProviderEntityMapping[]): void {
   // 1. Disallow multiple entity mappings for the same provider to be mapped to the same object
   // 2. Disallow multiple mappings for entities to object for the same entity name
 

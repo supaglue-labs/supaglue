@@ -7,7 +7,7 @@ import type {
   ProviderName,
   SchemaMappingsConfig,
 } from '@supaglue/types';
-import type { EntityMapping } from '@supaglue/types/entity_mapping';
+import type { ConnectionEntityMapping } from '@supaglue/types/entity_mapping';
 import { decrypt } from '../lib/crypt';
 import { parseCustomerIdPk } from '../lib/customer_id';
 
@@ -34,7 +34,7 @@ export async function fromConnectionModelToConnectionUnsafe<T extends ProviderNa
     providerName: providerName as T,
     credentials: JSON.parse(await decrypt(credentials)),
     schemaMappingsConfig: schemaMappingsConfig as SchemaMappingsConfig | undefined,
-    entityMappings: entityMappings as EntityMapping[] | undefined,
+    entityMappings: entityMappings as ConnectionEntityMapping[] | undefined,
     instanceUrl,
   };
 }
@@ -60,7 +60,7 @@ export function fromConnectionModelToConnectionSafe({
     status: status as ConnectionStatus,
     providerName: providerName as ProviderName,
     schemaMappingsConfig: schemaMappingsConfig as SchemaMappingsConfig | undefined,
-    entityMappings: entityMappings as EntityMapping[] | undefined,
+    entityMappings: entityMappings as ConnectionEntityMapping[] | undefined,
     instanceUrl,
   };
 }

@@ -13,7 +13,7 @@ import type {
   WebhookConfig,
 } from '@supaglue/types';
 import type { Entity } from '@supaglue/types/entity';
-import type { EntityMapping } from '@supaglue/types/entity_mapping';
+import type { ConnectionEntityMapping } from '@supaglue/types/entity_mapping';
 import { snakecaseKeys, snakecaseKeysSansHeaders } from '@supaglue/utils/snakecase';
 
 export type ClientErrorResponse = {
@@ -262,11 +262,11 @@ export async function deleteEntity(applicationId: string, syncConfigId: string):
   return await toClientEmptyResponse(result);
 }
 
-export async function updateEntityMapping(
+export async function updateCustomerEntityMapping(
   applicationId: string,
   customerId: string,
   providerName: string,
-  data: EntityMapping
+  data: ConnectionEntityMapping
 ): Promise<ClientEmptyResponse> {
   const result = await fetch(
     `/api/internal/entity-mappings/${data.entityId}?customer_id=${customerId}&provider_name=${providerName}`,

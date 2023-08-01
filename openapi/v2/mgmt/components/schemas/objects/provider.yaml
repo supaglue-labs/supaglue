@@ -22,7 +22,7 @@ properties:
   entity_mappings:
     type: array
     items:
-      $ref: ./entity_mapping.yaml
+      $ref: ./provider_entity_mapping.yaml
 required:
   - id
   - application_id

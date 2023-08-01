@@ -9,7 +9,7 @@ put:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/objects/entity_mapping.yaml
+          $ref: ../components/schemas/objects/connection_entity_mapping.yaml
   responses:
     200:
       description: Entity Mapping
