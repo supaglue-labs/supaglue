@@ -1,86 +1,33 @@
----
-description: ''
----
-
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 # Actions API (writes)
 
 The Actions API lets you perform common operations on your customers' SaaS tools.
-![actions_api_diagram](/img/actions-api-diagram-2.png 'actions API diagram')
+
+<ThemedImage
+alt="actions api diagram"
+width="75%"
+sources={{
+    light: '/img/actions-api-diagram-2.png',
+    dark: '/img/actions-api-diagram-2.png',
+  }}
+/>
 
 ## How it works
 
 1. You call Supaglue’s Actions API with a request payload.
-2. Supaglue applies mappings and updates the data in Salesforce (or another remote provider). You can use Supaglue’s default unified mappings or your own.
-3. Optional: Supaglue updates your application DB for the corresponding record, before returning a 200 response (see cache invalidation).
+2. Supaglue applies mappings ([Objects](../platform/objects/overview), [Entities](../platform/entities/overview), or [Common Schema](../platform/common-schema/overview)) and updates the data in your customer's third-party Provider tool.
+3. Optional: For application databases (Postgres, MySQL, MongoDB), Supaglue updates your application DB for the corresponding record before returning a 200 response (see [data invalidation](#data-invalidation)).
+
+The example below calls the Actions API to create a contact in Salesforce:
 
 ![actions_api_diagram](/img/actions-api-diagram.png 'actions API diagram')
 
-## Unified API
+## Data invalidation
 
-Supaglue unifies action API endpoints so that you can communicate with multiple providers within a single category with a single interface.
-
-For example, you can update a Salesforce Account record and HubSpot Company record with the same API endpoint and schema just by changing a header:
-
-<Tabs>
-
-<TabItem value="hubspot" label="HubSpot" default>
-
-```shell
-
-curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
---header 'x-customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
---header 'x-provider-name: hubspot' \
---header 'x-api-key: {{apiKey}}' \
---header 'Content-Type: application/json' \
---data '{
-    "model": {
-        "first_name": "John",
-        "last_name": "Doe"
-    }
-}'
-```
-
-</TabItem>
-
-<TabItem value="salesforce" label="Salesforce">
-
-```shell
-
-curl --location --request POST 'https://api.supaglue.io/crm/v2/contacts' \
---header 'x-customer-id: 9ca0cd70-ae74-4f8f-81fd-9dd5d0a41677' \
---header 'x-provider-name: salesforce' \
---header 'x-api-key: {{apiKey}}' \
---header 'Content-Type: application/json' \
---data '{
-    "model": {
-        "first_name": "John",
-        "last_name": "Doe"
-    }
-}'
-```
-
-</TabItem>
-
-</Tabs>
-
-:::info
-
-Besides unifying the API endpoints, the actions API also applies the Supaglue common schema, which normalizes the request and response schemas across different providers in the same category. See [Common schema](../platform/common-schema/overview) to learn more.
-
-:::
-
-## Cache invalidation
-
-If you have configured a destination for managed syncs, Supaglue will immediately reflect any newly created or updated records in your destination.
+Suppose you have configured an application destination (Postgres, MySQL, MongoDB) for managed syncs. In that case, Supaglue will immediately reflect any newly created or updated records in your destination after updating the third-party Provider.
 
 For example, if you have updated an Account record in Salesforce, Supaglue will update the corresponding Account record in your Postgres database.
 
-Cache invalidation helps maintain data consistency between your customers' CRM and destination database.
-
-:::info
-This feature is only supported for some destinations, not all.
-
-:::
+Data invalidation helps maintain data consistency between your customers' third-party Provider and Destination database.

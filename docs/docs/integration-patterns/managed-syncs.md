@@ -1,27 +1,27 @@
----
-description: ''
----
+import ThemedImage from '@theme/ThemedImage';
 
 # Managed syncs (reads)
 
-Managed syncs lets you sync data from your customers’ third-party provider directly into your own application database or data warehouse.
-![managed_syncs_diagram](/img/managed-syncs-diagram-2.png 'managed syncs diagram')
+Managed syncs let you sync data from your customers’ third-party provider directly into your own application database or data warehouse.
+
+<ThemedImage
+alt="managed syncs diagram"
+width="75%"
+sources={{
+    light: '/img/managed-syncs-diagram-2.png',
+    dark: '/img/managed-syncs-diagram-2.png',
+  }}
+/>
 
 ## How it works
 
-You can set up a managed sync in about 5 minutes.
-
 1. Configure the sync parameters (customers, providers, destination, sync configuration) using the [Management Portal](https://app.supaglue.io) or [Management API](../api/v2/mgmt/management-api).
-2. Your customer connects via our [Managed Authentication](../platform/managed-auth) feature and optionally defines field mappings specific to their third-party Provider.
+2. Your customer connects via our [Managed Authentication](../platform/managed-auth) feature and optionally defines mappings ([Objects](../platform/objects/overview), [Entities](../platform/entities/overview), or [Common Schema](../platform/common-schema/overview)) specific to their third-party Provider.
 3. Supaglue starts fetching data from your customers’ third-party Providers and landing them in your Destination (e.g. Postgres).
-
-## Configuration
-
-You can configure a managed sync through a UI in the management portal, or programmatically via the management API.
 
 ### Provider configuration
 
-The provider configuration defines which providers to sync from (e.g. Salesforce), and allows your customers to connect securely through Supaglue's management authentication.
+The provider configuration defines which providers to sync from (e.g. Salesforce), and allows your customers to connect securely through Supaglue's managed authentication.
 
 ```json
 {
@@ -45,7 +45,7 @@ import TabItem from '@theme/TabItem';
 
 ### Destination configuration
 
-The destination configuration defines where we sync to. This is usually a data store hosted in your cloud.
+The destination configuration defines where we sync to. It is a data store hosted in your cloud.
 
 <Tabs>
 
@@ -59,11 +59,12 @@ The destination configuration defines where we sync to. This is usually a data s
   "credentials": {
     "host": "db.jqmzyaitgfisezefyosx.supabase.co",
     "port": 5432,
-    "database": "postgres", // ex. parameterization: "${SUPAGLUE_CUSTOMER_ID}"
-    "schema": "supaglue",   // ex. parameterization: "${SUPAGLUE_CUSTOMER_ID}"
+    "database": "postgres",
+    "schema": "supaglue",
     "user": "admin",
     "password": "admin"
   }
+}
 ```
 
 </TabItem>
@@ -118,12 +119,11 @@ The above sync configuration defines a managed sync that does the following:
 
 ## Destination schema
 
-### Standard and custom objects
-
-Supaglue lands standard and custom objects in provider-specific tables, consisting of the following components:
+Supaglue lands data in provider-specific tables consisting of the following components:
 
 - **Supaglue metadata fields**: these specify the application, customer, provider, and timestamps associated with the managed sync.
-- **Raw data**: the raw source data is returned in a JSON blob.
+- **Raw data**: the raw source data resides in a JSON blob.
+- **Normalized data**: the raw data is normalized (hoisted to top-level fields/columns) and mapped based on the [data model](../platform/overview#data-modeling) you chose.
 
 Here's an example of a destination schema associated with a managed sync for a standard object:
 
@@ -136,7 +136,9 @@ Here's an example of a destination schema associated with a managed sync for a s
 | \_supaglue_is_deleted     | Boolean   |
 | \_supaglue_raw_data       | json      |
 
-Supaglue adds a primary key database constraint on `(_supaglue_application_id, supaglue_customer_id, supaglue_provider_name, id)`.
+:::note
+For Postgres/MySQL, Supaglue adds a primary key database constraint on `(_supaglue_application_id, supaglue_customer_id, supaglue_provider_name, id)`.
+:::
 
 ## Query patterns
 
