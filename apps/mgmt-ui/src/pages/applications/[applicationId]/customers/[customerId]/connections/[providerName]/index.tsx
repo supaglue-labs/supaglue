@@ -1,4 +1,4 @@
-import { updateEntityMapping } from '@/client';
+import { updateCustomerEntityMapping } from '@/client';
 import Spinner from '@/components/Spinner';
 import { TabPanel } from '@/components/TabPanel';
 import { useNotification } from '@/context/notification';
@@ -27,8 +27,12 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import type { EntityFieldMapping, MergedEntityFieldMapping, MergedEntityMapping } from '@supaglue/types/entity_mapping';
-import { EntityMapping } from '@supaglue/types/entity_mapping';
+import type {
+  ConnectionEntityMapping,
+  EntityFieldMapping,
+  MergedEntityFieldMapping,
+  MergedEntityMapping,
+} from '@supaglue/types/entity_mapping';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -52,14 +56,19 @@ export default function Home() {
 
   const saveEntityMapping = async (mergedEntityMapping: MergedEntityMapping) => {
     const { entityId, object, fieldMappings } = mergedEntityMapping;
-    const entityMapping: EntityMapping = {
+    const entityMapping: ConnectionEntityMapping = {
       entityId: entityId,
       object: object?.from === 'customer' ? object : undefined,
       fieldMappings: fieldMappings.filter(
         (fieldMapping) => fieldMapping.from === 'customer' && fieldMapping.mappedField
       ) as EntityFieldMapping[],
     };
-    const response = await updateEntityMapping(applicationId, customerId, providerName as string, entityMapping);
+    const response = await updateCustomerEntityMapping(
+      applicationId,
+      customerId,
+      providerName as string,
+      entityMapping
+    );
     if (!response.ok) {
       addNotification({ message: response.errorMessage, severity: 'error' });
       return;
