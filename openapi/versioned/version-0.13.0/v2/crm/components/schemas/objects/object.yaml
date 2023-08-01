@@ -1,9 +1,0 @@
-type: object
-properties:
-  id:
-    type: string
-  origin_type:
-    $ref: ./object_type.yaml
-required:
-  - id
-  - origin_type

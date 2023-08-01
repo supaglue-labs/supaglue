@@ -1,5 +1,0 @@
-type: string
-enum:
-  - crm
-  - engagement
-  - no_category

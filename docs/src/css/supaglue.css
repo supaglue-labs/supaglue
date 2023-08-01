@@ -382,6 +382,12 @@ li > a.menu__link {
   background-color: var(--openapi-code-orange);
 }
 
+.event > .menu__link::before {
+  content: "event";
+  background-color: var(--ifm-color-secondary);
+  color: var(--ifm-menu-color);
+}
+
 .head > .menu__link::before {
   content: "head";
   background-color: var(--ifm-color-secondary-darkest);

@@ -1,5 +1,4 @@
 import ApiKeyTabPanel from '@/components/configuration/ApiKeyTabPanel';
-import CDCWebhookTabPanel from '@/components/configuration/CDCWebhookTabPanel';
 import DestinationTabPanelContainer from '@/components/configuration/destination/DestinationTabPanelContainer';
 import EntityTabPanelContainer from '@/components/configuration/entity/EntityTabPanelContainer';
 import ProviderTabPanelContainer from '@/components/configuration/provider/ProviderTabPanelContainer';
@@ -41,16 +40,12 @@ const configurationHeaderTabs: ConfigurationHeaderTab[] = [
     value: 'entities',
   },
   {
-    label: 'Webhook',
-    value: 'webhook',
+    label: 'Webhooks',
+    value: 'webhooks',
   },
   {
     label: 'API Keys',
     value: 'api_keys',
-  },
-  {
-    label: 'Realtime Events',
-    value: 'realtime_events',
   },
 ];
 
@@ -116,26 +111,20 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
                   await router.push(`/applications/${activeApplicationId}/configuration/entities`);
                 }}
               />
-              <Tab
-                label="Webhook"
-                onClick={async () => {
-                  await router.push(`/applications/${activeApplicationId}/configuration/webhook`);
-                }}
-              />
+              {svixDashboardUrl ? (
+                <Tab
+                  label="Webhooks"
+                  onClick={async () => {
+                    await router.push(`/applications/${activeApplicationId}/configuration/webhooks`);
+                  }}
+                />
+              ) : null}
               <Tab
                 label="API Key"
                 onClick={async () => {
                   await router.push(`/applications/${activeApplicationId}/configuration/api_keys`);
                 }}
               />
-              {svixDashboardUrl ? (
-                <Tab
-                  label="Realtime Events"
-                  onClick={async () => {
-                    await router.push(`/applications/${activeApplicationId}/configuration/realtime_events`);
-                  }}
-                />
-              ) : null}
             </Tabs>
           }
           title="Configuration"
@@ -157,17 +146,14 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
           <TabPanel value={value} index={4} className="w-full">
             <EntityTabPanelContainer />
           </TabPanel>
-          <TabPanel value={value} index={5} className="w-full">
-            <WebhookTabPanel />
-          </TabPanel>
+          {svixDashboardUrl ? (
+            <TabPanel value={value} index={5} className="w-full">
+              <WebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
+            </TabPanel>
+          ) : null}
           <TabPanel value={value} index={6} className="w-full">
             <ApiKeyTabPanel />
           </TabPanel>
-          {svixDashboardUrl ? (
-            <TabPanel value={value} index={7} className="w-full">
-              <CDCWebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
-            </TabPanel>
-          ) : null}
         </Box>
       </Box>
     </>

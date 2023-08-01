@@ -6744,6 +6744,7 @@ __metadata:
     "@sentry/integrations": ^7.43.0
     "@sentry/node": ^7.43.0
     "@supaglue/db": "workspace:*"
+    "@supaglue/schemas": "workspace:*"
     "@supaglue/types": "workspace:^"
     "@supaglue/utils": "workspace:*"
     "@temporalio/proto": 1.8.0
@@ -6832,7 +6833,7 @@ __metadata:
   dependencies:
     "@tsconfig/node18": ^1.0.1
     camelcase-keys: 7.0.2
-    snakecase-keys: ^5.4.5
+    snakecase-keys: ^5.4.6
     typescript: ^4.9.5
   languageName: unknown
   linkType: soft
@@ -8696,6 +8697,7 @@ __metadata:
     "@supaglue/db": "workspace:*"
     "@supaglue/schemas": "workspace:*"
     "@supaglue/sync-workflows": "workspace:*"
+    "@supaglue/utils": "workspace:*"
     "@temporalio/activity": ^1.8.0
     "@temporalio/client": ^1.8.0
     "@temporalio/workflow": ^1.8.0
@@ -14280,6 +14282,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"iframe-resizer-react@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "iframe-resizer-react@npm:1.1.0"
+  dependencies:
+    iframe-resizer: ^4.3.0
+    warning: ^4.0.3
+  peerDependencies:
+    prop-types: ">=15.7.2"
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 64ddf99d0246da71c5ef34fd6a9b35d14e9346bda0ff0e9f0f011041822eb99f477b8b8167a82126efdfc3a84eb428262518f9ade7601f0f208b69d4cdadb9f7
+  languageName: node
+  linkType: hard
+
+"iframe-resizer@npm:^4.3.0":
+  version: 4.3.6
+  resolution: "iframe-resizer@npm:4.3.6"
+  checksum: 9ef4178bc1e15335d28adb65686b5b4d784d416558fe02a255b6c77876f2da7c08ef878569eb2bb50be84b33db52927e24134faea7d43b9b3081bb61d2adeef8
+  languageName: node
+  linkType: hard
+
 "ignore@npm:^5.2.0":
   version: 5.2.4
   resolution: "ignore@npm:5.2.4"
@@ -16132,6 +16155,7 @@ __metadata:
     react-dom: 18.2.0
     sharp: ^0.31.3
     svix: ^0.84.1
+    svix-react: ^1.7.0
     swr: ^2.1.0
     tailwind-override: ^0.6.1
     tailwindcss: ^3.2.7
@@ -20382,6 +20406,7 @@ __metadata:
     jsforce: ^2.0.0-beta.20
     lru-cache: ^9.1.1
     simple-oauth2: ^5.0.0
+    snakecase-keys: ^5.4.6
     tsx: ^3.12.6
     typescript: ^4.9.5
   languageName: unknown
@@ -21034,14 +21059,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"snakecase-keys@npm:^5.4.5":
-  version: 5.4.5
-  resolution: "snakecase-keys@npm:5.4.5"
+"snakecase-keys@npm:^5.4.6":
+  version: 5.4.6
+  resolution: "snakecase-keys@npm:5.4.6"
   dependencies:
     map-obj: ^4.1.0
     snake-case: ^3.0.4
     type-fest: ^2.5.2
-  checksum: 9e591c95a58892fb07201813f61bd7cb908553bccfab910e0a03f7ea727d3c1d6b0a0a13fd413e91f5a77e6471773c309d9a7c28d60b4b71f45e1393c92c5dff
+  checksum: 992ec20490f576bfe620eaa4378a229b92be4c93595216deb5a27530e7f5608f1061333990b9d6e0fda369d9387553e96b02c9eb0f56f6b296444428182bf36d
   languageName: node
   linkType: hard
 
@@ -21637,7 +21662,7 @@ __metadata:
     prettier-plugin-prisma: ^4.12.0
     tsc-files: ^1.1.3
     tsx: ^3.12.3
-    turbo: 1.10.9
+    turbo: 1.10.12
     typescript: ^4.9.5
   languageName: unknown
   linkType: soft
@@ -21714,6 +21739,19 @@ __metadata:
     node-fetch: ^2.6.1
     whatwg-fetch: ^3.4.1
   checksum: 7b5db2cb6a8a534eec27838e8255d014618cac4c3146ca882ca0fb4ef0da3353ba7617d72d0119fceb17845f9583b952c4a22892086f56ec76c508c655f252a8
+  languageName: node
+  linkType: hard
+
+"svix-react@npm:^1.7.0":
+  version: 1.7.0
+  resolution: "svix-react@npm:1.7.0"
+  dependencies:
+    iframe-resizer-react: ^1.1.0
+  peerDependencies:
+    react: ">=17"
+    react-dom: ">=17"
+    svix: ">=0.70.0"
+  checksum: d8d3134c489b1a2f2e120228f80fa38f0d335d522d72fefb975738e0b8718c2603e0c2ed5bbf33b24b57ccb6f6a4ea2f329fbe0ab869ebbbbd202839f57c7e69
   languageName: node
   linkType: hard
 
@@ -22397,58 +22435,58 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo-darwin-64@npm:1.10.9":
-  version: 1.10.9
-  resolution: "turbo-darwin-64@npm:1.10.9"
+"turbo-darwin-64@npm:1.10.12":
+  version: 1.10.12
+  resolution: "turbo-darwin-64@npm:1.10.12"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-darwin-arm64@npm:1.10.9":
-  version: 1.10.9
-  resolution: "turbo-darwin-arm64@npm:1.10.9"
+"turbo-darwin-arm64@npm:1.10.12":
+  version: 1.10.12
+  resolution: "turbo-darwin-arm64@npm:1.10.12"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-linux-64@npm:1.10.9":
-  version: 1.10.9
-  resolution: "turbo-linux-64@npm:1.10.9"
+"turbo-linux-64@npm:1.10.12":
+  version: 1.10.12
+  resolution: "turbo-linux-64@npm:1.10.12"
   conditions: os=linux & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-linux-arm64@npm:1.10.9":
-  version: 1.10.9
-  resolution: "turbo-linux-arm64@npm:1.10.9"
+"turbo-linux-arm64@npm:1.10.12":
+  version: 1.10.12
+  resolution: "turbo-linux-arm64@npm:1.10.12"
   conditions: os=linux & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo-windows-64@npm:1.10.9":
-  version: 1.10.9
-  resolution: "turbo-windows-64@npm:1.10.9"
+"turbo-windows-64@npm:1.10.12":
+  version: 1.10.12
+  resolution: "turbo-windows-64@npm:1.10.12"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
 
-"turbo-windows-arm64@npm:1.10.9":
-  version: 1.10.9
-  resolution: "turbo-windows-arm64@npm:1.10.9"
+"turbo-windows-arm64@npm:1.10.12":
+  version: 1.10.12
+  resolution: "turbo-windows-arm64@npm:1.10.12"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"turbo@npm:1.10.9":
-  version: 1.10.9
-  resolution: "turbo@npm:1.10.9"
+"turbo@npm:1.10.12":
+  version: 1.10.12
+  resolution: "turbo@npm:1.10.12"
   dependencies:
-    turbo-darwin-64: 1.10.9
-    turbo-darwin-arm64: 1.10.9
-    turbo-linux-64: 1.10.9
-    turbo-linux-arm64: 1.10.9
-    turbo-windows-64: 1.10.9
-    turbo-windows-arm64: 1.10.9
+    turbo-darwin-64: 1.10.12
+    turbo-darwin-arm64: 1.10.12
+    turbo-linux-64: 1.10.12
+    turbo-linux-arm64: 1.10.12
+    turbo-windows-64: 1.10.12
+    turbo-windows-arm64: 1.10.12
   dependenciesMeta:
     turbo-darwin-64:
       optional: true
@@ -22464,7 +22502,7 @@ __metadata:
       optional: true
   bin:
     turbo: bin/turbo
-  checksum: 667867c3ea6ecf59cafe494e1bd4da8564bdae4ea735a14813656b2784a909fb69f12f8c6cdb140ca490c602fd11dc186b5d426af6a451ba51a487e73b742731
+  checksum: 266b70404e149b92cd64051fcdd03c56b474ed22f6bd11cf4cf1b70f55c72f9a2aaa90109b19b95e43d68e53a6be54485f0cc0135c8d5b505db09fd126a34052
   languageName: node
   linkType: hard
 

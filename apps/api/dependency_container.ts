@@ -23,8 +23,15 @@ let dependencyContainer: DependencyContainer | undefined = undefined;
 
 function createDependencyContainer(): DependencyContainer {
   const coreDependencyContainer = getCoreDependencyContainer();
-  const { prisma, providerService, syncConfigService, remoteService, connectionService, applicationService } =
-    coreDependencyContainer;
+  const {
+    prisma,
+    providerService,
+    syncConfigService,
+    remoteService,
+    connectionService,
+    applicationService,
+    webhookService,
+  } = coreDependencyContainer;
 
   const temporalClient = new Client({
     namespace: process.env.TEMPORAL_NAMESPACE ?? 'default',
@@ -47,7 +54,8 @@ function createDependencyContainer(): DependencyContainer {
     providerService,
     syncConfigService,
     applicationService,
-    connectionService
+    connectionService,
+    webhookService
   );
 
   const passthroughService = new PassthroughService(remoteService);
