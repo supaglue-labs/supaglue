@@ -4,6 +4,7 @@ import type {
   EntityRecord,
   EntityRecordData,
   EntityRecordUpsertData,
+  FullEntityRecord,
 } from '@supaglue/types/entity_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { ConnectionService, RemoteService } from '.';
@@ -51,11 +52,11 @@ export class EntityRecordService {
     };
   }
 
-  public async getEntityRecord(
+  async #getFullEntityRecord(
     connection: ConnectionSafeAny,
     entityName: string,
     recordId: string
-  ): Promise<EntityRecord> {
+  ): Promise<FullEntityRecord> {
     const entity = await this.#entityService.getByNameAndApplicationId(entityName, connection.applicationId);
     const remoteClient = await this.#remoteService.getRemoteClient(connection.id);
     const { object, fieldMappingConfig } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
@@ -81,7 +82,22 @@ export class EntityRecordService {
         id: entity.id,
         name: entity.name,
       },
-      data: mapObjectToEntityFields(record.data, fieldMappingConfig),
+      mappedData: mapObjectToEntityFields(record.data, fieldMappingConfig),
+      rawData: record.data,
+      metadata: record.metadata,
+    };
+  }
+
+  public async getEntityRecord(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    recordId: string
+  ): Promise<EntityRecord> {
+    const { id, entity, mappedData } = await this.#getFullEntityRecord(connection, entityName, recordId);
+    return {
+      id,
+      entity,
+      data: mappedData,
     };
   }
 

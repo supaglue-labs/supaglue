@@ -68,14 +68,14 @@ export type ObjectMetadata = {
   lastModifiedAt: Date;
 };
 
-type BaseFullObjectRecord = {
+export type BaseFullRecord = {
   id: string;
   mappedData: ObjectRecordData;
   rawData: Record<string, unknown>;
   metadata: ObjectMetadata;
 };
 
-export type StandardFullObjectRecord = BaseFullObjectRecord & {
+export type StandardFullObjectRecord = BaseFullRecord & {
   standardObjectName: string;
 };
 

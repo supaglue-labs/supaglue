@@ -1,9 +1,11 @@
 import type {
+  BaseFullRecord,
   CommonObjectType,
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
+  FullEntityRecord,
   MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
@@ -182,36 +184,11 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
   }
 
   public override async upsertStandardObjectRecord(
-    { applicationId, providerName, customerId }: ConnectionSafeAny,
+    connection: ConnectionSafeAny,
     objectName: string,
     record: StandardFullObjectRecord
   ): Promise<void> {
-    const mappedRecord = {
-      _supaglue_application_id: applicationId,
-      _supaglue_provider_name: providerName,
-      _supaglue_customer_id: customerId,
-      _supaglue_emitted_at: new Date(),
-      id: record.id,
-      _supaglue_is_deleted: record.metadata.isDeleted,
-      _supaglue_raw_data: record.rawData,
-      _supaglue_mapped_data: record.mappedData,
-    };
-    const { database } = this.#destination.config;
-    const collectionName = getObjectCollectionName(providerName, objectName);
-
-    const client = this.#getClient();
-    const collection = client.db(database).collection(collectionName);
-
-    await collection.replaceOne(
-      {
-        id: mappedRecord.id,
-        _supaglue_application_id: mappedRecord._supaglue_application_id,
-        _supaglue_provider_name: mappedRecord._supaglue_provider_name,
-        _supaglue_customer_id: mappedRecord._supaglue_customer_id,
-      },
-      mappedRecord,
-      { upsert: true }
-    );
+    return await this.#upsertRecord(connection, getObjectCollectionName(connection.providerName, objectName), record);
   }
 
   public override async writeEntityRecords(
@@ -227,6 +204,46 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       inputStream,
       heartbeat,
       logger.child({ connectionId, providerName, customerId, entityName })
+    );
+  }
+
+  public override async upsertEntityRecord(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    record: FullEntityRecord
+  ): Promise<void> {
+    return await this.#upsertRecord(connection, getEntityCollectionName(entityName), record);
+  }
+
+  async #upsertRecord(
+    { applicationId, providerName, customerId }: ConnectionSafeAny,
+    collectionName: string,
+    record: BaseFullRecord
+  ): Promise<void> {
+    const mappedRecord = {
+      _supaglue_application_id: applicationId,
+      _supaglue_provider_name: providerName,
+      _supaglue_customer_id: customerId,
+      _supaglue_emitted_at: new Date(),
+      id: record.id,
+      _supaglue_is_deleted: record.metadata.isDeleted,
+      _supaglue_raw_data: record.rawData,
+      _supaglue_mapped_data: record.mappedData,
+    };
+    const { database } = this.#destination.config;
+
+    const client = this.#getClient();
+    const collection = client.db(database).collection(collectionName);
+
+    await collection.replaceOne(
+      {
+        id: mappedRecord.id,
+        _supaglue_application_id: mappedRecord._supaglue_application_id,
+        _supaglue_provider_name: mappedRecord._supaglue_provider_name,
+        _supaglue_customer_id: mappedRecord._supaglue_customer_id,
+      },
+      mappedRecord,
+      { upsert: true }
     );
   }
 

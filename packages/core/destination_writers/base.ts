@@ -6,6 +6,7 @@ import type {
   ProviderCategory,
   StandardFullObjectRecord,
 } from '@supaglue/types';
+import type { FullEntityRecord } from '@supaglue/types/entity_record';
 import type { Readable } from 'stream';
 
 export type WriteCommonObjectRecordsResult = {
@@ -76,6 +77,14 @@ export interface DestinationWriter {
     stream: Readable,
     heartbeat: () => void
   ): Promise<WriteEntityRecordsResult>;
+
+  /**
+   *
+   * @param connection
+   * @param objectName
+   * @param record
+   */
+  upsertEntityRecord(connection: ConnectionSafeAny, entityName: string, record: FullEntityRecord): Promise<void>;
 }
 
 export abstract class BaseDestinationWriter implements DestinationWriter {
@@ -95,6 +104,12 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     connection: ConnectionSafeAny,
     objectName: string,
     record: StandardFullObjectRecord
+  ): Promise<void>;
+
+  abstract upsertEntityRecord(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    record: FullEntityRecord
   ): Promise<void>;
 
   /**
