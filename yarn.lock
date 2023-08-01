@@ -20400,6 +20400,7 @@ __metadata:
     "@bufbuild/connect-node": ^0.8.6
     "@bufbuild/protobuf": ^1.2.0
     "@supaglue/core": "workspace:*"
+    "@supaglue/utils": "workspace:^"
     "@types/simple-oauth2": ^5
     avsc: ^5.7.7
     bigint-conversion: ^2.4.1

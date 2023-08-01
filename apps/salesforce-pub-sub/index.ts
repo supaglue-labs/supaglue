@@ -158,7 +158,7 @@ const { connectionService, providerService, webhookService, applicationService }
           const webhookPayload = snakecaseKeys(
             {
               id: recordId,
-              entityName,
+              entityName: entityName as string, // Oddly for the correct typing to work in snakecaseKeys, this has to be cast
               nulledFields,
               changedFields,
               diffFields,
