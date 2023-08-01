@@ -168,24 +168,73 @@ const config = {
                 to: '/providers/apollo',
               },
               {
+                label: 'Asana',
+                to: '/providers/asana',
+              },
+              {
+                label: 'Box',
+                to: '/providers/box',
+              },
+              {
+                label: 'Dropbox',
+                to: '/providers/dropbox',
+              },
+              {
+                label: 'Gmail',
+                to: '/providers/gmail',
+              },
+              {
                 label: 'Gong',
                 to: '/providers/gong',
+              },
+              {
+                label: 'Google Calendar',
+                to: '/providers/google_calendar',
+              },
+              {
+                label: 'Google Drive',
+                to: '/providers/google_drive',
               },
               {
                 label: 'HubSpot',
                 to: '/providers/hubspot',
               },
               {
+                label: 'Intercom',
+                to: '/providers/intercom',
+              },
+              {
+                label: 'LinkedIn',
+                to: '/providers/linkedin',
+              },
+              {
                 label: 'Marketo',
                 to: '/providers/marketo',
               },
+              {
+                label: 'Messenger',
+                to: '/providers/messenger',
+              },
+            ],
+          },
+          {
+            title: 'Connectors',
+            items: [
               {
                 label: 'Dynamics 365 Sales',
                 to: '/providers/ms_dynamics_365_sales',
               },
               {
+                label: 'Onedrive',
+                to: '/providers/onedrive',
+              },
+              {
                 label: 'Outreach',
                 to: '/providers/outreach',
+              },
+              {
+                label: 'Pardot',
+                to: '/providers/pardot',
               },
               {
                 label: 'Pipedrive',
@@ -200,8 +249,57 @@ const config = {
                 to: '/providers/salesloft',
               },
               {
+                label: 'Slack',
+                to: '/providers/slack',
+              },
+              {
+                label: 'Microsoft Teams',
+                to: '/providers/teams',
+              },
+              {
+                label: 'Whatsapp',
+                to: '/providers/whatsapp',
+              },
+              {
                 label: 'Zendesk',
                 to: '/providers/zendesk',
+              },
+              {
+                label: 'Zoho',
+                to: '/providers/zoho',
+              },
+              {
+                label: 'Zoom',
+                to: '/providers/zoom',
+              },
+            ],
+          },
+          {
+            title: 'Destinations',
+            items: [
+              {
+                label: 'BigQuery',
+                to: '/destinations/bigquery',
+              },
+              {
+                label: 'MongoDB',
+                to: '/destinations/mongodb',
+              },
+              {
+                label: 'MySQL',
+                to: '/destinations/MySQL',
+              },
+              {
+                label: 'Postgres',
+                to: '/destinations/postgres',
+              },
+              {
+                label: 'AWS S3',
+                to: '/destinations/s3',
+              },
+              {
+                label: 'Snowflake',
+                to: '/destinations/snowflake',
               },
             ],
           },
