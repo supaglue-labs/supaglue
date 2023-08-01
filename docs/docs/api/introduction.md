@@ -10,8 +10,8 @@ import ThemedImage from '@theme/ThemedImage';
 Supaglue supports three types of APIs:
 
 1. **Management**: configure all aspects of your integrations.
-2. **Actions**: write to third-party Providers using [Entities](../platform/entities/overview) and [Objects](../platform/objects/overview).
-3. **Unified Actions**: write to third-party Providers using Supaglue's [Common Schema](../platform/common-schema/overview).
+2. **Actions**: write to third-party Providers using [Entities](../platform/entities/overview), [Objects](../platform/objects/overview), and [Common Schema](../platform/common-schema/overview).
+3. **Passthrough**: use underlying native third-party Provider APIs.
 
 ### Management API
 
@@ -21,13 +21,10 @@ You can use the [Management API V2](v2/mgmt/management-api) to manage customer i
 
 You can use the [Actions API V2](v2/actions/actions-api) to write to third-party Providers using Entities and Objects.
 
-### Unified Actions API
+Actions API using Common Schema are categorized by vertical. We support two verticals (`crm`, `engagement`) today:
 
-Unified Actions API are categorized by vertical. We support two verticals (`crm`, `engagement`) today:
-
-- You can use the [CRM API V2](v2/crm/unified-crm-api) to write to third-party CRM Providers using Supaglue's Common Schema.
-
-- You can use the [Engagement API V2](v2/engagement/unified-engagement-api) to write to third-party engagement Providers using Supaglue's Common Schema.
+- [CRM API V2](v2/crm/unified-crm-api)
+- [Engagement API V2](v2/engagement/unified-engagement-api)
 
 ## API authentication
 
