@@ -7,8 +7,8 @@ import type {
   ConnectionUnsafe,
   CRMProvider,
   ListedObjectRecord,
-  ObjectRecord,
   ObjectRecordUpsertData,
+  ObjectRecordWithMetadata,
   Property,
   Provider,
   SendPassthroughRequestRequest,
@@ -460,7 +460,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     object: StandardOrCustomObject,
     id: string,
     fields: string[]
-  ): Promise<ObjectRecord> {
+  ): Promise<ObjectRecordWithMetadata> {
     if (object.type === 'custom') {
       throw new BadRequestError('Custom objects are not supported for Salesforce');
     }
@@ -472,6 +472,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       id: record.Id as string,
       standardObjectName: object.name,
       data: record,
+      metadata: {
+        isDeleted: record.IsDeleted === 'true',
+        lastModifiedAt: new Date(record.SystemModstamp),
+      },
     };
   }
 

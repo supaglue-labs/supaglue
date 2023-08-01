@@ -7,6 +7,7 @@ import type {
   MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
+  StandardFullObjectRecord,
 } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
@@ -281,6 +282,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     );
   }
 
+  public override async upsertStandardObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: StandardFullObjectRecord
+  ): Promise<void> {
+    return await this.#upsertRecord(connection, objectName, record);
+  }
+
   public override async writeEntityRecords(
     connection: ConnectionSafeAny,
     entityName: string,
@@ -295,6 +304,73 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       heartbeat,
       logger.child({ connectionId, providerName, customerId, entityName })
     );
+  }
+
+  async #upsertRecord(
+    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    objectName: string,
+    record: StandardFullObjectRecord
+  ): Promise<void> {
+    const table = getObjectTableName(providerName, objectName);
+    const { schema } = this.#destination.config;
+    const qualifiedTable = `${schema}.${table}`;
+    const client = await this.#getClient();
+
+    try {
+      // Create tables if necessary
+      // TODO: We should only need to do this once at the beginning
+      await client.query(getObjectOrEntitySchemaSetupSql(table, schema));
+
+      const mappedRecord: Record<string, string | boolean | object> = {
+        _supaglue_application_id: applicationId,
+        _supaglue_provider_name: providerName,
+        _supaglue_customer_id: customerId,
+        _supaglue_emitted_at: new Date(),
+        id: record.id,
+        _supaglue_is_deleted: record.metadata.isDeleted,
+        _supaglue_raw_data: record.rawData,
+        _supaglue_mapped_data: record.mappedData,
+        _supaglue_last_modified_at: record.metadata.lastModifiedAt,
+      };
+      const columns = Object.keys(mappedRecord);
+      const columnsToUpdate = columns.filter(
+        (c) =>
+          c !== '_supaglue_application_id' &&
+          c !== '_supaglue_provider_name' &&
+          c !== '_supaglue_customer_id' &&
+          c !== 'id'
+      );
+
+      const columnsStr = columns.join(',');
+      const columnPlaceholderValuesStr = columns.map((column, index) => `$${index + 1}`).join(',');
+      const columnsToUpdateStr = columnsToUpdate.join(',');
+      const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
+      const values = columns.map((column) => {
+        const value = mappedRecord[column];
+        // pg doesn't seem to convert objects to JSON even though the docs say it does
+        // https://node-postgres.com/features/queries
+        if (value !== null && value !== undefined && typeof value === 'object') {
+          return jsonStringifyWithoutNullChars(value);
+        }
+
+        if (typeof value === 'string') {
+          return stripNullCharsFromString(value);
+        }
+
+        return value;
+      });
+
+      await client.query(
+        `INSERT INTO ${qualifiedTable} (${columnsStr})
+VALUES
+  (${columnPlaceholderValuesStr})
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
+        values
+      );
+    } finally {
+      client.release();
+    }
   }
 
   async #writeRecords(

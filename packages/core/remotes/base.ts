@@ -1,6 +1,6 @@
 import type {
-  ObjectRecord,
   ObjectRecordUpsertData,
+  ObjectRecordWithMetadata,
   Property,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -23,7 +23,7 @@ export interface RemoteClient {
   listProperties(object: StandardOrCustomObjectDef): Promise<Property[]>;
 
   createObjectRecord(object: StandardOrCustomObject, data: ObjectRecordUpsertData): Promise<string>;
-  getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecord>;
+  getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecordWithMetadata>;
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
   listStandardObjectRecords(
@@ -68,7 +68,11 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new Error('Not implemented');
   }
 
-  public async getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecord> {
+  public async getObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    fields: string[]
+  ): Promise<ObjectRecordWithMetadata> {
     throw new Error('Not implemented');
   }
 

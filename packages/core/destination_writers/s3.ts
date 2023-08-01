@@ -8,6 +8,7 @@ import type {
   MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
+  StandardFullObjectRecord,
 } from '@supaglue/types';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
@@ -243,6 +244,15 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     }
 
     return { numRecords, maxLastModifiedAt };
+  }
+
+  public override async upsertStandardObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: StandardFullObjectRecord
+  ): Promise<void> {
+    // Do nothing
+    return;
   }
 
   public override async writeEntityRecords(

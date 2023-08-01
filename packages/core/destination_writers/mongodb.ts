@@ -7,6 +7,7 @@ import type {
   MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
+  StandardFullObjectRecord,
 } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
@@ -178,6 +179,15 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       heartbeat,
       logger.child({ connectionId, providerName, customerId, object })
     );
+  }
+
+  public override async upsertStandardObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: StandardFullObjectRecord
+  ): Promise<void> {
+    // Do nothing
+    return;
   }
 
   public override async writeEntityRecords(

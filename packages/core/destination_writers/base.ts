@@ -4,6 +4,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   ProviderCategory,
+  StandardFullObjectRecord,
 } from '@supaglue/types';
 import type { Readable } from 'stream';
 
@@ -53,6 +54,18 @@ export interface DestinationWriter {
   /**
    *
    * @param connection
+   * @param objectName
+   * @param record
+   */
+  upsertStandardObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: StandardFullObjectRecord
+  ): Promise<void>;
+
+  /**
+   *
+   * @param connection
    * @param entityName
    * @param stream this streams objects of type ObjectRecord<T>
    * @param heartbeat
@@ -76,6 +89,12 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     connection: ConnectionSafeAny,
     commonObjectType: T,
     record: CommonObjectTypeMapForCategory<P>['object']
+  ): Promise<void>;
+
+  abstract upsertStandardObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: StandardFullObjectRecord
   ): Promise<void>;
 
   /**
