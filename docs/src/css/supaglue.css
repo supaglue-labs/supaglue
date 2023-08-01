@@ -335,6 +335,83 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
+.theme-doc-sidebar-item-category-level-1 a[href$="/destinations/bigquery"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/destination_icons/bigquery.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/destinations/bigquery"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/destination_icons/bigquery.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/destinations/mongodb"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/destination_icons/mongodb.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/destinations/postgres"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/destination_icons/postgres.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/destinations/s3"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/destination_icons/s3.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/destinations/snowflake"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/destination_icons/snowflake.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/destinations/mysql"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/destination_icons/mysql.png);
+  background-repeat: no-repeat;
+}
+
 /* API Menu Items */
 .api-method > .menu__link {
   align-items: center;
