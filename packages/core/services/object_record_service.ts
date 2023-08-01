@@ -3,6 +3,7 @@ import type {
   CreatedStandardObjectRecord,
   ObjectRecordData,
   ObjectRecordUpsertData,
+  StandardFullObjectRecord,
   StandardObjectRecord,
 } from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
@@ -44,17 +45,28 @@ export class ObjectRecordService {
       },
       unmappedData
     );
+
+    await this.#cacheInvalidateObjectRecord(connection, objectName, id);
+
     return {
       id,
       standardObjectName: objectName,
     };
   }
 
-  public async getStandardObjectRecord(
+  async #cacheInvalidateObjectRecord(connection: ConnectionSafeAny, objectName: string, id: string): Promise<void> {
+    const [writer] = await this.#destinationService.getWriterByProviderId(connection.providerId);
+    if (writer) {
+      const object = await this.#getStandardFullObjectRecord(connection, objectName, id);
+      await writer.upsertStandardObjectRecord(connection, objectName, object);
+    }
+  }
+
+  async #getStandardFullObjectRecord(
     connection: ConnectionSafeAny,
     objectName: string,
     recordId: string
-  ): Promise<StandardObjectRecord> {
+  ): Promise<StandardFullObjectRecord> {
     const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(
       connection.id,
       'standard',
@@ -81,7 +93,26 @@ export class ObjectRecordService {
     return {
       id: recordId,
       standardObjectName: objectName,
-      data: mapObjectToSchema(record.data, fieldMappingConfig),
+      mappedData: mapObjectToSchema(record.data, fieldMappingConfig),
+      rawData: record.data,
+      metadata: record.metadata,
+    };
+  }
+
+  public async getStandardObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    recordId: string
+  ): Promise<StandardObjectRecord> {
+    const { id, standardObjectName, mappedData } = await this.#getStandardFullObjectRecord(
+      connection,
+      objectName,
+      recordId
+    );
+    return {
+      id,
+      standardObjectName,
+      data: mappedData,
     };
   }
 
@@ -106,6 +137,7 @@ export class ObjectRecordService {
       recordId,
       unmappedData
     );
+    await this.#cacheInvalidateObjectRecord(connection, objectName, recordId);
   }
 }
 

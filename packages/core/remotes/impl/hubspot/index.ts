@@ -17,8 +17,9 @@ import type {
   ConnectionUnsafe,
   CRMProvider,
   ListedObjectRecordRawDataOnly,
-  ObjectRecord,
+  ObjectMetadata,
   ObjectRecordUpsertData,
+  ObjectRecordWithMetadata,
   PropertiesWithAdditionalFields,
   Property,
   Provider,
@@ -935,7 +936,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     object: StandardOrCustomObject,
     id: string,
     fields: string[]
-  ): Promise<ObjectRecord> {
+  ): Promise<ObjectRecordWithMetadata> {
     if (object.type === 'custom') {
       throw new BadRequestError('Custom objects are not supported for HubSpot');
     }
@@ -958,6 +959,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       id: response.data.id,
       standardObjectName: object.name,
       data: response.data.properties,
+      metadata: getMetadataFromRecord(response.data),
     };
   }
 
@@ -2067,5 +2069,13 @@ function normalizeResponse(
       emittedAt: new Date(),
     })),
     paging: response.paging,
+  };
+}
+
+function getMetadataFromRecord(record: HubSpotAPIV3GetRecordResponse): ObjectMetadata {
+  return {
+    isDeleted: record.archived,
+    // We don't support getting archived records, so we don't need to check for archivedAt
+    lastModifiedAt: new Date(record.updatedAt),
   };
 }

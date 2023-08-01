@@ -10,6 +10,7 @@ import type {
   MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
+  StandardFullObjectRecord,
 } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
@@ -215,6 +216,15 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       heartbeat,
       logger.child({ connectionId, providerName, customerId, object })
     );
+  }
+
+  public override async upsertStandardObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: StandardFullObjectRecord
+  ): Promise<void> {
+    // Do nothing
+    return;
   }
 
   public override async writeEntityRecords(

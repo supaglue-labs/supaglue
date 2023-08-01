@@ -58,3 +58,25 @@ export type StandardObjectRecord = BaseObjectRecord & {
 };
 
 export type ObjectRecord = StandardObjectRecord;
+
+export type ObjectRecordWithMetadata = ObjectRecord & {
+  metadata: ObjectMetadata;
+};
+
+export type ObjectMetadata = {
+  isDeleted: boolean;
+  lastModifiedAt: Date;
+};
+
+type BaseFullObjectRecord = {
+  id: string;
+  mappedData: ObjectRecordData;
+  rawData: Record<string, unknown>;
+  metadata: ObjectMetadata;
+};
+
+export type StandardFullObjectRecord = BaseFullObjectRecord & {
+  standardObjectName: string;
+};
+
+export type FullObjectRecord = StandardFullObjectRecord;
