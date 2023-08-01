@@ -871,36 +871,45 @@ export interface components {
       auth_type: "oauth2";
       config: components["schemas"]["create_provider_config"];
       objects?: components["schemas"]["objects"];
-    }, {
-      /** @enum {string} */
-      auth_type: "api_key";
-    }]> & OneOf<[{
       /** @enum {string} */
       category: "crm";
       name: components["schemas"]["provider_name_crm"];
     }, {
       /** @enum {string} */
+      auth_type: "oauth2";
+      config: components["schemas"]["create_provider_config"];
+      objects?: components["schemas"]["objects"];
+      /** @enum {string} */
       category: "engagement";
       name: components["schemas"]["provider_name_engagement"];
     }, {
       /** @enum {string} */
-      category: "no_category";
-      name: components["schemas"]["provider_name_crm"];
+      auth_type: "api_key";
+      /** @enum {string} */
+      category?: "no_category";
+      name?: components["schemas"]["provider_name_no_category"];
     }]>;
-    update_provider: {
+    update_provider: OneOf<[{
       /** @enum {string} */
       auth_type: "oauth2";
       config: components["schemas"]["update_provider_config"];
       objects?: components["schemas"]["objects"];
-    } & OneOf<[{
       /** @enum {string} */
       category: "crm";
       name: components["schemas"]["provider_name_crm"];
     }, {
       /** @enum {string} */
+      auth_type: "oauth2";
+      config: components["schemas"]["update_provider_config"];
+      objects?: components["schemas"]["objects"];
+      /** @enum {string} */
       category: "engagement";
       name: components["schemas"]["provider_name_engagement"];
     }, {
+      /** @enum {string} */
+      auth_type: "oauth2";
+      config: components["schemas"]["update_provider_config"];
+      objects?: components["schemas"]["objects"];
       /** @enum {string} */
       category: "no_category";
       name: components["schemas"]["provider_name_no_category"];
@@ -1927,7 +1936,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": (OneOf<[{
+        "application/json": OneOf<[{
           /**
            * @description The object type to filter by 
            * @enum {string}
@@ -1938,13 +1947,14 @@ export interface operations {
            * @example contact
            */
           object: string;
+          /** @example true */
+          perform_full_refresh?: boolean;
         }, {
           /** @description The entity id to filter by */
           entity_id: string;
-        }]>) & {
           /** @example true */
           perform_full_refresh?: boolean;
-        };
+        }]>;
       };
     };
     responses: {
