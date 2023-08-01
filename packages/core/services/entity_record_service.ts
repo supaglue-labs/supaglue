@@ -58,7 +58,7 @@ export class EntityRecordService {
   }
 
   async #cacheInvalidateEntityRecord(connection: ConnectionSafeAny, entityName: string, id: string): Promise<void> {
-    const sync = await this.#syncService.getByConnectionIdAndEntity(connection.id, entityName);
+    const sync = await this.#syncService.findByConnectionIdAndEntity(connection.id, entityName);
     if (!sync || sync.paused) {
       return;
     }

@@ -64,7 +64,7 @@ export class CrmCommonObjectService {
     objectName: T,
     id: string
   ): Promise<void> {
-    const sync = await this.#syncService.getByConnectionIdAndObjectTypeAndObject(connection.id, 'common', objectName);
+    const sync = await this.#syncService.findByConnectionIdAndObjectTypeAndObject(connection.id, 'common', objectName);
     if (!sync || sync.paused) {
       return;
     }

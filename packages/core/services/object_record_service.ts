@@ -64,7 +64,11 @@ export class ObjectRecordService {
     objectName: string,
     id: string
   ): Promise<void> {
-    const sync = await this.#syncService.getByConnectionIdAndObjectTypeAndObject(connection.id, objectType, objectName);
+    const sync = await this.#syncService.findByConnectionIdAndObjectTypeAndObject(
+      connection.id,
+      objectType,
+      objectName
+    );
     if (!sync || sync.paused) {
       return;
     }

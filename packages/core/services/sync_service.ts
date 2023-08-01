@@ -55,11 +55,11 @@ export class SyncService {
     };
   }
 
-  public async getByConnectionIdAndObjectTypeAndObject(
+  public async findByConnectionIdAndObjectTypeAndObject(
     connectionId: string,
     objectType: ObjectType,
     object: string
-  ): Promise<Sync> {
+  ): Promise<Sync | undefined> {
     const model = await this.#prisma.sync.findUnique({
       where: {
         connectionId_type_objectType_object: {
@@ -71,14 +71,26 @@ export class SyncService {
       },
     });
     if (!model) {
-      throw new NotFoundError(
-        `Sync not found for connectionId: ${connectionId}, objectType: ${objectType}, object: ${object}`
-      );
+      return;
     }
     return fromSyncModel(model);
   }
 
-  public async getByConnectionIdAndEntity(connectionId: string, entityId: string): Promise<Sync> {
+  public async getByConnectionIdAndObjectTypeAndObject(
+    connectionId: string,
+    objectType: ObjectType,
+    object: string
+  ): Promise<Sync> {
+    const sync = await this.findByConnectionIdAndObjectTypeAndObject(connectionId, objectType, object);
+    if (!sync) {
+      throw new NotFoundError(
+        `Sync not found for connectionId: ${connectionId}, objectType: ${objectType}, object: ${object}`
+      );
+    }
+    return sync;
+  }
+
+  public async findByConnectionIdAndEntity(connectionId: string, entityId: string): Promise<Sync | undefined> {
     const model = await this.#prisma.sync.findUnique({
       where: {
         connectionId_type_entityId: {
@@ -89,8 +101,16 @@ export class SyncService {
       },
     });
     if (!model) {
-      throw new NotFoundError(`Sync not found for connectionId: ${connectionId}, entityId: ${entityId}`);
+      return;
     }
     return fromSyncModel(model);
+  }
+
+  public async getByConnectionIdAndEntity(connectionId: string, entityId: string): Promise<Sync> {
+    const sync = await this.findByConnectionIdAndEntity(connectionId, entityId);
+    if (!sync) {
+      throw new NotFoundError(`Sync not found for connectionId: ${connectionId}, entityId: ${entityId}`);
+    }
+    return sync;
   }
 }
