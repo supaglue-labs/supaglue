@@ -15,7 +15,7 @@ import type {
   SchemaMappingsConfigObjectFieldMapping,
 } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
-import type { EntityMapping, MergedEntityMapping } from '@supaglue/types/entity_mapping';
+import type { ConnectionEntityMapping, MergedEntityMapping } from '@supaglue/types/entity_mapping';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { ObjectType } from '@supaglue/types/sync';
@@ -355,7 +355,7 @@ export class ConnectionService {
   public async upsertEntityMapping(
     connectionId: string,
     entityId: string,
-    entityMapping: EntityMapping
+    entityMapping: ConnectionEntityMapping
   ): Promise<void> {
     const connection = await this.getSafeById(connectionId);
 

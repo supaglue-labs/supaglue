@@ -1,5 +1,5 @@
 import type { CategoryOfProviderName, ProviderName, SchemaMappingsConfig } from '.';
-import type { EntityMapping } from './entity_mapping';
+import type { ConnectionEntityMapping } from './entity_mapping';
 
 export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
 
@@ -51,7 +51,7 @@ export type ConnectionCreateParams<T extends ProviderName> = {
   providerName: T;
   credentials: ConnectionCredentialsDecrypted<T>;
   schemaMappingsConfig?: SchemaMappingsConfig;
-  entityMappings?: EntityMapping[];
+  entityMappings?: ConnectionEntityMapping[];
   instanceUrl: string;
 };
 

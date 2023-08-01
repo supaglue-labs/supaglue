@@ -1,4 +1,0 @@
-type: string
-enum:
-  - intercom
-  - gong

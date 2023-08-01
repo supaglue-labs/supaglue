@@ -13,6 +13,7 @@
     "@sentry/integrations": "^7.43.0",
     "@sentry/node": "^7.43.0",
     "@supaglue/db": "workspace:*",
+    "@supaglue/schemas": "workspace:*",
     "@supaglue/types": "workspace:^",
     "@supaglue/utils": "workspace:*",
     "@temporalio/proto": "1.8.0",

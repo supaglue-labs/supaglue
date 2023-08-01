@@ -7,7 +7,7 @@
   "packageManager": "yarn@3.4.1",
   "dependencies": {
     "camelcase-keys": "7.0.2",
-    "snakecase-keys": "^5.4.5"
+    "snakecase-keys": "^5.4.6"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",

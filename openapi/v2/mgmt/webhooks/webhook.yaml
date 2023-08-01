@@ -1,8 +1,9 @@
 post:
   operationId: webhook
-  summary: Webhook
+  summary: Webhook payload (deprecated)
+  description: Webhook payload (deprecated)
   tags:
-    - Webhooks
+    - Webhook Events
   requestBody:
     content:
       application/json:

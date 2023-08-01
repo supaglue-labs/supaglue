@@ -1,9 +1,0 @@
-type: object
-properties:
-  id:
-    type: string
-  standard_object_name:
-    type: string
-required:
-  - id
-  - standard_object_name

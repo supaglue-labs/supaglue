@@ -583,7 +583,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/entity_mapping"
+                "$ref": "#/components/schemas/connection_entity_mapping"
               }
             }
           }
@@ -2804,7 +2804,7 @@
           "entity_mappings": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/entity_mapping"
+              "$ref": "#/components/schemas/provider_entity_mapping"
             }
           }
         },
@@ -3722,7 +3722,7 @@
           "entity_mappings": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/entity_mapping"
+              "$ref": "#/components/schemas/connection_entity_mapping"
             }
           }
         },
@@ -3743,7 +3743,8 @@
           "crm",
           "engagement",
           "no_category"
-        ]
+        ],
+        "example": "crm"
       },
       "sync_config": {
         "type": "object",
@@ -4023,7 +4024,8 @@
           "apollo",
           "salesloft",
           "intercom"
-        ]
+        ],
+        "example": "hubspot"
       },
       "provider_name_crm": {
         "type": "string",
@@ -4529,6 +4531,12 @@
               "objects": {
                 "$ref": "#/components/schemas/objects"
               },
+              "entity_mappings": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/provider_entity_mapping"
+                }
+              },
               "category": {
                 "type": "string",
                 "enum": [
@@ -4562,6 +4570,12 @@
               "objects": {
                 "$ref": "#/components/schemas/objects"
               },
+              "entity_mappings": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/provider_entity_mapping"
+                }
+              },
               "category": {
                 "type": "string",
                 "enum": [
@@ -4594,6 +4608,12 @@
               },
               "objects": {
                 "$ref": "#/components/schemas/objects"
+              },
+              "entity_mappings": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/provider_entity_mapping"
+                }
               },
               "category": {
                 "type": "string",
@@ -5040,6 +5060,42 @@
           }
         ]
       },
+      "salesforce_cdc.create": {
+        "$ref": "#/webhooks/salesforce_cdc.create"
+      },
+      "salesforce_cdc.update": {
+        "$ref": "#/webhooks/salesforce_cdc.update"
+      },
+      "salesforce_cdc.delete": {
+        "$ref": "#/webhooks/salesforce_cdc.delete"
+      },
+      "salesforce_cdc.undelete": {
+        "$ref": "#/webhooks/salesforce_cdc.undelete"
+      },
+      "sync.complete": {
+        "$ref": "#/webhooks/sync.complete"
+      },
+      "connection.create": {
+        "$ref": "#/webhooks/connection.create"
+      },
+      "standard_object": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "standard"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "name"
+        ]
+      },
       "standard_or_custom_object": {
         "type": "object",
         "properties": {
@@ -5059,7 +5115,27 @@
           "name"
         ]
       },
-      "entity_mapping": {
+      "provider_entity_mapping": {
+        "type": "object",
+        "properties": {
+          "entity_id": {
+            "type": "string"
+          },
+          "object": {
+            "$ref": "#/components/schemas/standard_object"
+          },
+          "field_mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/entity_field_mapping"
+            }
+          }
+        },
+        "required": [
+          "entity_id"
+        ]
+      },
+      "connection_entity_mapping": {
         "type": "object",
         "properties": {
           "entity_id": {
@@ -5224,19 +5300,872 @@
       }
     }
   },
-  "webhooks": {
-    "webhook": {
+  "x-webhooks": {
+    "salesforce_cdc.create": {
       "post": {
-        "operationId": "webhook",
-        "summary": "Webhook",
+        "summary": "Salesforce record created (beta)",
+        "description": "When a record is created in a customer's Salesforce (beta)\n\nThis feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.",
+        "operationId": "salesforceCdcCreate",
+        "x-event-type": "salesforce_cdc.create",
         "tags": [
-          "Webhooks"
+          "Webhook Events"
         ],
         "requestBody": {
           "content": {
             "application/json": {
+              "example": {
+                "id": "0011t00000B0G6uAAF",
+                "entity_name": "Account",
+                "fields": {
+                  "Name": "Acme"
+                }
+              },
               "schema": {
-                "$ref": "#/components/schemas/webhook-payload"
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The Salesforce ID of the record that was created",
+                    "example": "0011t00000B0G6uAAF"
+                  },
+                  "entity_name": {
+                    "type": "string",
+                    "description": "The name of the Salesforce object that the record belongs to",
+                    "example": "Account"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "description": "The fields that were set when the record was created",
+                    "example": {
+                      "Name": "Acme"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "entity_name",
+                  "fields"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "salesforce_cdc.update": {
+      "post": {
+        "summary": "Salesforce record updated (beta)",
+        "description": "When a record is updated in a customer's Salesforce (beta)\n\nThis feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.",
+        "operationId": "salesforceCdcUpdate",
+        "x-event-type": "salesforce_cdc.update",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "id": "0011t00000B0G6uAAF",
+                "entity_name": "Account",
+                "fields": {
+                  "Name": "Acme"
+                },
+                "nulled_fields": [],
+                "changed_fields": [
+                  "Name"
+                ],
+                "diff_fields": []
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The Salesforce ID of the record that was updated",
+                    "example": "0011t00000B0G6uAAF"
+                  },
+                  "entity_name": {
+                    "type": "string",
+                    "description": "The name of the Salesforce object that the record belongs to",
+                    "example": "Account"
+                  },
+                  "nulled_fields": {
+                    "type": "array",
+                    "description": "The fields that were set to null when the record was updated",
+                    "example": [
+                      "PhoneNumber2"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "changed_fields": {
+                    "type": "array",
+                    "description": "The fields that were changed when the record was updated",
+                    "example": [
+                      "Name"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "diff_fields": {
+                    "type": "array",
+                    "description": "The fields that were changed when the record was updated and the value in the fields object is a diff to be applied to the existing value",
+                    "example": [
+                      "Description"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "fields": {
+                    "type": "object",
+                    "description": "The fields that were set when the record was created"
+                  }
+                },
+                "required": [
+                  "id",
+                  "entity_name",
+                  "fields",
+                  "nulled_fields",
+                  "changed_fields",
+                  "diff_fields"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "salesforce_cdc.delete": {
+      "post": {
+        "summary": "Salesforce record deleted (beta)",
+        "description": "When a record is deleted from a customer's Salesforce (beta)\n\nThis feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.",
+        "operationId": "salesforceCdcDelete",
+        "x-event-type": "salesforce_cdc.delete",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "id": "0011t00000B0G6uAAF",
+                "entity_name": "Account"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The Salesforce ID of the record that was deleted",
+                    "example": "0011t00000B0G6uAAF"
+                  },
+                  "entity_name": {
+                    "type": "string",
+                    "description": "The name of the Salesforce object that the record belongs to",
+                    "example": "Account"
+                  }
+                },
+                "required": [
+                  "id",
+                  "entity_name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "salesforce_cdc.undelete": {
+      "post": {
+        "summary": "Salesforce record undeleted (beta)",
+        "description": "When a record is undeleted in a customer's Salesforce (beta)\n\nThis feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.",
+        "operationId": "salesforceCdcUndelete",
+        "x-event-type": "salesforce_cdc.undelete",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "id": "0011t00000B0G6uAAF",
+                "entity_name": "Account",
+                "fields": {
+                  "Name": "Acme"
+                }
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The Salesforce ID of the record that was undeleted",
+                    "example": "0011t00000B0G6uAAF"
+                  },
+                  "entity_name": {
+                    "type": "string",
+                    "description": "The name of the Salesforce object that the record belongs to",
+                    "example": "Account"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "description": "The fields that were set when the record was undeleted",
+                    "example": {
+                      "Name": "Acme"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "entity_name",
+                  "fields"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "sync.complete": {
+      "post": {
+        "summary": "Sync completed",
+        "description": "Notification of the completion of a sync",
+        "operationId": "syncComplete",
+        "x-event-type": "sync.complete",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "provider_name": "salesforce",
+                "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+                "object_type": "standard",
+                "object": "contact",
+                "error_message": "Error message"
+              },
+              "schema": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "connection_id": {
+                        "type": "string",
+                        "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                      },
+                      "provider_name": {
+                        "$ref": "#/components/schemas/provider_name"
+                      },
+                      "history_id": {
+                        "type": "string",
+                        "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                      },
+                      "result": {
+                        "type": "string",
+                        "enum": [
+                          "SUCCESS",
+                          "ERROR"
+                        ]
+                      },
+                      "num_records_synced": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "error_message": {
+                        "type": "string",
+                        "example": "Error message"
+                      }
+                    },
+                    "required": [
+                      "connection_id",
+                      "customer_id",
+                      "provider_name",
+                      "history_id",
+                      "result"
+                    ]
+                  },
+                  {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "object"
+                            ]
+                          },
+                          "object_type": {
+                            "type": "string",
+                            "enum": [
+                              "common",
+                              "standard",
+                              "custom"
+                            ]
+                          },
+                          "object": {
+                            "type": "string",
+                            "example": "contact"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "object_type",
+                          "object"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "entity"
+                            ]
+                          },
+                          "entity_id": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "entity_id"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "connection.create": {
+      "post": {
+        "summary": "Customer connection created",
+        "description": "Notification of the creation of a connection for a customer",
+        "operationId": "connectionCreate",
+        "x-event-type": "connection.create",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
+                "category": "crm",
+                "provider_name": "salesforce",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "provider_id": {
+                    "type": "string",
+                    "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
+                  },
+                  "category": {
+                    "$ref": "#/components/schemas/category"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  }
+                },
+                "required": [
+                  "customer_id",
+                  "provider_id",
+                  "category",
+                  "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    }
+  },
+  "webhooks": {
+    "salesforce_cdc.create": {
+      "post": {
+        "summary": "Salesforce record created (beta)",
+        "description": "When a record is created in a customer's Salesforce (beta)\n\nThis feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.",
+        "operationId": "salesforceCdcCreate",
+        "x-event-type": "salesforce_cdc.create",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "id": "0011t00000B0G6uAAF",
+                "entity_name": "Account",
+                "fields": {
+                  "Name": "Acme"
+                }
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The Salesforce ID of the record that was created",
+                    "example": "0011t00000B0G6uAAF"
+                  },
+                  "entity_name": {
+                    "type": "string",
+                    "description": "The name of the Salesforce object that the record belongs to",
+                    "example": "Account"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "description": "The fields that were set when the record was created",
+                    "example": {
+                      "Name": "Acme"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "entity_name",
+                  "fields"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "salesforce_cdc.update": {
+      "post": {
+        "summary": "Salesforce record updated (beta)",
+        "description": "When a record is updated in a customer's Salesforce (beta)\n\nThis feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.",
+        "operationId": "salesforceCdcUpdate",
+        "x-event-type": "salesforce_cdc.update",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "id": "0011t00000B0G6uAAF",
+                "entity_name": "Account",
+                "fields": {
+                  "Name": "Acme"
+                },
+                "nulled_fields": [],
+                "changed_fields": [
+                  "Name"
+                ],
+                "diff_fields": []
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The Salesforce ID of the record that was updated",
+                    "example": "0011t00000B0G6uAAF"
+                  },
+                  "entity_name": {
+                    "type": "string",
+                    "description": "The name of the Salesforce object that the record belongs to",
+                    "example": "Account"
+                  },
+                  "nulled_fields": {
+                    "type": "array",
+                    "description": "The fields that were set to null when the record was updated",
+                    "example": [
+                      "PhoneNumber2"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "changed_fields": {
+                    "type": "array",
+                    "description": "The fields that were changed when the record was updated",
+                    "example": [
+                      "Name"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "diff_fields": {
+                    "type": "array",
+                    "description": "The fields that were changed when the record was updated and the value in the fields object is a diff to be applied to the existing value",
+                    "example": [
+                      "Description"
+                    ],
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "fields": {
+                    "type": "object",
+                    "description": "The fields that were set when the record was created"
+                  }
+                },
+                "required": [
+                  "id",
+                  "entity_name",
+                  "fields",
+                  "nulled_fields",
+                  "changed_fields",
+                  "diff_fields"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "salesforce_cdc.delete": {
+      "post": {
+        "summary": "Salesforce record deleted (beta)",
+        "description": "When a record is deleted from a customer's Salesforce (beta)\n\nThis feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.",
+        "operationId": "salesforceCdcDelete",
+        "x-event-type": "salesforce_cdc.delete",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "id": "0011t00000B0G6uAAF",
+                "entity_name": "Account"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The Salesforce ID of the record that was deleted",
+                    "example": "0011t00000B0G6uAAF"
+                  },
+                  "entity_name": {
+                    "type": "string",
+                    "description": "The name of the Salesforce object that the record belongs to",
+                    "example": "Account"
+                  }
+                },
+                "required": [
+                  "id",
+                  "entity_name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "salesforce_cdc.undelete": {
+      "post": {
+        "summary": "Salesforce record undeleted (beta)",
+        "description": "When a record is undeleted in a customer's Salesforce (beta)\n\nThis feature is in private beta in Supaglue Cloud. Please [register](https://m8ndtm64l4g.typeform.com/to/ovOUDxGj) if you'd like early access.",
+        "operationId": "salesforceCdcUndelete",
+        "x-event-type": "salesforce_cdc.undelete",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "id": "0011t00000B0G6uAAF",
+                "entity_name": "Account",
+                "fields": {
+                  "Name": "Acme"
+                }
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The Salesforce ID of the record that was undeleted",
+                    "example": "0011t00000B0G6uAAF"
+                  },
+                  "entity_name": {
+                    "type": "string",
+                    "description": "The name of the Salesforce object that the record belongs to",
+                    "example": "Account"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "description": "The fields that were set when the record was undeleted",
+                    "example": {
+                      "Name": "Acme"
+                    }
+                  }
+                },
+                "required": [
+                  "id",
+                  "entity_name",
+                  "fields"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "sync.complete": {
+      "post": {
+        "summary": "Sync completed",
+        "description": "Notification of the completion of a sync",
+        "operationId": "syncComplete",
+        "x-event-type": "sync.complete",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "provider_name": "salesforce",
+                "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+                "object_type": "standard",
+                "object": "contact",
+                "error_message": "Error message"
+              },
+              "schema": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "connection_id": {
+                        "type": "string",
+                        "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                      },
+                      "provider_name": {
+                        "$ref": "#/components/schemas/provider_name"
+                      },
+                      "history_id": {
+                        "type": "string",
+                        "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                      },
+                      "result": {
+                        "type": "string",
+                        "enum": [
+                          "SUCCESS",
+                          "ERROR"
+                        ]
+                      },
+                      "num_records_synced": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "error_message": {
+                        "type": "string",
+                        "example": "Error message"
+                      }
+                    },
+                    "required": [
+                      "connection_id",
+                      "customer_id",
+                      "provider_name",
+                      "history_id",
+                      "result"
+                    ]
+                  },
+                  {
+                    "oneOf": [
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "object"
+                            ]
+                          },
+                          "object_type": {
+                            "type": "string",
+                            "enum": [
+                              "common",
+                              "standard",
+                              "custom"
+                            ]
+                          },
+                          "object": {
+                            "type": "string",
+                            "example": "contact"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "object_type",
+                          "object"
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "entity"
+                            ]
+                          },
+                          "entity_id": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "type",
+                          "entity_id"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "connection.create": {
+      "post": {
+        "summary": "Customer connection created",
+        "description": "Notification of the creation of a connection for a customer",
+        "operationId": "connectionCreate",
+        "x-event-type": "connection.create",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
+                "category": "crm",
+                "provider_name": "salesforce",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "customer_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "provider_id": {
+                    "type": "string",
+                    "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
+                  },
+                  "category": {
+                    "$ref": "#/components/schemas/category"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  }
+                },
+                "required": [
+                  "customer_id",
+                  "provider_id",
+                  "category",
+                  "provider_name",
+                  "result"
+                ]
               }
             }
           }

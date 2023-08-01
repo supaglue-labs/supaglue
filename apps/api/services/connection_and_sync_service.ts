@@ -4,7 +4,7 @@ import { encrypt } from '@supaglue/core/lib/crypt';
 import { getCustomerIdPk } from '@supaglue/core/lib/customer_id';
 import { fromConnectionModelToConnectionUnsafe } from '@supaglue/core/mappers/connection';
 import { fromSyncModel } from '@supaglue/core/mappers/sync';
-import type { ApplicationService, ProviderService, SyncConfigService } from '@supaglue/core/services';
+import type { ApplicationService, ProviderService, SyncConfigService, WebhookService } from '@supaglue/core/services';
 import type { ConnectionService } from '@supaglue/core/services/connection_service';
 import type { Prisma, PrismaClient } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
@@ -24,6 +24,7 @@ import type {
   ConnectionUpsertParamsAny,
 } from '@supaglue/types/connection';
 import type { Sync } from '@supaglue/types/sync';
+import { snakecaseKeys } from '@supaglue/utils';
 import type { Client } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleOverlapPolicy } from '@temporalio/client';
 import { v4 as uuidv4 } from 'uuid';
@@ -35,6 +36,7 @@ export class ConnectionAndSyncService {
   #syncConfigService: SyncConfigService;
   #applicationService: ApplicationService;
   #connectionService: ConnectionService;
+  #webhookService: WebhookService;
 
   constructor(
     prisma: PrismaClient,
@@ -42,7 +44,8 @@ export class ConnectionAndSyncService {
     providerService: ProviderService,
     syncConfigService: SyncConfigService,
     applicationService: ApplicationService,
-    connectionService: ConnectionService
+    connectionService: ConnectionService,
+    webhookService: WebhookService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
@@ -50,6 +53,7 @@ export class ConnectionAndSyncService {
     this.#syncConfigService = syncConfigService;
     this.#applicationService = applicationService;
     this.#connectionService = connectionService;
+    this.#webhookService = webhookService;
   }
 
   public async triggerSync(sync: Sync, performFullRefresh: boolean): Promise<Sync> {
@@ -217,10 +221,9 @@ export class ConnectionAndSyncService {
     const application = await this.#applicationService.getById(provider.applicationId);
     let errored = false;
 
+    const connectionId = uuidv4();
     try {
       const status: ConnectionStatus = 'added';
-
-      const connectionId = uuidv4();
 
       const connectionModel = await this.#prisma.$transaction(async (tx) => {
         const connectionModel = await tx.connection.create({
@@ -369,6 +372,15 @@ export class ConnectionAndSyncService {
       errored = true;
       throw e;
     } finally {
+      const { credentials: _, ...paramsWithoutCredentials } = params;
+      await this.#webhookService.sendMessage(
+        'connection.create',
+        { ...snakecaseKeys(paramsWithoutCredentials), result: errored ? 'ERROR' : 'SUCCESS' },
+        application,
+        connectionId
+      );
+
+      // TODO remove this after all customers migrate to the svix webhooks
       if (application.config.webhook) {
         await maybeSendWebhookPayload(
           application.config.webhook,

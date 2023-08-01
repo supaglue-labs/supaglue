@@ -1,4 +1,10 @@
-import type { StandardOrCustomObject } from './standard_or_custom_object';
+import type { StandardObject, StandardOrCustomObject } from './standard_or_custom_object';
+
+export type MergedEntityMappingWithoutAttribution = {
+  entityId: string;
+  object?: StandardOrCustomObject;
+  fieldMappings: EntityFieldMapping[];
+};
 
 export type MergedEntityMapping = {
   entityId: string;
@@ -17,7 +23,14 @@ export type MergedEntityFieldMapping = {
   isAdditional: boolean;
 };
 
-export type EntityMapping = {
+export type ProviderEntityMapping = {
+  entityId: string;
+  // don't support custom objects because for hubspot, custom object id is different per customer
+  object?: StandardObject;
+  fieldMappings?: EntityFieldMapping[];
+};
+
+export type ConnectionEntityMapping = {
   entityId: string;
   object?: StandardOrCustomObject;
   fieldMappings?: EntityFieldMapping[];

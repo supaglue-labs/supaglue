@@ -1,4 +1,10 @@
-import type { ConnectionService, ProviderService, RemoteService, SyncConfigService } from '@supaglue/core/services';
+import type {
+  ConnectionService,
+  ProviderService,
+  RemoteService,
+  SyncConfigService,
+  WebhookService,
+} from '@supaglue/core/services';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { EntityService } from '@supaglue/core/services/entity_service';
 import type { SyncRunService } from '@supaglue/core/services/sync_run_service';
@@ -25,6 +31,7 @@ export const createActivities = ({
   destinationService,
   syncRunService,
   entityService,
+  webhookService,
 }: {
   systemSettingsService: SystemSettingsService;
   connectionService: ConnectionService;
@@ -36,6 +43,7 @@ export const createActivities = ({
   destinationService: DestinationService;
   syncRunService: SyncRunService;
   entityService: EntityService;
+  webhookService: WebhookService;
 }) => {
   return {
     getSync: createGetSync(syncService),
@@ -69,6 +77,7 @@ export const createActivities = ({
       connectionService,
       providerService,
       applicationService,
+      webhookService,
     }),
   };
 };

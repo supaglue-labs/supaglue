@@ -1,6 +1,0 @@
-name: provider_name
-in: query
-schema:
-  type: string
-  example: salesforce
-description: The provider name

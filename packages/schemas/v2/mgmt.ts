@@ -1,4 +1,4 @@
-import type { operations, paths } from '../gen/v2/mgmt';
+import type { operations, paths, webhooks } from '../gen/v2/mgmt';
 
 export type GetCustomersPathParams = never;
 export type GetCustomersQueryParams = never;
@@ -258,3 +258,13 @@ export type UpsertEntityMappingResponse =
 export type DeleteEntityMappingPathParams = paths['/entity_mappings/{entity_id}']['parameters']['path'];
 export type DeleteEntityMappingRequest = never;
 export type DeleteEntityMappingResponse = never;
+
+export type WebhookPayloads = {
+  [K in keyof webhooks]: Exclude<webhooks[K]['post']['requestBody'], undefined>['content']['application/json'];
+};
+
+export type WebhookPayload = Exclude<
+  webhooks[keyof webhooks]['post']['requestBody'],
+  undefined
+>['content']['application/json'];
+export type WebhookType = keyof webhooks;

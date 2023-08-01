@@ -79,6 +79,8 @@ services:
     depends_on:
       api:
         condition: service_started
+      init:
+        condition: service_completed_successfully
     environment:
       <<: *fe-api-common-env
       SUPAGLUE_API_HOST: ${SUPAGLUE_API_HOST:-http://api:8080}

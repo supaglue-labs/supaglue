@@ -33,7 +33,7 @@ properties:
   entity_mappings:
     type: array
     items:
-      $ref: ./entity_mapping.yaml
+      $ref: ./connection_entity_mapping.yaml
 required:
   - id
   - status
