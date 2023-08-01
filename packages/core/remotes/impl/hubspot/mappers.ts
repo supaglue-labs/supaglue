@@ -184,7 +184,7 @@ export const fromHubSpotDealToOpportunity = (
   pipelineStageMapping: PipelineStageMapping
 ): Opportunity => {
   let status: OpportunityStatus = 'OPEN';
-  if (properties.hs_is_closed_won) {
+  if (properties.hs_is_closed_won === 'true') {
     status = 'WON';
   } else if (properties.hs_is_closed === 'true') {
     status = 'LOST';
