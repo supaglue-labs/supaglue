@@ -1092,12 +1092,6 @@ export interface components {
         provider_name: "hubspot" | "salesforce";
       };
     }]>;
-    "salesforce_cdc.create": webhooks["salesforce_cdc.create"];
-    "salesforce_cdc.update": webhooks["salesforce_cdc.update"];
-    "salesforce_cdc.delete": webhooks["salesforce_cdc.delete"];
-    "salesforce_cdc.undelete": webhooks["salesforce_cdc.undelete"];
-    "sync.complete": webhooks["sync.complete"];
-    "connection.create": webhooks["connection.create"];
     standard_object: {
       /** @enum {string} */
       type: "standard";

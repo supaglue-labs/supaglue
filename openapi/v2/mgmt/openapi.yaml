@@ -213,18 +213,6 @@ components:
       $ref: ./components/schemas/objects/webhook.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
-    salesforce_cdc.create:
-      $ref: ./webhooks/salesforce_cdc.create.yaml
-    salesforce_cdc.update:
-      $ref: ./webhooks/salesforce_cdc.update.yaml
-    salesforce_cdc.delete:
-      $ref: ./webhooks/salesforce_cdc.delete.yaml
-    salesforce_cdc.undelete:
-      $ref: ./webhooks/salesforce_cdc.undelete.yaml
-    sync.complete:
-      $ref: ./webhooks/sync.complete.yaml
-    connection.create:
-      $ref: ./webhooks/connection.create.yaml
     standard_object:
       $ref: ./components/schemas/objects/standard_object.yaml
     standard_or_custom_object:
