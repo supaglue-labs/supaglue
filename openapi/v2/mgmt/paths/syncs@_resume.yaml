@@ -12,6 +12,7 @@ post:
         schema:
           oneOf:
             - type: object
+              title: 'Data model: Objects'
               properties:
                 object_type:
                   type: string
@@ -28,6 +29,7 @@ post:
                 - object_type
                 - object
             - type: object
+              title: 'Data model: Entities'
               properties:
                 entity_id:
                   type: string

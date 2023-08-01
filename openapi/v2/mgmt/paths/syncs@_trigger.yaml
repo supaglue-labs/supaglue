@@ -10,36 +10,38 @@ post:
     content:
       application/json:
         schema:
-          allOf:
-            - oneOf:
-              - type: object
-                properties:
-                  object_type:
-                    type: string
-                    enum:
-                      - common
-                      - standard
-                      - custom
-                    description: The object type to filter by
-                  object:
-                    type: string
-                    example: contact
-                    description: The object to filter by
-                required:
-                  - object_type
-                  - object
-              - type: object
-                properties:
-                  entity_id:
-                    type: string
-                    description: The entity id to filter by
-                required:
-                  - entity_id
+          oneOf:
             - type: object
+              title: 'Data model: Objects'
               properties:
+                object_type:
+                  type: string
+                  enum:
+                    - common
+                    - standard
+                    - custom
+                  description: The object type to filter by
+                object:
+                  type: string
+                  example: contact
+                  description: The object to filter by
                 perform_full_refresh:
                   type: boolean
                   example: true
+              required:
+                - object_type
+                - object
+            - type: object
+              title: 'Data model: Entities'
+              properties:
+                entity_id:
+                  type: string
+                  description: The entity id to filter by
+                perform_full_refresh:
+                  type: boolean
+                  example: true
+              required:
+                - entity_id
   responses:
     '200':
       description: Sync triggered

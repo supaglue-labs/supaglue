@@ -1,5 +1,6 @@
-allOf:
+oneOf:
   - type: object
+    title: crm
     properties:
       auth_type:
         type: string
@@ -9,40 +10,58 @@ allOf:
         $ref: ./objects/update_provider_config.yaml
       objects:
         $ref: ./objects/objects.yaml
+      category:
+        type: string
+        enum:
+          - crm
+      name:
+        $ref: ./objects/provider_name_crm.yaml
     required:
       - auth_type
       - config
-  - oneOf:
-      - type: object
-        properties:
-          category:
-            type: string
-            enum:
-              - crm
-          name:
-            $ref: ./objects/provider_name_crm.yaml
-        required:
-          - category
-          - name
-      - type: object
-        properties:
-          category:
-            type: string
-            enum:
-              - engagement
-          name:
-            $ref: ./objects/provider_name_engagement.yaml
-        required:
-          - category
-          - name
-      - type: object
-        properties:
-          category:
-            type: string
-            enum:
-              - no_category 
-          name:
-            $ref: ./objects/provider_name_no_category.yaml
-        required:
-          - category
-          - name
+      - category
+      - name
+  - type: object
+    title: engagement
+    properties:
+      auth_type:
+        type: string
+        enum:
+          - oauth2
+      config:
+        $ref: ./objects/update_provider_config.yaml
+      objects:
+        $ref: ./objects/objects.yaml
+      category:
+        type: string
+        enum:
+          - engagement
+      name:
+        $ref: ./objects/provider_name_engagement.yaml
+    required:
+      - auth_type
+      - config
+      - category
+      - name
+  - type: object
+    title: no category
+    properties:
+      auth_type:
+        type: string
+        enum:
+          - oauth2
+      config:
+        $ref: ./objects/update_provider_config.yaml
+      objects:
+        $ref: ./objects/objects.yaml
+      category:
+        type: string
+        enum:
+          - no_category
+      name:
+        $ref: ./objects/provider_name_no_category.yaml
+    required:
+      - auth_type
+      - config
+      - category
+      - name

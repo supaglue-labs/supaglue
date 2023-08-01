@@ -2272,6 +2272,7 @@
                 "oneOf": [
                   {
                     "type": "object",
+                    "title": "Data model: Objects",
                     "properties": {
                       "object_type": {
                         "type": "string",
@@ -2295,6 +2296,7 @@
                   },
                   {
                     "type": "object",
+                    "title": "Data model: Entities",
                     "properties": {
                       "entity_id": {
                         "type": "string",
@@ -2352,6 +2354,7 @@
                 "oneOf": [
                   {
                     "type": "object",
+                    "title": "Data model: Objects",
                     "properties": {
                       "object_type": {
                         "type": "string",
@@ -2375,6 +2378,7 @@
                   },
                   {
                     "type": "object",
+                    "title": "Data model: Entities",
                     "properties": {
                       "entity_id": {
                         "type": "string",
@@ -2429,54 +2433,51 @@
           "content": {
             "application/json": {
               "schema": {
-                "allOf": [
-                  {
-                    "oneOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "object_type": {
-                            "type": "string",
-                            "enum": [
-                              "common",
-                              "standard",
-                              "custom"
-                            ],
-                            "description": "The object type to filter by"
-                          },
-                          "object": {
-                            "type": "string",
-                            "example": "contact",
-                            "description": "The object to filter by"
-                          }
-                        },
-                        "required": [
-                          "object_type",
-                          "object"
-                        ]
-                      },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "entity_id": {
-                            "type": "string",
-                            "description": "The entity id to filter by"
-                          }
-                        },
-                        "required": [
-                          "entity_id"
-                        ]
-                      }
-                    ]
-                  },
+                "oneOf": [
                   {
                     "type": "object",
+                    "title": "Data model: Objects",
                     "properties": {
+                      "object_type": {
+                        "type": "string",
+                        "enum": [
+                          "common",
+                          "standard",
+                          "custom"
+                        ],
+                        "description": "The object type to filter by"
+                      },
+                      "object": {
+                        "type": "string",
+                        "example": "contact",
+                        "description": "The object to filter by"
+                      },
                       "perform_full_refresh": {
                         "type": "boolean",
                         "example": true
                       }
-                    }
+                    },
+                    "required": [
+                      "object_type",
+                      "object"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "Data model: Entities",
+                    "properties": {
+                      "entity_id": {
+                        "type": "string",
+                        "description": "The entity id to filter by"
+                      },
+                      "perform_full_refresh": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    },
+                    "required": [
+                      "entity_id"
+                    ]
                   }
                 ]
               }
@@ -4245,6 +4246,7 @@
         "oneOf": [
           {
             "type": "object",
+            "title": "Data model: Objects",
             "properties": {
               "object_type": {
                 "type": "string",
@@ -4323,6 +4325,7 @@
           },
           {
             "type": "object",
+            "title": "Data model: Entities",
             "properties": {
               "entity_id": {
                 "type": "string"
@@ -4415,110 +4418,104 @@
         ]
       },
       "create_provider": {
-        "allOf": [
+        "oneOf": [
           {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "auth_type": {
-                    "type": "string",
-                    "enum": [
-                      "oauth2"
-                    ]
-                  },
-                  "config": {
-                    "$ref": "#/components/schemas/create_provider_config"
-                  },
-                  "objects": {
-                    "$ref": "#/components/schemas/objects"
-                  }
-                },
-                "required": [
-                  "auth_type",
-                  "config"
+            "type": "object",
+            "title": "crm",
+            "properties": {
+              "auth_type": {
+                "type": "string",
+                "enum": [
+                  "oauth2"
                 ]
               },
-              {
-                "type": "object",
-                "properties": {
-                  "auth_type": {
-                    "type": "string",
-                    "enum": [
-                      "api_key"
-                    ]
-                  }
-                },
-                "required": [
-                  "auth_type"
+              "config": {
+                "$ref": "#/components/schemas/create_provider_config"
+              },
+              "objects": {
+                "$ref": "#/components/schemas/objects"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "crm"
                 ]
+              },
+              "name": {
+                "$ref": "#/components/schemas/provider_name_crm"
               }
+            },
+            "required": [
+              "auth_type",
+              "config",
+              "category",
+              "name"
             ]
           },
           {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "category": {
-                    "type": "string",
-                    "enum": [
-                      "crm"
-                    ]
-                  },
-                  "name": {
-                    "$ref": "#/components/schemas/provider_name_crm"
-                  }
-                },
-                "required": [
-                  "category",
-                  "name"
+            "type": "object",
+            "title": "engagement",
+            "properties": {
+              "auth_type": {
+                "type": "string",
+                "enum": [
+                  "oauth2"
                 ]
               },
-              {
-                "type": "object",
-                "properties": {
-                  "category": {
-                    "type": "string",
-                    "enum": [
-                      "engagement"
-                    ]
-                  },
-                  "name": {
-                    "$ref": "#/components/schemas/provider_name_engagement"
-                  }
-                },
-                "required": [
-                  "category",
-                  "name"
+              "config": {
+                "$ref": "#/components/schemas/create_provider_config"
+              },
+              "objects": {
+                "$ref": "#/components/schemas/objects"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "engagement"
                 ]
               },
-              {
-                "type": "object",
-                "properties": {
-                  "category": {
-                    "type": "string",
-                    "enum": [
-                      "no_category"
-                    ]
-                  },
-                  "name": {
-                    "$ref": "#/components/schemas/provider_name_crm"
-                  }
-                },
-                "required": [
-                  "category",
-                  "name"
-                ]
+              "name": {
+                "$ref": "#/components/schemas/provider_name_engagement"
               }
+            },
+            "required": [
+              "auth_type",
+              "config",
+              "category",
+              "name"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "no category",
+            "properties": {
+              "auth_type": {
+                "type": "string",
+                "enum": [
+                  "api_key"
+                ]
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "no_category"
+                ]
+              },
+              "name": {
+                "$ref": "#/components/schemas/provider_name_no_category"
+              }
+            },
+            "required": [
+              "auth_type"
             ]
           }
         ]
       },
       "update_provider": {
-        "allOf": [
+        "oneOf": [
           {
             "type": "object",
+            "title": "crm",
             "properties": {
               "auth_type": {
                 "type": "string",
@@ -4531,69 +4528,88 @@
               },
               "objects": {
                 "$ref": "#/components/schemas/objects"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "crm"
+                ]
+              },
+              "name": {
+                "$ref": "#/components/schemas/provider_name_crm"
               }
             },
             "required": [
               "auth_type",
-              "config"
+              "config",
+              "category",
+              "name"
             ]
           },
           {
-            "oneOf": [
-              {
-                "type": "object",
-                "properties": {
-                  "category": {
-                    "type": "string",
-                    "enum": [
-                      "crm"
-                    ]
-                  },
-                  "name": {
-                    "$ref": "#/components/schemas/provider_name_crm"
-                  }
-                },
-                "required": [
-                  "category",
-                  "name"
+            "type": "object",
+            "title": "engagement",
+            "properties": {
+              "auth_type": {
+                "type": "string",
+                "enum": [
+                  "oauth2"
                 ]
               },
-              {
-                "type": "object",
-                "properties": {
-                  "category": {
-                    "type": "string",
-                    "enum": [
-                      "engagement"
-                    ]
-                  },
-                  "name": {
-                    "$ref": "#/components/schemas/provider_name_engagement"
-                  }
-                },
-                "required": [
-                  "category",
-                  "name"
+              "config": {
+                "$ref": "#/components/schemas/update_provider_config"
+              },
+              "objects": {
+                "$ref": "#/components/schemas/objects"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "engagement"
                 ]
               },
-              {
-                "type": "object",
-                "properties": {
-                  "category": {
-                    "type": "string",
-                    "enum": [
-                      "no_category"
-                    ]
-                  },
-                  "name": {
-                    "$ref": "#/components/schemas/provider_name_no_category"
-                  }
-                },
-                "required": [
-                  "category",
-                  "name"
-                ]
+              "name": {
+                "$ref": "#/components/schemas/provider_name_engagement"
               }
+            },
+            "required": [
+              "auth_type",
+              "config",
+              "category",
+              "name"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "no category",
+            "properties": {
+              "auth_type": {
+                "type": "string",
+                "enum": [
+                  "oauth2"
+                ]
+              },
+              "config": {
+                "$ref": "#/components/schemas/update_provider_config"
+              },
+              "objects": {
+                "$ref": "#/components/schemas/objects"
+              },
+              "category": {
+                "type": "string",
+                "enum": [
+                  "no_category"
+                ]
+              },
+              "name": {
+                "$ref": "#/components/schemas/provider_name_no_category"
+              }
+            },
+            "required": [
+              "auth_type",
+              "config",
+              "category",
+              "name"
             ]
           }
         ]
