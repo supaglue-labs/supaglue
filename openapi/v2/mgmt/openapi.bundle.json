@@ -583,7 +583,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/entity_mapping"
+                "$ref": "#/components/schemas/connection_entity_mapping"
               }
             }
           }
@@ -2804,7 +2804,7 @@
           "entity_mappings": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/entity_mapping"
+              "$ref": "#/components/schemas/provider_entity_mapping"
             }
           }
         },
@@ -3722,7 +3722,7 @@
           "entity_mappings": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/entity_mapping"
+              "$ref": "#/components/schemas/connection_entity_mapping"
             }
           }
         },
@@ -4531,6 +4531,12 @@
               "objects": {
                 "$ref": "#/components/schemas/objects"
               },
+              "entity_mappings": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/provider_entity_mapping"
+                }
+              },
               "category": {
                 "type": "string",
                 "enum": [
@@ -4564,6 +4570,12 @@
               "objects": {
                 "$ref": "#/components/schemas/objects"
               },
+              "entity_mappings": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/provider_entity_mapping"
+                }
+              },
               "category": {
                 "type": "string",
                 "enum": [
@@ -4596,6 +4608,12 @@
               },
               "objects": {
                 "$ref": "#/components/schemas/objects"
+              },
+              "entity_mappings": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/provider_entity_mapping"
+                }
               },
               "category": {
                 "type": "string",
@@ -5060,6 +5078,24 @@
       "connection.create": {
         "$ref": "#/webhooks/connection.create"
       },
+      "standard_object": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "standard"
+            ]
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "name"
+        ]
+      },
       "standard_or_custom_object": {
         "type": "object",
         "properties": {
@@ -5079,7 +5115,27 @@
           "name"
         ]
       },
-      "entity_mapping": {
+      "provider_entity_mapping": {
+        "type": "object",
+        "properties": {
+          "entity_id": {
+            "type": "string"
+          },
+          "object": {
+            "$ref": "#/components/schemas/standard_object"
+          },
+          "field_mappings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/entity_field_mapping"
+            }
+          }
+        },
+        "required": [
+          "entity_id"
+        ]
+      },
+      "connection_entity_mapping": {
         "type": "object",
         "properties": {
           "entity_id": {

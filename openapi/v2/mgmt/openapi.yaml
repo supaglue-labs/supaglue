@@ -225,10 +225,14 @@ components:
       $ref: ./webhooks/sync.complete.yaml
     connection.create:
       $ref: ./webhooks/connection.create.yaml
+    standard_object:
+      $ref: ./components/schemas/objects/standard_object.yaml
     standard_or_custom_object:
       $ref: ./components/schemas/objects/standard_or_custom_object.yaml
-    entity_mapping:
-      $ref: ./components/schemas/objects/entity_mapping.yaml
+    provider_entity_mapping:
+      $ref: ./components/schemas/objects/provider_entity_mapping.yaml
+    connection_entity_mapping:
+      $ref: ./components/schemas/objects/connection_entity_mapping.yaml
     merged_entity_mapping:
       $ref: ./components/schemas/objects/merged_entity_mapping.yaml
     entity_field_mapping:

@@ -370,7 +370,7 @@ export interface components {
       name: components["schemas"]["provider_name"];
       config?: components["schemas"]["create_provider_config"];
       objects?: components["schemas"]["objects"];
-      entity_mappings?: (components["schemas"]["entity_mapping"])[];
+      entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
     };
     destination: OneOf<[{
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -674,7 +674,7 @@ export interface components {
             field_mappings: (components["schemas"]["field_mapping"])[];
           })[];
       };
-      entity_mappings?: (components["schemas"]["entity_mapping"])[];
+      entity_mappings?: (components["schemas"]["connection_entity_mapping"])[];
     };
     /**
      * @example crm 
@@ -946,6 +946,7 @@ export interface components {
       auth_type: "oauth2";
       config: components["schemas"]["update_provider_config"];
       objects?: components["schemas"]["objects"];
+      entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
       /** @enum {string} */
       category: "crm";
       name: components["schemas"]["provider_name_crm"];
@@ -954,6 +955,7 @@ export interface components {
       auth_type: "oauth2";
       config: components["schemas"]["update_provider_config"];
       objects?: components["schemas"]["objects"];
+      entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
       /** @enum {string} */
       category: "engagement";
       name: components["schemas"]["provider_name_engagement"];
@@ -962,6 +964,7 @@ export interface components {
       auth_type: "oauth2";
       config: components["schemas"]["update_provider_config"];
       objects?: components["schemas"]["objects"];
+      entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
       /** @enum {string} */
       category: "no_category";
       name: components["schemas"]["provider_name_no_category"];
@@ -1095,12 +1098,22 @@ export interface components {
     "salesforce_cdc.undelete": webhooks["salesforce_cdc.undelete"];
     "sync.complete": webhooks["sync.complete"];
     "connection.create": webhooks["connection.create"];
+    standard_object: {
+      /** @enum {string} */
+      type: "standard";
+      name: string;
+    };
     standard_or_custom_object: {
       /** @enum {string} */
       type: "standard" | "custom";
       name: string;
     };
-    entity_mapping: {
+    provider_entity_mapping: {
+      entity_id: string;
+      object?: components["schemas"]["standard_object"];
+      field_mappings?: (components["schemas"]["entity_field_mapping"])[];
+    };
+    connection_entity_mapping: {
       entity_id: string;
       object?: components["schemas"]["standard_or_custom_object"];
       field_mappings?: (components["schemas"]["entity_field_mapping"])[];
@@ -1371,7 +1384,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["entity_mapping"];
+        "application/json": components["schemas"]["connection_entity_mapping"];
       };
     };
     responses: {

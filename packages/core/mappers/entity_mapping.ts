@@ -1,10 +1,15 @@
 import type { Entity } from '@supaglue/types/entity';
-import type { EntityMapping, MergedEntityMapping } from '@supaglue/types/entity_mapping';
+import type {
+  ConnectionEntityMapping,
+  MergedEntityMapping,
+  MergedEntityMappingWithoutAttribution,
+  ProviderEntityMapping,
+} from '@supaglue/types/entity_mapping';
 
 export function mergeEntityMappings(
-  providerEntityMapping: EntityMapping | undefined,
-  connectionEntityMapping: EntityMapping | undefined
-): EntityMapping | undefined {
+  providerEntityMapping: ProviderEntityMapping | undefined,
+  connectionEntityMapping: ConnectionEntityMapping | undefined
+): MergedEntityMappingWithoutAttribution | undefined {
   if (
     providerEntityMapping &&
     connectionEntityMapping &&
@@ -13,7 +18,7 @@ export function mergeEntityMappings(
     throw new Error('Entity mappings must be for the same entity');
   }
 
-  let mergedEntityMapping: EntityMapping | undefined = undefined;
+  let mergedEntityMapping: MergedEntityMappingWithoutAttribution | undefined = undefined;
 
   for (const entityMapping of [providerEntityMapping, connectionEntityMapping]) {
     if (!entityMapping) {
@@ -24,7 +29,7 @@ export function mergeEntityMappings(
       mergedEntityMapping = {
         entityId: entityMapping.entityId,
         object: entityMapping.object,
-        fieldMappings: entityMapping.fieldMappings,
+        fieldMappings: entityMapping.fieldMappings ?? [],
       };
     } else {
       mergedEntityMapping.object = entityMapping.object;
@@ -54,8 +59,8 @@ export function mergeEntityMappings(
  */
 export function mergeEntityMappingsList(
   entities: Entity[],
-  providerEntityMappings: EntityMapping[],
-  connectionEntityMappings: EntityMapping[]
+  providerEntityMappings: ProviderEntityMapping[],
+  connectionEntityMappings: ConnectionEntityMapping[]
 ): MergedEntityMapping[] {
   // Start off with a skeleton
   const mergedEntityMappings: MergedEntityMapping[] = entities.map((entity) => ({

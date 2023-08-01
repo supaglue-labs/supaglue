@@ -7,14 +7,14 @@ import type {
   SchemaCreateParams,
 } from '.';
 import type { CRMProviderName } from './crm';
-import type { EntityMapping } from './entity_mapping';
+import type { ProviderEntityMapping } from './entity_mapping';
 import type { FieldMapping } from './field_mapping_config';
 import type { ObjectType } from './sync';
 
 type BaseProvider = {
   id: string;
   applicationId: string;
-  entityMappings?: EntityMapping[];
+  entityMappings?: ProviderEntityMapping[];
 };
 
 type BaseOauthProvider = BaseProvider & {
