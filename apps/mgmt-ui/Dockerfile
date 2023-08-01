@@ -2,7 +2,7 @@ FROM node:18-bullseye-slim AS builder
 # Set working directory
 WORKDIR /app
 COPY . .
-RUN --mount=type=cache,target=/app/.yarn/cache yarn dlx -p turbo@1.10.9 turbo prune --scope=mgmt-ui --docker
+RUN --mount=type=cache,target=/app/.yarn/cache yarn dlx -p turbo@1.10.12 turbo prune --scope=mgmt-ui --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:18-bullseye-slim AS installer
@@ -24,7 +24,7 @@ COPY scripts/validate_and_bundle_openapi.ts scripts/validate_and_bundle_openapi.
 COPY openapi openapi
 
 WORKDIR /app
-RUN --mount=type=cache,target=/app/.yarn/cache yarn dlx -p turbo@1.10.9 turbo run build --filter=mgmt-ui...
+RUN --mount=type=cache,target=/app/.yarn/cache yarn dlx -p turbo@1.10.12 turbo run build --filter=mgmt-ui...
 
 FROM node:18-bullseye-slim AS runner
 RUN apt-get update && apt-get install -y openssl libssl-dev && rm -rf /var/lib/apt/lists/* && apt-get clean

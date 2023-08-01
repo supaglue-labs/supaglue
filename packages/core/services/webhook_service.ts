@@ -1,9 +1,10 @@
 import type { PrismaClient } from '@supaglue/db';
+import type { WebhookPayloads, WebhookType } from '@supaglue/schemas/v2/mgmt';
 import type { Application } from '@supaglue/types';
 import { Svix } from 'svix';
 
 /**
- * WebhookService is a wrapper around Svix's API and is only used for CDC webhooks currently.
+ * WebhookService is a wrapper around Svix's API.
  */
 export class WebhookService {
   #prisma: PrismaClient;
@@ -23,7 +24,12 @@ export class WebhookService {
     return await this.#svix.application.create({ uid: applicationId, name });
   }
 
-  async sendMessage(eventType: string, payload: any, application: Application, idempotencyKey?: string) {
+  async sendMessage<T extends WebhookType>(
+    eventType: T,
+    payload: WebhookPayloads[T],
+    application: Application,
+    idempotencyKey?: string
+  ) {
     if (!this.#svix) {
       return;
     }

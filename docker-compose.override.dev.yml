@@ -49,9 +49,10 @@ services:
       - .:/app
     working_dir: /app
     command:
-      - sh 
+      - sh
       - -c
       - |
+        yarn install
         yarn workspace @supaglue/db prisma migrate dev
         yarn workspace @supaglue/db prisma db seed
         yarn workspace api init-temporal

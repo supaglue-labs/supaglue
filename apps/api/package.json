@@ -12,6 +12,7 @@
     "@supaglue/db": "workspace:*",
     "@supaglue/schemas": "workspace:*",
     "@supaglue/sync-workflows": "workspace:*",
+    "@supaglue/utils": "workspace:*",
     "@temporalio/activity": "^1.8.0",
     "@temporalio/client": "^1.8.0",
     "@temporalio/workflow": "^1.8.0",

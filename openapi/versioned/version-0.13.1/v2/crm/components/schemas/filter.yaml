@@ -1,3 +1,0 @@
-oneOf:
-  - $ref: './equals_filter.yaml'
-  - $ref: './contains_filter.yaml'

@@ -1,6 +1,7 @@
 import { maybeSendWebhookPayload } from '@supaglue/core/lib/webhook';
-import type { ConnectionService, ProviderService } from '@supaglue/core/services';
+import type { ConnectionService, ProviderService, WebhookService } from '@supaglue/core/services';
 import type { ObjectType } from '@supaglue/types/sync';
+import { snakecaseKeys } from '@supaglue/utils';
 import type { ApplicationService } from '../services';
 
 export type MaybeSendSyncFinishWebhookArgs = {
@@ -25,16 +26,35 @@ export function createMaybeSendSyncFinishWebhook({
   connectionService,
   providerService,
   applicationService,
+  webhookService,
 }: {
   connectionService: ConnectionService;
   providerService: ProviderService;
   applicationService: ApplicationService;
+  webhookService: WebhookService;
 }) {
   return async function maybeSendSyncFinishWebhook(args: MaybeSendSyncFinishWebhookArgs) {
     const { connectionId, status } = args;
     const connection = await connectionService.getSafeById(connectionId);
     const provider = await providerService.getById(connection.providerId);
-    const { config } = await applicationService.getById(provider.applicationId);
+    const application = await applicationService.getById(provider.applicationId);
+    const { config } = application;
+
+    await webhookService.sendMessage(
+      'sync.complete',
+      {
+        ...snakecaseKeys({
+          ...args,
+          customerId: connection.customerId,
+          providerName: provider.name,
+        }),
+        result: status === 'SYNC_SUCCESS' ? 'SUCCESS' : 'ERROR',
+      },
+      application,
+      args.historyId
+    );
+
+    // TODO remove this after all customers migrate to the svix webhooks
     if (config.webhook) {
       await maybeSendWebhookPayload(config.webhook, status, {
         customerId: connection.customerId,
