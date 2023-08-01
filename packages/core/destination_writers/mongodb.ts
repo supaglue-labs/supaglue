@@ -195,7 +195,6 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       _supaglue_is_deleted: record.metadata.isDeleted,
       _supaglue_raw_data: record.rawData,
       _supaglue_mapped_data: record.mappedData,
-      _supaglue_last_modified_at: record.metadata.lastModifiedAt,
     };
     const { database } = this.#destination.config;
     const collectionName = getObjectCollectionName(providerName, objectName);
