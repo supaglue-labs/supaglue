@@ -7,6 +7,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
+  FullEntityRecord,
   MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
@@ -241,6 +242,15 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       heartbeat,
       logger.child({ connectionId, providerName, customerId, entityName })
     );
+  }
+
+  public override async upsertEntityRecord(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    record: FullEntityRecord
+  ): Promise<void> {
+    // Do nothing
+    return;
   }
 
   async #writeRecords(

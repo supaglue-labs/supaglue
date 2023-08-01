@@ -10,6 +10,7 @@ export * as crm from './crm';
 export * from './customer';
 export * from './destination';
 export * as engagement from './engagement';
+export * from './entity_record';
 export * from './field_mapping_info';
 export * from './oauth';
 export * from './object_record';

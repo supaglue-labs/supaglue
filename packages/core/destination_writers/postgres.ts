@@ -1,9 +1,11 @@
 import type {
+  BaseFullRecord,
   CommonObjectType,
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
+  FullEntityRecord,
   MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
@@ -287,7 +289,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     objectName: string,
     record: StandardFullObjectRecord
   ): Promise<void> {
-    return await this.#upsertRecord(connection, objectName, record);
+    return await this.#upsertRecord(connection, getObjectTableName(connection.providerName, objectName), record);
   }
 
   public override async writeEntityRecords(
@@ -306,12 +308,19 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     );
   }
 
+  public override async upsertEntityRecord(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    record: FullEntityRecord
+  ): Promise<void> {
+    return await this.#upsertRecord(connection, getEntityTableName(entityName), record);
+  }
+
   async #upsertRecord(
     { providerName, customerId, applicationId }: ConnectionSafeAny,
-    objectName: string,
-    record: StandardFullObjectRecord
+    table: string,
+    record: BaseFullRecord
   ): Promise<void> {
-    const table = getObjectTableName(providerName, objectName);
     const { schema } = this.#destination.config;
     const qualifiedTable = `${schema}.${table}`;
     const client = await this.#getClient();

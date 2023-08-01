@@ -5,6 +5,7 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   DestinationUnsafe,
+  FullEntityRecord,
   MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
@@ -262,6 +263,15 @@ export class S3DestinationWriter extends BaseDestinationWriter {
     heartbeat: () => void
   ): Promise<WriteEntityRecordsResult> {
     throw new Error('Entity sync not implemented for s3');
+  }
+
+  public override async upsertEntityRecord(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    record: FullEntityRecord
+  ): Promise<void> {
+    // Do nothing
+    return;
   }
 
   getRawRecordKeyPrefix(applicationId: string, object: string, customerId: string, providerName: ProviderName) {

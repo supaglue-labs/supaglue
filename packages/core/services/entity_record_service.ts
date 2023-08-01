@@ -4,29 +4,34 @@ import type {
   EntityRecord,
   EntityRecordData,
   EntityRecordUpsertData,
+  FullEntityRecord,
 } from '@supaglue/types/entity_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { ConnectionService, RemoteService } from '.';
 import { BadRequestError } from '../errors';
 import type { DestinationService } from './destination_service';
 import type { EntityService } from './entity_service';
+import type { SyncService } from './sync_service';
 
 export class EntityRecordService {
   readonly #entityService: EntityService;
   readonly #connectionService: ConnectionService;
   readonly #remoteService: RemoteService;
   readonly #destinationService: DestinationService;
+  readonly #syncService: SyncService;
 
   public constructor(
     entityService: EntityService,
     connectionService: ConnectionService,
     remoteService: RemoteService,
-    destinationService: DestinationService
+    destinationService: DestinationService,
+    syncService: SyncService
   ) {
     this.#entityService = entityService;
     this.#connectionService = connectionService;
     this.#remoteService = remoteService;
     this.#destinationService = destinationService;
+    this.#syncService = syncService;
   }
 
   public async createEntityRecord(
@@ -42,6 +47,7 @@ export class EntityRecordService {
     );
     const mappedData = mapEntityToObjectFields(data, fieldMappingConfig);
     const id = await remoteClient.createObjectRecord(object, mappedData);
+    await this.#cacheInvalidateEntityRecord(connection, entityName, id);
     return {
       id,
       entity: {
@@ -51,11 +57,23 @@ export class EntityRecordService {
     };
   }
 
-  public async getEntityRecord(
+  async #cacheInvalidateEntityRecord(connection: ConnectionSafeAny, entityName: string, id: string): Promise<void> {
+    const sync = await this.#syncService.findByConnectionIdAndEntity(connection.id, entityName);
+    if (!sync || sync.paused) {
+      return;
+    }
+    const [writer] = await this.#destinationService.getWriterByProviderId(connection.providerId);
+    if (writer) {
+      const entity = await this.#getFullEntityRecord(connection, entityName, id);
+      await writer.upsertEntityRecord(connection, entityName, entity);
+    }
+  }
+
+  async #getFullEntityRecord(
     connection: ConnectionSafeAny,
     entityName: string,
     recordId: string
-  ): Promise<EntityRecord> {
+  ): Promise<FullEntityRecord> {
     const entity = await this.#entityService.getByNameAndApplicationId(entityName, connection.applicationId);
     const remoteClient = await this.#remoteService.getRemoteClient(connection.id);
     const { object, fieldMappingConfig } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
@@ -81,7 +99,22 @@ export class EntityRecordService {
         id: entity.id,
         name: entity.name,
       },
-      data: mapObjectToEntityFields(record.data, fieldMappingConfig),
+      mappedData: mapObjectToEntityFields(record.data, fieldMappingConfig),
+      rawData: record.data,
+      metadata: record.metadata,
+    };
+  }
+
+  public async getEntityRecord(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    recordId: string
+  ): Promise<EntityRecord> {
+    const { id, entity, mappedData } = await this.#getFullEntityRecord(connection, entityName, recordId);
+    return {
+      id,
+      entity,
+      data: mappedData,
     };
   }
 
@@ -99,6 +132,8 @@ export class EntityRecordService {
     );
     const mappedData = mapEntityToObjectFields(data, fieldMappingConfig);
     await remoteClient.updateObjectRecord(object, recordId, mappedData);
+
+    await this.#cacheInvalidateEntityRecord(connection, entityName, recordId);
   }
 }
 

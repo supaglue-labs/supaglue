@@ -99,22 +99,33 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const webhookService = new WebhookService({ prisma });
   const destinationService = new DestinationService(prisma);
 
-  const crmCommonObjectService = new CrmCommonObjectService(remoteService, destinationService, connectionService);
+  const syncService = new SyncService(prisma, connectionService);
+  const syncRunService = new SyncRunService(prisma, connectionService);
+
+  const crmCommonObjectService = new CrmCommonObjectService(
+    remoteService,
+    destinationService,
+    connectionService,
+    syncService
+  );
   const engagementCommonObjectService = new EngagementCommonObjectService(remoteService, destinationService);
 
   const crmCustomObjectService = new CrmCustomObjectService(remoteService);
   const crmAssociationService = new CrmAssociationService(remoteService);
 
-  const syncService = new SyncService(prisma, connectionService);
-  const syncRunService = new SyncRunService(prisma, connectionService);
-
   const entityRecordService = new EntityRecordService(
     entityService,
     connectionService,
     remoteService,
-    destinationService
+    destinationService,
+    syncService
   );
-  const objectRecordService = new ObjectRecordService(connectionService, remoteService, destinationService);
+  const objectRecordService = new ObjectRecordService(
+    connectionService,
+    remoteService,
+    destinationService,
+    syncService
+  );
 
   return {
     pgPool,
