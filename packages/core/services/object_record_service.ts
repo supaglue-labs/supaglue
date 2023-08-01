@@ -46,16 +46,20 @@ export class ObjectRecordService {
       unmappedData
     );
 
-    // Cache invalidate
-    const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer) {
-      const object = await this.#getStandardFullObjectRecord(connection, objectName, id);
-      // await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, object);
-    }
+    await this.#cacheInvalidateObjectRecord(connection, objectName, id);
+
     return {
       id,
       standardObjectName: objectName,
     };
+  }
+
+  async #cacheInvalidateObjectRecord(connection: ConnectionSafeAny, objectName: string, id: string): Promise<void> {
+    const [writer] = await this.#destinationService.getWriterByProviderId(connection.providerId);
+    if (writer) {
+      const object = await this.#getStandardFullObjectRecord(connection, objectName, id);
+      await writer.upsertStandardObjectRecord(connection, objectName, object);
+    }
   }
 
   async #getStandardFullObjectRecord(
@@ -133,6 +137,7 @@ export class ObjectRecordService {
       recordId,
       unmappedData
     );
+    await this.#cacheInvalidateObjectRecord(connection, objectName, recordId);
   }
 }
 

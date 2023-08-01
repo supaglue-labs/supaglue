@@ -182,12 +182,37 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
   }
 
   public override async upsertStandardObjectRecord(
-    connection: ConnectionSafeAny,
+    { applicationId, providerName, customerId }: ConnectionSafeAny,
     objectName: string,
     record: StandardFullObjectRecord
   ): Promise<void> {
-    // Do nothing
-    return;
+    const mappedRecord = {
+      _supaglue_application_id: applicationId,
+      _supaglue_provider_name: providerName,
+      _supaglue_customer_id: customerId,
+      _supaglue_emitted_at: new Date(),
+      id: record.id,
+      _supaglue_is_deleted: record.metadata.isDeleted,
+      _supaglue_raw_data: record.rawData,
+      _supaglue_mapped_data: record.mappedData,
+      _supaglue_last_modified_at: record.metadata.lastModifiedAt,
+    };
+    const { database } = this.#destination.config;
+    const collectionName = getObjectCollectionName(providerName, objectName);
+
+    const client = this.#getClient();
+    const collection = client.db(database).collection(collectionName);
+
+    await collection.replaceOne(
+      {
+        id: mappedRecord.id,
+        _supaglue_application_id: mappedRecord._supaglue_application_id,
+        _supaglue_provider_name: mappedRecord._supaglue_provider_name,
+        _supaglue_customer_id: mappedRecord._supaglue_customer_id,
+      },
+      mappedRecord,
+      { upsert: true }
+    );
   }
 
   public override async writeEntityRecords(
