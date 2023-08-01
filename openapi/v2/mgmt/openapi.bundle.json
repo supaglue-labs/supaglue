@@ -5060,24 +5060,6 @@
           }
         ]
       },
-      "salesforce_cdc.create": {
-        "$ref": "#/webhooks/salesforce_cdc.create"
-      },
-      "salesforce_cdc.update": {
-        "$ref": "#/webhooks/salesforce_cdc.update"
-      },
-      "salesforce_cdc.delete": {
-        "$ref": "#/webhooks/salesforce_cdc.delete"
-      },
-      "salesforce_cdc.undelete": {
-        "$ref": "#/webhooks/salesforce_cdc.undelete"
-      },
-      "sync.complete": {
-        "$ref": "#/webhooks/sync.complete"
-      },
-      "connection.create": {
-        "$ref": "#/webhooks/connection.create"
-      },
       "standard_object": {
         "type": "object",
         "properties": {
