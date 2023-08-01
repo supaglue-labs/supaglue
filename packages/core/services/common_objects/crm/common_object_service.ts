@@ -6,20 +6,24 @@ import { BadRequestError } from '../../../errors';
 import { remoteDuration } from '../../../lib/metrics';
 import type { DestinationService } from '../../destination_service';
 import type { RemoteService } from '../../remote_service';
+import type { SyncService } from '../../sync_service';
 
 export class CrmCommonObjectService {
   readonly #remoteService: RemoteService;
   readonly #destinationService: DestinationService;
   readonly #connectionService: ConnectionService;
+  readonly #syncService: SyncService;
 
   public constructor(
     remoteService: RemoteService,
     destinationService: DestinationService,
-    connectionService: ConnectionService
+    connectionService: ConnectionService,
+    syncService: SyncService
   ) {
     this.#remoteService = remoteService;
     this.#destinationService = destinationService;
     this.#connectionService = connectionService;
+    this.#syncService = syncService;
   }
 
   public async get<T extends CRMCommonObjectType>(
@@ -50,7 +54,20 @@ export class CrmCommonObjectService {
     const id = await remoteClient.createCommonObjectRecord(objectName, mappedParams);
     end();
 
-    // If the associated provider has a destination, do cache invalidation
+    await this.#cacheInvalidateObjectRecord(connection, objectName, id);
+
+    return id;
+  }
+
+  async #cacheInvalidateObjectRecord<T extends CRMCommonObjectType>(
+    connection: ConnectionSafeAny,
+    objectName: T,
+    id: string
+  ): Promise<void> {
+    const sync = await this.#syncService.getByConnectionIdAndObjectTypeAndObject(connection.id, 'common', objectName);
+    if (!sync || sync.paused) {
+      return;
+    }
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
       const object = await this.get(objectName, connection, id);
@@ -59,8 +76,6 @@ export class CrmCommonObjectService {
       await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, object);
       end();
     }
-
-    return id;
   }
 
   public async update<T extends CRMCommonObjectType>(
@@ -76,15 +91,7 @@ export class CrmCommonObjectService {
     await remoteClient.updateCommonObjectRecord(objectName, mappedParams);
     end();
 
-    // If the associated provider has a destination, do cache invalidation
-    const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer) {
-      const object = await this.get(objectName, connection, params.id);
-
-      const end = remoteDuration.startTimer({ operation: 'update', remote_name: destinationType! });
-      await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, object);
-      end();
-    }
+    await this.#cacheInvalidateObjectRecord(connection, objectName, params.id);
   }
 }
 
