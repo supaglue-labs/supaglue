@@ -12,4 +12,5 @@ enum:
   - apollo
   - salesloft
   - intercom
+  - linear
 example: hubspot

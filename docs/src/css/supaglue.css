@@ -236,6 +236,17 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/linear"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/linear.svg);
+  background-repeat: no-repeat;
+}
+
 .theme-doc-sidebar-item-category-level-1 a[href$="/providers/messenger"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;

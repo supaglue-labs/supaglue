@@ -5,6 +5,7 @@ import * as capsule from './impl/capsule';
 import * as gong from './impl/gong';
 import * as hubspot from './impl/hubspot';
 import * as intercom from './impl/intercom';
+import * as linear from './impl/linear';
 import * as ms_dynamics_365_sales from './impl/ms_dynamics_365_sales';
 import * as outreach from './impl/outreach';
 import * as pipedrive from './impl/pipedrive';
@@ -34,6 +35,7 @@ const connectorConfigMap: {
   apollo,
   salesloft,
   intercom,
+  linear,
 };
 
 // `authConfig` to be used in simple-oauth2
@@ -95,6 +97,7 @@ export function getCategoryForProvider(providerName: ProviderName): ProviderCate
       return 'engagement';
     case 'gong':
     case 'intercom':
+    case 'linear':
       return 'no_category';
   }
 }

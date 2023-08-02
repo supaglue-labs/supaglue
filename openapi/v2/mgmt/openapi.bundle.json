@@ -4023,7 +4023,8 @@
           "gong",
           "apollo",
           "salesloft",
-          "intercom"
+          "intercom",
+          "linear"
         ],
         "example": "hubspot"
       },
@@ -4051,7 +4052,8 @@
         "type": "string",
         "enum": [
           "intercom",
-          "gong"
+          "gong",
+          "linear"
         ]
       },
       "sync": {

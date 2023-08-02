@@ -804,13 +804,13 @@ export interface components {
      * @example hubspot 
      * @enum {string}
      */
-    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom";
+    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear";
     /** @enum {string} */
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */
     provider_name_engagement: "outreach" | "apollo" | "salesloft";
     /** @enum {string} */
-    provider_name_no_category: "intercom" | "gong";
+    provider_name_no_category: "intercom" | "gong" | "linear";
     sync: OneOf<[{
       id: string;
       /** @enum {string} */

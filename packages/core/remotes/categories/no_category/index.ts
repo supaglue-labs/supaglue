@@ -3,6 +3,7 @@ import type { NoCategoryProviderName } from '@supaglue/types/no_category';
 import type { ConnectorAuthConfig, RemoteClient } from '../../base';
 import * as gong from '../../impl/gong';
 import * as intercom from '../../impl/intercom';
+import * as linear from '../../impl/linear';
 import type { AbstractNoCategoryRemoteClient } from './base';
 
 export type NoCategoryConnectorConfig<T extends NoCategoryProviderName> = {
@@ -15,6 +16,7 @@ export const NoCategoryConnectorConfigMap: {
 } = {
   intercom,
   gong,
+  linear,
 };
 
 export function getNoCategoryRemoteClient<T extends NoCategoryProviderName>(

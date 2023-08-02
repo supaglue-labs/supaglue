@@ -10,6 +10,7 @@ import GongIcon from '@/assets/connector_icons/gong.webp';
 import GDriveIcon from '@/assets/connector_icons/google_drive.png';
 import HubspotIcon from '@/assets/connector_icons/hubspot.png';
 import IntercomIcon from '@/assets/connector_icons/intercom.png';
+import LinearIcon from '@/assets/connector_icons/linear.svg';
 import LinkedInIcon from '@/assets/connector_icons/linkedin.png';
 import MarketoIcon from '@/assets/connector_icons/marketo.png';
 import MessengerIcon from '@/assets/connector_icons/messenger.png';
@@ -48,6 +49,7 @@ export default function getIcon(name: string, size = 25): ReactNode {
     ms_dynamics_365_sales: (
       <Image key={name} alt={name} src={MicrosoftDynamics365SalesIcon} width={size} height={size} />
     ),
+    linear: <Image key={name} alt={name} src={LinearIcon} width={size} height={size} />,
     pipedrive: <Image key={name} alt={name} src={PipedriveIcon} width={size} height={size} />,
     zendesk_sell: <Image key={name} alt={name} src={ZendeskSellIcon} width={size} height={size} />,
     outreach: <Image key={name} alt={name} src={OutreachIcon} width={size} height={size} />,

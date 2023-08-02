@@ -116,6 +116,11 @@ const config = {
             position: 'left',
             label: 'API Reference',
           },
+          {
+            label: 'Sign Up',
+            href: 'https://app.supaglue.io/signup',
+            position: 'right',
+          },
           { type: 'docsVersionDropdown', position: 'left' },
           {
             type: 'custom-githubButton',
