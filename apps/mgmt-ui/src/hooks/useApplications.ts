@@ -3,12 +3,10 @@ import useSWR from 'swr';
 import { fetcher } from '.';
 
 export function useApplications() {
-  const { data, error, isLoading, ...rest } = useSWR(`/api/internal/applications`, fetcher<Application[]>);
+  const { data, ...rest } = useSWR(`/api/internal/applications`, fetcher<Application[]>);
 
   return {
-    applications: data,
-    isLoading,
-    error,
+    applications: data ? data : [], // this can somehow be null, so we need to handle that
     ...rest,
   };
 }
