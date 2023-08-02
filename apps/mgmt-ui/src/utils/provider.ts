@@ -1,5 +1,5 @@
 import { HUBSPOT_STANDARD_OBJECT_TYPES, SALESFORCE_OBJECTS } from '@supaglue/utils';
-import { GONG_STANDARD_OBJECTS, INTERCOM_STANDARD_OBJECTS } from '@supaglue/utils/constants';
+import { GONG_STANDARD_OBJECTS, INTERCOM_STANDARD_OBJECTS, LINEAR_STANDARD_OBJECTS } from '@supaglue/utils/constants';
 
 export const getStandardObjectOptions = (providerName?: string): string[] => {
   switch (providerName) {
@@ -14,6 +14,9 @@ export const getStandardObjectOptions = (providerName?: string): string[] => {
     }
     case 'intercom': {
       return INTERCOM_STANDARD_OBJECTS as unknown as string[];
+    }
+    case 'linear': {
+      return LINEAR_STANDARD_OBJECTS as unknown as string[];
     }
     default:
       return [];

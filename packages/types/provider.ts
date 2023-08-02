@@ -46,7 +46,7 @@ export type EngagementApiKeyProvider = BaseApiKeyProvider & {
 
 export type NoCategoryProvider = BaseOauthProvider & {
   category: 'no_category';
-  name: 'intercom' | 'gong';
+  name: 'intercom' | 'gong' | 'linear';
   objects?: ProviderObjects<'no_category'>;
 };
 

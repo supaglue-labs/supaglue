@@ -109,4 +109,11 @@ export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {
       oauthClientSecret: process.env.GONG_CLIENT_SECRET || '',
     },
   },
+  linear: {
+    oauthScopes: ['read', 'write', 'issues:create', 'comments:create'],
+    credentials: {
+      oauthClientId: process.env.LINEAR_CLIENT_ID || '',
+      oauthClientSecret: process.env.LINEAR_CLIENT_SECRET || '',
+    },
+  },
 };

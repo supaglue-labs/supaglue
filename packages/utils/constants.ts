@@ -1175,3 +1175,5 @@ export const GONG_STANDARD_OBJECTS = ['call', 'detailedCall', 'callTranscript'] 
 export const INTERCOM_STANDARD_OBJECTS = ['admin', 'contact', 'company', 'article', 'conversation'] as const;
 
 export const PROVIDERS_THAT_SUPPORT_SCHEMAS = ['salesforce', 'hubspot', 'pipedrive'] as const;
+
+export const LINEAR_STANDARD_OBJECTS = ['issues', 'comments', 'users', 'projects', 'teams'] as const;

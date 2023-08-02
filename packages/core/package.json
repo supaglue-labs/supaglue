@@ -10,6 +10,7 @@
     "@aws-sdk/node-http-handler": "^3.350.0",
     "@google-cloud/bigquery": "^6.2.0",
     "@hubspot/api-client": "8.8.1",
+    "@linear/sdk": "^7.0.1",
     "@sentry/integrations": "^7.43.0",
     "@sentry/node": "^7.43.0",
     "@supaglue/db": "workspace:*",
