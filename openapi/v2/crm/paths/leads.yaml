@@ -34,8 +34,6 @@ post:
             properties:
               errors:
                 $ref: ../../../common/components/schemas/errors.yaml
-              logs:
-                $ref: ../../../common/components/schemas/logs.yaml
               record:
                 $ref: ../../../common/components/schemas/created_model.yaml
               warnings:

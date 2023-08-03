@@ -31,12 +31,15 @@ post:
             properties:
               errors:
                 $ref: ../../../../common/components/schemas/errors.yaml
-              logs:
-                $ref: ../../../../common/components/schemas/logs.yaml
               record:
                 $ref: ../../components/schemas/created_standard_object_record.yaml
               warnings:
                 $ref: ../../../../common/components/schemas/warnings.yaml
+          example:
+            record:
+              id: 87809459-af9f-41ee-bf13-b9f24997b42f
+              standard_object_name: Account
+            
 parameters:
   - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../components/parameters/header/x-provider-name.yaml

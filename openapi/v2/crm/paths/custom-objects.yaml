@@ -27,8 +27,6 @@ post:
             properties:
               errors:
                 $ref: ../../../common/components/schemas/errors.yaml
-              logs:
-                $ref: ../../../common/components/schemas/logs.yaml
               object:
                 type: object
                 properties:

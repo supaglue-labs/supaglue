@@ -2,6 +2,7 @@ type: object
 properties:
   id:
     type: string
+    example: ede9f49c-3a38-4ff8-8226-ffd99b89ad5e
   entity:
     $ref: ./simple_entity.yaml
   data:
@@ -10,7 +11,14 @@ properties:
       additional_properties:
         type: object
         additionalProperties: true
+        description: Any data that is not part of the Entity itself but is mapped by the customer when `allow_additional_field_mappings` is `true` on the Entity.
     additionalProperties: true
+    description: The data, in key:value format
+    example:
+      name: John Doe
+      email: johndoe123@supaglue.com
+      additional_properties:
+        has_signed_nda: false
 required:
   - id
   - entity

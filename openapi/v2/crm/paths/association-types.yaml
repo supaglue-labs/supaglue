@@ -64,8 +64,6 @@ post:
             properties:
               errors:
                 $ref: ../../../common/components/schemas/errors.yaml
-              logs:
-                $ref: ../../../common/components/schemas/logs.yaml
               association_type:
                 type: object
                 properties:

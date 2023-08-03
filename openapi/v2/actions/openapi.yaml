@@ -60,8 +60,6 @@ components:
       $ref: ./components/schemas/create_update_standard_object_record.yaml
     created_object_record:
       $ref: ./components/schemas/created_standard_object_record.yaml
-    logs:
-      $ref: ../../common/components/schemas/logs.yaml
     errors:
       $ref: ../../common/components/schemas/errors.yaml
     warnings:

@@ -50,8 +50,6 @@ patch:
             properties:
               errors:
                 $ref: ../../../common/components/schemas/errors.yaml
-              logs:
-                $ref: ../../../common/components/schemas/logs.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
 parameters:

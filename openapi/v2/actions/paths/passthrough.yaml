@@ -37,6 +37,9 @@ post:
           required:
             - path
             - method
+          example:
+            path: /crm/v3/schemas
+            method: GET
   responses:
     '200':
       description: Passthrough response
@@ -77,11 +80,18 @@ post:
           examples:
             Example:
               value:
-                url: https://customcrm.com/api/cars
+                url: https://api.hubapi.com/crm/v3/schemas
                 status: 200
                 headers:
-                  x-requests-limit: 96
-                body: []
+                  x-hubspot-ratelimit-remaining: 99
+                body:
+                  results:
+                    - labels:
+                        singular: Contract
+                        plural: Contracts
+                      requiredProperties:
+                        - name
+                        - description
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml

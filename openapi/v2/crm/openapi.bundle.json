@@ -59,9 +59,6 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
                     "record": {
                       "$ref": "#/components/schemas/created_record"
                     },
@@ -197,9 +194,6 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -277,9 +271,6 @@
                   "properties": {
                     "errors": {
                       "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
                     },
                     "record": {
                       "$ref": "#/components/schemas/created_record"
@@ -385,9 +376,6 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -466,9 +454,6 @@
                   "properties": {
                     "errors": {
                       "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
                     },
                     "record": {
                       "$ref": "#/components/schemas/created_record"
@@ -576,9 +561,6 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -658,9 +640,6 @@
                   "properties": {
                     "errors": {
                       "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
                     },
                     "record": {
                       "$ref": "#/components/schemas/created_record"
@@ -773,9 +752,6 @@
                   "properties": {
                     "errors": {
                       "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -1042,9 +1018,6 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
                     "object": {
                       "type": "object",
                       "properties": {
@@ -1142,9 +1115,6 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
                     }
@@ -1214,9 +1184,6 @@
                   "properties": {
                     "errors": {
                       "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
                     },
                     "record": {
                       "type": "object",
@@ -1323,9 +1290,6 @@
                   "properties": {
                     "errors": {
                       "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -1465,9 +1429,6 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
                     "association_type": {
                       "type": "object",
                       "properties": {
@@ -1606,9 +1567,6 @@
                   "properties": {
                     "errors": {
                       "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
                     },
                     "association": {
                       "$ref": "#/components/schemas/association"
@@ -2328,59 +2286,6 @@
             "$ref": "#/components/schemas/custom_fields"
           }
         }
-      },
-      "logs": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "dashboard_view": {
-              "type": "string",
-              "example": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832"
-            },
-            "log_id": {
-              "type": "string",
-              "example": "99433219-8017-4acd-bb3c-ceb23d663832"
-            },
-            "log_summary": {
-              "type": "object",
-              "properties": {
-                "method": {
-                  "type": "string",
-                  "example": "POST"
-                },
-                "status_code": {
-                  "type": "number",
-                  "example": 200
-                },
-                "url": {
-                  "type": "string",
-                  "example": "https://harvest.greenhouse.io/v1/candidates/"
-                }
-              }
-            }
-          }
-        },
-        "example": [
-          {
-            "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
-            "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
-            "log_summary": {
-              "method": "POST",
-              "status_code": 200,
-              "url": "https://harvest.greenhouse.io/v1/candidates/"
-            }
-          },
-          {
-            "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
-            "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
-            "log_summary": {
-              "method": "POST",
-              "status_code": 200,
-              "url": "https://harvest.greenhouse.io/v1/candidates/"
-            }
-          }
-        ]
       },
       "errors": {
         "type": "array",
