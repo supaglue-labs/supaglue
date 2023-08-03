@@ -16,6 +16,7 @@ import type {
   CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
+  ListedObjectRecord,
   ListedObjectRecordRawDataOnly,
   ObjectMetadata,
   ObjectRecordUpsertData,
@@ -468,10 +469,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       pageFetcher: normalPageFetcher,
       createStreamFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
         Readable.from(
-          response.results.map((record) => ({
-            ...record,
-            rawProperties: record.rawData.properties,
-          }))
+          response.results.map((record) => {
+            const ret: ListedObjectRecord = {
+              ...record,
+              rawProperties: record.rawData.properties,
+            };
+            return ret;
+          })
         ),
       getNextCursorFromPage: (response: NormalizedRecordsResponseWithFlattenedAssociations) =>
         response.paging?.next?.after,
@@ -488,10 +492,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         pageFetcher: archivedPageFetcher,
         createStreamFromPage: (response) =>
           Readable.from(
-            response.results.map((record) => ({
-              ...record,
-              rawProperties: record.rawData.properties,
-            }))
+            response.results.map((record) => {
+              const ret: ListedObjectRecord = {
+                ...record,
+                rawProperties: record.rawData.properties,
+              };
+              return ret;
+            })
           ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
@@ -610,10 +617,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         pageFetcher: normalPageFetcher,
         createStreamFromPage: (response) =>
           Readable.from(
-            response.results.map((result) => ({
-              ...result,
-              mappedData: result.rawData.properties,
-            }))
+            response.results.map((result) => {
+              const ret: ListedObjectRecord = {
+                ...result,
+                rawProperties: result.rawData.properties,
+              };
+              return ret;
+            })
           ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },
@@ -621,10 +631,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         pageFetcher: archivedPageFetcher,
         createStreamFromPage: (response) =>
           Readable.from(
-            response.results.map((result) => ({
-              ...result,
-              mappedData: result.rawData,
-            }))
+            response.results.map((result) => {
+              const ret: ListedObjectRecord = {
+                ...result,
+                rawProperties: result.rawData.properties,
+              };
+              return ret;
+            })
           ),
         getNextCursorFromPage: (response) => response.paging?.next?.after,
       },

@@ -10,7 +10,9 @@ properties:
       additional_properties:
         type: object
         additionalProperties: true
+        description: Any data that is not part of the Schema itself but is mapped by the customer when `allow_additional_field_mappings` is `true` on the Schema.
     additionalProperties: true
+    description: The data, in key:value format
 required:
   - id
   - standard_object_name

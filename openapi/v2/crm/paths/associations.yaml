@@ -69,8 +69,6 @@ put:
             properties:
               errors:
                 $ref: ../../../common/components/schemas/errors.yaml
-              logs:
-                $ref: ../../../common/components/schemas/logs.yaml
               association:
                 $ref: ../components/schemas/objects/association.yaml
               warnings:

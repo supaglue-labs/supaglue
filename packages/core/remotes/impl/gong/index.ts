@@ -129,14 +129,17 @@ class GongClient extends AbstractNoCategoryRemoteClient {
         return await this.#getPaginatorByGet<'calls', GongCall>(
           'v2/calls',
           'calls',
-          (call, emittedAt) => ({
-            id: call.id,
-            rawData: call,
-            rawProperties: call,
-            isDeleted: false,
-            lastModifiedAt: new Date(call.started),
-            emittedAt,
-          }),
+          (call, emittedAt) => {
+            const ret: ListedObjectRecord<GongCall> = {
+              id: call.id,
+              rawData: call,
+              rawProperties: call,
+              isDeleted: false,
+              lastModifiedAt: new Date(call.started),
+              emittedAt,
+            };
+            return ret;
+          },
           modifiedAfter
         );
       }
@@ -144,14 +147,17 @@ class GongClient extends AbstractNoCategoryRemoteClient {
         return await this.#getPaginatorByPost<'calls', GongDetailedCall>(
           'v2/calls/extensive',
           'calls',
-          (detailedCall, emittedAt) => ({
-            id: detailedCall.metaData.id,
-            rawData: detailedCall,
-            rawProperties: detailedCall,
-            isDeleted: false,
-            lastModifiedAt: new Date(detailedCall.metaData.started),
-            emittedAt,
-          }),
+          (detailedCall, emittedAt) => {
+            const ret: ListedObjectRecord<GongDetailedCall> = {
+              id: detailedCall.metaData.id,
+              rawData: detailedCall,
+              rawProperties: detailedCall,
+              isDeleted: false,
+              lastModifiedAt: new Date(detailedCall.metaData.started),
+              emittedAt,
+            };
+            return ret;
+          },
           modifiedAfter
         );
       }
@@ -159,19 +165,22 @@ class GongClient extends AbstractNoCategoryRemoteClient {
         return await this.#getPaginatorByPost<'callTranscripts', GongCallTranscript>(
           'v2/calls/transcript',
           'callTranscripts',
-          (transcript, emittedAt) => ({
-            id: transcript.callId,
-            rawData: transcript,
-            rawProperties: transcript,
-            isDeleted: false,
-            // we don't know the last modified at time
-            // TODO: figure out some way to address this.
-            // Otherwise, we're just going to be constantly doing full refresh for transcripts.
-            // Maybe there is some way to get the max last modified at time for the 'calls' sync
-            // and use that?
-            lastModifiedAt: new Date(0),
-            emittedAt,
-          }),
+          (transcript, emittedAt) => {
+            const ret: ListedObjectRecord<GongCallTranscript> = {
+              id: transcript.callId,
+              rawData: transcript,
+              rawProperties: transcript,
+              isDeleted: false,
+              // we don't know the last modified at time
+              // TODO: figure out some way to address this.
+              // Otherwise, we're just going to be constantly doing full refresh for transcripts.
+              // Maybe there is some way to get the max last modified at time for the 'calls' sync
+              // and use that?
+              lastModifiedAt: new Date(0),
+              emittedAt,
+            };
+            return ret;
+          },
           modifiedAfter
         );
       }

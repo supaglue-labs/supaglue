@@ -123,70 +123,85 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
         return await this.#getPaginator<'data'>(
           'contacts/search',
           'data',
-          (record, emittedAt) => ({
-            id: record.id,
-            rawData: record,
-            rawProperties: record,
-            isDeleted: false,
-            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
-            emittedAt,
-          }),
+          (record, emittedAt) => {
+            const ret: ListedObjectRecord<IntercomRecord> = {
+              id: record.id,
+              rawData: record,
+              rawProperties: record,
+              isDeleted: false,
+              lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+              emittedAt,
+            };
+            return ret;
+          },
           modifiedAfter
         );
       case 'conversation':
         return await this.#getPaginator<'conversations'>(
           'conversations/search',
           'conversations',
-          (record, emittedAt) => ({
-            id: record.id,
-            rawData: record,
-            rawProperties: record,
-            isDeleted: false,
-            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
-            emittedAt,
-          }),
+          (record, emittedAt) => {
+            const ret: ListedObjectRecord<IntercomRecord> = {
+              id: record.id,
+              rawData: record,
+              rawProperties: record,
+              isDeleted: false,
+              lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+              emittedAt,
+            };
+            return ret;
+          },
           modifiedAfter
         );
       case 'admin':
         return await this.#getPaginator<'admins'>(
           'admins',
           'admins',
-          (record, emittedAt) => ({
-            id: record.id,
-            rawData: record,
-            rawProperties: record,
-            isDeleted: false,
-            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
-            emittedAt,
-          }),
+          (record, emittedAt) => {
+            const ret: ListedObjectRecord<IntercomRecord> = {
+              id: record.id,
+              rawData: record,
+              rawProperties: record,
+              isDeleted: false,
+              lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+              emittedAt,
+            };
+            return ret;
+          },
           modifiedAfter
         );
       case 'article':
         return await this.#getPaginator<'data'>(
           'articles',
           'data',
-          (record, emittedAt) => ({
-            id: record.id,
-            rawData: record,
-            rawProperties: record,
-            isDeleted: false,
-            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
-            emittedAt,
-          }),
+          (record, emittedAt) => {
+            const ret: ListedObjectRecord<IntercomRecord> = {
+              id: record.id,
+              rawData: record,
+              rawProperties: record,
+              isDeleted: false,
+              lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+              emittedAt,
+            };
+            return ret;
+          },
           modifiedAfter
         );
       case 'company':
         return await this.#getPaginator<'data'>(
           'companies',
           'data',
-          (record, emittedAt) => ({
-            id: record.id,
-            rawData: record,
-            rawProperties: record,
-            isDeleted: false,
-            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
-            emittedAt,
-          }),
+          (record, emittedAt) => {
+            const ret: ListedObjectRecord<IntercomRecord> = {
+              id: record.id,
+              rawData: record,
+              rawProperties: record,
+              isDeleted: false,
+              lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+              emittedAt,
+            };
+            return ret;
+          },
           modifiedAfter
         );
     }
