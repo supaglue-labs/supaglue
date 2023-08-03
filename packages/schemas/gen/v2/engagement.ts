@@ -592,7 +592,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
@@ -647,7 +646,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             warnings?: components["schemas"]["warnings"];
           };
         };

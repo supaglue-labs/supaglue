@@ -214,9 +214,6 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
-                    },
                     "record": {
                       "$ref": "#/components/schemas/created_record"
                     },
@@ -321,9 +318,6 @@
                   "properties": {
                     "errors": {
                       "$ref": "#/components/schemas/errors"
-                    },
-                    "logs": {
-                      "$ref": "#/components/schemas/logs"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
