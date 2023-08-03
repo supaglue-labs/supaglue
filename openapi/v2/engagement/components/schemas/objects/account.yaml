@@ -1,27 +1,20 @@
 type: object
 properties:
-  owner_id:
-    type: string
-    nullable: true
-    example: 95fe0d29-e8cc-48ac-9afd-e02d8037a597
   id:
     type: string
     example: 54312
-  is_enabled:
-    type: boolean
-    example: true
-  name:
-    nullable: true
+  owner_id:
     type: string
-  tags:
-    type: array
-    items:
-      type: string
-  num_steps:
-    type: number
-  metrics:
-    type: object
-    additionalProperties: true
+    nullable: true
+    example: 23e640fe-6105-4a11-a636-3aa6b6c6e762
+  name:
+    type: string
+    nullable: true
+    example: My Company
+  domain:
+    type: string
+    nullable: true
+    example: mycompany.com
   created_at:
     type: string
     nullable: true
@@ -32,17 +25,22 @@ properties:
     nullable: true
     format: date-time
     example: '2022-02-27T00:00:00Z'
+  is_deleted:
+    type: boolean
+    example: false
   last_modified_at:
     type: string
     format: date-time
     example: '2022-02-27T00:00:00Z'
+  raw_data:
+    type: object
+    additionalProperties: true
 required:
   - id
-  - is_enabled
+  - owner_id
   - name
-  - tags
-  - num_steps
-  - metrics
-  - created_at
-  - updated_at
+  - domain
+  - created_at	
+  - updated_at	
+  - is_deleted
   - last_modified_at	

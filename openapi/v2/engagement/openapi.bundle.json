@@ -164,6 +164,195 @@
         }
       ]
     },
+    "/accounts": {
+      "post": {
+        "operationId": "createAccount",
+        "summary": "Create account",
+        "tags": [
+          "Accounts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_account"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              },
+              "example": {
+                "record": {
+                  "id": 1234,
+                  "name": "My Company",
+                  "domain": "mycompany.com",
+                  "created_at": "2023-02-27T00:00:00Z"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/accounts/{account_id}": {
+      "get": {
+        "operationId": "getAccount",
+        "summary": "Get account",
+        "tags": [
+          "Accounts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/account"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateAccount",
+        "summary": "Update account",
+        "tags": [
+          "Accounts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_account"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              },
+              "examples": {
+                "Example": {
+                  "value": {
+                    "record": {
+                      "id": 1234,
+                      "name": "My Company",
+                      "domain": "mycompany.com",
+                      "created_at": "2023-02-27T00:00:00Z"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "logs": {
+                      "$ref": "#/components/schemas/logs"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "account_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
     "/contacts": {
       "post": {
         "operationId": "createContact",
@@ -686,6 +875,10 @@
       "description": "The `Mailbox` Common Object is used to represent email mailbox, used within the application for sending and syncing emails"
     },
     {
+      "name": "Accounts",
+      "description": "The `Account` Common Object is used to represent a \"company\" or \"account\" in Engagements."
+    },
+    {
       "name": "Passthrough",
       "description": "Passthrough operations to underlying providers."
     }
@@ -700,6 +893,88 @@
       }
     },
     "schemas": {
+      "account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": 54312
+          },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "My Company"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "example": "mycompany.com"
+          },
+          "created_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "updated_at": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "example": false
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z"
+          },
+          "raw_data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "id",
+          "owner_id",
+          "name",
+          "domain",
+          "created_at",
+          "updated_at",
+          "is_deleted",
+          "last_modified_at"
+        ]
+      },
+      "create_account": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "My Company"
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "example": "mycompany.com"
+          },
+          "owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "9f3e97fd-4d5d-4efc-959d-bbebfac079f5"
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
+          }
+        }
+      },
       "contact": {
         "type": "object",
         "properties": {
@@ -1112,11 +1387,7 @@
           "name",
           "tags",
           "num_steps",
-          "schedule_count",
-          "open_count",
-          "opt_out_count",
-          "reply_count",
-          "click_count",
+          "metrics",
           "created_at",
           "updated_at",
           "last_modified_at"

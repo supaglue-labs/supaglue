@@ -28,6 +28,7 @@ import {
   keysOfSnakecasedLeadWithTenant,
   keysOfSnakecasedOpportunityWithTenant,
 } from '../keys/crm';
+import { keysOfSnakecasedEngagementAccountWithTenant } from '../keys/engagement/account';
 import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/contact';
 import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
 import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
@@ -427,6 +428,7 @@ const tableNamesByCommonObjectType: {
     user: 'crm_users',
   },
   engagement: {
+    account: 'engagement_accounts',
     contact: 'engagement_contacts',
     sequence_state: 'engagement_sequence_states',
     user: 'engagement_users',
@@ -454,6 +456,7 @@ const columnsByCommonObjectType: {
     user: keysOfSnakecasedCrmUserWithTenant,
   },
   engagement: {
+    account: keysOfSnakecasedEngagementAccountWithTenant,
     contact: keysOfSnakecasedEngagementContactWithTenant,
     sequence_state: keysOfSnakecasedSequenceStateWithTenant,
     user: keysOfSnakecasedEngagementUserWithTenant,
@@ -1027,6 +1030,75 @@ const schemaByCommonObjectType: {
     },
   },
   engagement: {
+    account: {
+      fields: [
+        {
+          name: '_supaglue_application_id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_provider_name',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_customer_id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_emitted_at',
+          type: 'TIMESTAMP',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'created_at',
+          type: 'TIMESTAMP',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'updated_at',
+          type: 'TIMESTAMP',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'is_deleted',
+          type: 'BOOLEAN',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'last_modified_at',
+          type: 'TIMESTAMP',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'name',
+          type: 'STRING',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'domain',
+          type: 'STRING',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'owner_id',
+          type: 'STRING',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'raw_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+      ],
+    },
     contact: {
       fields: [
         {
