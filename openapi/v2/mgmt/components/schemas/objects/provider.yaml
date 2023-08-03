@@ -2,10 +2,10 @@ type: object
 properties:
   id:
     type: string
-    example: e888cedf-e9d0-42c5-9485-2d72984faef2
+    example: 0c4cb91f-e392-46f5-8934-17496371f932
   application_id:
     type: string
-    example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+    example: 273e1c75-3b6d-439a-9b8e-c6ac407df92a
   category:
     $ref: ./category.yaml
   auth_type:
@@ -13,6 +13,7 @@ properties:
     enum:
       - oauth2
       - api_key
+    example: oauth2
   name:
     $ref: ./provider_name.yaml
   config:
@@ -20,9 +21,7 @@ properties:
   objects:
     $ref: ./objects.yaml
   entity_mappings:
-    type: array
-    items:
-      $ref: ./provider_entity_mapping.yaml
+    $ref: ./provider_entity_mappings.yaml
 required:
   - id
   - application_id

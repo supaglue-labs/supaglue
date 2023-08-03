@@ -12,6 +12,15 @@ post:
         schema:
           oneOf:
             - type: object
+              title: 'Data model: Entities'
+              properties:
+                entity_id:
+                  type: string
+                  example: cfba6060-c43a-4a63-8a8c-501c6099f8b0
+                  description: The entity id to filter by
+              required:
+                - entity_id
+            - type: object
               title: 'Data model: Objects'
               properties:
                 object_type:
@@ -20,6 +29,7 @@ post:
                     - common
                     - standard
                     - custom
+                  example: standard
                   description: The object type to filter by
                 object:
                   type: string
@@ -28,14 +38,6 @@ post:
               required:
                 - object_type
                 - object
-            - type: object
-              title: 'Data model: Entities'
-              properties:
-                entity_id:
-                  type: string
-                  description: The entity id to filter by
-              required:
-                - entity_id
   responses:
     '200':
       description: Sync resumed
@@ -43,6 +45,14 @@ post:
         application/json:
           schema:
             $ref: ../components/schemas/objects/sync.yaml
+          # this example lives here b/c of the oneOf issue
+          example:
+            id: 2caab904-3c7c-4894-8c82-4c28913b3419
+            type: entity
+            entity_id: db602f88-7a8c-44f0-8932-c92f1e033494
+            connection_id: da732713-2ff7-4f3b-8728-257a026177cd
+            sync_config_id: f2b3ea2a-6a1e-4983-91f1-92a4db4d7abd
+            paused: false
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

@@ -1,8 +1,8 @@
 get:
   operationId: listEntityMappings
-  summary: List entity mappings
+  summary: List entity mappings.
   tags:
-    - Entity Mappings
+    - EntityMappings
   security:
     - ApiKeyAuth: []
   parameters: []

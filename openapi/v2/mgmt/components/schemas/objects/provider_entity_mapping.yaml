@@ -2,11 +2,12 @@ type: object
 properties:
   entity_id:
     type: string
+    example: apolla_contact
   object:
     $ref: ./standard_object.yaml
   field_mappings:
     type: array
     items:
-      $ref: ./entity_field_mapping.yaml  
+      $ref: ./entity_field_mapping.yaml
 required:
   - entity_id
