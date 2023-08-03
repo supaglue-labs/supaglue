@@ -421,7 +421,7 @@ export const fromDynamicsOpportunityToRemoteOpportunity = (
     status,
     pipeline: opportunity_leadtoopportunitysalesprocess?.name ?? null,
     accountId: dynamicsOpportunity._parentaccountid_value,
-    amount: dynamicsOpportunity.actualvalue,
+    amount: dynamicsOpportunity.actualvalue !== null ? Math.trunc(dynamicsOpportunity.actualvalue) : null, // Hotfix for customer 8/2/23
     closeDate: dynamicsOpportunity.actualclosedate ? new Date(dynamicsOpportunity.actualclosedate) : null,
     stage: stageid_processstage?.stagename ?? dynamicsOpportunity.stepname,
     createdAt: dynamicsOpportunity.overriddencreatedon
