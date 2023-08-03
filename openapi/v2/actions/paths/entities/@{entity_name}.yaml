@@ -31,12 +31,16 @@ post:
             properties:
               errors:
                 $ref: ../../../../common/components/schemas/errors.yaml
-              logs:
-                $ref: ../../../../common/components/schemas/logs.yaml
               record:
                 $ref: ../../components/schemas/created_entity_record.yaml
               warnings:
                 $ref: ../../../../common/components/schemas/warnings.yaml
+          example:
+            record:
+              id: 5e13cd1d-ac44-4c02-b5c3-6bfc5d3e0463
+              entity:
+                id: 55ce9cf8-0e8c-44c4-b4f6-f4740f3e6258
+                name: ApplicationContact
 parameters:
   - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../components/parameters/header/x-provider-name.yaml

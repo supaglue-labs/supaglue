@@ -83,9 +83,21 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     entity_record: {
+      /** @example ede9f49c-3a38-4ff8-8226-ffd99b89ad5e */
       id: string;
       entity: components["schemas"]["simple_entity"];
+      /**
+       * @description The data, in key:value format 
+       * @example {
+       *   "name": "John Doe",
+       *   "email": "johndoe123@supaglue.com",
+       *   "additional_properties": {
+       *     "has_signed_nda": false
+       *   }
+       * }
+       */
       data: {
+        /** @description Any data that is not part of the Entity itself but is mapped by the customer when `allow_additional_field_mappings` is `true` on the Entity. */
         additional_properties?: {
           [key: string]: unknown;
         };
@@ -93,26 +105,33 @@ export interface components {
       };
     };
     simple_entity: {
+      /** @example 12579e73-8524-4570-9b67-ecbd702c6b19 */
       id: string;
+      /** @example ApplicationContact */
       name: string;
     };
     standard_object_record: {
       id: string;
       standard_object_name: string;
+      /** @description The data, in key:value format */
       data: {
+        /** @description Any data that is not part of the Schema itself but is mapped by the customer when `allow_additional_field_mappings` is `true` on the Schema. */
         additional_properties?: {
           [key: string]: unknown;
         };
         [key: string]: unknown;
       };
     };
+    /** @description The data (in key:value format) that will be used to create or update an Entity Record. */
     create_update_entity_record: {
       [key: string]: unknown;
     };
     created_entity_record: {
+      /** @example 42579e73-8524-4570-9b67-ecbd702c6b15 */
       id: string;
       entity: components["schemas"]["simple_entity"];
     };
+    /** @description The data (in key:value format) that will be used to create or update an Standard Object Record. */
     create_update_object_record: {
       [key: string]: unknown;
     };
@@ -120,42 +139,6 @@ export interface components {
       id: string;
       standard_object_name: string;
     };
-    /**
-     * @example [
-     *   {
-     *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
-     *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
-     *     "log_summary": {
-     *       "method": "POST",
-     *       "status_code": 200,
-     *       "url": "https://harvest.greenhouse.io/v1/candidates/"
-     *     }
-     *   },
-     *   {
-     *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
-     *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
-     *     "log_summary": {
-     *       "method": "POST",
-     *       "status_code": 200,
-     *       "url": "https://harvest.greenhouse.io/v1/candidates/"
-     *     }
-     *   }
-     * ]
-     */
-    logs: ({
-        /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
-        dashboard_view?: string;
-        /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
-        log_id?: string;
-        log_summary?: {
-          /** @example POST */
-          method?: string;
-          /** @example 200 */
-          status_code?: number;
-          /** @example https://harvest.greenhouse.io/v1/candidates/ */
-          url?: string;
-        };
-      })[];
     errors: ({
         /** @example name is a required field on model. */
         detail?: string;
@@ -241,7 +224,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             record?: components["schemas"]["created_entity_record"];
             warnings?: components["schemas"]["warnings"];
           };
@@ -295,7 +277,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -326,7 +307,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             record?: components["schemas"]["created_object_record"];
             warnings?: components["schemas"]["warnings"];
           };
@@ -380,7 +360,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             warnings?: components["schemas"]["warnings"];
           };
         };

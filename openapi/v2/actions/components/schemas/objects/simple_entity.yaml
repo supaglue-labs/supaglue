@@ -2,8 +2,10 @@ type: object
 properties:
   id:
     type: string
+    example: 12579e73-8524-4570-9b67-ecbd702c6b19
   name:
     type: string
+    example: ApplicationContact
 required:
   - id
   - name

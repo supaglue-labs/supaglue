@@ -500,42 +500,6 @@ export interface components {
       pipeline?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
-    /**
-     * @example [
-     *   {
-     *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
-     *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
-     *     "log_summary": {
-     *       "method": "POST",
-     *       "status_code": 200,
-     *       "url": "https://harvest.greenhouse.io/v1/candidates/"
-     *     }
-     *   },
-     *   {
-     *     "dashboard_view": "https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832",
-     *     "log_id": "99433219-8017-4acd-bb3c-ceb23d663832",
-     *     "log_summary": {
-     *       "method": "POST",
-     *       "status_code": 200,
-     *       "url": "https://harvest.greenhouse.io/v1/candidates/"
-     *     }
-     *   }
-     * ]
-     */
-    logs: ({
-        /** @example https://api.supaglue.com/logs/99433219-8017-4acd-bb3c-ceb23d663832 */
-        dashboard_view?: string;
-        /** @example 99433219-8017-4acd-bb3c-ceb23d663832 */
-        log_id?: string;
-        log_summary?: {
-          /** @example POST */
-          method?: string;
-          /** @example 200 */
-          status_code?: number;
-          /** @example https://harvest.greenhouse.io/v1/candidates/ */
-          url?: string;
-        };
-      })[];
     errors: ({
         /** @example name is a required field on model. */
         detail?: string;
@@ -829,7 +793,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
@@ -884,7 +847,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -922,7 +884,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
@@ -977,7 +938,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -1016,7 +976,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
@@ -1071,7 +1030,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -1111,7 +1069,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
@@ -1166,7 +1123,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -1281,7 +1237,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             object?: {
               id: string;
             };
@@ -1335,7 +1290,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -1366,7 +1320,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             record?: {
               id: string;
             };
@@ -1422,7 +1375,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -1476,7 +1428,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             association_type?: {
               id: string;
             };
@@ -1534,7 +1485,6 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            logs?: components["schemas"]["logs"];
             association?: components["schemas"]["association"];
             warnings?: components["schemas"]["warnings"];
           };

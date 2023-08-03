@@ -103,8 +103,6 @@ components:
       $ref: ./components/schemas/objects/user.yaml
     create_update_opportunity:
       $ref: ./components/schemas/create_update_opportunity.yaml
-    logs:
-      $ref: ../../common/components/schemas/logs.yaml
     errors:
       $ref: ../../common/components/schemas/errors.yaml
     warnings:

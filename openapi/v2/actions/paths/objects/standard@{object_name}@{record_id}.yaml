@@ -20,6 +20,8 @@ get:
                 data:
                   Name: Acme Corp
                   Description: We create the best embedded integration platforms.
+                  additional_properties:
+                    IsDomestic__c: true
 patch:
   operationId: updateStandardObjectRecord
   summary: Update Standard Object record
@@ -53,8 +55,6 @@ patch:
             properties:
               errors:
                 $ref: ../../../../common/components/schemas/errors.yaml
-              logs:
-                $ref: ../../../../common/components/schemas/logs.yaml
               warnings:
                 $ref: ../../../../common/components/schemas/warnings.yaml
 parameters:

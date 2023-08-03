@@ -2,6 +2,7 @@ type: object
 properties:
   id:
     type: string
+    example: 42579e73-8524-4570-9b67-ecbd702c6b15
   entity:
     $ref: ./objects/simple_entity.yaml
 required:
