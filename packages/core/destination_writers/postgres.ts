@@ -733,7 +733,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "name" TEXT,
   "description" TEXT,
-  "amount" INTEGER,
+  "amount" FLOAT,
   "stage" TEXT,
   "status" TEXT,
   "close_date" TIMESTAMP(3),
