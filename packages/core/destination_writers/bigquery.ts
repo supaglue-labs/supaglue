@@ -911,7 +911,7 @@ const schemaByCommonObjectType: {
         },
         {
           name: 'amount',
-          type: 'INTEGER',
+          type: 'FLOAT64',
           mode: 'NULLABLE',
         },
         {
