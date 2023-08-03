@@ -90,14 +90,17 @@ class LinearClient extends AbstractNoCategoryRemoteClient {
 
     return await this.#getPaginator(
       validatedObject,
-      (record, emittedAt) => ({
-        id: record.id,
-        rawData: record,
-        rawProperties: record,
-        isDeleted: false,
-        lastModifiedAt: record.updatedAt ?? new Date(0),
-        emittedAt,
-      }),
+      (record, emittedAt) => {
+        const ret: ListedObjectRecord<LinearRecord> = {
+          id: record.id,
+          rawData: record,
+          rawProperties: record,
+          isDeleted: false,
+          lastModifiedAt: record.updatedAt ?? new Date(0),
+          emittedAt,
+        };
+        return ret;
+      },
       modifiedAfter
     );
   }
