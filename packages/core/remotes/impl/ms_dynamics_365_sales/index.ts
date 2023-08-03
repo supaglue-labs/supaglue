@@ -2,7 +2,7 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import type { ConnectionUnsafe, CRMProvider, Provider } from '@supaglue/types';
+import type { ConnectionUnsafe, CRMProvider, ListedObjectRecord, Provider } from '@supaglue/types';
 import type {
   Account,
   Contact,
@@ -150,14 +150,17 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.value.map((result: any) => ({
-              id: result[idkey],
-              rawData: result,
-              mappedData: result,
-              isDeleted: false,
-              lastModifiedAt: new Date(result.modifiedon),
-              emittedAt,
-            }))
+            response.value.map((result: any) => {
+              const ret: ListedObjectRecord = {
+                id: result[idkey],
+                rawData: result,
+                rawProperties: result,
+                isDeleted: false,
+                lastModifiedAt: new Date(result.modifiedon),
+                emittedAt,
+              };
+              return ret;
+            })
           );
         },
         getNextCursorFromPage: (response) => response['@odata.nextLink'],
