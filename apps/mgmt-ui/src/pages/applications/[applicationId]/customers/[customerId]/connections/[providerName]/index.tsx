@@ -331,6 +331,11 @@ function EntityObjectMapping({ entity, customerId, providerName, object, setObje
     })),
   ];
 
+  if (!object) {
+    // If using Autocomplete in uncontrolled mode, defaultValue must not change
+    return null;
+  }
+
   return (
     <>
       <Grid item xs={4}>

@@ -155,12 +155,6 @@ export type DeleteConnectionRequest = never;
 export type DeleteConnectionResponse =
   operations['deleteConnection']['responses'][keyof operations['deleteConnection']['responses']]['content']['application/json'];
 
-export type ListPropertiesPathParams = never;
-export type ListPropertiesRequest = never;
-export type ListPropertiesQueryParams = Required<operations['listProperties']>['parameters']['query'];
-export type ListPropertiesResponse =
-  operations['listProperties']['responses'][keyof operations['listProperties']['responses']]['content']['application/json'];
-
 export type ListFieldMappingsPathParams = never;
 export type ListFieldMappingsRequest = never;
 export type ListFieldMappingsResponse =

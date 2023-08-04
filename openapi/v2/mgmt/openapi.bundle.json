@@ -418,75 +418,6 @@
         }
       ]
     },
-    "/properties": {
-      "get": {
-        "operationId": "listProperties",
-        "summary": "List properties",
-        "tags": [
-          "Properties"
-        ],
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "type",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "common",
-                "standard",
-                "custom"
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "The name of the object for which you want to list properties."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of properties",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "properties": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/property"
-                      }
-                    }
-                  },
-                  "required": [
-                    "properties"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
     "/field_mappings/_update_object": {
       "put": {
         "operationId": "updateObjectFieldMappings",
@@ -2668,10 +2599,6 @@
       "description": "A `Provider` is a CRM or other system that we can connect to."
     },
     {
-      "name": "Properties",
-      "description": "A `Property` is a field in a Provider Object."
-    },
-    {
       "name": "Schemas",
       "description": "A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API."
     },
@@ -2954,25 +2881,6 @@
               "config"
             ]
           }
-        ]
-      },
-      "property": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The name of the property as it appears in the API.",
-            "example": "first_name"
-          },
-          "label": {
-            "type": "string",
-            "description": "The human-readable name of the property.",
-            "example": "First Name"
-          }
-        },
-        "required": [
-          "id",
-          "label"
         ]
       },
       "s3_config_safe": {
@@ -4887,27 +4795,6 @@
           "destination_id",
           "provider_id",
           "config"
-        ]
-      },
-      "list_properties": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "common",
-              "standard",
-              "custom"
-            ]
-          },
-          "name": {
-            "type": "string",
-            "example": "object_name"
-          }
-        },
-        "required": [
-          "type",
-          "name"
         ]
       },
       "webhook": {

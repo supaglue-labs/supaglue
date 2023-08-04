@@ -6,7 +6,7 @@ import type {
   ListPropertiesQueryParams,
   ListPropertiesRequest,
   ListPropertiesResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/schemas/v2/metadata';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

@@ -37,8 +37,6 @@ paths:
     $ref: paths/destinations@{destination_id}.yaml
   '/field_mappings':
     $ref: paths/field_mappings.yaml
-  '/properties':
-    $ref: paths/properties.yaml
   '/field_mappings/_update_object':
     $ref: paths/field_mappings@_update_object.yaml
   '/entity_mappings':
@@ -88,8 +86,6 @@ tags:
     description: A `Destination` is a place where to which data can be written.
   - name: Providers
     description: A `Provider` is a CRM or other system that we can connect to.
-  - name: Properties
-    description: A `Property` is a field in a Provider Object.
   - name: Schemas
     description: A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API.
   - name: Entities
@@ -119,8 +115,6 @@ components:
       $ref: ./components/schemas/objects/provider.yaml
     destination:
       $ref: ./components/schemas/objects/destination.yaml
-    property:
-      $ref: ./components/schemas/objects/property.yaml
     s3_config_safe:
       $ref: ./components/schemas/objects/s3_config_safe.yaml
     postgres_config_safe:
@@ -207,8 +201,6 @@ components:
       $ref: ./components/schemas/update_destination.yaml
     create_update_sync_config:
       $ref: ./components/schemas/create_update_sync_config.yaml
-    list_properties:
-      $ref: ./components/schemas/list_properties.yaml
     webhook:
       $ref: ./components/schemas/objects/webhook.yaml
     webhook-payload:

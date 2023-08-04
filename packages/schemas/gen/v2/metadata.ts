@@ -57,12 +57,35 @@ export interface paths {
       };
     };
   };
+  "/properties": {
+    /** List properties */
+    get: operations["listProperties"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        /** @description The provider name */
+        "x-provider-name": string;
+      };
+    };
+  };
 }
 
 export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
+    property: {
+      /**
+       * @description The name of the property as it appears in the API. 
+       * @example first_name
+       */
+      id: string;
+      /**
+       * @description The human-readable name of the property. 
+       * @example First Name
+       */
+      label: string;
+    };
     standard_object: {
       /** @example ticket */
       name: string;
@@ -373,6 +396,30 @@ export interface operations {
               id: string;
             };
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** List properties */
+  listProperties: {
+    parameters: {
+      query: {
+        type: "common" | "standard" | "custom";
+        name: string;
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        /** @description The provider name */
+        "x-provider-name": string;
+      };
+    };
+    responses: {
+      /** @description List of properties */
+      200: {
+        content: {
+          "application/json": {
+            properties: (components["schemas"]["property"])[];
           };
         };
       };

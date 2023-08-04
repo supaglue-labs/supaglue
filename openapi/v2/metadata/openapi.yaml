@@ -32,6 +32,8 @@ paths:
     $ref: paths/objects@custom@{custom_object_id}.yaml
   '/association-types':
     $ref: paths/association-types.yaml
+  '/properties':
+    $ref: paths/properties.yaml
 tags:
   - name: CustomObjects
     description: A `Custom Object` is an object that is defined by the user.
@@ -39,11 +41,15 @@ tags:
     description: A `Standard Object` is an object that is available by default in the provider.
   - name: AssociationTypes
     description: An `Association Type` is a type of association between two entities.
+  - name: Properties
+    description: A `Property` is a field in a Provider Object.
 components:
   securitySchemes:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
+    property:
+      $ref: ./components/schemas/objects/property.yaml
     standard_object:
       $ref: ./components/schemas/objects/standard_object.yaml
     custom_object:

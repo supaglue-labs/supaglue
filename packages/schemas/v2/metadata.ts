@@ -52,3 +52,9 @@ export type CreateAssociationTypeRequest =
   operations['createAssociationType']['requestBody']['content']['application/json'];
 export type CreateAssociationTypeResponse =
   operations['createAssociationType']['responses'][keyof operations['createAssociationType']['responses']]['content']['application/json'];
+
+export type ListPropertiesPathParams = never;
+export type ListPropertiesRequest = never;
+export type ListPropertiesQueryParams = Required<operations['listProperties']>['parameters']['query'];
+export type ListPropertiesResponse =
+  operations['listProperties']['responses'][keyof operations['listProperties']['responses']]['content']['application/json'];

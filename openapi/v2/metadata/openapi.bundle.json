@@ -364,6 +364,82 @@
           "$ref": "#/components/parameters/x-provider-name"
         }
       ]
+    },
+    "/properties": {
+      "get": {
+        "operationId": "listProperties",
+        "summary": "List properties",
+        "tags": [
+          "Properties"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "common",
+                "standard",
+                "custom"
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "The name of the object for which you want to list properties."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of properties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "properties": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/property"
+                      }
+                    }
+                  },
+                  "required": [
+                    "properties"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
+        }
+      ]
     }
   },
   "tags": [
@@ -378,6 +454,10 @@
     {
       "name": "AssociationTypes",
       "description": "An `Association Type` is a type of association between two entities."
+    },
+    {
+      "name": "Properties",
+      "description": "A `Property` is a field in a Provider Object."
     }
   ],
   "components": {
@@ -390,6 +470,25 @@
       }
     },
     "schemas": {
+      "property": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The name of the property as it appears in the API.",
+            "example": "first_name"
+          },
+          "label": {
+            "type": "string",
+            "description": "The human-readable name of the property.",
+            "example": "First Name"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ]
+      },
       "standard_object": {
         "type": "object",
         "properties": {

@@ -60,16 +60,6 @@ export interface paths {
       };
     };
   };
-  "/properties": {
-    /** List properties */
-    get: operations["listProperties"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-  };
   "/field_mappings/_update_object": {
     /** Update object field mappings */
     put: operations["updateObjectFieldMappings"];
@@ -413,18 +403,6 @@ export interface components {
       type: "mongodb";
       config: components["schemas"]["mongodb_config_safe"];
     }]>;
-    property: {
-      /**
-       * @description The name of the property as it appears in the API. 
-       * @example first_name
-       */
-      id: string;
-      /**
-       * @description The human-readable name of the property. 
-       * @example First Name
-       */
-      label: string;
-    };
     s3_config_safe: {
       /** @example us-west-2 */
       region: string;
@@ -1036,12 +1014,6 @@ export interface components {
       provider_id: string;
       config: components["schemas"]["sync_config_data"];
     };
-    list_properties: {
-      /** @enum {string} */
-      type: "common" | "standard" | "custom";
-      /** @example object_name */
-      name: string;
-    };
     webhook: {
       url: string;
       notify_on_sync_success: boolean;
@@ -1299,29 +1271,6 @@ export interface operations {
       200: {
         content: {
           "application/json": (components["schemas"]["object_field_mapping_info"])[];
-        };
-      };
-    };
-  };
-  /** List properties */
-  listProperties: {
-    parameters: {
-      query: {
-        type: "common" | "standard" | "custom";
-        name: string;
-      };
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    responses: {
-      /** @description List of properties */
-      200: {
-        content: {
-          "application/json": {
-            properties: (components["schemas"]["property"])[];
-          };
         };
       };
     };
