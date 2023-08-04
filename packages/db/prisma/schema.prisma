@@ -61,7 +61,7 @@ model Customer {
   email              String
   createdAt          DateTime     @default(now()) @map("created_at")
   updatedAt          DateTime     @updatedAt @map("updated_at")
-  MagicLink          MagicLink[]
+  magicLinks         MagicLink[]
 
   @@unique([applicationId, externalIdentifier])
   @@map("customers")
@@ -81,7 +81,7 @@ model Provider {
   updatedAt      DateTime     @updatedAt @map("updated_at")
   connections    Connection[]
   syncConfig     SyncConfig?
-  MagicLink      MagicLink[]
+  magicLinks     MagicLink[]
 
   @@unique([applicationId, name])
   @@map("providers")
