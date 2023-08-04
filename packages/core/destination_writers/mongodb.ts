@@ -352,6 +352,7 @@ const collectionNamesByCommonObjectType: {
     user: 'crm_users',
   },
   engagement: {
+    account: 'engagement_accounts',
     contact: 'engagement_contacts',
     sequence_state: 'engagement_sequence_states',
     user: 'engagement_users',

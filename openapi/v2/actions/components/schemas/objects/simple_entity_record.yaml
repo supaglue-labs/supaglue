@@ -1,0 +1,9 @@
+type: object
+properties:
+  id:
+    type: string
+  entity_id:
+    type: string
+required:
+  - id
+  - entity_id

@@ -2,14 +2,14 @@ type: object
 properties:
   host:
     type: string
-    example: https://mydb.com
+    example: production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com
   port:
     type: number
     example: 5432
   database:
     type: string
-    example: my_database
-  schema: 
+    example: postgres_prod_db
+  schema:
     type: string
     example: public
   user:
@@ -17,7 +17,7 @@ properties:
     example: myuser
   password:
     type: string
-    example: password
+    example: mysensitivepassword
 required:
   - host
   - port

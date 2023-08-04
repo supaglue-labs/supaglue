@@ -1,4 +1,7 @@
 import type {
+  Account,
+  AccountCreateParams,
+  AccountUpdateParams,
   Address,
   Contact,
   ContactCreateParams,
@@ -71,6 +74,21 @@ export const fromOutreachMailboxToMailbox = (record: OutreachRecord): Mailbox =>
     isDeleted: false,
     lastModifiedAt: new Date(attributes.updatedAt as string),
     userId: relationships.user?.data?.id?.toString() ?? null,
+    rawData: record,
+  };
+};
+
+export const fromOutreachAccountToAccount = (record: OutreachRecord): Account => {
+  const { id, attributes, relationships } = record;
+  return {
+    id: record.id.toString(),
+    name: record.attributes.name as string,
+    domain: record.attributes.domain as string,
+    ownerId: relationships.owner?.data?.id?.toString() ?? null,
+    createdAt: new Date(attributes.createdAt as string),
+    updatedAt: new Date(attributes.updatedAt as string),
+    isDeleted: false,
+    lastModifiedAt: new Date(attributes.updatedAt as string),
     rawData: record,
   };
 };
@@ -149,6 +167,50 @@ export const fromOutreachPhonesToContactPhone = ({ attributes }: OutreachRecord)
     phoneNumberType: 'other',
   }));
   return [...mobile, ...home, ...work, ...other, ...voip];
+};
+
+export const toOutreachAccountCreateParams = ({ name, domain, ownerId, customFields }: AccountCreateParams) => {
+  const attributes = {
+    domain,
+    name,
+    ...customFields,
+  };
+  removeUndefinedValues(attributes);
+  if (ownerId === undefined) {
+    return {
+      data: {
+        type: 'account',
+        attributes,
+      },
+    };
+  }
+  return {
+    data: {
+      type: 'account',
+      attributes,
+      relationships: {
+        owner:
+          ownerId === null
+            ? null
+            : {
+                data: {
+                  type: 'user',
+                  id: ownerId,
+                },
+              },
+      },
+    },
+  };
+};
+
+export const toOutreachAccountUpdateParams = (params: AccountUpdateParams): Record<string, any> => {
+  const updateParams = toOutreachAccountCreateParams(params);
+  return {
+    data: {
+      ...updateParams.data,
+      id: parseInt(params.id, 10),
+    },
+  };
 };
 
 export const toOutreachProspectCreateParams = ({

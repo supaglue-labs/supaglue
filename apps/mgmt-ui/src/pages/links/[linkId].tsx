@@ -11,6 +11,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 export default function Home() {
   const linkId = useLinkId();
+
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {

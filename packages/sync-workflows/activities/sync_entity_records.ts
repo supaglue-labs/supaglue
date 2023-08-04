@@ -65,8 +65,13 @@ export function createSyncEntityRecords(
           );
         }
         case 'custom': {
-          const stream = await client.listCustomObjectRecords(object.name, updatedAfter, heartbeat);
-          return await writer.writeEntityRecords(connection, entity.name, toHeartbeatingReadable(stream), heartbeat);
+          const stream = await client.listCustomObjectRecords(object.name, fieldsToFetch, updatedAfter, heartbeat);
+          return await writer.writeEntityRecords(
+            connection,
+            entity.name,
+            toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
+            heartbeat
+          );
         }
       }
     }

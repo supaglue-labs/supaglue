@@ -1,5 +1,4 @@
 import type { ConnectionCreateParamsAny } from './connection';
-import type { ObjectType } from './sync';
 
 export type HttpRequestType = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
@@ -26,7 +25,7 @@ export type SyncWebhookPayload = {
   errorMessage?: string;
 } & (
   | {
-      objectType: ObjectType;
+      objectType: 'common' | 'standard';
       object: string;
     }
   | {

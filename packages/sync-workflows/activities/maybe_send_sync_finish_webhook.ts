@@ -1,6 +1,5 @@
 import { maybeSendWebhookPayload } from '@supaglue/core/lib/webhook';
 import type { ConnectionService, ProviderService, WebhookService } from '@supaglue/core/services';
-import type { ObjectType } from '@supaglue/types/sync';
 import { snakecaseKeys } from '@supaglue/utils';
 import type { ApplicationService } from '../services';
 
@@ -13,7 +12,7 @@ export type MaybeSendSyncFinishWebhookArgs = {
 } & (
   | {
       type: 'object';
-      objectType: ObjectType;
+      objectType: 'common' | 'standard';
       object: string;
     }
   | {

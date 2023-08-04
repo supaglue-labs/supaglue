@@ -6,7 +6,7 @@ get:
     - x-api-key: []
   summary: Get Syncs
   description: >-
-    Get a list of Sync objects.
+    Get a list of Syncs.
   parameters:
     - name: cursor
       in: query
@@ -18,7 +18,7 @@ get:
       in: query
       schema:
         type: string
-        example: '3804695'
+        example: '100'
       description: Number of results to return per page
     - name: customer_id
       in: query
@@ -39,7 +39,7 @@ get:
         enum:
           - common
           - standard
-          - custom
+        example: standard
       description: The object type to filter by
     - name: object
       in: query
@@ -51,6 +51,7 @@ get:
       in: query
       schema:
         type: string
+        example: e74b5a4f-f252-4a6c-940c-f35873498543
       description: The entity id to filter by
   responses:
     '200':

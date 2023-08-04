@@ -9,6 +9,7 @@ import customer from './customer';
 import destination from './destination';
 import entity from './entity';
 import entityMapping from './entity_mapping';
+import metadata from './metadata';
 import property from './property';
 import provider from './provider';
 import schema from './schema';
@@ -16,7 +17,6 @@ import sync from './sync';
 import syncConfig from './sync_config';
 import syncRun from './sync_run';
 import system from './system';
-import webhook from './webhook';
 
 export default function init(app: Router): void {
   // internal routes should require only internal middleware
@@ -48,13 +48,13 @@ export default function init(app: Router): void {
   destination(internalApplicationScopedRouter);
   provider(internalApplicationScopedRouter);
   schema(internalApplicationScopedRouter);
-  webhook(internalApplicationScopedRouter);
   sync(internalApplicationScopedRouter);
   syncConfig(internalApplicationScopedRouter);
   syncRun(internalApplicationScopedRouter);
   entity(internalApplicationScopedRouter);
   entityMapping(internalApplicationScopedRouter);
   property(internalApplicationScopedRouter);
+  metadata(internalApplicationScopedRouter);
 
   app.use('/internal', internalApplicationScopedRouter);
 }

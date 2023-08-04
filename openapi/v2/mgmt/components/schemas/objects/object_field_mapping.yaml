@@ -1,0 +1,10 @@
+type: object
+properties:
+  schema_field:
+    type: string
+    example: apolla_first_name
+  mapped_field:
+    type: string
+    example: FirstName
+required:
+  - schema_field

@@ -1,0 +1,16 @@
+type: object
+properties:
+  name:
+    type: string
+    nullable: true
+    example: My Company
+  domain:
+    type: string
+    nullable: true
+    example: mycompany.com
+  owner_id:
+    type: string
+    nullable: true
+    example: 9f3e97fd-4d5d-4efc-959d-bbebfac079f5
+  custom_fields:
+    $ref: ./objects/custom_fields.yaml

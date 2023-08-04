@@ -16,6 +16,12 @@ import type {
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type {
+  ListObjectAssociationsParams,
+  ObjectAssociation,
+  ObjectAssociationCreateParams,
+} from '@supaglue/types/association';
+import type { AssociationTypeCardinality, SimpleAssociationType } from '@supaglue/types/association_type';
+import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
@@ -32,21 +38,16 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/crm/association';
-import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
 import type {
   CustomObject,
   CustomObjectCreateParams,
   CustomObjectUpdateParams,
-} from '@supaglue/types/crm/custom_object';
-import type {
-  CustomObjectRecord,
-  CustomObjectRecordCreateParams,
-  CustomObjectRecordUpdateParams,
-} from '@supaglue/types/crm/custom_object_record';
+  SimpleCustomObject,
+} from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
+import { SALESFORCE_OBJECTS } from '@supaglue/utils';
 import retry from 'async-retry';
 import { parse } from 'csv-parse';
 import * as jsforce from 'jsforce';
@@ -66,7 +67,6 @@ import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
 import { toMappedProperties } from '../../utils/properties';
 import {
-  fromObjectToSalesforceObject,
   fromSalesforceAccountToAccount,
   fromSalesforceContactToContact,
   fromSalesforceLeadToLead,
@@ -291,6 +291,22 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return intersection(allPropertyIds, union(['Id', 'IsDeleted', 'SystemModstamp'], fieldsToFetch.fields));
   }
 
+  public override async listStandardObjects(): Promise<string[]> {
+    return SALESFORCE_OBJECTS as unknown as string[];
+  }
+
+  public override async listCustomObjects(): Promise<SimpleCustomObject[]> {
+    const metadata = await this.#client.metadata.list({ type: 'CustomObject' });
+    // for some reason, this returns standard objects and external objects too,
+    // so we need to filter them out
+    return metadata
+      .filter(({ fullName }) => fullName.endsWith('__c'))
+      .map(({ fullName }) => ({
+        id: fullName,
+        name: fullName,
+      }));
+  }
+
   public override async listStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
@@ -331,16 +347,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public override async listCustomObjectRecords(
     object: string,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date | undefined,
     heartbeat?: (() => void) | undefined
   ): Promise<Readable> {
-    return await this.listStandardObjectRecords(
-      `${object}__c`,
-      // TODO: Support customer field mappings for custom objects.
-      { type: 'inherit_all_fields' },
-      modifiedAfter,
-      heartbeat
-    );
+    return await this.listStandardObjectRecords(object, fieldsToFetch, modifiedAfter, heartbeat);
   }
 
   async getCommonPropertiesToFetch(
@@ -461,10 +472,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     id: string,
     fields: string[]
   ): Promise<ObjectRecordWithMetadata> {
-    if (object.type === 'custom') {
-      throw new BadRequestError('Custom objects are not supported for Salesforce');
-    }
-
     const record = await this.#client.retrieve(object.name, id, {
       fields,
     });
@@ -483,10 +490,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     object: StandardOrCustomObject,
     data: ObjectRecordUpsertData
   ): Promise<string> {
-    if (object.type === 'custom') {
-      throw new BadRequestError('Custom objects are not supported for Salesforce');
-    }
-
     const response = await this.#client.create(object.name, data);
     if (!response.success) {
       throw new Error(`Failed to create Salesforce ${object.name}`);
@@ -499,10 +502,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     id: string,
     data: ObjectRecordUpsertData
   ): Promise<void> {
-    if (object.type === 'custom') {
-      throw new BadRequestError('Custom objects are not supported for Salesforce');
-    }
-
     const response = await this.#client.update(object.name, {
       Id: id,
       ...data,
@@ -539,13 +538,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
-    if (!params.name.endsWith('__c')) {
-      // Salesforce doesn't actually enforce this, and will just append __c.
-      // However, we want to enforce this to avoid confusion when using
-      // the custom object name in other places.
-      throw new BadRequestError('Custom object name must end with __c');
-    }
-
     if (!params.fields.length) {
       throw new BadRequestError('Cannot create custom object with no fields');
     }
@@ -852,64 +844,18 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public async getCustomObjectRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
-    const record = await this.#client.retrieve(objectId, id);
+  public async listAssociationTypes(
+    sourceObject: StandardOrCustomObject,
+    targetObject: StandardOrCustomObject
+  ): Promise<SimpleAssociationType[]> {
+    const metadata = await this.#client.describe(sourceObject.name);
 
-    if (!record.Id) {
-      throw new NotFoundError(`Unexpectedly record was not returned with ${record.Id}`);
-    }
-
-    // Get the properties to fetch
-    // TODO: should we be returning other properties too?
-    const customObject = await this.getCustomObject(objectId);
-    const fieldsToFetch = customObject.fields.map((field) => field.keyName);
-
-    return {
-      id: record.Id,
-      objectId,
-      fields: Object.fromEntries(Object.entries(record).filter(([key]) => fieldsToFetch.includes(key))),
-    };
-  }
-
-  public async createCustomObjectRecord({ objectId, fields }: CustomObjectRecordCreateParams): Promise<string> {
-    const result = await this.#client.create(objectId, fields);
-    if (!result.success) {
-      throw new Error(
-        `Failed to create Salesforce custom object ${objectId} record: ${JSON.stringify(result.errors, null, 2)}`
-      );
-    }
-    return result.id;
-  }
-
-  public async updateCustomObjectRecord({ objectId, id, fields }: CustomObjectRecordUpdateParams): Promise<void> {
-    const result = await this.#client.update(objectId, {
-      Id: id,
-      ...fields,
-    });
-    if (!result.success) {
-      throw new Error(
-        `Failed to update Salesforce custom object ${objectId} record: ${JSON.stringify(result.errors, null, 2)}`
-      );
-    }
-  }
-
-  public async getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]> {
-    // TODO: support other types of objects as source
-    if (sourceObject.originType !== 'custom') {
-      throw new BadRequestError(`Only custom objects are supported as source objects for Salesforce`);
-    }
-
-    // id should look like `MyCustomObject__c`
-    // Get the lookup fields for this object
-    // Filter for the lookup fields that target the target object
-    const metadata = await this.#client.metadata.read('CustomObject', sourceObject.id);
-    const salesforceTargetObject = fromObjectToSalesforceObject(targetObject);
     const associationTypeFields = metadata.fields.filter(
-      (field) => field.type === 'Lookup' && field.referenceTo === salesforceTargetObject
+      (field) => field.type === 'reference' && field.referenceTo && field.referenceTo.includes(targetObject.name)
     );
 
     return associationTypeFields.map((field) => ({
-      id: `${metadata.fullName}.${field.fullName}`,
+      id: `${sourceObject.name}.${field.name}`,
       sourceObject,
       targetObject,
       displayName: field.label ?? '',
@@ -917,38 +863,50 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }));
   }
 
-  public async createAssociationType(params: AssociationTypeCreateParams): Promise<void> {
+  public override async createAssociationType(
+    sourceObject: StandardOrCustomObject,
+    targetObject: StandardOrCustomObject,
+    keyName: string,
+    displayName: string,
+    cardinality: AssociationTypeCardinality
+  ): Promise<void> {
     // TODO: support other types of objects as source
-    if (params.sourceObject.originType !== 'custom') {
+    if (sourceObject.type !== 'custom') {
       throw new BadRequestError(`Only custom objects are supported as source objects for Salesforce`);
     }
 
-    if (params.cardinality !== 'ONE_TO_MANY') {
+    if (cardinality !== 'ONE_TO_MANY') {
       throw new BadRequestError('Only ONE_TO_MANY cardinality is supported in Salesforce');
+    }
+
+    // if keyName doesn't end with __c, we need to add it ourselves
+    if (!keyName.endsWith('__c')) {
+      keyName = `${keyName}__c`;
     }
 
     // Look up source custom object to figure out a relationship name
     // TODO: we should find a better way to do this
-    const sourceCustomObjectMetadata = await this.#client.metadata.read('CustomObject', params.sourceObject.id);
+    const sourceCustomObjectMetadata = await this.#client.metadata.read('CustomObject', sourceObject.name);
 
     // If the relationship field doesn't already exist, create it
-    const existingField = sourceCustomObjectMetadata.fields?.find((field) => field.fullName === params.keyName);
-    const salesforceTargetObject = fromObjectToSalesforceObject(params.targetObject);
+    const existingField = sourceCustomObjectMetadata.fields?.find((field) => field.fullName === keyName);
+
+    const customFieldPayload = {
+      fullName: `${sourceObject.name}.${keyName}`,
+      label: displayName,
+      // The custom field name you provided Related Opportunity on object Opportunity can
+      // only contain alphanumeric characters, must begin with a letter, cannot end
+      // with an underscore or contain two consecutive underscore characters, and
+      // must be unique across all Opportunity fields
+      // TODO: allow developer to specify name?
+      relationshipName: sourceCustomObjectMetadata.pluralLabel?.replace(/\s/g, '') ?? 'relationshipName',
+      type: 'Lookup',
+      required: false,
+      referenceTo: targetObject.name,
+    };
 
     if (existingField) {
-      const result = await this.#client.metadata.update('CustomField', {
-        fullName: `${params.sourceObject.id}.${params.keyName}`,
-        label: params.displayName,
-        // The custom field name you provided Related Opportunity on object Opportunity can
-        // only contain alphanumeric characters, must begin with a letter, cannot end
-        // with an underscore or contain two consecutive underscore characters, and
-        // must be unique across all Opportunity fields
-        // TODO: allow developer to specify name?
-        relationshipName: sourceCustomObjectMetadata.pluralLabel?.replace(/\s/g, '') ?? 'relationshipName',
-        type: 'Lookup',
-        required: false,
-        referenceTo: salesforceTargetObject,
-      });
+      const result = await this.#client.metadata.update('CustomField', customFieldPayload);
 
       if (!result.success) {
         throw new Error(
@@ -956,19 +914,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         );
       }
     } else {
-      const result = await this.#client.metadata.create('CustomField', {
-        fullName: `${params.sourceObject.id}.${params.keyName}`,
-        label: params.displayName,
-        // The custom field name you provided Related Opportunity on object Opportunity can
-        // only contain alphanumeric characters, must begin with a letter, cannot end
-        // with an underscore or contain two consecutive underscore characters, and
-        // must be unique across all Opportunity fields
-        // TODO: allow developer to specify name?
-        relationshipName: sourceCustomObjectMetadata.pluralLabel?.replace(/\s/g, '') ?? 'relationshipName',
-        type: 'Lookup',
-        required: false,
-        referenceTo: salesforceTargetObject,
-      });
+      const result = await this.#client.metadata.create('CustomField', customFieldPayload);
 
       if (!result.success) {
         throw new Error(
@@ -998,7 +944,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // Figure out which fields already have permissions
     const { records: existingFieldPermissions } = await this.#client.query(
-      `SELECT Id,Field FROM FieldPermissions WHERE SobjectType='${params.sourceObject.id}' AND ParentId='${permissionSetId}' AND Field='${params.sourceObject.id}.${params.keyName}'`
+      `SELECT Id,Field FROM FieldPermissions WHERE SobjectType='${sourceObject.name}' AND ParentId='${permissionSetId}' AND Field='${sourceObject.name}.${keyName}'`
     );
     if (existingFieldPermissions.length) {
       // Update permission
@@ -1006,8 +952,8 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       const result = await this.#client.update('FieldPermissions', {
         Id: existingFieldPermission.Id as string,
         ParentId: permissionSetId,
-        SobjectType: params.sourceObject.id,
-        Field: `${params.sourceObject.id}.${params.keyName}`,
+        SobjectType: sourceObject.name,
+        Field: `${sourceObject.name}.${keyName}`,
         PermissionsEdit: true,
         PermissionsRead: true,
       });
@@ -1020,8 +966,8 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       // Create permission
       const result = await this.#client.create('FieldPermissions', {
         ParentId: permissionSetId,
-        SobjectType: params.sourceObject.id,
-        Field: `${params.sourceObject.id}.${params.keyName}`,
+        SobjectType: sourceObject.name,
+        Field: `${sourceObject.name}.${keyName}`,
         PermissionsEdit: true,
         PermissionsRead: true,
       });
@@ -1033,31 +979,32 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public async listAssociations(params: ListAssociationsParams): Promise<Association[]> {
-    if (params.sourceRecord.object.originType !== 'custom') {
-      throw new BadRequestError(`Only custom objects are supported as source objects for Salesforce`);
-    }
-
+  public override async listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]> {
     // Use the metadata API to find out if there are fields that are lookups to the target object
-    const metadata = await this.#client.metadata.read('CustomObject', params.sourceRecord.object.id);
-    const salesforceTargetObject = fromObjectToSalesforceObject(params.targetObject);
+    const sourceObjectIdOrName =
+      params.sourceRecord.object.type === 'custom' ? params.sourceRecord.object.id : params.sourceRecord.object.name;
+    const targetObjectIdOrName =
+      params.targetObject.type === 'custom' ? params.targetObject.id : params.targetObject.name;
+
+    const metadata = await this.#client.describe(sourceObjectIdOrName);
+
     const associationTypeFields = metadata.fields.filter(
-      (field) => field.type === 'Lookup' && field.referenceTo === salesforceTargetObject
+      (field) => field.type === 'reference' && field.referenceTo && field.referenceTo.includes(targetObjectIdOrName)
     );
 
-    const record = await this.#client.retrieve(params.sourceRecord.object.id, params.sourceRecord.id);
+    const record = await this.#client.retrieve(sourceObjectIdOrName, params.sourceRecord.id);
 
     // Iterate over fields and find the ones that refer to the target object
-    return associationTypeFields.map((field) => {
-      if (!field.fullName) {
-        throw new Error(`Unexpectedly could not find full name for field ${field}`);
+    return associationTypeFields.flatMap((field) => {
+      if (!field.name) {
+        throw new Error(`Unexpectedly could not find name for field ${field}`);
       }
-      const targetRecordId = record[field.fullName];
+      const targetRecordId = record[field.name];
       if (!targetRecordId) {
-        throw new Error(`Unexpectedly could not find target record id for field ${field.fullName}`);
+        return [];
       }
       return {
-        associationTypeId: `${params.sourceRecord.object.id}.${field.fullName}`,
+        associationTypeId: `${sourceObjectIdOrName}.${field.name}`,
         sourceRecord: params.sourceRecord,
         targetRecord: {
           id: targetRecordId,
@@ -1067,11 +1014,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     });
   }
 
-  public async createAssociation(params: AssociationCreateParams): Promise<Association> {
-    if (params.sourceRecord.object.originType !== 'custom') {
-      throw new BadRequestError(`Only custom objects are supported as source objects for Salesforce`);
-    }
-
+  public override async createAssociation(params: ObjectAssociationCreateParams): Promise<ObjectAssociation> {
     // keyName looks like `MyCustomObject__c.MyLookupField__c`. We should validate and then pull out the second part after the '.'
     const keyNameParts = params.associationTypeId.split('.');
     if (keyNameParts.length !== 2) {
@@ -1079,7 +1022,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
     const keyName = keyNameParts[1];
 
-    const result = await this.#client.update(params.sourceRecord.object.id, {
+    const sourceObjectIdOrName =
+      params.sourceRecord.object.type === 'custom' ? params.sourceRecord.object.id : params.sourceRecord.object.name;
+
+    const result = await this.#client.update(sourceObjectIdOrName, {
       Id: params.sourceRecord.id,
       [keyName]: params.targetRecord.id,
     });
@@ -1258,8 +1204,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
-    const sobject = object.type === 'custom' ? capitalizeString(`${object.name}__c`) : capitalizeString(object.name);
-    return await this.getSObjectProperties(sobject);
+    return await this.getSObjectProperties(capitalizeString(object.name));
   }
 
   private async getSObjectProperties(sobject: string): Promise<Property[]> {

@@ -30,6 +30,10 @@ servers:
 paths:
   '/passthrough':
     $ref: paths/passthrough.yaml
+  '/accounts':
+    $ref: paths/accounts.yaml
+  '/accounts/{account_id}':
+    $ref: paths/accounts@{account_id}.yaml
   '/contacts':
     $ref: paths/contacts.yaml
   '/contacts/{contact_id}':
@@ -55,6 +59,8 @@ tags:
     description: The `User` Common Object is used to represent a "user" in Engagements.
   - name: Mailboxes
     description: The `Mailbox` Common Object is used to represent email mailbox, used within the application for sending and syncing emails
+  - name: Accounts 
+    description: The `Account` Common Object is used to represent a "company" or "account" in Engagements.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
 components:
@@ -62,6 +68,10 @@ components:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
+    account:
+      $ref: ./components/schemas/objects/account.yaml
+    create_account:
+      $ref: ./components/schemas/create_update_account.yaml
     contact:
       $ref: ./components/schemas/objects/contact.yaml
     create_contact:

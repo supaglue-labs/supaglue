@@ -6,7 +6,7 @@ get:
     - x-api-key: []
   summary: Get SyncRuns
   description: >-
-    Get a list of SyncRun objects.
+    Get a list of SyncRuns.
   parameters:
     - name: cursor
       in: query
@@ -18,7 +18,7 @@ get:
       in: query
       schema:
         type: string
-        example: '3804695'
+        example: '100'
       description: Number of results to return per page
     - name: customer_id
       in: query
@@ -39,17 +39,18 @@ get:
         enum:
           - common
           - standard
-          - custom
+        example: standard
     - name: object
       in: query
       schema:
         type: string
-        example: contact
+        example: account
       description: The object to filter by
     - name: entity_id
       in: query
       schema:
         type: string
+        example: e74b5a4f-f252-4a6c-940c-f35873498543
       description: The entity id to filter by
   responses:
     '200':
@@ -65,29 +66,3 @@ get:
                     type: array
                     items:
                       $ref: ../components/schemas/objects/sync_run.yaml
-          examples:
-            Example:
-              value:
-                next: sjkflwbajkbbkajwbcs
-                previous: null
-                results:
-                  - object_type: common
-                    object: account
-                    start_timestamp: 2023-02-22T19:55:17.559537Z
-                    status: IN_PROGRESS
-                    application_id: 3217ea51-11c8-43c9-9547-6f197e02e5e4
-                    customer_id: my-customer-1
-                    provider_name: hubspot
-                    category: crm
-                    connection_id: f723e58c-3034-4056-babf-a8871ac12480
-                  - object_type: common
-                    object: contact
-                    start_timestamp: 2023-02-22T19:50:17.559537Z
-                    end_timestamp: 2023-02-22T20:50:17.559537Z
-                    status: ERROR
-                    error_message: 'Error: Something went wrong'
-                    application_id: 3217ea51-11c8-43c9-9547-6f197e02e5e4
-                    customer_id: my-customer-1
-                    provider_name: hubspot
-                    category: crm
-                    connection_id: f723e58c-3034-4056-babf-a8871ac12480

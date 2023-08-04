@@ -26,14 +26,12 @@ properties:
     $ref: ./category.yaml
   instance_url:
     type: string
-    description: Instance URL for the connected customer.
     example: https://app.hubspot.com/contacts/123456
+    description: Instance URL for the connected customer.
   schema_mappings_config:
     $ref: ./schema_mappings_config.yaml
   entity_mappings:
-    type: array
-    items:
-      $ref: ./connection_entity_mapping.yaml
+    $ref: ./connection_entity_mappings.yaml
 required:
   - id
   - status

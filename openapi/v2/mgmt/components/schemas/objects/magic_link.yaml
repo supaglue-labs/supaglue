@@ -6,6 +6,12 @@ properties:
   status:
     type: string
     example: created
+  auth_type:
+    type: string
+    enum:
+      - oauth2
+      - api_key
+      - access_key_secret
   application_id:
     type: string
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
@@ -31,6 +37,7 @@ properties:
     example: '2023-02-23T00:00:00Z'
 required:
   - id
+  - auth_type
   - status
   - application_id
   - customer_id

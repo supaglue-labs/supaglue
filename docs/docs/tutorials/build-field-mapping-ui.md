@@ -112,7 +112,7 @@ To render (4) the list of mappable Provider objects, you must create the list yo
 A Metadata API to fetch a list of Provider objects is under construction.
 :::
 
-To render (5) the list of mappable Provider-object fields, we'll need to call Supaglue's [Properties API](../api/v2/mgmt/list-properties).
+To render (5) the list of mappable Provider-object fields, we'll need to call Supaglue's [Properties API](../api/v2/metadata/list-properties).
 
 <ThemedImage
 alt="field mapping ui"

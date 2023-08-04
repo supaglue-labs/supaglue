@@ -1,4 +1,6 @@
 import type {
+  Account,
+  AccountCreateParams,
   Address,
   Contact,
   ContactCreateParams,
@@ -11,6 +13,20 @@ import type {
   SequenceStateCreateParams,
   User,
 } from '@supaglue/types/engagement';
+
+export const fromApolloAccountToAccount = (record: Record<string, any>): Account => {
+  return {
+    id: record.id,
+    name: record.name ?? null,
+    domain: record.domain ?? null,
+    ownerId: record.owner_id ?? null,
+    createdAt: new Date(record.created_at),
+    updatedAt: null, // Not supported in apollo
+    lastModifiedAt: new Date(record.created_at),
+    isDeleted: false,
+    rawData: record,
+  };
+};
 
 export const fromApolloContactToContact = (record: Record<string, any>): Contact => {
   return {
@@ -146,6 +162,15 @@ export const fromApolloContactToSequenceStates = (record: Record<string, any>): 
     rawData: status,
   }));
 };
+
+export const toApolloAccountCreateParams = (params: AccountCreateParams): Record<string, any> => {
+  return {
+    name: params.name,
+    domain: params.domain,
+  };
+};
+
+export const toApolloAccountUpdateParams = toApolloAccountCreateParams;
 
 export const toApolloContactCreateParams = (params: ContactCreateParams): Record<string, any> => {
   return {

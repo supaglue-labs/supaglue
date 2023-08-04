@@ -235,7 +235,7 @@ export default function init(app: Router): void {
       if (providerName === 'hubspot') {
         const accessToken = tokenWrapper.token['access_token'] as string;
         const hubspotClient = new HubspotClient({ accessToken: tokenWrapper.token['access_token'] as string });
-        const { hubId } = await hubspotClient.oauth.accessTokensApi.getAccessToken(accessToken);
+        const { hubId } = await hubspotClient.oauth.accessTokensApi.get(accessToken);
         instanceUrl = `https://app.hubspot.com/contacts/${hubId.toString()}`;
       }
 

@@ -1,4 +1,41 @@
+# this example lives here b/c of the oneOf issue
+example:
+  id: 0a292508-d254-4929-98d3-dc23416efff8
+  application_id: e52286c9-3038-4fa2-a2b8-3ec9759d20cb
+  name: My Postgres Destination
+  type: postgres
+  config:
+    host: production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com
+    port: 5432
+    database: postgres_prod_db
+    schema: public
+    user: myuser
 oneOf:
+  - type: object
+    title: postgres
+    properties:
+      id:
+        type: string
+        example: d455d20b-f6dc-4bc3-ab14-b4f21c4b4835
+      application_id:
+        type: string
+        example: 726fb798-d854-4c59-9a23-57e3e2f73eae
+      name:
+        type: string
+        example: My Postgres Destination
+      type:
+        type: string
+        enum:
+          - postgres
+        example: postgres
+      config:
+        $ref: ./postgres_config_safe.yaml
+    required:
+      - id
+      - application_id
+      - name
+      - type
+      - config
   - type: object
     title: s3
     properties:
@@ -10,37 +47,14 @@ oneOf:
         example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
       name:
         type: string
-        example: My Destination
+        example: My S3 Destination
       type:
         type: string
         enum:
           - s3
+        example: s3
       config:
         $ref: ./s3_config_safe.yaml
-    required:
-      - id
-      - application_id
-      - name
-      - type
-      - config
-  - type: object
-    title: postgres
-    properties:
-      id:
-        type: string
-        example: e888cedf-e9d0-42c5-9485-2d72984faef2
-      application_id:
-        type: string
-        example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
-      name:
-        type: string
-        example: My Destination
-      type:
-        type: string
-        enum:
-          - postgres
-      config:
-        $ref: ./postgres_config_safe.yaml
     required:
       - id
       - application_id
@@ -58,11 +72,12 @@ oneOf:
         example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
       name:
         type: string
-        example: My Destination
+        example: My BigQuery Destination
       type:
         type: string
         enum:
           - bigquery
+        example: bigquery
       config:
         $ref: ./bigquery_config_safe.yaml
     required:
@@ -82,11 +97,12 @@ oneOf:
         example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
       name:
         type: string
-        example: My Destination
+        example: My Mongo Destination
       type:
         type: string
         enum:
           - mongodb
+        example: mongodb
       config:
         $ref: ./mongodb_config_safe.yaml
     required:

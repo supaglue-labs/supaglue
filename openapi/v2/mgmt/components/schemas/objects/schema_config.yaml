@@ -7,12 +7,18 @@ properties:
       properties:
         name:
           type: string
+          example: apolla_first_name
+          description: Your application field name.
         mapped_name:
           type: string
+          example: FirstName
+          description: The field your customer maps. This is a Provider-specified field name. E.g. FirstName for Salesforce.
       required:
         - name
   allow_additional_field_mappings:
     type: boolean
+    description: Specifies whether your customer can add new application field names.
+    example: false
 required:
   - fields
   - allow_additional_field_mappings

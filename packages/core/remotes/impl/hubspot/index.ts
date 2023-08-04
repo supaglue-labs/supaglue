@@ -29,6 +29,12 @@ import type {
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type {
+  ListObjectAssociationsParams,
+  ObjectAssociation,
+  ObjectAssociationCreateParams,
+} from '@supaglue/types/association';
+import type { AssociationTypeCardinality, SimpleAssociationType } from '@supaglue/types/association_type';
+import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
@@ -45,19 +51,13 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import type { Association, AssociationCreateParams } from '@supaglue/types/crm/association';
-import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
 import type {
   CustomObject,
   CustomObjectCreateParams,
   CustomObjectFieldType,
   CustomObjectUpdateParams,
-} from '@supaglue/types/crm/custom_object';
-import type {
-  CustomObjectRecord,
-  CustomObjectRecordCreateParams,
-  CustomObjectRecordUpdateParams,
-} from '@supaglue/types/crm/custom_object_record';
+  SimpleCustomObject,
+} from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
@@ -403,7 +403,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   private async maybeRefreshAccessToken(): Promise<void> {
     if (!this.#config.expiresAt || Date.parse(this.#config.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS) {
-      const token = await this.#client.oauth.tokensApi.createToken(
+      // TODO: test this refresh flow
+      const token = await this.#client.oauth.tokensApi.create(
         'refresh_token',
         undefined,
         undefined,
@@ -582,6 +583,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override async listCustomObjectRecords(
     object: string,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
@@ -950,10 +952,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     id: string,
     fields: string[]
   ): Promise<ObjectRecordWithMetadata> {
-    if (object.type === 'custom') {
-      throw new BadRequestError('Custom objects are not supported for HubSpot');
-    }
-
     const objectType = object.name;
 
     const response = await retryWhenAxiosRateLimited(async () => {
@@ -980,10 +978,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     object: StandardOrCustomObject,
     data: ObjectRecordUpsertData
   ): Promise<string> {
-    if (object.type === 'custom') {
-      throw new BadRequestError('Custom objects are not supported for HubSpot');
-    }
-
     const objectType = object.name;
 
     const response = await retryWhenAxiosRateLimited(async () => {
@@ -1009,10 +1003,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     id: string,
     data: ObjectRecordUpsertData
   ): Promise<void> {
-    if (object.type === 'custom') {
-      throw new BadRequestError('Custom objects are not supported for HubSpot');
-    }
-
     const objectType = object.name;
 
     await retryWhenAxiosRateLimited(async () => {
@@ -1200,6 +1190,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.companies.basicApi.create({
       properties: toHubspotAccountCreateParams(params),
+      associations: [],
     });
     return response.id;
   }
@@ -1388,12 +1379,22 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.create({
       properties: toHubspotOpportunityCreateParams(params, pipelineStageMapping),
+      associations: params.accountId
+        ? [
+            {
+              to: {
+                id: params.accountId,
+              },
+              types: [
+                {
+                  associationCategory: 'HUBSPOT_DEFINED',
+                  associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID,
+                },
+              ],
+            },
+          ]
+        : [],
     });
-    if (params.accountId && parseInt(params.accountId)) {
-      await this.#client.crm.deals.associationsApi.create(parseInt(deal.id), 'company', parseInt(params.accountId), [
-        { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
-      ]);
-    }
     return deal.id;
   }
 
@@ -1404,9 +1405,13 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       properties: toHubspotOpportunityUpdateParams(params, pipelineStageMapping),
     });
     if (params.accountId && parseInt(params.accountId)) {
-      await this.#client.crm.deals.associationsApi.create(parseInt(deal.id), 'company', parseInt(params.accountId), [
-        { associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID },
-      ]);
+      await this.#client.crm.associations.v4.basicApi.create(
+        'deal',
+        parseInt(deal.id),
+        'company',
+        parseInt(params.accountId),
+        [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
+      );
     }
     return deal.id;
   }
@@ -1567,15 +1572,22 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.create({
       properties: toHubspotContactCreateParams(params),
+      associations: params.accountId
+        ? [
+            {
+              to: {
+                id: params.accountId,
+              },
+              types: [
+                {
+                  associationCategory: 'HUBSPOT_DEFINED',
+                  associationTypeId: CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID,
+                },
+              ],
+            },
+          ]
+        : [],
     });
-    if (params.accountId && parseInt(params.accountId)) {
-      await this.#client.crm.contacts.associationsApi.create(
-        parseInt(contact.id),
-        'company',
-        parseInt(params.accountId),
-        [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
-      );
-    }
     return contact.id;
   }
 
@@ -1585,7 +1597,8 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       properties: toHubspotContactUpdateParams(params),
     });
     if (params.accountId && parseInt(params.accountId)) {
-      await this.#client.crm.contacts.associationsApi.create(
+      await this.#client.crm.associations.v4.basicApi.create(
+        'contact',
         parseInt(contact.id),
         'company',
         parseInt(params.accountId),
@@ -1668,6 +1681,29 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
+  public override async listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]> {
+    await this.maybeRefreshAccessToken();
+    const fromObjectType =
+      params.sourceRecord.object.type === 'standard' ? params.sourceRecord.object.name : params.sourceRecord.object.id;
+    const toObjectType = params.targetObject.type === 'standard' ? params.targetObject.name : params.targetObject.id;
+    // TODO: need to page through all associations
+    const associations = await this.#client.crm.associations.v4.basicApi.getPage(
+      fromObjectType,
+      parseInt(params.sourceRecord.id),
+      toObjectType
+    );
+    return associations.results.flatMap((result) =>
+      result.associationTypes.map((associationType) => ({
+        associationTypeId: associationType.typeId.toString(),
+        sourceRecord: params.sourceRecord,
+        targetRecord: {
+          id: result.toObjectId.toString(),
+          object: params.targetObject,
+        },
+      }))
+    );
+  }
+
   async #listAssociations(
     fromObjectType: string,
     toObjectType: string,
@@ -1695,6 +1731,19 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await super.sendPassthroughRequest(request);
   }
 
+  public override async listStandardObjects(): Promise<string[]> {
+    return HUBSPOT_STANDARD_OBJECT_TYPES as unknown as string[];
+  }
+
+  public override async listCustomObjects(): Promise<SimpleCustomObject[]> {
+    await this.maybeRefreshAccessToken();
+    const response = await this.#client.crm.schemas.coreApi.getAll();
+    return response.results.map((object) => ({
+      id: object.objectTypeId,
+      name: object.name,
+    }));
+  }
+
   public override async getCustomObject(id: string): Promise<CustomObject> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.getById(id);
@@ -1707,14 +1756,12 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         singular: response.labels.singular ?? '',
         plural: response.labels.plural ?? '',
       },
-      fields: response.properties
-        .filter((property) => property.createdUserId && !property.hidden) // hack to filter for only user-created properties; might not be accurate
-        .map((property) => ({
-          keyName: property.name,
-          displayName: property.label,
-          fieldType: property.type as CustomObjectFieldType, // TODO
-          isRequired: response.requiredProperties.includes(property.name),
-        })),
+      fields: response.properties.map((property) => ({
+        keyName: property.name,
+        displayName: property.label,
+        fieldType: property.type as CustomObjectFieldType, // TODO
+        isRequired: response.requiredProperties.includes(property.name),
+      })),
     };
   }
 
@@ -1835,74 +1882,49 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public override async getCustomObjectRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
+  public async listAssociationTypes(
+    sourceObject: StandardOrCustomObject,
+    targetObject: StandardOrCustomObject
+  ): Promise<SimpleAssociationType[]> {
     await this.maybeRefreshAccessToken();
-
-    // Get the properties to fetch
-    // TODO: should we be returning other properties too?
-    const customObject = await this.getCustomObject(objectId);
-    const fieldsToFetch = customObject.fields.map((field) => field.keyName);
-    const response = await this.#client.crm.objects.basicApi.getById(objectId, id, fieldsToFetch);
-
-    return {
-      id: response.id,
-      objectId,
-      fields: Object.fromEntries(Object.entries(response.properties).filter(([key]) => fieldsToFetch.includes(key))),
-    };
-  }
-
-  public override async createCustomObjectRecord(params: CustomObjectRecordCreateParams): Promise<string> {
-    await this.maybeRefreshAccessToken();
-    const response = await this.#client.crm.objects.basicApi.create(params.objectId, {
-      properties: params.fields as Record<string, string>, // TODO: map types?
-    });
-    return response.id;
-  }
-
-  public override async updateCustomObjectRecord(params: CustomObjectRecordUpdateParams): Promise<void> {
-    await this.maybeRefreshAccessToken();
-    await this.#client.crm.objects.basicApi.update(params.objectId, params.id, {
-      properties: params.fields as Record<string, string>, // TODO: map types?
-    });
-  }
-
-  public async getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]> {
-    await this.maybeRefreshAccessToken();
-    const response = await this.#client.crm.associations.v4.definitionsApi.getAll(
+    const response = await this.#client.crm.associations.v4.schema.definitionsApi.getAll(
       fromObjectToHubspotObjectType(sourceObject),
       fromObjectToHubspotObjectType(targetObject)
     );
     return response.results.map((result) => ({
       id: result.typeId.toString(),
-      sourceObject,
-      targetObject,
       displayName: result.label ?? '',
       cardinality: 'UNKNOWN',
     }));
   }
 
-  public async createAssociationType(params: AssociationTypeCreateParams): Promise<void> {
-    if (params.cardinality !== 'ONE_TO_MANY') {
+  public override async createAssociationType(
+    sourceObject: StandardOrCustomObject,
+    targetObject: StandardOrCustomObject,
+    keyName: string,
+    displayName: string,
+    cardinality: AssociationTypeCardinality
+  ): Promise<void> {
+    if (cardinality !== 'ONE_TO_MANY') {
       throw new BadRequestError('Only ONE_TO_MANY cardinality is supported in HubSpot');
     }
-
     await this.maybeRefreshAccessToken();
-    await this.#client.crm.associations.v4.definitionsApi.create(
-      fromObjectToHubspotObjectType(params.sourceObject),
-      fromObjectToHubspotObjectType(params.targetObject),
+    await this.#client.crm.associations.v4.schema.definitionsApi.create(
+      fromObjectToHubspotObjectType(sourceObject),
+      fromObjectToHubspotObjectType(targetObject),
       {
-        label: params.displayName,
-        name: params.keyName,
+        label: displayName,
+        name: keyName,
       }
     );
   }
 
-  public async createAssociation(params: AssociationCreateParams): Promise<Association> {
+  public override async createAssociation(params: ObjectAssociationCreateParams): Promise<ObjectAssociation> {
     await this.maybeRefreshAccessToken();
 
     await this.#client.crm.associations.v4.batchApi.create(
-      fromObjectToHubspotObjectType(params.sourceRecord.object),
-      fromObjectToHubspotObjectType(params.targetRecord.object),
+      params.sourceRecord.object.type === 'standard' ? params.sourceRecord.object.name : params.sourceRecord.object.id,
+      params.targetRecord.object.type === 'standard' ? params.targetRecord.object.name : params.targetRecord.object.id,
       {
         inputs: [
           {

@@ -4522,9 +4522,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hubspot/api-client@npm:8.8.1":
-  version: 8.8.1
-  resolution: "@hubspot/api-client@npm:8.8.1"
+"@hubspot/api-client@npm:9.1.0":
+  version: 9.1.0
+  resolution: "@hubspot/api-client@npm:9.1.0"
   dependencies:
     "@types/node-fetch": ^2.5.7
     bottleneck: ^2.19.5
@@ -4534,7 +4534,7 @@ __metadata:
     lodash.merge: ^4.6.2
     node-fetch: ^2.6.0
     url-parse: ^1.4.3
-  checksum: 43102bfae44ebaeb1c41aabca6d75af3125b01362d5814461187c3782fb9514353fbf6f43c08d715ef83a9fbd27f5d31663fc2bbaa1abec5fbcc20966eb1e14c
+  checksum: 0a39bc8d7a547ae6045b0cc05f45ec02c1bc4bf8859418074586c32ef1b29dcbc3091b8ccfe50ad48a7eecd37d2800c45939e808a4999e680a9cfd1345e1eba3
   languageName: node
   linkType: hard
 
@@ -6760,7 +6760,7 @@ __metadata:
     "@aws-sdk/client-s3": ^3.338.0
     "@aws-sdk/node-http-handler": ^3.350.0
     "@google-cloud/bigquery": ^6.2.0
-    "@hubspot/api-client": 8.8.1
+    "@hubspot/api-client": 9.1.0
     "@linear/sdk": ^7.0.1
     "@sentry/integrations": ^7.43.0
     "@sentry/node": ^7.43.0

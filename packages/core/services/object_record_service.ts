@@ -50,7 +50,7 @@ export class ObjectRecordService {
       unmappedData
     );
 
-    await this.#cacheInvalidateObjectRecord(connection, 'standard', objectName, id);
+    await this.#cacheInvalidateStandardObjectRecord(connection, objectName, id);
 
     return {
       id,
@@ -58,15 +58,14 @@ export class ObjectRecordService {
     };
   }
 
-  async #cacheInvalidateObjectRecord(
+  async #cacheInvalidateStandardObjectRecord(
     connection: ConnectionSafeAny,
-    objectType: 'standard' | 'custom',
     objectName: string,
     id: string
   ): Promise<void> {
     const sync = await this.#syncService.findByConnectionIdAndObjectTypeAndObject(
       connection.id,
-      objectType,
+      'standard',
       objectName
     );
     if (!sync || sync.paused) {
@@ -154,7 +153,7 @@ export class ObjectRecordService {
       recordId,
       unmappedData
     );
-    await this.#cacheInvalidateObjectRecord(connection, 'standard', objectName, recordId);
+    await this.#cacheInvalidateStandardObjectRecord(connection, objectName, recordId);
   }
 }
 
