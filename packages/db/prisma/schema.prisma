@@ -30,6 +30,7 @@ model Application {
   providers    Provider[]
   schemas      Schema[]
   Entity       Entity[]
+  magicLinks   MagicLink[]
 
   @@unique([orgId, name])
   @@map("applications")
@@ -60,6 +61,7 @@ model Customer {
   email              String
   createdAt          DateTime     @default(now()) @map("created_at")
   updatedAt          DateTime     @updatedAt @map("updated_at")
+  MagicLink          MagicLink[]
 
   @@unique([applicationId, externalIdentifier])
   @@map("customers")
@@ -79,6 +81,7 @@ model Provider {
   updatedAt      DateTime     @updatedAt @map("updated_at")
   connections    Connection[]
   syncConfig     SyncConfig?
+  MagicLink      MagicLink[]
 
   @@unique([applicationId, name])
   @@map("providers")
@@ -218,4 +221,24 @@ model Entity {
 
   @@unique([applicationId, name])
   @@map("entities")
+}
+
+model MagicLink {
+  id            String      @id @default(uuid())
+  applicationId String      @map("application_id")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  customerId    String      @map("customer_id")
+  customer      Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  providerId    String      @map("provider_id")
+  provider      Provider    @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  providerName  String      @map("provider_name")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+  expiresAt     DateTime    @map("expires_at")
+  url           String
+  returnUrl     String      @map("return_url")
+  // new | consumed | failed
+  status        String
+
+  @@map("magic_links")
 }
