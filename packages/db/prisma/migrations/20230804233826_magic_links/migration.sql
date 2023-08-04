@@ -2,6 +2,7 @@
 CREATE TABLE "magic_links" (
     "id" TEXT NOT NULL,
     "application_id" TEXT NOT NULL,
+    "auth_type" TEXT NOT NULL,
     "customer_id" TEXT NOT NULL,
     "provider_id" TEXT NOT NULL,
     "provider_name" TEXT NOT NULL,
