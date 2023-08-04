@@ -229,7 +229,7 @@
                 "type": "object",
                 "properties": {
                   "data": {
-                    "$ref": "#/components/schemas/create_update_object_record"
+                    "$ref": "#/components/schemas/create_update_standard_object_record"
                   }
                 },
                 "required": [
@@ -257,7 +257,7 @@
                       "$ref": "#/components/schemas/errors"
                     },
                     "record": {
-                      "$ref": "#/components/schemas/created_object_record"
+                      "$ref": "#/components/schemas/created_standard_object_record"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -316,7 +316,7 @@
                 "examples": {
                   "Example": {
                     "value": {
-                      "id": "001Fn00023f8oYYIA0",
+                      "id": "001Fn00023f8oYYIB0",
                       "standard_object_name": "Account",
                       "data": {
                         "Name": "Acme Corp",
@@ -353,7 +353,7 @@
                 "type": "object",
                 "properties": {
                   "data": {
-                    "$ref": "#/components/schemas/create_update_object_record"
+                    "$ref": "#/components/schemas/create_update_standard_object_record"
                   }
                 },
                 "required": [
@@ -414,6 +414,121 @@
             "type": "string",
             "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
           }
+        }
+      ]
+    },
+    "/associations": {
+      "get": {
+        "operationId": "getAssociations",
+        "tags": [
+          "Associations"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List associations",
+        "description": "Get a list of associations",
+        "parameters": [
+          {
+            "name": "source_record_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "source_entity_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "target_entity_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Associations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/association"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "createAssociation",
+        "summary": "Create association",
+        "tags": [
+          "Associations"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_association"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Association created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "association": {
+                      "$ref": "#/components/schemas/association"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -619,7 +734,7 @@
           "data": {
             "type": "object",
             "properties": {
-              "additional_properties": {
+              "additional_fields": {
                 "type": "object",
                 "additionalProperties": true,
                 "description": "Any data that is not part of the Entity itself but is mapped by the customer when `allow_additional_field_mappings` is `true` on the Entity."
@@ -671,7 +786,7 @@
           "data": {
             "type": "object",
             "properties": {
-              "additional_properties": {
+              "additional_fields": {
                 "type": "object",
                 "additionalProperties": true,
                 "description": "Any data that is not part of the Schema itself but is mapped by the customer when `allow_additional_field_mappings` is `true` on the Schema."
@@ -686,6 +801,40 @@
           "standard_object_name",
           "data"
         ]
+      },
+      "custom_object_record": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "custom_object_id": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "additional_fields": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "id",
+          "custom_object_id",
+          "data"
+        ],
+        "example": {
+          "id": "001Fn00023f8oYYIA0",
+          "custom_object_id": "Account",
+          "data": {
+            "Name": "Acme Corp",
+            "Description": "We create the best embedded integration platforms."
+          }
+        }
       },
       "create_update_entity_record": {
         "type": "object",
@@ -708,12 +857,12 @@
           "entity"
         ]
       },
-      "create_update_object_record": {
+      "create_update_standard_object_record": {
         "type": "object",
         "additionalProperties": true,
         "description": "The data (in key:value format) that will be used to create or update an Standard Object Record."
       },
-      "created_object_record": {
+      "created_standard_object_record": {
         "type": "object",
         "properties": {
           "id": {
@@ -726,6 +875,78 @@
         "required": [
           "id",
           "standard_object_name"
+        ]
+      },
+      "create_update_custom_object_record": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "created_custom_object_record": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "custom_object_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "custom_object_id"
+        ]
+      },
+      "create_update_association": {
+        "type": "object",
+        "properties": {
+          "association_type_id": {
+            "type": "string"
+          },
+          "source_record": {
+            "$ref": "#/components/schemas/simple_entity_record"
+          },
+          "target_record": {
+            "$ref": "#/components/schemas/simple_entity_record"
+          }
+        },
+        "required": [
+          "association_type_id",
+          "source_record",
+          "target_record"
+        ]
+      },
+      "association": {
+        "type": "object",
+        "properties": {
+          "source_record": {
+            "$ref": "#/components/schemas/simple_entity_record"
+          },
+          "target_record": {
+            "$ref": "#/components/schemas/simple_entity_record"
+          },
+          "association_type_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_record",
+          "target_record",
+          "association_type_id"
+        ]
+      },
+      "simple_entity_record": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "entity_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "entity_id"
         ]
       },
       "errors": {

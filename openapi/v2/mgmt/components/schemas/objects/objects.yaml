@@ -28,16 +28,3 @@ properties:
           example: 777ea826-5776-4347-9ece-47bbb17ccdd4
       required:
         - name
-  custom:
-    type: array
-    items:
-      type: object
-      properties:
-        name:
-          type: string
-          example: BattleCard
-        schema_id:
-          type: string
-          example: f234d5ed-fa8c-487c-b495-5acd730436a3
-      required:
-        - name

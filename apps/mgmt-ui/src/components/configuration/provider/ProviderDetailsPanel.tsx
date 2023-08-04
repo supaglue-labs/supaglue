@@ -82,7 +82,6 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   const [useManagedOauth, setUseManagedOauth] = useState<boolean>(true);
   const [commonObjects, setCommonObjects] = useState<ProviderObject[]>([]);
   const [standardObjects, setStandardObjects] = useState<ProviderObject[]>([]);
-  const [customObjects, setCustomObjects] = useState<ProviderObject[]>([]);
   const router = useRouter();
 
   const supportsObjectToSchema = (PROVIDERS_THAT_SUPPORT_SCHEMAS as unknown as ProviderName[]).includes(providerName);
@@ -108,7 +107,6 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
 
     setCommonObjects(provider?.category === 'no_category' ? [] : provider?.objects?.common ?? []);
     setStandardObjects(provider?.objects?.standard ?? []);
-    setCustomObjects(provider?.objects?.custom ?? []);
   }, [provider?.id]);
 
   const createOrUpdateProvider = async (): Promise<Provider | undefined> => {
@@ -132,7 +130,6 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
         objects: {
           common: commonObjects,
           standard: standardObjects,
-          custom: customObjects,
         },
       };
       const response = await updateRemoteProvider(activeApplicationId, newProvider as Provider);
@@ -163,7 +160,6 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
       objects: {
         common: commonObjects,
         standard: standardObjects,
-        custom: customObjects,
       },
     } as ProviderCreateParams);
     if (!response.ok) {
@@ -276,15 +272,6 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
               objects={standardObjects}
               setObjects={setStandardObjects}
               objectOptions={getStandardObjectOptions(providerName)}
-              schemaOptions={schemas ?? []}
-            />
-            <SchemaToObjectMapping
-              isLoading={isLoading || isLoadingSchemas}
-              label="Custom Objects"
-              helperText={`Custom objects in ${providerName}. (Note: names are case-sensitive.)`}
-              objects={customObjects}
-              setObjects={setCustomObjects}
-              objectOptions={[]}
               schemaOptions={schemas ?? []}
             />
           </Stack>

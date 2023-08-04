@@ -32,7 +32,6 @@ oneOf:
             enum:
               - common
               - standard
-              - custom
           object:
             type: string
             example: contact

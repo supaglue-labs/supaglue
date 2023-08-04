@@ -175,8 +175,5 @@ function getObjectNamesUsingSchema(provider: Provider, schemaId: string): string
   out.push(
     ...(provider.objects.standard?.filter((object) => object.schemaId === schemaId).map((object) => object.name) ?? [])
   );
-  out.push(
-    ...(provider.objects.custom?.filter((object) => object.schemaId === schemaId).map((object) => object.name) ?? [])
-  );
   return out;
 }

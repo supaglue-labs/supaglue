@@ -1,0 +1,9 @@
+type: object
+properties:
+  id:
+    type: string
+  custom_object_id:
+    type: string
+required:
+  - id
+  - custom_object_id

@@ -12,13 +12,12 @@ import {
   SyncConfigService,
 } from './services';
 import { ApplicationService } from './services/application_service';
-import { CrmAssociationService } from './services/common_objects/crm/association_service';
 import { CrmCommonObjectService } from './services/common_objects/crm/common_object_service';
-import { CrmCustomObjectService } from './services/common_objects/crm/custom_object_service';
 import { EngagementCommonObjectService } from './services/common_objects/engagement/common_object_service';
 import { DestinationService } from './services/destination_service';
 import { EntityRecordService } from './services/entity_record_service';
 import { EntityService } from './services/entity_service';
+import { MetadataService } from './services/metadata_service';
 import { ObjectRecordService } from './services/object_record_service';
 import { SyncRunService } from './services/sync_run_service';
 import { SyncService } from './services/sync_service';
@@ -49,9 +48,7 @@ export type CoreDependencyContainer = {
   crmCommonObjectService: CrmCommonObjectService;
   engagementCommonObjectService: EngagementCommonObjectService;
 
-  crmCustomObjectService: CrmCustomObjectService;
-  crmAssociationService: CrmAssociationService;
-
+  metadataService: MetadataService;
   entityRecordService: EntityRecordService;
   objectRecordService: ObjectRecordService;
 };
@@ -110,8 +107,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   );
   const engagementCommonObjectService = new EngagementCommonObjectService(remoteService, destinationService);
 
-  const crmCustomObjectService = new CrmCustomObjectService(remoteService);
-  const crmAssociationService = new CrmAssociationService(remoteService);
+  const metadataService = new MetadataService(remoteService, connectionService);
 
   const entityRecordService = new EntityRecordService(
     entityService,
@@ -145,8 +141,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     entityService,
     crmCommonObjectService,
     engagementCommonObjectService,
-    crmCustomObjectService,
-    crmAssociationService,
+    metadataService,
     syncService,
     syncRunService,
     entityRecordService,

@@ -44,8 +44,8 @@ oneOf:
       object_type:
         type: string
         enum:
+          - common
           - standard
-          - custom
         example: standard
       object:
         type: string

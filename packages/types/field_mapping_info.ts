@@ -1,5 +1,3 @@
-import type { ObjectType } from './sync';
-
 export type FieldMappingInfo = {
   name: string;
   isAddedByCustomer: boolean;
@@ -9,7 +7,7 @@ export type FieldMappingInfo = {
 
 export type ObjectFieldMappingInfo = {
   objectName: string;
-  objectType: ObjectType;
+  objectType: 'common' | 'standard';
   schemaId: string;
   allowAdditionalFieldMappings: boolean;
   fields: FieldMappingInfo[];
@@ -17,7 +15,7 @@ export type ObjectFieldMappingInfo = {
 
 export type ObjectFieldMappingUpdateParams = {
   name: string;
-  type: ObjectType;
+  type: 'common' | 'standard';
   fieldMappings: SchemaMappingsConfigObjectFieldMapping[];
 };
 

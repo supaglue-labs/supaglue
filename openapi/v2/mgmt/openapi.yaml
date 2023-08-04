@@ -37,8 +37,6 @@ paths:
     $ref: paths/destinations@{destination_id}.yaml
   '/field_mappings':
     $ref: paths/field_mappings.yaml
-  '/properties':
-    $ref: paths/properties.yaml
   '/field_mappings/_update_object':
     $ref: paths/field_mappings@_update_object.yaml
   '/entity_mappings':
@@ -86,8 +84,6 @@ tags:
     description: A `Destination` is a data store where we write data in your infrastructure.
   - name: Providers
     description: A `Provider` is a third-party SaaS tool we can connect to (e.g. Salesforce).
-  - name: Properties
-    description: A `Property` is a field in a Provider object, e.g., `FirstName` on a Salesforce `Contact` object.
   - name: Schemas
     description: A [`Schema`](https://docs.supaglue.com/platform/objects/overview#schemas) allows you to normalize fields for customers across a single Provider object. Supaglue uses Schemas for Managed Syncs and Actions API.
   - name: Entities
@@ -117,8 +113,6 @@ components:
       $ref: ./components/schemas/objects/provider.yaml
     destination:
       $ref: ./components/schemas/objects/destination.yaml
-    property:
-      $ref: ./components/schemas/objects/property.yaml
     s3_config_safe:
       $ref: ./components/schemas/objects/s3_config_safe.yaml
     postgres_config_safe:
@@ -203,8 +197,6 @@ components:
       $ref: ./components/schemas/update_destination.yaml
     create_update_sync_config:
       $ref: ./components/schemas/create_update_sync_config.yaml
-    list_properties:
-      $ref: ./components/schemas/list_properties.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
     standard_object:

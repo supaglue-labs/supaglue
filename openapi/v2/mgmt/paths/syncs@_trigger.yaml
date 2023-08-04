@@ -29,7 +29,6 @@ post:
                   type: string
                   enum:
                     - standard
-                    - custom
                   description: The object type to filter by
                   example: standard
                 object:

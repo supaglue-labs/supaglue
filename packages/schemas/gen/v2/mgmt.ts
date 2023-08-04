@@ -60,16 +60,6 @@ export interface paths {
       };
     };
   };
-  "/properties": {
-    /** List properties */
-    get: operations["listProperties"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-  };
   "/field_mappings/_update_object": {
     /** Update schema mappings */
     put: operations["updateObjectFieldMappings"];
@@ -439,18 +429,6 @@ export interface components {
       type: "mongodb";
       config: components["schemas"]["mongodb_config_safe"];
     }]>;
-    property: {
-      /**
-       * @description The machine name of the property as it appears in the third-party Provider. 
-       * @example FirstName
-       */
-      id: string;
-      /**
-       * @description The human-readable name of the property as provided by the third-party Provider. 
-       * @example First Name
-       */
-      label: string;
-    };
     s3_config_safe: {
       /** @example us-west-2 */
       region: string;
@@ -642,18 +620,12 @@ export interface components {
           /** @example 777ea826-5776-4347-9ece-47bbb17ccdd4 */
           schema_id?: string;
         })[];
-      custom?: ({
-          /** @example BattleCard */
-          name: string;
-          /** @example f234d5ed-fa8c-487c-b495-5acd730436a3 */
-          schema_id?: string;
-        })[];
     };
     object_field_mappings: {
       /** @example contact */
       object_name: string;
       /** @enum {string} */
-      object_type: "common" | "standard" | "custom";
+      object_type: "common" | "standard";
       /** @example true */
       allow_additional_field_mappings: boolean;
       /** @example 51797e8d-f081-496d-99ec-5e41b467df4b */
@@ -677,7 +649,7 @@ export interface components {
       /** @example contact */
       name: string;
       /** @enum {string} */
-      type: "common" | "standard" | "custom";
+      type: "common" | "standard";
       field_mappings: (components["schemas"]["object_field_mapping"])[];
     };
     object_field_mapping: {
@@ -890,7 +862,7 @@ export interface components {
        * @example standard 
        * @enum {string}
        */
-      object_type: "standard" | "custom";
+      object_type: "common" | "standard";
       /**
        * @description The Provider's object name (case sensitive) 
        * @example contact
@@ -959,7 +931,7 @@ export interface components {
        * @example standard 
        * @enum {string}
        */
-      object_type: "common" | "standard" | "custom";
+      object_type: "common" | "standard";
       /** @example contact */
       object: string;
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
@@ -975,7 +947,7 @@ export interface components {
     }]>;
     sync_run: OneOf<[{
       /** @enum {string} */
-      object_type: "common" | "standard" | "custom";
+      object_type: "common" | "standard";
       object: string;
       error_message: string | null;
       /** @example 2023-02-22T19:55:17.559Z */
@@ -1182,12 +1154,6 @@ export interface components {
       provider_id: string;
       config: components["schemas"]["sync_config_data"];
     };
-    list_properties: {
-      /** @enum {string} */
-      type: "common" | "standard" | "custom";
-      /** @example object_name */
-      name: string;
-    };
     "webhook-payload": OneOf<[{
       /** @enum {unknown} */
       type: "SYNC_SUCCESS" | "SYNC_ERROR";
@@ -1206,7 +1172,7 @@ export interface components {
         /** @example 100 */
         num_records_synced: number;
         /** @enum {string} */
-        object_type: "common" | "standard" | "custom";
+        object_type: "common" | "standard";
         /** @example contact */
         object: string;
         error_message?: string;
@@ -1448,29 +1414,6 @@ export interface operations {
       200: {
         content: {
           "application/json": (components["schemas"]["object_field_mappings"])[];
-        };
-      };
-    };
-  };
-  /** List properties */
-  listProperties: {
-    parameters: {
-      query: {
-        type: "common" | "standard" | "custom";
-        name: string;
-      };
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    responses: {
-      /** @description List of properties */
-      200: {
-        content: {
-          "application/json": {
-            properties: (components["schemas"]["property"])[];
-          };
         };
       };
     };
@@ -2037,7 +1980,7 @@ export interface operations {
         /** @description The provider name */
         provider_name?: string;
         /** @description The object type to filter by */
-        object_type?: "common" | "standard" | "custom";
+        object_type?: "common" | "standard";
         /** @description The object to filter by */
         object?: string;
         /** @description The entity id to filter by */
@@ -2074,7 +2017,7 @@ export interface operations {
            * @example standard 
            * @enum {string}
            */
-          object_type: "common" | "standard" | "custom";
+          object_type: "common" | "standard";
           /**
            * @description The Provider object to filter by (case sensitive) 
            * @example Contact
@@ -2126,7 +2069,7 @@ export interface operations {
            * @example standard 
            * @enum {string}
            */
-          object_type: "common" | "standard" | "custom";
+          object_type: "common" | "standard";
           /**
            * @description The object to filter by 
            * @example contact
@@ -2165,7 +2108,7 @@ export interface operations {
            * @example standard 
            * @enum {string}
            */
-          object_type: "standard" | "custom";
+          object_type: "standard";
           /**
            * @description The Provider object to filter by (case sensitive) 
            * @example contact
@@ -2214,7 +2157,7 @@ export interface operations {
         customer_id?: string;
         /** @description The provider name */
         provider_name?: string;
-        object_type?: "common" | "standard" | "custom";
+        object_type?: "common" | "standard";
         /** @description The object to filter by */
         object?: string;
         /** @description The entity id to filter by */
@@ -2455,7 +2398,7 @@ export interface operations {
           /** @enum {string} */
           type: "object";
           /** @enum {string} */
-          object_type: "common" | "standard" | "custom";
+          object_type: "common" | "standard";
           /** @example contact */
           object: string;
         }, {

@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { PaginatedResult } from '@supaglue/types/common';
-import type { ObjectType, Sync, SyncDTO, SyncFilter } from '@supaglue/types/sync';
+import type { Sync, SyncDTO, SyncFilter } from '@supaglue/types/sync';
 import type { ConnectionService } from '.';
 import { NotFoundError } from '../errors';
 import { getCustomerIdPk } from '../lib';
@@ -57,7 +57,7 @@ export class SyncService {
 
   public async findByConnectionIdAndObjectTypeAndObject(
     connectionId: string,
-    objectType: ObjectType,
+    objectType: 'common' | 'standard',
     object: string
   ): Promise<Sync | undefined> {
     const model = await this.#prisma.sync.findUnique({
@@ -78,7 +78,7 @@ export class SyncService {
 
   public async getByConnectionIdAndObjectTypeAndObject(
     connectionId: string,
-    objectType: ObjectType,
+    objectType: 'common' | 'standard',
     object: string
   ): Promise<Sync> {
     const sync = await this.findByConnectionIdAndObjectTypeAndObject(connectionId, objectType, object);

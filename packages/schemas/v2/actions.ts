@@ -48,3 +48,15 @@ export type UpdateStandardObjectRecordRequest =
   operations['updateStandardObjectRecord']['requestBody']['content']['application/json'];
 export type UpdateStandardObjectRecordResponse =
   operations['updateStandardObjectRecord']['responses'][keyof operations['updateStandardObjectRecord']['responses']]['content']['application/json'];
+
+export type CreateAssociationPathParams = never;
+export type CreateAssociationRequestQueryParams = never;
+export type CreateAssociationRequest = operations['createAssociation']['requestBody']['content']['application/json'];
+export type CreateAssociationResponse =
+  operations['createAssociation']['responses'][keyof operations['createAssociation']['responses']]['content']['application/json'];
+
+export type GetAssociationsPathParams = never;
+export type GetAssociationsQueryParams = paths['/associations']['get']['parameters']['query'];
+export type GetAssociationsRequest = never;
+export type GetAssociationsResponse =
+  operations['getAssociations']['responses'][keyof operations['getAssociations']['responses']]['content']['application/json'];

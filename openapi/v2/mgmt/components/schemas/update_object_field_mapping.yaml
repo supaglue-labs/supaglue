@@ -8,7 +8,6 @@ properties:
     enum:
       - common
       - standard
-      - custom
   field_mappings:
     type: array
     items:

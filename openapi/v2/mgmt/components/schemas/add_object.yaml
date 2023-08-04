@@ -8,7 +8,6 @@
       enum:
         - common
         - standard
-        - custom
     enable_sync:
       type: boolean
     schema_id:

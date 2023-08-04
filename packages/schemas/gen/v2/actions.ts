@@ -63,6 +63,21 @@ export interface paths {
       };
     };
   };
+  "/associations": {
+    /**
+     * List associations 
+     * @description Get a list of associations
+     */
+    get: operations["getAssociations"];
+    /** Create association */
+    put: operations["createAssociation"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/passthrough": {
     /**
      * Send passthrough request 
@@ -98,7 +113,7 @@ export interface components {
        */
       data: {
         /** @description Any data that is not part of the Entity itself but is mapped by the customer when `allow_additional_field_mappings` is `true` on the Entity. */
-        additional_properties?: {
+        additional_fields?: {
           [key: string]: unknown;
         };
         [key: string]: unknown;
@@ -116,7 +131,27 @@ export interface components {
       /** @description The data, in key:value format */
       data: {
         /** @description Any data that is not part of the Schema itself but is mapped by the customer when `allow_additional_field_mappings` is `true` on the Schema. */
-        additional_properties?: {
+        additional_fields?: {
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      };
+    };
+    /**
+     * @example {
+     *   "id": "001Fn00023f8oYYIA0",
+     *   "custom_object_id": "Account",
+     *   "data": {
+     *     "Name": "Acme Corp",
+     *     "Description": "We create the best embedded integration platforms."
+     *   }
+     * }
+     */
+    custom_object_record: {
+      id: string;
+      custom_object_id: string;
+      data: {
+        additional_fields?: {
           [key: string]: unknown;
         };
         [key: string]: unknown;
@@ -132,12 +167,33 @@ export interface components {
       entity: components["schemas"]["simple_entity"];
     };
     /** @description The data (in key:value format) that will be used to create or update an Standard Object Record. */
-    create_update_object_record: {
+    create_update_standard_object_record: {
       [key: string]: unknown;
     };
-    created_object_record: {
+    created_standard_object_record: {
       id: string;
       standard_object_name: string;
+    };
+    create_update_custom_object_record: {
+      [key: string]: unknown;
+    };
+    created_custom_object_record: {
+      id: string;
+      custom_object_id: string;
+    };
+    create_update_association: {
+      association_type_id: string;
+      source_record: components["schemas"]["simple_entity_record"];
+      target_record: components["schemas"]["simple_entity_record"];
+    };
+    association: {
+      source_record: components["schemas"]["simple_entity_record"];
+      target_record: components["schemas"]["simple_entity_record"];
+      association_type_id: string;
+    };
+    simple_entity_record: {
+      id: string;
+      entity_id: string;
     };
     errors: ({
         /** @example name is a required field on model. */
@@ -297,7 +353,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          data: components["schemas"]["create_update_object_record"];
+          data: components["schemas"]["create_update_standard_object_record"];
         };
       };
     };
@@ -307,7 +363,7 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            record?: components["schemas"]["created_object_record"];
+            record?: components["schemas"]["created_standard_object_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -350,7 +406,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          data: components["schemas"]["create_update_object_record"];
+          data: components["schemas"]["create_update_standard_object_record"];
         };
       };
     };
@@ -360,6 +416,59 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * List associations 
+   * @description Get a list of associations
+   */
+  getAssociations: {
+    parameters: {
+      query: {
+        source_record_id: string;
+        source_entity_id: string;
+        target_entity_id: string;
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Associations */
+      200: {
+        content: {
+          "application/json": {
+            results?: (components["schemas"]["association"])[];
+          };
+        };
+      };
+    };
+  };
+  /** Create association */
+  createAssociation: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_association"];
+      };
+    };
+    responses: {
+      /** @description Association created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            association?: components["schemas"]["association"];
             warnings?: components["schemas"]["warnings"];
           };
         };

@@ -1,5 +1,4 @@
 import type { PaginationInternalParams } from '.';
-import type { ObjectType } from './sync';
 
 export type SyncRunStatus = 'SUCCESS' | 'FAILURE' | 'IN_PROGRESS';
 
@@ -21,7 +20,7 @@ export type SyncRun = {
 
 export type ObjectSyncRunWithObject = SyncRun & {
   type: 'object';
-  objectType: ObjectType;
+  objectType: 'common' | 'standard';
   object: string;
 };
 
@@ -47,7 +46,7 @@ export type SyncRunFilter = {
   paginationParams: PaginationInternalParams;
 } & (
   | {
-      objectType: ObjectType;
+      objectType: 'common' | 'standard';
       object: string;
     }
   | {

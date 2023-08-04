@@ -359,75 +359,6 @@
         }
       ]
     },
-    "/properties": {
-      "get": {
-        "operationId": "listProperties",
-        "summary": "List properties",
-        "tags": [
-          "Properties"
-        ],
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "type",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "common",
-                "standard",
-                "custom"
-              ]
-            }
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "description": "The name of the object for which you want to list properties."
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of properties",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "properties": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/property"
-                      }
-                    }
-                  },
-                  "required": [
-                    "properties"
-                  ]
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
     "/field_mappings/_update_object": {
       "put": {
         "operationId": "updateObjectFieldMappings",
@@ -1522,8 +1453,7 @@
               "type": "string",
               "enum": [
                 "common",
-                "standard",
-                "custom"
+                "standard"
               ],
               "example": "standard"
             },
@@ -1616,8 +1546,7 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard",
-                          "custom"
+                          "standard"
                         ],
                         "example": "standard",
                         "description": "The object type to filter by"
@@ -1723,8 +1652,7 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard",
-                          "custom"
+                          "standard"
                         ],
                         "example": "standard",
                         "description": "The object type to filter by"
@@ -1817,8 +1745,7 @@
                       "object_type": {
                         "type": "string",
                         "enum": [
-                          "standard",
-                          "custom"
+                          "standard"
                         ],
                         "description": "The object type to filter by",
                         "example": "standard"
@@ -1949,8 +1876,7 @@
               "type": "string",
               "enum": [
                 "common",
-                "standard",
-                "custom"
+                "standard"
               ],
               "example": "standard"
             }
@@ -2020,10 +1946,6 @@
     {
       "name": "Providers",
       "description": "A `Provider` is a third-party SaaS tool we can connect to (e.g. Salesforce)."
-    },
-    {
-      "name": "Properties",
-      "description": "A `Property` is a field in a Provider object, e.g., `FirstName` on a Salesforce `Contact` object."
     },
     {
       "name": "Schemas",
@@ -2327,25 +2249,6 @@
               "config"
             ]
           }
-        ]
-      },
-      "property": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The machine name of the property as it appears in the third-party Provider.",
-            "example": "FirstName"
-          },
-          "label": {
-            "type": "string",
-            "description": "The human-readable name of the property as provided by the third-party Provider.",
-            "example": "First Name"
-          }
-        },
-        "required": [
-          "id",
-          "label"
         ]
       },
       "s3_config_safe": {
@@ -2859,25 +2762,6 @@
                 "name"
               ]
             }
-          },
-          "custom": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "example": "BattleCard"
-                },
-                "schema_id": {
-                  "type": "string",
-                  "example": "f234d5ed-fa8c-487c-b495-5acd730436a3"
-                }
-              },
-              "required": [
-                "name"
-              ]
-            }
           }
         }
       },
@@ -2892,8 +2776,7 @@
             "type": "string",
             "enum": [
               "common",
-              "standard",
-              "custom"
+              "standard"
             ]
           },
           "allow_additional_field_mappings": {
@@ -2956,8 +2839,7 @@
             "type": "string",
             "enum": [
               "common",
-              "standard",
-              "custom"
+              "standard"
             ]
           },
           "field_mappings": {
@@ -3471,8 +3353,8 @@
               "object_type": {
                 "type": "string",
                 "enum": [
-                  "standard",
-                  "custom"
+                  "common",
+                  "standard"
                 ],
                 "example": "standard"
               },
@@ -3628,8 +3510,7 @@
                 "type": "string",
                 "enum": [
                   "common",
-                  "standard",
-                  "custom"
+                  "standard"
                 ],
                 "example": "standard"
               },
@@ -3682,8 +3563,7 @@
                 "type": "string",
                 "enum": [
                   "common",
-                  "standard",
-                  "custom"
+                  "standard"
                 ]
               },
               "object": {
@@ -4335,27 +4215,6 @@
           "config"
         ]
       },
-      "list_properties": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "common",
-              "standard",
-              "custom"
-            ]
-          },
-          "name": {
-            "type": "string",
-            "example": "object_name"
-          }
-        },
-        "required": [
-          "type",
-          "name"
-        ]
-      },
       "webhook-payload": {
         "oneOf": [
           {
@@ -4399,8 +4258,7 @@
                     "type": "string",
                     "enum": [
                       "common",
-                      "standard",
-                      "custom"
+                      "standard"
                     ]
                   },
                   "object": {
@@ -5035,8 +4893,7 @@
                             "type": "string",
                             "enum": [
                               "common",
-                              "standard",
-                              "custom"
+                              "standard"
                             ]
                           },
                           "object": {
@@ -5474,8 +5331,7 @@
                             "type": "string",
                             "enum": [
                               "common",
-                              "standard",
-                              "custom"
+                              "standard"
                             ]
                           },
                           "object": {

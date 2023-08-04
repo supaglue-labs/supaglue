@@ -8,7 +8,6 @@ properties:
     enum:
       - common
       - standard
-      - custom
   allow_additional_field_mappings:
     type: boolean
     example: true
