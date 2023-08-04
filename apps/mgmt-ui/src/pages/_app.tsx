@@ -30,7 +30,7 @@ if (typeof window !== 'undefined') {
   });
 }
 
-const publicPages = ['/sign-in/[[...index]]', '/sign-up/[[...index]]'];
+const publicPages = ['/sign-in/[[...index]]', '/sign-up/[[...index]]', '/links/[linkId]'];
 
 // Note: from material-ui template. Eventually consolidate between styled props, sx, and tailwindcss
 export let theme = createTheme({
@@ -194,7 +194,7 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
   }, []);
 
   if (!IS_CLOUD) {
-    if (!signedIn) {
+    if (!signedIn && !isPublicPage) {
       return null;
     }
     return (
