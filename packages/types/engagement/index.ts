@@ -1,3 +1,4 @@
+import type { RemoteAccountTypes } from './account';
 import type { RemoteContactTypes } from './contact';
 import type { RemoteMailboxTypes } from './mailbox';
 import type { RemoteSequenceTypes } from './sequence';
@@ -9,7 +10,14 @@ export const SUPPORTED_ENGAGEMENT_PROVIDERS = ['outreach', 'apollo', 'salesloft'
 export type EngagementProviderName = (typeof SUPPORTED_ENGAGEMENT_PROVIDERS)[number];
 export type EngagementProviderCategory = 'engagement';
 
-export const ENGAGEMENT_COMMON_OBJECT_TYPES = ['contact', 'user', 'sequence', 'mailbox', 'sequence_state'] as const;
+export const ENGAGEMENT_COMMON_OBJECT_TYPES = [
+  'contact',
+  'user',
+  'sequence',
+  'mailbox',
+  'sequence_state',
+  'account',
+] as const;
 export type EngagementCommonObjectType = (typeof ENGAGEMENT_COMMON_OBJECT_TYPES)[number];
 
 export type EngagementCommonObjectTypeMap<T extends EngagementCommonObjectType> = {
@@ -18,10 +26,12 @@ export type EngagementCommonObjectTypeMap<T extends EngagementCommonObjectType> 
   sequence: RemoteSequenceTypes;
   mailbox: RemoteMailboxTypes;
   sequence_state: RemoteSequenceStateTypes;
+  account: RemoteAccountTypes;
 }[T];
 
 export type CustomFields = Record<string, any>;
 
+export * from './account';
 export * from './base';
 export * from './common';
 export * from './contact';
