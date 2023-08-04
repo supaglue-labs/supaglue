@@ -236,7 +236,7 @@ model MagicLink {
   updatedAt     DateTime    @updatedAt @map("updated_at")
   expiresAt     DateTime    @map("expires_at")
   url           String
-  returnUrl     String      @map("return_url")
+  returnUrl     String?     @map("return_url")
   // new | consumed | failed
   status        String
 

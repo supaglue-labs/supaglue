@@ -9,7 +9,7 @@ CREATE TABLE "magic_links" (
     "updated_at" TIMESTAMP(3) NOT NULL,
     "expires_at" TIMESTAMP(3) NOT NULL,
     "url" TEXT NOT NULL,
-    "return_url" TEXT NOT NULL,
+    "return_url" TEXT,
     "status" TEXT NOT NULL,
 
     CONSTRAINT "magic_links_pkey" PRIMARY KEY ("id")
