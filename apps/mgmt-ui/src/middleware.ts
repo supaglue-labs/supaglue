@@ -4,9 +4,7 @@ import { NextResponse } from 'next/server';
 import { IS_CLOUD } from './pages/api';
 
 // Set the paths that don't require the user to be signed in
-const cloudPublicPaths = ['/sign-in*', '/sign-up*'];
-
-const cloudCreateOrgPath = '/create-organization*';
+const cloudPublicPaths = ['/sign-in*', '/sign-up*', '/links*'];
 
 // Paths that are only accessible if `IS_CLOUD` is true
 const cloudOnlyPaths = ['/sign-in*/', '/sign-up*', '/create-organization*'];
@@ -14,8 +12,6 @@ const cloudOnlyPaths = ['/sign-in*/', '/sign-up*', '/create-organization*'];
 const isCloudPublicPath = (path: string) => {
   return cloudPublicPaths.find((x) => path.match(new RegExp(`^${x}$`.replace('*$', '($|/)'))));
 };
-
-const isCloudCreateOrgPath = (path: string) => path.match(new RegExp(`^${cloudCreateOrgPath}$`.replace('*$', '($|/)')));
 
 const isCloudOnlyPath = (path: string) => {
   return cloudOnlyPaths.find((x) => path.match(new RegExp(`^${x}$`.replace('*$', '($|/)'))));
