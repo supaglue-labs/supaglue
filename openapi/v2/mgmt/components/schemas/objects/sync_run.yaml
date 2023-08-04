@@ -7,7 +7,6 @@ oneOf:
         enum:
           - common
           - standard
-          - custom
       object:
         type: string
       error_message:

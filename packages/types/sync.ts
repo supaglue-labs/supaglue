@@ -85,7 +85,7 @@ export type SyncFilter = {
   paginationParams: PaginationInternalParams;
 } & (
   | {
-      objectType: ObjectType;
+      objectType: 'common' | 'standard';
       object: string;
     }
   | {

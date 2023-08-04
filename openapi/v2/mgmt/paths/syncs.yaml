@@ -39,7 +39,6 @@ get:
         enum:
           - common
           - standard
-          - custom
         example: standard
       description: The object type to filter by
     - name: object

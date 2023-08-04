@@ -9,7 +9,6 @@ import type {
 import type { CRMProviderName } from './crm';
 import type { ProviderEntityMapping } from './entity_mapping';
 import type { FieldMapping } from './field_mapping_config';
-import type { ObjectType } from './sync';
 
 type BaseProvider = {
   id: string;
@@ -108,7 +107,7 @@ export type ProviderConfigMapperArgs = {
 
 export type AddObjectToProviderParams = {
   name: string;
-  type: ObjectType;
+  type: 'common' | 'standard';
   enableSync?: boolean;
   schemaId?: string;
   schema?: Omit<SchemaCreateParams, 'applicationId'>;

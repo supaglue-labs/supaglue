@@ -12,7 +12,6 @@ import type {
   SyncConfig,
 } from '@supaglue/types';
 import type { ProviderEntityMapping } from '@supaglue/types/entity_mapping';
-import type { ObjectType } from '@supaglue/types/sync';
 import { BadRequestError, NotFoundError } from '../errors';
 import { fromProviderModel, fromSyncConfigModel, toProviderModel, toSchemaModel, toSyncConfigModel } from '../mappers';
 
@@ -215,7 +214,7 @@ export class ProviderService {
 const addObjectToProviderObjects = <T extends ProviderCategory>(
   objects: ProviderObjects<T>,
   name: string,
-  type: ObjectType,
+  type: 'common' | 'standard',
   schemaId?: string
 ): ProviderObjects<T> => {
   function helper(): ProviderObjects<T> {
@@ -243,7 +242,7 @@ const addObjectToProviderObjects = <T extends ProviderCategory>(
   return ret;
 };
 
-const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: ObjectType): SyncConfig => {
+const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: 'common' | 'standard'): SyncConfig => {
   switch (type) {
     case 'common':
       if (syncConfig.config.commonObjects?.find((object) => object.object === name)) {
