@@ -456,7 +456,6 @@ function EntityFieldMappings({
                 <TextField
                   {...params}
                   label={`${providerName} field`}
-                  /* TODO: render friendly name for custom objects instead of the id */
                   helperText={object ? `Available fields for ${object?.name} in ${providerName}.` : undefined}
                 />
               )}
