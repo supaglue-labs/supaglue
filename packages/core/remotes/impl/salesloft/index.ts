@@ -6,9 +6,10 @@ import type {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type {
+  Account,
+  AccountCreateParams,
   Contact,
   ContactCreateParams,
-  ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
   Sequence,
@@ -24,10 +25,12 @@ import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
 import {
+  fromSalesloftAccountToAccount,
   fromSalesloftCadenceMembershipToSequenceState,
   fromSalesloftCadenceToSequence,
   fromSalesloftPersonToContact,
   fromSalesloftUserToUser,
+  toSalesloftAccountCreateParams,
   toSalesloftContactCreateParams,
   toSalesloftSequenceStateCreateParams,
 } from './mappers';
@@ -136,6 +139,8 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
         return await this.#getRecord<Contact>(id, '/v2/people', fromSalesloftPersonToContact);
       case 'user':
         return await this.#getRecord<User>(id, '/v2/users', fromSalesloftUserToUser);
+      case 'account':
+        return await this.#getRecord<Account>(id, '/v2/accounts', fromSalesloftAccountToAccount);
       case 'sequence': {
         const stepCount = await this.#getCadenceStepCount(id);
         return await this.#getRecord<Sequence>(id, '/v2/cadences', (data) =>
@@ -179,44 +184,6 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     };
   }
 
-  private async listContacts(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/people`, updatedAfter);
-    return await paginator([
-      {
-        pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(
-            response.data.map((result) => ({
-              record: fromSalesloftPersonToContact(result),
-              emittedAt,
-            }))
-          );
-        },
-        getNextCursorFromPage: (response) => response.metadata.paging?.next_page?.toString(),
-      },
-    ]);
-  }
-
-  private async listUsers(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/users`, updatedAfter);
-    return await paginator([
-      {
-        pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(
-            response.data.map((result) => ({
-              record: fromSalesloftUserToUser(result),
-              emittedAt,
-            }))
-          );
-        },
-        getNextCursorFromPage: (response) => response.metadata.paging?.next_page?.toString(),
-      },
-    ]);
-  }
-
   async #getCadenceStepCount(cadenceId: string): Promise<number> {
     const response = await axios.get<SalesloftPaginatedRecords>(
       `${this.#baseURL}/v2/steps?cadence_id=${cadenceId}&include_paging_counts=1`,
@@ -256,28 +223,19 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
 
   private async listSequences(updatedAfter?: Date): Promise<Readable> {
     const stepCounts = await this.#getCadenceStepCounts();
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/cadences`, updatedAfter);
-    return await paginator([
-      {
-        pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(
-            response.data.map((result) => {
-              return {
-                record: fromSalesloftCadenceToSequence(result, stepCounts[result.id?.toString()] ?? 0),
-                emittedAt,
-              };
-            })
-          );
-        },
-        getNextCursorFromPage: (response) => response.metadata.paging?.next_page?.toString(),
-      },
-    ]);
+    return await this.#listRecords(
+      '/v2/cadences',
+      (data) => fromSalesloftCadenceToSequence(data, stepCounts[data.id?.toString()] ?? 0),
+      updatedAfter
+    );
   }
 
-  private async listSequenceStates(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/cadence_memberships`, updatedAfter);
+  async #listRecords<T>(
+    path: string,
+    mapper: (data: Record<string, any>) => T,
+    updatedAfter?: Date
+  ): Promise<Readable> {
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}${path}`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -285,7 +243,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              record: fromSalesloftCadenceMembershipToSequenceState(result),
+              record: mapper(result),
               emittedAt,
             }))
           );
@@ -295,47 +253,36 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  private async listMailboxes(updatedAfter?: Date): Promise<Readable> {
-    return Readable.from([]);
-  }
-
   public override async listCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.listContacts(updatedAfter);
+        return await this.#listRecords(`/v2/people`, fromSalesloftPersonToContact, updatedAfter);
       case 'user':
-        return await this.listUsers(updatedAfter);
+        return await this.#listRecords(`/v2/users`, fromSalesloftUserToUser, updatedAfter);
+      case 'account':
+        return await this.#listRecords(`/v2/accounts`, fromSalesloftAccountToAccount, updatedAfter);
       case 'sequence':
         return await this.listSequences(updatedAfter);
       case 'mailbox':
-        return await this.listMailboxes(updatedAfter);
+        return Readable.from([]);
       case 'sequence_state':
-        return await this.listSequenceStates(updatedAfter);
+        return await this.#listRecords(
+          '/v2/cadence_memberships',
+          fromSalesloftCadenceMembershipToSequenceState,
+          updatedAfter
+        );
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported for salesloft`);
     }
   }
 
-  async createContact(params: ContactCreateParams): Promise<string> {
+  async #createRecord(path: string, salesloftParams: Record<string, unknown>): Promise<string> {
     await this.maybeRefreshAccessToken();
-    const response = await axios.post<{ data: { id: number } }>(
-      `${this.#baseURL}/v2/people`,
-      toSalesloftContactCreateParams(params),
-      {
-        headers: this.#headers,
-      }
-    );
-    return response.data.data.id.toString();
-  }
-
-  async createSequenceState(params: SequenceStateCreateParams): Promise<string> {
-    await this.maybeRefreshAccessToken();
-    const response = await axios.post<{ data: { id: number } }>(`${this.#baseURL}/v2/cadence_memberships`, undefined, {
+    const response = await axios.post<{ data: { id: number } }>(`${this.#baseURL}${path}`, salesloftParams, {
       headers: this.#headers,
-      params: toSalesloftSequenceStateCreateParams(params),
     });
     return response.data.data.id.toString();
   }
@@ -346,9 +293,14 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   ): Promise<string> {
     switch (commonObjectType) {
       case 'sequence_state':
-        return await this.createSequenceState(params as SequenceStateCreateParams);
+        return await this.#createRecord(
+          '/v2/cadence_memberships',
+          toSalesloftSequenceStateCreateParams(params as SequenceStateCreateParams)
+        );
+      case 'account':
+        return await this.#createRecord('/v2/accounts', toSalesloftAccountCreateParams(params as AccountCreateParams));
       case 'contact':
-        return await this.createContact(params as ContactCreateParams);
+        return await this.#createRecord('/v2/people', toSalesloftContactCreateParams(params as ContactCreateParams));
       case 'sequence':
       case 'mailbox':
       case 'user':
@@ -363,22 +315,28 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     params: EngagementCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
     switch (commonObjectType) {
+      case 'account':
+        return await this.#updateRecord(
+          params.id,
+          '/v2/accounts',
+          toSalesloftAccountCreateParams(params as AccountCreateParams)
+        );
       case 'contact':
-        return await this.updateContact(params as ContactUpdateParams);
+        return await this.#updateRecord(
+          params.id,
+          '/v2/people',
+          toSalesloftContactCreateParams(params as ContactCreateParams)
+        );
       default:
         throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
   }
 
-  async updateContact(params: ContactUpdateParams): Promise<string> {
+  async #updateRecord(id: string, path: string, salesloftParams: Record<string, unknown>): Promise<string> {
     await this.maybeRefreshAccessToken();
-    const response = await axios.put<{ data: { id: number } }>(
-      `${this.#baseURL}/v2/people/${params.id}`,
-      toSalesloftContactCreateParams(params),
-      {
-        headers: this.#headers,
-      }
-    );
+    const response = await axios.put<{ data: { id: number } }>(`${this.#baseURL}${path}/${id}`, salesloftParams, {
+      headers: this.#headers,
+    });
     return response.data.data.id.toString();
   }
 }

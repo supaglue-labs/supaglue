@@ -16,31 +16,9 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import type { SGObject } from '@supaglue/types/crm/association_type';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
-import type { CustomObject } from '@supaglue/types/crm/custom_object';
+import type { CustomObject } from '@supaglue/types/custom_object';
 import type { CustomObject as SalesforceCustomObject } from 'jsforce/lib/api/metadata';
-
-export const fromObjectToSalesforceObject = (object: SGObject): string => {
-  switch (object.originType) {
-    case 'standard':
-    case 'custom':
-      return object.id;
-    case 'common':
-      switch (object.id) {
-        case 'account':
-          return 'Account';
-        case 'contact':
-          return 'Contact';
-        case 'opportunity':
-          return 'Opportunity';
-        case 'lead':
-          return 'Lead';
-        default:
-          throw new Error(`Unknown common object: ${object.id}`);
-      }
-  }
-};
 
 export function getMapperForCommonObjectType<T extends CRMCommonObjectType>(
   commonObjectType: T

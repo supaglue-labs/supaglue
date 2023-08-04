@@ -12,7 +12,6 @@ import type {
   MappedListedObjectRecord,
   PropertiesWithAdditionalFields,
 } from '@supaglue/types/object_record';
-import type { ObjectType } from '@supaglue/types/sync';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import type { Readable } from 'stream';
 import { pipeline, Transform } from 'stream';
@@ -22,7 +21,7 @@ import type { ApplicationService, SyncService } from '../services';
 export type SyncObjectRecordsArgs = {
   syncId: string;
   connectionId: string;
-  objectType: ObjectType;
+  objectType: 'common' | 'standard';
   object: string;
   updatedAfterMs?: number;
 };
@@ -30,7 +29,7 @@ export type SyncObjectRecordsArgs = {
 export type SyncObjectRecordsResult = {
   syncId: string;
   connectionId: string;
-  objectType: ObjectType;
+  objectType: 'common' | 'standard';
   object: string;
   maxLastModifiedAtMs: number | null;
   numRecordsSynced: number;
@@ -117,11 +116,6 @@ export function createSyncObjectRecords(
             );
           }
           break;
-        case 'custom': {
-          const client = await remoteService.getRemoteClient(connectionId);
-          const stream = await client.listCustomObjectRecords(object, updatedAfter, heartbeat);
-          return await writer.writeObjectRecords(connection, object, toHeartbeatingReadable(stream), heartbeat);
-        }
       }
     }
 

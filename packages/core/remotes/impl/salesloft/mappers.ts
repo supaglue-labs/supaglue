@@ -1,4 +1,6 @@
 import type {
+  Account,
+  AccountCreateParams,
   Contact,
   ContactCreateParams,
   EmailAddress,
@@ -9,6 +11,20 @@ import type {
   User,
 } from '@supaglue/types/engagement';
 import { camelcaseKeys } from '@supaglue/utils';
+
+export const fromSalesloftAccountToAccount = (record: Record<string, any>): Account => {
+  return {
+    id: record.id.toString(),
+    name: record.name ?? null,
+    domain: record.domain ?? null,
+    ownerId: record.owner?.id?.toString() ?? null,
+    createdAt: new Date(record.created_at),
+    updatedAt: new Date(record.updated_at),
+    lastModifiedAt: new Date(record.updated_at),
+    isDeleted: false,
+    rawData: record,
+  };
+};
 
 export const fromSalesloftPersonToContact = (record: Record<string, any>): Contact => {
   return {
@@ -129,6 +145,14 @@ export const fromSalesloftCadenceMembershipToSequenceState = (record: Record<str
     lastModifiedAt: new Date(record.updated_at),
     isDeleted: false,
     rawData: record,
+  };
+};
+
+export const toSalesloftAccountCreateParams = (account: AccountCreateParams): Record<string, unknown> => {
+  return {
+    name: account.name,
+    domain: account.domain,
+    owner_id: account.ownerId ? parseInt(account.ownerId) : undefined,
   };
 };
 

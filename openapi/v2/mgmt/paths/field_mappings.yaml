@@ -1,8 +1,9 @@
+# TODO: rename endpoints and files from field mappings to schema mappings
 get:
   operationId: listFieldMappings
-  summary: List field mappings
+  summary: List schema mappings
   tags:
-    - Field Mappings
+    - SchemaMappings
   security:
     - x-api-key: []
   parameters: []
@@ -14,7 +15,7 @@ get:
           schema:
             type: array
             items:
-              $ref: ../components/schemas/objects/object_field_mapping_info.yaml
+              $ref: ../components/schemas/objects/object_field_mappings.yaml
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

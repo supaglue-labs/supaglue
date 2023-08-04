@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toSnakecaseKeysStandardObjectRecord } from '@supaglue/core/mappers/object_record';
 import type {
   CreateStandardObjectRecordPathParams,
   CreateStandardObjectRecordRequest,
@@ -49,7 +50,7 @@ export default function init(app: Router): void {
         req.params.object_name,
         req.params.record_id
       );
-      return res.status(200).send(snakecaseKeys(record));
+      return res.status(200).send(toSnakecaseKeysStandardObjectRecord(record));
     }
   );
 

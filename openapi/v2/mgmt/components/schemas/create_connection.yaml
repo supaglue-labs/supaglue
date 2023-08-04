@@ -1,40 +1,48 @@
 oneOf:
   - type: object
+    title: API key
     properties:
       provider_name:
         type: string
         # Creating api key connection is only supported for apollo
         enum:
           - apollo
+        example: apollo
       category:
         type: string
         enum:
           - engagement
+        example: engagement
       api_key:
         type: string
         description: API key for the connected customer.
-        example: 123456
+        example: e0c5545d-77b8-458d-b4bf-fc701a9cecac
     required:
       - provider_name
       - category
       - api_key
   - type: object
+    title: Access key
     properties:
       provider_name:
         type: string
         # Creating access key secret connection is only supported for gong
         enum:
           - gong
+        example: gong
       category:
         type: string
         enum:
           - no_category
+        example: no_category
       access_key:
         type: string
         description: Access key for the connected customer.
+        example: e0c5545d-77b8-458d-b4bf-fc701a9cecac
       access_key_secret:
         type: string
         description: Access key secret for the connected customer.
+        example: 258a80aa-2e9b-40b0-8d7a-28f858a856f3
     required:
       - provider_name
       - category

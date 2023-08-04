@@ -1,32 +1,34 @@
 oneOf:
   - type: object
-    title: s3
+    title: postgres
     properties:
       name:
         type: string
-        example: My Destination
+        example: My Postgres Destination
       type:
         type: string
         enum:
-          - s3
+          - postgres
+        example: postgres
       config:
-        $ref: ./objects/s3_config_unsafe.yaml
+        $ref: ./objects/postgres_config_unsafe.yaml
     required:
       - name
       - type
       - config
   - type: object
-    title: postgres
+    title: s3
     properties:
       name:
         type: string
-        example: My Destination
+        example: My S3 Destination
       type:
         type: string
         enum:
-          - postgres
+          - s3
+        example: s3
       config:
-        $ref: ./objects/postgres_config_unsafe.yaml
+        $ref: ./objects/s3_config_unsafe.yaml
     required:
       - name
       - type
@@ -36,11 +38,12 @@ oneOf:
     properties:
       name:
         type: string
-        example: My Destination
+        example: My BigQuery Destination
       type:
         type: string
         enum:
           - bigquery
+        example: bigquery
       config:
         $ref: ./objects/bigquery_config_unsafe.yaml
     required:
@@ -52,11 +55,12 @@ oneOf:
     properties:
       name:
         type: string
-        example: My Destination
+        example: My MongoDB Destination
       type:
         type: string
         enum:
           - mongodb
+        example: mongodb
       config:
         $ref: ./objects/mongodb_config_unsafe.yaml
     required:

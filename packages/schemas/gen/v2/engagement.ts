@@ -18,6 +18,31 @@ export interface paths {
       };
     };
   };
+  "/accounts": {
+    /** Create account */
+    post: operations["createAccount"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/accounts/{account_id}": {
+    /** Get account */
+    get: operations["getAccount"];
+    /** Update account */
+    patch: operations["updateAccount"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        account_id: string;
+      };
+    };
+  };
   "/contacts": {
     /** Create contact */
     post: operations["createContact"];
@@ -111,6 +136,45 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
+    account: {
+      /** @example 54312 */
+      id: string;
+      /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
+      owner_id: string | null;
+      /** @example My Company */
+      name: string | null;
+      /** @example mycompany.com */
+      domain: string | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      created_at: Date | null;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      updated_at: Date | null;
+      /** @example false */
+      is_deleted: boolean;
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
+      last_modified_at: Date;
+      raw_data?: {
+        [key: string]: unknown;
+      };
+    };
+    create_account: {
+      /** @example My Company */
+      name?: string | null;
+      /** @example mycompany.com */
+      domain?: string | null;
+      /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
+      owner_id?: string | null;
+      custom_fields?: components["schemas"]["custom_fields"];
+    };
     contact: {
       /** @example 54312 */
       id: string;
@@ -282,7 +346,7 @@ export interface components {
       name: string | null;
       tags: (string)[];
       num_steps: number;
-      metrics?: {
+      metrics: {
         [key: string]: unknown;
       };
       /**
@@ -492,6 +556,97 @@ export interface operations {
               })[] | {
               [key: string]: unknown;
             };
+          };
+        };
+      };
+    };
+  };
+  /** Create account */
+  createAccount: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        /**
+         * @example {
+         *   "record": {
+         *     "id": 1234,
+         *     "name": "My Company",
+         *     "domain": "mycompany.com",
+         *     "created_at": "2023-02-27T00:00:00Z"
+         *   }
+         * }
+         */
+        "application/json": {
+          record: components["schemas"]["create_account"];
+        };
+      };
+    };
+    responses: {
+      /** @description Account created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** Get account */
+  getAccount: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        account_id: string;
+      };
+    };
+    responses: {
+      /** @description Account */
+      200: {
+        content: {
+          "application/json": components["schemas"]["account"];
+        };
+      };
+    };
+  };
+  /** Update account */
+  updateAccount: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        account_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_account"];
+        };
+      };
+    };
+    responses: {
+      /** @description Account updated */
+      200: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            warnings?: components["schemas"]["warnings"];
           };
         };
       };

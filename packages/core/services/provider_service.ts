@@ -12,7 +12,6 @@ import type {
   SyncConfig,
 } from '@supaglue/types';
 import type { ProviderEntityMapping } from '@supaglue/types/entity_mapping';
-import type { ObjectType } from '@supaglue/types/sync';
 import { BadRequestError, NotFoundError } from '../errors';
 import { fromProviderModel, fromSyncConfigModel, toProviderModel, toSchemaModel, toSyncConfigModel } from '../mappers';
 
@@ -215,7 +214,7 @@ export class ProviderService {
 const addObjectToProviderObjects = <T extends ProviderCategory>(
   objects: ProviderObjects<T>,
   name: string,
-  type: ObjectType,
+  type: 'common' | 'standard',
   schemaId?: string
 ): ProviderObjects<T> => {
   function helper(): ProviderObjects<T> {
@@ -233,11 +232,6 @@ const addObjectToProviderObjects = <T extends ProviderCategory>(
           throw new BadRequestError(`Standard object with name: ${name} already exists in provider`);
         }
         return { ...objects, standard: [...(objects.standard ?? []), { name, schemaId }] } as ProviderObjects<T>;
-      case 'custom':
-        if (objects.custom?.find((object) => object.name === name)) {
-          throw new BadRequestError(`Custom object with name: ${name} already exists in provider`);
-        }
-        return { ...objects, custom: [...(objects.custom ?? []), { name, schemaId }] } as ProviderObjects<T>;
       default:
         throw new BadRequestError(`Invalid type: ${type}`);
     }
@@ -248,7 +242,7 @@ const addObjectToProviderObjects = <T extends ProviderCategory>(
   return ret;
 };
 
-const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: ObjectType): SyncConfig => {
+const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: 'common' | 'standard'): SyncConfig => {
   switch (type) {
     case 'common':
       if (syncConfig.config.commonObjects?.find((object) => object.object === name)) {
@@ -272,36 +266,12 @@ const upsertObjectToSyncConfig = (syncConfig: SyncConfig, name: string, type: Ob
           standardObjects: [...(syncConfig.config.standardObjects ?? []), { object: name }],
         },
       };
-    case 'custom':
-      if (syncConfig.config.customObjects?.find((object) => object.object === name)) {
-        return syncConfig;
-      }
-      return {
-        ...syncConfig,
-        config: {
-          ...syncConfig.config,
-          customObjects: [...(syncConfig.config.customObjects ?? []), { object: name }],
-        },
-      };
     default:
       throw new BadRequestError(`Invalid type: ${type}`);
   }
 };
 
-const upsertEntityToSyncConfig = (syncConfig: SyncConfig, entityId: string): SyncConfig => {
-  if (syncConfig.config.entities?.find((entity) => entity.entityId === entityId)) {
-    return syncConfig;
-  }
-  return {
-    ...syncConfig,
-    config: {
-      ...syncConfig.config,
-      entities: [...(syncConfig.config.entities ?? []), { entityId }],
-    },
-  };
-};
-
-function validateObjects({ common, standard, custom }: ProviderObjects<ProviderCategory>): void {
+function validateObjects({ common, standard }: ProviderObjects<ProviderCategory>): void {
   // 1. Disallow multiple objects for the same provider to be mapped to the same schema
   // 2. Disallow multiple mappings for objects to schema for the same object name
 
@@ -325,18 +295,6 @@ function validateObjects({ common, standard, custom }: ProviderObjects<ProviderC
 
     const standardObjectNames = standard.map((object) => object.name);
     if (standardObjectNames.length !== new Set(standardObjectNames).size) {
-      throw new BadRequestError('Multiple entries for mapping an object to a schema');
-    }
-  }
-
-  if (custom) {
-    const customSchemaIds = custom.map((object) => object.schemaId);
-    if (customSchemaIds.length !== new Set(customSchemaIds).size) {
-      throw new BadRequestError('Multiple custom objects are mapped to the same schema for the same provider');
-    }
-
-    const customObjectNames = custom.map((object) => object.name);
-    if (customObjectNames.length !== new Set(customObjectNames).size) {
       throw new BadRequestError('Multiple entries for mapping an object to a schema');
     }
   }

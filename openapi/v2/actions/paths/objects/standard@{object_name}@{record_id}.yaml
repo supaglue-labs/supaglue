@@ -15,7 +15,7 @@ get:
           examples:
             Example:
               value:
-                id: 001Fn00023f8oYYIA0
+                id: 001Fn00023f8oYYIB0
                 standard_object_name: Account
                 data:
                   Name: Acme Corp

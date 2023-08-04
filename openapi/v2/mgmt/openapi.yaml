@@ -41,8 +41,6 @@ paths:
     $ref: paths/magic_links.yaml
   '/magic_links/{magic_link_id}':
     $ref: paths/magic_links@{magic_link_id}.yaml
-  '/properties':
-    $ref: paths/properties.yaml
   '/field_mappings/_update_object':
     $ref: paths/field_mappings@_update_object.yaml
   '/entity_mappings':
@@ -71,8 +69,6 @@ paths:
     $ref: paths/connections@_provider_user_id.yaml
   '/customers/{customer_id}/connections/{connection_id}':
     $ref: paths/connections@{connection_id}.yaml
-  '/webhook':
-    $ref: paths/webhook.yaml
   '/syncs':
     $ref: paths/syncs.yaml
   '/syncs/_pause':
@@ -89,19 +85,17 @@ tags:
   - name: Connections
     description: A `Connection` represents a Customer's connection to a Provider.
   - name: Destinations
-    description: A `Destination` is a place where to which data can be written.
+    description: A `Destination` is a data store where we write data in your infrastructure.
   - name: Providers
-    description: A `Provider` is a CRM or other system that we can connect to.
-  - name: Properties
-    description: A `Property` is a field in a Provider Object.
+    description: A `Provider` is a third-party SaaS tool we can connect to (e.g. Salesforce).
   - name: Schemas
-    description: A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API.
+    description: A [`Schema`](https://docs.supaglue.com/platform/objects/overview#schemas) allows you to normalize fields for customers across a single Provider object. Supaglue uses Schemas for Managed Syncs and Actions API.
   - name: Entities
-    description: An `Entity` is a unified representation of Provider objects that can be synced to a Destination or manipulated by the Actions API.
-  - name: Entity Mappings
-    description: An `Entity Mapping` is a mapping between an Entity and an object with field mappings.
-  - name: Field Mappings
-    description: A `Field Mapping` is a mapping between a Schema field and the field in the Provider.
+    description: An [`Entity`](https://docs.supaglue.com/platform/entities/overview) allows you to represent your application data models in Supaglue so customers can map their different Provider objects and fields. Supaglue uses Entities for Managed Syncs and Actions API.
+  - name: EntityMappings
+    description: An [`Entity Mapping`](https://docs.supaglue.com/platform/entities/overview#entity-mapping) maps an [Entity](https://docs.supaglue.com/platform/entities/overview) to a customer's Provider object and fields. Use Entity Mappings when you use [Entities](https://docs.supaglue.com/platform/entities/overview) as your data model.
+  - name: SchemaMappings
+    description: A `Schema Mapping` is a mapping between a [Schema](https://docs.supaglue.com/platform/objects/overview#schemas) field and fields in your customer's Provider object.
   - name: SyncConfigs
     description: A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule.
   - name: Syncs
@@ -125,8 +119,6 @@ components:
       $ref: ./components/schemas/objects/provider.yaml
     destination:
       $ref: ./components/schemas/objects/destination.yaml
-    property:
-      $ref: ./components/schemas/objects/property.yaml
     s3_config_safe:
       $ref: ./components/schemas/objects/s3_config_safe.yaml
     postgres_config_safe:
@@ -165,16 +157,14 @@ components:
       $ref: ./components/schemas/objects/entity_config.yaml
     objects:
       $ref: ./components/schemas/objects/objects.yaml
-    object_field_mapping_info:
-      $ref: ./components/schemas/objects/object_field_mapping_info.yaml
-    field_mapping_info:
-      $ref: ./components/schemas/objects/field_mapping_info.yaml
+    object_field_mappings:
+      $ref: ./components/schemas/objects/object_field_mappings.yaml
+    merged_field_map:
+      $ref: ./components/schemas/objects/merged_field_map.yaml
     update_object_field_mapping:
       $ref: ./components/schemas/update_object_field_mapping.yaml
-    field_mapping:
-      $ref: ./components/schemas/objects/field_mapping.yaml
-    add_object:
-      $ref: ./components/schemas/add_object.yaml
+    object_field_mapping:
+      $ref: ./components/schemas/objects/object_field_mapping.yaml
     connection:
       $ref: ./components/schemas/objects/connection.yaml
     category:
@@ -217,10 +207,6 @@ components:
       $ref: ./components/schemas/update_destination.yaml
     create_update_sync_config:
       $ref: ./components/schemas/create_update_sync_config.yaml
-    list_properties:
-      $ref: ./components/schemas/list_properties.yaml
-    webhook:
-      $ref: ./components/schemas/objects/webhook.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
     standard_object:

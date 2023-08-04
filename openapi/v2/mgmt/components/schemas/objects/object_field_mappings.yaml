@@ -1,0 +1,26 @@
+type: object
+properties:
+  object_name:
+    type: string
+    example: contact
+  object_type:
+    type: string
+    enum:
+      - common
+      - standard
+  allow_additional_field_mappings:
+    type: boolean
+    example: true
+  schema_id:
+    type: string
+    example: 51797e8d-f081-496d-99ec-5e41b467df4b
+  fields:
+    type: array
+    items:
+      $ref: ./merged_field_map.yaml
+required:
+  - object_name
+  - object_type
+  - allow_additional_field_mappings
+  - schema_id
+  - fields

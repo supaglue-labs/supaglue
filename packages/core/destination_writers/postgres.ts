@@ -28,6 +28,7 @@ import {
   keysOfSnakecasedLeadWithTenant,
   keysOfSnakecasedOpportunityWithTenant,
 } from '../keys/crm';
+import { keysOfSnakecasedEngagementAccountWithTenant } from '../keys/engagement/account';
 import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/contact';
 import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
 import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
@@ -570,6 +571,7 @@ const tableNamesByCommonObjectType: {
     user: 'crm_users',
   },
   engagement: {
+    account: 'engagement_accounts',
     contact: 'engagement_contacts',
     sequence_state: 'engagement_sequence_states',
     user: 'engagement_users',
@@ -597,6 +599,7 @@ const columnsByCommonObjectType: {
     user: keysOfSnakecasedCrmUserWithTenant,
   },
   engagement: {
+    account: keysOfSnakecasedEngagementAccountWithTenant,
     contact: keysOfSnakecasedEngagementContactWithTenant,
     sequence_state: keysOfSnakecasedSequenceStateWithTenant,
     user: keysOfSnakecasedEngagementUserWithTenant,
@@ -767,6 +770,26 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_users' 
 );`,
   },
   engagement: {
+    account: (schema: string, temp?: boolean) => `-- CreateTable
+    CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+      temp ? 'temp_engagement_accounts' : `${schema}.engagement_accounts`
+    } (
+      "_supaglue_application_id" TEXT NOT NULL,
+      "_supaglue_provider_name" TEXT NOT NULL,
+      "_supaglue_customer_id" TEXT NOT NULL,
+      "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
+      "id" TEXT NOT NULL,
+      "created_at" TIMESTAMP(3),
+      "updated_at" TIMESTAMP(3),
+      "is_deleted" BOOLEAN NOT NULL,
+      "last_modified_at" TIMESTAMP(3) NOT NULL,
+      "name" TEXT,
+      "domain" TEXT,
+      "owner_id" TEXT,
+      "raw_data" JSONB,
+    
+      PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+    );`,
     contact: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
       temp ? 'temp_engagement_contacts' : `${schema}.engagement_contacts`

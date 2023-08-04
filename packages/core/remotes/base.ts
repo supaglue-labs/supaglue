@@ -6,6 +6,18 @@ import type {
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
+import type {
+  ListObjectAssociationsParams,
+  ObjectAssociation,
+  ObjectAssociationCreateParams,
+} from '@supaglue/types/association';
+import type { AssociationTypeCardinality, SimpleAssociationType } from '@supaglue/types/association_type';
+import type {
+  CustomObject,
+  CustomObjectCreateParams,
+  CustomObjectUpdateParams,
+  SimpleCustomObject,
+} from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import axios from 'axios';
@@ -26,13 +38,39 @@ export interface RemoteClient {
   getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecordWithMetadata>;
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
+  listStandardObjects(): Promise<string[]>;
+  listCustomObjects(): Promise<SimpleCustomObject[]>;
+  getCustomObject(id: string): Promise<CustomObject>;
+  createCustomObject(params: CustomObjectCreateParams): Promise<string>;
+  updateCustomObject(params: CustomObjectUpdateParams): Promise<void>;
+
+  listAssociationTypes(
+    sourceObject: StandardOrCustomObject,
+    targetObject: StandardOrCustomObject
+  ): Promise<SimpleAssociationType[]>;
+  createAssociationType(
+    sourceObject: StandardOrCustomObject,
+    targetObject: StandardOrCustomObject,
+    keyName: string,
+    displayName: string,
+    cardinality: AssociationTypeCardinality
+  ): Promise<void>;
+
+  listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]>;
+  createAssociation(params: ObjectAssociationCreateParams): Promise<ObjectAssociation>;
+
   listStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable>;
-  listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
+  listCustomObjectRecords(
+    object: string,
+    fieldsToFetch: FieldsToFetch,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable>;
 
   sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse>;
 
@@ -84,6 +122,45 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new Error('Not implemented');
   }
 
+  public async listStandardObjects(): Promise<string[]> {
+    throw new Error('Not implemented');
+  }
+  public async listCustomObjects(): Promise<SimpleCustomObject[]> {
+    throw new Error('Not implemented');
+  }
+  public async getCustomObject(id: string): Promise<CustomObject> {
+    throw new Error('Not implemented');
+  }
+  public async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
+    throw new Error('Not implemented');
+  }
+  public async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
+    throw new Error('Not implemented');
+  }
+
+  public async listAssociationTypes(
+    sourceObject: StandardOrCustomObject,
+    targetObject: StandardOrCustomObject
+  ): Promise<SimpleAssociationType[]> {
+    throw new Error('Not implemented');
+  }
+  public async createAssociationType(
+    sourceObject: StandardOrCustomObject,
+    targetObject: StandardOrCustomObject,
+    keyName: string,
+    displayName: string,
+    cardinality: AssociationTypeCardinality
+  ): Promise<void> {
+    throw new Error('Not implemented');
+  }
+
+  public async listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]> {
+    throw new Error('Not implemented');
+  }
+  public async createAssociation(params: ObjectAssociationCreateParams): Promise<ObjectAssociation> {
+    throw new Error('Not implemented');
+  }
+
   public async listStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
@@ -93,7 +170,12 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new Error('Not implemented');
   }
 
-  public listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  public listCustomObjectRecords(
+    object: string,
+    fieldsToFetch: FieldsToFetch,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     throw new Error('Not implemented');
   }
 

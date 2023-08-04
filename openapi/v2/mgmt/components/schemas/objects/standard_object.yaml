@@ -4,8 +4,10 @@ properties:
     type: string
     enum:
       - standard
+    example: standard
   name:
     type: string
+    example: Contact
 required:
   - type
   - name

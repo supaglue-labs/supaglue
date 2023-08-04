@@ -5,6 +5,8 @@ import type {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type {
+  AccountCreateParams,
+  AccountUpdateParams,
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
@@ -21,11 +23,14 @@ import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
 import {
+  fromApolloAccountToAccount,
   fromApolloContactToContact,
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
   fromApolloSequenceToSequence,
   fromApolloUserToUser,
+  toApolloAccountCreateParams,
+  toApolloAccountUpdateParams,
   toApolloContactCreateParams,
   toApolloContactUpdateParams,
   toApolloSequenceStateCreateParams,
@@ -37,6 +42,11 @@ type ApolloPagination = {
   per_page: number;
   total_entries: number;
   total_pages: number;
+};
+
+type ApolloPaginatedAccounts = {
+  accounts: Record<string, any>[];
+  pagination: ApolloPagination;
 };
 
 type ApolloPaginatedContacts = {
@@ -122,6 +132,42 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       },
     });
     return fromApolloSequenceToSequence(response.data.emailer_campaign);
+  }
+
+  async #getAccountPage(page = 1, updatedAfter?: Date): Promise<ApolloPaginatedAccounts> {
+    return await retryWhenAxiosRateLimited(async () => {
+      const response = await axios.post<ApolloPaginatedAccounts>(
+        `${this.#baseURL}/v1/accounts/search`,
+        {
+          api_key: this.#apiKey,
+          page,
+        },
+        {
+          headers: this.#headers,
+        }
+      );
+      return response.data;
+    });
+  }
+
+  async #listAccounts(updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = async (pageAsStr?: string) =>
+      await this.#getAccountPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter);
+    return await paginator([
+      {
+        pageFetcher: normalPageFetcher,
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.accounts.map((result) => ({
+              record: fromApolloAccountToAccount(result),
+              emittedAt,
+            }))
+          );
+        },
+        getNextCursorFromPage: (response) => getNextPage(response.pagination)?.toString(),
+      },
+    ]);
   }
 
   async #getContactPage(page = 1, updatedAfter?: Date): Promise<ApolloPaginatedContacts> {
@@ -273,10 +319,12 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   }
 
   public override async listCommonObjectRecords(
-    commonObjectType: 'contact' | 'user' | 'sequence' | 'mailbox' | 'sequence_state',
+    commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date | undefined
   ): Promise<Readable> {
     switch (commonObjectType) {
+      case 'account':
+        return await this.#listAccounts(updatedAfter);
       case 'contact':
         return await this.#listContacts(updatedAfter);
       case 'user':
@@ -290,6 +338,17 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       default:
         throw new BadRequestError(`Common object type ${commonObjectType} not supported for the Apollo API`);
     }
+  }
+
+  async createAccount(params: AccountCreateParams): Promise<string> {
+    const response = await axios.post<{ contact: Record<string, any> }>(
+      `${this.#baseURL}/v1/contacts`,
+      { ...toApolloAccountCreateParams(params), api_key: this.#apiKey },
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.contact.id.toString();
   }
 
   async createContact(params: ContactCreateParams): Promise<string> {
@@ -323,6 +382,8 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     params: EngagementCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
     switch (commonObjectType) {
+      case 'account':
+        return await this.createAccount(params as AccountCreateParams);
       case 'sequence_state':
         return await this.createSequenceState(params as SequenceStateCreateParams);
       case 'contact':
@@ -341,11 +402,24 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     params: EngagementCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
     switch (commonObjectType) {
+      case 'account':
+        return await this.updateAccount(params as AccountUpdateParams);
       case 'contact':
         return await this.updateContact(params as ContactUpdateParams);
       default:
         throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
+  }
+
+  async updateAccount(params: AccountUpdateParams): Promise<string> {
+    const response = await axios.put<{ contact: Record<string, any> }>(
+      `${this.#baseURL}/v1/accounts/${params.id}`,
+      { ...toApolloAccountUpdateParams(params), api_key: this.#apiKey },
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.contact.id;
   }
 
   async updateContact(params: ContactUpdateParams): Promise<string> {

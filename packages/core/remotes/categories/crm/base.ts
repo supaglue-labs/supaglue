@@ -1,17 +1,5 @@
 import type { CommonObjectDef, Property } from '@supaglue/types';
 import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
-import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/crm/association';
-import type { AssociationType, AssociationTypeCreateParams, SGObject } from '@supaglue/types/crm/association_type';
-import type {
-  CustomObject,
-  CustomObjectCreateParams,
-  CustomObjectUpdateParams,
-} from '@supaglue/types/crm/custom_object';
-import type {
-  CustomObjectRecord,
-  CustomObjectRecordCreateParams,
-  CustomObjectRecordUpdateParams,
-} from '@supaglue/types/crm/custom_object_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { Readable } from 'stream';
 import type { RemoteClient } from '../../base';
@@ -39,20 +27,6 @@ export interface CrmRemoteClient extends RemoteClient {
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string>;
-
-  getCustomObject(id: string): Promise<CustomObject>;
-  createCustomObject(params: CustomObjectCreateParams): Promise<string>;
-  updateCustomObject(params: CustomObjectUpdateParams): Promise<void>;
-
-  getCustomObjectRecord(objectId: string, id: string): Promise<CustomObjectRecord>;
-  createCustomObjectRecord(params: CustomObjectRecordCreateParams): Promise<string>;
-  updateCustomObjectRecord(params: CustomObjectRecordUpdateParams): Promise<void>;
-
-  getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]>;
-  createAssociationType(params: AssociationTypeCreateParams): Promise<void>;
-
-  listAssociations(params: ListAssociationsParams): Promise<Association[]>;
-  createAssociation(params: AssociationCreateParams): Promise<Association>;
 }
 
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
@@ -89,40 +63,6 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
-    throw new Error('Not implemented');
-  }
-
-  public async getCustomObject(id: string): Promise<CustomObject> {
-    throw new Error('Not implemented');
-  }
-  public async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
-    throw new Error('Not implemented');
-  }
-  public async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
-    throw new Error('Not implemented');
-  }
-
-  public async getCustomObjectRecord(objectId: string, id: string): Promise<CustomObjectRecord> {
-    throw new Error('Not implemented');
-  }
-  public async createCustomObjectRecord(params: CustomObjectRecordCreateParams): Promise<string> {
-    throw new Error('Not implemented');
-  }
-  public async updateCustomObjectRecord(params: CustomObjectRecordUpdateParams): Promise<void> {
-    throw new Error('Not implemented');
-  }
-
-  public async getAssociationTypes(sourceObject: SGObject, targetObject: SGObject): Promise<AssociationType[]> {
-    throw new Error('Not implemented');
-  }
-  public async createAssociationType(params: AssociationTypeCreateParams): Promise<void> {
-    throw new Error('Not implemented');
-  }
-
-  public async listAssociations(params: ListAssociationsParams): Promise<Association[]> {
-    throw new Error('Not implemented');
-  }
-  public async createAssociation(params: AssociationCreateParams): Promise<Association> {
     throw new Error('Not implemented');
   }
 }

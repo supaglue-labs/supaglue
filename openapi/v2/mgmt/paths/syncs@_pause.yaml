@@ -12,23 +12,6 @@ post:
         schema:
           oneOf:
             - type: object
-              title: 'Data model: Objects'
-              properties:
-                object_type:
-                  type: string
-                  enum:
-                    - common
-                    - standard
-                    - custom
-                  description: The object type to filter by
-                object:
-                  type: string
-                  example: contact
-                  description: The object to filter by
-              required:
-                - object_type
-                - object
-            - type: object
               title: 'Data model: Entities'
               properties:
                 entity_id:
@@ -36,6 +19,40 @@ post:
                   description: The entity id to filter by
               required:
                 - entity_id
+            - type: object
+              title: 'Data model: Objects'
+              properties:
+                object_type:
+                  type: string
+                  enum:
+                    - common
+                    - standard
+                  example: standard
+                  description: The object type to filter by
+                object:
+                  type: string
+                  example: Contact
+                  description: The Provider object to filter by (case sensitive)
+              required:
+                - object_type
+                - object
+            - type: object
+              title: 'Data model: Common Schema'
+              properties:
+                object_type:
+                  type: string
+                  enum:
+                    - common
+                  example: common
+                  description: The object type to filter by
+                object:
+                  type: string
+                  example: contact
+                  description: The Supaglue object to filter by
+              required:
+                - object_type
+                - object
+
   responses:
     '200':
       description: Sync paused

@@ -18,7 +18,6 @@ import type { CRMProviderName } from '@supaglue/types/crm';
 import type { ConnectionEntityMapping, MergedEntityMapping } from '@supaglue/types/entity_mapping';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
-import type { ObjectType } from '@supaglue/types/sync';
 import type { ProviderService, SchemaService } from '.';
 import { BadRequestError, NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
@@ -285,7 +284,7 @@ export class ConnectionService {
   private async getSchema(
     connection: ConnectionSafeAny,
     objectName: string,
-    objectType: ObjectType
+    objectType: 'common' | 'standard'
   ): Promise<Schema | undefined> {
     if (connection.category === 'no_category' && objectType === 'common') {
       return;
@@ -422,7 +421,7 @@ export class ConnectionService {
 
   public async getFieldMappingConfig(
     connectionId: string,
-    objectType: ObjectType,
+    objectType: 'common' | 'standard',
     objectName: string
   ): Promise<FieldMappingConfig> {
     const connection = await this.getSafeById(connectionId);
@@ -440,8 +439,6 @@ export class ConnectionService {
       customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
         (o) => o.object === objectName
       )?.fieldMappings;
-    } else {
-      throw new BadRequestError("Field mappings aren't supported for custom objects");
     }
     return createFieldMappingConfig(schema?.config, customerFieldMapping);
   }

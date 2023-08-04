@@ -9,6 +9,30 @@ export type SendPassthroughRequestRequest =
 export type SendPassthroughRequestResponse =
   operations['sendPassthroughRequest']['responses'][keyof operations['sendPassthroughRequest']['responses']]['content']['application/json'];
 
+export type CreateAccountPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type CreateAccountQueryParams = Required<operations['createAccount']>['parameters']['query'];
+export type CreateAccountQueryParams = any;
+export type CreateAccountRequest = operations['createAccount']['requestBody']['content']['application/json'];
+export type CreateAccountResponse =
+  operations['createAccount']['responses'][keyof operations['createAccount']['responses']]['content']['application/json'];
+
+export type GetAccountPathParams = paths[`/accounts/{account_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type GetAccountQueryParams = Required<operations['getAccount']>['parameters']['query'];
+export type GetAccountQueryParams = any;
+export type GetAccountRequest = never;
+export type GetAccountResponse =
+  operations['getAccount']['responses'][keyof operations['getAccount']['responses']]['content']['application/json'];
+
+export type UpdateAccountPathParams = paths[`/accounts/{account_id}`]['parameters']['path'];
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type UpdateAccountQueryParams = Required<operations['getAccount']>['parameters']['query'];
+export type UpdateAccountQueryParams = any;
+export type UpdateAccountRequest = operations['updateAccount']['requestBody']['content']['application/json'];
+export type UpdateAccountResponse =
+  operations['updateAccount']['responses'][keyof operations['updateAccount']['responses']]['content']['application/json'];
+
 export type CreateContactPathParams = never;
 // TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
 // export type CreateContactQueryParams = Required<operations['createContact']>['parameters']['query'];

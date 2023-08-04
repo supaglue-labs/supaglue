@@ -1,0 +1,64 @@
+get:
+  operationId: getCustomObjectRecord
+  summary: Get Custom Object record
+  tags:
+    - ObjectRecords
+  security:
+    - x-api-key: []
+  responses:
+    200:
+      description: Custom object record
+      content:
+        application/json:
+          schema:
+            $ref: ../../components/schemas/objects/custom_object_record.yaml
+patch:
+  operationId: updateCustomObjectRecord
+  summary: Update Custom Object record
+  tags:
+    - ObjectRecords
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              $ref: ../../components/schemas/create_update_custom_object_record.yaml
+          required:
+            - data
+          example:
+            data:
+              Name: Acme Corp
+              Description: We create the best embedded integration platforms.
+  responses:
+    200:
+      description: Custom object record updated
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../../common/components/schemas/errors.yaml
+              warnings:
+                $ref: ../../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../components/parameters/header/x-provider-name.yaml
+  - name: object_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: CustomObject__c
+  - name: record_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

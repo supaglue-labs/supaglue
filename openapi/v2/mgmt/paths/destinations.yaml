@@ -16,28 +16,27 @@ get:
             type: array
             items:
               $ref: ../components/schemas/objects/destination.yaml
-          examples:
-            Example:
-              value:
-                - id: 0a292508-d254-4929-98d3-dc23416efff8
-                  application_id: e52286c9-3038-4fa2-a2b8-3ec9759d20cb
-                  name: My S3 Destination
-                  type: s3
-                  config:
-                    region: us-west-2
-                    bucket: my-bucket
-                    access_key_id: MY_ACCESS_KEY_ID
-                - id: 92bc3460-a301-4116-8d1f-6e5f8252c2e2
-                  application_id: 9b9a31bb-9fe4-4fa5-ba84-4c035a27f258
-                  name: My Postgres Destination
-                  type: postgres
-                  config:
-                    host: https://mydb.com
-                    port: 5432
-                    database: my_database
-                    schema: public
-                    user: user
-                    password: password
+            # example here since destination.yaml uses oneOf
+            example:
+              - id: 0a292508-d254-4929-98d3-dc23416efff8
+                application_id: e52286c9-3038-4fa2-a2b8-3ec9759d20cb
+                name: My S3 Destination
+                type: s3
+                config:
+                  region: us-west-2
+                  bucket: my-bucket
+                  access_key_id: MY_ACCESS_KEY_ID
+              - id: 92bc3460-a301-4116-8d1f-6e5f8252c2e2
+                application_id: 9b9a31bb-9fe4-4fa5-ba84-4c035a27f258
+                name: My Postgres Destination
+                type: postgres
+                config:
+                  host: production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com
+                  port: 5432
+                  database: my_database
+                  schema: public
+                  user: user
+                  password: password
 post:
   operationId: createDestination
   summary: Create destination

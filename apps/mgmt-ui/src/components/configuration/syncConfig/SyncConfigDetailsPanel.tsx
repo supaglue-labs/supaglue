@@ -55,7 +55,6 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [strategy, setStrategy] = useState<SyncStrategyType>('full then incremental');
   const [commonObjects, setCommonObjects] = useState<CommonObjectType[]>([]);
   const [standardObjects, setStandardObjects] = useState<string[]>([]);
-  const [customObjects, setCustomObjects] = useState<string[]>([]);
   const [entityIds, setEntityIds] = useState<string[]>([]);
   const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
   const router = useRouter();
@@ -76,7 +75,6 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
     setStrategy(syncConfig?.config?.defaultConfig?.strategy ?? 'full then incremental');
     setCommonObjects(syncConfig?.config?.commonObjects?.map((o) => o.object) ?? []);
     setStandardObjects(syncConfig?.config?.standardObjects?.map((o) => o.object) ?? []);
-    setCustomObjects(syncConfig?.config?.customObjects?.map((o) => o.object) ?? []);
     setEntityIds(syncConfig?.config?.entities?.map((entity) => entity.entityId) ?? []);
   }, [syncConfig?.id]);
 
@@ -116,7 +114,6 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
           },
           commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
           standardObjects: standardObjects.map((object) => ({ object })),
-          customObjects: customObjects.map((object) => ({ object })),
           entities: entityIds.map((entityId) => ({ entityId })),
         },
       };
@@ -145,7 +142,6 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
         },
         commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
         standardObjects: standardObjects.map((object) => ({ object })),
-        customObjects: customObjects.map((object) => ({ object })),
         entities: entityIds.map((entityId) => ({ entityId })),
       },
     };
@@ -160,9 +156,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const selectedProvider = providers.find((p) => p.id === providerId);
   const selectedDestination = destinations?.find((d) => d.id === destinationId);
   const supportsStandardDestinations = ['postgres', 'bigquery', 'mongodb'];
-  const supportsCustomDestinations = ['postgres', 'bigquery', 'mongodb'];
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
-  const supportsCustomObjects = ['hubspot', 'salesforce'];
 
   const standardObjectsOptions = getStandardObjectOptions(selectedProvider?.name);
 
@@ -196,7 +190,6 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 }
                 setProviderId(value);
                 setStandardObjects([]);
-                setCustomObjects([]);
               }}
               value={providerId ?? ''}
               options={providers?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
@@ -297,38 +290,6 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   )}
                   onChange={(event: any, value: string[]) => {
                     setStandardObjects(value.map((v) => v.trim()));
-                  }}
-                />
-              </Stack>
-              <Stack className="gap-2">
-                <Typography variant="subtitle1">Custom objects</Typography>
-                <Autocomplete
-                  disabled={
-                    !supportsCustomObjects.includes(String(selectedProvider?.name)) ||
-                    !supportsCustomDestinations.includes(String(selectedDestination?.type))
-                  }
-                  size="small"
-                  key={providerId}
-                  multiple
-                  id="custom-objects"
-                  options={[]}
-                  defaultValue={customObjects}
-                  autoSelect
-                  freeSolo
-                  renderTags={(value: readonly string[], getTagProps) =>
-                    value.map((option: string, index: number) => (
-                      <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-                    ))
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Custom objects"
-                      helperText={`Custom objects in ${selectedProvider?.name}. (Note: names are case-sensitive. Use "enter" to add multiple objects.)`}
-                    />
-                  )}
-                  onChange={(event: any, value: string[]) => {
-                    setCustomObjects(value.map((object) => object.trim()));
                   }}
                 />
               </Stack>

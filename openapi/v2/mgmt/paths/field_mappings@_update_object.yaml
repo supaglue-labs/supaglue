@@ -1,8 +1,9 @@
+# TODO: rename endpoints and files from field mappings to schema mappings
 put:
   operationId: updateObjectFieldMappings
-  summary: Update object field mappings
+  summary: Update schema mappings
   tags:
-    - Field Mappings
+    - SchemaMappings
   security:
     - x-api-key: []
   parameters: []
@@ -18,7 +19,7 @@ put:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/object_field_mapping_info.yaml
+            $ref: ../components/schemas/objects/object_field_mappings.yaml
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

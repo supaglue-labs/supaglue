@@ -206,9 +206,9 @@ sources={{
     }}
 />
 
-Use the [`Field Mappings API`](../../api/v2/mgmt/field-mappings) to render field mapping UI for your customers and save field mappings set by your customer.
+Use the [`Schema Mappings API`](../../api/v2/mgmt/schema-mappings) to render field mapping UI for your customers and save field mappings set by your customer.
 
-The [List Field Mappings API](../../api/v2/mgmt/list-field-mappings) will return a JSON similar to the one below:
+The [List Schema Mappings API](../../api/v2/mgmt/list-field-mappings) will return a JSON similar to the one below:
 
 ```js
 {
@@ -231,7 +231,7 @@ The [List Field Mappings API](../../api/v2/mgmt/list-field-mappings) will return
 }
 ```
 
-Use the [Update Object Field Mappings API](../../api/v2/mgmt/update-object-field-mappings) to save field mappings set by your customer. The shape of the response should look something like the following:
+Use the [Update Schema Mappings API](../../api/v2/mgmt/update-object-field-mappings) to save field mappings set by your customer. The shape of the response should look something like the following:
 
 ```json
 {

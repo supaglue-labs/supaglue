@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { toSnakecaseKeysEntityRecord } from '@supaglue/core/mappers/entity_record';
 import type {
   CreateEntityRecordPathParams,
   CreateEntityRecordRequest,
@@ -10,7 +11,6 @@ import type {
   UpdateEntityRecordRequest,
   UpdateEntityRecordResponse,
 } from '@supaglue/schemas/v2/actions';
-import { snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
@@ -45,7 +45,7 @@ export default function init(app: Router): void {
         req.params.entity_name,
         req.params.record_id
       );
-      return res.status(200).send(snakecaseKeys(record));
+      return res.status(200).send(toSnakecaseKeysEntityRecord(record));
     }
   );
 

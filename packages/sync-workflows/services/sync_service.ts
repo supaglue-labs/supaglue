@@ -162,25 +162,6 @@ export class SyncService {
           }
         }
 
-        if (syncConfig.config.customObjects?.length) {
-          for (const customObject of syncConfig.config.customObjects) {
-            syncArgs.push({
-              type: 'object',
-              objectType: 'custom',
-              object: customObject.object,
-              connectionId: connection.id,
-              syncConfigId: syncConfig.id,
-              paused: !autoStart,
-              strategy: {
-                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-              },
-              state: {
-                phase: 'created',
-              },
-            });
-          }
-        }
-
         if (syncConfig.config.entities?.length) {
           for (const entity of syncConfig.config.entities) {
             syncArgs.push({
@@ -239,11 +220,6 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
                       type: 'object',
                       objectType: 'standard',
                       object: standardObject.object,
-                    })) ?? []),
-                    ...(syncConfig.config.customObjects?.map((customObject) => ({
-                      type: 'object',
-                      objectType: 'custom',
-                      object: customObject.object,
                     })) ?? []),
                     ...(syncConfig.config.entities?.map((entity) => ({
                       type: 'entity',

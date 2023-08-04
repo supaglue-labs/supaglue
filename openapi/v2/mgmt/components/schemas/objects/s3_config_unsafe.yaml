@@ -8,8 +8,10 @@ properties:
     example: my-test-bucket
   access_key_id:
     type: string
+    example: AKIAIOSFODNN7EXAMPLE
   secret_access_key:
     type: string
+    example: A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS
 required:
   - region
   - bucket

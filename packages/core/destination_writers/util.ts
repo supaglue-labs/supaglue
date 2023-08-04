@@ -9,6 +9,7 @@ import {
   toSnakecasedKeysCrmUser,
 } from '../mappers/crm';
 import {
+  toSnakecasedKeysEngagementAccount,
   toSnakecasedKeysEngagementContact,
   toSnakecasedKeysEngagementUser,
   toSnakecasedKeysMailbox,
@@ -35,6 +36,7 @@ const snakecasedKeysMapperByCommonObjectType: {
     user: toSnakecasedKeysCrmUser,
   },
   engagement: {
+    account: toSnakecasedKeysEngagementAccount,
     contact: toSnakecasedKeysEngagementContact,
     mailbox: toSnakecasedKeysMailbox,
     sequence: toSnakecasedKeysSequence,

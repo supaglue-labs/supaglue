@@ -222,6 +222,19 @@ const sidebars = {
     // section
     {
       type: 'html',
+      value: sidebarHeader('Metadata API'),
+    },
+    {
+      type: 'category',
+      label: 'Metadata API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/metadata/sidebar.js'),
+    },
+
+    // section
+    {
+      type: 'html',
       value: sidebarHeader('Actions API'),
     },
     {
