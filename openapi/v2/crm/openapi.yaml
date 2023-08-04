@@ -47,18 +47,6 @@ paths:
     $ref: paths/users@{user_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
-  '/custom-objects':
-    $ref: paths/custom-objects.yaml
-  '/custom-objects/{custom_object_id}':
-    $ref: paths/custom-objects@{custom_object_id}.yaml
-  '/custom-objects/{custom_object_id}/records':
-    $ref: paths/custom-object-records.yaml
-  '/custom-objects/{custom_object_id}/records/{record_id}':
-    $ref: paths/custom-object-records@{record_id}.yaml
-  '/association-types':
-    $ref: paths/association-types.yaml
-  '/associations':
-    $ref: paths/associations.yaml
 tags:
   - name: Accounts
     description: The `Account` Common Object is used to represent a "company" in CRMs.
@@ -72,14 +60,6 @@ tags:
     description: The `User` Common Object is used to represent a "user" that can login to CRMs.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
-  - name: CustomObjects
-    description: A `Custom Object` is used to represent a "custom object" in CRMs.
-  - name: CustomObjectRecords
-    description: A `Custom Object Record` is used to represent a "custom object record" in CRMs.
-  - name: AssociationTypes
-    description: An `Association Type` is used to represent an "association type" in CRMs.
-  - name: Associations
-    description: An `Association` is used to represent an "association" in CRMs.
 components:
   securitySchemes:
     x-api-key:
@@ -127,34 +107,6 @@ components:
       $ref: ./components/schemas/filter.yaml
     lifecycle_stage:
       $ref: ./components/schemas/objects/lifecycle_stage.yaml
-    custom_object:
-      $ref: ./components/schemas/objects/custom_object.yaml
-    create_update_custom_object:
-      $ref: ./components/schemas/create_update_custom_object.yaml
-    custom_object_record:
-      $ref: ./components/schemas/objects/custom_object_record.yaml
-    create_update_custom_object_record:
-      $ref: ./components/schemas/create_update_custom_object_record.yaml
-    custom_object_field:
-      $ref: ./components/schemas/objects/custom_object_field.yaml
-    association_type:
-      $ref: ./components/schemas/objects/association_type.yaml
-    create_update_association_type:
-      $ref: ./components/schemas/create_update_association_type.yaml
-    object:
-      $ref: ./components/schemas/objects/object.yaml
-    object_type:
-      $ref: ./components/schemas/objects/object_type.yaml
-    association_type_cardinality:
-      $ref: ./components/schemas/objects/association_type_cardinality.yaml
-    association_type_cardinality_or_unknown:
-      $ref: ./components/schemas/objects/association_type_cardinality_or_unknown.yaml
-    create_update_association:
-      $ref: ./components/schemas/create_update_association.yaml
-    association:
-      $ref: ./components/schemas/objects/association.yaml
-    record:
-      $ref: ./components/schemas/objects/record.yaml
   parameters:
     include_deleted_data:
       $ref: ../../common/components/parameters/query/include_deleted_data.yaml

@@ -4,11 +4,12 @@ import { TabPanel } from '@/components/TabPanel';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useActiveCustomerId } from '@/hooks/useActiveCustomerId';
+import { useCustomObjects } from '@/hooks/useCustomObjects';
 import { toListEntityMappingsResponse, useEntityMappings } from '@/hooks/useEntityMappings';
 import { useProperties } from '@/hooks/useProperties';
+import { useStandardObjects } from '@/hooks/useStandardObjects';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
-import { getStandardObjectOptions } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
 import DeleteIcon from '@mui/icons-material/Delete';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
@@ -40,6 +41,17 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 
 export { getServerSideProps };
+
+type FriendlyStandardOrCustomObject =
+  | {
+      type: 'standard';
+      name: string;
+    }
+  | {
+      type: 'custom';
+      id: string;
+      name: string;
+    };
 
 export default function Home() {
   const applicationId = useActiveApplicationId();
@@ -160,15 +172,21 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
   const [mergedEntityMapping, setMergedEntityMapping] = useState<MergedEntityMapping>(initialMapping);
   const [isDirty, setIsDirty] = useState<boolean>(false);
 
-  const setObject = (selected: string | undefined) => {
+  const setObject = (selected: FriendlyStandardOrCustomObject | undefined) => {
     setMergedEntityMapping({
       ...mergedEntityMapping,
       object: selected
-        ? {
-            type: 'standard',
-            name: selected,
-            from: 'customer',
-          }
+        ? selected.type === 'standard'
+          ? {
+              type: 'standard',
+              name: selected.name,
+              from: 'customer',
+            }
+          : {
+              type: 'custom',
+              name: selected.id,
+              from: 'customer',
+            }
         : undefined,
     });
     setIsDirty(true);
@@ -223,6 +241,7 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
         <Grid container spacing={2}>
           <EntityObjectMapping
             entity={entity}
+            customerId={customerId}
             providerName={providerName}
             object={initialMapping.object}
             setObject={setObject}
@@ -260,14 +279,29 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
 
 type EntityObjectMappingProps = {
   entity: string;
+  customerId: string;
   providerName: string;
   object?: StandardOrCustomObject & {
     from: 'developer' | 'customer';
   };
-  setObject: (selected: string | undefined) => void;
+  setObject: (selected: FriendlyStandardOrCustomObject | undefined) => void;
 };
-function EntityObjectMapping({ entity, providerName, object, setObject }: EntityObjectMappingProps) {
-  const objectOptions = getStandardObjectOptions(providerName);
+function EntityObjectMapping({ entity, customerId, providerName, object, setObject }: EntityObjectMappingProps) {
+  const { data: standardObjectOptions = [] } = useStandardObjects(customerId, providerName);
+  const { data: customObjectOptions = [] } = useCustomObjects(customerId, providerName);
+
+  const objectOptions = [
+    ...standardObjectOptions.map(({ name }) => ({
+      type: 'standard' as const,
+      name,
+    })),
+    ...customObjectOptions.map((object) => ({
+      type: 'custom' as const,
+      id: object.id,
+      name: object.name,
+    })),
+  ];
+
   return (
     <>
       <Grid item xs={4}>
@@ -287,17 +321,19 @@ function EntityObjectMapping({ entity, providerName, object, setObject }: Entity
             size="small"
             id="entity-object"
             options={objectOptions}
-            defaultValue={object?.name}
+            groupBy={(option) => option.type}
+            getOptionLabel={(option) => option.name}
+            // defaultValue={object?.name}
             autoSelect
-            renderTags={(value: readonly string[], getTagProps) =>
-              value.map((option: string, index: number) => (
-                <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+            renderTags={(value, getTagProps) =>
+              value.map((option, index: number) => (
+                <Chip variant="outlined" label={option.name} {...getTagProps({ index })} />
               ))
             }
             renderInput={(params) => (
-              <TextField {...params} label="Standard objects" helperText={`Available objects in ${providerName}.`} />
+              <TextField {...params} label="Objects" helperText={`Available objects in ${providerName}.`} />
             )}
-            onChange={(event: any, value: string | null) => {
+            onChange={(event: any, value) => {
               setObject(value ?? undefined);
             }}
           />
@@ -386,6 +422,7 @@ function EntityFieldMappings({
                 <TextField
                   {...params}
                   label={`${providerName} field`}
+                  /* TODO: render friendly name for custom objects instead of the id */
                   helperText={object ? `Available fields for ${object?.name} in ${providerName}.` : undefined}
                 />
               )}

@@ -1,0 +1,34 @@
+oneOf:
+  - type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - entity
+      entity_id:
+        type: string
+    required:
+      - type
+      - entity_id
+  - type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - standard_object
+      object_name:
+        type: string
+    required:
+      - type
+      - object_name
+  - type: object
+    properties:
+      type:
+        type: string
+        enum:
+          - custom_object
+      object_id:
+        type: string
+    required:
+      - type
+      - object_id

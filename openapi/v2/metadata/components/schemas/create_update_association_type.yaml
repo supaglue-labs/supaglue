@@ -1,0 +1,18 @@
+type: object
+properties:
+  source_entity_id:
+    type: string
+  target_entity_id:
+    type: string
+  key_name:
+    type: string
+  display_name:
+    type: string
+  cardinality:
+    $ref: ./objects/association_type_cardinality.yaml
+required:
+  - source_entity_id
+  - target_entity_id
+  - key_name
+  - display_name
+  - cardinality

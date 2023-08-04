@@ -7,6 +7,7 @@ import type {
 } from '@supaglue/schemas/v2/actions';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
+import associations from './associations';
 import entities from './entities';
 import objects from './objects';
 
@@ -29,6 +30,7 @@ export default function init(app: Router): void {
 
   entities(v2Router);
   objects(v2Router);
+  associations(v2Router);
 
   app.use('/v2', v2Router);
 }

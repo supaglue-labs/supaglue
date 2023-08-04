@@ -7,15 +7,20 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Introduction
 
-Supaglue supports three types of APIs:
+Supaglue supports four types of APIs:
 
 1. **Management**: configure all aspects of your integrations.
-2. **Actions**: write to third-party Providers using [Entities](../platform/entities/overview), [Objects](../platform/objects/overview), and [Common Schema](../platform/common-schema/overview).
-3. **Passthrough**: use underlying native third-party Provider APIs.
+1. **Metadata**: discover and manage third-party Provider metadata.
+1. **Actions**: write to third-party Providers using [Entities](../platform/entities/overview), [Objects](../platform/objects/overview), and [Common Schema](../platform/common-schema/overview).
+1. **Passthrough**: use underlying native third-party Provider APIs.
 
 ### Management API
 
 You can use the [Management API V2](v2/mgmt/management-api) to manage customer integrations.
+
+### Metadata API
+
+You can use the [Metadata API V2](v2/metadata/metadata-api) to discover and manage third-party Provider metadata. For example, you can create Custom Objects and Association Types.
 
 ### Actions API
 

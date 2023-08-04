@@ -441,7 +441,8 @@ export class ConnectionService {
         (o) => o.object === objectName
       )?.fieldMappings;
     } else {
-      throw new BadRequestError("Field mappings aren't supported for custom objects");
+      // TODO: support proper field mappings for custom objects
+      customerFieldMapping = undefined;
     }
     return createFieldMappingConfig(schema?.config, customerFieldMapping);
   }

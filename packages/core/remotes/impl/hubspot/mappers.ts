@@ -12,30 +12,15 @@ import type {
   OpportunityStatus,
   User,
 } from '@supaglue/types/crm';
-import type { SGObject } from '@supaglue/types/crm/association_type';
 import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate, removeUndefinedValues } from '../../../lib';
 import { getFullName } from '../../utils/name';
 
-export const fromObjectToHubspotObjectType = (object: SGObject): string => {
-  switch (object.originType) {
-    case 'standard':
-    case 'custom':
-      return object.id;
-    case 'common':
-      switch (object.id) {
-        case 'account':
-          return 'company';
-        case 'contact':
-          return 'contact';
-        case 'opportunity':
-          return 'deal';
-        default:
-          throw new Error(`Unknown common object: ${object.id}`);
-      }
-  }
+export const fromObjectToHubspotObjectType = (object: StandardOrCustomObject): string => {
+  return object.name;
 };
 
 export const fromHubSpotCompanyToAccount = ({

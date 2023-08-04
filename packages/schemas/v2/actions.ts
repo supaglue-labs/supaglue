@@ -48,3 +48,35 @@ export type UpdateStandardObjectRecordRequest =
   operations['updateStandardObjectRecord']['requestBody']['content']['application/json'];
 export type UpdateStandardObjectRecordResponse =
   operations['updateStandardObjectRecord']['responses'][keyof operations['updateStandardObjectRecord']['responses']]['content']['application/json'];
+
+export type CreateCustomObjectRecordPathParams = paths['/objects/custom/{object_id}']['parameters']['path'];
+export type CreateCustomObjectRecordRequestQueryParams = never;
+export type CreateCustomObjectRecordRequest =
+  operations['createCustomObjectRecord']['requestBody']['content']['application/json'];
+export type CreateCustomObjectRecordResponse =
+  operations['createCustomObjectRecord']['responses'][keyof operations['createCustomObjectRecord']['responses']]['content']['application/json'];
+
+export type GetCustomObjectRecordPathParams = paths['/objects/custom/{object_id}/{record_id}']['parameters']['path'];
+export type GetCustomObjectRecordRequestQueryParams = never;
+export type GetCustomObjectRecordRequest = never;
+export type GetCustomObjectRecordResponse =
+  operations['getCustomObjectRecord']['responses'][keyof operations['getCustomObjectRecord']['responses']]['content']['application/json'];
+
+export type UpdateCustomObjectRecordPathParams = paths['/objects/custom/{object_id}/{record_id}']['parameters']['path'];
+export type UpdateCustomObjectRecordRequestQueryParams = never;
+export type UpdateCustomObjectRecordRequest =
+  operations['updateCustomObjectRecord']['requestBody']['content']['application/json'];
+export type UpdateCustomObjectRecordResponse =
+  operations['updateCustomObjectRecord']['responses'][keyof operations['updateCustomObjectRecord']['responses']]['content']['application/json'];
+
+export type CreateAssociationPathParams = never;
+export type CreateAssociationRequestQueryParams = never;
+export type CreateAssociationRequest = operations['createAssociation']['requestBody']['content']['application/json'];
+export type CreateAssociationResponse =
+  operations['createAssociation']['responses'][keyof operations['createAssociation']['responses']]['content']['application/json'];
+
+export type GetAssociationsPathParams = never;
+export type GetAssociationsQueryParams = paths['/associations']['get']['parameters']['query'];
+export type GetAssociationsRequest = never;
+export type GetAssociationsResponse =
+  operations['getAssociations']['responses'][keyof operations['getAssociations']['responses']]['content']['application/json'];
