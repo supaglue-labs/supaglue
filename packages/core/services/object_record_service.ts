@@ -1,9 +1,6 @@
 import type {
   ConnectionSafeAny,
-  CreatedCustomObjectRecord,
   CreatedStandardObjectRecord,
-  CustomFullObjectRecord,
-  CustomObjectRecord,
   ObjectRecordData,
   ObjectRecordUpsertData,
   StandardFullObjectRecord,
@@ -157,92 +154,6 @@ export class ObjectRecordService {
       unmappedData
     );
     await this.#cacheInvalidateStandardObjectRecord(connection, objectName, recordId);
-  }
-
-  public async createCustomObjectRecord(
-    connection: ConnectionSafeAny,
-    objectId: string,
-    data: ObjectRecordUpsertData
-  ): Promise<CreatedCustomObjectRecord> {
-    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'custom', objectId);
-    const unmappedData = mapSchemaToObject(data, fieldMappingConfig);
-    const remoteClient = await this.#remoteService.getRemoteClient(connection.id);
-    const id = await remoteClient.createObjectRecord(
-      {
-        type: 'custom',
-        name: objectId,
-      },
-      unmappedData
-    );
-    return {
-      id,
-      customObjectId: objectId,
-    };
-  }
-
-  async #getCustomFullObjectRecord(
-    connection: ConnectionSafeAny,
-    objectId: string,
-    recordId: string
-  ): Promise<CustomFullObjectRecord> {
-    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'custom', objectId);
-    const remoteClient = await this.#remoteService.getRemoteClient(connection.id);
-    const fields =
-      fieldMappingConfig.type === 'inherit_all_fields'
-        ? (await remoteClient.listProperties({ type: 'custom', name: objectId })).map((p) => p.id)
-        : [
-            ...new Set([
-              ...fieldMappingConfig.coreFieldMappings.map((m) => m.mappedField),
-              ...fieldMappingConfig.additionalFieldMappings.map((m) => m.mappedField),
-            ]),
-          ];
-    const record = await remoteClient.getObjectRecord(
-      {
-        type: 'custom',
-        name: objectId,
-      },
-      recordId,
-      fields
-    );
-    return {
-      id: recordId,
-      customObjectId: objectId,
-      mappedData: mapObjectToSchema(record.data, fieldMappingConfig),
-      rawData: record.data,
-      metadata: record.metadata,
-    };
-  }
-
-  public async getCustomObjectRecord(
-    connection: ConnectionSafeAny,
-    objectName: string,
-    recordId: string
-  ): Promise<CustomObjectRecord> {
-    const { id, customObjectId, mappedData } = await this.#getCustomFullObjectRecord(connection, objectName, recordId);
-    return {
-      id,
-      customObjectId,
-      data: mappedData,
-    };
-  }
-
-  public async updateCustomObjectRecord(
-    connection: ConnectionSafeAny,
-    objectName: string,
-    recordId: string,
-    data: ObjectRecordUpsertData
-  ): Promise<void> {
-    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'custom', objectName);
-    const unmappedData = mapSchemaToObject(data, fieldMappingConfig);
-    const remoteClient = await this.#remoteService.getRemoteClient(connection.id);
-    await remoteClient.updateObjectRecord(
-      {
-        type: 'custom',
-        name: objectName,
-      },
-      recordId,
-      unmappedData
-    );
   }
 }
 

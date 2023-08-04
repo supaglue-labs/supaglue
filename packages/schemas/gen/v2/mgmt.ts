@@ -571,11 +571,6 @@ export interface components {
           name: string;
           schema_id?: string;
         })[];
-      custom?: ({
-          /** @example custom_object_name */
-          name: string;
-          schema_id?: string;
-        })[];
     };
     object_field_mapping_info: {
       /** @example contact */

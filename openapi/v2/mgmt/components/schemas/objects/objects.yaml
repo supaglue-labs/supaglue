@@ -25,15 +25,3 @@ properties:
           type: string
       required:
         - name
-  custom:
-    type: array
-    items:
-      type: object
-      properties:
-        name:
-          type: string
-          example: custom_object_name
-        schema_id:
-          type: string
-      required:
-        - name

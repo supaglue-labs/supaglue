@@ -17,7 +17,6 @@ export type SyncConfigData = {
   defaultConfig: SyncStrategyConfig;
   commonObjects?: CommonObjectConfig[];
   standardObjects?: StandardObjectConfig[];
-  customObjects?: CustomObjectConfig[];
   entities?: {
     entityId: string;
   }[];
@@ -35,9 +34,5 @@ export type CommonObjectConfig = {
 };
 
 export type StandardObjectConfig = {
-  object: string;
-};
-
-export type CustomObjectConfig = {
   object: string;
 };

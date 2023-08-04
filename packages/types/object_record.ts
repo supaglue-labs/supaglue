@@ -45,10 +45,6 @@ export type CreatedStandardObjectRecord = BaseCreatedObjectRecord & {
   standardObjectName: string;
 };
 
-export type CreatedCustomObjectRecord = BaseCreatedObjectRecord & {
-  customObjectId: string;
-};
-
 export type ObjectRecordUpsertData = Record<string, unknown>;
 
 export type ObjectRecordData = {
@@ -65,11 +61,7 @@ export type StandardObjectRecord = BaseObjectRecord & {
   standardObjectName: string;
 };
 
-export type CustomObjectRecord = BaseObjectRecord & {
-  customObjectId: string;
-};
-
-export type ObjectRecord = StandardObjectRecord | CustomObjectRecord;
+export type ObjectRecord = StandardObjectRecord;
 
 export type ObjectRecordWithMetadata = ObjectRecord & {
   metadata: ObjectMetadata;
@@ -89,10 +81,6 @@ export type BaseFullRecord = {
 
 export type StandardFullObjectRecord = BaseFullRecord & {
   standardObjectName: string;
-};
-
-export type CustomFullObjectRecord = BaseFullRecord & {
-  customObjectId: string;
 };
 
 export type FullObjectRecord = StandardFullObjectRecord;

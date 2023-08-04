@@ -68,35 +68,6 @@ export interface paths {
       };
     };
   };
-  "/objects/custom/{object_id}": {
-    /** Create Custom Object record */
-    post: operations["createCustomObjectRecord"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-      path: {
-        object_id: string;
-      };
-    };
-  };
-  "/objects/custom/{object_id}/{record_id}": {
-    /** Get Custom Object record */
-    get: operations["getCustomObjectRecord"];
-    /** Update Custom Object record */
-    patch: operations["updateCustomObjectRecord"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-      path: {
-        object_id: string;
-        record_id: string;
-      };
-    };
-  };
   "/associations": {
     /**
      * List associations 
@@ -465,89 +436,6 @@ export interface operations {
     };
     responses: {
       /** @description Standard object record updated */
-      200: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-            warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  /** Create Custom Object record */
-  createCustomObjectRecord: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-      path: {
-        object_id: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          data: components["schemas"]["create_update_custom_object_record"];
-        };
-      };
-    };
-    responses: {
-      /** @description Custom ObjectRecord created */
-      201: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-            record?: components["schemas"]["created_custom_object_record"];
-            warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  /** Get Custom Object record */
-  getCustomObjectRecord: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-      path: {
-        object_id: string;
-        record_id: string;
-      };
-    };
-    responses: {
-      /** @description Custom object record */
-      200: {
-        content: {
-          "application/json": components["schemas"]["custom_object_record"];
-        };
-      };
-    };
-  };
-  /** Update Custom Object record */
-  updateCustomObjectRecord: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-      path: {
-        object_id: string;
-        record_id: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          data: components["schemas"]["create_update_custom_object_record"];
-        };
-      };
-    };
-    responses: {
-      /** @description Custom object record updated */
       200: {
         content: {
           "application/json": {

@@ -58,7 +58,6 @@ export type OauthProvider = CRMProvider | EngagementOauthProvider | NoCategoryPr
 export type ProviderObjects<T extends ProviderCategory> = {
   common?: ProviderCommonObject<T>[];
   standard?: ProviderObject[];
-  custom?: ProviderObject[];
 };
 
 export type ProviderCommonObject<T extends ProviderCategory> = {
@@ -118,7 +117,6 @@ export type AddObjectToProviderParams = {
 export type ObjectsWithExpandedSchemasAndFieldMappings<T extends ProviderCategory> = {
   common?: (Omit<ProviderCommonObject<T>, 'schemaId'> & { schema?: Schema })[];
   standard?: (Omit<ProviderObject, 'schemaId'> & { schema?: Schema })[];
-  custom?: (Omit<ProviderObject, 'schemaId'> & { schema?: Schema })[];
 };
 
 export type AddEntityMappingToProviderParams = {

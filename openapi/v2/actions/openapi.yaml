@@ -32,10 +32,6 @@ paths:
     $ref: paths/objects/standard@{object_name}.yaml
   '/objects/standard/{object_name}/{record_id}':
     $ref: paths/objects/standard@{object_name}@{record_id}.yaml
-  '/objects/custom/{object_id}':
-    $ref: paths/objects/custom@{object_id}.yaml
-  '/objects/custom/{object_id}/{record_id}':
-    $ref: paths/objects/custom@{object_id}@{record_id}.yaml
   '/associations':
     $ref: paths/associations.yaml
   '/passthrough':
