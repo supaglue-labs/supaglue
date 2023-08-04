@@ -53,6 +53,19 @@ type FriendlyStandardOrCustomObject =
       name: string;
     };
 
+type FriendlyStandardOrCustomObjectWithAttribution =
+  | {
+      type: 'standard';
+      name: string;
+      from: 'developer' | 'customer';
+    }
+  | {
+      type: 'custom';
+      id: string;
+      name: string;
+      from: 'developer' | 'customer';
+    };
+
 export default function Home() {
   const applicationId = useActiveApplicationId();
   const customerId = useActiveCustomerId();
@@ -172,6 +185,8 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
   const [mergedEntityMapping, setMergedEntityMapping] = useState<MergedEntityMapping>(initialMapping);
   const [isDirty, setIsDirty] = useState<boolean>(false);
 
+  const { data: customObjectOptions = [] } = useCustomObjects(customerId, providerName);
+
   const setObject = (selected: FriendlyStandardOrCustomObject | undefined) => {
     setMergedEntityMapping({
       ...mergedEntityMapping,
@@ -231,6 +246,22 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
     !!mergedEntityMapping.object &&
     mergedEntityMapping.fieldMappings.every((fieldMapping) => !!fieldMapping.mappedField && !!fieldMapping.entityField);
 
+  const initialMappingFriendlyObjectWithAttribution: FriendlyStandardOrCustomObjectWithAttribution | undefined =
+    initialMapping.object
+      ? initialMapping.object.type === 'standard'
+        ? {
+            type: 'standard',
+            name: initialMapping.object.name,
+            from: initialMapping.object.from,
+          }
+        : {
+            type: 'custom',
+            id: initialMapping.object.name,
+            name: customObjectOptions.find(({ id }) => id === initialMapping.object?.name)?.name ?? '',
+            from: initialMapping.object.from,
+          }
+      : undefined;
+
   return (
     <>
       <Box
@@ -243,7 +274,7 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
             entity={entity}
             customerId={customerId}
             providerName={providerName}
-            object={initialMapping.object}
+            object={initialMappingFriendlyObjectWithAttribution}
             setObject={setObject}
           />
           <EntityFieldMappings
@@ -281,9 +312,7 @@ type EntityObjectMappingProps = {
   entity: string;
   customerId: string;
   providerName: string;
-  object?: StandardOrCustomObject & {
-    from: 'developer' | 'customer';
-  };
+  object?: FriendlyStandardOrCustomObjectWithAttribution;
   setObject: (selected: FriendlyStandardOrCustomObject | undefined) => void;
 };
 function EntityObjectMapping({ entity, customerId, providerName, object, setObject }: EntityObjectMappingProps) {
@@ -323,7 +352,7 @@ function EntityObjectMapping({ entity, customerId, providerName, object, setObje
             options={objectOptions}
             groupBy={(option) => option.type}
             getOptionLabel={(option) => option.name}
-            // defaultValue={object?.name}
+            defaultValue={object}
             autoSelect
             renderTags={(value, getTagProps) =>
               value.map((option, index: number) => (
