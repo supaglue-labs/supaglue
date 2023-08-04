@@ -569,10 +569,10 @@
       "create_update_custom_object": {
         "type": "object",
         "properties": {
-          "name": {
+          "suggested_name": {
             "type": "string",
             "example": "ticket",
-            "description": "In Salesforce, this must end with `__c`."
+            "description": "The name you'd like to use for the custom object. For some providers, like Salesforce, we might mutate the name, like append `__c`."
           },
           "description": {
             "type": "string",
@@ -609,7 +609,7 @@
           }
         },
         "required": [
-          "name",
+          "suggested_name",
           "description",
           "labels",
           "primary_field_key_name",
@@ -625,7 +625,7 @@
           "target_entity_id": {
             "type": "string"
           },
-          "key_name": {
+          "suggested_key_name": {
             "type": "string"
           },
           "display_name": {
@@ -638,7 +638,7 @@
         "required": [
           "source_entity_id",
           "target_entity_id",
-          "key_name",
+          "suggested_key_name",
           "display_name",
           "cardinality"
         ]

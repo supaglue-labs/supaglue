@@ -113,10 +113,10 @@ export interface components {
     };
     create_update_custom_object: {
       /**
-       * @description In Salesforce, this must end with `__c`. 
+       * @description The name you'd like to use for the custom object. For some providers, like Salesforce, we might mutate the name, like append `__c`. 
        * @example ticket
        */
-      name: string;
+      suggested_name: string;
       /** @example Ticket object */
       description: string | null;
       labels: {
@@ -135,7 +135,7 @@ export interface components {
     create_update_association_type: {
       source_entity_id: string;
       target_entity_id: string;
-      key_name: string;
+      suggested_key_name: string;
       display_name: string;
       cardinality: components["schemas"]["association_type_cardinality"];
     };

@@ -10,7 +10,6 @@ import type {
   GetAssociationTypesRequest,
   GetAssociationTypesResponse,
 } from '@supaglue/schemas/v2/metadata';
-import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
@@ -54,7 +53,13 @@ export default function init(app: Router): void {
       req: Request<CreateAssociationTypePathParams, CreateAssociationTypeResponse, CreateAssociationTypeRequest>,
       res: Response<CreateAssociationTypeResponse>
     ) => {
-      await metadataService.createAssociationType(req.customerConnection.id, camelcaseKeys(req.body));
+      await metadataService.createAssociationType(req.customerConnection.id, {
+        sourceEntityId: req.body.source_entity_id,
+        targetEntityId: req.body.target_entity_id,
+        keyName: req.body.suggested_key_name,
+        displayName: req.body.display_name,
+        cardinality: req.body.cardinality,
+      });
       return res.status(201).send();
     }
   );

@@ -57,7 +57,11 @@ export default function init(app: Router): void {
       req: Request<CreateCustomObjectPathParams, CreateCustomObjectResponse, CreateCustomObjectRequest>,
       res: Response<CreateCustomObjectResponse>
     ) => {
-      const id = await metadataService.createCustomObject(req.customerConnection.id, camelcaseKeys(req.body.object));
+      const { suggestedName, ...rest } = camelcaseKeys(req.body.object);
+      const id = await metadataService.createCustomObject(req.customerConnection.id, {
+        name: suggestedName,
+        ...rest,
+      });
       return res.status(201).send({ object: { id } });
     }
   );
@@ -82,9 +86,11 @@ export default function init(app: Router): void {
       req: Request<UpdateCustomObjectPathParams, UpdateCustomObjectResponse, UpdateCustomObjectRequest>,
       res: Response<UpdateCustomObjectResponse>
     ) => {
+      const { suggestedName, ...rest } = camelcaseKeys(req.body.object);
       await metadataService.updateCustomObject(req.customerConnection.id, {
         id: req.params.custom_object_id,
-        ...camelcaseKeys(req.body.object),
+        name: suggestedName,
+        ...rest,
       });
       return res.status(204).send();
     }

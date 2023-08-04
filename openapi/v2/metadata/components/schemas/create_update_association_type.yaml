@@ -4,7 +4,7 @@ properties:
     type: string
   target_entity_id:
     type: string
-  key_name:
+  suggested_key_name:
     type: string
   display_name:
     type: string
@@ -13,6 +13,6 @@ properties:
 required:
   - source_entity_id
   - target_entity_id
-  - key_name
+  - suggested_key_name
   - display_name
   - cardinality

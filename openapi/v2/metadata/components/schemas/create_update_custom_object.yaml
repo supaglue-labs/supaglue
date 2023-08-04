@@ -1,9 +1,9 @@
 type: object
 properties:
-  name:
+  suggested_name:
     type: string
     example: ticket
-    description: In Salesforce, this must end with `__c`.
+    description: The name you'd like to use for the custom object. For some providers, like Salesforce, we might mutate the name, like append `__c`.
   description:
     type: string
     nullable: true
@@ -29,7 +29,7 @@ properties:
     items:
       $ref: ./objects/custom_object_field.yaml
 required:
-  - name
+  - suggested_name
   - description
   - labels
   - primary_field_key_name
