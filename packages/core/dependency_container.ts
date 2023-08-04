@@ -5,6 +5,7 @@ import { Pool } from 'pg';
 import {
   ConnectionService,
   CustomerService,
+  MagicLinkService,
   ProviderService,
   RemoteService,
   SchemaService,
@@ -45,6 +46,7 @@ export type CoreDependencyContainer = {
   syncService: SyncService;
   syncRunService: SyncRunService;
   entityService: EntityService;
+  magicLinkService: MagicLinkService;
 
   crmCommonObjectService: CrmCommonObjectService;
   engagementCommonObjectService: EngagementCommonObjectService;
@@ -98,6 +100,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const remoteService = new RemoteService(connectionService, providerService);
   const webhookService = new WebhookService({ prisma });
   const destinationService = new DestinationService(prisma);
+  const magicLinkService = new MagicLinkService(prisma, customerService, providerService);
 
   const syncService = new SyncService(prisma, connectionService);
   const syncRunService = new SyncRunService(prisma, connectionService);
@@ -141,6 +144,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     remoteService,
     webhookService,
     destinationService,
+    magicLinkService,
     schemaService,
     entityService,
     crmCommonObjectService,

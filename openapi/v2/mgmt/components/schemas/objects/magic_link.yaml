@@ -1,0 +1,40 @@
+type: object
+properties:
+  id:
+    type: string
+    example: ec208408-db29-4705-b39e-4d33070b4ef6
+  status:
+    type: string
+    example: created
+  application_id:
+    type: string
+    example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+  customer_id:
+    type: string
+    example: my-customer-1
+  provider_id:
+    type: string
+    example: 677fcfca-cf89-4387-a189-71c885be67bc
+  provider_name:
+    $ref: ./provider_name.yaml
+  url:
+    type: string
+    description: The magic link URL.
+    example: https://app.hubspot.com/contacts/123456
+  return_url:
+    type: string
+    description: URL to redirect to after the connection is authorized.
+    example: https://app.myapp.com/connections/123456
+  expires_at:
+    type: string
+    format: date-time
+    example: '2023-02-23T00:00:00Z'
+required:
+  - id
+  - status
+  - application_id
+  - customer_id
+  - provider_id
+  - provider_name
+  - expires_at
+  - url

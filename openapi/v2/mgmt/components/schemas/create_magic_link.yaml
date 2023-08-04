@@ -1,0 +1,18 @@
+type: object
+properties:
+  customer_id:
+    type: string
+    example: my-customer-1
+  provider_name:
+    $ref: ./objects/provider_name.yaml
+  return_url:
+    type: string
+    description: URL to redirect to after the connection is authorized.
+    example: https://app.myapp.com/connections/123456
+  expiration_secs:
+    type: number
+    example: 18000
+required:
+  - customer_id
+  - provider_name
+  - expiration_secs

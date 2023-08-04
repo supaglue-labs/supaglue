@@ -1,0 +1,50 @@
+get:
+  operationId: getMagicLinks
+  tags:
+    - Magic Links
+  security:
+    - x-api-key: []
+  summary: List magic links
+  description: >-
+    Get a list of magic links
+  responses:
+    '200':
+      description: Magic Links
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/objects/magic_link.yaml
+          examples:
+            Example:
+              value:
+                - id: 49231b23-9b58-490a-89da-0efa607e876c
+                  application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
+                  customer_id: my-customer-1
+                  status: created
+                  provider_id: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+                  provider_name: salesforce
+                  url: https://app.supaglue.io/links/49231b23-9b58-490a-89da-0efa607e876c
+                  returnUrl: https://myapp.com
+post:
+  operationId: createMagicLink
+  summary: Create magic link
+  tags:
+    - Magic Links
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/create_magic_link.yaml
+  responses:
+    '201':
+      description: Entity created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/magic_link.yaml

@@ -37,6 +37,10 @@ paths:
     $ref: paths/destinations@{destination_id}.yaml
   '/field_mappings':
     $ref: paths/field_mappings.yaml
+  '/magic_links':
+    $ref: paths/magic_links.yaml
+  '/magic_links/{magic_link_id}':
+    $ref: paths/magic_links@{magic_link_id}.yaml
   '/properties':
     $ref: paths/properties.yaml
   '/field_mappings/_update_object':
@@ -106,6 +110,8 @@ tags:
     description: A `SyncRun` is a single execution of a Sync at a point in time.
   - name: Webhooks
     description: A `Webhook` is a way for Supaglue to notify you when events have happened.
+  - name: Magic Links
+    description: A `Magic Link` is a secure URL that allows your customers to connect their accounts to Supaglue.
 components:
   securitySchemes:
     x-api-key:
@@ -149,6 +155,10 @@ components:
       $ref: ./components/schemas/objects/schema.yaml
     schema_config:
       $ref: ./components/schemas/objects/schema_config.yaml
+    magic_link:
+      $ref: ./components/schemas/objects/magic_link.yaml
+    create_magic_link:
+      $ref: ./components/schemas/create_magic_link.yaml
     entity:
       $ref: ./components/schemas/objects/entity.yaml
     entity_config:
