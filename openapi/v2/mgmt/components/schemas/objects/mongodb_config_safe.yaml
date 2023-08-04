@@ -2,10 +2,10 @@ type: object
 properties:
   host:
     type: string
-    example: mongodb.company.com
+    example: my-cluster.z31wcmj.mongodb.net
   database:
     type: string
-    example: my_database
+    example: my-cluster
   user:
     type: string
     example: myuser

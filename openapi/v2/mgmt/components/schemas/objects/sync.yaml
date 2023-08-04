@@ -1,21 +1,19 @@
 # this is verbose because our docs generator can't handle allOf with nested oneOf correctly
 oneOf:
   - type: object
+    title: 'Data model: Entities'
     properties:
       id:
         type: string
+        example: 7026e4e8-15d7-48d8-b997-f2592b654619
       type:
-          type: string
-          enum:
-            - object
-      object_type:
         type: string
         enum:
-          - common
-          - standard
-          - custom
-      object:
+          - entity
+        example: entity
+      entity_id:
         type: string
+        example: 94e6cb6c-0ec8-423f-8873-21054979a6b1
       connection_id:
         type: string
         example: 3217ea51-11c8-43c9-9547-6f197e02e5e4
@@ -24,6 +22,44 @@ oneOf:
         example: 3217ea51-11c8-43c9-9547-6f197e02e5e5
       paused:
         type: boolean
+        example: false
+    required:
+      - id
+      - type
+      - entity_id
+      - connection_id
+      - sync_config_id
+      - paused
+  - type: object
+    title: 'Data model: Objects'
+    properties:
+      id:
+        type: string
+        example: 7026e4e8-15d7-48d8-b997-f2592b654619
+      type:
+        type: string
+        enum:
+          - object
+        example: object
+      object_type:
+        type: string
+        enum:
+          - standard
+          - custom
+        example: standard
+      object:
+        type: string
+        example: contact
+        description: The Provider's object name (case sensitive)
+      connection_id:
+        type: string
+        example: 3217ea51-11c8-43c9-9547-6f197e02e5e4
+      sync_config_id:
+        type: string
+        example: 3217ea51-11c8-43c9-9547-6f197e02e5e5
+      paused:
+        type: boolean
+        example: false
     required:
       - id
       - type
@@ -33,15 +69,25 @@ oneOf:
       - sync_config_id
       - paused
   - type: object
+    title: 'Data model: Common Schema'
     properties:
       id:
         type: string
+        example: 7026e4e8-15d7-48d8-b997-f2592b654619
       type:
         type: string
         enum:
-          - entity
-      entity_id:
+          - object
+        example: object
+      object_type:
         type: string
+        enum:
+          - common
+        example: standard
+      object:
+        type: string
+        example: contact
+        description: Supaglue's object name
       connection_id:
         type: string
         example: 3217ea51-11c8-43c9-9547-6f197e02e5e4
@@ -50,10 +96,12 @@ oneOf:
         example: 3217ea51-11c8-43c9-9547-6f197e02e5e5
       paused:
         type: boolean
+        example: false
     required:
       - id
       - type
-      - entity_id
+      - object_type
+      - object
       - connection_id
       - sync_config_id
       - paused

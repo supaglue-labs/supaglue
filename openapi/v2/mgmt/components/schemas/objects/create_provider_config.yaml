@@ -1,4 +1,5 @@
 type: object
+description: An object that stores Oauth2/API key/access key related credentials.
 properties:
   provider_app_id:
     type: string
@@ -6,7 +7,7 @@ properties:
   use_managed_oauth:
     type: boolean
     description: "True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials."
-    example: false
+    example: true
   oauth:
     type: object
     properties:
@@ -14,7 +15,14 @@ properties:
         type: array
         items:
           type: string
-          example: crm.objects.contacts.read
+        example:
+          - crm.objects.contacts.read
+          - crm.objects.companies.read
+          - crm.objects.deals.read
+          - crm.objects.owners.read
+          - crm.objects.contacts.write
+          - crm.objects.companies.write
+          - crm.objects.deals.write
       credentials:
         type: object
         properties:
@@ -33,18 +41,3 @@ properties:
 required:
   - provider_app_id
   - oauth
-example:
-  provider_app_id: my_app_id
-  use_managed_oauth: true
-  oauth:
-    oauth_scopes:
-      - crm.objects.contacts.read
-      - crm.objects.companies.read
-      - crm.objects.deals.read
-      - crm.objects.owners.read
-      - crm.objects.contacts.write
-      - crm.objects.companies.write
-      - crm.objects.deals.write
-    credentials:
-      oauth_client_id: 7393b5a4-5e20-4648-87af-b7b297793fd1
-      oauth_client_secret: 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a

@@ -2,7 +2,7 @@ get:
   operationId: getWebhook
   tags:
     - Webhooks
-  summary: Get webhook
+  summary: Get webhook (deprecated)
   description: >-
     Get webhook details
   security:
@@ -24,7 +24,7 @@ get:
                 notify_on_connection_error: true
 post:
   operationId: createWebhook
-  summary: Create webhook
+  summary: Create webhook (deprecated)
   tags:
     - Webhooks
   parameters: []
@@ -45,7 +45,7 @@ post:
             $ref: ../components/schemas/objects/webhook.yaml
 delete:
   operationId: deleteWebhook
-  summary: Delete webhook
+  summary: Delete webhook (deprecated)
   tags:
     - Webhooks
   parameters: []

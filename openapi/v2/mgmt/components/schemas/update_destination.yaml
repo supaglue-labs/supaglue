@@ -1,32 +1,45 @@
+# this example lives here b/c of the oneOf issue
+example:
+  name: My Postgres Destination
+  type: postgres
+  config:
+    host: production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com
+    port: 5432
+    database: postgres_prod_db
+    schema: public
+    user: myuser
+    password: mysensitivepassword
 oneOf:
-  - type: object
-    title: s3
-    properties:
-      name:
-        type: string
-        example: My Destination
-      type:
-        type: string
-        enum:
-          - s3
-      config:
-        $ref: ./objects/s3_config_at_least_safe.yaml
-    required:
-      - name
-      - type
-      - config
   - type: object
     title: postgres
     properties:
       name:
         type: string
-        example: My Destination
+        example: My Postgres Destination
       type:
         type: string
         enum:
           - postgres
+        example: postgres
       config:
         $ref: ./objects/postgres_config_at_least_safe.yaml
+    required:
+      - name
+      - type
+      - config
+  - type: object
+    title: s3
+    properties:
+      name:
+        type: string
+        example: My S3 Destination
+      type:
+        type: string
+        enum:
+          - s3
+        example: s3
+      config:
+        $ref: ./objects/s3_config_at_least_safe.yaml
     required:
       - name
       - type
@@ -36,11 +49,12 @@ oneOf:
     properties:
       name:
         type: string
-        example: My Destination
+        example: My BigQuery Destination
       type:
         type: string
         enum:
           - bigquery
+        example: bigquery
       config:
         $ref: ./objects/bigquery_config_at_least_safe.yaml
     required:
@@ -52,11 +66,12 @@ oneOf:
     properties:
       name:
         type: string
-        example: My Destination
+        example: My MongoDB Destination
       type:
         type: string
         enum:
           - mongodb
+        example: mongodb
       config:
         $ref: ./objects/mongodb_config_at_least_safe.yaml
     required:

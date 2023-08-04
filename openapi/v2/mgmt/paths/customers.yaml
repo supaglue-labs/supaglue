@@ -16,17 +16,6 @@ get:
             type: array
             items:
               $ref: ../components/schemas/objects/customer.yaml
-          examples:
-            Example:
-              value:
-                - customer_id: your-customers-unique-application-id
-                  application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
-                  name: MyCompany Inc
-                  email: contact@mycompany.com
-                - customer_id: your-other-customers-unique-application-id2
-                  application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
-                  name: TheirCompany Inc
-                  email: contact@theircompany.com
 put:
   operationId: upsertCustomer
   summary: Upsert customer

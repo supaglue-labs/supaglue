@@ -40,24 +40,6 @@
                   "items": {
                     "$ref": "#/components/schemas/customer"
                   }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "customer_id": "your-customers-unique-application-id",
-                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-                        "name": "MyCompany Inc",
-                        "email": "contact@mycompany.com"
-                      },
-                      {
-                        "customer_id": "your-other-customers-unique-application-id2",
-                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-                        "name": "TheirCompany Inc",
-                        "email": "contact@theircompany.com"
-                      }
-                    ]
-                  }
                 }
               }
             }
@@ -203,38 +185,34 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/destination"
-                  }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "id": "0a292508-d254-4929-98d3-dc23416efff8",
-                        "application_id": "e52286c9-3038-4fa2-a2b8-3ec9759d20cb",
-                        "name": "My S3 Destination",
-                        "type": "s3",
-                        "config": {
-                          "region": "us-west-2",
-                          "bucket": "my-bucket",
-                          "access_key_id": "MY_ACCESS_KEY_ID"
-                        }
-                      },
-                      {
-                        "id": "92bc3460-a301-4116-8d1f-6e5f8252c2e2",
-                        "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
-                        "name": "My Postgres Destination",
-                        "type": "postgres",
-                        "config": {
-                          "host": "https://mydb.com",
-                          "port": 5432,
-                          "database": "my_database",
-                          "schema": "public",
-                          "user": "user",
-                          "password": "password"
-                        }
+                  },
+                  "example": [
+                    {
+                      "id": "0a292508-d254-4929-98d3-dc23416efff8",
+                      "application_id": "e52286c9-3038-4fa2-a2b8-3ec9759d20cb",
+                      "name": "My S3 Destination",
+                      "type": "s3",
+                      "config": {
+                        "region": "us-west-2",
+                        "bucket": "my-bucket",
+                        "access_key_id": "MY_ACCESS_KEY_ID"
                       }
-                    ]
-                  }
+                    },
+                    {
+                      "id": "92bc3460-a301-4116-8d1f-6e5f8252c2e2",
+                      "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
+                      "name": "My Postgres Destination",
+                      "type": "postgres",
+                      "config": {
+                        "host": "production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com",
+                        "port": 5432,
+                        "database": "my_database",
+                        "schema": "public",
+                        "user": "user",
+                        "password": "password"
+                      }
+                    }
+                  ]
                 }
               }
             }
@@ -296,24 +274,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/destination"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "987e576f-73b1-47c7-bc1a-3d20e4d3cc5f",
-                      "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
-                      "name": "My Postgres Destination",
-                      "type": "postgres",
-                      "config": {
-                        "host": "https://mydb.com",
-                        "port": 5432,
-                        "database": "my_database",
-                        "schema": "public",
-                        "user": "user",
-                        "password": "password"
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -344,24 +304,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/destination"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "bc8583c0-74b2-4557-b9d7-ccf9415185f9",
-                      "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
-                      "name": "My Postgres Destination",
-                      "type": "postgres",
-                      "config": {
-                        "host": "https://mydb.com",
-                        "port": 5432,
-                        "database": "my_database",
-                        "schema": "public",
-                        "user": "user",
-                        "password": "password"
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -374,8 +316,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+            "type": "string"
           }
         }
       ]
@@ -383,9 +324,9 @@
     "/field_mappings": {
       "get": {
         "operationId": "listFieldMappings",
-        "summary": "List field mappings",
+        "summary": "List schema mappings",
         "tags": [
-          "Field Mappings"
+          "SchemaMappings"
         ],
         "security": [
           {
@@ -401,7 +342,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/object_field_mapping_info"
+                    "$ref": "#/components/schemas/object_field_mappings"
                   }
                 }
               }
@@ -490,9 +431,9 @@
     "/field_mappings/_update_object": {
       "put": {
         "operationId": "updateObjectFieldMappings",
-        "summary": "Update object field mappings",
+        "summary": "Update schema mappings",
         "tags": [
-          "Field Mappings"
+          "SchemaMappings"
         ],
         "security": [
           {
@@ -516,7 +457,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/object_field_mapping_info"
+                  "$ref": "#/components/schemas/object_field_mappings"
                 }
               }
             }
@@ -535,9 +476,9 @@
     "/entity_mappings": {
       "get": {
         "operationId": "listEntityMappings",
-        "summary": "List entity mappings",
+        "summary": "List entity mappings.",
         "tags": [
-          "Entity Mappings"
+          "EntityMappings"
         ],
         "security": [
           {
@@ -575,7 +516,7 @@
         "operationId": "upsertEntityMapping",
         "summary": "Upsert entity mapping",
         "tags": [
-          "Entity Mappings"
+          "EntityMappings"
         ],
         "parameters": [],
         "requestBody": {
@@ -598,7 +539,7 @@
         "operationId": "deleteEntityMapping",
         "summary": "Delete entity mapping",
         "tags": [
-          "Entity Mappings"
+          "EntityMappings"
         ],
         "security": [
           {
@@ -651,42 +592,6 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/schema"
-                  }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "id": "649b1e49-2722-46a3-a7e7-10caae78a43f",
-                        "name": "my-schema",
-                        "config": {
-                          "fields": [
-                            {
-                              "name": "field1"
-                            },
-                            {
-                              "name": "field2"
-                            }
-                          ],
-                          "allow_additional_field_mappings": false
-                        }
-                      },
-                      {
-                        "id": "84b84f5b-cfa0-4ef5-ab41-6362f8cdd414",
-                        "name": "my-schema2",
-                        "config": {
-                          "fields": [
-                            {
-                              "name": "field1"
-                            },
-                            {
-                              "name": "field2"
-                            }
-                          ],
-                          "allow_additional_field_mappings": false
-                        }
-                      }
-                    ]
                   }
                 }
               }
@@ -749,27 +654,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/schema"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "0218d76c-b2e1-4c34-ac7d-22b8df065004",
-                      "name": "my-schema",
-                      "config": {
-                        "fields": [
-                          {
-                            "name": "field1",
-                            "mappedName": "fieldA"
-                          },
-                          {
-                            "name": "field2",
-                            "mappedName": "fieldB"
-                          }
-                        ],
-                        "allow_additional_field_mappings": false
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -800,27 +684,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/schema"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "959fd65f-850a-4c53-bc06-9f46facd4444",
-                      "name": "my-schema",
-                      "config": {
-                        "fields": [
-                          {
-                            "name": "field1",
-                            "mappedName": "fieldA"
-                          },
-                          {
-                            "name": "field2",
-                            "mappedName": "fieldB"
-                          }
-                        ],
-                        "allow_additional_field_mappings": false
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -845,27 +708,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/schema"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "b2b0e394-541c-4e5b-b6b5-9eefd412bf8d",
-                      "name": "my-schema",
-                      "config": {
-                        "fields": [
-                          {
-                            "name": "field1",
-                            "mappedName": "fieldA"
-                          },
-                          {
-                            "name": "field2",
-                            "mappedName": "fieldB"
-                          }
-                        ],
-                        "allow_additional_field_mappings": false
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -906,46 +748,6 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/entity"
-                  }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "id": "649b1e49-2722-46a3-a7e7-10caae78a440",
-                        "name": "my-entity",
-                        "config": {
-                          "fields": [
-                            {
-                              "name": "field1",
-                              "mappedName": "fieldA"
-                            },
-                            {
-                              "name": "field2",
-                              "mappedName": "fieldB"
-                            }
-                          ],
-                          "allow_additional_field_mappings": false
-                        }
-                      },
-                      {
-                        "id": "84b84f5b-cfa0-4ef5-ab41-6362f8cdd415",
-                        "name": "my-entity2",
-                        "config": {
-                          "fields": [
-                            {
-                              "name": "field1",
-                              "mappedName": "fieldA"
-                            },
-                            {
-                              "name": "field2",
-                              "mappedName": "fieldB"
-                            }
-                          ],
-                          "allow_additional_field_mappings": false
-                        }
-                      }
-                    ]
                   }
                 }
               }
@@ -1008,27 +810,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/entity"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "0218d76c-b2e1-4c34-ac7d-22b8df065005",
-                      "name": "my-entity",
-                      "config": {
-                        "fields": [
-                          {
-                            "name": "field1",
-                            "mappedName": "fieldA"
-                          },
-                          {
-                            "name": "field2",
-                            "mappedName": "fieldB"
-                          }
-                        ],
-                        "allow_additional_field_mappings": false
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -1059,27 +840,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/entity"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "959fd65f-850a-4c53-bc06-9f46facd4445",
-                      "name": "my-entity",
-                      "config": {
-                        "fields": [
-                          {
-                            "name": "field1",
-                            "mappedName": "fieldA"
-                          },
-                          {
-                            "name": "field2",
-                            "mappedName": "fieldB"
-                          }
-                        ],
-                        "allow_additional_field_mappings": false
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -1104,25 +864,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/entity"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "b2b0e394-541c-4e5b-b6b5-9eefd412bf8e",
-                      "name": "my-entity",
-                      "config": {
-                        "fields": [
-                          {
-                            "name": "field1"
-                          },
-                          {
-                            "name": "field2"
-                          }
-                        ],
-                        "allow_additional_field_mappings": false
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -1135,8 +876,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "a821d59d-8b4c-4ad9-aeec-1292d2e28702"
+            "type": "string"
           }
         }
       ]
@@ -1163,62 +903,6 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/provider"
-                  }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "id": "e888cedf-e9d0-42c5-9485-2d72984faef8",
-                        "category": "crm",
-                        "auth_type": "oauth2",
-                        "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
-                        "provider_name": "hubspot",
-                        "config": {
-                          "provider_app_id": "my_app_id",
-                          "oauth": {
-                            "oauth_scopes": [
-                              "crm.objects.contacts.read",
-                              "crm.objects.companies.read",
-                              "crm.objects.deals.read",
-                              "crm.objects.owners.read",
-                              "crm.objects.contacts.write",
-                              "crm.objects.companies.write",
-                              "crm.objects.deals.write"
-                            ],
-                            "credentials": {
-                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                            }
-                          }
-                        }
-                      },
-                      {
-                        "id": "cb40ff24-6587-4b24-82a3-9269a05d5dda",
-                        "category": "crm",
-                        "auth_type": "oauth2",
-                        "destination_id": null,
-                        "provider_name": "salesforce",
-                        "config": {
-                          "provider_app_id": "my_app_id2",
-                          "oauth": {
-                            "oauth_scopes": [
-                              "crm.objects.contacts.read",
-                              "crm.objects.companies.read",
-                              "crm.objects.deals.read",
-                              "crm.objects.owners.read",
-                              "crm.objects.contacts.write",
-                              "crm.objects.companies.write",
-                              "crm.objects.deals.write"
-                            ],
-                            "credentials": {
-                              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                            }
-                          }
-                        }
-                      }
-                    ]
                   }
                 }
               }
@@ -1281,34 +965,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/provider"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "e252792a-de72-460a-ae42-c9115fe9321d",
-                      "category": "crm",
-                      "auth_type": "oauth2",
-                      "provider_name": "hubspot",
-                      "config": {
-                        "provider_app_id": "my_app_id",
-                        "oauth": {
-                          "oauth_scopes": [
-                            "crm.objects.contacts.read",
-                            "crm.objects.companies.read",
-                            "crm.objects.deals.read",
-                            "crm.objects.owners.read",
-                            "crm.objects.contacts.write",
-                            "crm.objects.companies.write",
-                            "crm.objects.deals.write"
-                          ],
-                          "credentials": {
-                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                          }
-                        }
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -1339,34 +995,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/provider"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "39477a27-80fd-4b6d-b07e-256e14ee094e",
-                      "category": "crm",
-                      "auth_type": "oauth2",
-                      "provider_name": "hubspot",
-                      "config": {
-                        "provider_app_id": "my_app_id",
-                        "oauth": {
-                          "oauth_scopes": [
-                            "crm.objects.contacts.read",
-                            "crm.objects.companies.read",
-                            "crm.objects.deals.read",
-                            "crm.objects.owners.read",
-                            "crm.objects.contacts.write",
-                            "crm.objects.companies.write",
-                            "crm.objects.deals.write"
-                          ],
-                          "credentials": {
-                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                          }
-                        }
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -1391,34 +1019,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/provider"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "699e93b0-a7e6-4009-af59-07ec274db394",
-                      "category": "crm",
-                      "auth_type": "oauth2",
-                      "provider_name": "hubspot",
-                      "config": {
-                        "provider_app_id": "my_app_id",
-                        "oauth": {
-                          "oauth_scopes": [
-                            "crm.objects.contacts.read",
-                            "crm.objects.companies.read",
-                            "crm.objects.deals.read",
-                            "crm.objects.owners.read",
-                            "crm.objects.contacts.write",
-                            "crm.objects.companies.write",
-                            "crm.objects.deals.write"
-                          ],
-                          "credentials": {
-                            "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-                            "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-                          }
-                        }
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -1431,8 +1031,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+            "type": "string"
           }
         }
       ]
@@ -1459,60 +1058,6 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/sync_config"
-                  }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "id": "80fcb3be-4259-408e-a1f4-e6db7221caeb",
-                        "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
-                        "provider_id": "ebd1e697-0e4d-4c01-8622-c8c03703ef68",
-                        "config": {
-                          "default_config": {
-                            "period_ms": 60000,
-                            "strategy": "full then incremental"
-                          },
-                          "common_objects": [
-                            {
-                              "object": "contacts"
-                            },
-                            {
-                              "object": "accounts"
-                            }
-                          ],
-                          "standard_objects": [
-                            {
-                              "object": "emails"
-                            },
-                            {
-                              "object": "tasks"
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "id": "200080b0-374a-48bd-877f-d9cc5a0e3399",
-                        "destination_id": "c0e47183-ff55-4b84-9132-1e6122f763ca",
-                        "provider_id": "bdb14829-2a3f-40db-b13c-acc1b3cee216",
-                        "config": {
-                          "default_config": {
-                            "period_ms": 10000,
-                            "strategy": "full then incremental"
-                          },
-                          "common_objects": [
-                            {
-                              "object": "accounts"
-                            }
-                          ],
-                          "standard_objects": [
-                            {
-                              "object": "tasks"
-                            }
-                          ]
-                        }
-                      }
-                    ]
                   }
                 }
               }
@@ -1575,37 +1120,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/sync_config"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "a91c434a-6f75-4f5f-85f9-90fd7caa168f",
-                      "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
-                      "provider_id": "ebd1e697-0e4d-4c01-8622-c8c03703ef68",
-                      "config": {
-                        "default_config": {
-                          "period_ms": 60000,
-                          "strategy": "full then incremental"
-                        },
-                        "common_objects": [
-                          {
-                            "object": "contacts"
-                          },
-                          {
-                            "object": "accounts"
-                          }
-                        ],
-                        "standard_objects": [
-                          {
-                            "object": "emails"
-                          },
-                          {
-                            "object": "tasks"
-                          }
-                        ]
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -1636,37 +1150,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/sync_config"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "7a34a7bb-193a-4cca-ac16-63ef739995e1",
-                      "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
-                      "provider_id": "ebd1e697-0e4d-4c01-8622-c8c03703ef68",
-                      "config": {
-                        "default_config": {
-                          "period_ms": 60000,
-                          "strategy": "full then incremental"
-                        },
-                        "common_objects": [
-                          {
-                            "object": "contacts"
-                          },
-                          {
-                            "object": "accounts"
-                          }
-                        ],
-                        "standard_objects": [
-                          {
-                            "object": "emails"
-                          },
-                          {
-                            "object": "tasks"
-                          }
-                        ]
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -1691,37 +1174,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/sync_config"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "ee2b63fa-edec-4875-b2f5-921d3b13ca83",
-                      "destination_id": "0a292508-d254-4929-98d3-dc23416efff8",
-                      "provider_id": "ebd1e697-0e4d-4c01-8622-c8c03703ef68",
-                      "config": {
-                        "default_config": {
-                          "period_ms": 60000,
-                          "strategy": "full then incremental"
-                        },
-                        "common_objects": [
-                          {
-                            "object": "contacts"
-                          },
-                          {
-                            "object": "accounts"
-                          }
-                        ],
-                        "standard_objects": [
-                          {
-                            "object": "emails"
-                          },
-                          {
-                            "object": "tasks"
-                          }
-                        ]
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -1763,32 +1215,6 @@
                   "items": {
                     "$ref": "#/components/schemas/connection"
                   }
-                },
-                "examples": {
-                  "Example": {
-                    "value": [
-                      {
-                        "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6b",
-                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-                        "customer_id": "my-customer-1",
-                        "status": "available",
-                        "provider_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
-                        "provider_name": "salesforce",
-                        "category": "crm",
-                        "instance_url": "https://mycompany-dev-ed.develop.my.salesforce.com"
-                      },
-                      {
-                        "id": "e888cedf-e9d0-42c5-9485-2d72984faef7",
-                        "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-                        "customer_id": "my-customer-2",
-                        "status": "available",
-                        "provider_id": "db40a684-3150-46d2-bfd2-acb341a72681",
-                        "provider_name": "hubspot",
-                        "category": "crm",
-                        "instance_url": "https://app.hubspot.com/contacts/1234567"
-                      }
-                    ]
-                  }
                 }
               }
             }
@@ -1797,7 +1223,8 @@
       },
       "post": {
         "operationId": "createConnection",
-        "summary": "Create a connection (for providers with API key authentication). Use Embedded Links for OAuth 2.0.",
+        "summary": "Create a connection",
+        "description": "This endpoint is for providers that use API key or access key for authentication. Please use [Embedded Links](https://docs.supaglue.com/platform/managed-auth#oauth-20) for providers that support Oauth2 for authentication.",
         "tags": [
           "Connections"
         ],
@@ -1815,23 +1242,26 @@
                 "oneOf": [
                   {
                     "type": "object",
+                    "title": "API key",
                     "properties": {
                       "provider_name": {
                         "type": "string",
                         "enum": [
                           "apollo"
-                        ]
+                        ],
+                        "example": "apollo"
                       },
                       "category": {
                         "type": "string",
                         "enum": [
                           "engagement"
-                        ]
+                        ],
+                        "example": "engagement"
                       },
                       "api_key": {
                         "type": "string",
                         "description": "API key for the connected customer.",
-                        "example": 123456
+                        "example": "e0c5545d-77b8-458d-b4bf-fc701a9cecac"
                       }
                     },
                     "required": [
@@ -1842,26 +1272,31 @@
                   },
                   {
                     "type": "object",
+                    "title": "Access key",
                     "properties": {
                       "provider_name": {
                         "type": "string",
                         "enum": [
                           "gong"
-                        ]
+                        ],
+                        "example": "gong"
                       },
                       "category": {
                         "type": "string",
                         "enum": [
                           "no_category"
-                        ]
+                        ],
+                        "example": "no_category"
                       },
                       "access_key": {
                         "type": "string",
-                        "description": "Access key for the connected customer."
+                        "description": "Access key for the connected customer.",
+                        "example": "e0c5545d-77b8-458d-b4bf-fc701a9cecac"
                       },
                       "access_key_secret": {
                         "type": "string",
-                        "description": "Access key secret for the connected customer."
+                        "description": "Access key secret for the connected customer.",
+                        "example": "258a80aa-2e9b-40b0-8d7a-28f858a856f3"
                       }
                     },
                     "required": [
@@ -1895,8 +1330,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+            "type": "string"
           }
         }
       ]
@@ -1904,7 +1338,8 @@
     "/customers/{customer_id}/connections/_provider_user_id": {
       "get": {
         "operationId": "getProviderUserId",
-        "summary": "Get provider logged in user ID",
+        "summary": "Get logged in user ID",
+        "description": "This endpoint returns the ID of the logged in user. This is sometimes known as the owner ID.",
         "tags": [
           "Connections"
         ],
@@ -1933,15 +1368,11 @@
                   "properties": {
                     "user_id": {
                       "type": "string",
-                      "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                      "description": "The ID of the logged in user. The ID originates from your customer's third-party Provider (e.g. MS Dynamics 365 Sales)."
                     }
-                  }
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "example": "70115e3c-2700-4112-b28f-2706e08570e6"
-                    }
+                  },
+                  "example": {
+                    "user_id": "70115e3c-2700-4112-b28f-2706e08570e6"
                   }
                 }
               }
@@ -1955,8 +1386,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "your-customers-unique-application-id"
+            "type": "string"
           }
         }
       ]
@@ -1988,25 +1418,11 @@
                       "properties": {
                         "user_id": {
                           "type": "string",
-                          "example": "70115e3c-2700-4112-b28f-2706e08570e6"
+                          "description": "The id of the user associated with this connection. This is sometimes also known as the owner."
                         }
                       }
                     }
                   ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "id": "9572d08b-f19f-48cc-a992-1eb7031d3f6c",
-                      "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-                      "customer_id": "my-customer-1",
-                      "status": "available",
-                      "provider_id": "9572d08b-f19f-48cc-a992-1eb7031d3f6a",
-                      "provider_name": "salesforce",
-                      "category": "crm",
-                      "instance_url": "https://supaglue-dev-ed.develop.my.salesforce.com"
-                    }
-                  }
                 }
               }
             }
@@ -2026,7 +1442,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Connection"
+            "description": "An empty body is returned on successful deletion."
           }
         }
       },
@@ -2036,8 +1452,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+            "type": "string"
           }
         },
         {
@@ -2045,102 +1460,10 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+            "type": "string"
           }
         }
       ]
-    },
-    "/webhook": {
-      "get": {
-        "operationId": "getWebhook",
-        "tags": [
-          "Webhooks"
-        ],
-        "summary": "Get webhook",
-        "description": "Get webhook details",
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Applications",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/webhook"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "url": "https://api.supaglue.io",
-                      "notify_on_sync_success": true,
-                      "notify_on_sync_error": true,
-                      "notify_on_connection_success": true,
-                      "notify_on_connection_error": true
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "operationId": "createWebhook",
-        "summary": "Create webhook",
-        "tags": [
-          "Webhooks"
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/webhook"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Webhook created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/webhook"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "operationId": "deleteWebhook",
-        "summary": "Delete webhook",
-        "tags": [
-          "Webhooks"
-        ],
-        "parameters": [],
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Webhook deleted"
-          }
-        }
-      }
     },
     "/syncs": {
       "get": {
@@ -2154,7 +1477,7 @@
           }
         ],
         "summary": "Get Syncs",
-        "description": "Get a list of Sync objects.",
+        "description": "Get a list of Syncs.",
         "parameters": [
           {
             "name": "cursor",
@@ -2170,7 +1493,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "example": "3804695"
+              "example": "100"
             },
             "description": "Number of results to return per page"
           },
@@ -2201,7 +1524,8 @@
                 "common",
                 "standard",
                 "custom"
-              ]
+              ],
+              "example": "standard"
             },
             "description": "The object type to filter by"
           },
@@ -2218,7 +1542,8 @@
             "name": "entity_id",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "e74b5a4f-f252-4a6c-940c-f35873498543"
             },
             "description": "The entity id to filter by"
           }
@@ -2272,30 +1597,6 @@
                 "oneOf": [
                   {
                     "type": "object",
-                    "title": "Data model: Objects",
-                    "properties": {
-                      "object_type": {
-                        "type": "string",
-                        "enum": [
-                          "common",
-                          "standard",
-                          "custom"
-                        ],
-                        "description": "The object type to filter by"
-                      },
-                      "object": {
-                        "type": "string",
-                        "example": "contact",
-                        "description": "The object to filter by"
-                      }
-                    },
-                    "required": [
-                      "object_type",
-                      "object"
-                    ]
-                  },
-                  {
-                    "type": "object",
                     "title": "Data model: Entities",
                     "properties": {
                       "entity_id": {
@@ -2305,6 +1606,54 @@
                     },
                     "required": [
                       "entity_id"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "Data model: Objects",
+                    "properties": {
+                      "object_type": {
+                        "type": "string",
+                        "enum": [
+                          "common",
+                          "standard",
+                          "custom"
+                        ],
+                        "example": "standard",
+                        "description": "The object type to filter by"
+                      },
+                      "object": {
+                        "type": "string",
+                        "example": "Contact",
+                        "description": "The Provider object to filter by (case sensitive)"
+                      }
+                    },
+                    "required": [
+                      "object_type",
+                      "object"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "Data model: Common Schema",
+                    "properties": {
+                      "object_type": {
+                        "type": "string",
+                        "enum": [
+                          "common"
+                        ],
+                        "example": "common",
+                        "description": "The object type to filter by"
+                      },
+                      "object": {
+                        "type": "string",
+                        "example": "contact",
+                        "description": "The Supaglue object to filter by"
+                      }
+                    },
+                    "required": [
+                      "object_type",
+                      "object"
                     ]
                   }
                 ]
@@ -2354,6 +1703,20 @@
                 "oneOf": [
                   {
                     "type": "object",
+                    "title": "Data model: Entities",
+                    "properties": {
+                      "entity_id": {
+                        "type": "string",
+                        "example": "cfba6060-c43a-4a63-8a8c-501c6099f8b0",
+                        "description": "The entity id to filter by"
+                      }
+                    },
+                    "required": [
+                      "entity_id"
+                    ]
+                  },
+                  {
+                    "type": "object",
                     "title": "Data model: Objects",
                     "properties": {
                       "object_type": {
@@ -2363,6 +1726,7 @@
                           "standard",
                           "custom"
                         ],
+                        "example": "standard",
                         "description": "The object type to filter by"
                       },
                       "object": {
@@ -2374,19 +1738,6 @@
                     "required": [
                       "object_type",
                       "object"
-                    ]
-                  },
-                  {
-                    "type": "object",
-                    "title": "Data model: Entities",
-                    "properties": {
-                      "entity_id": {
-                        "type": "string",
-                        "description": "The entity id to filter by"
-                      }
-                    },
-                    "required": [
-                      "entity_id"
                     ]
                   }
                 ]
@@ -2401,6 +1752,14 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/sync"
+                },
+                "example": {
+                  "id": "2caab904-3c7c-4894-8c82-4c28913b3419",
+                  "type": "entity",
+                  "entity_id": "db602f88-7a8c-44f0-8932-c92f1e033494",
+                  "connection_id": "da732713-2ff7-4f3b-8728-257a026177cd",
+                  "sync_config_id": "f2b3ea2a-6a1e-4983-91f1-92a4db4d7abd",
+                  "paused": false
                 }
               }
             }
@@ -2436,34 +1795,6 @@
                 "oneOf": [
                   {
                     "type": "object",
-                    "title": "Data model: Objects",
-                    "properties": {
-                      "object_type": {
-                        "type": "string",
-                        "enum": [
-                          "common",
-                          "standard",
-                          "custom"
-                        ],
-                        "description": "The object type to filter by"
-                      },
-                      "object": {
-                        "type": "string",
-                        "example": "contact",
-                        "description": "The object to filter by"
-                      },
-                      "perform_full_refresh": {
-                        "type": "boolean",
-                        "example": true
-                      }
-                    },
-                    "required": [
-                      "object_type",
-                      "object"
-                    ]
-                  },
-                  {
-                    "type": "object",
                     "title": "Data model: Entities",
                     "properties": {
                       "entity_id": {
@@ -2477,6 +1808,61 @@
                     },
                     "required": [
                       "entity_id"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "Data model: Objects",
+                    "properties": {
+                      "object_type": {
+                        "type": "string",
+                        "enum": [
+                          "standard",
+                          "custom"
+                        ],
+                        "description": "The object type to filter by",
+                        "example": "standard"
+                      },
+                      "object": {
+                        "type": "string",
+                        "example": "contact",
+                        "description": "The Provider object to filter by (case sensitive)"
+                      },
+                      "perform_full_refresh": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    },
+                    "required": [
+                      "object_type",
+                      "object"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "Data model: Common Schema",
+                    "properties": {
+                      "object_type": {
+                        "type": "string",
+                        "enum": [
+                          "common"
+                        ],
+                        "description": "The object type to filter by",
+                        "example": "common"
+                      },
+                      "object": {
+                        "type": "string",
+                        "example": "contact",
+                        "description": "The Supaglue object to filter by"
+                      },
+                      "perform_full_refresh": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    },
+                    "required": [
+                      "object_type",
+                      "object"
                     ]
                   }
                 ]
@@ -2518,7 +1904,7 @@
           }
         ],
         "summary": "Get SyncRuns",
-        "description": "Get a list of SyncRun objects.",
+        "description": "Get a list of SyncRuns.",
         "parameters": [
           {
             "name": "cursor",
@@ -2534,7 +1920,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "example": "3804695"
+              "example": "100"
             },
             "description": "Number of results to return per page"
           },
@@ -2565,7 +1951,8 @@
                 "common",
                 "standard",
                 "custom"
-              ]
+              ],
+              "example": "standard"
             }
           },
           {
@@ -2573,7 +1960,7 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "example": "contact"
+              "example": "account"
             },
             "description": "The object to filter by"
           },
@@ -2581,7 +1968,8 @@
             "name": "entity_id",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "example": "e74b5a4f-f252-4a6c-940c-f35873498543"
             },
             "description": "The entity id to filter by"
           }
@@ -2608,40 +1996,6 @@
                       }
                     }
                   ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "next": "sjkflwbajkbbkajwbcs",
-                      "previous": null,
-                      "results": [
-                        {
-                          "object_type": "common",
-                          "object": "account",
-                          "start_timestamp": "2023-02-22T19:55:17.559Z",
-                          "status": "IN_PROGRESS",
-                          "application_id": "3217ea51-11c8-43c9-9547-6f197e02e5e4",
-                          "customer_id": "my-customer-1",
-                          "provider_name": "hubspot",
-                          "category": "crm",
-                          "connection_id": "f723e58c-3034-4056-babf-a8871ac12480"
-                        },
-                        {
-                          "object_type": "common",
-                          "object": "contact",
-                          "start_timestamp": "2023-02-22T19:50:17.559Z",
-                          "end_timestamp": "2023-02-22T20:50:17.559Z",
-                          "status": "ERROR",
-                          "error_message": "Error: Something went wrong",
-                          "application_id": "3217ea51-11c8-43c9-9547-6f197e02e5e4",
-                          "customer_id": "my-customer-1",
-                          "provider_name": "hubspot",
-                          "category": "crm",
-                          "connection_id": "f723e58c-3034-4056-babf-a8871ac12480"
-                        }
-                      ]
-                    }
-                  }
                 }
               }
             }
@@ -2661,31 +2015,31 @@
     },
     {
       "name": "Destinations",
-      "description": "A `Destination` is a place where to which data can be written."
+      "description": "A `Destination` is a data store where we write data in your infrastructure."
     },
     {
       "name": "Providers",
-      "description": "A `Provider` is a CRM or other system that we can connect to."
+      "description": "A `Provider` is a third-party SaaS tool we can connect to (e.g. Salesforce)."
     },
     {
       "name": "Properties",
-      "description": "A `Property` is a field in a Provider Object."
+      "description": "A `Property` is a field in a Provider object, e.g., `FirstName` on a Salesforce `Contact` object."
     },
     {
       "name": "Schemas",
-      "description": "A `Schema` is a description of the data that can be synced from a Provider to a Destination or manipulated by the Actions API."
+      "description": "A [`Schema`](https://docs.supaglue.com/platform/objects/overview#schemas) allows you to normalize fields for customers across a single Provider object. Supaglue uses Schemas for Managed Syncs and Actions API."
     },
     {
       "name": "Entities",
-      "description": "An `Entity` is a unified representation of Provider objects that can be synced to a Destination or manipulated by the Actions API."
+      "description": "An [`Entity`](https://docs.supaglue.com/platform/entities/overview) allows you to represent your application data models in Supaglue so customers can map their different Provider objects and fields. Supaglue uses Entities for Managed Syncs and Actions API."
     },
     {
-      "name": "Entity Mappings",
-      "description": "An `Entity Mapping` is a mapping between an Entity and an object with field mappings."
+      "name": "EntityMappings",
+      "description": "An [`Entity Mapping`](https://docs.supaglue.com/platform/entities/overview#entity-mapping) maps an [Entity](https://docs.supaglue.com/platform/entities/overview) to a customer's Provider object and fields. Use Entity Mappings when you use [Entities](https://docs.supaglue.com/platform/entities/overview) as your data model."
     },
     {
-      "name": "Field Mappings",
-      "description": "A `Field Mapping` is a mapping between a Schema field and the field in the Provider."
+      "name": "SchemaMappings",
+      "description": "A `Schema Mapping` is a mapping between a [Schema](https://docs.supaglue.com/platform/objects/overview#schemas) field and fields in your customer's Provider object."
     },
     {
       "name": "SyncConfigs",
@@ -2776,11 +2130,11 @@
         "properties": {
           "id": {
             "type": "string",
-            "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+            "example": "0c4cb91f-e392-46f5-8934-17496371f932"
           },
           "application_id": {
             "type": "string",
-            "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+            "example": "273e1c75-3b6d-439a-9b8e-c6ac407df92a"
           },
           "category": {
             "$ref": "#/components/schemas/category"
@@ -2790,7 +2144,8 @@
             "enum": [
               "oauth2",
               "api_key"
-            ]
+            ],
+            "example": "oauth2"
           },
           "name": {
             "$ref": "#/components/schemas/provider_name"
@@ -2803,6 +2158,7 @@
           },
           "entity_mappings": {
             "type": "array",
+            "description": "This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview). The object/field mappings (aka [Entity Mappings](https://docs.supaglue.com/platform/entities/overview#entity-mapping)) here are set by you, the developer, and the mappings apply for all your customers.",
             "items": {
               "$ref": "#/components/schemas/provider_entity_mapping"
             }
@@ -2817,7 +2173,55 @@
         ]
       },
       "destination": {
+        "example": {
+          "id": "0a292508-d254-4929-98d3-dc23416efff8",
+          "application_id": "e52286c9-3038-4fa2-a2b8-3ec9759d20cb",
+          "name": "My Postgres Destination",
+          "type": "postgres",
+          "config": {
+            "host": "production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com",
+            "port": 5432,
+            "database": "postgres_prod_db",
+            "schema": "public",
+            "user": "myuser"
+          }
+        },
         "oneOf": [
+          {
+            "type": "object",
+            "title": "postgres",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "d455d20b-f6dc-4bc3-ab14-b4f21c4b4835"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "726fb798-d854-4c59-9a23-57e3e2f73eae"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Postgres Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
+                ],
+                "example": "postgres"
+              },
+              "config": {
+                "$ref": "#/components/schemas/postgres_config_safe"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config"
+            ]
+          },
           {
             "type": "object",
             "title": "s3",
@@ -2832,50 +2236,17 @@
               },
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My S3 Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "s3"
-                ]
+                ],
+                "example": "s3"
               },
               "config": {
                 "$ref": "#/components/schemas/s3_config_safe"
-              }
-            },
-            "required": [
-              "id",
-              "application_id",
-              "name",
-              "type",
-              "config"
-            ]
-          },
-          {
-            "type": "object",
-            "title": "postgres",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-              },
-              "application_id": {
-                "type": "string",
-                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
-              },
-              "name": {
-                "type": "string",
-                "example": "My Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "postgres"
-                ]
-              },
-              "config": {
-                "$ref": "#/components/schemas/postgres_config_safe"
               }
             },
             "required": [
@@ -2900,13 +2271,14 @@
               },
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My BigQuery Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "bigquery"
-                ]
+                ],
+                "example": "bigquery"
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_safe"
@@ -2934,13 +2306,14 @@
               },
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My Mongo Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "mongodb"
-                ]
+                ],
+                "example": "mongodb"
               },
               "config": {
                 "$ref": "#/components/schemas/mongodb_config_safe"
@@ -2961,12 +2334,12 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "The name of the property as it appears in the API.",
-            "example": "first_name"
+            "description": "The machine name of the property as it appears in the third-party Provider.",
+            "example": "FirstName"
           },
           "label": {
             "type": "string",
-            "description": "The human-readable name of the property.",
+            "description": "The human-readable name of the property as provided by the third-party Provider.",
             "example": "First Name"
           }
         },
@@ -2987,7 +2360,8 @@
             "example": "my-test-bucket"
           },
           "access_key_id": {
-            "type": "string"
+            "type": "string",
+            "example": "AKIAIOSFODNN7EXAMPLE"
           }
         },
         "required": [
@@ -3001,7 +2375,7 @@
         "properties": {
           "host": {
             "type": "string",
-            "example": "https://mydb.com"
+            "example": "production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com"
           },
           "port": {
             "type": "number",
@@ -3009,7 +2383,7 @@
           },
           "database": {
             "type": "string",
-            "example": "my_database"
+            "example": "postgres_prod_db"
           },
           "schema": {
             "type": "string",
@@ -3033,18 +2407,18 @@
         "properties": {
           "project_id": {
             "type": "string",
-            "example": "my-project"
+            "example": "my-gcp-project-id"
           },
           "dataset": {
             "type": "string",
-            "example": "my-dataset"
+            "example": "my_bigquery_dataset"
           },
           "credentials": {
             "type": "object",
             "properties": {
               "client_email": {
                 "type": "string",
-                "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+                "example": "my_bigquery_service_account@my_project.iam.gserviceaccount.com"
               }
             },
             "required": [
@@ -3063,11 +2437,11 @@
         "properties": {
           "host": {
             "type": "string",
-            "example": "mongodb.company.com"
+            "example": "my-cluster.z31wcmj.mongodb.net"
           },
           "database": {
             "type": "string",
-            "example": "my_database"
+            "example": "my-cluster"
           },
           "user": {
             "type": "string",
@@ -3092,10 +2466,12 @@
             "example": "my-test-bucket"
           },
           "access_key_id": {
-            "type": "string"
+            "type": "string",
+            "example": "AKIAIOSFODNN7EXAMPLE"
           },
           "secret_access_key": {
-            "type": "string"
+            "type": "string",
+            "example": "A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS"
           }
         },
         "required": [
@@ -3109,7 +2485,7 @@
         "properties": {
           "host": {
             "type": "string",
-            "example": "https://mydb.com"
+            "example": "production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com"
           },
           "port": {
             "type": "number",
@@ -3117,7 +2493,7 @@
           },
           "database": {
             "type": "string",
-            "example": "my_database"
+            "example": "postgres_prod_db"
           },
           "schema": {
             "type": "string",
@@ -3129,7 +2505,7 @@
           },
           "password": {
             "type": "string",
-            "example": "password"
+            "example": "mysensitivepassword"
           }
         },
         "required": [
@@ -3145,18 +2521,18 @@
         "properties": {
           "project_id": {
             "type": "string",
-            "example": "my-project"
+            "example": "my-gcp-project-id"
           },
           "dataset": {
             "type": "string",
-            "example": "my-dataset"
+            "example": "my_bigquery_dataset"
           },
           "credentials": {
             "type": "object",
             "properties": {
               "client_email": {
                 "type": "string",
-                "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+                "example": "my_bigquery_service_account@my_project.iam.gserviceaccount.com"
               },
               "private_key": {
                 "type": "string",
@@ -3180,11 +2556,11 @@
         "properties": {
           "host": {
             "type": "string",
-            "example": "mongodb.company.com"
+            "example": "my-cluster.z31wcmj.mongodb.net"
           },
           "database": {
             "type": "string",
-            "example": "my_database"
+            "example": "my-cluster"
           },
           "user": {
             "type": "string",
@@ -3192,7 +2568,7 @@
           },
           "password": {
             "type": "string",
-            "example": "password"
+            "example": "mysensitivepassword"
           }
         },
         "required": [
@@ -3213,10 +2589,12 @@
             "example": "my-test-bucket"
           },
           "access_key_id": {
-            "type": "string"
+            "type": "string",
+            "example": "AKIAIOSFODNN7EXAMPLE"
           },
           "secret_access_key": {
-            "type": "string"
+            "type": "string",
+            "example": "A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS"
           }
         },
         "required": [
@@ -3231,7 +2609,7 @@
         "properties": {
           "host": {
             "type": "string",
-            "example": "database.company.com"
+            "example": "production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com"
           },
           "port": {
             "type": "number",
@@ -3239,7 +2617,7 @@
           },
           "database": {
             "type": "string",
-            "example": "my_database"
+            "example": "postgres_prod_db"
           },
           "schema": {
             "type": "string",
@@ -3251,7 +2629,7 @@
           },
           "password": {
             "type": "string",
-            "example": "password"
+            "example": "mysensitivepassword"
           }
         },
         "required": [
@@ -3268,18 +2646,18 @@
         "properties": {
           "project_id": {
             "type": "string",
-            "example": "my-project"
+            "example": "my-gcp-project-id"
           },
           "dataset": {
             "type": "string",
-            "example": "my-dataset"
+            "example": "my_bigquery_dataset"
           },
           "credentials": {
             "type": "object",
             "properties": {
               "client_email": {
                 "type": "string",
-                "example": "supaglue@supaglue-382017.iam.gserviceaccount.com"
+                "example": "my_bigquery_service_account@my_project.iam.gserviceaccount.com"
               },
               "private_key": {
                 "type": "string",
@@ -3303,11 +2681,11 @@
         "properties": {
           "host": {
             "type": "string",
-            "example": "mongodb.company.com"
+            "example": "my-cluster.z31wcmj.mongodb.net"
           },
           "database": {
             "type": "string",
-            "example": "my_database"
+            "example": "my-cluster"
           },
           "user": {
             "type": "string",
@@ -3315,7 +2693,7 @@
           },
           "password": {
             "type": "string",
-            "example": "password"
+            "example": "mysensitivepassword"
           }
         },
         "required": [
@@ -3360,10 +2738,14 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "apolla_first_name",
+                  "description": "Your application field name."
                 },
                 "mapped_name": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "FirstName",
+                  "description": "The field your customer maps. This is a Provider-specified field name. E.g. FirstName for Salesforce."
                 }
               },
               "required": [
@@ -3372,7 +2754,9 @@
             }
           },
           "allow_additional_field_mappings": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Specifies whether your customer can add new application field names.",
+            "example": false
           }
         },
         "required": [
@@ -3415,7 +2799,8 @@
               "type": "object",
               "properties": {
                 "name": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "apolla_first_name"
                 }
               },
               "required": [
@@ -3434,6 +2819,7 @@
       },
       "objects": {
         "type": "object",
+        "description": "This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview). The field mappings (aka [Schemas](https://docs.supaglue.com/platform/objects/overview#schemas)) here are set by you, the developer, and the mappings apply for all your customers.",
         "properties": {
           "common": {
             "type": "array",
@@ -3442,11 +2828,12 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "common_object_name"
+                  "example": "account"
                 },
                 "schema_id": {
                   "type": "string",
-                  "description": "If set, will sync these mapped fields into the raw_data column in addition to the common object. If not set, will fetch all fields as is."
+                  "description": "If set, will sync these mapped fields into the raw_data column in addition to the common object. If not set, will fetch all fields as is.",
+                  "example": "328a8cb3-8345-4b02-b661-ee13b4f76806"
                 }
               },
               "required": [
@@ -3461,10 +2848,11 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "standard_object_name"
+                  "example": "Account"
                 },
                 "schema_id": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "777ea826-5776-4347-9ece-47bbb17ccdd4"
                 }
               },
               "required": [
@@ -3479,10 +2867,11 @@
               "properties": {
                 "name": {
                   "type": "string",
-                  "example": "custom_object_name"
+                  "example": "BattleCard"
                 },
                 "schema_id": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "f234d5ed-fa8c-487c-b495-5acd730436a3"
                 }
               },
               "required": [
@@ -3492,7 +2881,7 @@
           }
         }
       },
-      "object_field_mapping_info": {
+      "object_field_mappings": {
         "type": "object",
         "properties": {
           "object_name": {
@@ -3518,7 +2907,7 @@
           "fields": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/field_mapping_info"
+              "$ref": "#/components/schemas/merged_field_map"
             }
           }
         },
@@ -3530,7 +2919,7 @@
           "fields"
         ]
       },
-      "field_mapping_info": {
+      "merged_field_map": {
         "type": "object",
         "properties": {
           "name": {
@@ -3574,7 +2963,7 @@
           "field_mappings": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/field_mapping"
+              "$ref": "#/components/schemas/object_field_mapping"
             }
           }
         },
@@ -3584,52 +2973,20 @@
           "field_mappings"
         ]
       },
-      "field_mapping": {
+      "object_field_mapping": {
         "type": "object",
         "properties": {
           "schema_field": {
-            "type": "string"
+            "type": "string",
+            "example": "apolla_first_name"
           },
           "mapped_field": {
-            "type": "string"
+            "type": "string",
+            "example": "FirstName"
           }
         },
         "required": [
           "schema_field"
-        ]
-      },
-      "add_object": {
-        "allOf": [
-          {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "object_name"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "common",
-                  "standard",
-                  "custom"
-                ]
-              },
-              "enable_sync": {
-                "type": "boolean"
-              },
-              "schema_id": {
-                "type": "string"
-              },
-              "schema": {
-                "$ref": "#/components/schemas/create_update_schema"
-              }
-            },
-            "required": [
-              "name",
-              "type"
-            ]
-          }
         ]
       },
       "connection": {
@@ -3669,10 +3026,11 @@
           },
           "instance_url": {
             "type": "string",
-            "description": "Instance URL for the connected customer.",
-            "example": "https://app.hubspot.com/contacts/123456"
+            "example": "https://app.hubspot.com/contacts/123456",
+            "description": "Instance URL for the connected customer."
           },
           "schema_mappings_config": {
+            "description": "This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview#schemas). The field mappings here are set by your customers using the [Field Mappings API](https://docs.supaglue.com/api/v2/mgmt/update-object-field-mappings).",
             "type": "object",
             "properties": {
               "common_objects": {
@@ -3681,12 +3039,13 @@
                   "type": "object",
                   "properties": {
                     "object": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Contact__c"
                     },
                     "field_mappings": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/field_mapping"
+                        "$ref": "#/components/schemas/object_field_mapping"
                       }
                     }
                   },
@@ -3702,15 +3061,17 @@
                   "type": "object",
                   "properties": {
                     "object": {
-                      "type": "string"
+                      "type": "string",
+                      "example": "Contact"
                     },
                     "field_mappings": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/field_mapping"
+                        "$ref": "#/components/schemas/object_field_mapping"
                       }
                     }
                   },
+                  "example": null,
                   "required": [
                     "object",
                     "field_mappings"
@@ -3721,9 +3082,11 @@
           },
           "entity_mappings": {
             "type": "array",
+            "description": "This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview#entity-mapping). The object/field mappings here are set by your customers using the [Entity Mappings API](https://docs.supaglue.com/api/v2/mgmt/upsert-entity-mapping).",
             "items": {
               "$ref": "#/components/schemas/connection_entity_mapping"
-            }
+            },
+            "example": []
           }
         },
         "required": [
@@ -3782,18 +3145,21 @@
         "properties": {
           "default_config": {
             "type": "object",
+            "description": "Configuration options for \"how\" to sync.",
             "properties": {
               "period_ms": {
                 "type": "integer",
                 "minimum": 60000,
-                "example": 60000
+                "example": 60000,
+                "description": "The period (in milliseconds) to run the sync."
               },
               "strategy": {
                 "type": "string",
                 "enum": [
                   "full then incremental",
                   "full only"
-                ]
+                ],
+                "description": "\\\"full then incremental\\\" will run a full sync on the first run, then incremental syncs. \\\"full only\\\" will run a full sync on every run."
               },
               "auto_start_on_connection": {
                 "type": "boolean",
@@ -3806,13 +3172,15 @@
             ]
           },
           "common_objects": {
+            "description": "A list of Supaglue objects to be synced.",
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
                 "object": {
                   "type": "string",
-                  "example": "contacts"
+                  "description": "The Supaglue object name",
+                  "example": "contact"
                 }
               },
               "required": [
@@ -3821,13 +3189,15 @@
             }
           },
           "standard_objects": {
+            "description": "A list of case-sensitive Provider objects to be synced.",
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
                 "object": {
                   "type": "string",
-                  "example": "contacts"
+                  "description": "The Provider object name (case sensitive)",
+                  "example": "Contact"
                 }
               },
               "required": [
@@ -3836,13 +3206,15 @@
             }
           },
           "custom_objects": {
+            "description": "A list of case-sensitive Provider objects to be synced.",
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
                 "object": {
                   "type": "string",
-                  "example": "contacts"
+                  "description": "The Supaglue object name (case sensitive)",
+                  "example": "Contact__c"
                 }
               },
               "required": [
@@ -3856,7 +3228,8 @@
               "type": "object",
               "properties": {
                 "entity_id": {
-                  "type": "string"
+                  "type": "string",
+                  "example": "3a82409f-c98f-4d25-bbd8-3335de3f12cc"
                 }
               },
               "required": [
@@ -3867,16 +3240,11 @@
         },
         "required": [
           "default_config"
-        ],
-        "example": {
-          "default_config": {
-            "period_ms": 60000,
-            "strategy": "full then incremental"
-          }
-        }
+        ]
       },
       "create_provider_config": {
         "type": "object",
+        "description": "An object that stores Oauth2/API key/access key related credentials.",
         "properties": {
           "provider_app_id": {
             "type": "string",
@@ -3885,7 +3253,7 @@
           "use_managed_oauth": {
             "type": "boolean",
             "description": "True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials.",
-            "example": false
+            "example": true
           },
           "oauth": {
             "type": "object",
@@ -3893,9 +3261,17 @@
               "oauth_scopes": {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "example": "crm.objects.contacts.read"
-                }
+                  "type": "string"
+                },
+                "example": [
+                  "crm.objects.contacts.read",
+                  "crm.objects.companies.read",
+                  "crm.objects.deals.read",
+                  "crm.objects.owners.read",
+                  "crm.objects.contacts.write",
+                  "crm.objects.companies.write",
+                  "crm.objects.deals.write"
+                ]
               },
               "credentials": {
                 "type": "object",
@@ -3924,33 +3300,14 @@
         "required": [
           "provider_app_id",
           "oauth"
-        ],
-        "example": {
-          "provider_app_id": "my_app_id",
-          "use_managed_oauth": true,
-          "oauth": {
-            "oauth_scopes": [
-              "crm.objects.contacts.read",
-              "crm.objects.companies.read",
-              "crm.objects.deals.read",
-              "crm.objects.owners.read",
-              "crm.objects.contacts.write",
-              "crm.objects.companies.write",
-              "crm.objects.deals.write"
-            ],
-            "credentials": {
-              "oauth_client_id": "7393b5a4-5e20-4648-87af-b7b297793fd1",
-              "oauth_client_secret": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
-            }
-          }
-        }
+        ]
       },
       "update_provider_config": {
         "type": "object",
+        "description": "An object that stores Oauth2/API key/access key related credentials.",
         "properties": {
           "provider_app_id": {
-            "type": "string",
-            "example": "my_app_id"
+            "type": "string"
           },
           "oauth": {
             "type": "object",
@@ -3958,20 +3315,17 @@
               "oauth_scopes": {
                 "type": "array",
                 "items": {
-                  "type": "string",
-                  "example": "crm.objects.contacts.read"
+                  "type": "string"
                 }
               },
               "credentials": {
                 "type": "object",
                 "properties": {
                   "oauth_client_id": {
-                    "type": "string",
-                    "example": "7393b5a4-5e20-4648-87af-b7b297793fd1"
+                    "type": "string"
                   },
                   "oauth_client_secret": {
-                    "type": "string",
-                    "example": "941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a"
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -4060,26 +3414,22 @@
         "oneOf": [
           {
             "type": "object",
+            "title": "Data model: Entities",
             "properties": {
               "id": {
-                "type": "string"
+                "type": "string",
+                "example": "7026e4e8-15d7-48d8-b997-f2592b654619"
               },
               "type": {
                 "type": "string",
                 "enum": [
-                  "object"
-                ]
+                  "entity"
+                ],
+                "example": "entity"
               },
-              "object_type": {
+              "entity_id": {
                 "type": "string",
-                "enum": [
-                  "common",
-                  "standard",
-                  "custom"
-                ]
-              },
-              "object": {
-                "type": "string"
+                "example": "94e6cb6c-0ec8-423f-8873-21054979a6b1"
               },
               "connection_id": {
                 "type": "string",
@@ -4090,7 +3440,58 @@
                 "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
               },
               "paused": {
-                "type": "boolean"
+                "type": "boolean",
+                "example": false
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "entity_id",
+              "connection_id",
+              "sync_config_id",
+              "paused"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "Data model: Objects",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "7026e4e8-15d7-48d8-b997-f2592b654619"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "object"
+                ],
+                "example": "object"
+              },
+              "object_type": {
+                "type": "string",
+                "enum": [
+                  "standard",
+                  "custom"
+                ],
+                "example": "standard"
+              },
+              "object": {
+                "type": "string",
+                "example": "contact",
+                "description": "The Provider's object name (case sensitive)"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean",
+                "example": false
               }
             },
             "required": [
@@ -4105,18 +3506,30 @@
           },
           {
             "type": "object",
+            "title": "Data model: Common Schema",
             "properties": {
               "id": {
-                "type": "string"
+                "type": "string",
+                "example": "7026e4e8-15d7-48d8-b997-f2592b654619"
               },
               "type": {
                 "type": "string",
                 "enum": [
-                  "entity"
-                ]
+                  "object"
+                ],
+                "example": "object"
               },
-              "entity_id": {
-                "type": "string"
+              "object_type": {
+                "type": "string",
+                "enum": [
+                  "common"
+                ],
+                "example": "standard"
+              },
+              "object": {
+                "type": "string",
+                "example": "contact",
+                "description": "Supaglue's object name"
               },
               "connection_id": {
                 "type": "string",
@@ -4127,13 +3540,15 @@
                 "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
               },
               "paused": {
-                "type": "boolean"
+                "type": "boolean",
+                "example": false
               }
             },
             "required": [
               "id",
               "type",
-              "entity_id",
+              "object_type",
+              "object",
               "connection_id",
               "sync_config_id",
               "paused"
@@ -4145,26 +3560,22 @@
         "oneOf": [
           {
             "type": "object",
+            "title": "Data model: Entities",
             "properties": {
               "id": {
-                "type": "string"
+                "type": "string",
+                "example": "971cb76d-9558-42fe-8f3b-8a531c32bd5f"
               },
               "type": {
                 "type": "string",
                 "enum": [
-                  "object"
-                ]
+                  "entity"
+                ],
+                "example": "entity"
               },
-              "object_type": {
+              "entity_id": {
                 "type": "string",
-                "enum": [
-                  "common",
-                  "standard",
-                  "custom"
-                ]
-              },
-              "object": {
-                "type": "string"
+                "example": "70da3830-b717-49cb-91f0-22fb3f09a97a"
               },
               "connection_id": {
                 "type": "string",
@@ -4175,7 +3586,68 @@
                 "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
               },
               "paused": {
-                "type": "boolean"
+                "type": "boolean",
+                "example": false
+              },
+              "provider_name": {
+                "type": "string",
+                "example": "hubspot"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "my-customer-1"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "entity_id",
+              "connection_id",
+              "sync_config_id",
+              "paused",
+              "provider_name",
+              "customer_id"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "Data model: Objects",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "971cb76d-9558-42fe-8f3b-8a531c32bd5f"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "object"
+                ],
+                "example": "object"
+              },
+              "object_type": {
+                "type": "string",
+                "enum": [
+                  "common",
+                  "standard",
+                  "custom"
+                ],
+                "example": "standard"
+              },
+              "object": {
+                "type": "string",
+                "example": "contact"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean",
+                "example": false
               },
               "provider_name": {
                 "type": "string",
@@ -4191,52 +3663,6 @@
               "type",
               "object_type",
               "object",
-              "connection_id",
-              "sync_config_id",
-              "paused",
-              "provider_name",
-              "customer_id"
-            ]
-          },
-          {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "entity"
-                ]
-              },
-              "entity_id": {
-                "type": "string"
-              },
-              "connection_id": {
-                "type": "string",
-                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
-              },
-              "sync_config_id": {
-                "type": "string",
-                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
-              },
-              "paused": {
-                "type": "boolean"
-              },
-              "provider_name": {
-                "type": "string",
-                "example": "hubspot"
-              },
-              "customer_id": {
-                "type": "string",
-                "example": "my-customer-1"
-              }
-            },
-            "required": [
-              "id",
-              "type",
-              "entity_id",
               "connection_id",
               "sync_config_id",
               "paused",
@@ -4672,20 +4098,21 @@
         "oneOf": [
           {
             "type": "object",
-            "title": "s3",
+            "title": "postgres",
             "properties": {
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My Postgres Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
-                  "s3"
-                ]
+                  "postgres"
+                ],
+                "example": "postgres"
               },
               "config": {
-                "$ref": "#/components/schemas/s3_config_unsafe"
+                "$ref": "#/components/schemas/postgres_config_unsafe"
               }
             },
             "required": [
@@ -4696,20 +4123,21 @@
           },
           {
             "type": "object",
-            "title": "postgres",
+            "title": "s3",
             "properties": {
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My S3 Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
-                  "postgres"
-                ]
+                  "s3"
+                ],
+                "example": "s3"
               },
               "config": {
-                "$ref": "#/components/schemas/postgres_config_unsafe"
+                "$ref": "#/components/schemas/s3_config_unsafe"
               }
             },
             "required": [
@@ -4724,13 +4152,14 @@
             "properties": {
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My BigQuery Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "bigquery"
-                ]
+                ],
+                "example": "bigquery"
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_unsafe"
@@ -4748,13 +4177,14 @@
             "properties": {
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My MongoDB Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "mongodb"
-                ]
+                ],
+                "example": "mongodb"
               },
               "config": {
                 "$ref": "#/components/schemas/mongodb_config_unsafe"
@@ -4769,23 +4199,36 @@
         ]
       },
       "update_destination": {
+        "example": {
+          "name": "My Postgres Destination",
+          "type": "postgres",
+          "config": {
+            "host": "production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com",
+            "port": 5432,
+            "database": "postgres_prod_db",
+            "schema": "public",
+            "user": "myuser",
+            "password": "mysensitivepassword"
+          }
+        },
         "oneOf": [
           {
             "type": "object",
-            "title": "s3",
+            "title": "postgres",
             "properties": {
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My Postgres Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
-                  "s3"
-                ]
+                  "postgres"
+                ],
+                "example": "postgres"
               },
               "config": {
-                "$ref": "#/components/schemas/s3_config_at_least_safe"
+                "$ref": "#/components/schemas/postgres_config_at_least_safe"
               }
             },
             "required": [
@@ -4796,20 +4239,21 @@
           },
           {
             "type": "object",
-            "title": "postgres",
+            "title": "s3",
             "properties": {
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My S3 Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
-                  "postgres"
-                ]
+                  "s3"
+                ],
+                "example": "s3"
               },
               "config": {
-                "$ref": "#/components/schemas/postgres_config_at_least_safe"
+                "$ref": "#/components/schemas/s3_config_at_least_safe"
               }
             },
             "required": [
@@ -4824,13 +4268,14 @@
             "properties": {
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My BigQuery Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "bigquery"
-                ]
+                ],
+                "example": "bigquery"
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_at_least_safe"
@@ -4848,13 +4293,14 @@
             "properties": {
               "name": {
                 "type": "string",
-                "example": "My Destination"
+                "example": "My MongoDB Destination"
               },
               "type": {
                 "type": "string",
                 "enum": [
                   "mongodb"
-                ]
+                ],
+                "example": "mongodb"
               },
               "config": {
                 "$ref": "#/components/schemas/mongodb_config_at_least_safe"
@@ -4908,37 +4354,6 @@
         "required": [
           "type",
           "name"
-        ]
-      },
-      "webhook": {
-        "type": "object",
-        "properties": {
-          "url": {
-            "type": "string"
-          },
-          "notify_on_sync_success": {
-            "type": "boolean"
-          },
-          "notify_on_sync_error": {
-            "type": "boolean"
-          },
-          "notify_on_connection_success": {
-            "type": "boolean"
-          },
-          "notify_on_connection_error": {
-            "type": "boolean"
-          },
-          "headers": {
-            "type": "object",
-            "additionalProperties": true
-          }
-        },
-        "required": [
-          "url",
-          "notify_on_sync_success",
-          "notify_on_sync_error",
-          "notify_on_connection_success",
-          "notify_on_connection_error"
         ]
       },
       "webhook-payload": {
@@ -5069,10 +4484,12 @@
             "type": "string",
             "enum": [
               "standard"
-            ]
+            ],
+            "example": "standard"
           },
           "name": {
-            "type": "string"
+            "type": "string",
+            "example": "Contact"
           }
         },
         "required": [
@@ -5103,7 +4520,8 @@
         "type": "object",
         "properties": {
           "entity_id": {
-            "type": "string"
+            "type": "string",
+            "example": "apolla_contact"
           },
           "object": {
             "$ref": "#/components/schemas/standard_object"
@@ -5213,10 +4631,14 @@
         "type": "object",
         "properties": {
           "entity_field": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the field in your application.",
+            "example": "apolla_first_name"
           },
           "mapped_field": {
-            "type": "string"
+            "type": "string",
+            "description": "The name of the field in your customer's third-party Provider tool (e.g. Salesforce).",
+            "example": "FirstName"
           }
         },
         "required": [
