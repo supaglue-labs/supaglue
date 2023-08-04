@@ -2,16 +2,19 @@ type: object
 properties:
   default_config:
     type: object
+    description: Configuration options for "how" to sync.
     properties:
       period_ms:
         type: integer
         minimum: 60000
         example: 60000
+        description: The period (in milliseconds) to run the sync.
       strategy:
         type: string
         enum:
           - full then incremental
           - full only
+        description: \"full then incremental\" will run a full sync on the first run, then incremental syncs. \"full only\" will run a full sync on every run.
       auto_start_on_connection:
         type: boolean
         description: |
@@ -21,33 +24,39 @@ properties:
       - period_ms
       - strategy
   common_objects:
+    description: A list of Supaglue objects to be synced.
     type: array
     items:
       type: object
       properties:
         object:
           type: string
-          example: contacts
+          description: The Supaglue object name
+          example: contact
       required:
         - object
   standard_objects:
+    description: A list of case-sensitive Provider objects to be synced.
     type: array
     items:
       type: object
       properties:
         object:
           type: string
-          example: contacts
+          description: The Provider object name (case sensitive)
+          example: Contact
       required:
         - object
   custom_objects:
+    description: A list of case-sensitive Provider objects to be synced.
     type: array
     items:
       type: object
       properties:
         object:
           type: string
-          example: contacts
+          description: The Supaglue object name (case sensitive)
+          example: Contact__c
       required:
         - object
   entities:
@@ -57,11 +66,8 @@ properties:
       properties:
         entity_id:
           type: string
+          example: 3a82409f-c98f-4d25-bbd8-3335de3f12cc
       required:
         - entity_id
 required:
   - default_config
-example:
-  default_config:
-    period_ms: 60000
-    strategy: full then incremental

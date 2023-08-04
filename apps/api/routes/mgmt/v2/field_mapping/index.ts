@@ -11,7 +11,6 @@ import type {
   UpdateObjectFieldMappingsResponse,
 } from '@supaglue/schemas/v2/mgmt';
 import type { ObjectFieldMappingInfo, ProviderObject, Schema, SchemaMappingsConfigForObject } from '@supaglue/types';
-import type { ObjectType } from '@supaglue/types/sync';
 import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
@@ -35,7 +34,6 @@ export default function init(app: Router): void {
       const schemaIds = [
         ...(objects?.common?.flatMap((object) => object.schemaId ?? []) ?? []),
         ...(objects?.standard?.flatMap((object) => object.schemaId ?? []) ?? []),
-        ...(objects?.custom?.flatMap((object) => object.schemaId ?? []) ?? []),
       ];
       const schemas = await schemaService.getByIds(schemaIds);
       const out = [
@@ -81,7 +79,7 @@ export default function init(app: Router): void {
 const getObjectFieldMappingInfo = (
   providerObjects: ProviderObject[],
   schemas: Schema[],
-  type: ObjectType,
+  type: 'common' | 'standard',
   schemaMappingsConfigForObject?: SchemaMappingsConfigForObject[]
 ): ObjectFieldMappingInfo[] => {
   return providerObjects.flatMap((object) => {

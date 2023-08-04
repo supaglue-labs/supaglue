@@ -2,7 +2,7 @@ put:
   operationId: upsertEntityMapping
   summary: Upsert entity mapping
   tags:
-    - Entity Mappings
+    - EntityMappings
   parameters: []
   requestBody:
     required: true
@@ -22,7 +22,7 @@ delete:
   operationId: deleteEntityMapping
   summary: Delete entity mapping
   tags:
-    - Entity Mappings
+    - EntityMappings
   security:
     - ApiKeyAuth: []
   responses:

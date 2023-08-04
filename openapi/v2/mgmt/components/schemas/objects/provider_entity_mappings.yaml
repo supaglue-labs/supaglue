@@ -1,0 +1,4 @@
+type: array
+description: This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview). The object/field mappings (aka [Entity Mappings](https://docs.supaglue.com/platform/entities/overview#entity-mapping)) here are set by you, the developer, and the mappings apply for all your customers.
+items:
+  $ref: ./provider_entity_mapping.yaml

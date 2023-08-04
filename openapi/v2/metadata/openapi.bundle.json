@@ -475,12 +475,12 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "The name of the property as it appears in the API.",
-            "example": "first_name"
+            "description": "The machine name of the property as it appears in the third-party Provider.",
+            "example": "FirstName"
           },
           "label": {
             "type": "string",
-            "description": "The human-readable name of the property.",
+            "description": "The human-readable name of the property as provided by the third-party Provider.",
             "example": "First Name"
           }
         },

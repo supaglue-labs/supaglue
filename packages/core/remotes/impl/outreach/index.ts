@@ -6,16 +6,13 @@ import type {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type {
-  Contact,
+  AccountCreateParams,
+  AccountUpdateParams,
   ContactCreateParams,
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
-  Mailbox,
-  Sequence,
-  SequenceState,
   SequenceStateCreateParams,
-  User,
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
@@ -33,11 +30,14 @@ import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
 import {
+  fromOutreachAccountToAccount,
   fromOutreachMailboxToMailbox,
   fromOutreachProspectToContact,
   fromOutreachSequenceStateToSequenceState,
   fromOutreachSequenceToSequence,
   fromOutreachUserToUser,
+  toOutreachAccountCreateParams,
+  toOutreachAccountUpdateParams,
   toOutreachProspectCreateParams,
   toOutreachProspectUpdateParams,
   toOutreachSequenceStateCreateParams,
@@ -95,53 +95,27 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.getContact(id);
+        return await this.#getRecord(id, '/api/v2/prospects', fromOutreachProspectToContact);
       case 'user':
-        return await this.getUser(id);
+        return await this.#getRecord(id, '/api/v2/users', fromOutreachUserToUser);
       case 'sequence':
-        return await this.getSequence(id);
+        return await this.#getRecord(id, '/api/v2/sequences', fromOutreachSequenceToSequence);
       case 'mailbox':
-        return await this.getMailbox(id);
+        return await this.#getRecord(id, '/api/v2/mailboxes', fromOutreachMailboxToMailbox);
       case 'sequence_state':
-        return await this.getSequenceState(id);
+        return await this.#getRecord(id, '/api/v2/sequenceStates', fromOutreachSequenceStateToSequenceState);
+      case 'account':
+        return await this.#getRecord(id, '/api/v2/accounts', fromOutreachAccountToAccount);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
-  async getContact(id: string): Promise<Contact> {
-    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/prospects/${id}`, {
+  async #getRecord<T>(id: string, path: string, mapper: (record: OutreachRecord) => T): Promise<T> {
+    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}${path}/${id}`, {
       headers: this.#headers,
     });
-    return fromOutreachProspectToContact(response.data.data);
-  }
-
-  async getUser(id: string): Promise<User> {
-    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/users/${id}`, {
-      headers: this.#headers,
-    });
-    return fromOutreachUserToUser(response.data.data);
-  }
-
-  async getSequence(id: string): Promise<Sequence> {
-    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequences/${id}`, {
-      headers: this.#headers,
-    });
-    return fromOutreachSequenceToSequence(response.data.data);
-  }
-
-  async getMailbox(id: string): Promise<Mailbox> {
-    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/mailboxes/${id}`, {
-      headers: this.#headers,
-    });
-    return fromOutreachMailboxToMailbox(response.data.data);
-  }
-
-  async getSequenceState(id: string): Promise<SequenceState> {
-    const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}/api/v2/sequenceStates/${id}`, {
-      headers: this.#headers,
-    });
-    return fromOutreachSequenceStateToSequenceState(response.data.data);
+    return mapper(response.data.data);
   }
 
   public override async listCommonObjectRecords(
@@ -150,15 +124,21 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.listContacts(updatedAfter);
+        return await this.#listRecords('/api/v2/prospects', fromOutreachProspectToContact, updatedAfter);
       case 'user':
-        return await this.listUsers(updatedAfter);
+        return await this.#listRecords('/api/v2/users', fromOutreachUserToUser, updatedAfter);
       case 'sequence':
-        return await this.listSequences(updatedAfter);
+        return await this.#listRecords('/api/v2/sequences', fromOutreachSequenceToSequence, updatedAfter);
       case 'mailbox':
-        return await this.listMailboxes(updatedAfter);
+        return await this.#listRecords('/api/v2/mailboxes', fromOutreachMailboxToMailbox, updatedAfter);
       case 'sequence_state':
-        return await this.listSequenceStates(updatedAfter);
+        return await this.#listRecords(
+          '/api/v2/sequenceStates',
+          fromOutreachSequenceStateToSequenceState,
+          updatedAfter
+        );
+      case 'account':
+        return await this.#listRecords('/api/v2/accounts', fromOutreachAccountToAccount, updatedAfter);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
@@ -219,8 +199,8 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     };
   }
 
-  private async listContacts(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/prospects`, updatedAfter);
+  async #listRecords<T>(path: string, mapper: (record: OutreachRecord) => T, updatedAfter?: Date): Promise<Readable> {
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}${path}`, updatedAfter);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -228,83 +208,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.data.map((result) => ({
-              record: fromOutreachProspectToContact(result),
-              emittedAt,
-            }))
-          );
-        },
-        getNextCursorFromPage: (response) => response.links?.next,
-      },
-    ]);
-  }
-
-  private async listUsers(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/users`, updatedAfter);
-    return await paginator([
-      {
-        pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(
-            response.data.map((result) => ({
-              record: fromOutreachUserToUser(result),
-              emittedAt,
-            }))
-          );
-        },
-        getNextCursorFromPage: (response) => response.links?.next,
-      },
-    ]);
-  }
-
-  private async listSequences(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/sequences`, updatedAfter);
-    return await paginator([
-      {
-        pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(
-            response.data.map((result) => ({
-              record: fromOutreachSequenceToSequence(result),
-              emittedAt,
-            }))
-          );
-        },
-        getNextCursorFromPage: (response) => response.links?.next,
-      },
-    ]);
-  }
-
-  private async listMailboxes(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/mailboxes`, updatedAfter);
-    return await paginator([
-      {
-        pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(
-            response.data.map((result) => ({
-              record: fromOutreachMailboxToMailbox(result),
-              emittedAt,
-            }))
-          );
-        },
-        getNextCursorFromPage: (response) => response.links?.next,
-      },
-    ]);
-  }
-
-  private async listSequenceStates(updatedAfter?: Date): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/api/v2/sequenceStates`, updatedAfter);
-    return await paginator([
-      {
-        pageFetcher: normalPageFetcher,
-        createStreamFromPage: (response) => {
-          const emittedAt = new Date();
-          return Readable.from(
-            response.data.map((result) => ({
-              record: fromOutreachSequenceStateToSequenceState(result),
+              record: mapper(result),
               emittedAt,
             }))
           );
@@ -323,6 +227,8 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         return await this.createSequenceState(params as SequenceStateCreateParams);
       case 'contact':
         return await this.createContact(params as ContactCreateParams);
+      case 'account':
+        return await this.createAccount(params as AccountCreateParams);
       case 'sequence':
       case 'mailbox':
       case 'user':
@@ -337,6 +243,18 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     const response = await axios.post<{ data: OutreachRecord }>(
       `${this.#baseURL}/api/v2/prospects`,
       toOutreachProspectCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.data.id.toString();
+  }
+
+  async createAccount(params: AccountCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/accounts`,
+      toOutreachAccountCreateParams(params),
       {
         headers: this.#headers,
       }
@@ -363,6 +281,8 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     switch (commonObjectType) {
       case 'contact':
         return await this.updateContact(params as ContactUpdateParams);
+      case 'account':
+        return await this.updateAccount(params as AccountUpdateParams);
       default:
         throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
@@ -373,6 +293,18 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     const response = await axios.patch<{ data: OutreachRecord }>(
       `${this.#baseURL}/api/v2/prospects/${params.id}`,
       toOutreachProspectUpdateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.data.id.toString();
+  }
+
+  async updateAccount(params: AccountUpdateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.patch<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/accounts/${params.id}`,
+      toOutreachAccountUpdateParams(params),
       {
         headers: this.#headers,
       }

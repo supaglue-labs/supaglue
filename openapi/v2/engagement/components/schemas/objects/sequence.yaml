@@ -42,11 +42,7 @@ required:
   - name
   - tags
   - num_steps
-  - schedule_count
-  - open_count
-  - opt_out_count
-  - reply_count
-  - click_count
+  - metrics
   - created_at
   - updated_at
   - last_modified_at	

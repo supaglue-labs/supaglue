@@ -1,3 +1,4 @@
+description: This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview#schemas). The field mappings here are set by your customers using the [Field Mappings API](https://docs.supaglue.com/api/v2/mgmt/update-object-field-mappings).
 type: object
 properties:
   common_objects:
@@ -7,10 +8,11 @@ properties:
       properties:
         object:
           type: string
+          example: Contact__c
         field_mappings:
           type: array
           items:
-            $ref: ./field_mapping.yaml
+            $ref: ./object_field_mapping.yaml
       required:
         - object
         - field_mappings
@@ -21,10 +23,12 @@ properties:
       properties:
         object:
           type: string
+          example: Contact
         field_mappings:
           type: array
           items:
-            $ref: ./field_mapping.yaml
+            $ref: ./object_field_mapping.yaml
+      example:
       required:
         - object
         - field_mappings

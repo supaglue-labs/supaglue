@@ -1,4 +1,5 @@
 type: object
+description: This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview). The field mappings (aka [Schemas](https://docs.supaglue.com/platform/objects/overview#schemas)) here are set by you, the developer, and the mappings apply for all your customers.
 properties:
   common:
     type: array
@@ -7,10 +8,11 @@ properties:
       properties:
         name:
           type: string
-          example: common_object_name
+          example: account
         schema_id:
           type: string
           description: If set, will sync these mapped fields into the raw_data column in addition to the common object. If not set, will fetch all fields as is.
+          example: 328a8cb3-8345-4b02-b661-ee13b4f76806
       required:
         - name
   standard:
@@ -20,8 +22,9 @@ properties:
       properties:
         name:
           type: string
-          example: standard_object_name
+          example: Account
         schema_id:
           type: string
+          example: 777ea826-5776-4347-9ece-47bbb17ccdd4
       required:
         - name

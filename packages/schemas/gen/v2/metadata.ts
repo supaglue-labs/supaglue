@@ -76,12 +76,12 @@ export interface components {
   schemas: {
     property: {
       /**
-       * @description The name of the property as it appears in the API. 
-       * @example first_name
+       * @description The machine name of the property as it appears in the third-party Provider. 
+       * @example FirstName
        */
       id: string;
       /**
-       * @description The human-readable name of the property. 
+       * @description The human-readable name of the property as provided by the third-party Provider. 
        * @example First Name
        */
       label: string;

@@ -11,7 +11,6 @@ import schema from './schema';
 import sync from './sync';
 import syncConfig from './sync_config';
 import syncRun from './sync_run';
-import webhook from './webhook';
 
 export default function init(app: Router): void {
   const v2Router = Router();
@@ -23,7 +22,6 @@ export default function init(app: Router): void {
   destination(v2Router);
   provider(v2Router);
   schema(v2Router);
-  webhook(v2Router);
   syncConfig(v2Router);
   sync(v2Router);
   syncRun(v2Router);

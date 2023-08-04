@@ -12,18 +12,6 @@ get:
         application/json:
           schema:
             $ref: ../components/schemas/objects/schema.yaml
-          examples:
-            Example:
-              value:
-                id: 0218d76c-b2e1-4c34-ac7d-22b8df065004
-                name: my-schema
-                config:
-                  fields:
-                    - name: field1
-                      mappedName: fieldA
-                    - name: field2
-                      mappedName: fieldB
-                  allow_additional_field_mappings: false
 put:
   operationId: updateSchema
   summary: Update schema
@@ -43,18 +31,6 @@ put:
         application/json:
           schema:
             $ref: ../components/schemas/objects/schema.yaml
-          examples:
-            Example:
-              value:
-                id: 959fd65f-850a-4c53-bc06-9f46facd4444
-                name: my-schema
-                config:
-                  fields:
-                    - name: field1
-                      mappedName: fieldA
-                    - name: field2
-                      mappedName: fieldB
-                  allow_additional_field_mappings: false
 delete:
   operationId: deleteSchema
   summary: Delete schema
@@ -69,18 +45,6 @@ delete:
         application/json:
           schema:
             $ref: ../components/schemas/objects/schema.yaml
-          examples:
-            Example:
-              value:
-                id: b2b0e394-541c-4e5b-b6b5-9eefd412bf8d
-                name: my-schema
-                config:
-                  fields:
-                    - name: field1
-                      mappedName: fieldA
-                    - name: field2
-                      mappedName: fieldB
-                  allow_additional_field_mappings: false
 parameters:
   - name: schema_id
     in: path

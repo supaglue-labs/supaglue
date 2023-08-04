@@ -8,7 +8,6 @@ properties:
     enum:
       - common
       - standard
-      - custom
   allow_additional_field_mappings:
     type: boolean
     example: true
@@ -18,7 +17,7 @@ properties:
   fields:
     type: array
     items:
-      $ref: ./field_mapping_info.yaml
+      $ref: ./merged_field_map.yaml
 required:
   - object_name
   - object_type

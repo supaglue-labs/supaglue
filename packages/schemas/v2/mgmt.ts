@@ -166,20 +166,6 @@ export type UpdateObjectFieldMappingsRequest =
 export type UpdateObjectFieldMappingsResponse =
   operations['updateObjectFieldMappings']['responses'][keyof operations['updateObjectFieldMappings']['responses']]['content']['application/json'];
 
-export type CreateWebhookPathParams = never;
-export type CreateWebhookRequest = operations['createWebhook']['requestBody']['content']['application/json'];
-export type CreateWebhookResponse =
-  operations['createWebhook']['responses'][keyof operations['createWebhook']['responses']]['content']['application/json'];
-
-export type GetWebhookPathParams = never;
-export type GetWebhookRequest = never;
-export type GetWebhookResponse =
-  operations['getWebhook']['responses'][keyof operations['getWebhook']['responses']]['content']['application/json'];
-
-export type DeleteWebhookPathParams = never;
-export type DeleteWebhookRequest = never;
-export type DeleteWebhookResponse = never;
-
 export type GetSyncsPathParams = never;
 export type GetSyncsQueryParams = Required<operations['getSyncs']>['parameters']['query'];
 export type GetSyncsRequest = never;

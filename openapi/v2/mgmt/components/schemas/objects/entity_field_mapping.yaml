@@ -2,8 +2,12 @@ type: object
 properties:
   entity_field:
     type: string
+    description: The name of the field in your application.
+    example: apolla_first_name
   mapped_field:
     type: string
+    description: The name of the field in your customer's third-party Provider tool (e.g. Salesforce).
+    example: FirstName
 required:
   - entity_field
   - mapped_field

@@ -1,8 +1,8 @@
 type: object
+description: An object that stores Oauth2/API key/access key related credentials.
 properties:
   provider_app_id:
     type: string
-    example: my_app_id
   oauth:
     type: object
     properties:
@@ -10,16 +10,13 @@ properties:
         type: array
         items:
           type: string
-          example: crm.objects.contacts.read
       credentials:
         type: object
         properties:
           oauth_client_id:
             type: string
-            example: 7393b5a4-5e20-4648-87af-b7b297793fd1
           oauth_client_secret:
             type: string
-            example: 941b846a-5a8c-48b8-b0e1-41b6d4bc4f1a
         required:
           - oauth_client_id
           - oauth_client_secret

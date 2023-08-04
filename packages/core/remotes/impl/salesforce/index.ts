@@ -351,7 +351,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     heartbeat?: (() => void) | undefined
   ): Promise<Readable> {
     return await this.listStandardObjectRecords(
-      `${object}__c`,
+      object,
       // TODO: Support customer field mappings for custom objects.
       { type: 'inherit_all_fields' },
       modifiedAfter,

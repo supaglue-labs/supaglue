@@ -1,6 +1,6 @@
 type: object
 properties:
-  name: 
+  name:
     type: string
     example: contact
   type:
@@ -8,11 +8,10 @@ properties:
     enum:
       - common
       - standard
-      - custom
   field_mappings:
     type: array
     items:
-      $ref: ./objects/field_mapping.yaml
+      $ref: ./objects/object_field_mapping.yaml
 required:
   - name
   - type
