@@ -15,3 +15,9 @@ required:
   - id
   - custom_object_id
   - data
+example:
+  id: 001Fn00023f8oYYIA0
+  custom_object_id: Account
+  data:
+    Name: Acme Corp
+    Description: We create the best embedded integration platforms.

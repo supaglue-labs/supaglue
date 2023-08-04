@@ -65,7 +65,12 @@ export interface RemoteClient {
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable>;
-  listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable>;
+  listCustomObjectRecords(
+    object: string,
+    fieldsToFetch: FieldsToFetch,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable>;
 
   sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse>;
 
@@ -165,7 +170,12 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new Error('Not implemented');
   }
 
-  public listCustomObjectRecords(object: string, modifiedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  public listCustomObjectRecords(
+    object: string,
+    fieldsToFetch: FieldsToFetch,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
     throw new Error('Not implemented');
   }
 

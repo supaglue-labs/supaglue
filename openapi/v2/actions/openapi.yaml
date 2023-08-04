@@ -72,10 +72,6 @@ components:
       $ref: ./components/schemas/create_update_association.yaml
     association:
       $ref: ./components/schemas/objects/association.yaml
-    entity_or_object:
-      $ref: ./components/schemas/objects/entity_or_object.yaml
-    entity_or_object_record:
-      $ref: ./components/schemas/objects/entity_or_object_record.yaml
     simple_entity_record:
       $ref: ./components/schemas/objects/simple_entity_record.yaml
     errors:

@@ -3,7 +3,7 @@ properties:
   suggested_name:
     type: string
     example: ticket
-    description: The name you'd like to use for the custom object. For some providers, like Salesforce, we might mutate the name, like append `__c`.
+    description: The name you'd like to use for the custom object. For Salesforce, we will append `__c` if necessary. For HubSpot, it will pass through as-is.
   description:
     type: string
     nullable: true

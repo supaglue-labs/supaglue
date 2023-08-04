@@ -347,16 +347,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public override async listCustomObjectRecords(
     object: string,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date | undefined,
     heartbeat?: (() => void) | undefined
   ): Promise<Readable> {
-    return await this.listStandardObjectRecords(
-      object,
-      // TODO: Support customer field mappings for custom objects.
-      { type: 'inherit_all_fields' },
-      modifiedAfter,
-      heartbeat
-    );
+    return await this.listStandardObjectRecords(object, fieldsToFetch, modifiedAfter, heartbeat);
   }
 
   async getCommonPropertiesToFetch(

@@ -16,7 +16,7 @@ type BaseSync = {
 
 export type ObjectSyncArgs = {
   type: 'object';
-  objectType: ObjectType;
+  objectType: 'common' | 'standard';
   object: string;
 };
 

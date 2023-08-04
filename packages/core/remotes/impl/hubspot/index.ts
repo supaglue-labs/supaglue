@@ -583,6 +583,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override async listCustomObjectRecords(
     object: string,
+    fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {

@@ -12,14 +12,6 @@ get:
         application/json:
           schema:
             $ref: ../../components/schemas/objects/custom_object_record.yaml
-          examples:
-            Example:
-              value:
-                id: 001Fn00023f8oYYIA0
-                custom_object_id: Account
-                data:
-                  Name: Acme Corp
-                  Description: We create the best embedded integration platforms.
 patch:
   operationId: updateCustomObjectRecord
   summary: Update Custom Object record

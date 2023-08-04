@@ -113,7 +113,7 @@ export interface components {
     };
     create_update_custom_object: {
       /**
-       * @description The name you'd like to use for the custom object. For some providers, like Salesforce, we might mutate the name, like append `__c`. 
+       * @description The name you'd like to use for the custom object. For Salesforce, we will append `__c` if necessary. For HubSpot, it will pass through as-is. 
        * @example ticket
        */
       suggested_name: string;

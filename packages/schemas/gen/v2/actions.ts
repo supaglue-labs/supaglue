@@ -4,11 +4,6 @@
  */
 
 
-/** OneOf type helpers */
-type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
-type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
-type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
-
 export interface paths {
   "/entities/{entity_name}": {
     /** Create Entity record */
@@ -142,6 +137,16 @@ export interface components {
         [key: string]: unknown;
       };
     };
+    /**
+     * @example {
+     *   "id": "001Fn00023f8oYYIA0",
+     *   "custom_object_id": "Account",
+     *   "data": {
+     *     "Name": "Acme Corp",
+     *     "Description": "We create the best embedded integration platforms."
+     *   }
+     * }
+     */
     custom_object_record: {
       id: string;
       custom_object_id: string;
@@ -186,35 +191,6 @@ export interface components {
       target_record: components["schemas"]["simple_entity_record"];
       association_type_id: string;
     };
-    entity_or_object: OneOf<[{
-      /** @enum {string} */
-      type: "entity";
-      entity_id: string;
-    }, {
-      /** @enum {string} */
-      type: "standard_object";
-      object_name: string;
-    }, {
-      /** @enum {string} */
-      type: "custom_object";
-      object_id: string;
-    }]>;
-    entity_or_object_record: OneOf<[{
-      /** @enum {string} */
-      type: "entity";
-      entity_id: string;
-      id: string;
-    }, {
-      /** @enum {string} */
-      type: "standard_object";
-      object_name: string;
-      id: string;
-    }, {
-      /** @enum {string} */
-      type: "custom_object";
-      object_id: string;
-      id: string;
-    }]>;
     simple_entity_record: {
       id: string;
       entity_id: string;
