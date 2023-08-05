@@ -587,8 +587,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    // Look up the objectTypeId given the object name
-    const objectTypeId = await this.#getObjectTypeIdByCustomObjectName(object);
+    const objectTypeId = object;
     const propertiesToFetch = await this.listPropertiesForRawObjectName(objectTypeId);
     const propertyIds = propertiesToFetch.map(({ id }) => id);
 
