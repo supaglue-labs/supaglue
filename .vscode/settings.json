@@ -38,10 +38,11 @@
     }
   ],
   "files.readonlyInclude": {
-    ".yarn/**": true,
-    "**/gen/**": true,
     "**/node_modules/**": true,
-    "**/yarn.lock": true
+    ".yarn/**": true,
+    "**/yarn.lock": true,
+    "**/openapi.bundle.json": true,
+    "**/gen/**": true
   },
   "githubPullRequests.ignoredPullRequestBranches": ["main"],
   "grammarly.selectors": [
