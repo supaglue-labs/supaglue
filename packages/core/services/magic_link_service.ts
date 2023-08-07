@@ -63,6 +63,7 @@ export class MagicLinkService {
         customerId: `${applicationId}:${params.customerId}`,
         providerId: provider.id,
         url,
+        returnUrl: params.returnUrl,
         expiresAt: new Date(Date.now() + params.expirationSecs * 1000),
         status: 'new',
       },

@@ -23,7 +23,7 @@ export default function Home() {
     await consumeMagicLink(data.magicLink.id);
     mutate({
       code: 'magic_link_already_used',
-      error: 'This magic link has already been consumed',
+      error: 'Magic link has already been consumed',
     });
   };
 
