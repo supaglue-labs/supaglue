@@ -197,7 +197,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
   ): Promise<Readable> {
     return paginator([
       {
-        pageFetcher: this.#getPageFetcherByGet<K, R>(path, modifiedAfter),
+        pageFetcher: this.#getPageFetcherByGet<K, R>(key, path, modifiedAfter),
         createStreamFromPage: ({ [key]: records }) => {
           const emittedAt = new Date();
           return Readable.from(records.map((record) => mapper(record, emittedAt)));
@@ -215,7 +215,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
   ): Promise<Readable> {
     return paginator([
       {
-        pageFetcher: this.#getPageFetcherByPost<K, R>(path, modifiedAfter),
+        pageFetcher: this.#getPageFetcherByPost<K, R>(key, path, modifiedAfter),
         createStreamFromPage: ({ [key]: records }) => {
           const emittedAt = new Date();
           return Readable.from(records.map((record) => mapper(record, emittedAt)));
@@ -226,6 +226,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
   }
 
   #getPageFetcherByGet<K extends string, R extends Record<string, unknown>>(
+    key: K,
     path: string,
     modifiedAfter?: Date
   ): (cursor?: string) => Promise<GongPaginatedResponse<K, R>> {
@@ -238,7 +239,16 @@ class GongClient extends AbstractNoCategoryRemoteClient {
             cursor,
             fromDateTime: modifiedAfter?.toISOString(),
           },
+          validateStatus: (status) => status === 200 || status === 404,
         });
+
+        // Gong returns a 404 when there are no records. We want to return a GongPaginatedResponse with no cursor and empty [key] records
+        data.records = data.records ?? {
+          totalRecords: 0,
+          currentPageSize: 0,
+          currentPageNumber: 0,
+        };
+        data[key] = data[key] ?? [];
 
         return data;
       });
@@ -246,6 +256,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
   }
 
   #getPageFetcherByPost<K extends string, R extends Record<string, unknown>>(
+    key: K,
     path: string,
     modifiedAfter?: Date
   ): (cursor?: string) => Promise<GongPaginatedResponse<K, R>> {
@@ -262,8 +273,17 @@ class GongClient extends AbstractNoCategoryRemoteClient {
           },
           {
             headers: this.getAuthHeaders(),
+            validateStatus: (status) => status === 200 || status === 404,
           }
         );
+
+        // Gong returns a 404 when there are no records. We want to return a GongPaginatedResponse with no cursor and empty [key] records
+        data.records = data.records ?? {
+          totalRecords: 0,
+          currentPageSize: 0,
+          currentPageNumber: 0,
+        };
+        data[key] = data[key] ?? [];
 
         return data;
       });
