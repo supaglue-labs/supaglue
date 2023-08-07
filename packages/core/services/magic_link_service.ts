@@ -27,12 +27,12 @@ export class MagicLinkService {
     return magicLinks.map((magicLink) => fromMagicLinkModel(magicLink));
   }
 
-  public async getById(id: string): Promise<MagicLink> {
+  public async findById(id: string): Promise<MagicLink | null> {
     const magicLink = await this.#prisma.magicLink.findUnique({
       where: { id },
     });
     if (!magicLink) {
-      throw new NotFoundError(`Can't find magic link with id: ${id}`);
+      return null;
     }
     return fromMagicLinkModel(magicLink);
   }
@@ -56,7 +56,8 @@ export class MagicLinkService {
     const url = this.generateMagicLinkUrl(id);
     const magicLink = await this.#prisma.magicLink.create({
       data: {
-        ...params,
+        authType: params.authType,
+        providerName: params.providerName,
         applicationId,
         id,
         customerId: `${applicationId}:${params.customerId}`,
@@ -67,6 +68,25 @@ export class MagicLinkService {
       },
     });
     return fromMagicLinkModel(magicLink);
+  }
+
+  public async consumeMagicLink(id: string): Promise<MagicLink> {
+    const magicLink = await this.#prisma.magicLink.findUnique({
+      where: { id },
+    });
+    if (!magicLink) {
+      throw new NotFoundError(`Can't find magic link with id: ${id}`);
+    }
+    if (magicLink.status !== 'new') {
+      throw new BadRequestError(`Magic link with id: ${id} has already been consumed`);
+    }
+    const updatedMagicLink = await this.#prisma.magicLink.update({
+      where: { id },
+      data: {
+        status: 'consumed',
+      },
+    });
+    return fromMagicLinkModel(updatedMagicLink);
   }
 
   #validateMagicLinkParams(params: MagicLinkCreateParams): void {

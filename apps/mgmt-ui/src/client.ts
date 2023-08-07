@@ -188,6 +188,16 @@ export async function deleteSyncConfig(applicationId: string, syncConfigId: stri
   return await toClientEmptyResponse(result);
 }
 
+export async function consumeMagicLink(linkId: string): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/links/${linkId}/consume`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return await toClientEmptyResponse(result);
+}
+
 export async function createSchema(applicationId: string, data: Omit<Schema, 'id'>): Promise<ClientResponse<Schema>> {
   const result = await fetch(`/api/internal/schemas/create`, {
     method: 'POST',

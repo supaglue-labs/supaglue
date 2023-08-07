@@ -1,9 +1,11 @@
+import { consumeMagicLink } from '@/client';
 import Spinner from '@/components/Spinner';
 import { useMagicLinkData } from '@/hooks/useMagicLinkData';
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import type { GetServerSideProps } from 'next';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
@@ -12,7 +14,18 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 export default function Home() {
-  const { data, isLoading, error } = useMagicLinkData();
+  const { data, isLoading, error, mutate } = useMagicLinkData();
+
+  const onConsume = async () => {
+    if (data?.code !== 'magic_link_valid' || !data?.magicLink) {
+      return;
+    }
+    await consumeMagicLink(data.magicLink.id);
+    mutate({
+      code: 'magic_link_already_used',
+      error: 'This magic link has already been consumed',
+    });
+  };
 
   if (isLoading) {
     return <Spinner />;
@@ -22,12 +35,12 @@ export default function Home() {
     return <ErrorPage errorMessage={error?.message} />;
   }
 
-  if (data.code === 'magic_link_expired') {
-    return <ErrorPage errorMessage="Magic link expired." />;
-  }
-
-  if (data.code === 'magic_link_already_used') {
-    return <ErrorPage errorMessage="This magic link has already been consumed." />;
+  if (
+    data.code === 'magic_link_expired' ||
+    data.code === 'magic_link_not_found' ||
+    data.code === 'magic_link_already_used'
+  ) {
+    return <ErrorPage errorMessage={data.error} />;
   }
 
   if (
@@ -37,10 +50,12 @@ export default function Home() {
   ) {
     return (
       <Oauth2RedirectPage
+        linkId={data.magicLink.id}
         applicationId={data.magicLink.applicationId}
         customerId={data.magicLink.customerId}
         providerName={data.magicLink.providerName}
         returnUrl={data.magicLink.returnUrl}
+        onConsume={onConsume}
       />
     );
   }
@@ -81,7 +96,9 @@ const ErrorPage = ({ errorMessage = 'Unknown error.' }) => {
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
           <Stack>
             <Box>
-              <Typography variant="h5">Error: {errorMessage} </Typography>
+              <Typography color="red" variant="h5">
+                Error: {errorMessage}
+              </Typography>
             </Box>
           </Stack>
         </Box>
@@ -89,21 +106,47 @@ const ErrorPage = ({ errorMessage = 'Unknown error.' }) => {
     </>
   );
 };
-
 type Oauth2RedirectPageProps = {
+  linkId: string;
   applicationId: string;
   customerId: string;
   providerName: string;
   returnUrl?: string;
+  onConsume: () => void;
 };
 
-const Oauth2RedirectPage = ({ applicationId, customerId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
-  const { nextLambdaEnv } = useNextLambdaEnv();
-  const oauthUrl = `${
-    nextLambdaEnv?.API_HOST
-  }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
-    customerId
-  )}&returnUrl=${returnUrl}&providerName=${providerName}`;
+const Oauth2RedirectPage = ({
+  linkId,
+  applicationId,
+  customerId,
+  providerName,
+  returnUrl,
+  onConsume,
+}: Oauth2RedirectPageProps) => {
+  const router = useRouter();
 
-  return redirect(oauthUrl);
+  const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
+
+  useEffect(() => {
+    void (async () => {
+      if (!nextLambdaEnv?.API_HOST) {
+        return;
+      }
+      const oauthUrl = `${
+        nextLambdaEnv.API_HOST
+      }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+        customerId
+      )}&returnUrl=${returnUrl}&providerName=${providerName}`;
+
+      onConsume();
+
+      await router.push(oauthUrl);
+    })();
+  }, [nextLambdaEnv?.API_HOST, router, linkId, applicationId, customerId, providerName, returnUrl]);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  return null;
 };

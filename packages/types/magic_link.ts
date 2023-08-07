@@ -31,6 +31,6 @@ export type ValidMagicLinkData = {
 };
 
 export type InvalidMagicLinkData = {
-  code: 'magic_link_already_used' | 'magic_link_expired';
+  code: 'magic_link_already_used' | 'magic_link_expired' | 'magic_link_not_found';
   error: string;
 };
