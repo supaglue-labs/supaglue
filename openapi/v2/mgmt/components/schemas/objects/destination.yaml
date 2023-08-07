@@ -1,15 +1,16 @@
-# this example lives here b/c of the oneOf issue
-example:
-  id: 0a292508-d254-4929-98d3-dc23416efff8
-  application_id: e52286c9-3038-4fa2-a2b8-3ec9759d20cb
-  name: My Postgres Destination
-  type: postgres
-  config:
-    host: production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com
-    port: 5432
-    database: postgres_prod_db
-    schema: public
-    user: myuser
+# https://github.com/stoplightio/spectral/issues/2081
+# # this example lives here b/c of the oneOf issue
+# example:
+#   id: 2cce5aed-e8fc-41b2-bff6-6ddbc1f99285
+#   application_id: e52286c9-3038-4fa2-a2b8-3ec9759d20cb
+#   name: My Postgres Destination
+#   type: postgres
+#   config:
+#     host: production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com
+#     port: 5432
+#     database: postgres_prod_db
+#     schema: public
+#     user: myuser
 oneOf:
   - type: object
     title: postgres
