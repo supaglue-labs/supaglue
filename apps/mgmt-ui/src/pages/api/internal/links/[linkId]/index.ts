@@ -11,7 +11,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
       const r = await result.json();
-      console.log(`r: `, r);
       if (!result.ok) {
         return res.status(result.status).json(r);
       }
