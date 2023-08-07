@@ -12,6 +12,7 @@ export * from './destination';
 export * as engagement from './engagement';
 export * from './entity_record';
 export * from './field_mapping_info';
+export * from './magic_link';
 export * from './oauth';
 export * from './object_record';
 export * from './passthrough';

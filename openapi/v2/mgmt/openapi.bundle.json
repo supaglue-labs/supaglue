@@ -359,6 +359,101 @@
         }
       ]
     },
+    "/magic_links": {
+      "get": {
+        "operationId": "getMagicLinks",
+        "tags": [
+          "Magic Links"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List magic links",
+        "description": "Get a list of magic links",
+        "responses": {
+          "200": {
+            "description": "Magic Links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/magic_link"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createMagicLink",
+        "summary": "Create magic link",
+        "tags": [
+          "Magic Links"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_magic_link"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Entity created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/magic_link"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/magic_links/{magic_link_id}": {
+      "delete": {
+        "operationId": "deleteMagicLink",
+        "summary": "Delete magic link",
+        "tags": [
+          "Magic Links"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Magic Link deleted"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "magic_link_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "6bf954f9-dba3-4c34-9275-3830dccb0030"
+          }
+        }
+      ]
+    },
     "/field_mappings/_update_object": {
       "put": {
         "operationId": "updateObjectFieldMappings",
@@ -1978,6 +2073,10 @@
     {
       "name": "Webhooks",
       "description": "A `Webhook` is a way for Supaglue to notify you when events have happened."
+    },
+    {
+      "name": "Magic Links",
+      "description": "A `Magic Link` is a secure URL that allows your customers to connect their accounts to Supaglue."
     }
   ],
   "components": {
@@ -2652,6 +2751,103 @@
         "required": [
           "fields",
           "allow_additional_field_mappings"
+        ]
+      },
+      "magic_link": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "ec208408-db29-4705-b39e-4d33070b4ef6"
+          },
+          "status": {
+            "type": "string",
+            "example": "created"
+          },
+          "auth_type": {
+            "type": "string",
+            "enum": [
+              "oauth2",
+              "api_key",
+              "access_key_secret"
+            ]
+          },
+          "application_id": {
+            "type": "string",
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "provider_id": {
+            "type": "string",
+            "example": "677fcfca-cf89-4387-a189-71c885be67bc"
+          },
+          "provider_name": {
+            "$ref": "#/components/schemas/provider_name"
+          },
+          "url": {
+            "type": "string",
+            "description": "The magic link URL.",
+            "example": "https://app.hubspot.com/contacts/123456"
+          },
+          "return_url": {
+            "type": "string",
+            "description": "URL to redirect to after the connection is authorized.",
+            "example": "https://app.myapp.com/connections/123456"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-02-23T00:00:00Z"
+          }
+        },
+        "required": [
+          "id",
+          "auth_type",
+          "status",
+          "application_id",
+          "customer_id",
+          "provider_id",
+          "provider_name",
+          "expires_at",
+          "url"
+        ]
+      },
+      "create_magic_link": {
+        "type": "object",
+        "properties": {
+          "customer_id": {
+            "type": "string",
+            "example": "my-customer-1"
+          },
+          "provider_name": {
+            "$ref": "#/components/schemas/provider_name"
+          },
+          "auth_type": {
+            "type": "string",
+            "enum": [
+              "oauth2",
+              "api_key",
+              "access_key_secret"
+            ]
+          },
+          "return_url": {
+            "type": "string",
+            "description": "URL to redirect to after the connection is authorized.",
+            "example": "https://app.myapp.com/connections/123456"
+          },
+          "expiration_secs": {
+            "type": "number",
+            "example": 18000
+          }
+        },
+        "required": [
+          "customer_id",
+          "provider_name",
+          "auth_type",
+          "expiration_secs"
         ]
       },
       "entity": {

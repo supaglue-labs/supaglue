@@ -1,0 +1,17 @@
+delete:
+  operationId: deleteMagicLink
+  summary: Delete magic link
+  tags:
+    - Magic Links
+  security:
+    - x-api-key: []
+  responses:
+    204:
+      description: Magic Link deleted
+parameters:
+  - name: magic_link_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 6bf954f9-dba3-4c34-9275-3830dccb0030

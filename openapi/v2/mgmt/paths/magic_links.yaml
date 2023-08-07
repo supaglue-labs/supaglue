@@ -1,0 +1,39 @@
+get:
+  operationId: getMagicLinks
+  tags:
+    - Magic Links
+  security:
+    - x-api-key: []
+  summary: List magic links
+  description: >-
+    Get a list of magic links
+  responses:
+    '200':
+      description: Magic Links
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/objects/magic_link.yaml
+post:
+  operationId: createMagicLink
+  summary: Create magic link
+  tags:
+    - Magic Links
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/create_magic_link.yaml
+  responses:
+    '201':
+      description: Entity created
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/magic_link.yaml

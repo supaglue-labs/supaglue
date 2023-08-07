@@ -60,6 +60,24 @@ export interface paths {
       };
     };
   };
+  "/magic_links": {
+    /**
+     * List magic links 
+     * @description Get a list of magic links
+     */
+    get: operations["getMagicLinks"];
+    /** Create magic link */
+    post: operations["createMagicLink"];
+  };
+  "/magic_links/{magic_link_id}": {
+    /** Delete magic link */
+    delete: operations["deleteMagicLink"];
+    parameters: {
+      path: {
+        magic_link_id: string;
+      };
+    };
+  };
   "/field_mappings/_update_object": {
     /** Update schema mappings */
     put: operations["updateObjectFieldMappings"];
@@ -571,6 +589,50 @@ export interface components {
        * @example false
        */
       allow_additional_field_mappings: boolean;
+    };
+    magic_link: {
+      /** @example ec208408-db29-4705-b39e-4d33070b4ef6 */
+      id: string;
+      /** @example created */
+      status: string;
+      /** @enum {string} */
+      auth_type: "oauth2" | "api_key" | "access_key_secret";
+      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+      application_id: string;
+      /** @example my-customer-1 */
+      customer_id: string;
+      /** @example 677fcfca-cf89-4387-a189-71c885be67bc */
+      provider_id: string;
+      provider_name: components["schemas"]["provider_name"];
+      /**
+       * @description The magic link URL. 
+       * @example https://app.hubspot.com/contacts/123456
+       */
+      url: string;
+      /**
+       * @description URL to redirect to after the connection is authorized. 
+       * @example https://app.myapp.com/connections/123456
+       */
+      return_url?: string;
+      /**
+       * Format: date-time 
+       * @example 2023-02-23T00:00:00Z
+       */
+      expires_at: Date;
+    };
+    create_magic_link: {
+      /** @example my-customer-1 */
+      customer_id: string;
+      provider_name: components["schemas"]["provider_name"];
+      /** @enum {string} */
+      auth_type: "oauth2" | "api_key" | "access_key_secret";
+      /**
+       * @description URL to redirect to after the connection is authorized. 
+       * @example https://app.myapp.com/connections/123456
+       */
+      return_url?: string;
+      /** @example 18000 */
+      expiration_secs: number;
     };
     entity: {
       /** @example 649b1e49-2722-46a3-a7e7-10caae78a43f */
@@ -1401,6 +1463,48 @@ export interface operations {
           "application/json": (components["schemas"]["object_field_mappings"])[];
         };
       };
+    };
+  };
+  /**
+   * List magic links 
+   * @description Get a list of magic links
+   */
+  getMagicLinks: {
+    responses: {
+      /** @description Magic Links */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["magic_link"])[];
+        };
+      };
+    };
+  };
+  /** Create magic link */
+  createMagicLink: {
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_magic_link"];
+      };
+    };
+    responses: {
+      /** @description Entity created */
+      201: {
+        content: {
+          "application/json": components["schemas"]["magic_link"];
+        };
+      };
+    };
+  };
+  /** Delete magic link */
+  deleteMagicLink: {
+    parameters: {
+      path: {
+        magic_link_id: string;
+      };
+    };
+    responses: {
+      /** @description Magic Link deleted */
+      204: never;
     };
   };
   /** Update schema mappings */

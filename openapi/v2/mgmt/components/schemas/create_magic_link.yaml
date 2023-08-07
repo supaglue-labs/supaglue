@@ -1,0 +1,25 @@
+type: object
+properties:
+  customer_id:
+    type: string
+    example: my-customer-1
+  provider_name:
+    $ref: ./objects/provider_name.yaml
+  auth_type:
+    type: string
+    enum:
+      - oauth2
+      - api_key
+      - access_key_secret
+  return_url:
+    type: string
+    description: URL to redirect to after the connection is authorized.
+    example: https://app.myapp.com/connections/123456
+  expiration_secs:
+    type: number
+    example: 18000
+required:
+  - customer_id
+  - provider_name
+  - auth_type
+  - expiration_secs

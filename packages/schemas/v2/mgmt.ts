@@ -155,6 +155,23 @@ export type DeleteConnectionRequest = never;
 export type DeleteConnectionResponse =
   operations['deleteConnection']['responses'][keyof operations['deleteConnection']['responses']]['content']['application/json'];
 
+export type GetMagicLinksPathParams = never;
+export type GetMagicLinksQueryParams = never;
+export type GetMagicLinksRequest = never;
+export type GetMagicLinksResponse =
+  operations['getMagicLinks']['responses'][keyof operations['getMagicLinks']['responses']]['content']['application/json'];
+
+export type CreateMagicLinkPathParams = never;
+export type CreateMagicLinkQueryParams = never;
+export type CreateMagicLinkRequest = operations['createMagicLink']['requestBody']['content']['application/json'];
+export type CreateMagicLinkResponse =
+  operations['createMagicLink']['responses'][keyof operations['createMagicLink']['responses']]['content']['application/json'];
+
+export type DeleteMagicLinkPathParams = paths[`/magic_links/{magic_link_id}`]['parameters']['path'];
+export type DeleteMagicLinkRequest = never;
+export type DeleteMagicLinkResponse =
+  operations['deleteMagicLink']['responses'][keyof operations['deleteMagicLink']['responses']]['content']['application/json'];
+
 export type ListFieldMappingsPathParams = never;
 export type ListFieldMappingsRequest = never;
 export type ListFieldMappingsResponse =
