@@ -16,17 +16,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
 export default function Home() {
   const { data, isLoading, error, mutate } = useMagicLinkData();
 
-  const onConsume = async () => {
-    if (data?.code !== 'magic_link_valid' || !data?.magicLink) {
-      return;
-    }
-    await consumeMagicLink(data.magicLink.id);
-    mutate({
-      code: 'magic_link_already_used',
-      error: 'Magic link has already been consumed',
-    });
-  };
-
   if (isLoading) {
     return <Spinner />;
   }
@@ -55,7 +44,6 @@ export default function Home() {
         customerId={data.magicLink.customerId}
         providerName={data.magicLink.providerName}
         returnUrl={data.magicLink.returnUrl}
-        onConsume={onConsume}
       />
     );
   }
@@ -112,7 +100,6 @@ type Oauth2RedirectPageProps = {
   customerId: string;
   providerName: string;
   returnUrl?: string;
-  onConsume: () => void;
 };
 
 const Oauth2RedirectPage = ({
@@ -121,7 +108,6 @@ const Oauth2RedirectPage = ({
   customerId,
   providerName,
   returnUrl,
-  onConsume,
 }: Oauth2RedirectPageProps) => {
   const router = useRouter();
 
@@ -138,8 +124,7 @@ const Oauth2RedirectPage = ({
         customerId
       )}&returnUrl=${returnUrl}&providerName=${providerName}`;
 
-      onConsume();
-
+      await consumeMagicLink(linkId);
       await router.push(oauthUrl);
     })();
   }, [nextLambdaEnv?.API_HOST, router, linkId, applicationId, customerId, providerName, returnUrl]);
