@@ -2,7 +2,7 @@ import { consumeMagicLink } from '@/client';
 import Spinner from '@/components/Spinner';
 import { useMagicLinkData } from '@/hooks/useMagicLinkData';
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import type { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 export default function Home() {
-  const { data, isLoading, error, mutate } = useMagicLinkData();
+  const { data, isLoading, error } = useMagicLinkData();
 
   if (isLoading) {
     return <Spinner />;
@@ -48,27 +48,14 @@ export default function Home() {
     );
   }
 
+  // TODO: Implement ms365, api key, and access key flows
   return (
     <>
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
           <Stack>
             <Box>
-              <Typography variant="h5">Welcome to the Supaglue Management Portal!</Typography>
-            </Box>
-            <Box>
-              <Typography variant="body1">
-                Learn how to sync your customers's data to your database using our guide below.
-              </Typography>
-            </Box>
-
-            <Box>
-              <Box fontSize="2.4rem">
-                👉{' '}
-                <Button variant="contained" color="primary" href="https://docs.supaglue.com/quickstart">
-                  Quickstart Guide
-                </Button>
-              </Box>
+              <Typography variant="h5">Not implemented yet</Typography>
             </Box>
           </Stack>
         </Box>
