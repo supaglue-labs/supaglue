@@ -14,10 +14,12 @@ export type MagicLink = {
   status: string;
 };
 
+export type MagicLinkAuthType = 'oauth2' | 'api_key' | 'access_key_secret';
+
 export type MagicLinkCreateParams = {
   // external id
   customerId: string;
-  authType: 'oauth2' | 'api_key' | 'access_key_secret';
+  authType: MagicLinkAuthType;
   providerName: string;
   expirationSecs: number;
   returnUrl?: string;
