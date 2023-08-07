@@ -1,7 +1,9 @@
-import { useLinkId } from '@/hooks/useLinkId';
+import Spinner from '@/components/Spinner';
+import { useMagicLinkData } from '@/hooks/useMagicLinkData';
+import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import type { GetServerSideProps } from 'next';
-import { useState } from 'react';
+import { redirect } from 'next/navigation';
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
@@ -10,13 +12,38 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 export default function Home() {
-  const linkId = useLinkId();
+  const { data, isLoading, error } = useMagicLinkData();
 
-  const [mobileOpen, setMobileOpen] = useState(false);
+  if (isLoading) {
+    return <Spinner />;
+  }
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  if (!data || error) {
+    return <ErrorPage errorMessage={error?.message} />;
+  }
+
+  if (data.code === 'magic_link_expired') {
+    return <ErrorPage errorMessage="Magic link expired." />;
+  }
+
+  if (data.code === 'magic_link_already_used') {
+    return <ErrorPage errorMessage="This magic link has already been consumed." />;
+  }
+
+  if (
+    data.code === 'magic_link_valid' &&
+    data.magicLink.authType === 'oauth2' &&
+    data.magicLink.providerName !== 'ms_dynamics_365_sales'
+  ) {
+    return (
+      <Oauth2RedirectPage
+        applicationId={data.magicLink.applicationId}
+        customerId={data.magicLink.customerId}
+        providerName={data.magicLink.providerName}
+        returnUrl={data.magicLink.returnUrl}
+      />
+    );
+  }
 
   return (
     <>
@@ -46,3 +73,37 @@ export default function Home() {
     </>
   );
 }
+
+const ErrorPage = ({ errorMessage = 'Unknown error.' }) => {
+  return (
+    <>
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
+          <Stack>
+            <Box>
+              <Typography variant="h5">Error: {errorMessage} </Typography>
+            </Box>
+          </Stack>
+        </Box>
+      </Box>
+    </>
+  );
+};
+
+type Oauth2RedirectPageProps = {
+  applicationId: string;
+  customerId: string;
+  providerName: string;
+  returnUrl?: string;
+};
+
+const Oauth2RedirectPage = ({ applicationId, customerId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
+  const { nextLambdaEnv } = useNextLambdaEnv();
+  const oauthUrl = `${
+    nextLambdaEnv?.API_HOST
+  }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+    customerId
+  )}&returnUrl=${returnUrl}&providerName=${providerName}`;
+
+  return redirect(oauthUrl);
+};

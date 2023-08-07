@@ -9,6 +9,8 @@ import customer from './customer';
 import destination from './destination';
 import entity from './entity';
 import entityMapping from './entity_mapping';
+import link from './link';
+import magicLink from './magic_link';
 import metadata from './metadata';
 import property from './property';
 import provider from './provider';
@@ -24,6 +26,7 @@ export default function init(app: Router): void {
   internalRouter.use(internalMiddleware);
 
   system(internalRouter);
+  link(internalRouter);
 
   app.use('/internal', internalRouter);
 
@@ -52,6 +55,7 @@ export default function init(app: Router): void {
   syncConfig(internalApplicationScopedRouter);
   syncRun(internalApplicationScopedRouter);
   entity(internalApplicationScopedRouter);
+  magicLink(internalApplicationScopedRouter);
   entityMapping(internalApplicationScopedRouter);
   property(internalApplicationScopedRouter);
   metadata(internalApplicationScopedRouter);

@@ -7,6 +7,7 @@ import destination from './destination';
 import entity from './entity';
 import entityMapping from './entity_mapping';
 import fieldMapping from './field_mapping';
+import magicLink from './magic_link';
 import schema from './schema';
 import sync from './sync';
 import syncConfig from './sync_config';
@@ -28,6 +29,7 @@ export default function init(app: Router): void {
   fieldMapping(v2Router);
   entity(v2Router);
   entityMapping(v2Router);
+  magicLink(v2Router);
 
   app.use('/v2', v2Router);
 }

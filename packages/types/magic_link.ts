@@ -22,3 +22,15 @@ export type MagicLinkCreateParams = {
   expirationSecs: number;
   returnUrl?: string;
 };
+
+export type MagicLinkData = ValidMagicLinkData | InvalidMagicLinkData;
+
+export type ValidMagicLinkData = {
+  code: 'magic_link_valid';
+  magicLink: MagicLink;
+};
+
+export type InvalidMagicLinkData = {
+  code: 'magic_link_already_used' | 'magic_link_expired';
+  error: string;
+};

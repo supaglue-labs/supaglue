@@ -2,7 +2,7 @@ import type { PrismaClient } from '@supaglue/db';
 import type { MagicLink, MagicLinkCreateParams } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
 import type { CustomerService, ProviderService } from '.';
-import { NotFoundError } from '../errors';
+import { BadRequestError, NotFoundError } from '../errors';
 import { fromMagicLinkModel } from '../mappers';
 
 const BASE_URL = process.env.SUPAGLUE_MAGIC_LINK_URL ?? 'http://localhost:3000/links';
@@ -32,7 +32,7 @@ export class MagicLinkService {
       where: { id },
     });
     if (!magicLink) {
-      throw new NotFoundError(`Can't find provider with id: ${id}`);
+      throw new NotFoundError(`Can't find magic link with id: ${id}`);
     }
     return fromMagicLinkModel(magicLink);
   }
@@ -42,13 +42,14 @@ export class MagicLinkService {
       where: { id },
     });
     if (!magicLink || magicLink.applicationId !== applicationId) {
-      throw new NotFoundError(`Can't find provider with id: ${id}`);
+      throw new NotFoundError(`Can't find magic link with id: ${id}`);
     }
 
     return fromMagicLinkModel(magicLink);
   }
 
   public async createMagicLink(applicationId: string, params: MagicLinkCreateParams): Promise<MagicLink> {
+    this.#validateMagicLinkParams(params);
     const id = uuidv4();
     await this.#customerService.getByExternalId(applicationId, params.customerId);
     const provider = await this.#providerService.getByNameAndApplicationId(params.providerName, applicationId);
@@ -62,10 +63,29 @@ export class MagicLinkService {
         providerId: provider.id,
         url,
         expiresAt: new Date(Date.now() + params.expirationSecs * 1000),
-        status: 'created',
+        status: 'new',
       },
     });
     return fromMagicLinkModel(magicLink);
+  }
+
+  #validateMagicLinkParams(params: MagicLinkCreateParams): void {
+    switch (params.providerName) {
+      case 'apollo':
+        if (params.authType !== 'api_key') {
+          throw new BadRequestError('Apollo provider only supports api_key auth type');
+        }
+        return;
+      case 'gong':
+        if (params.authType === 'api_key') {
+          throw new BadRequestError('Gong provider does not support api_key auth type');
+        }
+        return;
+      default:
+        if (params.authType !== 'oauth2') {
+          throw new BadRequestError(`Only oauth2 auth type is supported for provider ${params.providerName}`);
+        }
+    }
   }
 
   public async deleteMagicLink(applicationId: string, id: string): Promise<void> {
