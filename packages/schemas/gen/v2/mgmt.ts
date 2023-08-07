@@ -361,6 +361,21 @@ export interface components {
       /** @description This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview). The object/field mappings (aka [Entity Mappings](https://docs.supaglue.com/platform/entities/overview#entity-mapping)) here are set by you, the developer, and the mappings apply for all your customers. */
       entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
     };
+    /**
+     * @example {
+     *   "id": "2cce5aed-e8fc-41b2-bff6-6ddbc1f99285",
+     *   "application_id": "e52286c9-3038-4fa2-a2b8-3ec9759d20cb",
+     *   "name": "My Postgres Destination",
+     *   "type": "postgres",
+     *   "config": {
+     *     "host": "production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com",
+     *     "port": 5432,
+     *     "database": "postgres_prod_db",
+     *     "schema": "public",
+     *     "user": "myuser"
+     *   }
+     * }
+     */
     destination: OneOf<[{
       /** @example d455d20b-f6dc-4bc3-ab14-b4f21c4b4835 */
       id: string;
