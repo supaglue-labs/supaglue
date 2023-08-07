@@ -34,6 +34,21 @@ export class SyncService {
       include: {
         connection: true,
       },
+      orderBy: [
+        {
+          connection: {
+            customerId: 'asc',
+          },
+        },
+        {
+          connection: {
+            providerName: 'asc',
+          },
+        },
+        {
+          object: 'asc',
+        },
+      ],
     });
     const countPromise = this.#prisma.sync.count({
       where: {
