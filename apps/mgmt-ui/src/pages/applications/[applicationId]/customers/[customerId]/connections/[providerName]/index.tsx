@@ -34,7 +34,6 @@ import type {
   MergedEntityFieldMapping,
   MergedEntityMapping,
 } from '@supaglue/types/entity_mapping';
-import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -246,19 +245,19 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
     !!mergedEntityMapping.object &&
     mergedEntityMapping.fieldMappings.every((fieldMapping) => !!fieldMapping.mappedField && !!fieldMapping.entityField);
 
-  const initialMappingFriendlyObjectWithAttribution: FriendlyStandardOrCustomObjectWithAttribution | undefined =
-    initialMapping.object
-      ? initialMapping.object.type === 'standard'
+  const entityMappingFriendlyObjectWithAttribution: FriendlyStandardOrCustomObjectWithAttribution | undefined =
+    mergedEntityMapping.object
+      ? mergedEntityMapping.object.type === 'standard'
         ? {
             type: 'standard',
-            name: initialMapping.object.name,
-            from: initialMapping.object.from,
+            name: mergedEntityMapping.object.name,
+            from: mergedEntityMapping.object.from,
           }
         : {
             type: 'custom',
-            id: initialMapping.object.name,
-            name: customObjectOptions.find(({ id }) => id === initialMapping.object?.name)?.name ?? '',
-            from: initialMapping.object.from,
+            id: mergedEntityMapping.object.name,
+            name: customObjectOptions.find(({ id }) => id === mergedEntityMapping.object?.name)?.name ?? '',
+            from: mergedEntityMapping.object.from,
           }
       : undefined;
 
@@ -274,7 +273,7 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
             entity={entity}
             customerId={customerId}
             providerName={providerName}
-            object={initialMappingFriendlyObjectWithAttribution}
+            object={entityMappingFriendlyObjectWithAttribution}
             setObject={setObject}
           />
           <EntityFieldMappings
@@ -283,7 +282,7 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
             entity={entity}
             allowAdditionalFieldMappings={mergedEntityMapping.allowAdditionalFieldMappings}
             providerName={providerName}
-            object={mergedEntityMapping.object}
+            object={entityMappingFriendlyObjectWithAttribution}
             fieldMappings={mergedEntityMapping.fieldMappings}
             setFieldMapping={setFieldMapping}
             addFieldMapping={addFieldMapping}
@@ -331,11 +330,6 @@ function EntityObjectMapping({ entity, customerId, providerName, object, setObje
     })),
   ];
 
-  if (!object) {
-    // If using Autocomplete in uncontrolled mode, defaultValue must not change
-    return null;
-  }
-
   return (
     <>
       <Grid item xs={4}>
@@ -357,7 +351,7 @@ function EntityObjectMapping({ entity, customerId, providerName, object, setObje
             options={objectOptions}
             groupBy={(option) => option.type}
             getOptionLabel={(option) => option.name}
-            defaultValue={object}
+            value={object}
             autoSelect
             renderTags={(value, getTagProps) =>
               value.map((option, index: number) => (
@@ -380,9 +374,7 @@ function EntityObjectMapping({ entity, customerId, providerName, object, setObje
 type EntityFieldMappingsProps = {
   customerId: string;
   entity: string;
-  object?: StandardOrCustomObject & {
-    from: 'developer' | 'customer';
-  };
+  object?: FriendlyStandardOrCustomObjectWithAttribution;
   allowAdditionalFieldMappings: boolean;
   providerName: string;
   fieldMappings: MergedEntityFieldMapping[];
