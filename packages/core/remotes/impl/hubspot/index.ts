@@ -446,13 +446,14 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   ): Promise<Readable> {
     const standardObjectType = toStandardObjectType(object);
     const propertiesToFetch = await this.getStandardPropertyIdsToFetch(object, fieldsToFetch);
-    const associatedStandardObjectTypes = hubspotStandardObjectTypeToAssociatedStandardObjectTypes[standardObjectType];
+    const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
+      await this.#getAssociatedObjectTypesForObjectType(object);
 
     const normalPageFetcher = await this.#getListRecordsFetcher(
       standardObjectType,
       propertiesToFetch,
       associatedStandardObjectTypes,
-      /* associatedCustomObjectSchemas */ [], // TODO: should we sync custom object associations?
+      associatedCustomObjectSchemas,
       /* archived */ false,
       modifiedAfter
     );
@@ -461,7 +462,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       standardObjectType,
       propertiesToFetch,
       associatedStandardObjectTypes,
-      /* associatedCustomObjectSchemas */ [], // TODO: should we sync custom object associations?
+      associatedCustomObjectSchemas,
       /* archived */ true,
       modifiedAfter
     );
@@ -519,17 +520,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  async #getObjectTypeIdByCustomObjectName(objectName: string): Promise<string> {
-    const objectTypeSchemas = await this.#getAllCustomObjectSchemas();
-    const matchingResult = objectTypeSchemas.find((result) => result.name === objectName);
-    if (!matchingResult) {
-      throw new BadRequestError(`Couldn't find object type with name: ${objectName}`);
-    }
-
-    return matchingResult.objectTypeId;
-  }
-
-  async #getAssociatedObjectTypesForCustomObject(fromObjectTypeId: string): Promise<{
+  async #getAssociatedObjectTypesForObjectType(fromObjectTypeId: string): Promise<{
     standardObjectTypes: string[];
     customObjectSchemas: HubSpotCustomSchema[];
   }> {
@@ -593,7 +584,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
     // Find the associated object types for the object
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForCustomObject(objectTypeId);
+      await this.#getAssociatedObjectTypesForObjectType(objectTypeId);
 
     const normalPageFetcher = await this.#getListRecordsFetcher(
       objectTypeId,
