@@ -1277,13 +1277,6 @@
                         ],
                         "example": "apollo"
                       },
-                      "category": {
-                        "type": "string",
-                        "enum": [
-                          "engagement"
-                        ],
-                        "example": "engagement"
-                      },
                       "api_key": {
                         "type": "string",
                         "description": "API key for the connected customer.",
@@ -1292,7 +1285,6 @@
                     },
                     "required": [
                       "provider_name",
-                      "category",
                       "api_key"
                     ]
                   },
@@ -1307,13 +1299,6 @@
                         ],
                         "example": "gong"
                       },
-                      "category": {
-                        "type": "string",
-                        "enum": [
-                          "no_category"
-                        ],
-                        "example": "no_category"
-                      },
                       "access_key": {
                         "type": "string",
                         "description": "Access key for the connected customer.",
@@ -1327,7 +1312,6 @@
                     },
                     "required": [
                       "provider_name",
-                      "category",
                       "access_key",
                       "access_key_secret"
                     ]
@@ -2812,7 +2796,8 @@
           "provider_id",
           "provider_name",
           "expires_at",
-          "url"
+          "url",
+          "return_url"
         ]
       },
       "create_magic_link": {
@@ -2847,7 +2832,8 @@
           "customer_id",
           "provider_name",
           "auth_type",
-          "expiration_secs"
+          "expiration_secs",
+          "return_url"
         ]
       },
       "entity": {
