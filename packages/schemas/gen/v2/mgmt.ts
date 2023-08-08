@@ -628,7 +628,7 @@ export interface components {
        * @description URL to redirect to after the connection is authorized. 
        * @example https://app.myapp.com/connections/123456
        */
-      return_url?: string;
+      return_url: string;
       /**
        * Format: date-time 
        * @example 2023-02-23T00:00:00Z
@@ -645,7 +645,7 @@ export interface components {
        * @description URL to redirect to after the connection is authorized. 
        * @example https://app.myapp.com/connections/123456
        */
-      return_url?: string;
+      return_url: string;
       /** @example 18000 */
       expiration_secs: number;
     };
@@ -1968,11 +1968,6 @@ export interface operations {
            */
           provider_name: "apollo";
           /**
-           * @example engagement 
-           * @enum {string}
-           */
-          category: "engagement";
-          /**
            * @description API key for the connected customer. 
            * @example e0c5545d-77b8-458d-b4bf-fc701a9cecac
            */
@@ -1983,11 +1978,6 @@ export interface operations {
            * @enum {string}
            */
           provider_name: "gong";
-          /**
-           * @example no_category 
-           * @enum {string}
-           */
-          category: "no_category";
           /**
            * @description Access key for the connected customer. 
            * @example e0c5545d-77b8-458d-b4bf-fc701a9cecac

@@ -45,3 +45,4 @@ required:
   - provider_name
   - expires_at
   - url
+  - return_url

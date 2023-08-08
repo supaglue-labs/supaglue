@@ -7,6 +7,7 @@ import type {
   DestinationTestResult,
   DestinationUpdateParamsAny,
   MagicLink,
+  MagicLinkConsumeParams,
   MagicLinkCreateParams,
   Provider,
   ProviderCreateParams,
@@ -206,12 +207,13 @@ export async function createMagicLink(
   return await toClientResponse(result);
 }
 
-export async function consumeMagicLink(linkId: string): Promise<ClientEmptyResponse> {
+export async function consumeMagicLink(linkId: string, data?: MagicLinkConsumeParams): Promise<ClientEmptyResponse> {
   const result = await fetch(`/api/internal/links/${linkId}/consume`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
+    body: data ? JSON.stringify(snakecaseKeys(data)) : undefined,
   });
   return await toClientEmptyResponse(result);
 }

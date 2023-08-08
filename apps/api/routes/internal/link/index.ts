@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { snakecaseKeys } from '@supaglue/utils';
+import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
@@ -35,7 +35,7 @@ export default function init(app: Router): void {
   });
 
   linkRouter.post('/:link_id/_consume', async (req: Request, res: Response) => {
-    await magicLinkService.consumeMagicLink(req.params.link_id);
+    await magicLinkService.consumeMagicLink(req.params.link_id, camelcaseKeys(req.body));
     return res.status(204).send();
   });
 

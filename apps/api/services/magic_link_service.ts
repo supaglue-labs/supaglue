@@ -1,9 +1,10 @@
+import { BadRequestError, NotFoundError } from '@supaglue/core/errors';
+import { fromMagicLinkModel } from '@supaglue/core/mappers';
+import type { CustomerService, ProviderService } from '@supaglue/core/services';
 import type { PrismaClient } from '@supaglue/db';
-import type { MagicLink, MagicLinkCreateParams } from '@supaglue/types';
+import type { MagicLink, MagicLinkConsumeParams, MagicLinkCreateParams } from '@supaglue/types';
 import { v4 as uuidv4 } from 'uuid';
-import type { CustomerService, ProviderService } from '.';
-import { BadRequestError, NotFoundError } from '../errors';
-import { fromMagicLinkModel } from '../mappers';
+import type { ConnectionAndSyncService } from '.';
 
 const BASE_URL = process.env.SUPAGLUE_MAGIC_LINK_URL ?? 'http://localhost:3000/links';
 
@@ -11,11 +12,18 @@ export class MagicLinkService {
   #prisma: PrismaClient;
   #customerService: CustomerService;
   #providerService: ProviderService;
+  #connectionAndSyncService: ConnectionAndSyncService;
 
-  constructor(prisma: PrismaClient, customerService: CustomerService, providerService: ProviderService) {
+  constructor(
+    prisma: PrismaClient,
+    customerService: CustomerService,
+    providerService: ProviderService,
+    connectionAndSyncService: ConnectionAndSyncService
+  ) {
     this.#prisma = prisma;
     this.#customerService = customerService;
     this.#providerService = providerService;
+    this.#connectionAndSyncService = connectionAndSyncService;
   }
 
   public async listByApplicationId(applicationId: string): Promise<MagicLink[]> {
@@ -71,15 +79,30 @@ export class MagicLinkService {
     return fromMagicLinkModel(magicLink);
   }
 
-  public async consumeMagicLink(id: string): Promise<MagicLink> {
-    const magicLink = await this.#prisma.magicLink.findUnique({
-      where: { id },
-    });
+  public async consumeMagicLink(id: string, params?: MagicLinkConsumeParams): Promise<MagicLink> {
+    const magicLink = await this.findById(id);
     if (!magicLink) {
       throw new NotFoundError(`Can't find magic link with id: ${id}`);
     }
     if (magicLink.status !== 'new') {
       throw new BadRequestError(`Magic link with id: ${id} has already been consumed`);
+    }
+    if (params?.type === 'api_key') {
+      await this.#connectionAndSyncService.createFromApiKey(
+        magicLink.applicationId,
+        magicLink.customerId,
+        magicLink.providerName,
+        params.apiKey
+      );
+    }
+    if (params?.type === 'access_key_secret') {
+      await this.#connectionAndSyncService.createFromAccessKeySecret(
+        magicLink.applicationId,
+        magicLink.customerId,
+        magicLink.providerName,
+        params.accessKey,
+        params.accessKeySecret
+      );
     }
     const updatedMagicLink = await this.#prisma.magicLink.update({
       where: { id },
