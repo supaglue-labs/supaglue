@@ -354,12 +354,21 @@ function MagicLinkIcon({ customerId }: { customerId: string }) {
               <Typography variant="subtitle1">Return URL</Typography>
               <TextField
                 value={returnUrl}
+<<<<<<< HEAD
                 error={!returnUrl}
+=======
+>>>>>>> 7ee077f468904506ca00c3e9d84e4e321b6db8e8
                 size="small"
                 label="Return URL"
                 variant="outlined"
                 helperText={`URL to return to once the customer is done authenticating.`}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+<<<<<<< HEAD
+=======
+                  if (!event.target.value) {
+                    setReturnUrl(undefined);
+                  }
+>>>>>>> 7ee077f468904506ca00c3e9d84e4e321b6db8e8
                   setReturnUrl(event.target.value);
                 }}
               />
@@ -372,7 +381,10 @@ function MagicLinkIcon({ customerId }: { customerId: string }) {
                 label="Expiration (in days)"
                 variant="outlined"
                 type="number"
+<<<<<<< HEAD
                 error={expirationDays < 1}
+=======
+>>>>>>> 7ee077f468904506ca00c3e9d84e4e321b6db8e8
                 helperText="Value needs to be at least 1."
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   const value: number | undefined = parseInt(event.target.value, 10);

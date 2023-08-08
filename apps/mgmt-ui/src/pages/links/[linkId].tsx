@@ -91,7 +91,6 @@ const ErrorPage = ({ errorMessage = 'Unknown error.' }) => {
     </>
   );
 };
-
 type Oauth2RedirectPageProps = {
   linkId: string;
   applicationId: string;
