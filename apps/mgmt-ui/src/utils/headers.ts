@@ -18,3 +18,10 @@ export function getHeaders(req: NextApiRequest) {
     'x-org-id': getOrgId(req),
   };
 }
+
+export function getInternalTokenOnlyHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'x-sg-internal-token': SG_INTERNAL_TOKEN,
+  };
+}

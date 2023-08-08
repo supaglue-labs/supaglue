@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { IS_CLOUD } from './pages/api';
 
 // Set the paths that don't require the user to be signed in
-const cloudPublicPaths = ['/sign-in*', '/sign-up*'];
+const cloudPublicPaths = ['/sign-in*', '/sign-up*', '/links*'];
 
 // Paths that are only accessible if `IS_CLOUD` is true
 const cloudOnlyPaths = ['/sign-in*/', '/sign-up*', '/create-organization*', '/switch-organization*'];

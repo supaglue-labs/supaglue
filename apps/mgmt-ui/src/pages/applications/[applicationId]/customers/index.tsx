@@ -1,7 +1,9 @@
-import { createCustomer, deleteCustomer } from '@/client';
+import { createCustomer, createMagicLink, deleteCustomer } from '@/client';
 import { DeleteCustomer } from '@/components/customers/DeleteCustomer';
 import { NewCustomer } from '@/components/customers/NewCustomer';
 import MetricCard from '@/components/MetricCard';
+import { ConfirmationModal } from '@/components/modals';
+import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
@@ -13,12 +15,11 @@ import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
 import LinkIcon from '@mui/icons-material/Link';
-import { Box, Breadcrumbs, Grid, IconButton, Stack, Typography } from '@mui/material';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import { Box, Breadcrumbs, Grid, IconButton, Menu, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
-import type { ConnectionSafeAny } from '@supaglue/types';
+import type { MagicLinkAuthType, ProviderName } from '@supaglue/types';
+import { type ConnectionSafeAny } from '@supaglue/types';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -93,11 +94,19 @@ export default function Home() {
       },
     },
     {
-      field: 'link',
+      field: 'embed_link',
       headerName: 'Embed Link',
       width: 100,
       renderCell: (params) => {
         return <EmbedLinkMenu customerId={params.id as string} />;
+      },
+    },
+    {
+      field: 'magic_link',
+      headerName: 'Magic Link',
+      width: 100,
+      renderCell: (params) => {
+        return <MagicLinkIcon customerId={params.id as string} />;
       },
     },
     {
@@ -250,6 +259,134 @@ function EmbedLinkMenu({ customerId }: { customerId: string }) {
           </MenuItem>
         ))}
       </Menu>
+    </>
+  );
+}
+
+function MagicLinkIcon({ customerId }: { customerId: string }) {
+  const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const defaultReturnUrl = `${origin}${router.asPath}`;
+  const [providerName, setProviderName] = useState<ProviderName | undefined>();
+  const [authType, setAuthType] = useState<MagicLinkAuthType | undefined>();
+  const [returnUrl, setReturnUrl] = useState<string | undefined>(defaultReturnUrl);
+  const [expirationDays, setExpirationDays] = useState<number>(7);
+  const { addNotification } = useNotification();
+  const applicationId = useActiveApplicationId();
+  const { providers = [], isLoading: isLoadingProviders } = useProviders();
+
+  const handleCreate = async () => {
+    if (!providerName || !authType) {
+      addNotification({ message: 'Please select a provider and auth type', severity: 'error' });
+      return;
+    }
+    const response = await createMagicLink(applicationId, {
+      customerId,
+      providerName,
+      returnUrl,
+      expirationSecs: expirationDays * 24 * 60 * 60,
+      authType,
+    });
+
+    if (!response.ok) {
+      return addNotification({ message: response.errorMessage, severity: 'error' });
+    }
+    addNotification({ message: 'Copied magic link to clipboard', severity: 'success' });
+    await navigator.clipboard.writeText(response.data.url);
+  };
+
+  const getAuthOptions = (providerName: ProviderName): MagicLinkAuthType[] => {
+    if (providerName === 'apollo') {
+      return ['api_key'];
+    }
+    if (providerName === 'gong') {
+      return ['oauth2', 'access_key_secret'];
+    }
+    return ['oauth2'];
+  };
+
+  return (
+    <>
+      <IconButton onClick={() => setOpen(true)}>
+        <LinkIcon />
+      </IconButton>
+      <ConfirmationModal
+        open={open}
+        handleClose={() => setOpen(false)}
+        onConfirm={handleCreate}
+        confirmText="Create Magic Link"
+        confirmVariant="contained"
+        title="Create Magic Link"
+        content={
+          <Stack direction="column" className="gap-2" sx={{ padding: '2rem' }}>
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">Provider</Typography>
+              <Select
+                name="Provider"
+                disabled={isLoadingProviders}
+                onChange={(value: string) => {
+                  setProviderName(value as ProviderName);
+                  const authOptions = getAuthOptions(value as ProviderName);
+                  if (authOptions.length === 1) {
+                    setAuthType(authOptions[0]);
+                  }
+                }}
+                value={providerName ?? ''}
+                options={providers?.map(({ name }) => ({ value: name })) ?? []}
+              />
+            </Stack>
+            {providerName && (
+              <Stack className="gap-2">
+                <Typography variant="subtitle1">Auth Type</Typography>
+                <Select
+                  name="Auth Type"
+                  disabled={getAuthOptions(providerName).length === 1}
+                  onChange={(value: string) => {
+                    setAuthType(value as MagicLinkAuthType);
+                  }}
+                  value={authType ?? ''}
+                  options={getAuthOptions(providerName).map((value) => ({ value }))}
+                />
+              </Stack>
+            )}
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">Return URL</Typography>
+              <TextField
+                value={returnUrl}
+                size="small"
+                label="Return URL"
+                variant="outlined"
+                helperText={`URL to return to once the customer is done authenticating.`}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (!event.target.value) {
+                    setReturnUrl(undefined);
+                  }
+                  setReturnUrl(event.target.value);
+                }}
+              />
+            </Stack>
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">Expiration</Typography>
+              <TextField
+                value={expirationDays}
+                size="small"
+                label="Expiration (in days)"
+                variant="outlined"
+                type="number"
+                helperText="Value needs to be at least 1."
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  const value: number | undefined = parseInt(event.target.value, 10);
+                  if (Number.isNaN(value)) {
+                    return;
+                  }
+                  setExpirationDays(value);
+                }}
+              />
+            </Stack>
+          </Stack>
+        }
+      />
     </>
   );
 }

@@ -6,6 +6,8 @@ import type {
   DestinationTestParamsAny,
   DestinationTestResult,
   DestinationUpdateParamsAny,
+  MagicLink,
+  MagicLinkCreateParams,
   Provider,
   ProviderCreateParams,
   Schema,
@@ -183,6 +185,32 @@ export async function deleteSyncConfig(applicationId: string, syncConfigId: stri
     headers: {
       'Content-Type': 'application/json',
       'x-application-id': applicationId,
+    },
+  });
+  return await toClientEmptyResponse(result);
+}
+
+export async function createMagicLink(
+  applicationId: string,
+  data: MagicLinkCreateParams
+): Promise<ClientResponse<MagicLink>> {
+  const result = await fetch(`/api/internal/magic_links`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+    body: JSON.stringify(snakecaseKeys(data)),
+  });
+
+  return await toClientResponse(result);
+}
+
+export async function consumeMagicLink(linkId: string): Promise<ClientEmptyResponse> {
+  const result = await fetch(`/api/internal/links/${linkId}/consume`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
     },
   });
   return await toClientEmptyResponse(result);
