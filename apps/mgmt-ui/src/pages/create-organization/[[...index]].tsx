@@ -18,7 +18,7 @@ export default function CreateOrganizationPage() {
         <div className="flex flex-col items-center gap-6">
           <Paper className="px-8 py-10 gap-6 flex flex-col" elevation={1}>
             <Typography variant="h5">Switch organization</Typography>
-            <OrganizationSwitcher afterSwitchOrganizationUrl="/" />
+            <OrganizationSwitcher afterSwitchOrganizationUrl="/" hidePersonal={true} />
           </Paper>
           <div className="text-sm">
             or <a href="/create-organization">create organization</a>
