@@ -8,18 +8,12 @@ oneOf:
         enum:
           - apollo
         example: apollo
-      category:
-        type: string
-        enum:
-          - engagement
-        example: engagement
       api_key:
         type: string
         description: API key for the connected customer.
         example: e0c5545d-77b8-458d-b4bf-fc701a9cecac
     required:
       - provider_name
-      - category
       - api_key
   - type: object
     title: Access key
@@ -30,11 +24,6 @@ oneOf:
         enum:
           - gong
         example: gong
-      category:
-        type: string
-        enum:
-          - no_category
-        example: no_category
       access_key:
         type: string
         description: Access key for the connected customer.
@@ -45,6 +34,5 @@ oneOf:
         example: 258a80aa-2e9b-40b0-8d7a-28f858a856f3
     required:
       - provider_name
-      - category
       - access_key
       - access_key_secret

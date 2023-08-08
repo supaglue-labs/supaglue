@@ -14,7 +14,7 @@ import {
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
 import { getRunObjectSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_object_sync';
-import type { ProviderCategory, ProviderName } from '@supaglue/types';
+import type { ProviderName } from '@supaglue/types';
 import type {
   ConnectionCreateParams,
   ConnectionCreateParamsAny,
@@ -158,22 +158,18 @@ export class ConnectionAndSyncService {
   public async createFromApiKey(
     applicationId: string,
     customerId: string,
-    category: ProviderCategory,
     providerName: ProviderName,
     apiKey: string
   ): Promise<ConnectionSafeAny> {
     if (providerName !== 'apollo') {
       throw new BadRequestError(`Operation not supported for ${providerName}`);
     }
-    if (category !== 'engagement') {
-      throw new BadRequestError(`Operation not supported for ${category}`);
-    }
     const provider = await this.#providerService.getByNameAndApplicationId(providerName, applicationId);
     const params: ConnectionCreateParams<'apollo'> = {
       applicationId,
       providerName,
       providerId: provider.id,
-      category,
+      category: 'engagement',
       customerId,
       credentials: {
         type: 'api_key',
@@ -187,7 +183,6 @@ export class ConnectionAndSyncService {
   public async createFromAccessKeySecret(
     applicationId: string,
     customerId: string,
-    category: ProviderCategory,
     providerName: ProviderName,
     accessKey: string,
     accessKeySecret: string
@@ -195,15 +190,12 @@ export class ConnectionAndSyncService {
     if (providerName !== 'gong') {
       throw new BadRequestError(`Operation not supported for ${providerName}`);
     }
-    if (category !== 'no_category') {
-      throw new BadRequestError(`Operation not supported for ${category}`);
-    }
     const provider = await this.#providerService.getByNameAndApplicationId(providerName, applicationId);
     const params: ConnectionCreateParams<'gong'> = {
       applicationId,
       providerName,
       providerId: provider.id,
-      category,
+      category: 'no_category',
       customerId,
       credentials: {
         type: 'access_key_secret',

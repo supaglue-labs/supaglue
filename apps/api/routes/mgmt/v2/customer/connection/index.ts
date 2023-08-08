@@ -80,7 +80,6 @@ export default function init(app: Router): void {
         const connection = await connectionAndSyncService.createFromApiKey(
           req.supaglueApplication.id,
           req.params.customer_id,
-          req.body.category,
           req.body.provider_name,
           req.body.api_key
         );
@@ -90,7 +89,6 @@ export default function init(app: Router): void {
         const connection = await connectionAndSyncService.createFromAccessKeySecret(
           req.supaglueApplication.id,
           req.params.customer_id,
-          req.body.category,
           req.body.provider_name,
           req.body.access_key,
           req.body.access_key_secret

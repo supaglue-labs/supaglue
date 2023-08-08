@@ -2,7 +2,6 @@ export * from './application_service';
 export * from './common_objects';
 export * from './connection_service';
 export * from './customer_service';
-export * from './magic_link_service';
 export * from './provider_service';
 export * from './remote_service';
 export * from './schema_service';

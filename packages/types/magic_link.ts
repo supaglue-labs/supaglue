@@ -1,4 +1,8 @@
-import type { ProviderName } from '.';
+import type {
+  AccessKeySecretConnectionCredentialsDecrypted,
+  ApiKeyConnectionCredentialsDecrypted,
+  ProviderName,
+} from '.';
 
 export type MagicLink = {
   id: string;
@@ -9,7 +13,7 @@ export type MagicLink = {
   providerName: ProviderName;
   expiresAt: Date;
   url: string;
-  returnUrl?: string;
+  returnUrl: string;
   // TODO: Make enums
   status: string;
 };
@@ -22,7 +26,7 @@ export type MagicLinkCreateParams = {
   authType: MagicLinkAuthType;
   providerName: string;
   expirationSecs: number;
-  returnUrl?: string;
+  returnUrl: string;
 };
 
 export type MagicLinkData = ValidMagicLinkData | InvalidMagicLinkData;
@@ -36,3 +40,7 @@ export type InvalidMagicLinkData = {
   code: 'magic_link_already_used' | 'magic_link_expired' | 'magic_link_not_found';
   error: string;
 };
+
+export type MagicLinkConsumeParams =
+  | ApiKeyConnectionCredentialsDecrypted
+  | AccessKeySecretConnectionCredentialsDecrypted;
