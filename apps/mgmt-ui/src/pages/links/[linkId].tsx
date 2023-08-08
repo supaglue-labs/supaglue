@@ -95,8 +95,9 @@ type Oauth2RedirectPageProps = {
   linkId: string;
   applicationId: string;
   customerId: string;
-  providerName: string;
+  providerName: ProviderName;
   returnUrl: string;
+  scope?: string;
 };
 
 const Oauth2RedirectPage = ({
@@ -105,6 +106,7 @@ const Oauth2RedirectPage = ({
   customerId,
   providerName,
   returnUrl,
+  scope,
 }: Oauth2RedirectPageProps) => {
   const router = useRouter();
 
@@ -115,11 +117,14 @@ const Oauth2RedirectPage = ({
       if (!nextLambdaEnv?.API_HOST) {
         return;
       }
-      const oauthUrl = `${
+      let oauthUrl = `${
         nextLambdaEnv.API_HOST
       }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
         customerId
       )}&returnUrl=${returnUrl}&providerName=${providerName}`;
+      if (scope) {
+        oauthUrl += `&scope=${encodeURIComponent(scope)}`;
+      }
 
       await consumeMagicLink(linkId);
       await router.push(oauthUrl);
@@ -156,13 +161,13 @@ const MagicLinkFormWrapper = ({ providerName, children }: MagicLinkFormWrapperPr
   );
 };
 
-type AccessSecretKeyFormProps = {
+type MagicLinkFormProps = {
   linkId: string;
   returnUrl: string;
   providerName: ProviderName;
 };
 
-const AccessKeySecretCard = ({ linkId, providerName, returnUrl }: AccessSecretKeyFormProps) => {
+const AccessKeySecretCard = ({ linkId, providerName, returnUrl }: MagicLinkFormProps) => {
   const router = useRouter();
   const [accessKey, setAccessKey] = useState('');
   const [accessKeySecret, setAccessKeySecret] = useState('');
@@ -211,13 +216,7 @@ const AccessKeySecretCard = ({ linkId, providerName, returnUrl }: AccessSecretKe
   );
 };
 
-type ApiKeyCardProps = {
-  linkId: string;
-  returnUrl: string;
-  providerName: ProviderName;
-};
-
-const ApiKeyCard = ({ linkId, providerName, returnUrl }: ApiKeyCardProps) => {
+const ApiKeyCard = ({ linkId, providerName, returnUrl }: MagicLinkFormProps) => {
   const router = useRouter();
   const [apiKey, setApiKey] = useState('');
   return (
@@ -244,6 +243,58 @@ const ApiKeyCard = ({ linkId, providerName, returnUrl }: ApiKeyCardProps) => {
           onClick={async () => {
             await consumeMagicLink(linkId, { type: 'api_key', apiKey });
             await router.push(returnUrl);
+          }}
+        >
+          Save
+        </Button>
+      </Stack>
+    </MagicLinkFormWrapper>
+  );
+};
+
+const Ms365Card = ({ applicationId, customerId, linkId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
+  const router = useRouter();
+
+  const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
+  const [instanceUrl, setInstanceUrl] = useState('');
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+  return (
+    <MagicLinkFormWrapper providerName={providerName}>
+      <Stack className="gap-2">
+        <Typography variant="subtitle1">API Key</Typography>
+        <TextField
+          required={true}
+          value={instanceUrl}
+          size="small"
+          label="Instance URL"
+          variant="outlined"
+          helperText={`Enter your ${capitalizeString(providerName)} Instance URL`}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setInstanceUrl(event.target.value);
+          }}
+        />
+      </Stack>
+      <Stack direction="row" className="gap-2 justify-end">
+        <Button
+          disabled={!instanceUrl}
+          variant="contained"
+          onClick={async () => {
+            if (!nextLambdaEnv?.API_HOST) {
+              return;
+            }
+            const oauthUrl = `${
+              nextLambdaEnv.API_HOST
+            }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+              customerId
+            )}&returnUrl=${returnUrl}&providerName=${providerName}&scope=${encodeURIComponent(
+              `${instanceUrl}/.default`
+            )}`;
+
+            await consumeMagicLink(linkId);
+            await router.push(oauthUrl);
           }}
         >
           Save
