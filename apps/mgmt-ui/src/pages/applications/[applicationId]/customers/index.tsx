@@ -203,7 +203,7 @@ function MagicLinkIcon({ customerId }: { customerId: string }) {
   const defaultReturnUrl = `${origin}${router.asPath}`;
   const [providerName, setProviderName] = useState<ProviderName | undefined>();
   const [authType, setAuthType] = useState<MagicLinkAuthType | undefined>();
-  const [returnUrl, setReturnUrl] = useState<string | undefined>(defaultReturnUrl);
+  const [returnUrl, setReturnUrl] = useState<string>(defaultReturnUrl);
   const [expirationDays, setExpirationDays] = useState<number>(7);
   const { addNotification } = useNotification();
   const applicationId = useActiveApplicationId();
