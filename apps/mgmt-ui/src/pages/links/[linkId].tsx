@@ -134,6 +134,29 @@ const Oauth2RedirectPage = ({
   return null;
 };
 
+type MagicLinkFormWrapperProps = {
+  providerName: ProviderName;
+  children: React.ReactNode;
+};
+
+const MagicLinkFormWrapper = ({ providerName, children }: MagicLinkFormWrapperProps) => {
+  return (
+    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
+      <Grid item xs={3}>
+        <Card sx={{ padding: '4rem' }}>
+          <Stack direction="column" className="gap-2" sx={{ padding: '2rem' }}>
+            <Stack direction="row" spacing={1} className="items-center w-full">
+              <Typography variant="subtitle1">Connect to {capitalizeString(providerName)}</Typography>
+              {providerToIcon(providerName, 35)}
+            </Stack>
+          </Stack>
+          {children}
+        </Card>
+      </Grid>
+    </Grid>
+  );
+};
+
 type AccessSecretKeyFormProps = {
   linkId: string;
   returnUrl: string;
@@ -145,57 +168,47 @@ const AccessKeySecretCard = ({ linkId, providerName, returnUrl }: AccessSecretKe
   const [accessKey, setAccessKey] = useState('');
   const [accessKeySecret, setAccessKeySecret] = useState('');
   return (
-    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
-      <Grid item xs={3}>
-        <Card sx={{ padding: '4rem' }}>
-          <Stack direction="column" className="gap-2" sx={{ padding: '2rem' }}>
-            <Stack direction="row" spacing={1} className="items-center w-full">
-              <Typography variant="subtitle1">Connect to {capitalizeString(providerName)}</Typography>
-              {providerToIcon(providerName, 35)}
-            </Stack>
-          </Stack>
-          <Stack className="gap-2">
-            <Typography variant="subtitle1">Access Key</Typography>
-            <TextField
-              required={true}
-              value={accessKey}
-              size="small"
-              label="Access Key"
-              variant="outlined"
-              helperText={`Enter your ${capitalizeString(providerName)} Access Key`}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setAccessKey(event.target.value);
-              }}
-            />
-            <Typography variant="subtitle1">Access Key Secret</Typography>
-            <TextField
-              required={true}
-              value={accessKeySecret}
-              size="small"
-              label="Access Key Secret"
-              type="password"
-              variant="outlined"
-              helperText={`Enter your ${capitalizeString(providerName)} Access Key Secret`}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setAccessKeySecret(event.target.value);
-              }}
-            />
-          </Stack>
-          <Stack direction="row" className="gap-2 justify-end">
-            <Button
-              disabled={!accessKey}
-              variant="contained"
-              onClick={async () => {
-                await consumeMagicLink(linkId, { type: 'access_key_secret', accessKey, accessKeySecret });
-                await router.push(returnUrl);
-              }}
-            >
-              Save
-            </Button>
-          </Stack>
-        </Card>
-      </Grid>
-    </Grid>
+    <MagicLinkFormWrapper providerName={providerName}>
+      <Stack className="gap-2">
+        <Typography variant="subtitle1">Access Key</Typography>
+        <TextField
+          required={true}
+          value={accessKey}
+          size="small"
+          label="Access Key"
+          variant="outlined"
+          helperText={`Enter your ${capitalizeString(providerName)} Access Key`}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setAccessKey(event.target.value);
+          }}
+        />
+        <Typography variant="subtitle1">Access Key Secret</Typography>
+        <TextField
+          required={true}
+          value={accessKeySecret}
+          size="small"
+          label="Access Key Secret"
+          type="password"
+          variant="outlined"
+          helperText={`Enter your ${capitalizeString(providerName)} Access Key Secret`}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setAccessKeySecret(event.target.value);
+          }}
+        />
+      </Stack>
+      <Stack direction="row" className="gap-2 justify-end">
+        <Button
+          disabled={!accessKey}
+          variant="contained"
+          onClick={async () => {
+            await consumeMagicLink(linkId, { type: 'access_key_secret', accessKey, accessKeySecret });
+            await router.push(returnUrl);
+          }}
+        >
+          Save
+        </Button>
+      </Stack>
+    </MagicLinkFormWrapper>
   );
 };
 
@@ -209,45 +222,35 @@ const ApiKeyCard = ({ linkId, providerName, returnUrl }: ApiKeyCardProps) => {
   const router = useRouter();
   const [apiKey, setApiKey] = useState('');
   return (
-    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
-      <Grid item xs={3}>
-        <Card sx={{ padding: '4rem' }}>
-          <Stack direction="column" className="gap-2" sx={{ padding: '2rem' }}>
-            <Stack direction="row" spacing={2} className="items-center w-full">
-              <Typography variant="subtitle1">Connect to {capitalizeString(providerName)}</Typography>
-              {providerToIcon(providerName, 35)}
-            </Stack>
-          </Stack>
-          <Stack className="gap-2">
-            <Typography variant="subtitle1">API Key</Typography>
-            <TextField
-              required={true}
-              value={apiKey}
-              size="small"
-              label="API Key"
-              variant="outlined"
-              type="password"
-              helperText={`Enter your ${capitalizeString(providerName)} API Key`}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setApiKey(event.target.value);
-              }}
-            />
-          </Stack>
-          <Stack direction="row" className="gap-2 justify-end">
-            <Button
-              disabled={!apiKey}
-              variant="contained"
-              onClick={async () => {
-                await consumeMagicLink(linkId, { type: 'api_key', apiKey });
-                await router.push(returnUrl);
-              }}
-            >
-              Save
-            </Button>
-          </Stack>
-        </Card>
-      </Grid>
-    </Grid>
+    <MagicLinkFormWrapper providerName={providerName}>
+      <Stack className="gap-2">
+        <Typography variant="subtitle1">API Key</Typography>
+        <TextField
+          required={true}
+          value={apiKey}
+          size="small"
+          label="API Key"
+          variant="outlined"
+          type="password"
+          helperText={`Enter your ${capitalizeString(providerName)} API Key`}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setApiKey(event.target.value);
+          }}
+        />
+      </Stack>
+      <Stack direction="row" className="gap-2 justify-end">
+        <Button
+          disabled={!apiKey}
+          variant="contained"
+          onClick={async () => {
+            await consumeMagicLink(linkId, { type: 'api_key', apiKey });
+            await router.push(returnUrl);
+          }}
+        >
+          Save
+        </Button>
+      </Stack>
+    </MagicLinkFormWrapper>
   );
 };
 
