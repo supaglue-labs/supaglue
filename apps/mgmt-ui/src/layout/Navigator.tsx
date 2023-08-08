@@ -83,7 +83,7 @@ export default function Navigator(props: DrawerProps) {
           ? [
               {
                 id: 'Team Settings',
-                to: 'https://accounts.supaglue.io/organization',
+                to: nextLambdaEnv.CLERK_ORGANIZATION_URL,
                 icon: <ManageAccountsIcon />,
                 active: false,
               },
