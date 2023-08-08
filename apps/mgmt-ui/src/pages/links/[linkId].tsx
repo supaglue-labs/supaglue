@@ -71,7 +71,7 @@ export default function Home() {
   }
 
   // TODO: Implement ms365
-  return <ErrorPage errorMessage={data.error} />;
+  return <ErrorPage />;
 }
 
 const ErrorPage = ({ errorMessage = 'Unknown error.' }) => {
