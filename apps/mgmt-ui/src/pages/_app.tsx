@@ -249,7 +249,7 @@ const PosthogClerkUserIdentifier = (props: { children: ReactNode }) => {
   const { user, isLoaded, isSignedIn } = useUser();
 
   useEffect(() => {
-    if (isLoaded && isSignedIn) {
+    if (user && isLoaded && isSignedIn && posthog) {
       posthog?.identify(user.id, {
         email: user.emailAddresses[0]?.emailAddress,
       });
