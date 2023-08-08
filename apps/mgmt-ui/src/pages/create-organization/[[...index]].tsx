@@ -26,7 +26,7 @@ export default function CreateOrganizationPage() {
         </div>
       ) : (
         <div className="flex flex-col items-center gap-6">
-          <CreateOrganization />
+          <CreateOrganization afterCreateOrganizationUrl="/" />
           <div className="text-sm">
             or <a href="/create-organization?switcher=1">switch organization</a>
           </div>
