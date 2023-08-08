@@ -141,7 +141,7 @@ export async function fetchProperties(
   objectName: string,
   providerName: string
 ) {
-  const response = await fetch(`https://api.supaglue.io/mgmt/v2/properties?type=${objectType}&name=${objectName}`, {
+  const response = await fetch(`https://api.supaglue.io/metadata/v2/properties?type=${objectType}&name=${objectName}`, {
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': process.env.NEXT_PUBLIC_SUPAGLUE_API_KEY,
