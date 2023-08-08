@@ -11,9 +11,11 @@ import * as React from 'react';
 import { Logout } from '../Logout';
 
 function Profile() {
+  const { nextLambdaEnv } = useNextLambdaEnv();
+
   return (
     <MUILink
-      href="https://accounts.supaglue.io/user"
+      href={nextLambdaEnv?.CLERK_ACCOUNT_URL}
       component={NextLink}
       sx={{ color: 'inherit', textDecoration: 'inherit' }}
     >

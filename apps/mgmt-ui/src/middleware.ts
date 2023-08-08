@@ -6,16 +6,12 @@ import { IS_CLOUD } from './pages/api';
 // Set the paths that don't require the user to be signed in
 const cloudPublicPaths = ['/sign-in*', '/sign-up*'];
 
-const cloudCreateOrgPath = '/create-organization*';
-
 // Paths that are only accessible if `IS_CLOUD` is true
-const cloudOnlyPaths = ['/sign-in*/', '/sign-up*', '/create-organization*'];
+const cloudOnlyPaths = ['/sign-in*/', '/sign-up*', '/create-organization*', '/switch-organization*'];
 
 const isCloudPublicPath = (path: string) => {
   return cloudPublicPaths.find((x) => path.match(new RegExp(`^${x}$`.replace('*$', '($|/)'))));
 };
-
-const isCloudCreateOrgPath = (path: string) => path.match(new RegExp(`^${cloudCreateOrgPath}$`.replace('*$', '($|/)')));
 
 const isCloudOnlyPath = (path: string) => {
   return cloudOnlyPaths.find((x) => path.match(new RegExp(`^${x}$`.replace('*$', '($|/)'))));
@@ -36,11 +32,12 @@ const cloudMiddleware = authMiddleware({
       return NextResponse.redirect(signInUrl);
     }
 
-    // redirect them to organization selection page
-    if (userId && !orgId && request.nextUrl.pathname !== '/switch-organization') {
-      const orgSwitcher = new URL('/switch-organization', request.url);
-      return NextResponse.redirect(orgSwitcher);
+    // redirect them to create an organization if they don't have one
+    if (userId && !orgId && request.nextUrl.pathname !== '/create-organization') {
+      const createOrganizationUrl = new URL('/create-organization', request.url);
+      return NextResponse.redirect(createOrganizationUrl);
     }
+
     return NextResponse.next();
   },
 });
