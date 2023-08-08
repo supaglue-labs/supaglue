@@ -7,7 +7,7 @@ import { IS_CLOUD } from './pages/api';
 const cloudPublicPaths = ['/sign-in*', '/sign-up*', '/links*'];
 
 // Paths that are only accessible if `IS_CLOUD` is true
-const cloudOnlyPaths = ['/sign-in*/', '/sign-up*', '/create-organization*'];
+const cloudOnlyPaths = ['/sign-in*/', '/sign-up*', '/create-organization*', '/switch-organization*'];
 
 const isCloudPublicPath = (path: string) => {
   return cloudPublicPaths.find((x) => path.match(new RegExp(`^${x}$`.replace('*$', '($|/)'))));
@@ -32,11 +32,12 @@ const cloudMiddleware = authMiddleware({
       return NextResponse.redirect(signInUrl);
     }
 
-    // redirect them to organization selection page
-    if (userId && !orgId && request.nextUrl.pathname !== '/switch-organization') {
-      const orgSwitcher = new URL('/switch-organization', request.url);
-      return NextResponse.redirect(orgSwitcher);
+    // redirect them to create an organization if they don't have one
+    if (userId && !orgId && request.nextUrl.pathname !== '/create-organization') {
+      const createOrganizationUrl = new URL('/create-organization', request.url);
+      return NextResponse.redirect(createOrganizationUrl);
     }
+
     return NextResponse.next();
   },
 });

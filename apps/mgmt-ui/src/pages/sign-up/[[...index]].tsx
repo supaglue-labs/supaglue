@@ -9,7 +9,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
 const SignUpPage = () => (
   <div className="m-auto">
-    <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" afterSignUpUrl="/create-organization" />
+    <SignUp path="/sign-up" routing="path" signInUrl="/sign-in" />
   </div>
 );
 

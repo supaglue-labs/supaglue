@@ -8,13 +8,14 @@ import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useCustomers } from '@/hooks/useCustomers';
+import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import { useProviders } from '@/hooks/useProviders';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
 import LinkIcon from '@mui/icons-material/Link';
-import { Box, Breadcrumbs, Grid, IconButton, Stack, TextField, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Grid, IconButton, Menu, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { MagicLinkAuthType, ProviderName } from '@supaglue/types';
@@ -93,7 +94,15 @@ export default function Home() {
       },
     },
     {
-      field: 'link',
+      field: 'embed_link',
+      headerName: 'Embed Link',
+      width: 100,
+      renderCell: (params) => {
+        return <EmbedLinkMenu customerId={params.id as string} />;
+      },
+    },
+    {
+      field: 'magic_link',
       headerName: 'Magic Link',
       width: 100,
       renderCell: (params) => {
@@ -192,6 +201,64 @@ export default function Home() {
           )}
         </Box>
       </Box>
+    </>
+  );
+}
+
+function EmbedLinkMenu({ customerId }: { customerId: string }) {
+  const { nextLambdaEnv } = useNextLambdaEnv();
+  const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
+  const router = useRouter();
+  const returnUrl = `${origin}${router.asPath}`;
+  const { addNotification } = useNotification();
+  const applicationId = useActiveApplicationId();
+
+  const { providers = [] } = useProviders();
+
+  const handleEmbedLinkClick = async (providerName: string) => {
+    addNotification({ message: 'Copied to clipboard', severity: 'success' });
+    await navigator.clipboard.writeText(
+      `${nextLambdaEnv?.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+        customerId
+      )}&returnUrl=${returnUrl}&providerName=${providerName}`
+    );
+  };
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  return (
+    <>
+      <IconButton onClick={handleClick}>
+        <LinkIcon />
+      </IconButton>
+      <Menu
+        anchorEl={anchorEl}
+        id="account-menu"
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        {providers.map(({ name: providerName }) => (
+          <MenuItem
+            key={providerName}
+            onClick={async () => {
+              await handleEmbedLinkClick(providerName);
+              handleClose();
+            }}
+          >
+            {providerName}
+          </MenuItem>
+        ))}
+      </Menu>
     </>
   );
 }
