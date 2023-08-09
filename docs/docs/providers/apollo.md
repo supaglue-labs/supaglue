@@ -9,16 +9,17 @@ description: ''
 
 ## Overview
 
+Apollo is both a sales engagement connector and a data enrichment provider.
+
 | Feature                            | Available |
 | ---------------------------------- | --------- |
 | Authentication                     | Yes       |
 | Managed syncs                      | Yes       |
 | Actions API                        | Yes       |
-| Real-time events                   | Yes       |
+| Real-time events                   | No        |
 | Passthrough API                    | Yes       |
 
 
-*Note: Apollo does not support Oauth connections, so only API Key based connections are supported.
 **Note: Only full (non-incremental) syncs are supported.
 
 Supported common objects:
@@ -33,9 +34,11 @@ Supported common objects:
 
 To enable the Apollo provider on Supaglue, simply navigate to the Apollo Provider configuration page and click "Enable".
 
+![apollo_auth](/img/apollo_auth.png 'apollo auth config')
+
 ## Connection setup
 
-Unlike our other providers, Apollo currently does not support OAuth connections. To establish a connection with your customer's Apollo instance, you will need the customer to input their Apollo API Key, and then call the following:
+Apollo supports API key authentication. To establish a connection with your customer's Apollo instance, you will need the customer to input their Apollo API Key, and then call the following:
 
 ```
 curl --location 'https://api.supaglue.io/mgmt/v2/customers/{CUSTOMER_ID}/connections' \
