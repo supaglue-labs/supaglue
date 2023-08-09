@@ -164,7 +164,14 @@ type MagicLinkFormWrapperProps = {
 
 const MagicLinkFormWrapper = ({ providerName, children }: MagicLinkFormWrapperProps) => {
   return (
-    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
+    <Grid
+      sx={{ backgroundColor: 'gray' }}
+      container
+      spacing={0}
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+    >
       <Grid item xs={3}>
         <Card sx={{ padding: '4rem' }}>
           <Stack direction="column" spacing={2}>
@@ -244,7 +251,7 @@ const GongCard = ({ linkId, applicationId, customerId, providerName, returnUrl }
       )}
       <Stack direction="row" className="gap-2 justify-end">
         <Button
-          disabled={!accessKey}
+          disabled={authType === 'access_key_secret' && (!accessKey || !accessKeySecret)}
           variant="contained"
           onClick={async () => {
             if (authType === 'oauth2') {
