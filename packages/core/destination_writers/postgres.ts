@@ -771,25 +771,25 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_users' 
   },
   engagement: {
     account: (schema: string, temp?: boolean) => `-- CreateTable
-    CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
       temp ? 'temp_engagement_accounts' : `${schema}.engagement_accounts`
     } (
-      "_supaglue_application_id" TEXT NOT NULL,
-      "_supaglue_provider_name" TEXT NOT NULL,
-      "_supaglue_customer_id" TEXT NOT NULL,
-      "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
-      "id" TEXT NOT NULL,
-      "created_at" TIMESTAMP(3),
-      "updated_at" TIMESTAMP(3),
-      "is_deleted" BOOLEAN NOT NULL,
-      "last_modified_at" TIMESTAMP(3) NOT NULL,
-      "name" TEXT,
-      "domain" TEXT,
-      "owner_id" TEXT,
-      "raw_data" JSONB,
-    
-      PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
-    );`,
+  "_supaglue_application_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "name" TEXT,
+  "domain" TEXT,
+  "owner_id" TEXT,
+  "raw_data" JSONB
+
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
+);`,
     contact: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
       temp ? 'temp_engagement_contacts' : `${schema}.engagement_contacts`
@@ -814,9 +814,9 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "click_count" INTEGER NOT NULL,
   "reply_count" INTEGER NOT NULL,
   "bounced_count" INTEGER NOT NULL,
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
     mailbox: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
@@ -833,9 +833,9 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "email" TEXT,
   "user_id" TEXT,
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
     sequence: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
@@ -856,9 +856,9 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "num_steps" INTEGER NOT NULL,
   "metrics" JSONB,
   "is_enabled" BOOLEAN NOT NULL,
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
     sequence_state: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
@@ -878,9 +878,9 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "mailbox_id" TEXT,
   "user_id" TEXT,
   "state" TEXT,
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
     user: (schema: string, temp?: boolean) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_engagement_users' : `${schema}.engagement_users`} (
@@ -896,9 +896,9 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_engagement_
   "first_name" TEXT,
   "last_name" TEXT,
   "email" TEXT,
-  "raw_data" JSONB,
+  "raw_data" JSONB
 
-  PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
   },
 };
