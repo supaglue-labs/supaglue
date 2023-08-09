@@ -13,13 +13,23 @@ import ThemedImage from '@theme/ThemedImage';
 
 ## Introduction
 
-An **Entity** is an abstraction that maps to different objects and fields in each of your customer's Providers. As the developer, you define the Entity and its fields. You can then work with a common schema whenever you sync data or perform actions on data.
+An **Entity** is an abstraction that maps to different objects and fields in each of your customer's Providers. As the developer, you define the Entity and its fields. You can then work with a normalized schema whenever you sync data or perform actions on data.
 
-### Examples
+### Example
 
-- You'd like to sync `Leads` from Salesforce customers, but `Contacts` from HubSpot customers. You'd like to only sync a subset of fields from each Provider and map them to a common schema, and you'd like to use that schema when creating or updating `Leads` or `Contacts` in your customers' CRMs. You could create a `ContactOrLead` Entity and then map it to `Lead` for Salesforce and `Contact` for HubSpot.
-- For one Salesforce customer, you'd like to sync records for the custom object `ProductIdea__c`, but for another customer, you'd like to sync records for the custom object `ProductGap__c`. These two custom objects might even have different field names. However, since these semantically refer to the same concept, so you'd like to write them to your DB as `product_idea` records with the same field names.
-- You'd like to create a custom object in each of your customers' HubSpot instances and then create or update records for that object. However, as the custom object id is different per instance, you'd like to use a common Entity to reference these in CRUD operations.
+You have customers using different CRMs: Salesforce, HubSpot, and Pipedrive. While they all support the same `Account` concept, they're represented differently in each Provider. Moreover, your customers could have made custom modifications to their CRMs, so the objects could be named differently or even contain different fields.
+
+- Customer 1: They use the `Account` standard object, with the standard `name` and `website` fields.
+- Customer 2: They use the `Account` standard object as a Person Account, and created a custom field `domain__c` to store the website instead.
+- Customer 3: They use the `company` standard object, with `name` and `domain` fields.
+- Customer 4: They created a `company_europe` custom object, with `name` and `domain` fields.
+- Customer 5: They use the `Organization` standard object, but with a `domain_custom` custom field.
+
+To unify all these representations, you could
+
+1. define an `Account` Entity in Supaglue with `name` and `website` fields,
+1. map them to the corresponding fields globally for each Provider or specifically for each customer, and
+1. only deal with the `Account` Entity whenever you sync or perform actions on data.
 
 ### Comparison
 
