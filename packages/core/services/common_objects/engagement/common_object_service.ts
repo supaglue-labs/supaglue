@@ -46,7 +46,7 @@ export class EngagementCommonObjectService {
 
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer) {
+    if (writer && connection.providerName !== 'apollo') {
       const object = await remoteClient.getCommonObjectRecord(type, id);
 
       const end = histogram.startTimer({ operation: 'create', remote_name: destinationType! });
@@ -70,7 +70,7 @@ export class EngagementCommonObjectService {
 
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer) {
+    if (writer && connection.providerName !== 'apollo') {
       const object = await remoteClient.getCommonObjectRecord(type, params.id);
 
       const end = histogram.startTimer({ operation: 'update', remote_name: destinationType! });
