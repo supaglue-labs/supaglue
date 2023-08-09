@@ -1,6 +1,7 @@
 import { consumeMagicLink } from '@/client';
 import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
+import { useNotification } from '@/context/notification';
 import { useMagicLinkData } from '@/hooks/useMagicLinkData';
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import { getDisplayName } from '@/utils/provider';
@@ -280,6 +281,7 @@ const ApiKeyCard = ({ linkId, providerName, returnUrl }: MagicLinkFormProps) => 
 
 const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
   const router = useRouter();
+  const { addNotification } = useNotification();
 
   const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
   const [instanceUrl, setInstanceUrl] = useState('');
@@ -297,7 +299,7 @@ const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, re
           size="small"
           label="Instance URL"
           variant="outlined"
-          helperText={`Enter your Microsoft Dynamics 365 Instance URL`}
+          helperText={`Enter your Microsoft Dynamics 365 Instance URL (must start with https://)`}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setInstanceUrl(event.target.value);
           }}
@@ -309,14 +311,23 @@ const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, re
           variant="contained"
           onClick={async () => {
             if (!nextLambdaEnv?.API_HOST) {
+              addNotification({
+                message: 'Unknown error encountered. Please refresh and try again.',
+                severity: 'error',
+              });
               return;
             }
+            if (!instanceUrl.startsWith('https://')) {
+              addNotification({ message: 'Instance URL must start with https://', severity: 'error' });
+              return;
+            }
+            const trimmedInstanceUrl = instanceUrl.replace(/\/$/, '');
             const oauthUrl = `${
               nextLambdaEnv.API_HOST
             }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
               customerId
             )}&returnUrl=${returnUrl}&providerName=${providerName}&scope=${encodeURIComponent(
-              `${instanceUrl}/.default`
+              `${trimmedInstanceUrl}/.default`
             )}`;
 
             await consumeMagicLink(linkId);
