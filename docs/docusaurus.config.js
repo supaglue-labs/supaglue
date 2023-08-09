@@ -117,8 +117,14 @@ const config = {
             label: 'API Reference',
           },
           {
+            type: 'doc',
+            docId: '/category/providers',
+            position: 'left',
+            label: 'Connectors',
+          },
+          {
             label: 'Sign Up',
-            href: 'https://app.supaglue.io/signup',
+            href: 'https://app.supaglue.io/sign-up',
             position: 'right',
           },
           { type: 'docsVersionDropdown', position: 'left' },
