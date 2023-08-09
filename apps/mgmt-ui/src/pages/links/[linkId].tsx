@@ -1,4 +1,5 @@
 import { consumeMagicLink } from '@/client';
+import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { useMagicLinkData } from '@/hooks/useMagicLinkData';
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
@@ -38,7 +39,8 @@ export default function Home() {
   if (
     data.code === 'magic_link_valid' &&
     data.magicLink.authType === 'oauth2' &&
-    data.magicLink.providerName !== 'ms_dynamics_365_sales'
+    data.magicLink.providerName !== 'ms_dynamics_365_sales' &&
+    data.magicLink.providerName !== 'salesforce'
   ) {
     return (
       <Oauth2RedirectPage
@@ -83,7 +85,18 @@ export default function Home() {
     );
   }
 
-  // TODO: Implement ms365
+  if (data.code === 'magic_link_valid' && data.magicLink.providerName === 'salesforce') {
+    return (
+      <SalesforceCard
+        linkId={data.magicLink.id}
+        applicationId={data.magicLink.applicationId}
+        customerId={data.magicLink.customerId}
+        providerName={data.magicLink.providerName}
+        returnUrl={data.magicLink.returnUrl}
+      />
+    );
+  }
+
   return <ErrorPage />;
 }
 
@@ -161,13 +174,13 @@ const MagicLinkFormWrapper = ({ providerName, children }: MagicLinkFormWrapperPr
     <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
       <Grid item xs={3}>
         <Card sx={{ padding: '4rem' }}>
-          <Stack direction="column" className="gap-2" sx={{ padding: '2rem' }}>
+          <Stack direction="column" spacing={2}>
             <Stack direction="row" spacing={1} className="items-center w-full">
               <Typography variant="subtitle1">Connect to {getDisplayName(providerName)}</Typography>
               {providerToIcon(providerName, 35)}
             </Stack>
+            {children}
           </Stack>
-          {children}
         </Card>
       </Grid>
     </Grid>
@@ -222,7 +235,7 @@ const AccessKeySecretCard = ({ linkId, providerName, returnUrl }: MagicLinkFormP
             await router.push(returnUrl);
           }}
         >
-          Save
+          Authenticate
         </Button>
       </Stack>
     </MagicLinkFormWrapper>
@@ -258,7 +271,7 @@ const ApiKeyCard = ({ linkId, providerName, returnUrl }: MagicLinkFormProps) => 
             await router.push(returnUrl);
           }}
         >
-          Save
+          Authenticate
         </Button>
       </Stack>
     </MagicLinkFormWrapper>
@@ -310,7 +323,56 @@ const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, re
             await router.push(oauthUrl);
           }}
         >
-          Save
+          Authenticate
+        </Button>
+      </Stack>
+    </MagicLinkFormWrapper>
+  );
+};
+
+const SalesforceCard = ({ applicationId, customerId, linkId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
+  const router = useRouter();
+
+  const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
+  const [isSandbox, setIsSandbox] = useState(false);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+  return (
+    <MagicLinkFormWrapper providerName={providerName}>
+      <Stack className="gap-2">
+        <Typography variant="subtitle1">Environment</Typography>
+        <Select
+          name="Environment"
+          onChange={(value: string) => {
+            setIsSandbox(value === 'Sandbox');
+          }}
+          value={isSandbox ? 'Sandbox' : 'Production'}
+          options={[{ value: 'Production' }, { value: 'Sandbox' }]}
+        />
+      </Stack>
+      <Stack direction="row" className="gap-2 justify-end">
+        <Button
+          variant="contained"
+          onClick={async () => {
+            if (!nextLambdaEnv?.API_HOST) {
+              return;
+            }
+            let oauthUrl = `${
+              nextLambdaEnv.API_HOST
+            }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+              customerId
+            )}&returnUrl=${returnUrl}&providerName=${providerName}`;
+            if (isSandbox) {
+              oauthUrl += `&loginUrl=${encodeURIComponent('https://test.salesforce.com')}`;
+            }
+
+            await consumeMagicLink(linkId);
+            await router.push(oauthUrl);
+          }}
+        >
+          Authenticate
         </Button>
       </Stack>
     </MagicLinkFormWrapper>
