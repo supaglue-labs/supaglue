@@ -1,6 +1,7 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { Entity, EntityCreateParams, EntityUpdateParams } from '@supaglue/types/entity';
 import { NotFoundError } from '../errors';
+import { validateEntityOrSchemaFieldName } from '../lib/entity';
 import { fromEntityModel, toEntityModel } from '../mappers/entity';
 
 export class EntityService {
@@ -59,7 +60,7 @@ export class EntityService {
   }
 
   public async create(entity: EntityCreateParams): Promise<Entity> {
-    validateEntityName(entity.name);
+    validateEntity(entity);
     const createdEntity = await this.#prisma.entity.create({
       data: toEntityModel(entity),
     });
@@ -67,7 +68,7 @@ export class EntityService {
   }
 
   public async update(id: string, applicationId: string, params: EntityUpdateParams): Promise<Entity> {
-    validateEntityName(params.name);
+    validateEntity(params);
     const updatedEntity = await this.#prisma.entity.update({
       where: { id },
       data: toEntityModel({ ...params, applicationId }),
@@ -76,7 +77,7 @@ export class EntityService {
   }
 
   public async upsert(params: EntityCreateParams): Promise<Entity> {
-    validateEntityName(params.name);
+    validateEntity(params);
     const upsertedEntity = await this.#prisma.entity.upsert({
       where: {
         applicationId_name: {
@@ -97,8 +98,14 @@ export class EntityService {
   }
 }
 
-function validateEntityName(name: string): void {
-  if (!name.match(/^[a-zA-Z0-9_]+$/)) {
+function validateEntity(entity: EntityUpdateParams): void {
+  // validate name
+  if (!entity.name.match(/^[a-zA-Z0-9_]+$/)) {
     throw new Error(`Invalid entity name: ${name}; must only contain letters, numbers, and underscores.`);
+  }
+
+  // don't allow fields we've reserved, so that there's no field name collisions (in `_supaglue_raw_data` OR top-level normalized fields)
+  for (const { name } of entity.config.fields) {
+    validateEntityOrSchemaFieldName(name);
   }
 }

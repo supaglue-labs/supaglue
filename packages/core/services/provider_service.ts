@@ -13,6 +13,7 @@ import type {
 } from '@supaglue/types';
 import type { ProviderEntityMapping } from '@supaglue/types/entity_mapping';
 import { BadRequestError, NotFoundError } from '../errors';
+import { validateEntityOrSchemaFieldName } from '../lib/entity';
 import { fromProviderModel, fromSyncConfigModel, toProviderModel, toSchemaModel, toSyncConfigModel } from '../mappers';
 
 export class ProviderService {
@@ -303,6 +304,7 @@ function validateObjects({ common, standard }: ProviderObjects<ProviderCategory>
 function validateEntityMappings(entityMappings: ProviderEntityMapping[]): void {
   // 1. Disallow multiple entity mappings for the same provider to be mapped to the same object
   // 2. Disallow multiple mappings for entities to object for the same entity name
+  // 3. Validate entity field names
 
   const entityMappingObjects = entityMappings.map((entityMapping) => entityMapping.object);
   if (entityMappingObjects.length !== new Set(entityMappingObjects).size) {
@@ -312,5 +314,9 @@ function validateEntityMappings(entityMappings: ProviderEntityMapping[]): void {
   const entityMappingEntityIds = entityMappings.map((entityMapping) => entityMapping.entityId);
   if (entityMappingEntityIds.length !== new Set(entityMappingEntityIds).size) {
     throw new BadRequestError('Multiple entries for mapping the same entity to an object');
+  }
+
+  for (const field of entityMappings.flatMap((entityMapping) => entityMapping.fieldMappings ?? [])) {
+    validateEntityOrSchemaFieldName(field.entityField);
   }
 }
