@@ -1,8 +1,8 @@
 import { consumeMagicLink } from '@/client';
-import { PROVIDER_CARDS_INFO } from '@/components/configuration/provider/ProviderTabPanelContainer';
 import Spinner from '@/components/Spinner';
 import { useMagicLinkData } from '@/hooks/useMagicLinkData';
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
+import { getDisplayName } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
 import { Box, Button, Card, Grid, Stack, TextField, Typography } from '@mui/material';
 import type { ProviderName } from '@supaglue/types';
@@ -157,15 +157,13 @@ type MagicLinkFormWrapperProps = {
 };
 
 const MagicLinkFormWrapper = ({ providerName, children }: MagicLinkFormWrapperProps) => {
-  const providerDisplayName =
-    PROVIDER_CARDS_INFO.find((p) => p.providerName === providerName)?.name ?? capitalizeString(providerName);
   return (
     <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
       <Grid item xs={3}>
         <Card sx={{ padding: '4rem' }}>
           <Stack direction="column" className="gap-2" sx={{ padding: '2rem' }}>
             <Stack direction="row" spacing={1} className="items-center w-full">
-              <Typography variant="subtitle1">Connect to {providerDisplayName}</Typography>
+              <Typography variant="subtitle1">Connect to {getDisplayName(providerName)}</Typography>
               {providerToIcon(providerName, 35)}
             </Stack>
           </Stack>
@@ -196,7 +194,7 @@ const AccessKeySecretCard = ({ linkId, providerName, returnUrl }: MagicLinkFormP
           size="small"
           label="Access Key"
           variant="outlined"
-          helperText={`Enter your ${capitalizeString(providerName)} Access Key`}
+          helperText={`Enter your ${getDisplayName(providerName)} Access Key`}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setAccessKey(event.target.value);
           }}
@@ -209,7 +207,7 @@ const AccessKeySecretCard = ({ linkId, providerName, returnUrl }: MagicLinkFormP
           label="Access Key Secret"
           type="password"
           variant="outlined"
-          helperText={`Enter your ${capitalizeString(providerName)} Access Key Secret`}
+          helperText={`Enter your ${getDisplayName(providerName)} Access Key Secret`}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setAccessKeySecret(event.target.value);
           }}
@@ -245,7 +243,7 @@ const ApiKeyCard = ({ linkId, providerName, returnUrl }: MagicLinkFormProps) => 
           label="API Key"
           variant="outlined"
           type="password"
-          helperText={`Enter your ${capitalizeString(providerName)} API Key`}
+          helperText={`Enter your ${getDisplayName(providerName)} API Key`}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setApiKey(event.target.value);
           }}
@@ -318,10 +316,3 @@ const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, re
     </MagicLinkFormWrapper>
   );
 };
-
-function capitalizeString(str: string): string {
-  if (!str) {
-    return str;
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}

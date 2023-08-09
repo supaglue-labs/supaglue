@@ -1,8 +1,8 @@
 import Spinner from '@/components/Spinner';
+import type { ProviderCardInfo } from '@/utils/provider';
 import { Grid } from '@mui/material';
 import type { Provider } from '@supaglue/types';
 import ProviderCard from './ProviderCard';
-import type { ProviderCardInfo } from './ProviderTabPanelContainer';
 
 export type ProvidersListPanelProps = {
   providerCardsInfo: ProviderCardInfo[];
