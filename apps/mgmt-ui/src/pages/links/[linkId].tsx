@@ -1,4 +1,5 @@
 import { consumeMagicLink } from '@/client';
+import { PROVIDER_CARDS_INFO } from '@/components/configuration/provider/ProviderTabPanelContainer';
 import Spinner from '@/components/Spinner';
 import { useMagicLinkData } from '@/hooks/useMagicLinkData';
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
@@ -66,6 +67,18 @@ export default function Home() {
         returnUrl={data.magicLink.returnUrl}
         linkId={data.magicLink.id}
         providerName={data.magicLink.providerName}
+      />
+    );
+  }
+
+  if (data.code === 'magic_link_valid' && data.magicLink.providerName === 'ms_dynamics_365_sales') {
+    return (
+      <MsDynamics365Card
+        linkId={data.magicLink.id}
+        applicationId={data.magicLink.applicationId}
+        customerId={data.magicLink.customerId}
+        providerName={data.magicLink.providerName}
+        returnUrl={data.magicLink.returnUrl}
       />
     );
   }
@@ -144,13 +157,15 @@ type MagicLinkFormWrapperProps = {
 };
 
 const MagicLinkFormWrapper = ({ providerName, children }: MagicLinkFormWrapperProps) => {
+  const providerDisplayName =
+    PROVIDER_CARDS_INFO.find((p) => p.providerName === providerName)?.name ?? capitalizeString(providerName);
   return (
     <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
       <Grid item xs={3}>
         <Card sx={{ padding: '4rem' }}>
           <Stack direction="column" className="gap-2" sx={{ padding: '2rem' }}>
             <Stack direction="row" spacing={1} className="items-center w-full">
-              <Typography variant="subtitle1">Connect to {capitalizeString(providerName)}</Typography>
+              <Typography variant="subtitle1">Connect to {providerDisplayName}</Typography>
               {providerToIcon(providerName, 35)}
             </Stack>
           </Stack>
@@ -252,7 +267,7 @@ const ApiKeyCard = ({ linkId, providerName, returnUrl }: MagicLinkFormProps) => 
   );
 };
 
-const Ms365Card = ({ applicationId, customerId, linkId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
+const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
   const router = useRouter();
 
   const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
@@ -264,14 +279,14 @@ const Ms365Card = ({ applicationId, customerId, linkId, providerName, returnUrl 
   return (
     <MagicLinkFormWrapper providerName={providerName}>
       <Stack className="gap-2">
-        <Typography variant="subtitle1">API Key</Typography>
+        <Typography variant="subtitle1">Instance URL</Typography>
         <TextField
           required={true}
           value={instanceUrl}
           size="small"
           label="Instance URL"
           variant="outlined"
-          helperText={`Enter your ${capitalizeString(providerName)} Instance URL`}
+          helperText={`Enter your Microsoft Dynamics 365 Instance URL`}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
             setInstanceUrl(event.target.value);
           }}
