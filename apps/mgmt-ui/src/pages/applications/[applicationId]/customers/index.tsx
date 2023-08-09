@@ -19,7 +19,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import { Box, Breadcrumbs, Grid, IconButton, Menu, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
-import type { MagicLinkAuthType, ProviderName } from '@supaglue/types';
+import type { ProviderName } from '@supaglue/types';
 import { type ConnectionSafeAny } from '@supaglue/types';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -270,7 +270,6 @@ function MagicLinkIcon({ customerId }: { customerId: string }) {
   const [open, setOpen] = useState(false);
   const defaultReturnUrl = `${origin}${router.asPath}`;
   const [providerName, setProviderName] = useState<ProviderName | undefined>();
-  const [authType, setAuthType] = useState<MagicLinkAuthType | undefined>();
   const [returnUrl, setReturnUrl] = useState<string>(defaultReturnUrl);
   const [expirationDays, setExpirationDays] = useState<number>(7);
   const { addNotification } = useNotification();
@@ -278,8 +277,8 @@ function MagicLinkIcon({ customerId }: { customerId: string }) {
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
 
   const handleCreate = async () => {
-    if (!providerName || !authType) {
-      addNotification({ message: 'Please select a provider and auth type', severity: 'error' });
+    if (!providerName) {
+      addNotification({ message: 'Please select a provider', severity: 'error' });
       return;
     }
     const response = await createMagicLink(applicationId, {
@@ -287,7 +286,6 @@ function MagicLinkIcon({ customerId }: { customerId: string }) {
       providerName,
       returnUrl,
       expirationSecs: expirationDays * 24 * 60 * 60,
-      authType,
     });
 
     if (!response.ok) {
@@ -295,16 +293,6 @@ function MagicLinkIcon({ customerId }: { customerId: string }) {
     }
     addNotification({ message: 'Copied magic link to clipboard', severity: 'success' });
     await navigator.clipboard.writeText(response.data.url);
-  };
-
-  const getAuthOptions = (providerName: ProviderName): MagicLinkAuthType[] => {
-    if (providerName === 'apollo') {
-      return ['api_key'];
-    }
-    if (providerName === 'gong') {
-      return ['oauth2', 'access_key_secret'];
-    }
-    return ['oauth2'];
   };
 
   return (
@@ -328,29 +316,11 @@ function MagicLinkIcon({ customerId }: { customerId: string }) {
                 disabled={isLoadingProviders}
                 onChange={(value: string) => {
                   setProviderName(value as ProviderName);
-                  const authOptions = getAuthOptions(value as ProviderName);
-                  if (authOptions.length === 1) {
-                    setAuthType(authOptions[0]);
-                  }
                 }}
                 value={providerName ?? ''}
                 options={providers?.map(({ name }) => ({ value: name, displayValue: getDisplayName(name) })) ?? []}
               />
             </Stack>
-            {providerName && (
-              <Stack className="gap-2">
-                <Typography variant="subtitle1">Auth Type</Typography>
-                <Select
-                  name="Auth Type"
-                  disabled={getAuthOptions(providerName).length === 1}
-                  onChange={(value: string) => {
-                    setAuthType(value as MagicLinkAuthType);
-                  }}
-                  value={authType ?? ''}
-                  options={getAuthOptions(providerName).map((value) => ({ value }))}
-                />
-              </Stack>
-            )}
             <Stack className="gap-2">
               <Typography variant="subtitle1">Return URL</Typography>
               <TextField

@@ -227,8 +227,6 @@ model MagicLink {
   id            String      @id @default(uuid())
   applicationId String      @map("application_id")
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  // oauth2, api_key, or access_key_secret
-  authType      String      @map("auth_type")
   customerId    String      @map("customer_id")
   customer      Customer    @relation(fields: [customerId], references: [id], onDelete: Cascade)
   providerId    String      @map("provider_id")

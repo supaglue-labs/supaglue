@@ -57,14 +57,12 @@ export class MagicLinkService {
   }
 
   public async createMagicLink(applicationId: string, params: MagicLinkCreateParams): Promise<MagicLink> {
-    this.#validateMagicLinkParams(params);
     const id = uuidv4();
     await this.#customerService.getByExternalId(applicationId, params.customerId);
     const provider = await this.#providerService.getByNameAndApplicationId(params.providerName, applicationId);
     const url = this.generateMagicLinkUrl(id);
     const magicLink = await this.#prisma.magicLink.create({
       data: {
-        authType: params.authType,
         providerName: params.providerName,
         applicationId,
         id,
@@ -111,25 +109,6 @@ export class MagicLinkService {
       },
     });
     return fromMagicLinkModel(updatedMagicLink);
-  }
-
-  #validateMagicLinkParams(params: MagicLinkCreateParams): void {
-    switch (params.providerName) {
-      case 'apollo':
-        if (params.authType !== 'api_key') {
-          throw new BadRequestError('Apollo provider only supports api_key auth type');
-        }
-        return;
-      case 'gong':
-        if (params.authType === 'api_key') {
-          throw new BadRequestError('Gong provider does not support api_key auth type');
-        }
-        return;
-      default:
-        if (params.authType !== 'oauth2') {
-          throw new BadRequestError(`Only oauth2 auth type is supported for provider ${params.providerName}`);
-        }
-    }
   }
 
   public async deleteMagicLink(applicationId: string, id: string): Promise<void> {

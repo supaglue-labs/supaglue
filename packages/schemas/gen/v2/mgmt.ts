@@ -610,8 +610,6 @@ export interface components {
       id: string;
       /** @example created */
       status: string;
-      /** @enum {string} */
-      auth_type: "oauth2" | "api_key" | "access_key_secret";
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
       /** @example my-customer-1 */
@@ -639,8 +637,6 @@ export interface components {
       /** @example my-customer-1 */
       customer_id: string;
       provider_name: components["schemas"]["provider_name"];
-      /** @enum {string} */
-      auth_type: "oauth2" | "api_key" | "access_key_secret";
       /**
        * @description URL to redirect to after the connection is authorized. 
        * @example https://app.myapp.com/connections/123456

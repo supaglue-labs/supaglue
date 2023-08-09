@@ -37,68 +37,60 @@ export default function Home() {
     return <ErrorPage errorMessage={data.error} />;
   }
 
-  if (
-    data.code === 'magic_link_valid' &&
-    data.magicLink.authType === 'oauth2' &&
-    data.magicLink.providerName !== 'ms_dynamics_365_sales' &&
-    data.magicLink.providerName !== 'salesforce'
-  ) {
-    return (
-      <Oauth2RedirectPage
-        linkId={data.magicLink.id}
-        applicationId={data.magicLink.applicationId}
-        customerId={data.magicLink.customerId}
-        providerName={data.magicLink.providerName}
-        returnUrl={data.magicLink.returnUrl}
-      />
-    );
+  if (data.code !== 'magic_link_valid') {
+    return <ErrorPage />;
   }
 
-  if (data.code === 'magic_link_valid' && data.magicLink.authType === 'api_key') {
-    return (
-      <ApiKeyCard
-        returnUrl={data.magicLink.returnUrl}
-        linkId={data.magicLink.id}
-        providerName={data.magicLink.providerName}
-      />
-    );
+  switch (data.magicLink.providerName) {
+    case 'apollo':
+      return (
+        <ApiKeyCard
+          returnUrl={data.magicLink.returnUrl}
+          linkId={data.magicLink.id}
+          providerName={data.magicLink.providerName}
+        />
+      );
+    case 'gong':
+      return (
+        <GongCard
+          linkId={data.magicLink.id}
+          applicationId={data.magicLink.applicationId}
+          customerId={data.magicLink.customerId}
+          providerName={data.magicLink.providerName}
+          returnUrl={data.magicLink.returnUrl}
+        />
+      );
+    case 'ms_dynamics_365_sales':
+      return (
+        <MsDynamics365Card
+          linkId={data.magicLink.id}
+          applicationId={data.magicLink.applicationId}
+          customerId={data.magicLink.customerId}
+          providerName={data.magicLink.providerName}
+          returnUrl={data.magicLink.returnUrl}
+        />
+      );
+    case 'salesforce':
+      return (
+        <SalesforceCard
+          linkId={data.magicLink.id}
+          applicationId={data.magicLink.applicationId}
+          customerId={data.magicLink.customerId}
+          providerName={data.magicLink.providerName}
+          returnUrl={data.magicLink.returnUrl}
+        />
+      );
+    default:
+      return (
+        <Oauth2RedirectPage
+          linkId={data.magicLink.id}
+          applicationId={data.magicLink.applicationId}
+          customerId={data.magicLink.customerId}
+          providerName={data.magicLink.providerName}
+          returnUrl={data.magicLink.returnUrl}
+        />
+      );
   }
-
-  if (data.code === 'magic_link_valid' && data.magicLink.authType === 'access_key_secret') {
-    return (
-      <AccessKeySecretCard
-        returnUrl={data.magicLink.returnUrl}
-        linkId={data.magicLink.id}
-        providerName={data.magicLink.providerName}
-      />
-    );
-  }
-
-  if (data.code === 'magic_link_valid' && data.magicLink.providerName === 'ms_dynamics_365_sales') {
-    return (
-      <MsDynamics365Card
-        linkId={data.magicLink.id}
-        applicationId={data.magicLink.applicationId}
-        customerId={data.magicLink.customerId}
-        providerName={data.magicLink.providerName}
-        returnUrl={data.magicLink.returnUrl}
-      />
-    );
-  }
-
-  if (data.code === 'magic_link_valid' && data.magicLink.providerName === 'salesforce') {
-    return (
-      <SalesforceCard
-        linkId={data.magicLink.id}
-        applicationId={data.magicLink.applicationId}
-        customerId={data.magicLink.customerId}
-        providerName={data.magicLink.providerName}
-        returnUrl={data.magicLink.returnUrl}
-      />
-    );
-  }
-
-  return <ErrorPage />;
 }
 
 const ErrorPage = ({ errorMessage = 'Unknown error.' }) => {
@@ -172,7 +164,14 @@ type MagicLinkFormWrapperProps = {
 
 const MagicLinkFormWrapper = ({ providerName, children }: MagicLinkFormWrapperProps) => {
   return (
-    <Grid container spacing={0} direction="column" alignItems="center" justifyContent="center">
+    <Grid
+      sx={{ backgroundColor: 'gray' }}
+      container
+      spacing={0}
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+    >
       <Grid item xs={3}>
         <Card sx={{ padding: '4rem' }}>
           <Stack direction="column" spacing={2}>
@@ -194,46 +193,86 @@ type MagicLinkFormProps = {
   providerName: ProviderName;
 };
 
-const AccessKeySecretCard = ({ linkId, providerName, returnUrl }: MagicLinkFormProps) => {
+const GongCard = ({ linkId, applicationId, customerId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
   const router = useRouter();
+  const { addNotification } = useNotification();
+  const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
+  const [authType, setAuthType] = useState<'oauth2' | 'access_key_secret'>('oauth2');
   const [accessKey, setAccessKey] = useState('');
   const [accessKeySecret, setAccessKeySecret] = useState('');
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <MagicLinkFormWrapper providerName={providerName}>
       <Stack className="gap-2">
-        <Typography variant="subtitle1">Access Key</Typography>
-        <TextField
-          required={true}
-          value={accessKey}
-          size="small"
-          label="Access Key"
-          variant="outlined"
-          helperText={`Enter your ${getDisplayName(providerName)} Access Key`}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setAccessKey(event.target.value);
+        <Typography variant="subtitle1">Authentication</Typography>
+        <Select
+          name="Authentication"
+          onChange={(value) => {
+            setAuthType(value as 'oauth2' | 'access_key_secret');
           }}
-        />
-        <Typography variant="subtitle1">Access Key Secret</Typography>
-        <TextField
-          required={true}
-          value={accessKeySecret}
-          size="small"
-          label="Access Key Secret"
-          type="password"
-          variant="outlined"
-          helperText={`Enter your ${getDisplayName(providerName)} Access Key Secret`}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setAccessKeySecret(event.target.value);
-          }}
+          value={authType}
+          options={[
+            { value: 'oauth2', displayValue: 'OAuth' },
+            { value: 'access_key_secret', displayValue: 'Access Key and Secret' },
+          ]}
         />
       </Stack>
+
+      {authType === 'access_key_secret' && (
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">Access Key</Typography>
+          <TextField
+            required={true}
+            value={accessKey}
+            size="small"
+            label="Access Key"
+            variant="outlined"
+            helperText={`Enter your ${getDisplayName(providerName)} Access Key`}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setAccessKey(event.target.value);
+            }}
+          />
+          <Typography variant="subtitle1">Access Key Secret</Typography>
+          <TextField
+            required={true}
+            value={accessKeySecret}
+            size="small"
+            label="Access Key Secret"
+            type="password"
+            variant="outlined"
+            helperText={`Enter your ${getDisplayName(providerName)} Access Key Secret`}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setAccessKeySecret(event.target.value);
+            }}
+          />
+        </Stack>
+      )}
       <Stack direction="row" className="gap-2 justify-end">
         <Button
-          disabled={!accessKey}
+          disabled={authType === 'access_key_secret' && (!accessKey || !accessKeySecret)}
           variant="contained"
           onClick={async () => {
-            await consumeMagicLink(linkId, { type: 'access_key_secret', accessKey, accessKeySecret });
-            await router.push(returnUrl);
+            if (authType === 'oauth2') {
+              if (!nextLambdaEnv?.API_HOST) {
+                addNotification({
+                  message: 'Unknown error encountered. Please refresh and try again.',
+                  severity: 'error',
+                });
+                return;
+              }
+              const oauthUrl = `${
+                nextLambdaEnv.API_HOST
+              }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+                customerId
+              )}&returnUrl=${returnUrl}&providerName=${providerName}`;
+              await consumeMagicLink(linkId);
+              await router.push(oauthUrl);
+            } else {
+              await consumeMagicLink(linkId, { type: authType, accessKey, accessKeySecret });
+              await router.push(returnUrl);
+            }
           }}
         >
           Authenticate
@@ -373,7 +412,6 @@ const SalesforceCard = ({ applicationId, customerId, linkId, providerName, retur
                 message: 'Unknown error encountered. Please refresh and try again.',
                 severity: 'error',
               });
-
               return;
             }
             let oauthUrl = `${

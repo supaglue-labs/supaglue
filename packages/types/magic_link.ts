@@ -7,7 +7,6 @@ import type {
 export type MagicLink = {
   id: string;
   applicationId: string;
-  authType: 'oauth2' | 'api_key' | 'access_key_secret';
   customerId: string;
   providerId: string;
   providerName: ProviderName;
@@ -23,7 +22,6 @@ export type MagicLinkAuthType = 'oauth2' | 'api_key' | 'access_key_secret';
 export type MagicLinkCreateParams = {
   // external id
   customerId: string;
-  authType: MagicLinkAuthType;
   providerName: string;
   expirationSecs: number;
   returnUrl: string;

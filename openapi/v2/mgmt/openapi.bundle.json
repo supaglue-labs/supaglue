@@ -2761,14 +2761,6 @@
             "type": "string",
             "example": "created"
           },
-          "auth_type": {
-            "type": "string",
-            "enum": [
-              "oauth2",
-              "api_key",
-              "access_key_secret"
-            ]
-          },
           "application_id": {
             "type": "string",
             "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
@@ -2802,7 +2794,6 @@
         },
         "required": [
           "id",
-          "auth_type",
           "status",
           "application_id",
           "customer_id",
@@ -2823,14 +2814,6 @@
           "provider_name": {
             "$ref": "#/components/schemas/provider_name"
           },
-          "auth_type": {
-            "type": "string",
-            "enum": [
-              "oauth2",
-              "api_key",
-              "access_key_secret"
-            ]
-          },
           "return_url": {
             "type": "string",
             "description": "URL to redirect to after the connection is authorized.",
@@ -2844,7 +2827,6 @@
         "required": [
           "customer_id",
           "provider_name",
-          "auth_type",
           "expiration_secs",
           "return_url"
         ]
