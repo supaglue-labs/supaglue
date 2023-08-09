@@ -5,7 +5,6 @@ import { parseCustomerIdPk } from '../lib';
 export function fromMagicLinkModel({
   id,
   applicationId,
-  authType,
   customerId,
   providerId,
   providerName,
@@ -18,7 +17,6 @@ export function fromMagicLinkModel({
   return {
     id,
     applicationId,
-    authType: authType as MagicLink['authType'],
     customerId: externalCustomerId,
     providerId,
     providerName: providerName as ProviderName,
