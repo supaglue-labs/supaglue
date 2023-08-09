@@ -346,14 +346,113 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/destinations/bigquery"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/amplitude"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
   width: 20px;
   height: 20px;
   content:"";
-  background-image: url(/static/img/destination_icons/bigquery.png);
+  background-image: url(/static/img/connector_icons/amplitude.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/6sense"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/6sense.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/chargebee"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/chargebee.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/clearbit"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/clearbit.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/google-analytics"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/google-analytics.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/mixpanel"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/mixpanel.webp);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/segment"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/segment.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/stripe"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/stripe.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/zoominfo"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/zoominfo.png);
+  background-repeat: no-repeat;
+}
+
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/zuora"]::before {
+  padding-right: 0.25rem;
+  background-size: 20px 20px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  content:"";
+  background-image: url(/static/img/connector_icons/zuora.png);
   background-repeat: no-repeat;
 }
 
