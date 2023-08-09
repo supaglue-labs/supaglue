@@ -370,6 +370,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         headers: this.#headers,
       }
     );
+    if (response.data.contacts.length === 0) {
+      throw new Error('Apollo could not add this contact to the sequence.');
+    }
     const campaignStatus = response.data.contacts[0].contact_campaign_statuses.find(
       (status: Record<string, any>) =>
         status.send_email_from_email_account_id === params.mailboxId && status.emailer_campaign_id === params.sequenceId
