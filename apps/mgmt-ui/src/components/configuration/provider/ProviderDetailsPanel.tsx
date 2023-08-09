@@ -6,7 +6,7 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useProviders } from '@/hooks/useProviders';
 import { useSchemas } from '@/hooks/useSchemas';
-import { getStandardObjectOptions } from '@/utils/provider';
+import { getStandardObjectOptions, PROVIDER_CARDS_INFO } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -38,7 +38,6 @@ import { PROVIDERS_THAT_SUPPORT_SCHEMAS } from '@supaglue/utils';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { DeleteProviderButton } from './DeleteProviderButton';
-import { providerCardsInfo } from './ProviderTabPanelContainer';
 
 export type ProviderDetailsPanelProps = {
   category: ProviderCategory;
@@ -90,7 +89,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
 
   const provider = existingProviders.find((existingProvider) => existingProvider.name === providerName);
 
-  const providerCardInfo = providerCardsInfo.find((providerCardInfo) => providerCardInfo.providerName === providerName);
+  const providerCardInfo = PROVIDER_CARDS_INFO.find(
+    (providerCardInfo) => providerCardInfo.providerName === providerName
+  );
 
   useEffect(() => {
     setFriendlyProviderId(provider?.id ?? '--');

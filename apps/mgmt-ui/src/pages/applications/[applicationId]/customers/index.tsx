@@ -12,6 +12,7 @@ import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import { useProviders } from '@/hooks/useProviders';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
+import { getDisplayName } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
 import LinkIcon from '@mui/icons-material/Link';
@@ -255,7 +256,7 @@ function EmbedLinkMenu({ customerId }: { customerId: string }) {
               handleClose();
             }}
           >
-            {providerName}
+            {getDisplayName(providerName)}
           </MenuItem>
         ))}
       </Menu>
@@ -333,7 +334,7 @@ function MagicLinkIcon({ customerId }: { customerId: string }) {
                   }
                 }}
                 value={providerName ?? ''}
-                options={providers?.map(({ name }) => ({ value: name })) ?? []}
+                options={providers?.map(({ name }) => ({ value: name, displayValue: getDisplayName(name) })) ?? []}
               />
             </Stack>
             {providerName && (

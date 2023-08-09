@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import type { ProviderCardInfo } from '@/utils/provider';
+import providerToIcon from '@/utils/providerToIcon';
 import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import type { Provider } from '@supaglue/types';
 import { useRouter } from 'next/router';
-import type { ProviderCardInfo } from './ProviderTabPanelContainer';
 
 export default function ProviderCard({
   provider,
@@ -16,7 +17,8 @@ export default function ProviderCard({
   const router = useRouter();
   const applicationId = useActiveApplicationId();
 
-  const { icon, name, description, displayCategory, category, providerName } = providerInfo;
+  const { name, description, displayCategory, category, providerName } = providerInfo;
+  const icon = providerToIcon(providerName, 35);
 
   return (
     <Card
