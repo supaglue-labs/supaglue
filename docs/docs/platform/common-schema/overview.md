@@ -11,7 +11,11 @@ sources={{
     }}
 />
 
-Supaglue applies a common schema to normalize [Standard Objects](../objects/overview#standard-object) and fields across providers within a single category. These are known as **Common Objects**. Common Objects have a 1-n relationship between your application and Provider objects.
+## Introduction
+
+Supaglue applies a common schema to normalize [Standard Objects](../objects/overview#standard-object) and fields across providers within a single category. These are known as **Common Objects**. Common Objects have a 1-N relationship between your application and Provider objects.
+
+### Comparison
 
 Common schema differs from [Objects](../objects/overview): Objects can only have a 1-1 relationship between your application and Provider objects, with no normalization.
 

@@ -12,7 +12,11 @@ sources={{
     }}
 />
 
+## Introduction
+
 **Standard Objects** and **Custom Objects** (known as **Objects**) have a 1-1 relationship between your application object and your Provider object. For example, a `Contact` in Salesforce is a `salesforce_Contact` in your application, and a Hubspot `company` is a `hubspot_company` in your application.
+
+### Comparison
 
 Objects differ from [Common Schema](../common-schema/overview): Common Schemas have a 1-n relationship between your application object and Provider object, where Supaglue determines the normalization.
 

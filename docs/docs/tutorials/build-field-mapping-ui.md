@@ -106,11 +106,7 @@ Use `field_mappings[].entity_field` and `field_mappings[].mapped_field` to rende
 
 ### Rendering 4 + 5: Lists of mappable Provider objects and fields
 
-To render (4) the list of mappable Provider objects, you must create the list yourself.
-
-:::info
-A Metadata API to fetch a list of Provider objects is under construction.
-:::
+To render (4) the list of mappable Provider objects, we'll need to call Supaglue's [Standard Objects API](../api/v2/metadata/list-standard-objects) and [Custom Objects API](../api/v2/metadata/list-custom-objects).
 
 To render (5) the list of mappable Provider-object fields, we'll need to call Supaglue's [Properties API](../api/v2/metadata/list-properties).
 
@@ -135,13 +131,47 @@ sources={{
 Let's use [`fetch`](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) in a Nextjs [Server Component](https://nextjs.org/docs/getting-started/react-essentials#server-components) to call the API:
 
 ```jsx
+export async function fetchStandardObjects(
+  customerId: string,
+  providerName: string
+) {
+  const response = await fetch('https://api.supaglue.io/metadata/v2/objects/standard', {
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.NEXT_PUBLIC_SUPAGLUE_API_KEY,
+      'x-customer-id': customerId,
+      'x-provider-name': providerName,
+    },
+  });
+
+  const properties = await response.json();
+  return properties;
+}
+
+export async function fetchCustomObjects(
+  customerId: string,
+  providerName: string
+) {
+  const response = await fetch('https://api.supaglue.io/metadata/v2/objects/custom', {
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.NEXT_PUBLIC_SUPAGLUE_API_KEY,
+      'x-customer-id': customerId,
+      'x-provider-name': providerName,
+    },
+  });
+
+  const properties = await response.json();
+  return properties;
+}
+
 export async function fetchProperties(
   customerId: string,
   objectType: string,
   objectName: string,
   providerName: string
 ) {
-  const response = await fetch(`https://api.supaglue.io/mgmt/v2/properties?type=${objectType}&name=${objectName}`, {
+  const response = await fetch(`https://api.supaglue.io/metadata/v2/properties?type=${objectType}&name=${objectName}`, {
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': process.env.NEXT_PUBLIC_SUPAGLUE_API_KEY,
@@ -155,9 +185,26 @@ export async function fetchProperties(
 }
 ```
 
-It will return a response that looks like the following:
+The corresponding responses will look like the following:
 
 ```json
+// standard objects
+[
+  "Contact",
+  "Lead",
+  "Opportunity",
+  "Account",
+  ...
+]
+
+// custom objects
+[
+  { "id": "2-15234567", "name": "ContactV2" },
+  { "id": "2-14568739", "name": "MyCustomObject" },
+  ...
+]
+
+// properties
 {
   "properties": [
     {
