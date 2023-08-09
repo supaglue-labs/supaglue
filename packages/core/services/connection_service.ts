@@ -21,7 +21,7 @@ import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_
 import type { ProviderService, SchemaService } from '.';
 import { BadRequestError, NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
-import { createFieldMappingConfigForEntity } from '../lib/entity';
+import { createFieldMappingConfigForEntity, validateEntityOrSchemaFieldName } from '../lib/entity';
 import { createFieldMappingConfig } from '../lib/schema';
 import { fromConnectionModelToConnectionSafe, fromConnectionModelToConnectionUnsafe } from '../mappers';
 import { mergeEntityMappings, mergeEntityMappingsList } from '../mappers/entity_mapping';
@@ -207,6 +207,11 @@ export class ConnectionService {
   }
 
   private validateObjectFieldMappingUpdateParams(params: ObjectFieldMappingUpdateParams, schema: Schema): void {
+    // Validate fields
+    for (const { schemaField } of params.fieldMappings) {
+      validateEntityOrSchemaFieldName(schemaField);
+    }
+
     const schemaMappingRequiredFields = schema.config.fields
       .filter(({ mappedName }) => !mappedName)
       .map(({ name }) => name);
@@ -232,6 +237,11 @@ export class ConnectionService {
     connection: ConnectionSafeAny,
     params: ObjectFieldMappingUpdateParams
   ): Promise<ObjectFieldMappingInfo> {
+    // Validate field names
+    for (const { schemaField } of params.fieldMappings) {
+      validateEntityOrSchemaFieldName(schemaField);
+    }
+
     const schema = await this.getSchema(connection, params.name, params.type);
     if (!schema) {
       throw new BadRequestError(
@@ -356,6 +366,11 @@ export class ConnectionService {
     entityId: string,
     entityMapping: ConnectionEntityMapping
   ): Promise<void> {
+    // Validate fields
+    for (const { entityField } of entityMapping.fieldMappings ?? []) {
+      validateEntityOrSchemaFieldName(entityField);
+    }
+
     const connection = await this.getSafeById(connectionId);
 
     // upsert entity mapping with `entityId` from `connection.entityMappings` and write back to DB

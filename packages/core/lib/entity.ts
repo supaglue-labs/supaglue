@@ -37,3 +37,9 @@ export function createFieldMappingConfigForEntity(
       })) ?? [],
   };
 }
+
+export function validateEntityOrSchemaFieldName(name: string): void {
+  if (name.startsWith('_supaglue') || name === 'id' || name === 'additional_fields') {
+    throw new Error(`Invalid field name: ${name}; this is a reserved field name.`);
+  }
+}
