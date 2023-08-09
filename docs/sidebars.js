@@ -100,6 +100,11 @@ const sidebars = {
       type: 'doc',
     },
     {
+      id: 'platform/magic-link',
+      label: 'Magic Links',
+      type: 'doc',
+    },
+    {
       label: 'Data models',
       type: 'category',
       link: {
