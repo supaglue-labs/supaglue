@@ -344,6 +344,7 @@ const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, re
 const SalesforceCard = ({ applicationId, customerId, linkId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
   const router = useRouter();
 
+  const { addNotification } = useNotification();
   const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
   const [isSandbox, setIsSandbox] = useState(false);
 
@@ -368,6 +369,11 @@ const SalesforceCard = ({ applicationId, customerId, linkId, providerName, retur
           variant="contained"
           onClick={async () => {
             if (!nextLambdaEnv?.API_HOST) {
+              addNotification({
+                message: 'Unknown error encountered. Please refresh and try again.',
+                severity: 'error',
+              });
+
               return;
             }
             let oauthUrl = `${
