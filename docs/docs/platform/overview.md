@@ -1,8 +1,3 @@
----
-description: ''
-sidebar_position: 1
----
-
 import ThemedImage from '@theme/ThemedImage';
 
 # Overview
@@ -38,6 +33,17 @@ There are three ways to data model objects in Supaglue:
 1. **[Entities](./entities/overview)**: You, the developer, define the data models.
 2. **[Objects](./objects/overview)**: Let you take the Provider's data model as-is.
 3. **[Common schema](./common-schema/overview)**: Lets Supaglue define the data model.
+
+Here's an example using Hubspot `organization` standard object:
+
+<ThemedImage
+alt="data models example"
+width="70%"
+sources={{
+    light: '/img/data-models-example.png',
+    dark: '/img/data-models-example.png',
+  }}
+/>
 
 Which data model you choose to adopt is based on the [integration patterns](../integration-patterns/overview) you are building into your product.
 
