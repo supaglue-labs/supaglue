@@ -42,8 +42,7 @@ model Destination {
   type            String
   applicationId   String       @map("application_id")
   application     Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  config          Json
-  encryptedConfig Bytes?       @map("encrypted_config")
+  encryptedConfig Bytes        @map("encrypted_config")
   createdAt       DateTime     @default(now()) @map("created_at")
   updatedAt       DateTime     @default(now()) @updatedAt @map("updated_at")
   syncConfigs     SyncConfig[]
