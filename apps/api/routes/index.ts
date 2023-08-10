@@ -6,6 +6,7 @@ import internal from './internal';
 import metadata from './metadata';
 import mgmt from './mgmt';
 import oauth from './oauth';
+import privateRoutes from './private';
 
 export default function initRoutes(app: Router): void {
   oauth(app);
@@ -15,4 +16,5 @@ export default function initRoutes(app: Router): void {
   metadata(app);
   actions(app);
   internal(app);
+  privateRoutes(app);
 }
