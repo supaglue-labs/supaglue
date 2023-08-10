@@ -79,6 +79,23 @@ export class ConnectionService {
     return connections.map(fromConnectionModelToConnectionSafe);
   }
 
+  public async getUnsafeByIdAndApplicationId(id: string, applicationId: string): Promise<ConnectionUnsafeAny> {
+    const connections = await this.#prisma.connection.findMany({
+      where: {
+        id,
+        provider: {
+          applicationId,
+        },
+      },
+    });
+
+    if (!connections.length) {
+      throw new NotFoundError(`Can't find connection with id: ${id}`);
+    }
+
+    return fromConnectionModelToConnectionUnsafe(connections[0]);
+  }
+
   public async getSafeByIdAndApplicationId(id: string, applicationId: string): Promise<ConnectionSafeAny> {
     const connections = await this.#prisma.connection.findMany({
       where: {
