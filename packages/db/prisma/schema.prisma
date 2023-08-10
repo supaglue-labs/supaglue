@@ -181,6 +181,7 @@ model SyncRun {
   endTimestamp     DateTime? @map("end_timestamp")
   numRecordsSynced Int?      @map("num_records_synced")
 
+  @@index([startTimestamp(sort: Desc)])
   @@map("object_sync_runs")
 }
 
