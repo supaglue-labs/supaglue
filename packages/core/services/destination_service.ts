@@ -34,6 +34,20 @@ export class DestinationService {
     this.#prisma = prisma;
   }
 
+  public async encryptAllDestinationConfigs(): Promise<void> {
+    const models = await this.#prisma.destination.findMany();
+    const destinations = await Promise.all(models.map(fromDestinationModelToUnsafe));
+
+    for (const destination of destinations) {
+      await this.#prisma.destination.update({
+        where: { id: destination.id },
+        data: {
+          encryptedConfig: await encrypt(JSON.stringify(destination.config)),
+        },
+      });
+    }
+  }
+
   public async getDestinationsSafeByApplicationId(applicationId: string): Promise<DestinationSafeAny[]> {
     const models = await this.#prisma.destination.findMany({
       where: { applicationId },
