@@ -509,7 +509,7 @@ export interface operations {
           query?: {
             [key: string]: string | undefined;
           };
-          /** @description Body to pass to downstream */
+          /** @description Body to pass to downstream (can be string or JSON object) */
           body?: OneOf<[string, {
             [key: string]: unknown;
           }]>;

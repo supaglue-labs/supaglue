@@ -879,7 +879,7 @@
                     }
                   },
                   "body": {
-                    "description": "Body to pass to downstream",
+                    "description": "Body to pass to downstream (can be string or JSON object)",
                     "oneOf": [
                       {
                         "type": "string"
