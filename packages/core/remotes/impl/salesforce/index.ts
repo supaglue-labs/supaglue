@@ -248,6 +248,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       instanceUrl,
       refreshToken,
       maxRequest: 10,
+      version: '57.0',
     });
   }
 
