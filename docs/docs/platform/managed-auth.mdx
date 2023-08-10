@@ -1,33 +1,49 @@
 import ThemedImage from '@theme/ThemedImage';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
+import BrowserWindow from '@site/src/components/BrowserWindow';
 
 # Managed authentication
 
 <ThemedImage
   alt="managed auth"
-  width="50%"
+  width="75%"
   sources={{
     light: '/img/managed-auth-diagram.png',
     dark: '/img/managed-auth-diagram.png',
   }}
 />
 
-Supaglue securely manages connections between your application and your customers' data sources. We manage access and refresh tokens on your behalf.
+We securely store third-party Provider credentials, unify your authentication interface, and maintain credentials (e.g. refresh tokens) on your behalf. There are two ways to allow your customers to authenticate with third-party providers:
 
-## Oauth 2.0
+1. Embed it into your application ([Embedded authentication](#embedded-authentication))
+2. Redirect your customers to Supaglue-hosted authentication pages ([Supaglue-hosted authentication](#supaglue-hosted-authentication))
 
-You can use Embedded Links for third-party providers that use OAuth 2.0 for authentication.
+## Embeddable authentication
 
-### Embedded Link
+We support three kinds of authentication methods for your customers to authenticate with third-party providers:
 
-An **Embedded Link** is a URL that initiates an authentication flow in your customer's third-party provider to install your developer app. Once installed, a connection is created in Supaglue, allowing you to read from and write to your customers' SaaS provider. Embedded links allow customers to connect their SaaS providers to your application using Supaglue.
+1. [Oauth 2.0](#oauth-20)
+2. [API key](#api-key)
+3. [Access key](#access-key)
 
-Expose an Embedded Link in your application as a link or button so your customers can initiate an authentication flow with their third-party provider, e.g. Salesforce.
+Your authentication method depends on the third-party provider you want to connect to. For example, Salesforce requires Oauth 2.0 authentication, while Apollo requires API key authentication.
 
-### Link format
+### Oauth 2.0
 
-An embedded link takes the following form:
+Supaglue supports third-party providers that use [OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749) for authentication.
+
+Supaglue supports third-party providers that use OAuth 2.0 [Authorization Code Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1) (aka Authorization Code Grant). This means that your customers will be redirected to the third-party provider's login page to authenticate themselves. Once authenticated, the third-party provider will redirect your customer to Supaglue with an authorization code. Supaglue will then exchange the authorization code for an access token and refresh token.
+
+#### Create a Connection
+
+An **Embedded Link** is a single Supaglue URL (with customer-specific query parameters) that initiates the Authorization Code Flow.
+
+You can expose an Embedded Link in your application as a link or button so your customers can initiate an authentication flow with their third-party provider, e.g. Salesforce, or simply pass them along to customers via email or chat.
+
+#### Embedded Link
+
+An Embedded Link has the following form:
 
 <Tabs>
 
@@ -38,6 +54,8 @@ An embedded link takes the following form:
 </TabItem>
 
 </Tabs>
+
+**Query parameters:**
 
 | Parameter       | Description                                                                                                                                                                                                                                                            | Required |
 | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
@@ -63,59 +81,6 @@ export const IntegrationCard = ({ icon, provider, description, to }) => (
     </div>
   </div>
 );
-
-### UI component
-
-If you'd rather not write any Frontend code, you can let Supaglue handle this by using [Magic Links](../platform/magic-link).
-
-Otherwise, use Embedded Links in any UI components in your frontend application. For example, the two cards below are cards that your customer can click to connect to Salesforce and HubSpot:
-
-<div className="grid grid-cols-2 gap-4">
-
-<IntegrationCard
-  icon="/img/salesforce.svg"
-  provider="Salesforce"
-  description="Sync your leads in and out of Salesforce"
-  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-salesforce&providerName=salesforce&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
-/>
-
-<IntegrationCard
-  icon="/img/hubspot.svg"
-  provider="Hubspot"
-  description="Sync your leads in and out of HubSpot"
-  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
-/>
-</div>
-
-The code template for the cards above (using Typescript + React + Tailwindcss) is:
-
-```jsx
-const IntegrationCard = ({
-  icon,
-  provider,
-  description,
-  to,
-}: {
-  icon: ReactNode,
-  provider: string,
-  description: string,
-  to: string,
-}) => (
-  <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
-    <img src={icon} className="w-auto h-9" />
-    <div className="font-semibold mt-4">{provider}</div>
-    <div className="text-xs mt-2">{description}</div>
-    <div
-      onClick={() => {
-        window.location.href = to;
-      }}
-      className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
-    >
-      Connect
-    </div>
-  </div>
-);
-```
 
 export const ApiKeyIntegrationCard = ({ icon, provider, description, to, customerId }) => {
   return (
@@ -156,71 +121,126 @@ export const ApiKeyIntegrationCard = ({ icon, provider, description, to, custome
   );
 };
 
-## API key
+### API key
 
-### Create Connection API
+Supaglue supports third-party providers that use API keys for authentication. API keys range widely in their format and behavior. At a high level, your customers generate an API key in their third-party provider account, e.g. Apollo, and you pass this on to Supaglue.
 
-Use the [Create Connection Management API](../api/v2/mgmt/create-connection) to create a connection for your customer for third-party providers that do not offer OAuth 2.0 authentication.
+#### Create a Connection
+
+Use Supaglue's Management API, the [Create Connection API](../api/v2/mgmt/create-connection), to save customers' third-party provider API keys. Unlike Embedded Links, this cannot be initiated in your client application but from your backend server.
 
 :::info
 Since the API above is a cross-original POST request, you must proxy the call through your backend server.
 :::
 
-### UI component
+### Access keys
 
-If you'd rather not write any Frontend code, you can use [Magic Links](../platform/magic-link) which will handle the input form and calling the connection API for you.
+Supaglue supports third-party providers that use access keys for authentication. Access keys are similar to API keys but consist of two parts: an ID and secret.
 
-Otherwise, you can embed an input field in your frontend application to prompt customers to provide their API key. See a reference UI component and code below:
+#### Create a Connection
 
-<div className="grid grid-cols-3 gap-4">
+Use Supaglue's Management API, the [Create Connection API](../api/v2/mgmt/create-connection), to save customers' third-party provider access keys. Unlike Embedded Links, this cannot be initiated in your client application but from your backend server.
 
-<ApiKeyIntegrationCard
-  icon="/img/salesforce.svg"
-  provider="Salesforce"
-  description="Sync your leads in and out of Salesforce"
-  customerId="1"
-  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-salesforce&providerName=salesforce&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
-/>
+:::info
+Since the API above is a cross-original POST request, you must proxy the call through your backend server.
+:::
 
-</div>
+## Supaglue-hosted authentication
 
-```jsx
-const ApiKeyIntegrationCard = ({ icon, provider, description, to, customerId }) => {
-  return (
-    <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
-      <img src={icon} style={{ width: 'auto', height: '36px' }} />
-      <div className="font-semibold mt-4">{provider}</div>
-      <div className="text-xs mt-2">{description}</div>
-      <div className="mt-4">
-        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-          API key
-        </label>
-        <div className="mt-2">
-          <input
-            type="password"
-            name="apiKey"
-            id="apiKey"
-            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            placeholder="JdPcdo76t01KCW3JA9jvfhcaZ6KA7IkP1GOFk+"
-          />
-        </div>
-      </div>
-      <div
-        onClick={async () => {
-          await fetch(YOUR_BACKEND_API, {
-            method: 'POST',
-            body: JSON.stringify({
-              provide_name: provider,
-              category: 'crm',
-              api_key: YOUR_CUSTOMERS_API_KEY,
-            }),
-          });
-        }}
-        className="border-solid font-semibold cursor-pointer hover:bg-slate-100 mt-6 px-4 py-2 border border-slate-300 rounded-md text-xs"
-      >
-        Connect
-      </div>
-    </div>
-  );
-};
+We offer Supaglue-hosted authentication pages for your customers to authenticate with their third-party provider. You can redirect customers to them using Magic Links.
+
+### Magic Link
+
+Supaglue's Magic Link is a shareable URL that allows your customers to create a connection to your application without having to write any frontend code.
+
+<BrowserWindow url="https://app.supaglue.io/links/bec0250e-6b50-4853-a785-c133232dacfa">
+
+![image](/img/magic-link-diagram.png)
+
+</BrowserWindow>
+
+#### Generating a Magic Link
+
+A Magic Link can be created in one of two ways:
+
+- From the Supaglue Management UI
+- Programatically via Management API
+
+#### Management UI
+
+You can create a Magic Link by:
+
+1. Navigating to the Customers page
+
+2. Finding the customer you want to create the Magic Link for, and clicking on the Magic Link column
+
+3. Filling out the relevant information, including provider, return url, and expiration.
+
+<BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/customers">
+
+![image](/img/magic-link-create.png)
+
+</BrowserWindow>
+
+#### Management API
+
+Supaglue also offers the ability to create Magic Links via our Management API.
+
+You can do so by making a POST request to the [/magic_links](../api/v2/mgmt/create-magic-link) endpoint. You will have to specify the:
+
+<Tabs>
+
+<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
+
 ```
+curl --location 'https://api.supaglue.io/mgmt/v2/magic_links' \
+--header 'Content-Type: application/json' \
+--header 'x-api-key: {{API_KEY}}' \
+--data '{
+    "customer_id": "{{CUSTOMER_ID}}",
+    "provider_name": "{{PROVIDER_NAME}}",
+    "return_url": "{{RETURN_URL}}",
+    "expiration_secs": {{EXPIRATION_SECS}}
+}'
+```
+
+</TabItem>
+
+<TabItem value="localhost" label="Localhost" default>
+
+```
+curl --location 'http://localhost:8080/mgmt/v2/magic_links' \
+--header 'Content-Type: application/json' \
+--header 'x-api-key: {{API_KEY}}' \
+--data '{
+    "customer_id": "{{CUSTOMER_ID}}",
+    "provider_name": "{{PROVIDER_NAME}}",
+    "return_url": "{{RETURN_URL}}",
+    "expiration_secs": {{EXPIRATION_SECS}}
+}'
+```
+
+</TabItem>
+
+</Tabs>
+
+- API_KEY: Your Supaglue API key as generated from the API Key tab
+- CUSTOMER_ID: `1234` (your customer's unique identifier)
+- PROVIDER_NAME: e.g. `hubspot` or `salesforce`
+- RETURN_URL: URL to redirect to after the connection is authorized
+- EXPIRATION_SECS: The number of seconds after which the magic link will expire and become invalid.
+
+### Consuming the Magic Link
+
+Once your customer navigates to the Magic Link, they will have the opportunity to go through the Authentication flow for that provider. In many cases, this will be identical to the standard OAuth flow as documented in [Embedded Links](../platform/managed-auth#embedded-link).
+
+For some providers, customers will have to provide additional information to complete the authentication flow, e.g.:
+
+- the Instance URL (for Microsoft Dynamics 365)
+- the API Key (for Apollo, which does not support OAuth)
+- whether to connect to Sandbox or Production environment (for Salesforce)
+- etc.
+
+:::info
+A Magic Link can only be consumed once, after which the Magic Link will be considered invalid.
+:::
