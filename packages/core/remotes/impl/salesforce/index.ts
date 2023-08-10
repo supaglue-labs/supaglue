@@ -84,6 +84,8 @@ import {
   toSalesforceOpportunityUpdateParams,
 } from './mappers';
 
+const SALESFORCE_API_VERSION = '57.0';
+
 const FETCH_TIMEOUT = 60 * 1000;
 
 const COMPOUND_TYPES = ['location', 'address'];
@@ -248,7 +250,7 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       instanceUrl,
       refreshToken,
       maxRequest: 10,
-      version: '57.0',
+      version: SALESFORCE_API_VERSION,
     });
   }
 
@@ -809,7 +811,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
 
     const { compositeResponse } = await this.#client.requestPost<{ compositeResponse: { httpStatusCode: number }[] }>(
-      '/services/data/v57.0/composite',
+      `/services/data/v${SALESFORCE_API_VERSION}/composite`,
       {
         // We're doing this for all fields, not just the added ones, in case the previous
         // call to this endpoint succeeded creating additional fields but failed to
@@ -817,7 +819,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         compositeRequest: fieldsToAddPermissionsFor.map((field) => ({
           referenceId: field.keyName,
           method: 'POST',
-          url: '/services/data/v57.0/sobjects/FieldPermissions/',
+          url: `/services/data/v${SALESFORCE_API_VERSION}/sobjects/FieldPermissions/`,
           body: {
             ParentId: permissionSetId,
             SobjectType: params.name,
@@ -1120,7 +1122,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   async #submitBulk2QueryJob(soql: string): Promise<SalesforceBulk2QueryJob> {
-    const response = await this.#fetch('/services/data/v57.0/jobs/query', {
+    const response = await this.#fetch(`/services/data/v${SALESFORCE_API_VERSION}/jobs/query`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -1135,7 +1137,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   async #pollBulk2QueryJob(jobId: string, heartbeat?: () => void): Promise<void> {
     const poll = async (): Promise<SalesforceBulk2QueryJob> => {
-      const response = await this.#fetch(`/services/data/v57.0/jobs/query/${jobId}`, {
+      const response = await this.#fetch(`/services/data/v${SALESFORCE_API_VERSION}/jobs/query/${jobId}`, {
         method: 'GET',
       });
       return await response.json();
@@ -1176,7 +1178,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       params.set('locator', locator);
     }
 
-    return await this.#fetch(`/services/data/v57.0/jobs/query/${jobId}/results?${params}`, {
+    return await this.#fetch(`/services/data/v${SALESFORCE_API_VERSION}/jobs/query/${jobId}/results?${params}`, {
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
         Accept: 'text/csv',
