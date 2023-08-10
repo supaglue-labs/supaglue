@@ -5,7 +5,7 @@ import type { SyncRun } from '@supaglue/types/sync_run';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
-export const SYNC_RUNS_PAGE_SIZE = 10;
+export const SYNC_RUNS_PAGE_SIZE = 100;
 
 export function useSyncRuns(cursor?: string, filterParams?: SyncFilterParams) {
   const queryParams = new URLSearchParams();
