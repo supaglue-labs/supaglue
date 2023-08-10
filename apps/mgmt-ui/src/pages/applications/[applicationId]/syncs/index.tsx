@@ -2,6 +2,7 @@ import SyncsTable from '@/components/logs/SyncsTable';
 import { useSyncs } from '@/hooks/useSyncs';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
+import type { SyncFilterParams } from '@/utils/filter';
 import { Box } from '@mui/material';
 import Head from 'next/head';
 import { useState } from 'react';
@@ -10,7 +11,8 @@ export { getServerSideProps };
 
 export default function Home() {
   const [currentCursor, setCurrentCursor] = useState<string | undefined>(undefined);
-  const { syncs, isLoading, mutate } = useSyncs(currentCursor);
+  const [filterParams, setFilterParams] = useState<SyncFilterParams | undefined>();
+  const { syncs, isLoading, mutate } = useSyncs(currentCursor, filterParams);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -29,6 +31,11 @@ export default function Home() {
     }
   };
 
+  const handleFilter = (newFilterParams?: SyncFilterParams) => {
+    setFilterParams(newFilterParams);
+    setCurrentCursor(undefined);
+  };
+
   return (
     <>
       <Head>
@@ -44,6 +51,7 @@ export default function Home() {
           <SyncsTable
             handleNextPage={handleNextPage}
             handlePreviousPage={handlePreviousPage}
+            handleFilter={handleFilter}
             rowCount={syncs?.totalCount ?? 0}
             data={syncs?.results ?? []}
             isLoading={isLoading}
