@@ -3,7 +3,7 @@ export type SendPassthroughRequestRequest = {
   method: string;
   headers?: Record<string, string | undefined>;
   query?: Record<string, string | undefined>;
-  body?: string;
+  body?: string | Record<string, unknown>;
 };
 
 export type SendPassthroughRequestResponse = {

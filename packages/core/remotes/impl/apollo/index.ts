@@ -89,7 +89,12 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       return await super.sendPassthroughRequest({ ...request, query: { ...request.query, api_key: this.#apiKey } });
     }
     if (request.method === 'POST' || request.method === 'PATCH' || request.method === 'PUT') {
-      const bodyJson = request.body ? JSON.parse(request.body as string) : {};
+      let bodyJson: Record<string, unknown> = {};
+      if (typeof request.body === 'string') {
+        bodyJson = JSON.parse(request.body);
+      } else if (typeof request.body === 'object') {
+        bodyJson = request.body;
+      }
       bodyJson['api_key'] = this.#apiKey;
       return await super.sendPassthroughRequest({ ...request, body: JSON.stringify(bodyJson) });
     }
