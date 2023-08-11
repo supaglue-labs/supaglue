@@ -8,8 +8,8 @@ import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useCustomers } from '@/hooks/useCustomers';
-import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import { useProviders } from '@/hooks/useProviders';
+import { usePublicNextEnv } from '@/hooks/usePublicNextEnv';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { getDisplayName } from '@/utils/provider';
@@ -207,7 +207,7 @@ export default function Home() {
 }
 
 function EmbedLinkMenu({ customerId }: { customerId: string }) {
-  const { nextLambdaEnv } = useNextLambdaEnv();
+  const { publicNextEnv } = usePublicNextEnv();
   const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
   const router = useRouter();
   const returnUrl = `${origin}${router.asPath}`;
@@ -219,7 +219,7 @@ function EmbedLinkMenu({ customerId }: { customerId: string }) {
   const handleEmbedLinkClick = async (providerName: string) => {
     addNotification({ message: 'Copied to clipboard', severity: 'success' });
     await navigator.clipboard.writeText(
-      `${nextLambdaEnv?.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+      `${publicNextEnv?.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
         customerId
       )}&returnUrl=${returnUrl}&providerName=${providerName}`
     );

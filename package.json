@@ -56,5 +56,9 @@
     "got": "11.8.5",
     "vm2": "3.9.18",
     "yaml": "2.2.2"
+  },
+  "dependencies": {
+    "@lekko/node-server-sdk": "^0.0.9",
+    "mgmt-ui": "workspace:^"
   }
 }

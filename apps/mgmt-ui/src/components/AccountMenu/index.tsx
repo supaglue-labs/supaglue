@@ -1,4 +1,4 @@
-import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
+import { usePublicNextEnv } from '@/hooks/usePublicNextEnv';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link as MUILink, ListItemIcon, MenuItem } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
@@ -11,11 +11,11 @@ import * as React from 'react';
 import { Logout } from '../Logout';
 
 function Profile() {
-  const { nextLambdaEnv } = useNextLambdaEnv();
+  const { publicNextEnv } = usePublicNextEnv();
 
   return (
     <MUILink
-      href={nextLambdaEnv?.CLERK_ACCOUNT_URL}
+      href={publicNextEnv?.CLERK_ACCOUNT_URL}
       component={NextLink}
       sx={{ color: 'inherit', textDecoration: 'inherit' }}
     >
@@ -30,7 +30,7 @@ function Profile() {
 }
 
 export default function AccountMenu() {
-  const { nextLambdaEnv } = useNextLambdaEnv();
+  const { publicNextEnv } = usePublicNextEnv();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -90,7 +90,7 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {nextLambdaEnv?.IS_CLOUD ? <Profile /> : null}
+        {publicNextEnv?.IS_CLOUD ? <Profile /> : null}
         <Logout />
       </Menu>
     </React.Fragment>

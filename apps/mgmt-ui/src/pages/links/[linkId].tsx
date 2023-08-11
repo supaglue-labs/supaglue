@@ -3,7 +3,7 @@ import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useMagicLinkData } from '@/hooks/useMagicLinkData';
-import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
+import { usePublicNextEnv } from '@/hooks/usePublicNextEnv';
 import { getDisplayName } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
 import { Box, Button, Card, Grid, Stack, TextField, Typography } from '@mui/material';
@@ -129,15 +129,15 @@ const Oauth2RedirectPage = ({
 }: Oauth2RedirectPageProps) => {
   const router = useRouter();
 
-  const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
+  const { publicNextEnv, isLoading } = usePublicNextEnv();
 
   useEffect(() => {
     void (async () => {
-      if (!nextLambdaEnv?.API_HOST) {
+      if (!publicNextEnv?.API_HOST) {
         return;
       }
       let oauthUrl = `${
-        nextLambdaEnv.API_HOST
+        publicNextEnv.API_HOST
       }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
         customerId
       )}&returnUrl=${returnUrl}&providerName=${providerName}`;
@@ -148,7 +148,7 @@ const Oauth2RedirectPage = ({
       await consumeMagicLink(linkId);
       await router.push(oauthUrl);
     })();
-  }, [nextLambdaEnv?.API_HOST, router, linkId, applicationId, customerId, providerName, returnUrl]);
+  }, [publicNextEnv?.API_HOST, router, linkId, applicationId, customerId, providerName, returnUrl]);
 
   if (isLoading) {
     return <Spinner />;
@@ -196,7 +196,7 @@ type MagicLinkFormProps = {
 const GongCard = ({ linkId, applicationId, customerId, providerName, returnUrl }: Oauth2RedirectPageProps) => {
   const router = useRouter();
   const { addNotification } = useNotification();
-  const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
+  const { publicNextEnv, isLoading } = usePublicNextEnv();
   const [authType, setAuthType] = useState<'oauth2' | 'access_key_secret'>('oauth2');
   const [accessKey, setAccessKey] = useState('');
   const [accessKeySecret, setAccessKeySecret] = useState('');
@@ -255,7 +255,7 @@ const GongCard = ({ linkId, applicationId, customerId, providerName, returnUrl }
           variant="contained"
           onClick={async () => {
             if (authType === 'oauth2') {
-              if (!nextLambdaEnv?.API_HOST) {
+              if (!publicNextEnv?.API_HOST) {
                 addNotification({
                   message: 'Unknown error encountered. Please refresh and try again.',
                   severity: 'error',
@@ -263,7 +263,7 @@ const GongCard = ({ linkId, applicationId, customerId, providerName, returnUrl }
                 return;
               }
               const oauthUrl = `${
-                nextLambdaEnv.API_HOST
+                publicNextEnv.API_HOST
               }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
                 customerId
               )}&returnUrl=${returnUrl}&providerName=${providerName}`;
@@ -322,7 +322,7 @@ const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, re
   const router = useRouter();
   const { addNotification } = useNotification();
 
-  const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
+  const { publicNextEnv, isLoading } = usePublicNextEnv();
   const [instanceUrl, setInstanceUrl] = useState('');
 
   if (isLoading) {
@@ -349,7 +349,7 @@ const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, re
           disabled={!instanceUrl}
           variant="contained"
           onClick={async () => {
-            if (!nextLambdaEnv?.API_HOST) {
+            if (!publicNextEnv?.API_HOST) {
               addNotification({
                 message: 'Unknown error encountered. Please refresh and try again.',
                 severity: 'error',
@@ -362,7 +362,7 @@ const MsDynamics365Card = ({ applicationId, customerId, linkId, providerName, re
             }
             const trimmedInstanceUrl = instanceUrl.replace(/\/$/, '');
             const oauthUrl = `${
-              nextLambdaEnv.API_HOST
+              publicNextEnv.API_HOST
             }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
               customerId
             )}&returnUrl=${returnUrl}&providerName=${providerName}&scope=${encodeURIComponent(
@@ -384,7 +384,7 @@ const SalesforceCard = ({ applicationId, customerId, linkId, providerName, retur
   const router = useRouter();
 
   const { addNotification } = useNotification();
-  const { nextLambdaEnv, isLoading } = useNextLambdaEnv();
+  const { publicNextEnv, isLoading } = usePublicNextEnv();
   const [isSandbox, setIsSandbox] = useState(false);
 
   if (isLoading) {
@@ -407,7 +407,7 @@ const SalesforceCard = ({ applicationId, customerId, linkId, providerName, retur
         <Button
           variant="contained"
           onClick={async () => {
-            if (!nextLambdaEnv?.API_HOST) {
+            if (!publicNextEnv?.API_HOST) {
               addNotification({
                 message: 'Unknown error encountered. Please refresh and try again.',
                 severity: 'error',
@@ -415,7 +415,7 @@ const SalesforceCard = ({ applicationId, customerId, linkId, providerName, retur
               return;
             }
             let oauthUrl = `${
-              nextLambdaEnv.API_HOST
+              publicNextEnv.API_HOST
             }/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
               customerId
             )}&returnUrl=${returnUrl}&providerName=${providerName}`;

@@ -1,7 +1,8 @@
+import { usePublicNextEnv } from '@/hooks/usePublicNextEnv';
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { buildClerkProps, getAuth } from '@clerk/nextjs/server';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Skeleton, Stack, Typography } from '@mui/material';
 import { type GetServerSideProps } from 'next';
 import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
@@ -50,6 +51,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
 
 export default function Home() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { publicNextEnv, isLoading } = usePublicNextEnv();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -78,12 +80,16 @@ export default function Home() {
             </Box>
 
             <Box>
-              <Box fontSize="2.4rem">
-                👉{' '}
-                <Button variant="contained" color="primary" href="https://docs.supaglue.com/quickstart">
-                  Quickstart Guide
-                </Button>
-              </Box>
+              {isLoading || !publicNextEnv ? (
+                <Skeleton className="mt-4" variant="rounded" width={210} height={36.5} />
+              ) : (
+                <Box fontSize="2.4rem">
+                  👉{' '}
+                  <Button variant="contained" color="primary" href={publicNextEnv.homeCtaButtonConfig.buttonLink}>
+                    {publicNextEnv.homeCtaButtonConfig.buttonMessage}
+                  </Button>
+                </Box>
+              )}
             </Box>
           </Stack>
         </Box>
