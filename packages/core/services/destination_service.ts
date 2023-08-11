@@ -22,6 +22,7 @@ import { MongoDBDestinationWriter } from '../destination_writers/mongodb';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
 import { BadRequestError } from '../errors';
+import { encrypt } from '../lib/crypt';
 import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
 
 const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
@@ -33,11 +34,25 @@ export class DestinationService {
     this.#prisma = prisma;
   }
 
+  public async encryptAllDestinationConfigs(): Promise<void> {
+    const models = await this.#prisma.destination.findMany();
+    const destinations = await Promise.all(models.map(fromDestinationModelToUnsafe));
+
+    for (const destination of destinations) {
+      await this.#prisma.destination.update({
+        where: { id: destination.id },
+        data: {
+          encryptedConfig: await encrypt(JSON.stringify(destination.config)),
+        },
+      });
+    }
+  }
+
   public async getDestinationsSafeByApplicationId(applicationId: string): Promise<DestinationSafeAny[]> {
     const models = await this.#prisma.destination.findMany({
       where: { applicationId },
     });
-    return models.map(fromDestinationModelToSafe);
+    return Promise.all(models.map(fromDestinationModelToSafe));
   }
 
   public async getDestinationUnsafeByProviderId(providerId: string): Promise<DestinationUnsafeAny | null> {
@@ -80,6 +95,7 @@ export class DestinationService {
         applicationId: params.applicationId,
         type: params.type,
         config: params.config,
+        encryptedConfig: await encrypt(JSON.stringify(params.config)),
       },
     });
     return fromDestinationModelToSafe(model);
@@ -237,6 +253,7 @@ export class DestinationService {
         applicationId: params.applicationId,
         type: params.type,
         config: mergedConfig,
+        encryptedConfig: await encrypt(JSON.stringify(mergedConfig)),
         name: params.name,
       },
     });

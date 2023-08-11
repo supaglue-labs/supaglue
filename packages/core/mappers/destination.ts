@@ -8,17 +8,16 @@ import type {
   S3ConfigUnsafe,
 } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils';
+import { decrypt } from '../lib/crypt';
 
-// TODO: do decryption when we actually encrypt creds
-
-export const fromDestinationModelToUnsafe = (model: DestinationModel): DestinationUnsafeAny => {
+export const fromDestinationModelToUnsafe = async (model: DestinationModel): Promise<DestinationUnsafeAny> => {
   const baseParams = {
     id: model.id,
     name: model.name,
     applicationId: model.applicationId,
   };
 
-  const config = model.config as any;
+  const decryptedConfig = model.encryptedConfig ? JSON.parse(await decrypt(model.encryptedConfig)) : model.config;
 
   switch (model.type) {
     case 'bigquery':
@@ -26,8 +25,8 @@ export const fromDestinationModelToUnsafe = (model: DestinationModel): Destinati
         ...baseParams,
         type: 'bigquery',
         config: {
-          ...config,
-          credentials: camelcaseKeys(config.credentials),
+          ...decryptedConfig,
+          credentials: camelcaseKeys(decryptedConfig.credentials),
         },
       };
     case 'postgres':
@@ -36,23 +35,25 @@ export const fromDestinationModelToUnsafe = (model: DestinationModel): Destinati
       return {
         ...baseParams,
         type: model.type,
-        config,
+        config: decryptedConfig,
       };
     default:
       throw new Error(`Unknown destination type: ${model.type}`);
   }
 };
 
-export const fromDestinationModelToSafe = (model: DestinationModel): DestinationSafeAny => {
+export const fromDestinationModelToSafe = async (model: DestinationModel): Promise<DestinationSafeAny> => {
   const baseParams = {
     id: model.id,
     name: model.name,
     applicationId: model.applicationId,
   };
 
+  const decryptedConfig = model.encryptedConfig ? JSON.parse(await decrypt(model.encryptedConfig)) : model.config;
+
   switch (model.type) {
     case 'bigquery': {
-      const config = camelcaseKeys(model.config as any) as BigQueryConfigUnsafe;
+      const config = camelcaseKeys(decryptedConfig) as BigQueryConfigUnsafe;
       return {
         ...baseParams,
         type: 'bigquery',
@@ -66,7 +67,7 @@ export const fromDestinationModelToSafe = (model: DestinationModel): Destination
       };
     }
     case 'postgres': {
-      const config = model.config as PostgresConfigUnsafe;
+      const config = decryptedConfig as PostgresConfigUnsafe;
       return {
         ...baseParams,
         type: 'postgres',
@@ -80,7 +81,7 @@ export const fromDestinationModelToSafe = (model: DestinationModel): Destination
       };
     }
     case 's3': {
-      const config = model.config as S3ConfigUnsafe;
+      const config = decryptedConfig as S3ConfigUnsafe;
       return {
         ...baseParams,
         type: model.type,
@@ -92,7 +93,7 @@ export const fromDestinationModelToSafe = (model: DestinationModel): Destination
       };
     }
     case 'mongodb': {
-      const config = model.config as MongoDBConfigUnsafe;
+      const config = decryptedConfig as MongoDBConfigUnsafe;
       return {
         ...baseParams,
         type: 'mongodb',
