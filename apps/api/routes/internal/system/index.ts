@@ -4,7 +4,7 @@ import { ScheduleOverlapPolicy } from '@temporalio/client/lib/schedule-types';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { systemSettingsService, temporalClient, destinationService } = getDependencyContainer();
+const { systemSettingsService, temporalClient } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const systemRouter = Router();
@@ -15,11 +15,6 @@ export default function init(app: Router): void {
     const handle = temporalClient.schedule.getHandle(PROCESS_SYNC_CHANGES_SCHEDULE_ID);
     await handle.trigger(ScheduleOverlapPolicy.BUFFER_ONE);
 
-    return res.status(200).send();
-  });
-
-  systemRouter.post('/_encrypt_all_destination_creds', async (req: Request, res: Response) => {
-    await destinationService.encryptAllDestinationConfigs();
     return res.status(200).send();
   });
 

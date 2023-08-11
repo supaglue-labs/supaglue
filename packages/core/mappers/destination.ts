@@ -17,7 +17,7 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
     applicationId: model.applicationId,
   };
 
-  const decryptedConfig = model.encryptedConfig ? JSON.parse(await decrypt(model.encryptedConfig)) : model.config;
+  const decryptedConfig = JSON.parse(await decrypt(model.encryptedConfig));
 
   switch (model.type) {
     case 'bigquery':
@@ -49,7 +49,7 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
     applicationId: model.applicationId,
   };
 
-  const decryptedConfig = model.encryptedConfig ? JSON.parse(await decrypt(model.encryptedConfig)) : model.config;
+  const decryptedConfig = JSON.parse(await decrypt(model.encryptedConfig));
 
   switch (model.type) {
     case 'bigquery': {
