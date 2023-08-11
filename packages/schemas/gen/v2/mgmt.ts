@@ -1964,6 +1964,11 @@ export interface operations {
            */
           provider_name: "apollo";
           /**
+           * @example api_key 
+           * @enum {string}
+           */
+          type: "api_key";
+          /**
            * @description API key for the connected customer. 
            * @example e0c5545d-77b8-458d-b4bf-fc701a9cecac
            */
@@ -1975,6 +1980,11 @@ export interface operations {
            */
           provider_name: "gong";
           /**
+           * @example access_key_secret 
+           * @enum {string}
+           */
+          type: "access_key_secret";
+          /**
            * @description Access key for the connected customer. 
            * @example e0c5545d-77b8-458d-b4bf-fc701a9cecac
            */
@@ -1984,6 +1994,32 @@ export interface operations {
            * @example 258a80aa-2e9b-40b0-8d7a-28f858a856f3
            */
           access_key_secret: string;
+        }, {
+          /**
+           * @example salesforce 
+           * @enum {string}
+           */
+          provider_name: "salesforce";
+          /**
+           * @example oauth2 
+           * @enum {string}
+           */
+          type: "oauth2";
+          refresh_token: string;
+          instance_url: string;
+          login_url?: string;
+        }, {
+          /**
+           * @example hubspot 
+           * @enum {string}
+           */
+          provider_name: "hubspot";
+          /**
+           * @example oauth2 
+           * @enum {string}
+           */
+          type: "oauth2";
+          refresh_token: string;
         }]>;
       };
     };

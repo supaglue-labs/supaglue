@@ -252,6 +252,13 @@ class SalesforceClient extends AbstractCrmRemoteClient {
       maxRequest: 10,
       version: SALESFORCE_API_VERSION,
     });
+    this.#client.on('refresh', async (accessToken: string) => {
+      this.#accessToken = accessToken;
+      this.emit('token_refreshed', {
+        accessToken,
+        expiresAt: null,
+      });
+    });
   }
 
   async #listObjectsHelper(
