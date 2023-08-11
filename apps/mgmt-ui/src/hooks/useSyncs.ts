@@ -7,12 +7,12 @@ import { useSWRWithApplication } from './useSWRWithApplication';
 
 export const SYNCS_PAGE_SIZE = 100;
 
-export function useSyncs(cursor?: string, filterParams?: SyncFilterParams) {
+export function useSyncs(cursor?: string, filterParams?: SyncFilterParams[]) {
   const queryParams = new URLSearchParams();
   queryParams.append('page_size', SYNCS_PAGE_SIZE.toString());
-  if (filterParams) {
-    queryParams.append(snakecase(filterParams.filterBy), filterParams.value);
-  }
+  filterParams?.forEach(({ filterBy, value }) => {
+    queryParams.append(snakecase(filterBy), value);
+  });
   cursor && queryParams.append('cursor', cursor);
 
   const { data, isLoading, error, mutate } = useSWRWithApplication<PaginatedResult<SyncDTO>>(

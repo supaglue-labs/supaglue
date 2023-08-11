@@ -2,8 +2,8 @@ import { useEntities } from '@/hooks/useEntities';
 import { SYNC_RUNS_PAGE_SIZE } from '@/hooks/useSyncRuns';
 import { datetimeStringFromISOString } from '@/utils/datetime';
 import type { SyncFilterParams } from '@/utils/filter';
-import type { GridColDef } from '@mui/x-data-grid';
-import { DataGrid, getGridStringOperators, GridToolbar } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid-pro';
+import { DataGridPro, getGridStringOperators, GridLogicOperator, GridToolbar } from '@mui/x-data-grid-pro';
 import type { SyncRun } from '@supaglue/types/sync_run';
 import { useState } from 'react';
 
@@ -13,13 +13,13 @@ export type SyncRunsTableProps = {
   data: SyncRun[];
   handleNextPage: () => void;
   handlePreviousPage: () => void;
-  handleFilter: (newFilterParams?: SyncFilterParams) => void;
+  handleFilters: (newFilterParams?: SyncFilterParams[]) => void;
 };
 
 const equalOperatorOnly = getGridStringOperators().filter((operator) => operator.value === 'equals');
 
 export default function SyncRunsTable(props: SyncRunsTableProps) {
-  const { data, rowCount, handleNextPage, handlePreviousPage, isLoading, handleFilter } = props;
+  const { data, rowCount, handleNextPage, handlePreviousPage, isLoading, handleFilters } = props;
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: SYNC_RUNS_PAGE_SIZE,
@@ -114,29 +114,30 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
 
   return (
     <div style={{ height: 750, width: '100%' }}>
-      <DataGrid
+      <DataGridPro
         density="compact"
         disableDensitySelector
         pageSizeOptions={[SYNC_RUNS_PAGE_SIZE]}
         filterMode="server"
         onFilterModelChange={(model) => {
           if (model.items.length === 0) {
-            handleFilter(undefined);
+            handleFilters(undefined);
             return;
           }
-          const { field, value } = model.items[0];
-          if (!value) {
-            handleFilter(undefined);
-            return;
-          }
-          if (value) {
-            handleFilter({
+          const filters = model.items
+            .map(({ field, value }) => ({
               filterBy: field as 'customerId' | 'object' | 'objectType' | 'providerName' | 'entityId',
               value: value as string,
-            });
-          }
+            }))
+            .filter(({ value }) => !!value);
+          handleFilters(filters);
         }}
         slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          filterPanel: {
+            logicOperators: [GridLogicOperator.And],
+          },
+        }}
         loading={isLoading}
         rowCount={rowCount}
         rows={data ?? []}

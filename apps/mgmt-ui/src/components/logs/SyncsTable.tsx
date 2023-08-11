@@ -6,8 +6,8 @@ import { SYNCS_PAGE_SIZE } from '@/hooks/useSyncs';
 import type { SyncFilterParams } from '@/utils/filter';
 import { Button, Stack } from '@mui/material';
 import Switch from '@mui/material/Switch';
-import type { GridColDef } from '@mui/x-data-grid';
-import { DataGrid, getGridStringOperators, GridToolbar } from '@mui/x-data-grid';
+import type { GridColDef } from '@mui/x-data-grid-pro';
+import { DataGridPro, getGridStringOperators, GridLogicOperator, GridToolbar } from '@mui/x-data-grid-pro';
 import type { PaginatedResult } from '@supaglue/types';
 import type { SyncDTO } from '@supaglue/types/sync';
 import { useState } from 'react';
@@ -19,14 +19,14 @@ export type SyncsTableProps = {
   data: SyncDTO[];
   handleNextPage: () => void;
   handlePreviousPage: () => void;
-  handleFilter: (newFilterParams?: SyncFilterParams) => void;
+  handleFilters: (newFilterParams?: SyncFilterParams[]) => void;
   mutate: KeyedMutator<PaginatedResult<SyncDTO>>;
 };
 
 const equalOperatorOnly = getGridStringOperators().filter((operator) => operator.value === 'equals');
 
 export default function SyncsTable(props: SyncsTableProps) {
-  const { data, rowCount, handleNextPage, handlePreviousPage, isLoading, mutate, handleFilter } = props;
+  const { data, rowCount, handleNextPage, handlePreviousPage, isLoading, mutate, handleFilters } = props;
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: SYNCS_PAGE_SIZE,
@@ -242,29 +242,30 @@ export default function SyncsTable(props: SyncsTableProps) {
 
   return (
     <div style={{ height: 750, width: '100%' }}>
-      <DataGrid
+      <DataGridPro
         density="compact"
         disableDensitySelector
         pageSizeOptions={[SYNCS_PAGE_SIZE]}
         filterMode="server"
         onFilterModelChange={(model) => {
           if (model.items.length === 0) {
-            handleFilter(undefined);
+            handleFilters(undefined);
             return;
           }
-          const { field, value } = model.items[0];
-          if (!value) {
-            handleFilter(undefined);
-            return;
-          }
-          if (value) {
-            handleFilter({
+          const filters = model.items
+            .map(({ field, value }) => ({
               filterBy: field as 'customerId' | 'object' | 'objectType' | 'providerName' | 'entityId',
               value: value as string,
-            });
-          }
+            }))
+            .filter(({ value }) => !!value);
+          handleFilters(filters);
         }}
         slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          filterPanel: {
+            logicOperators: [GridLogicOperator.And],
+          },
+        }}
         loading={isLoading}
         rowCount={rowCount}
         rows={data ?? []}
