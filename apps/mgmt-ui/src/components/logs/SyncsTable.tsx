@@ -2,10 +2,12 @@ import { pauseSync, resumeSync, triggerSync } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useEntities } from '@/hooks/useEntities';
+import { SYNCS_PAGE_SIZE } from '@/hooks/useSyncs';
+import type { SyncFilterParams } from '@/utils/filter';
 import { Button, Stack } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import type { GridColDef } from '@mui/x-data-grid';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, getGridStringOperators, GridToolbar } from '@mui/x-data-grid';
 import type { PaginatedResult } from '@supaglue/types';
 import type { SyncDTO } from '@supaglue/types/sync';
 import { useState } from 'react';
@@ -17,14 +19,17 @@ export type SyncsTableProps = {
   data: SyncDTO[];
   handleNextPage: () => void;
   handlePreviousPage: () => void;
+  handleFilter: (newFilterParams?: SyncFilterParams) => void;
   mutate: KeyedMutator<PaginatedResult<SyncDTO>>;
 };
 
+const equalOperatorOnly = getGridStringOperators().filter((operator) => operator.value === 'equals');
+
 export default function SyncsTable(props: SyncsTableProps) {
-  const { data, rowCount, handleNextPage, handlePreviousPage, isLoading, mutate } = props;
+  const { data, rowCount, handleNextPage, handlePreviousPage, isLoading, mutate, handleFilter } = props;
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
-    pageSize: 100,
+    pageSize: SYNCS_PAGE_SIZE,
   });
 
   const applicationId = useActiveApplicationId();
@@ -33,11 +38,39 @@ export default function SyncsTable(props: SyncsTableProps) {
   const { entities = [] } = useEntities();
 
   const columns: GridColDef[] = [
-    { field: 'customerId', headerName: 'Customer Id', width: 200, sortable: false },
-    { field: 'providerName', headerName: 'Provider', width: 120, sortable: false },
-    { field: 'type', headerName: 'Type', width: 100, sortable: false },
-    { field: 'objectType', headerName: 'Object Type', width: 120, sortable: false },
-    { field: 'object', headerName: 'Object', width: 120, sortable: false },
+    {
+      field: 'customerId',
+      headerName: 'Customer Id',
+      width: 200,
+      sortable: false,
+      filterable: true,
+      filterOperators: equalOperatorOnly,
+    },
+    {
+      field: 'providerName',
+      headerName: 'Provider',
+      width: 120,
+      sortable: false,
+      filterable: true,
+      filterOperators: equalOperatorOnly,
+    },
+    { field: 'type', headerName: 'Type', width: 100, sortable: false, filterable: false },
+    {
+      field: 'objectType',
+      headerName: 'Object Type',
+      width: 120,
+      sortable: false,
+      filterable: true,
+      filterOperators: equalOperatorOnly,
+    },
+    {
+      field: 'object',
+      headerName: 'Object',
+      width: 120,
+      sortable: false,
+      filterable: true,
+      filterOperators: equalOperatorOnly,
+    },
     {
       field: 'entityId',
       headerName: 'EntityId',
@@ -47,12 +80,15 @@ export default function SyncsTable(props: SyncsTableProps) {
           : '',
       width: 120,
       sortable: false,
+      filterable: true,
+      filterOperators: equalOperatorOnly,
     },
     {
       field: 'paused',
       headerName: 'Paused?',
       width: 120,
       sortable: false,
+      filterable: false,
       renderCell: (params) => {
         return (
           <Switch
@@ -135,6 +171,7 @@ export default function SyncsTable(props: SyncsTableProps) {
       headerName: 'Actions',
       width: 200,
       sortable: false,
+      filterable: false,
       renderCell: (params) => {
         // buttons to trigger sync run
         return (
@@ -207,9 +244,27 @@ export default function SyncsTable(props: SyncsTableProps) {
     <div style={{ height: 750, width: '100%' }}>
       <DataGrid
         density="compact"
-        pageSizeOptions={[100]}
-        disableColumnFilter
-        disableColumnMenu
+        disableDensitySelector
+        pageSizeOptions={[SYNCS_PAGE_SIZE]}
+        filterMode="server"
+        onFilterModelChange={(model) => {
+          if (model.items.length === 0) {
+            handleFilter(undefined);
+            return;
+          }
+          const { field, value } = model.items[0];
+          if (!value) {
+            handleFilter(undefined);
+            return;
+          }
+          if (value) {
+            handleFilter({
+              filterBy: field as 'customerId' | 'object' | 'objectType' | 'providerName' | 'entityId',
+              value: value as string,
+            });
+          }
+        }}
+        slots={{ toolbar: GridToolbar }}
         loading={isLoading}
         rowCount={rowCount}
         rows={data ?? []}
