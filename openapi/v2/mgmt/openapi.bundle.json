@@ -1268,7 +1268,7 @@
                 "oneOf": [
                   {
                     "type": "object",
-                    "title": "API key",
+                    "title": "apollo",
                     "properties": {
                       "provider_name": {
                         "type": "string",
@@ -1276,6 +1276,13 @@
                           "apollo"
                         ],
                         "example": "apollo"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "api_key"
+                        ],
+                        "example": "api_key"
                       },
                       "api_key": {
                         "type": "string",
@@ -1285,12 +1292,13 @@
                     },
                     "required": [
                       "provider_name",
+                      "type",
                       "api_key"
                     ]
                   },
                   {
                     "type": "object",
-                    "title": "Access key",
+                    "title": "gong",
                     "properties": {
                       "provider_name": {
                         "type": "string",
@@ -1298,6 +1306,13 @@
                           "gong"
                         ],
                         "example": "gong"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "access_key_secret"
+                        ],
+                        "example": "access_key_secret"
                       },
                       "access_key": {
                         "type": "string",
@@ -1312,8 +1327,72 @@
                     },
                     "required": [
                       "provider_name",
+                      "type",
                       "access_key",
                       "access_key_secret"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "salesforce",
+                    "properties": {
+                      "provider_name": {
+                        "type": "string",
+                        "enum": [
+                          "salesforce"
+                        ],
+                        "example": "salesforce"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "oauth2"
+                        ],
+                        "example": "oauth2"
+                      },
+                      "refresh_token": {
+                        "type": "string"
+                      },
+                      "instance_url": {
+                        "type": "string"
+                      },
+                      "login_url": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "provider_name",
+                      "type",
+                      "refresh_token",
+                      "instance_url"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "hubspot",
+                    "properties": {
+                      "provider_name": {
+                        "type": "string",
+                        "enum": [
+                          "hubspot"
+                        ],
+                        "example": "hubspot"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "oauth2"
+                        ],
+                        "example": "oauth2"
+                      },
+                      "refresh_token": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "provider_name",
+                      "type",
+                      "refresh_token"
                     ]
                   }
                 ]
