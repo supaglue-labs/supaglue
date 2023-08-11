@@ -94,7 +94,6 @@ export class DestinationService {
         name: params.name,
         applicationId: params.applicationId,
         type: params.type,
-        config: params.config,
         encryptedConfig: await encrypt(JSON.stringify(params.config)),
       },
     });
@@ -252,7 +251,6 @@ export class DestinationService {
       data: {
         applicationId: params.applicationId,
         type: params.type,
-        config: mergedConfig,
         encryptedConfig: await encrypt(JSON.stringify(mergedConfig)),
         name: params.name,
       },
