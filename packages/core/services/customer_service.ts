@@ -32,6 +32,9 @@ export class CustomerService {
       where: {
         applicationId,
       },
+      orderBy: {
+        externalIdentifier: 'asc',
+      },
     });
     return customers.map((customer) => fromCustomerModel(customer));
   }

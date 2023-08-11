@@ -54,7 +54,7 @@ export class SchemaService {
   }
 
   public async list(applicationId: string): Promise<Schema[]> {
-    const schemas = await this.#prisma.schema.findMany({ where: { applicationId } });
+    const schemas = await this.#prisma.schema.findMany({ where: { applicationId }, orderBy: { name: 'asc' } });
     return Promise.all(schemas.map((schema) => fromSchemaModel(schema)));
   }
 

@@ -57,7 +57,7 @@ export class ApplicationService {
 
   // TODO: paginate
   public async list(orgId: string): Promise<Application[]> {
-    const applications = await this.#prisma.application.findMany({ where: { orgId } });
+    const applications = await this.#prisma.application.findMany({ where: { orgId }, orderBy: { name: 'asc' } });
     return applications.map(fromApplicationModel);
   }
 
