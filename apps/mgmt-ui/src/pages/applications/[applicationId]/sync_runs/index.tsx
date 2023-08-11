@@ -11,7 +11,7 @@ export { getServerSideProps };
 
 export default function Home() {
   const [currentCursor, setCurrentCursor] = useState<string | undefined>();
-  const [filterParams, setFilterParams] = useState<SyncFilterParams | undefined>();
+  const [filterParams, setFilterParams] = useState<SyncFilterParams[] | undefined>();
   const { syncRuns, isLoading } = useSyncRuns(currentCursor, filterParams);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -31,7 +31,7 @@ export default function Home() {
     }
   };
 
-  const handleFilter = (newFilterParams?: SyncFilterParams) => {
+  const handleFilters = (newFilterParams?: SyncFilterParams[]) => {
     setFilterParams(newFilterParams);
     setCurrentCursor(undefined);
   };
@@ -51,7 +51,7 @@ export default function Home() {
           <SyncRunsTable
             handleNextPage={handleNextPage}
             handlePreviousPage={handlePreviousPage}
-            handleFilter={handleFilter}
+            handleFilters={handleFilters}
             rowCount={syncRuns?.totalCount ?? 0}
             data={syncRuns?.results ?? []}
             isLoading={isLoading}

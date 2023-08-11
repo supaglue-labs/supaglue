@@ -4,6 +4,7 @@ import '@/styles/globals.css';
 import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut, useUser } from '@clerk/nextjs';
 import { Box, CssBaseline, StyledEngineProvider, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { LicenseInfo } from '@mui/x-license-pro';
 import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
@@ -11,7 +12,9 @@ import posthog from 'posthog-js';
 import { PostHogProvider, usePostHog } from 'posthog-js/react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { IS_CLOUD } from './api';
+import { IS_CLOUD, MUI_LICENSE_KEY } from './api';
+
+LicenseInfo.setLicenseKey(MUI_LICENSE_KEY!);
 
 // Check that PostHog is client-side (used to handle Next.js SSR)
 if (typeof window !== 'undefined') {
