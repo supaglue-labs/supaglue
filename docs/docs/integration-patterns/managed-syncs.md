@@ -39,9 +39,9 @@ sources={{
 
 A Provider is a third-party SaaS tool that Supaglue can connect to, to sync data.
 
-Use the **Configuration --> Providers** page in the Management Portal to configure Oauth app credentials:
+Use the **Connectors --> Providers** page in the Management Portal to configure Oauth app credentials:
 
-<BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/providers/crm/salesforce">
+<BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/connectors/providers/crm/salesforce">
 
 <ThemedImage
 alt="provider config"
@@ -82,9 +82,9 @@ import TabItem from '@theme/TabItem';
 
 A Destination is a database or data warehouse in your infrastructure where Supaglue can write third-party Provider data to.
 
-Use the **Configuration --> Destinations** page in the Management Portal to configure Oauth app credentials:
+Use the **Connectors --> Destinations** page in the Management Portal to configure Oauth app credentials:
 
-<BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/destinations/postgres">
+<BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/connectors/destinations/postgres">
 
 <ThemedImage
 alt="destination config"
@@ -131,7 +131,7 @@ Before syncing data, Supaglue generates the destination tables and columns in yo
 
 A SyncConfig ties a Provider (source) to a Destination. It defines what objects to sync and how to sync them (frequency, strategy, etc).
 
-<BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/sync_configs/4427eb3f-3c64-4d1e-bf3a-0646475fc71c">
+<BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/syncs/sync_configs/4427eb3f-3c64-4d1e-bf3a-0646475fc71c">
 
 <ThemedImage
 alt="sync config"

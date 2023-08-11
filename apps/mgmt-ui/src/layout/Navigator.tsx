@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import ApplicationMenu from '@/components/ApplicationMenu';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
-import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import { Biotech, FindInPage, MenuBook } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import HubIcon from '@mui/icons-material/Hub';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PeopleIcon from '@mui/icons-material/People';
 import SchemaIcon from '@mui/icons-material/Schema';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -44,7 +42,6 @@ const item = {
 export default function Navigator(props: DrawerProps) {
   const { ...other } = props;
 
-  const { nextLambdaEnv } = useNextLambdaEnv();
   const applicationId = useActiveApplicationId();
 
   const categories: {
@@ -97,16 +94,6 @@ export default function Navigator(props: DrawerProps) {
           icon: <SettingsIcon />,
           active: false,
         },
-        ...(nextLambdaEnv?.IS_CLOUD
-          ? [
-              {
-                id: 'Team Settings',
-                to: nextLambdaEnv.CLERK_ORGANIZATION_URL,
-                icon: <ManageAccountsIcon />,
-                active: false,
-              },
-            ]
-          : []),
       ],
     },
     {

@@ -42,7 +42,7 @@ Note that the MongoDB user will need write access to the database you choose.
 
 ### Configuring the MongoDB destination
 
-1. Go to Configuration -> Destinations.
+1. Go to Connectors -> Destinations.
 1. Click the Configure button on the MongoDB card.
 1. Enter your MongoDB credentials.
 1. Click Test, then Save.

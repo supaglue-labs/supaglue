@@ -18,7 +18,7 @@ description: ''
 
 ## Setup
 
-1. Go to Configuration -> Destinations.
+1. Go to Connectors -> Destinations.
 2. Click the Configure button on the Postgres card.
 3. Enter your Postgres credentials.
 

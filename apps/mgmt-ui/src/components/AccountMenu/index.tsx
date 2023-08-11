@@ -1,5 +1,6 @@
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import GroupIcon from '@mui/icons-material/Group';
 import { Link as MUILink, ListItemIcon, MenuItem } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
@@ -24,6 +25,25 @@ function Profile() {
           <AccountCircleIcon />
         </ListItemIcon>
         Profile
+      </MenuItem>
+    </MUILink>
+  );
+}
+
+function Organization() {
+  const { nextLambdaEnv } = useNextLambdaEnv();
+
+  return (
+    <MUILink
+      href={nextLambdaEnv?.CLERK_ORGANIZATION_URL}
+      component={NextLink}
+      sx={{ color: 'inherit', textDecoration: 'inherit' }}
+    >
+      <MenuItem>
+        <ListItemIcon>
+          <GroupIcon />
+        </ListItemIcon>
+        Organization
       </MenuItem>
     </MUILink>
   );
@@ -91,6 +111,7 @@ export default function AccountMenu() {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         {nextLambdaEnv?.IS_CLOUD ? <Profile /> : null}
+        {nextLambdaEnv?.IS_CLOUD ? <Organization /> : null}
         <Logout />
       </Menu>
     </React.Fragment>
