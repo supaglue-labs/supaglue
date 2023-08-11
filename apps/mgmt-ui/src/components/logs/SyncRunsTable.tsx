@@ -79,7 +79,7 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
       filterable: true,
       filterOperators: equalOperatorOnly,
     },
-    { field: 'status', headerName: 'Status', width: 100, sortable: false },
+    { field: 'status', headerName: 'Status', width: 100, sortable: false, filterable: false },
     {
       field: 'startTimestamp',
       headerName: 'Start Time',
