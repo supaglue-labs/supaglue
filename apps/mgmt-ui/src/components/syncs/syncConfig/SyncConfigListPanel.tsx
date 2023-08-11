@@ -10,7 +10,7 @@ import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs
 import getIcon from '@/utils/companyToIcon';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
-import { Breadcrumbs, Button, Stack, Typography } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { SyncConfig } from '@supaglue/types';
@@ -37,7 +37,7 @@ export default function SyncConfigListPanel() {
       renderCell: (params) => {
         return (
           <Link
-            href={`/applications/${applicationId}/configuration/sync_configs/${params.id}`}
+            href={`/applications/${applicationId}/syncs/sync_configs/${params.id}`}
             className="flex flex-row gap-2 items-center w-full h-full"
             style={{
               textDecoration: 'none',
@@ -60,7 +60,7 @@ export default function SyncConfigListPanel() {
         }
         return (
           <Link
-            href={`/applications/${applicationId}/configuration/providers/${provider.category}/${provider.name}`}
+            href={`/applications/${applicationId}/connectors/providers/${provider.category}/${provider.name}`}
             className="flex flex-row gap-2 items-center w-full h-full"
           >
             {providerToIcon(provider.name)}
@@ -80,7 +80,7 @@ export default function SyncConfigListPanel() {
         }
         return (
           <Link
-            href={`/applications/${applicationId}/configuration/destinations/${destination.id}`}
+            href={`/applications/${applicationId}/connectors/destinations/${destination.id}`}
             style={{
               color: 'inherit',
               textDecoration: 'inherit',
@@ -151,12 +151,6 @@ export default function SyncConfigListPanel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Breadcrumbs>
-        <Link color="inherit" href={`/applications/${applicationId}`}>
-          Home
-        </Link>
-        <Typography color="text.primary">Sync Configs</Typography>
-      </Breadcrumbs>
       <MetricCard
         icon={<PeopleAltOutlined />}
         className="w-[calc(100vw-26rem)]"
@@ -167,7 +161,7 @@ export default function SyncConfigListPanel() {
             </div>
             <div className="p-1">
               <Link
-                href={`/applications/${applicationId}/configuration/sync_configs/new`}
+                href={`/applications/${applicationId}/syncs/sync_configs/new`}
                 className="flex flex-row gap-2 items-center w-full h-full"
                 style={{
                   textDecoration: 'inherit',

@@ -2,7 +2,7 @@
 import { createRemoteApiKey } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
-import { Box, Stack, TextField } from '@mui/material';
+import { Card, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
 import { RegenerateApiKey } from './RegenerateApiKey';
 
@@ -13,7 +13,7 @@ export default function ApiKeyTabPanel() {
   const { addNotification } = useNotification();
 
   return (
-    <Box
+    <Card
       sx={{
         padding: 6,
         flexGrow: 1,
@@ -52,6 +52,6 @@ export default function ApiKeyTabPanel() {
           />
         </Stack>
       </Stack>
-    </Box>
+    </Card>
   );
 }

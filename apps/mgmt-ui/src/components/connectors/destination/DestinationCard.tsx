@@ -1,29 +1,27 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
-import type { ProviderCardInfo } from '@/utils/provider';
-import providerToIcon from '@/utils/providerToIcon';
 import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import type { Provider } from '@supaglue/types';
+import type { DestinationSafeAny } from '@supaglue/types';
 import { useRouter } from 'next/router';
+import type { DestinationCardInfo } from './DestinationTabPanelContainer';
 
-export default function ProviderCard({
-  provider,
-  providerInfo,
+export default function DestinationCard({
+  destination,
+  destinationInfo,
 }: {
-  provider?: Provider;
-  providerInfo: ProviderCardInfo;
+  destination?: DestinationSafeAny;
+  destinationInfo: DestinationCardInfo;
 }) {
   const router = useRouter();
   const applicationId = useActiveApplicationId();
 
-  const { name, description, displayCategory, category, providerName } = providerInfo;
-  const icon = providerToIcon(providerName, 35);
+  const { icon, name, description, type } = destinationInfo;
 
   return (
     <Card
       classes={{
-        root: 'min-h-48 justify-between flex flex-col overflow-y-hidden',
+        root: 'h-48 justify-between flex flex-col overflow-y-hidden',
       }}
     >
       <Box>
@@ -33,10 +31,9 @@ export default function ProviderCard({
             <Stack direction="row" className="justify-between">
               <Stack direction="column">
                 <Typography>{name}</Typography>
-                <Typography fontSize={12}>{(displayCategory ?? category).toUpperCase()}</Typography>
               </Stack>
-              <Typography color={provider ? '#22c55e' : undefined}>
-                {provider ? 'Connected' : 'Not Connected'}
+              <Typography color={destination ? '#22c55e' : undefined}>
+                {destination ? 'Connected' : 'Not Connected'}
               </Typography>
             </Stack>
           }
@@ -55,7 +52,7 @@ export default function ProviderCard({
           <Button
             variant="text"
             onClick={() => {
-              router.push(`/applications/${applicationId}/configuration/providers/${category}/${providerName}`);
+              router.push(`/applications/${applicationId}/connectors/destinations/${type}`);
             }}
           >
             Configure

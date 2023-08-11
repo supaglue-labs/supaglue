@@ -2,10 +2,15 @@
 import ApplicationMenu from '@/components/ApplicationMenu';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
-import { Biotech, FindInPage, MenuBook, Tune } from '@mui/icons-material';
+import { Biotech, FindInPage, MenuBook } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
+import HubIcon from '@mui/icons-material/Hub';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import PeopleIcon from '@mui/icons-material/People';
+import SchemaIcon from '@mui/icons-material/Schema';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SyncIcon from '@mui/icons-material/Sync';
+
 import type { DrawerProps } from '@mui/material';
 import {
   Box,
@@ -62,21 +67,34 @@ export default function Navigator(props: DrawerProps) {
           active: false,
         },
         {
-          id: 'Configuration',
-          to: `/applications/${applicationId}/configuration/providers`,
-          icon: <Tune />,
+          id: 'Connectors',
+          to: `/applications/${applicationId}/connectors/providers`,
+          icon: <HubIcon />,
           active: false,
         },
+
         {
           id: 'Syncs',
-          to: `/applications/${applicationId}/syncs`,
+          to: `/applications/${applicationId}/syncs/syncs`,
+          icon: <SyncIcon />,
+          active: false,
+        },
+        {
+          id: 'Data Model',
+          to: `/applications/${applicationId}/data_model/entities`,
+          icon: <SchemaIcon />,
+          active: false,
+        },
+        {
+          id: 'Logs',
+          to: `/applications/${applicationId}/logs`,
           icon: <FindInPage />,
           active: false,
         },
         {
-          id: 'Sync Runs',
-          to: `/applications/${applicationId}/sync_runs`,
-          icon: <FindInPage />,
+          id: 'Settings',
+          to: `/applications/${applicationId}/settings/webhooks`,
+          icon: <SettingsIcon />,
           active: false,
         },
         ...(nextLambdaEnv?.IS_CLOUD
@@ -113,14 +131,11 @@ export default function Navigator(props: DrawerProps) {
   return (
     <Drawer variant="permanent" {...other}>
       <List disablePadding>
-        <ListItem sx={{ p: 0, fontSize: 22, color: '#fff' }}>
+        <ListItem sx={{ px: 0, pb: 1, fontSize: 22, color: '#fff' }}>
           <ApplicationMenu />
         </ListItem>
         {categories.map(({ id, children }) => (
-          <Box key={id} sx={{ bgcolor: '#101F33' }}>
-            <ListItem sx={{ py: 2, px: 3 }}>
-              <ListItemText sx={{ color: '#fff' }}>{id}</ListItemText>
-            </ListItem>
+          <Box key={id} sx={{ bgcolor: '#101F33', py: 2 }}>
             {children.map(({ id: childId, icon, active, to }) => (
               <ListItem disablePadding key={childId}>
                 <MUILink href={to} component={NextLink} sx={{ width: '100%', textDecoration: 'none' }}>
