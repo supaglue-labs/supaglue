@@ -2,7 +2,7 @@ import SyncRunsTable from '@/components/logs/SyncRunsTable';
 import { useSyncRuns } from '@/hooks/useSyncRuns';
 import Header from '@/layout/Header';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
-import type { SyncFilterParams } from '@/utils/filter';
+import type { SyncRunFilterParams } from '@/utils/filter';
 import { Box } from '@mui/material';
 import Head from 'next/head';
 import { useState } from 'react';
@@ -11,7 +11,7 @@ export { getServerSideProps };
 
 export default function Home() {
   const [currentCursor, setCurrentCursor] = useState<string | undefined>();
-  const [filterParams, setFilterParams] = useState<SyncFilterParams[] | undefined>();
+  const [filterParams, setFilterParams] = useState<SyncRunFilterParams[] | undefined>();
   const { syncRuns, isLoading } = useSyncRuns(currentCursor, filterParams);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -31,7 +31,7 @@ export default function Home() {
     }
   };
 
-  const handleFilters = (newFilterParams?: SyncFilterParams[]) => {
+  const handleFilters = (newFilterParams?: SyncRunFilterParams[]) => {
     setFilterParams(newFilterParams);
     setCurrentCursor(undefined);
   };

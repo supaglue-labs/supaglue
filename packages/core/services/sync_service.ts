@@ -23,14 +23,15 @@ export class SyncService {
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const connectionIds = connections.map(({ id }) => id);
     const { page_size, cursor } = paginationParams;
+    const whereClause = {
+      connectionId: { in: connectionIds },
+      objectType: 'objectType' in args ? args.objectType : undefined,
+      object: 'object' in args ? args.object : undefined,
+      entityId: 'entityId' in args ? args.entityId : undefined,
+    };
     const modelsPromise = this.#prisma.sync.findMany({
       ...getPaginationParams<string>(page_size, cursor),
-      where: {
-        connectionId: { in: connectionIds },
-        objectType: 'objectType' in args ? args.objectType : undefined,
-        object: 'object' in args ? args.object : undefined,
-        entityId: 'entityId' in args ? args.entityId : undefined,
-      },
+      where: whereClause,
       include: {
         connection: true,
       },
@@ -51,12 +52,7 @@ export class SyncService {
       ],
     });
     const countPromise = this.#prisma.sync.count({
-      where: {
-        connectionId: { in: connectionIds },
-        objectType: 'objectType' in args ? args.objectType : undefined,
-        object: 'object' in args ? args.object : undefined,
-        entityId: 'entityId' in args ? args.entityId : undefined,
-      },
+      where: whereClause,
     });
 
     const [models, count] = await Promise.all([modelsPromise, countPromise]);

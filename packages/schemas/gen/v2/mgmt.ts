@@ -2252,6 +2252,12 @@ export interface operations {
         object?: string;
         /** @description The entity id to filter by */
         entity_id?: string;
+        /** @description The status to filter by (case-insensitive) */
+        status?: string;
+        /** @description The start time to filter by. Should start with one of [>, <] followed by an ISO 8601 timestamp. */
+        start_timestamp?: string;
+        /** @description The end time to filter by. Should start with [>, <] followed by an ISO 8601 timestamp. */
+        end_timestamp?: string;
       };
     };
     responses: {
