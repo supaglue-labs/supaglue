@@ -3,7 +3,7 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useEntities } from '@/hooks/useEntities';
 import { SYNCS_PAGE_SIZE } from '@/hooks/useSyncs';
-import type { SyncFilterParams } from '@/utils/filter';
+import type { SyncFilterBy, SyncFilterParams } from '@/utils/filter';
 import { Button, Stack } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import type { GridColDef } from '@mui/x-data-grid-pro';
@@ -254,7 +254,7 @@ export default function SyncsTable(props: SyncsTableProps) {
           }
           const filters = model.items
             .map(({ field, value }) => ({
-              filterBy: field as 'customerId' | 'object' | 'objectType' | 'providerName' | 'entityId',
+              filterBy: field as SyncFilterBy,
               value: value as string,
             }))
             .filter(({ value }) => !!value);
@@ -270,6 +270,7 @@ export default function SyncsTable(props: SyncsTableProps) {
         rowCount={rowCount}
         rows={data ?? []}
         columns={columns}
+        pagination
         paginationMode="server"
         paginationModel={paginationModel}
         onPaginationModelChange={(newPaginationModel) => {

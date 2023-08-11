@@ -1,9 +1,15 @@
 import { useEntities } from '@/hooks/useEntities';
 import { SYNC_RUNS_PAGE_SIZE } from '@/hooks/useSyncRuns';
 import { datetimeStringFromISOString } from '@/utils/datetime';
-import type { SyncFilterParams } from '@/utils/filter';
+import type { SyncRunFilterBy, SyncRunFilterParams } from '@/utils/filter';
 import type { GridColDef } from '@mui/x-data-grid-pro';
-import { DataGridPro, getGridStringOperators, GridLogicOperator, GridToolbar } from '@mui/x-data-grid-pro';
+import {
+  DataGridPro,
+  getGridDateOperators,
+  getGridStringOperators,
+  GridLogicOperator,
+  GridToolbar,
+} from '@mui/x-data-grid-pro';
 import type { SyncRun } from '@supaglue/types/sync_run';
 import { useState } from 'react';
 
@@ -13,10 +19,15 @@ export type SyncRunsTableProps = {
   data: SyncRun[];
   handleNextPage: () => void;
   handlePreviousPage: () => void;
-  handleFilters: (newFilterParams?: SyncFilterParams[]) => void;
+  handleFilters: (newFilterParams?: SyncRunFilterParams[]) => void;
 };
 
 const equalOperatorOnly = getGridStringOperators().filter((operator) => operator.value === 'equals');
+
+const SUPPORTED_OPERATORS = ['after', 'before'];
+const supportedDateOperators = getGridDateOperators(true).filter((operator) =>
+  SUPPORTED_OPERATORS.includes(operator.value)
+);
 
 export default function SyncRunsTable(props: SyncRunsTableProps) {
   const { data, rowCount, handleNextPage, handlePreviousPage, isLoading, handleFilters } = props;
@@ -79,14 +90,22 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
       filterable: true,
       filterOperators: equalOperatorOnly,
     },
-    { field: 'status', headerName: 'Status', width: 100, sortable: false, filterable: false },
+    {
+      field: 'status',
+      headerName: 'Status',
+      width: 100,
+      sortable: false,
+      filterable: true,
+      filterOperators: equalOperatorOnly,
+    },
     {
       field: 'startTimestamp',
       headerName: 'Start Time',
       width: 160,
       valueFormatter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
       sortable: false,
-      filterable: false,
+      filterable: true,
+      filterOperators: supportedDateOperators,
     },
     {
       field: 'endTimestamp',
@@ -94,7 +113,8 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
       width: 160,
       valueFormatter: ({ value }) => (value ? datetimeStringFromISOString(value) : '-'),
       sortable: false,
-      filterable: false,
+      filterable: true,
+      filterOperators: supportedDateOperators,
     },
     {
       field: 'numRecordsSynced',
@@ -125,12 +145,32 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
             return;
           }
           const filters = model.items
-            .map(({ field, value }) => ({
-              filterBy: field as 'customerId' | 'object' | 'objectType' | 'providerName' | 'entityId',
-              value: value as string,
-            }))
+            .map(({ field, operator, value }) => {
+              if (operator === 'equals') {
+                return {
+                  filterBy: field as SyncRunFilterBy,
+                  value: value as string,
+                };
+              }
+              if (operator === 'after' && value) {
+                return {
+                  filterBy: field as SyncRunFilterBy,
+                  value: `>${attachTimezone(value)}`,
+                };
+              }
+              if (operator === 'before' && value) {
+                return {
+                  filterBy: field as SyncRunFilterBy,
+                  value: `<${attachTimezone(value)}`,
+                };
+              }
+              return {
+                filterBy: field as SyncRunFilterBy,
+                value: undefined,
+              };
+            })
             .filter(({ value }) => !!value);
-          handleFilters(filters);
+          handleFilters(filters as SyncRunFilterParams[]);
         }}
         slots={{ toolbar: GridToolbar }}
         slotProps={{
@@ -142,6 +182,7 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
         rowCount={rowCount}
         rows={data ?? []}
         columns={columns}
+        pagination
         paginationMode="server"
         paginationModel={paginationModel}
         onPaginationModelChange={(newPaginationModel) => {
@@ -164,4 +205,20 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
       />
     </div>
   );
+}
+
+function attachTimezone(timestamp: string): string {
+  const currentOffsetMinutes = new Date().getTimezoneOffset();
+  const offsetHours = Math.abs(Math.floor(currentOffsetMinutes / 60));
+  const offsetMinutes = Math.abs(currentOffsetMinutes % 60);
+
+  // Format the offset. For instance, if the offset is 330 minutes (5 hours and 30 minutes ahead of UTC),
+  // it should return "+05:30".
+  const formattedOffset =
+    (currentOffsetMinutes > 0 ? '-' : '+') +
+    String(offsetHours).padStart(2, '0') +
+    ':' +
+    String(offsetMinutes).padStart(2, '0');
+
+  return `${timestamp}${formattedOffset}`;
 }

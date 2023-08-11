@@ -113,22 +113,20 @@ export class SyncRunService {
     const connections = await this.#connectionService.listSafe(applicationId, customerId, providerName);
     const connectionIds = connections.map(({ id }) => id);
     const { page_size, cursor } = paginationParams;
+    const whereClause = {
+      sync: {
+        connectionId: { in: connectionIds },
+        objectType: 'objectType' in args ? args.objectType : undefined,
+        object: 'object' in args ? args.object : undefined,
+        entityId: 'entityId' in args ? args.entityId : undefined,
+      },
+      startTimestamp: 'startTimestamp' in args ? args.startTimestamp : undefined,
+      endTimestamp: 'endTimestamp' in args ? args.endTimestamp : undefined,
+      status: 'status' in args ? args.status : undefined,
+    };
     const modelsPromise = this.#prisma.syncRun.findMany({
       ...getPaginationParams<string>(page_size, cursor),
-      where: {
-        sync: {
-          connectionId: { in: connectionIds },
-          objectType: {
-            equals: 'objectType' in args ? args.objectType : undefined,
-            mode: 'insensitive',
-          },
-          object: {
-            equals: 'object' in args ? args.object : undefined,
-            mode: 'insensitive',
-          },
-          entityId: 'entityId' in args ? args.entityId : undefined,
-        },
-      },
+      where: whereClause,
       include: {
         sync: {
           select: {
@@ -146,14 +144,7 @@ export class SyncRunService {
       },
     });
     const countPromise = this.#prisma.syncRun.count({
-      where: {
-        sync: {
-          connectionId: { in: connectionIds },
-          objectType: 'objectType' in args ? args.objectType : undefined,
-          object: 'object' in args ? args.object : undefined,
-          entityId: 'entityId' in args ? args.entityId : undefined,
-        },
-      },
+      where: whereClause,
     });
 
     const [models, count] = await Promise.all([modelsPromise, countPromise]);

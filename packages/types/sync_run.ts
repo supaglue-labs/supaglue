@@ -43,6 +43,9 @@ export type SyncRunFilter = {
   applicationId: string;
   externalCustomerId?: string;
   providerName?: string;
+  status?: SyncRunStatus;
+  startTimestamp?: SyncRunTimestampFilter;
+  endTimestamp?: SyncRunTimestampFilter;
   paginationParams: PaginationInternalParams;
 } & (
   | {
@@ -55,3 +58,11 @@ export type SyncRunFilter = {
   // eslint-disable-next-line @typescript-eslint/ban-types
   | {}
 );
+
+export type SyncRunTimestampFilter =
+  | {
+      gt: Date;
+    }
+  | {
+      lt: Date;
+    };

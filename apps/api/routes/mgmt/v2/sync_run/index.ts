@@ -7,6 +7,7 @@ import type {
   GetSyncRunsRequest,
   GetSyncRunsResponse,
 } from '@supaglue/schemas/v2/mgmt';
+import type { SyncRunStatus, SyncRunTimestampFilter } from '@supaglue/types/sync_run';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Router, type Request, type Response } from 'express';
 
@@ -48,6 +49,9 @@ export default function init(app: Router) {
         ...getObjectOrEntityFilter(),
         externalCustomerId: req.query?.customer_id,
         providerName: req.query?.provider_name,
+        status: req.query?.status?.toUpperCase() as SyncRunStatus | undefined,
+        startTimestamp: parseTimeFilter(req.query?.start_timestamp),
+        endTimestamp: parseTimeFilter(req.query?.end_timestamp),
       });
 
       const snakeCaseResults = results.map((result) =>
@@ -62,4 +66,20 @@ export default function init(app: Router) {
   );
 
   app.use('/sync-runs', syncRunRouter);
+}
+
+function parseTimeFilter(timeFilter?: string): SyncRunTimestampFilter | undefined {
+  if (!timeFilter) {
+    return;
+  }
+  if (timeFilter.startsWith('>')) {
+    return {
+      gt: new Date(timeFilter.slice(1)),
+    };
+  } else if (timeFilter.startsWith('<')) {
+    return {
+      lt: new Date(timeFilter.slice(1)),
+    };
+  }
+  throw new BadRequestError(`invalid time filter: ${timeFilter}`);
 }
