@@ -160,6 +160,7 @@ model Sync {
 
   @@unique([connectionId, type, objectType, object])
   @@unique([connectionId, type, entityId])
+  @@index([connectionId])
   @@map("object_syncs")
 }
 
@@ -183,6 +184,7 @@ model SyncRun {
   numRecordsSynced Int?      @map("num_records_synced")
 
   @@index([startTimestamp(sort: Desc)])
+  @@index([status])
   @@map("object_sync_runs")
 }
 
