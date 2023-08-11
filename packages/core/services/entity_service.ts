@@ -55,7 +55,7 @@ export class EntityService {
   }
 
   public async list(applicationId: string): Promise<Entity[]> {
-    const entitys = await this.#prisma.entity.findMany({ where: { applicationId } });
+    const entitys = await this.#prisma.entity.findMany({ where: { applicationId }, orderBy: { name: 'asc' } });
     return Promise.all(entitys.map(fromEntityModel));
   }
 

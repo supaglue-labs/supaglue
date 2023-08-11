@@ -35,7 +35,7 @@ export default function init(app: Router): void {
       res: Response<GetConnectionsResponse>
     ) => {
       const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
-      const connections = await connectionService.listSafe(req.supaglueApplication.id, customerId);
+      const connections = await connectionService.listSafeByCustomer(req.supaglueApplication.id, customerId);
       return res.status(200).send(connections.map(snakecaseKeys));
     }
   );
