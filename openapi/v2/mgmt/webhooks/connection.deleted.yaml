@@ -1,8 +1,8 @@
 post:
   summary: Customer connection deleted
   description: Notification of the deletion of a connection for a customer
-  operationId: connectionDelete
-  x-event-type: connection.delete
+  operationId: connectionDeleted
+  x-event-type: connection.deleted
   tags:
     - Webhook Events
   requestBody:

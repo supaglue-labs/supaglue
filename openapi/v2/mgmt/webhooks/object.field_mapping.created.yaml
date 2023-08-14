@@ -1,53 +1,54 @@
 post:
-  summary: Entity mapping deleted
-  description: Notification of the deletion of an entity mapping
-  operationId: entityMappingDelete
-  x-event-type: entity_mapping.delete
+  summary: Object field mapping created
+  description: Notification of the creation of am object field mapping
+  operationId: objectFieldMappingCreated
+  x-event-type: object.field_mapping.created
   tags:
     - Webhook Events
   requestBody:
     content:
       application/json:
         example:
-          webhook_event_type: entity_mapping.delete
-          entity_id: e30cbb93-5b05-4186-b6de-1acc10013795
+          webhook_event_type: object.field_mapping.created
+          connection_id: e30cbb93-5b05-4186-b6de-1acc10013795
           application_id: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
-          connection_id: a7052919-e024-4985-bd08-856056b66f59
-          customer_id: 1a2b3c4d5e6f
+          customer_id: c7c5204a-61d3-44a7-b581-a1f29b239f89
           provider_name: salesforce
-          object_name: opportunity
-          object_type: standard
-          result: SUCCESS
+          object_name: Contact
+          object_type: common
+          schema_id: 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d
+          result: ERROR
+          error_message: 'Error message'
         schema:
           type: object
           properties:
             webhook_event_type:
               type: string
-              example: entity_mapping.delete
-            entity_id:
+              enum:
+                - object.field_mapping.created
+              example: object.field_mapping.created
+            connection_id:
               type: string
               example: e30cbb93-5b05-4186-b6de-1acc10013795
             application_id:
               type: string
               example: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
-            connection_id:
-              type: string
-              example: a7052919-e024-4985-bd08-856056b66f59
             customer_id:
               type: string
-              example: 1a2b3c4d5e6f
+              example: c7c5204a-61d3-44a7-b581-a1f29b239f89
             provider_name:
-              type: string
-              example: salesforce
+              $ref: '../components/schemas/objects/provider_name.yaml'
             object_name:
               type: string
-              example: opportunity
+              example: Contact
             object_type:
               type: string
               enum:
+                - common
                 - standard
-                - custom
-              example: standard
+            schema_id:
+              type: string
+              example: 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d
             result:
               type: string
               enum:
@@ -55,14 +56,16 @@ post:
                 - ERROR
             error_message:
               type: string
-              example: Error message
+              example: 'Error message'
           required:
             - webhook_event_type
-            - entity_id
-            - application_id
             - connection_id
+            - application_id
             - customer_id
             - provider_name
+            - object_name
+            - object_type
+            - schema_id
             - result
 
   responses:

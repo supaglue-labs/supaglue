@@ -1,8 +1,8 @@
 post:
   summary: Customer connection created
   description: Notification of the creation of a connection for a customer
-  operationId: connectionCreate
-  x-event-type: connection.create
+  operationId: connectionCreated
+  x-event-type: connection.created
   tags:
     - Webhook Events
   requestBody:

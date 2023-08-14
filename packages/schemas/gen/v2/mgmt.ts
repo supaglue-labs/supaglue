@@ -332,54 +332,54 @@ export interface webhooks {
      */
     post: operations["syncComplete"];
   };
-  "connection.create": {
+  "connection.created": {
     /**
      * Customer connection created 
      * @description Notification of the creation of a connection for a customer
      */
-    post: operations["connectionCreate"];
+    post: operations["connectionCreated"];
   };
-  "connection.delete": {
+  "connection.deleted": {
     /**
      * Customer connection deleted 
      * @description Notification of the deletion of a connection for a customer
      */
-    post: operations["connectionDelete"];
+    post: operations["connectionDeleted"];
   };
-  "entity_mapping.create": {
+  "entity.entity_mapping.created": {
     /**
      * Entity mapping created 
      * @description Notification of the creation of an entity mapping
      */
-    post: operations["entityMappingCreate"];
+    post: operations["entityEntityMappingCreated"];
   };
-  "entity_mapping.update": {
+  "entity.entity_mapping.updated": {
     /**
      * Entity mapping updated 
      * @description Notification of an update to an entity mapping
      */
-    post: operations["entityMappingUpdate"];
+    post: operations["entityEntityMappingUpdated"];
   };
-  "entity_mapping.delete": {
+  "entity.entity_mapping.deleted": {
     /**
      * Entity mapping deleted 
      * @description Notification of the deletion of an entity mapping
      */
-    post: operations["entityMappingDelete"];
+    post: operations["entityEntityMappingDeleted"];
   };
-  "field_mapping.create": {
+  "object.field_mapping.created": {
     /**
-     * Field mapping created 
-     * @description Notification of the creation of a field mapping
+     * Object field mapping created 
+     * @description Notification of the creation of am object field mapping
      */
-    post: operations["fieldMappingCreate"];
+    post: operations["objectFieldMappingCreated"];
   };
-  "field_mapping.update": {
+  "object.field_mapping.updated": {
     /**
-     * Field mapping updated 
-     * @description Notification of an update to a field mapping
+     * Object field mapping updated 
+     * @description Notification of an update to an object field mapping
      */
-    post: operations["fieldMappingUpdate"];
+    post: operations["objectFieldMappingUpdated"];
   };
 }
 
@@ -2615,7 +2615,7 @@ export interface operations {
    * Customer connection created 
    * @description Notification of the creation of a connection for a customer
    */
-  connectionCreate: {
+  connectionCreated: {
     requestBody?: {
       content: {
         /**
@@ -2651,7 +2651,7 @@ export interface operations {
    * Customer connection deleted 
    * @description Notification of the deletion of a connection for a customer
    */
-  connectionDelete: {
+  connectionDeleted: {
     requestBody?: {
       content: {
         /**
@@ -2689,12 +2689,12 @@ export interface operations {
    * Entity mapping created 
    * @description Notification of the creation of an entity mapping
    */
-  entityMappingCreate: {
+  entityEntityMappingCreated: {
     requestBody?: {
       content: {
         /**
          * @example {
-         *   "webhook_event_type": "entity_mapping.create",
+         *   "webhook_event_type": "entity.entity_mapping.created",
          *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -2706,8 +2706,11 @@ export interface operations {
          * }
          */
         "application/json": {
-          /** @example entity_mapping.create */
-          webhook_event_type: string;
+          /**
+           * @example entity.entity_mapping.created 
+           * @enum {string}
+           */
+          webhook_event_type: "entity.entity_mapping.created";
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           entity_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2741,12 +2744,12 @@ export interface operations {
    * Entity mapping updated 
    * @description Notification of an update to an entity mapping
    */
-  entityMappingUpdate: {
+  entityEntityMappingUpdated: {
     requestBody?: {
       content: {
         /**
          * @example {
-         *   "webhook_event_type": "entity_mapping.update",
+         *   "webhook_event_type": "entity.entity_mapping.updated",
          *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -2758,8 +2761,11 @@ export interface operations {
          * }
          */
         "application/json": {
-          /** @example entity_mapping.update */
-          webhook_event_type: string;
+          /**
+           * @example entity.entity_mapping.updated 
+           * @enum {string}
+           */
+          webhook_event_type: "entity.entity_mapping.updated";
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           entity_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2793,12 +2799,12 @@ export interface operations {
    * Entity mapping deleted 
    * @description Notification of the deletion of an entity mapping
    */
-  entityMappingDelete: {
+  entityEntityMappingDeleted: {
     requestBody?: {
       content: {
         /**
          * @example {
-         *   "webhook_event_type": "entity_mapping.delete",
+         *   "webhook_event_type": "entity.entity_mapping.deleted",
          *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -2810,8 +2816,11 @@ export interface operations {
          * }
          */
         "application/json": {
-          /** @example entity_mapping.delete */
-          webhook_event_type: string;
+          /**
+           * @example entity.entity_mapping.deleted 
+           * @enum {string}
+           */
+          webhook_event_type: "entity.entity_mapping.deleted";
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           entity_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2842,14 +2851,15 @@ export interface operations {
     };
   };
   /**
-   * Field mapping created 
-   * @description Notification of the creation of a field mapping
+   * Object field mapping created 
+   * @description Notification of the creation of am object field mapping
    */
-  fieldMappingCreate: {
+  objectFieldMappingCreated: {
     requestBody?: {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "object.field_mapping.created",
          *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
@@ -2862,8 +2872,11 @@ export interface operations {
          * }
          */
         "application/json": {
-          /** @example field_mapping.create */
-          webhook_event_type: string;
+          /**
+           * @example object.field_mapping.created 
+           * @enum {string}
+           */
+          webhook_event_type: "object.field_mapping.created";
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2890,15 +2903,15 @@ export interface operations {
     };
   };
   /**
-   * Field mapping updated 
-   * @description Notification of an update to a field mapping
+   * Object field mapping updated 
+   * @description Notification of an update to an object field mapping
    */
-  fieldMappingUpdate: {
+  objectFieldMappingUpdated: {
     requestBody?: {
       content: {
         /**
          * @example {
-         *   "webhook_event_type": "field_mapping.update",
+         *   "webhook_event_type": "object.field_mapping.updated",
          *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
@@ -2911,8 +2924,11 @@ export interface operations {
          * }
          */
         "application/json": {
-          /** @example field_mapping.update */
-          webhook_event_type: string;
+          /**
+           * @example object.field_mapping.updated 
+           * @enum {string}
+           */
+          webhook_event_type: "object.field_mapping.updated";
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */

@@ -333,7 +333,7 @@ export class ConnectionService {
       throw e;
     } finally {
       await this.#webhookService.sendMessage(
-        isNew ? 'field_mapping.create' : 'field_mapping.update',
+        isNew ? 'object.field_mapping.created' : 'object.field_mapping.updated',
         {
           connection_id: connection.id,
           application_id: connection.applicationId,
@@ -456,7 +456,7 @@ export class ConnectionService {
       throw e;
     } finally {
       await this.#webhookService.sendMessage(
-        isUpdate ? 'entity_mapping.update' : 'entity_mapping.create',
+        isUpdate ? 'entity.entity_mapping.updated' : 'entity.entity_mapping.created',
         {
           connection_id: connectionId,
           application_id: connection.applicationId,
@@ -502,7 +502,7 @@ export class ConnectionService {
       throw e;
     } finally {
       await this.#webhookService.sendMessage(
-        'entity_mapping.delete',
+        'entity.entity_mapping.deleted',
         {
           connection_id: connectionId,
           application_id: connection.applicationId,

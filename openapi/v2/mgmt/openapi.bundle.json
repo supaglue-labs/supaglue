@@ -5240,12 +5240,12 @@
         }
       }
     },
-    "connection.create": {
+    "connection.created": {
       "post": {
         "summary": "Customer connection created",
         "description": "Notification of the creation of a connection for a customer",
-        "operationId": "connectionCreate",
-        "x-event-type": "connection.create",
+        "operationId": "connectionCreated",
+        "x-event-type": "connection.created",
         "tags": [
           "Webhook Events"
         ],
@@ -5308,12 +5308,12 @@
         }
       }
     },
-    "connection.delete": {
+    "connection.deleted": {
       "post": {
         "summary": "Customer connection deleted",
         "description": "Notification of the deletion of a connection for a customer",
-        "operationId": "connectionDelete",
-        "x-event-type": "connection.delete",
+        "operationId": "connectionDeleted",
+        "x-event-type": "connection.deleted",
         "tags": [
           "Webhook Events"
         ],
@@ -5381,12 +5381,12 @@
         }
       }
     },
-    "entity_mapping.create": {
+    "entity.entity_mapping.created": {
       "post": {
         "summary": "Entity mapping created",
         "description": "Notification of the creation of an entity mapping",
-        "operationId": "entityMappingCreate",
-        "x-event-type": "entity_mapping.create",
+        "operationId": "entityEntityMappingCreated",
+        "x-event-type": "entity.entity_mapping.created",
         "tags": [
           "Webhook Events"
         ],
@@ -5394,7 +5394,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "entity_mapping.create",
+                "webhook_event_type": "entity.entity_mapping.created",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -5409,7 +5409,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "entity_mapping.create"
+                    "enum": [
+                      "entity.entity_mapping.created"
+                    ],
+                    "example": "entity.entity_mapping.created"
                   },
                   "entity_id": {
                     "type": "string",
@@ -5475,12 +5478,12 @@
         }
       }
     },
-    "entity_mapping.update": {
+    "entity.entity_mapping.updated": {
       "post": {
         "summary": "Entity mapping updated",
         "description": "Notification of an update to an entity mapping",
-        "operationId": "entityMappingUpdate",
-        "x-event-type": "entity_mapping.update",
+        "operationId": "entityEntityMappingUpdated",
+        "x-event-type": "entity.entity_mapping.updated",
         "tags": [
           "Webhook Events"
         ],
@@ -5488,7 +5491,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "entity_mapping.update",
+                "webhook_event_type": "entity.entity_mapping.updated",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -5503,7 +5506,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "entity_mapping.update"
+                    "enum": [
+                      "entity.entity_mapping.updated"
+                    ],
+                    "example": "entity.entity_mapping.updated"
                   },
                   "entity_id": {
                     "type": "string",
@@ -5569,12 +5575,12 @@
         }
       }
     },
-    "entity_mapping.delete": {
+    "entity.entity_mapping.deleted": {
       "post": {
         "summary": "Entity mapping deleted",
         "description": "Notification of the deletion of an entity mapping",
-        "operationId": "entityMappingDelete",
-        "x-event-type": "entity_mapping.delete",
+        "operationId": "entityEntityMappingDeleted",
+        "x-event-type": "entity.entity_mapping.deleted",
         "tags": [
           "Webhook Events"
         ],
@@ -5582,7 +5588,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "entity_mapping.delete",
+                "webhook_event_type": "entity.entity_mapping.deleted",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -5597,7 +5603,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "entity_mapping.delete"
+                    "enum": [
+                      "entity.entity_mapping.deleted"
+                    ],
+                    "example": "entity.entity_mapping.deleted"
                   },
                   "entity_id": {
                     "type": "string",
@@ -5663,12 +5672,12 @@
         }
       }
     },
-    "field_mapping.create": {
+    "object.field_mapping.created": {
       "post": {
-        "summary": "Field mapping created",
-        "description": "Notification of the creation of a field mapping",
-        "operationId": "fieldMappingCreate",
-        "x-event-type": "field_mapping.create",
+        "summary": "Object field mapping created",
+        "description": "Notification of the creation of am object field mapping",
+        "operationId": "objectFieldMappingCreated",
+        "x-event-type": "object.field_mapping.created",
         "tags": [
           "Webhook Events"
         ],
@@ -5676,6 +5685,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "object.field_mapping.created",
                 "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
@@ -5691,7 +5701,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "field_mapping.create"
+                    "enum": [
+                      "object.field_mapping.created"
+                    ],
+                    "example": "object.field_mapping.created"
                   },
                   "connection_id": {
                     "type": "string",
@@ -5757,12 +5770,12 @@
         }
       }
     },
-    "field_mapping.update": {
+    "object.field_mapping.updated": {
       "post": {
-        "summary": "Field mapping updated",
-        "description": "Notification of an update to a field mapping",
-        "operationId": "fieldMappingUpdate",
-        "x-event-type": "field_mapping.update",
+        "summary": "Object field mapping updated",
+        "description": "Notification of an update to an object field mapping",
+        "operationId": "objectFieldMappingUpdated",
+        "x-event-type": "object.field_mapping.updated",
         "tags": [
           "Webhook Events"
         ],
@@ -5770,7 +5783,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "field_mapping.update",
+                "webhook_event_type": "object.field_mapping.updated",
                 "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
@@ -5786,7 +5799,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "field_mapping.update"
+                    "enum": [
+                      "object.field_mapping.updated"
+                    ],
+                    "example": "object.field_mapping.updated"
                   },
                   "connection_id": {
                     "type": "string",
@@ -6259,12 +6275,12 @@
         }
       }
     },
-    "connection.create": {
+    "connection.created": {
       "post": {
         "summary": "Customer connection created",
         "description": "Notification of the creation of a connection for a customer",
-        "operationId": "connectionCreate",
-        "x-event-type": "connection.create",
+        "operationId": "connectionCreated",
+        "x-event-type": "connection.created",
         "tags": [
           "Webhook Events"
         ],
@@ -6327,12 +6343,12 @@
         }
       }
     },
-    "connection.delete": {
+    "connection.deleted": {
       "post": {
         "summary": "Customer connection deleted",
         "description": "Notification of the deletion of a connection for a customer",
-        "operationId": "connectionDelete",
-        "x-event-type": "connection.delete",
+        "operationId": "connectionDeleted",
+        "x-event-type": "connection.deleted",
         "tags": [
           "Webhook Events"
         ],
@@ -6400,12 +6416,12 @@
         }
       }
     },
-    "entity_mapping.create": {
+    "entity.entity_mapping.created": {
       "post": {
         "summary": "Entity mapping created",
         "description": "Notification of the creation of an entity mapping",
-        "operationId": "entityMappingCreate",
-        "x-event-type": "entity_mapping.create",
+        "operationId": "entityEntityMappingCreated",
+        "x-event-type": "entity.entity_mapping.created",
         "tags": [
           "Webhook Events"
         ],
@@ -6413,7 +6429,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "entity_mapping.create",
+                "webhook_event_type": "entity.entity_mapping.created",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -6428,7 +6444,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "entity_mapping.create"
+                    "enum": [
+                      "entity.entity_mapping.created"
+                    ],
+                    "example": "entity.entity_mapping.created"
                   },
                   "entity_id": {
                     "type": "string",
@@ -6494,12 +6513,12 @@
         }
       }
     },
-    "entity_mapping.update": {
+    "entity.entity_mapping.updated": {
       "post": {
         "summary": "Entity mapping updated",
         "description": "Notification of an update to an entity mapping",
-        "operationId": "entityMappingUpdate",
-        "x-event-type": "entity_mapping.update",
+        "operationId": "entityEntityMappingUpdated",
+        "x-event-type": "entity.entity_mapping.updated",
         "tags": [
           "Webhook Events"
         ],
@@ -6507,7 +6526,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "entity_mapping.update",
+                "webhook_event_type": "entity.entity_mapping.updated",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -6522,7 +6541,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "entity_mapping.update"
+                    "enum": [
+                      "entity.entity_mapping.updated"
+                    ],
+                    "example": "entity.entity_mapping.updated"
                   },
                   "entity_id": {
                     "type": "string",
@@ -6588,12 +6610,12 @@
         }
       }
     },
-    "entity_mapping.delete": {
+    "entity.entity_mapping.deleted": {
       "post": {
         "summary": "Entity mapping deleted",
         "description": "Notification of the deletion of an entity mapping",
-        "operationId": "entityMappingDelete",
-        "x-event-type": "entity_mapping.delete",
+        "operationId": "entityEntityMappingDeleted",
+        "x-event-type": "entity.entity_mapping.deleted",
         "tags": [
           "Webhook Events"
         ],
@@ -6601,7 +6623,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "entity_mapping.delete",
+                "webhook_event_type": "entity.entity_mapping.deleted",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -6616,7 +6638,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "entity_mapping.delete"
+                    "enum": [
+                      "entity.entity_mapping.deleted"
+                    ],
+                    "example": "entity.entity_mapping.deleted"
                   },
                   "entity_id": {
                     "type": "string",
@@ -6682,12 +6707,12 @@
         }
       }
     },
-    "field_mapping.create": {
+    "object.field_mapping.created": {
       "post": {
-        "summary": "Field mapping created",
-        "description": "Notification of the creation of a field mapping",
-        "operationId": "fieldMappingCreate",
-        "x-event-type": "field_mapping.create",
+        "summary": "Object field mapping created",
+        "description": "Notification of the creation of am object field mapping",
+        "operationId": "objectFieldMappingCreated",
+        "x-event-type": "object.field_mapping.created",
         "tags": [
           "Webhook Events"
         ],
@@ -6695,6 +6720,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "object.field_mapping.created",
                 "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
@@ -6710,7 +6736,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "field_mapping.create"
+                    "enum": [
+                      "object.field_mapping.created"
+                    ],
+                    "example": "object.field_mapping.created"
                   },
                   "connection_id": {
                     "type": "string",
@@ -6776,12 +6805,12 @@
         }
       }
     },
-    "field_mapping.update": {
+    "object.field_mapping.updated": {
       "post": {
-        "summary": "Field mapping updated",
-        "description": "Notification of an update to a field mapping",
-        "operationId": "fieldMappingUpdate",
-        "x-event-type": "field_mapping.update",
+        "summary": "Object field mapping updated",
+        "description": "Notification of an update to an object field mapping",
+        "operationId": "objectFieldMappingUpdated",
+        "x-event-type": "object.field_mapping.updated",
         "tags": [
           "Webhook Events"
         ],
@@ -6789,7 +6818,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "field_mapping.update",
+                "webhook_event_type": "object.field_mapping.updated",
                 "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
@@ -6805,7 +6834,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "field_mapping.update"
+                    "enum": [
+                      "object.field_mapping.updated"
+                    ],
+                    "example": "object.field_mapping.updated"
                   },
                   "connection_id": {
                     "type": "string",

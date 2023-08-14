@@ -396,7 +396,7 @@ export class ConnectionAndSyncService {
     } finally {
       const { credentials: _, ...paramsWithoutCredentials } = params;
       await this.#webhookService.sendMessage(
-        'connection.create',
+        'connection.created',
         { ...snakecaseKeys(paramsWithoutCredentials), result: errored ? 'ERROR' : 'SUCCESS' },
         application.id,
         `${connectionId}-create`
@@ -461,7 +461,7 @@ export class ConnectionAndSyncService {
       throw e;
     } finally {
       await this.#webhookService.sendMessage(
-        'connection.delete',
+        'connection.deleted',
         {
           connection_id: id,
           customer_id: connection.customerId,
