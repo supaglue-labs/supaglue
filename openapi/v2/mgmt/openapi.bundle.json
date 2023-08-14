@@ -4857,6 +4857,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.create"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was created",
@@ -4876,6 +4881,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields"
@@ -4918,6 +4924,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.update"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was updated",
@@ -4964,6 +4975,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields",
@@ -5001,6 +5013,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.delete"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was deleted",
@@ -5013,6 +5030,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name"
                 ]
@@ -5049,6 +5067,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.undelete"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was undeleted",
@@ -5068,6 +5091,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields"
@@ -5111,6 +5135,10 @@
                   {
                     "type": "object",
                     "properties": {
+                      "webhook_event_type": {
+                        "type": "string",
+                        "example": "sync.complete"
+                      },
                       "connection_id": {
                         "type": "string",
                         "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5143,6 +5171,7 @@
                       }
                     },
                     "required": [
+                      "webhook_event_type",
                       "connection_id",
                       "customer_id",
                       "provider_name",
@@ -5224,6 +5253,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "connection.create",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -5233,6 +5263,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "connection.create"
+                  },
                   "customer_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5256,6 +5290,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "customer_id",
                   "provider_id",
                   "category",
@@ -5286,6 +5321,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "connection.delete",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -5295,6 +5331,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "connection.delete"
+                  },
                   "connection_id": {
                     "type": "string",
                     "example": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b"
@@ -5322,6 +5362,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "connection_id",
                   "customer_id",
                   "provider_id",
@@ -5353,6 +5394,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "entity_mapping.create",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -5365,6 +5407,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "entity_mapping.create"
+                  },
                   "entity_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5410,6 +5456,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "entity_id",
                   "application_id",
                   "connection_id",
@@ -5441,6 +5488,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "entity_mapping.update",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -5453,6 +5501,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "entity_mapping.update"
+                  },
                   "entity_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5498,6 +5550,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "entity_id",
                   "application_id",
                   "connection_id",
@@ -5529,6 +5582,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "entity_mapping.delete",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -5541,6 +5595,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "entity_mapping.delete"
+                  },
                   "entity_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5586,6 +5644,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "entity_id",
                   "application_id",
                   "connection_id",
@@ -5630,6 +5689,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "field_mapping.create"
+                  },
                   "connection_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5673,6 +5736,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "connection_id",
                   "application_id",
                   "customer_id",
@@ -5706,6 +5770,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "field_mapping.update",
                 "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
@@ -5719,6 +5784,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "field_mapping.update"
+                  },
                   "connection_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5762,6 +5831,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "connection_id",
                   "application_id",
                   "customer_id",
@@ -5806,6 +5876,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.create"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was created",
@@ -5825,6 +5900,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields"
@@ -5867,6 +5943,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.update"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was updated",
@@ -5913,6 +5994,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields",
@@ -5950,6 +6032,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.delete"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was deleted",
@@ -5962,6 +6049,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name"
                 ]
@@ -5998,6 +6086,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.undelete"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was undeleted",
@@ -6017,6 +6110,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields"
@@ -6060,6 +6154,10 @@
                   {
                     "type": "object",
                     "properties": {
+                      "webhook_event_type": {
+                        "type": "string",
+                        "example": "sync.complete"
+                      },
                       "connection_id": {
                         "type": "string",
                         "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -6092,6 +6190,7 @@
                       }
                     },
                     "required": [
+                      "webhook_event_type",
                       "connection_id",
                       "customer_id",
                       "provider_name",
@@ -6173,6 +6272,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "connection.create",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -6182,6 +6282,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "connection.create"
+                  },
                   "customer_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -6205,6 +6309,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "customer_id",
                   "provider_id",
                   "category",
@@ -6235,6 +6340,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "connection.delete",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -6244,6 +6350,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "connection.delete"
+                  },
                   "connection_id": {
                     "type": "string",
                     "example": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b"
@@ -6271,6 +6381,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "connection_id",
                   "customer_id",
                   "provider_id",
@@ -6302,6 +6413,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "entity_mapping.create",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -6314,6 +6426,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "entity_mapping.create"
+                  },
                   "entity_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -6359,6 +6475,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "entity_id",
                   "application_id",
                   "connection_id",
@@ -6390,6 +6507,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "entity_mapping.update",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -6402,6 +6520,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "entity_mapping.update"
+                  },
                   "entity_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -6447,6 +6569,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "entity_id",
                   "application_id",
                   "connection_id",
@@ -6478,6 +6601,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "entity_mapping.delete",
                 "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -6490,6 +6614,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "entity_mapping.delete"
+                  },
                   "entity_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -6535,6 +6663,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "entity_id",
                   "application_id",
                   "connection_id",
@@ -6579,6 +6708,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "field_mapping.create"
+                  },
                   "connection_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -6622,6 +6755,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "connection_id",
                   "application_id",
                   "customer_id",
@@ -6655,6 +6789,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "field_mapping.update",
                 "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
@@ -6668,6 +6803,10 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "example": "field_mapping.update"
+                  },
                   "connection_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -6711,6 +6850,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "connection_id",
                   "application_id",
                   "customer_id",

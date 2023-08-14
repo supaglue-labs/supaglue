@@ -19,6 +19,10 @@ post:
         schema:
           type: object
           properties:
+            webhook_event_type:
+              type: string
+              description: The type of webhook event
+              example: salesforce_cdc.create
             id:
               type: string
               description: The Salesforce ID of the record that was created
@@ -32,6 +36,7 @@ post:
               description: The fields that were set when the record was created
               example: { Name: 'Acme' }
           required:
+            - webhook_event_type
             - id
             - entity_name
             - fields

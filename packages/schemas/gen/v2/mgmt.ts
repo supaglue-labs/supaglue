@@ -2369,6 +2369,11 @@ export interface operations {
          */
         "application/json": {
           /**
+           * @description The type of webhook event 
+           * @example salesforce_cdc.create
+           */
+          webhook_event_type: string;
+          /**
            * @description The Salesforce ID of the record that was created 
            * @example 0011t00000B0G6uAAF
            */
@@ -2417,6 +2422,11 @@ export interface operations {
          * }
          */
         "application/json": {
+          /**
+           * @description The type of webhook event 
+           * @example salesforce_cdc.update
+           */
+          webhook_event_type: string;
           /**
            * @description The Salesforce ID of the record that was updated 
            * @example 0011t00000B0G6uAAF
@@ -2475,6 +2485,11 @@ export interface operations {
          */
         "application/json": {
           /**
+           * @description The type of webhook event 
+           * @example salesforce_cdc.delete
+           */
+          webhook_event_type: string;
+          /**
            * @description The Salesforce ID of the record that was deleted 
            * @example 0011t00000B0G6uAAF
            */
@@ -2511,6 +2526,11 @@ export interface operations {
          * }
          */
         "application/json": {
+          /**
+           * @description The type of webhook event 
+           * @example salesforce_cdc.undelete
+           */
+          webhook_event_type: string;
           /**
            * @description The Salesforce ID of the record that was undeleted 
            * @example 0011t00000B0G6uAAF
@@ -2557,6 +2577,8 @@ export interface operations {
          * }
          */
         "application/json": ({
+          /** @example sync.complete */
+          webhook_event_type: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2598,6 +2620,7 @@ export interface operations {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "connection.create",
          *   "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
          *   "category": "crm",
@@ -2606,6 +2629,8 @@ export interface operations {
          * }
          */
         "application/json": {
+          /** @example connection.create */
+          webhook_event_type: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           customer_id: string;
           /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
@@ -2631,6 +2656,7 @@ export interface operations {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "connection.delete",
          *   "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
          *   "category": "crm",
@@ -2639,6 +2665,8 @@ export interface operations {
          * }
          */
         "application/json": {
+          /** @example connection.delete */
+          webhook_event_type: string;
           /** @example 6b0abaf8-076d-48e7-9cdf-f12c68e86e2b */
           connection_id: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
@@ -2666,6 +2694,7 @@ export interface operations {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "entity_mapping.create",
          *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -2677,6 +2706,8 @@ export interface operations {
          * }
          */
         "application/json": {
+          /** @example entity_mapping.create */
+          webhook_event_type: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           entity_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2715,6 +2746,7 @@ export interface operations {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "entity_mapping.update",
          *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -2726,6 +2758,8 @@ export interface operations {
          * }
          */
         "application/json": {
+          /** @example entity_mapping.update */
+          webhook_event_type: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           entity_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2764,6 +2798,7 @@ export interface operations {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "entity_mapping.delete",
          *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
@@ -2775,6 +2810,8 @@ export interface operations {
          * }
          */
         "application/json": {
+          /** @example entity_mapping.delete */
+          webhook_event_type: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           entity_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2825,6 +2862,8 @@ export interface operations {
          * }
          */
         "application/json": {
+          /** @example field_mapping.create */
+          webhook_event_type: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2859,6 +2898,7 @@ export interface operations {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "field_mapping.update",
          *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
@@ -2871,6 +2911,8 @@ export interface operations {
          * }
          */
         "application/json": {
+          /** @example field_mapping.update */
+          webhook_event_type: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */

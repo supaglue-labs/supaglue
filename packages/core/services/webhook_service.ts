@@ -28,7 +28,7 @@ export class WebhookService {
 
   async sendMessage<T extends WebhookType>(
     eventType: T,
-    payload: WebhookPayloads[T],
+    payload: Omit<WebhookPayloads[T], 'webhook_event_type'>,
     applicationId: string,
     idempotencyKey?: string
   ) {
@@ -38,7 +38,11 @@ export class WebhookService {
     const application = await this.#applicationService.getById(applicationId);
     return await this.#svix.message.create(
       application.id,
-      { eventType, payload, application: { name: application.name, uid: application.id } },
+      {
+        eventType,
+        payload: { ...payload, webhook_event_type: eventType },
+        application: { name: application.name, uid: application.id },
+      },
       { idempotencyKey }
     );
   }

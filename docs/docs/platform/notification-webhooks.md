@@ -35,7 +35,15 @@ Configure webhook notifications via the Management Portal by navigating to **Set
 ## Event types
 
 - `sync.complete`
-- `connection.created`
+- `connection.create`
+- `connection.delete`
+- `field_mapping.create`
+- `field_mapping.update`
+- `entity_mapping.create`
+- `entity_mapping.update`
+- `entity_mapping.delete`
+
+You can retrieve the event type in the request payload from the key `webhook_event_type`.
 
 ## Timeout
 

@@ -22,6 +22,9 @@ post:
           allOf:
             - type: object
               properties:
+                webhook_event_type:
+                  type: string
+                  example: sync.complete
                 connection_id:
                   type: string
                   example: e30cbb93-5b05-4186-b6de-1acc10013795
@@ -45,6 +48,7 @@ post:
                   type: string
                   example: 'Error message'
               required:
+                - webhook_event_type
                 - connection_id
                 - customer_id
                 - provider_name

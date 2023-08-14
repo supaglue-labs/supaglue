@@ -9,6 +9,7 @@ post:
     content:
       application/json:
         example:
+          webhook_event_type: field_mapping.update
           connection_id: e30cbb93-5b05-4186-b6de-1acc10013795
           application_id: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
           customer_id: c7c5204a-61d3-44a7-b581-a1f29b239f89
@@ -21,6 +22,9 @@ post:
         schema:
           type: object
           properties:
+            webhook_event_type:
+              type: string
+              example: field_mapping.update
             connection_id:
               type: string
               example: e30cbb93-5b05-4186-b6de-1acc10013795
@@ -52,6 +56,7 @@ post:
               type: string
               example: 'Error message'
           required:
+            - webhook_event_type
             - connection_id
             - application_id
             - customer_id

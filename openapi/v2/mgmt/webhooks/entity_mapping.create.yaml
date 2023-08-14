@@ -9,6 +9,7 @@ post:
     content:
       application/json:
         example:
+          webhook_event_type: entity_mapping.create
           entity_id: e30cbb93-5b05-4186-b6de-1acc10013795
           application_id: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
           connection_id: a7052919-e024-4985-bd08-856056b66f59
@@ -20,6 +21,9 @@ post:
         schema:
           type: object
           properties:
+            webhook_event_type:
+              type: string
+              example: entity_mapping.create
             entity_id:
               type: string
               example: e30cbb93-5b05-4186-b6de-1acc10013795
@@ -53,6 +57,7 @@ post:
               type: string
               example: Error message
           required:
+            - webhook_event_type
             - entity_id
             - application_id
             - connection_id

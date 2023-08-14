@@ -17,6 +17,10 @@ post:
         schema:
           type: object
           properties:
+            webhook_event_type:
+              type: string
+              description: The type of webhook event
+              example: salesforce_cdc.delete
             id:
               type: string
               description: The Salesforce ID of the record that was deleted
@@ -26,6 +30,7 @@ post:
               description: The name of the Salesforce object that the record belongs to
               example: Account
           required:
+            - webhook_event_type
             - id
             - entity_name
 
