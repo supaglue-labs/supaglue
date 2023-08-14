@@ -339,6 +339,48 @@ export interface webhooks {
      */
     post: operations["connectionCreate"];
   };
+  "connection.delete": {
+    /**
+     * Customer connection deleted 
+     * @description Notification of the deletion of a connection for a customer
+     */
+    post: operations["connectionDelete"];
+  };
+  "entity_mapping.create": {
+    /**
+     * Entity mapping created 
+     * @description Notification of the creation of an entity mapping
+     */
+    post: operations["entityMappingCreate"];
+  };
+  "entity_mapping.update": {
+    /**
+     * Entity mapping updated 
+     * @description Notification of an update to an entity mapping
+     */
+    post: operations["entityMappingUpdate"];
+  };
+  "entity_mapping.delete": {
+    /**
+     * Entity mapping deleted 
+     * @description Notification of the deletion of an entity mapping
+     */
+    post: operations["entityMappingDelete"];
+  };
+  "field_mapping.create": {
+    /**
+     * Field mapping created 
+     * @description Notification of the creation of a field mapping
+     */
+    post: operations["fieldMappingCreate"];
+  };
+  "field_mapping.update": {
+    /**
+     * Field mapping updated 
+     * @description Notification of an update to a field mapping
+     */
+    post: operations["fieldMappingUpdate"];
+  };
 }
 
 export interface components {
@@ -2507,8 +2549,10 @@ export interface operations {
          *   "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "provider_name": "salesforce",
          *   "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+         *   "type": "object",
          *   "object_type": "standard",
          *   "object": "contact",
+         *   "result": "ERROR",
          *   "error_message": "Error message"
          * }
          */
@@ -2570,6 +2614,280 @@ export interface operations {
           provider_name: components["schemas"]["provider_name"];
           /** @enum {string} */
           result: "SUCCESS" | "ERROR";
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Customer connection deleted 
+   * @description Notification of the deletion of a connection for a customer
+   */
+  connectionDelete: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
+         *   "category": "crm",
+         *   "provider_name": "salesforce",
+         *   "result": "SUCCESS"
+         * }
+         */
+        "application/json": {
+          /** @example 6b0abaf8-076d-48e7-9cdf-f12c68e86e2b */
+          connection_id: string;
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          customer_id: string;
+          /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
+          provider_id: string;
+          category: components["schemas"]["category"];
+          provider_name: components["schemas"]["provider_name"];
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Entity mapping created 
+   * @description Notification of the creation of an entity mapping
+   */
+  entityMappingCreate: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+         *   "customer_id": "1a2b3c4d5e6f",
+         *   "provider_name": "salesforce",
+         *   "object_name": "opportunity",
+         *   "object_type": "standard",
+         *   "result": "SUCCESS"
+         * }
+         */
+        "application/json": {
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          entity_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example a7052919-e024-4985-bd08-856056b66f59 */
+          connection_id: string;
+          /** @example 1a2b3c4d5e6f */
+          customer_id: string;
+          /** @example salesforce */
+          provider_name: string;
+          /** @example opportunity */
+          object_name?: string;
+          /**
+           * @example standard 
+           * @enum {string}
+           */
+          object_type?: "standard" | "custom";
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Entity mapping updated 
+   * @description Notification of an update to an entity mapping
+   */
+  entityMappingUpdate: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+         *   "customer_id": "1a2b3c4d5e6f",
+         *   "provider_name": "salesforce",
+         *   "object_name": "opportunity",
+         *   "object_type": "standard",
+         *   "result": "SUCCESS"
+         * }
+         */
+        "application/json": {
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          entity_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example a7052919-e024-4985-bd08-856056b66f59 */
+          connection_id: string;
+          /** @example 1a2b3c4d5e6f */
+          customer_id: string;
+          /** @example salesforce */
+          provider_name: string;
+          /** @example opportunity */
+          object_name?: string;
+          /**
+           * @example standard 
+           * @enum {string}
+           */
+          object_type?: "standard" | "custom";
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Entity mapping deleted 
+   * @description Notification of the deletion of an entity mapping
+   */
+  entityMappingDelete: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+         *   "customer_id": "1a2b3c4d5e6f",
+         *   "provider_name": "salesforce",
+         *   "object_name": "opportunity",
+         *   "object_type": "standard",
+         *   "result": "SUCCESS"
+         * }
+         */
+        "application/json": {
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          entity_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example a7052919-e024-4985-bd08-856056b66f59 */
+          connection_id: string;
+          /** @example 1a2b3c4d5e6f */
+          customer_id: string;
+          /** @example salesforce */
+          provider_name: string;
+          /** @example opportunity */
+          object_name?: string;
+          /**
+           * @example standard 
+           * @enum {string}
+           */
+          object_type?: "standard" | "custom";
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Field mapping created 
+   * @description Notification of the creation of a field mapping
+   */
+  fieldMappingCreate: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
+         *   "provider_name": "salesforce",
+         *   "object_name": "Contact",
+         *   "object_type": "common",
+         *   "schema_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+         *   "result": "ERROR",
+         *   "error_message": "Error message"
+         * }
+         */
+        "application/json": {
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          connection_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example c7c5204a-61d3-44a7-b581-a1f29b239f89 */
+          customer_id: string;
+          provider_name: components["schemas"]["provider_name"];
+          /** @example Contact */
+          object_name: string;
+          /** @enum {string} */
+          object_type: "common" | "standard";
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          schema_id: string;
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Field mapping updated 
+   * @description Notification of an update to a field mapping
+   */
+  fieldMappingUpdate: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
+         *   "provider_name": "salesforce",
+         *   "object_name": "Contact",
+         *   "object_type": "common",
+         *   "schema_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+         *   "result": "ERROR",
+         *   "error_message": "Error message"
+         * }
+         */
+        "application/json": {
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          connection_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example c7c5204a-61d3-44a7-b581-a1f29b239f89 */
+          customer_id: string;
+          provider_name: components["schemas"]["provider_name"];
+          /** @example Contact */
+          object_name: string;
+          /** @enum {string} */
+          object_type: "common" | "standard";
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          schema_id: string;
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
         };
       };
     };

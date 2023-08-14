@@ -1,7 +1,7 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { WebhookPayloads, WebhookType } from '@supaglue/schemas/v2/mgmt';
-import type { Application } from '@supaglue/types';
 import { Svix } from 'svix';
+import type { ApplicationService } from './application_service';
 
 /**
  * WebhookService is a wrapper around Svix's API.
@@ -9,9 +9,11 @@ import { Svix } from 'svix';
 export class WebhookService {
   #prisma: PrismaClient;
   #svix: Svix | undefined;
+  #applicationService: ApplicationService;
 
-  constructor({ prisma }: { prisma: PrismaClient }) {
+  constructor({ prisma, applicationService }: { prisma: PrismaClient; applicationService: ApplicationService }) {
     this.#prisma = prisma;
+    this.#applicationService = applicationService;
     if (process.env.SVIX_API_TOKEN) {
       this.#svix = new Svix(process.env.SVIX_API_TOKEN, { serverUrl: process.env.SVIX_SERVER_URL });
     }
@@ -27,12 +29,13 @@ export class WebhookService {
   async sendMessage<T extends WebhookType>(
     eventType: T,
     payload: WebhookPayloads[T],
-    application: Application,
+    applicationId: string,
     idempotencyKey?: string
   ) {
     if (!this.#svix) {
       return;
     }
+    const application = await this.#applicationService.getById(applicationId);
     return await this.#svix.message.create(
       application.id,
       { eventType, payload, application: { name: application.name, uid: application.id } },

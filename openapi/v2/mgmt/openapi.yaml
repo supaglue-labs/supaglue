@@ -248,4 +248,16 @@ x-webhooks: &x-webhooks
     $ref: ./webhooks/sync.complete.yaml
   connection.create:
     $ref: ./webhooks/connection.create.yaml
+  connection.delete:
+    $ref: ./webhooks/connection.delete.yaml
+  entity_mapping.create:
+    $ref: ./webhooks/entity_mapping.create.yaml
+  entity_mapping.update:
+    $ref: ./webhooks/entity_mapping.update.yaml
+  entity_mapping.delete:
+    $ref: ./webhooks/entity_mapping.delete.yaml
+  field_mapping.create:
+    $ref: ./webhooks/field_mapping.create.yaml
+  field_mapping.update:
+    $ref: ./webhooks/field_mapping.update.yaml
 webhooks: *x-webhooks

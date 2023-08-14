@@ -13,8 +13,10 @@ post:
           customer_id: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
           provider_name: salesforce
           history_id: 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d
+          type: object
           object_type: standard
           object: contact
+          result: ERROR
           error_message: 'Error message'
         schema:
           allOf:

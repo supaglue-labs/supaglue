@@ -1,0 +1,66 @@
+post:
+  summary: Field mapping updated
+  description: Notification of an update to a field mapping
+  operationId: fieldMappingUpdate
+  x-event-type: field_mapping.update
+  tags:
+    - Webhook Events
+  requestBody:
+    content:
+      application/json:
+        example:
+          connection_id: e30cbb93-5b05-4186-b6de-1acc10013795
+          application_id: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
+          customer_id: c7c5204a-61d3-44a7-b581-a1f29b239f89
+          provider_name: salesforce
+          object_name: Contact
+          object_type: common
+          schema_id: 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d
+          result: ERROR
+          error_message: 'Error message'
+        schema:
+          type: object
+          properties:
+            connection_id:
+              type: string
+              example: e30cbb93-5b05-4186-b6de-1acc10013795
+            application_id:
+              type: string
+              example: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
+            customer_id:
+              type: string
+              example: c7c5204a-61d3-44a7-b581-a1f29b239f89
+            provider_name:
+              $ref: '../components/schemas/objects/provider_name.yaml'
+            object_name:
+              type: string
+              example: Contact
+            object_type:
+              type: string
+              enum:
+                - common
+                - standard
+            schema_id:
+              type: string
+              example: 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d
+            result:
+              type: string
+              enum:
+                - SUCCESS
+                - ERROR
+            error_message:
+              type: string
+              example: 'Error message'
+          required:
+            - connection_id
+            - application_id
+            - customer_id
+            - provider_name
+            - object_name
+            - object_type
+            - schema_id
+            - result
+
+  responses:
+    '200':
+      description: Return a 200 status to indicate that the data was received successfully

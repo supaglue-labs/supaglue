@@ -36,8 +36,6 @@ export function createMaybeSendSyncFinishWebhook({
     const { connectionId } = args;
     const connection = await connectionService.getSafeById(connectionId);
     const provider = await providerService.getById(connection.providerId);
-    const application = await applicationService.getById(provider.applicationId);
-    const { config } = application;
 
     const { status, ...argsWithoutStatus } = args;
 
@@ -51,11 +49,13 @@ export function createMaybeSendSyncFinishWebhook({
         }),
         result: status === 'SYNC_SUCCESS' ? 'SUCCESS' : 'ERROR',
       },
-      application,
+      provider.applicationId,
       args.historyId
     );
 
     // TODO remove this after all customers migrate to the svix webhooks
+    const application = await applicationService.getById(provider.applicationId);
+    const { config } = application;
     if (config.webhook) {
       await maybeSendWebhookPayload(config.webhook, status, {
         customerId: connection.customerId,

@@ -7,7 +7,7 @@ post:
   operationId: salesforceCdcUndelete
   x-event-type: salesforce_cdc.undelete
   tags:
-    - Webhook Events
+    - Salesforce CDC Events (beta)
   requestBody:
     content:
       application/json:

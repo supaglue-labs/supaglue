@@ -1,0 +1,47 @@
+post:
+  summary: Customer connection deleted
+  description: Notification of the deletion of a connection for a customer
+  operationId: connectionDelete
+  x-event-type: connection.delete
+  tags:
+    - Webhook Events
+  requestBody:
+    content:
+      application/json:
+        example:
+          customer_id: e30cbb93-5b05-4186-b6de-1acc10013795
+          provider_id: 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024
+          category: crm
+          provider_name: salesforce
+          result: SUCCESS
+        schema:
+          type: object
+          properties:
+            connection_id:
+              type: string
+              example: 6b0abaf8-076d-48e7-9cdf-f12c68e86e2b
+            customer_id:
+              type: string
+              example: e30cbb93-5b05-4186-b6de-1acc10013795
+            provider_id:
+              type: string
+              example: 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024
+            category:
+              $ref: '../components/schemas/objects/category.yaml'
+            provider_name:
+              $ref: '../components/schemas/objects/provider_name.yaml'
+            result:
+              type: string
+              enum:
+                - SUCCESS
+                - ERROR
+          required:
+            - connection_id
+            - customer_id
+            - provider_id
+            - category
+            - provider_name
+            - result
+  responses:
+    '200':
+      description: Return a 200 status to indicate that the data was received successfully

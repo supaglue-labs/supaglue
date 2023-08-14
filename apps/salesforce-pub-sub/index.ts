@@ -22,8 +22,6 @@ const { connectionService, providerService, webhookService, applicationService }
   const connections = await connectionService.listAllUnsafe({ providerName: 'salesforce' });
 
   for (const connection of connections) {
-    const application = await applicationService.getById(connection.applicationId);
-
     const {
       credentials: { instanceUrl, refreshToken, loginUrl = 'https://login.salesforce.com' },
       id: connectionId,
@@ -167,7 +165,12 @@ const { connectionService, providerService, webhookService, applicationService }
             { deep: false }
           );
 
-          await webhookService.sendMessage(eventName, webhookPayload, application, `${transactionKey}-${recordId}`);
+          await webhookService.sendMessage(
+            eventName,
+            webhookPayload,
+            connection.applicationId,
+            `${transactionKey}-${recordId}`
+          );
 
           logger.debug(
             {
