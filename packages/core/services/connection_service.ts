@@ -137,6 +137,18 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connections[0]);
   }
 
+  public async listSafeByCustomer(applicationId: string, customerId: string): Promise<ConnectionSafeAny[]> {
+    const connections = await this.#prisma.connection.findMany({
+      where: { provider: { applicationId }, customerId },
+      orderBy: {
+        provider: {
+          name: 'asc',
+        },
+      },
+    });
+    return connections.map(fromConnectionModelToConnectionSafe);
+  }
+
   public async listSafe(
     applicationId: string,
     customerId?: string,

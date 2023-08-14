@@ -19,6 +19,7 @@ import type {
   GetProviderUserIdRequest,
   GetProviderUserIdResponse,
 } from '@supaglue/schemas/v2/mgmt';
+import { camelcaseKeys } from '@supaglue/utils';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
@@ -35,7 +36,7 @@ export default function init(app: Router): void {
       res: Response<GetConnectionsResponse>
     ) => {
       const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
-      const connections = await connectionService.listSafe(req.supaglueApplication.id, customerId);
+      const connections = await connectionService.listSafeByCustomer(req.supaglueApplication.id, customerId);
       return res.status(200).send(connections.map(snakecaseKeys));
     }
   );
@@ -76,26 +77,12 @@ export default function init(app: Router): void {
       req: Request<CreateConnectionPathParams, CreateConnectionResponse, CreateConnectionRequest>,
       res: Response<CreateConnectionResponse>
     ) => {
-      if (req.body.api_key) {
-        const connection = await connectionAndSyncService.createFromApiKey(
-          req.supaglueApplication.id,
-          req.params.customer_id,
-          req.body.provider_name,
-          req.body.api_key
-        );
-        return res.status(200).send(snakecaseKeys(connection));
-      }
-      if (req.body.access_key && req.body.access_key_secret) {
-        const connection = await connectionAndSyncService.createFromAccessKeySecret(
-          req.supaglueApplication.id,
-          req.params.customer_id,
-          req.body.provider_name,
-          req.body.access_key,
-          req.body.access_key_secret
-        );
-        return res.status(200).send(snakecaseKeys(connection));
-      }
-      throw new BadRequestError('Invalid connection type');
+      const connection = await connectionAndSyncService.createManually(
+        req.supaglueApplication.id,
+        req.params.customer_id,
+        camelcaseKeys(req.body)
+      );
+      return res.status(200).send(snakecaseKeys(connection));
     }
   );
 

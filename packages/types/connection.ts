@@ -21,25 +21,53 @@ export type OauthConnectionCredentialsDecrypted = {
   expiresAt: string | null; // null means unknown expiry time
 };
 
-export type ConnectionCredentialsDecrypted<T extends ProviderName> = (T extends 'apollo'
-  ? ApiKeyConnectionCredentialsDecrypted
-  : T extends 'gong'
-  ? AccessKeySecretConnectionCredentialsDecrypted | OauthConnectionCredentialsDecrypted
-  : OauthConnectionCredentialsDecrypted) &
-  (T extends 'salesforce'
-    ? {
-        instanceUrl: string;
-        loginUrl?: string;
-      }
-    : T extends 'pipedrive'
-    ? {
-        instanceUrl: string;
-      }
-    : T extends 'ms_dynamics_365_sales'
-    ? {
-        instanceUrl: string;
-      }
-    : object);
+export type ImportedConnectionCredentials =
+  | {
+      providerName: 'salesforce';
+      type: 'oauth2';
+      refreshToken: string;
+      instanceUrl: string;
+      loginUrl?: string;
+    }
+  | {
+      providerName: 'hubspot';
+      type: 'oauth2';
+      refreshToken: string;
+    }
+  | {
+      providerName: 'apollo';
+      type: 'api_key';
+      apiKey: string;
+    }
+  | {
+      providerName: 'gong';
+      type: 'access_key_secret';
+      accessKey: string;
+      accessKeySecret: string;
+    };
+
+export type ConnectionCredentialsDecrypted<T extends ProviderName> = {
+  salesforce: OauthConnectionCredentialsDecrypted & {
+    instanceUrl: string;
+    loginUrl?: string;
+  };
+  hubspot: OauthConnectionCredentialsDecrypted;
+  pipedrive: OauthConnectionCredentialsDecrypted & {
+    instanceUrl: string;
+  };
+  zendesk_sell: OauthConnectionCredentialsDecrypted;
+  ms_dynamics_365_sales: OauthConnectionCredentialsDecrypted & {
+    instanceUrl: string;
+  };
+  zoho_crm: OauthConnectionCredentialsDecrypted;
+  capsule: OauthConnectionCredentialsDecrypted;
+  outreach: OauthConnectionCredentialsDecrypted;
+  apollo: ApiKeyConnectionCredentialsDecrypted;
+  salesloft: OauthConnectionCredentialsDecrypted;
+  gong: AccessKeySecretConnectionCredentialsDecrypted | OauthConnectionCredentialsDecrypted;
+  intercom: OauthConnectionCredentialsDecrypted;
+  linear: OauthConnectionCredentialsDecrypted;
+}[T];
 
 export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;
 

@@ -85,22 +85,19 @@ export class MagicLinkService {
     if (magicLink.status !== 'new') {
       throw new BadRequestError(`Magic link with id: ${id} has already been consumed`);
     }
-    if (params?.type === 'api_key') {
-      await this.#connectionAndSyncService.createFromApiKey(
-        magicLink.applicationId,
-        magicLink.customerId,
-        magicLink.providerName,
-        params.apiKey
-      );
-    }
-    if (params?.type === 'access_key_secret') {
-      await this.#connectionAndSyncService.createFromAccessKeySecret(
-        magicLink.applicationId,
-        magicLink.customerId,
-        magicLink.providerName,
-        params.accessKey,
-        params.accessKeySecret
-      );
+    if (magicLink.providerName === 'apollo' && params?.type === 'api_key') {
+      await this.#connectionAndSyncService.createManually(magicLink.applicationId, magicLink.customerId, {
+        providerName: 'apollo',
+        type: 'api_key',
+        apiKey: params.apiKey,
+      });
+    } else if (magicLink.providerName === 'gong' && params?.type === 'access_key_secret') {
+      await this.#connectionAndSyncService.createManually(magicLink.applicationId, magicLink.customerId, {
+        providerName: 'gong',
+        type: 'access_key_secret',
+        accessKey: params.accessKey,
+        accessKeySecret: params.accessKeySecret,
+      });
     }
     const updatedMagicLink = await this.#prisma.magicLink.update({
       where: { id },

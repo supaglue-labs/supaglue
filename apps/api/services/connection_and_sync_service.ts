@@ -1,3 +1,4 @@
+import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError, NotFoundError } from '@supaglue/core/errors';
 import { logger, maybeSendWebhookPayload } from '@supaglue/core/lib';
 import { encrypt } from '@supaglue/core/lib/crypt';
@@ -22,6 +23,7 @@ import type {
   ConnectionStatus,
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
+  ImportedConnectionCredentials,
 } from '@supaglue/types/connection';
 import type { Sync } from '@supaglue/types/sync';
 import { snakecaseKeys } from '@supaglue/utils';
@@ -155,56 +157,110 @@ export class ConnectionAndSyncService {
     return fromConnectionModelToConnectionUnsafe<ProviderName>(connection);
   }
 
-  public async createFromApiKey(
+  public async createManually(
     applicationId: string,
     customerId: string,
-    providerName: ProviderName,
-    apiKey: string
+    importedCredentials: ImportedConnectionCredentials
   ): Promise<ConnectionSafeAny> {
-    if (providerName !== 'apollo') {
-      throw new BadRequestError(`Operation not supported for ${providerName}`);
-    }
-    const provider = await this.#providerService.getByNameAndApplicationId(providerName, applicationId);
-    const params: ConnectionCreateParams<'apollo'> = {
-      applicationId,
-      providerName,
-      providerId: provider.id,
-      category: 'engagement',
-      customerId,
-      credentials: {
-        type: 'api_key',
-        apiKey,
-      },
-      instanceUrl: '',
-    };
-    return await this.create(params);
-  }
+    // TODO: Delegate this logic to each remote to implement instead
+    // of doing it in ConnectionAndSyncService.
+    const provider = await this.#providerService.getByNameAndApplicationId(
+      importedCredentials.providerName,
+      applicationId
+    );
 
-  public async createFromAccessKeySecret(
-    applicationId: string,
-    customerId: string,
-    providerName: ProviderName,
-    accessKey: string,
-    accessKeySecret: string
-  ): Promise<ConnectionSafeAny> {
-    if (providerName !== 'gong') {
-      throw new BadRequestError(`Operation not supported for ${providerName}`);
+    switch (importedCredentials.providerName) {
+      case 'apollo': {
+        const params: ConnectionCreateParams<'apollo'> = {
+          applicationId,
+          providerName: importedCredentials.providerName,
+          providerId: provider.id,
+          category: 'engagement',
+          customerId,
+          credentials: {
+            type: importedCredentials.type,
+            apiKey: importedCredentials.apiKey,
+          },
+          instanceUrl: '',
+        };
+        return await this.create(params);
+      }
+      case 'gong': {
+        const params: ConnectionCreateParams<'gong'> = {
+          applicationId,
+          providerName: importedCredentials.providerName,
+          providerId: provider.id,
+          category: 'no_category',
+          customerId,
+          credentials: {
+            type: importedCredentials.type,
+            accessKey: importedCredentials.accessKey,
+            accessKeySecret: importedCredentials.accessKeySecret,
+          },
+          instanceUrl: '',
+        };
+        return await this.create(params);
+      }
+      case 'salesforce': {
+        // TODO: actually fetch an access token and store it
+        const params: ConnectionCreateParams<'salesforce'> = {
+          applicationId,
+          providerName: importedCredentials.providerName,
+          providerId: provider.id,
+          category: 'crm',
+          customerId,
+          credentials: {
+            type: importedCredentials.type,
+            refreshToken: importedCredentials.refreshToken,
+            // TODO: we should not require access token if you have refresh token
+            accessToken: '',
+            expiresAt: null,
+            instanceUrl: importedCredentials.instanceUrl,
+            loginUrl: importedCredentials.loginUrl,
+          },
+          instanceUrl: importedCredentials.instanceUrl,
+        };
+        return await this.create(params);
+      }
+      case 'hubspot': {
+        if (provider.name !== 'hubspot') {
+          throw new BadRequestError(`Provider name ${provider.name} does not match credentials provider name`);
+        }
+
+        // Fetch access token, expiry, hub id and other info
+        const client = new HubspotClient();
+        const token = await client.oauth.tokensApi.create(
+          'refresh_token',
+          undefined,
+          undefined,
+          provider.config.oauth.credentials.oauthClientId,
+          provider.config.oauth.credentials.oauthClientSecret,
+          importedCredentials.refreshToken
+        );
+        const newAccessToken = token.accessToken;
+        const newRefreshToken = token.refreshToken;
+        const expiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
+
+        const { hubId } = await client.oauth.accessTokensApi.get(newAccessToken);
+        const instanceUrl = `https://app.hubspot.com/contacts/${hubId.toString()}`;
+
+        const params: ConnectionCreateParams<'hubspot'> = {
+          applicationId,
+          providerName: importedCredentials.providerName,
+          providerId: provider.id,
+          category: 'crm',
+          customerId,
+          credentials: {
+            type: importedCredentials.type,
+            refreshToken: newRefreshToken,
+            accessToken: newAccessToken,
+            expiresAt,
+          },
+          instanceUrl,
+        };
+        return await this.create(params);
+      }
     }
-    const provider = await this.#providerService.getByNameAndApplicationId(providerName, applicationId);
-    const params: ConnectionCreateParams<'gong'> = {
-      applicationId,
-      providerName,
-      providerId: provider.id,
-      category: 'no_category',
-      customerId,
-      credentials: {
-        type: 'access_key_secret',
-        accessKey,
-        accessKeySecret,
-      },
-      instanceUrl: '',
-    };
-    return await this.create(params);
   }
 
   public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
