@@ -18,6 +18,7 @@ import type { CRMProviderName } from '@supaglue/types/crm';
 import type { ConnectionEntityMapping, MergedEntityMapping } from '@supaglue/types/entity_mapping';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
+import retry from 'async-retry';
 import type { ProviderService, SchemaService } from '.';
 import { BadRequestError, NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
@@ -367,16 +368,18 @@ export class ConnectionService {
       expiresAt,
     };
 
-    const updatedConnection = await this.#prisma.connection.update({
-      where: {
-        id: connectionId,
-      },
-      data: {
-        credentials: await encrypt(JSON.stringify(newCredentials)),
-      },
-    });
-
-    return fromConnectionModelToConnectionSafe(updatedConnection);
+    const helper = async () => {
+      const updatedConnection = await this.#prisma.connection.update({
+        where: {
+          id: connectionId,
+        },
+        data: {
+          credentials: await encrypt(JSON.stringify(newCredentials)),
+        },
+      });
+      return fromConnectionModelToConnectionSafe(updatedConnection);
+    };
+    return await retry(helper, { retries: 5 });
   }
 
   public async listMergedEntityMappings(connectionId: string): Promise<MergedEntityMapping[]> {
