@@ -29,7 +29,7 @@ Your application data models are called [Entities](../platform/entities/overview
 
 Let's call our "contact" Entity, `apolla_contact`, and we want three fields on it: `first_name`, `last_name`, and `address`.
 
-Navigate to **Configuration --> Entities** to define it in the Management Portal. Enter the "Name" and "Fields" as shown below.
+Navigate to **Data Model --> Entities** to define it in the Management Portal. Enter the "Name" and "Fields" as shown below.
 
 <ThemedImage
 alt="entity tutorial configuration"
@@ -42,7 +42,7 @@ sources={{
 
 ## Associate the Entity for syncs
 
-To use the Entity for [Managed Syncs](../integration-patterns/managed-syncs), navigate to **Configuration --> Sync Configs**, where you should have already defined one for Hubspot and Salesforce.
+To use the Entity for [Managed Syncs](../integration-patterns/managed-syncs), navigate to **Syncs --> Sync Configs**, where you should have already defined one for Hubspot and Salesforce.
 
 <ThemedImage
 alt="entity tutorial sync config"

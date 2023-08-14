@@ -1,7 +1,7 @@
 export async function getServerSideProps() {
   return {
     redirect: {
-      destination: './syncs/syncs',
+      destination: './data_model/entities',
       permanent: false,
     },
   };

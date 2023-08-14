@@ -6,7 +6,7 @@ import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { toGetEntitiesResponse, useEntities } from '@/hooks/useEntities';
 import { useProviders } from '@/hooks/useProviders';
 import { PeopleAltOutlined } from '@mui/icons-material';
-import { Breadcrumbs, Button, Stack, Typography } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { Provider } from '@supaglue/types';
@@ -31,7 +31,7 @@ export default function EntityListPanel() {
       renderCell: (params) => {
         return (
           <Link
-            href={`/applications/${applicationId}/configuration/entities/${params.row.id}`}
+            href={`/applications/${applicationId}/data_model/entities/${params.row.id}`}
             className="flex flex-row gap-2 items-center w-full h-full whitespace-normal break-all"
             style={{
               textDecoration: 'none',
@@ -64,7 +64,7 @@ export default function EntityListPanel() {
               return objects.map((object) => {
                 return (
                   <Link
-                    href={`/applications/${applicationId}/configuration/providers/${provider.category}/${provider.name}`}
+                    href={`/applications/${applicationId}/data_model/providers/${provider.category}/${provider.name}`}
                     className="flex flex-row gap-2 items-center w-full h-full whitespace-normal"
                   >
                     {object}
@@ -107,12 +107,6 @@ export default function EntityListPanel() {
 
   return (
     <div className="flex flex-col gap-4">
-      <Breadcrumbs>
-        <Link color="inherit" href={`/applications/${applicationId}`}>
-          Home
-        </Link>
-        <Typography color="text.primary">Entities</Typography>
-      </Breadcrumbs>
       <MetricCard
         icon={<PeopleAltOutlined />}
         className="w-[calc(100vw-26rem)]"
@@ -123,7 +117,7 @@ export default function EntityListPanel() {
             </div>
             <div className="p-1">
               <Link
-                href={`/applications/${applicationId}/configuration/entities/new`}
+                href={`/applications/${applicationId}/data_model/entities/new`}
                 className="flex flex-row gap-2 items-center w-full h-full"
                 style={{
                   textDecoration: 'inherit',

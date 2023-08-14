@@ -34,9 +34,9 @@ Sync Standard Objects to your Destination using Managed Syncs.
 
 #### Configuration
 
-Use the **Configuration --> Sync Configs** page in the Management Portal to specify the Standard Objects you wish to sync to your Destination.
+Use the **Syncs --> Sync Configs** page in the Management Portal to specify the Standard Objects you wish to sync to your Destination.
 
-<BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/providers/crm/salesforce">
+<BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/syncs/sync_configs/new">
 
 ![image](/img/standard-object-sync-config.png)
 
@@ -86,9 +86,9 @@ Sync Custom Objects to your Destination using Managed Syncs.
 
 #### Configuration
 
-Use the **Configuration --> Sync Configs** page in the Management Portal to specify the Custom Objects you wish to sync to your Destination.
+Use the **Syncs --> Sync Configs** page in the Management Portal to specify the Custom Objects you wish to sync to your Destination.
 
-<BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/providers/crm/salesforce">
+<BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/syncs/sync_configs/new">
 
 ![image](/img/custom-object-sync-config.png)
 
@@ -143,7 +143,7 @@ Use **[Entities](../entities/overview)** instead to map multiple Provider object
 
 ### 1. Subset of fields
 
-To sync a subset of fields, first create a Schema. Go to **Configuration --> Schemas**.
+To sync a subset of fields, first create a Schema. Go to **Data Model --> Schemas**.
 
 Then list out the fields you wish to sync. On the left side, specify the field names written to your Destination. On the right side, map the corresponding fields in your Provider.
 
@@ -181,7 +181,7 @@ The JSON for the Schema above looks like the following:
 
 Finally, associate the Schema with its corresponding Provider:
 
-- Go to **Configuration --> Providers**.
+- Go to **Connectors --> Providers**.
 - Click on the appropriate Provider (Salesforce for example).
 - Click "Standard Object" to find the appropriate object in Salesforce (`Contact` for our example).
 - Associate it with the Schema that we created above.

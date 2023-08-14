@@ -23,7 +23,7 @@ Common schema differs from [Entities](../entities/overview): With Entities, you,
 
 ## Syncing
 
-In the Management Portal, go to **Configuration --> Sync Config**. Under `Common Objects`, select the objects you want to be synced from `user`, `lead`, `contact`, `account`, or `opportunity`.
+In the Management Portal, go to **Syncs --> Sync Config**. Under `Common Objects`, select the objects you want to be synced from `user`, `lead`, `contact`, `account`, or `opportunity`.
 
 <ThemedImage
 alt="common object sync config"

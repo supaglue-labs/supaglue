@@ -1,3 +1,4 @@
+import { SupaglueHead } from '@/components/SupaglueHead';
 import { NotificationManager } from '@/context/notification';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
@@ -291,6 +292,7 @@ function InnerApp({ signedIn, children }: { signedIn: boolean; children: ReactNo
           <Navigator PaperProps={{ style: { width: drawerWidth } }} sx={{ display: { sm: 'block', xs: 'none' } }} />
         </Box>
       )}
+      <SupaglueHead />
       {children}
     </Box>
   );

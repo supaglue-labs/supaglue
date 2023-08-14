@@ -54,7 +54,7 @@ Think about the following questions before you start defining Entities:
 
 You can create and update Entities through the Management Portal and Management API.
 
-Use the **Configuration --> Entities** page in the Management Portal to define Entities.
+Use the **Data Model --> Entities** page in the Management Portal to define Entities.
 
 <ThemedImage
   alt="entity sync config"
@@ -189,7 +189,7 @@ You can sync Entities after defining them and their Entity Mappings.
 
 ### Configuration
 
-Use the **Configuration --> Sync Configs** page in the Management Portal to specify the Entities to sync to your Destination.
+Use the **Syncs --> Sync Configs** page in the Management Portal to specify the Entities to sync to your Destination.
 
 <ThemedImage
 alt="entity sync config"
@@ -250,7 +250,7 @@ You can write Entities after defining them and their Entity Mappings.
 
 ### Configuration
 
-Use the **Configuration --> Provider** page in the Management Portal to map your Entities to Providers. Use the [Action API endpoints](../../api/v2/actions/entity-records) to write to them.
+Use the **Connectors --> Provider** page in the Management Portal to map your Entities to Providers. Use the [Action API endpoints](../../api/v2/actions/entity-records) to write to them.
 
 Writing to an Entity Action API endpoint will call the appropriate Provider endpoint based on configured Entity Mappings.
 
