@@ -67,7 +67,7 @@ app.listen(8080);
 
 ```
 
-Another important aspect of handling webhooks is to verify the signature and timestamp when processing them. You can learn more about it in the [webhook security](#webhook-security) section.
+Another important aspect of handling webhooks is to verify the signature and timestamp when processing them. You can learn more about it in the [webhook security](../platform/notification-webhooks#webhook-security) section.
 
 ### 2. Subscribe to the webhook events
 
@@ -133,9 +133,9 @@ const supaglueEventsQueue = new Queue('supaglueEventsQueue');
 const app = express();
 
 app.get('/webhooks', async (req: Request, res: Response) {
-    const eventType = req.headers.get('x-event-type');
+    const supaglueEvent = JSON.parse(req.body);
 
-    supaglueEventsQueue.add(eventType, { data: JSON.stringify(req.body) })
+    supaglueEventsQueue.add(supaglueEvent.webhook_event_type, { data: req.body })
 
     return res.status(200).send();
 })
@@ -143,6 +143,26 @@ app.get('/webhooks', async (req: Request, res: Response) {
 app.listen(8080);
 
 ```
+
+The shape of the `sync.completed` event looks like the following:
+
+```json
+{
+  "webhook_event_type": "sync.completed",
+  "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+  "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+  "provider_name": "hubspot",
+  "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+  "result": "SUCCESS",
+  "num_records_synced": 100,
+  "error_message": "Error message",
+  "type": "object",
+  "object_type": "common",
+  "object": "contact"
+}
+```
+
+You can view the other events in our [Management Portal API Reference](../api/v2/mgmt/management-api)
 
 Several popular queue or message broker technologies include the following:
 
@@ -154,15 +174,3 @@ Several popular queue or message broker technologies include the following:
 - GCP Cloud Tasks
 - GCP PubSub
 - ...
-
-## Webhook security
-
-Because of the way webhooks work, attackers can impersonate services by simply sending a fake webhook to an endpoint. Think about it: it's just an HTTP POST from an unknown source. This is a potential security hole for many applications, or at the very least, a source of problems.
-
-To prevent it, Supaglue signs every webhook and its metadata with a unique key for each endpoint. This signature can then be used to verify the webhook indeed comes from Supaglue, and only process it if it is.
-
-Another potential security hole is what's called replay attacks. A [replay attack](https://en.wikipedia.org/wiki/Replay_attack) is when an attacker intercepts a valid payload (including the signature), and re-transmits it to your endpoint. This payload will pass signature validation, and will therefore be acted upon.
-
-To mitigate this attack, Supaglue includes a timestamp for when the webhook attempt occurred. Our libraries automatically reject webhooks with a timestamp that are more than five minutes away (past or future) from the current time. This requires your server's clock to be synchronised and accurate, and it's recommended that you use [NTP](https://en.wikipedia.org/wiki/Network_Time_Protocol) to achieve this.
-
-Supaglue uses an underlying webhook framework called Svix. Look more about how to validate the signature of webhook events in their [docs here](https://docs.svix.com/receiving/verifying-payloads/how).
