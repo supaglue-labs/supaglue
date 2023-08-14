@@ -34,60 +34,22 @@ export type ProviderCardInfo = {
 
 export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
   {
-    name: 'Salesforce',
-    providerName: 'salesforce',
-    category: 'crm',
-    description: 'Configure your Salesforce provider.',
+    name: '6sense',
+    providerName: 'six_sense',
+    category: 'enrichment',
+    description: 'Configure your 6sense provider.',
   },
   {
-    name: 'HubSpot',
-    providerName: 'hubspot',
-    category: 'crm',
-    description: 'Configure your HubSpot provider.',
-  },
-  {
-    name: 'Pipedrive',
-    providerName: 'pipedrive',
-    category: 'crm',
-    description: 'Configure your Pipedrive provider.',
-  },
-  {
-    name: 'Microsoft Dynamics 365 Sales',
-    providerName: 'ms_dynamics_365_sales',
-    category: 'crm',
-    description: 'Configure your MS Dynamics 365 Sales provider.',
-  },
-  {
-    name: 'Outreach',
-    providerName: 'outreach',
-    category: 'engagement',
-    description: 'Configure your Outreach provider.',
-  },
-  {
-    name: 'Gong',
-    providerName: 'gong',
-    displayCategory: 'engagement',
-    category: 'no_category',
-    description: 'Configure your Gong provider.',
+    name: 'Amplitude',
+    providerName: 'amplitude',
+    category: 'analytics',
+    description: 'Configure your Amplitude provider.',
   },
   {
     name: 'Apollo',
     providerName: 'apollo',
     category: 'engagement',
     description: 'Configure your Apollo provider.',
-  },
-  {
-    name: 'Salesloft',
-    providerName: 'salesloft',
-    category: 'engagement',
-    description: 'Configure your Salesloft provider.',
-  },
-  {
-    name: 'Intercom',
-    providerName: 'intercom',
-    displayCategory: 'ticketing',
-    category: 'no_category',
-    description: 'Configure your Intercom provider.',
   },
   {
     name: 'Asana',
@@ -102,6 +64,18 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
     description: 'Configure your Box provider.',
   },
   {
+    name: 'Chargebee',
+    providerName: 'chargebee',
+    category: 'billing',
+    description: 'Configure your Chargebee provider.',
+  },
+  {
+    name: 'Clearbit',
+    providerName: 'clearbit',
+    category: 'enrichment',
+    description: 'Configure your Clearbit provider.',
+  },
+  {
     name: 'Dropbox',
     providerName: 'dropbox',
     category: 'file storage',
@@ -113,7 +87,19 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
     category: 'email',
     description: 'Configure your Gmail provider.',
   },
-
+  {
+    name: 'Gong',
+    providerName: 'gong',
+    displayCategory: 'engagement',
+    category: 'no_category',
+    description: 'Configure your Gong provider.',
+  },
+  {
+    name: 'Google Analytics',
+    providerName: 'google_analytics',
+    category: 'analytics',
+    description: 'Configure your Google Analytics provider.',
+  },
   {
     name: 'Google Calendar',
     providerName: 'google_calendar',
@@ -126,7 +112,26 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
     category: 'file storage',
     description: 'Configure your Google Drive provider.',
   },
-
+  {
+    name: 'HubSpot',
+    providerName: 'hubspot',
+    category: 'crm',
+    description: 'Configure your HubSpot provider.',
+  },
+  {
+    name: 'Intercom',
+    providerName: 'intercom',
+    displayCategory: 'ticketing',
+    category: 'no_category',
+    description: 'Configure your Intercom provider.',
+  },
+  {
+    name: 'Linear',
+    providerName: 'linear',
+    displayCategory: 'ticketing',
+    category: 'no_category',
+    description: 'Configure your Linear provider.',
+  },
   {
     name: 'LinkedIn',
     providerName: 'linkedin',
@@ -146,6 +151,24 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
     description: 'Configure your Messenger provider.',
   },
   {
+    name: 'Mixpanel',
+    providerName: 'mixpanel',
+    category: 'analytics',
+    description: 'Configure your Mixpanel provider.',
+  },
+  {
+    name: 'Microsoft Dynamics 365 Sales',
+    providerName: 'ms_dynamics_365_sales',
+    category: 'crm',
+    description: 'Configure your MS Dynamics 365 Sales provider.',
+  },
+  {
+    name: 'Microsoft Teams',
+    providerName: 'ms_teams',
+    category: 'communications',
+    description: 'Configure your Microsoft Teams provider.',
+  },
+  {
     name: 'OneDrive',
     providerName: 'onedrive',
     category: 'file storage',
@@ -158,10 +181,40 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
     description: 'Configure your Outlook provider.',
   },
   {
+    name: 'Outreach',
+    providerName: 'outreach',
+    category: 'engagement',
+    description: 'Configure your Outreach provider.',
+  },
+  {
     name: 'Pardot',
     providerName: 'pardot',
     category: 'marketing automation',
     description: 'Configure your Pardot provider.',
+  },
+  {
+    name: 'Pipedrive',
+    providerName: 'pipedrive',
+    category: 'crm',
+    description: 'Configure your Pipedrive provider.',
+  },
+  {
+    name: 'Salesforce',
+    providerName: 'salesforce',
+    category: 'crm',
+    description: 'Configure your Salesforce provider.',
+  },
+  {
+    name: 'Salesloft',
+    providerName: 'salesloft',
+    category: 'engagement',
+    description: 'Configure your Salesloft provider.',
+  },
+  {
+    name: 'Segment',
+    providerName: 'segment',
+    category: 'analytics',
+    description: 'Configure your Segment provider.',
   },
   {
     name: 'Slack',
@@ -170,10 +223,10 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
     description: 'Configure your Slack provider.',
   },
   {
-    name: 'Microsoft Teams',
-    providerName: 'ms_teams',
-    category: 'communications',
-    description: 'Configure your Microsoft Teams provider.',
+    name: 'Stripe',
+    providerName: 'stripe',
+    category: 'billing',
+    description: 'Configure your Stripe provider.',
   },
   {
     name: 'Whatsapp',
@@ -194,10 +247,22 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
     description: 'Configure your Zoho provider.',
   },
   {
-    name: 'Linear',
-    providerName: 'linear',
-    category: 'no_category',
-    description: 'Configure your Linear provider.',
+    name: 'Zoom',
+    providerName: 'zoom',
+    category: 'communications',
+    description: 'Configure your Zoom provider.',
+  },
+  {
+    name: 'Zoominfo',
+    providerName: 'zoominfo',
+    category: 'enrichment',
+    description: 'Configure your Zoominfo provider.',
+  },
+  {
+    name: 'Zuora',
+    providerName: 'zuora',
+    category: 'billing',
+    description: 'Configure your Zuora provider.',
   },
 ];
 
