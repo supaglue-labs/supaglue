@@ -10,7 +10,7 @@ You can configure Supaglue to fire webhooks to your application for important ev
 Supaglue uses [Svix](https://svix.com) as its webhooks platform. They provide some nice characteristics for building production-grade webhooks in the following areas:
 
 - [idempotency](https://docs.svix.com/idempotency): exactly-once semantics
-- [rate limiting](https://docs.svix.com/rate-limit): 1000 QPS (configurable)
+- [rate limiting](https://docs.svix.com/rate-limit): 1000 QPS (user configurable)
 - [retries](https://docs.svix.com/retries): exponential backoff
 - [retention](https://docs.svix.com/retention): 90 days
 - [security](https://docs.svix.com/security)
