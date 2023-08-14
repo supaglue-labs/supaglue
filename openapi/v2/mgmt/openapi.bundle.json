@@ -5137,6 +5137,9 @@
                     "properties": {
                       "webhook_event_type": {
                         "type": "string",
+                        "enum": [
+                          "sync.complete"
+                        ],
                         "example": "sync.complete"
                       },
                       "connection_id": {
@@ -5253,7 +5256,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "connection.create",
+                "webhook_event_type": "connection.created",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -5265,7 +5268,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "connection.create"
+                    "enum": [
+                      "connection.created"
+                    ],
+                    "example": "connection.created"
                   },
                   "customer_id": {
                     "type": "string",
@@ -5321,7 +5327,8 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "connection.delete",
+                "webhook_event_type": "connection.deleted",
+                "connection_id": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -5333,7 +5340,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "connection.delete"
+                    "enum": [
+                      "connection.deleted"
+                    ],
+                    "example": "connection.deleted"
                   },
                   "connection_id": {
                     "type": "string",
@@ -6172,6 +6182,9 @@
                     "properties": {
                       "webhook_event_type": {
                         "type": "string",
+                        "enum": [
+                          "sync.complete"
+                        ],
                         "example": "sync.complete"
                       },
                       "connection_id": {
@@ -6288,7 +6301,7 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "connection.create",
+                "webhook_event_type": "connection.created",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -6300,7 +6313,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "connection.create"
+                    "enum": [
+                      "connection.created"
+                    ],
+                    "example": "connection.created"
                   },
                   "customer_id": {
                     "type": "string",
@@ -6356,7 +6372,8 @@
           "content": {
             "application/json": {
               "example": {
-                "webhook_event_type": "connection.delete",
+                "webhook_event_type": "connection.deleted",
+                "connection_id": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -6368,7 +6385,10 @@
                 "properties": {
                   "webhook_event_type": {
                     "type": "string",
-                    "example": "connection.delete"
+                    "enum": [
+                      "connection.deleted"
+                    ],
+                    "example": "connection.deleted"
                   },
                   "connection_id": {
                     "type": "string",

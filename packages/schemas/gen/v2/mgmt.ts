@@ -2577,8 +2577,11 @@ export interface operations {
          * }
          */
         "application/json": ({
-          /** @example sync.complete */
-          webhook_event_type: string;
+          /**
+           * @example sync.complete 
+           * @enum {string}
+           */
+          webhook_event_type: "sync.complete";
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2620,7 +2623,7 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "webhook_event_type": "connection.create",
+         *   "webhook_event_type": "connection.created",
          *   "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
          *   "category": "crm",
@@ -2629,8 +2632,11 @@ export interface operations {
          * }
          */
         "application/json": {
-          /** @example connection.create */
-          webhook_event_type: string;
+          /**
+           * @example connection.created 
+           * @enum {string}
+           */
+          webhook_event_type: "connection.created";
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           customer_id: string;
           /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
@@ -2656,7 +2662,8 @@ export interface operations {
       content: {
         /**
          * @example {
-         *   "webhook_event_type": "connection.delete",
+         *   "webhook_event_type": "connection.deleted",
+         *   "connection_id": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b",
          *   "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
          *   "category": "crm",
@@ -2665,8 +2672,11 @@ export interface operations {
          * }
          */
         "application/json": {
-          /** @example connection.delete */
-          webhook_event_type: string;
+          /**
+           * @example connection.deleted 
+           * @enum {string}
+           */
+          webhook_event_type: "connection.deleted";
           /** @example 6b0abaf8-076d-48e7-9cdf-f12c68e86e2b */
           connection_id: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */

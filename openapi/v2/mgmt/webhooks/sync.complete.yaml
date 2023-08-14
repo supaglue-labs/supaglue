@@ -24,6 +24,8 @@ post:
               properties:
                 webhook_event_type:
                   type: string
+                  enum:
+                    - sync.complete
                   example: sync.complete
                 connection_id:
                   type: string
