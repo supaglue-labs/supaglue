@@ -123,18 +123,20 @@ The sequence for processing webhook events asynchronously is the following:
 3. You respond with a 200 to Supaglue
 4. You dequeue from your internal queue and process the events
 
-Below is an example of Steps 1-3 using Typescript, Nodejs+Expressjs, Redis+[Bull](https://github.com/OptimalBits/bull):
+Below is an example of Steps 1-3 using Typescript, Nodejs+Expressjs, [BullMQ](https://github.com/taskforcesh/bullmq):
 
 ```ts
 import express from 'express';
-import Queue from 'bull';
+import { Queue } from 'bullmq';
 
-const redisConfig = {...};
-const supaglueEventsQueue = new Queue('supaglueEventsQueue', { redis: redisConfig });
+const supaglueEventsQueue = new Queue('supaglueEventsQueue');
 const app = express();
 
 app.get('/webhooks', async (req: Request, res: Response) {
-    supaglueEventsQueue.add({ data: JSON.stringify(req.body) })
+    const eventType = req.headers.get('x-event-type');
+
+    supaglueEventsQueue.add(eventType, { data: JSON.stringify(req.body) })
+
     return res.status(200).send();
 })
 
@@ -163,4 +165,4 @@ Another potential security hole is what's called replay attacks. A [replay attac
 
 To mitigate this attack, Supaglue includes a timestamp for when the webhook attempt occurred. Our libraries automatically reject webhooks with a timestamp that are more than five minutes away (past or future) from the current time. This requires your server's clock to be synchronised and accurate, and it's recommended that you use [NTP](https://en.wikipedia.org/wiki/Network_Time_Protocol) to achieve this.
 
-Supaglue uses an underlying webhook framework called Svix. Look more about how to sign webhooks in their [docs here](https://docs.svix.com/receiving/verifying-payloads/how).
+Supaglue uses an underlying webhook framework called Svix. Look more about how to validate the signature of webhook events in their [docs here](https://docs.svix.com/receiving/verifying-payloads/how).

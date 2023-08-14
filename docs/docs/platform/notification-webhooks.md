@@ -29,6 +29,8 @@ Configure webhook notifications via the Management Portal by navigating to **Set
 - `sync.complete`
 - `connection.created`
 
+You can retrieve the event type in the request payload from the key `x-event-type`.
+
 ## Timeout
 
 Webhook events must be processed within 15 seconds.
