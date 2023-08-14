@@ -33,17 +33,19 @@ export function createMaybeSendSyncFinishWebhook({
   webhookService: WebhookService;
 }) {
   return async function maybeSendSyncFinishWebhook(args: MaybeSendSyncFinishWebhookArgs) {
-    const { connectionId, status } = args;
+    const { connectionId } = args;
     const connection = await connectionService.getSafeById(connectionId);
     const provider = await providerService.getById(connection.providerId);
     const application = await applicationService.getById(provider.applicationId);
     const { config } = application;
 
+    const { status, ...argsWithoutStatus } = args;
+
     await webhookService.sendMessage(
       'sync.complete',
       {
         ...snakecaseKeys({
-          ...args,
+          ...argsWithoutStatus,
           customerId: connection.customerId,
           providerName: provider.name,
         }),
