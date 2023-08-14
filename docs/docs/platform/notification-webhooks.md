@@ -35,7 +35,7 @@ Configure webhook notifications via the Management Portal by navigating to **Set
 ## Event types
 
 - `sync.complete`
-- `connection.create`
+- `connection.created`
 
 ## Timeout
 
