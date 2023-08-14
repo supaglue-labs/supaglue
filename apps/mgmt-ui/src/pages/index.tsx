@@ -25,10 +25,18 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
     }
   } else {
     const user = getAuth(req);
-    if (!user.userId || !user.orgId) {
+    if (!user.userId) {
       return {
         redirect: {
           destination: '/sign-in?redirect_url=' + resolvedUrl,
+          permanent: false,
+        },
+      };
+    }
+    if (!user.orgId) {
+      return {
+        redirect: {
+          destination: '/create-organization',
           permanent: false,
         },
       };
