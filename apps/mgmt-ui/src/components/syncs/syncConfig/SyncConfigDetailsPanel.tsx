@@ -55,6 +55,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [strategy, setStrategy] = useState<SyncStrategyType>('full then incremental');
   const [commonObjects, setCommonObjects] = useState<CommonObjectType[]>([]);
   const [standardObjects, setStandardObjects] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
   const [entityIds, setEntityIds] = useState<string[]>([]);
   const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
   const router = useRouter();
@@ -273,7 +274,8 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   multiple
                   id="standard-objects"
                   options={standardObjectsOptions}
-                  defaultValue={standardObjects}
+                  value={standardObjects}
+                  inputValue={inputValue}
                   autoSelect
                   freeSolo
                   renderTags={(value: readonly string[], getTagProps) =>
@@ -281,11 +283,22 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                       <Chip variant="outlined" label={option} {...getTagProps({ index })} />
                     ))
                   }
+                  onInputChange={(event, newInputValue) => {
+                    if (newInputValue.endsWith(',')) {
+                      const newObject = newInputValue.slice(0, -1).trim();
+                      if (newObject) {
+                        setStandardObjects([...standardObjects, newObject]);
+                      }
+                      setInputValue('');
+                      return;
+                    }
+                    setInputValue(newInputValue);
+                  }}
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       label="Standard objects"
-                      helperText={`Standard objects in ${selectedProvider?.name}. (Note: names are case-sensitive. Use "enter" to add multiple objects.)`}
+                      helperText={`Standard objects in ${selectedProvider?.name}. (Note: names are case-sensitive. Press enter or comma to add multiple fields.)`}
                     />
                   )}
                   onChange={(event: any, value: string[]) => {
