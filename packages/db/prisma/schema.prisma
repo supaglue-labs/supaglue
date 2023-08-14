@@ -25,6 +25,8 @@ model Application {
   updatedAt    DateTime      @updatedAt @map("updated_at")
   orgId        String        @map("org_id")
   environment  String        @default("production")
+  // Miscellaneous notes for debugging (i.e. org name, etc)
+  notes        String?
   customers    Customer[]
   destinations Destination[]
   providers    Provider[]
