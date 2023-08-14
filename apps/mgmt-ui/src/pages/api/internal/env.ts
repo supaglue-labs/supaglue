@@ -17,8 +17,8 @@ export default async function handler(
 
   const CLERK_ORGANIZATION_URL =
     API_HOST === 'https://api.supaglue.io'
-      ? 'https://accounts.supaglue.io/user'
-      : 'https://witty-eft-29.accounts.dev/user';
+      ? 'https://accounts.supaglue.io/organization'
+      : 'https://witty-eft-29.accounts.dev/organization';
 
   return res.status(200).json({
     API_HOST,
