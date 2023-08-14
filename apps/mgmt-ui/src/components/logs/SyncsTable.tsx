@@ -84,17 +84,17 @@ export default function SyncsTable(props: SyncsTableProps) {
       filterOperators: equalOperatorOnly,
     },
     {
-      field: 'paused',
-      headerName: 'Paused?',
+      field: 'active',
+      headerName: 'Active?',
       width: 120,
       sortable: false,
       filterable: false,
       renderCell: (params) => {
         return (
           <Switch
-            checked={params.row.paused}
+            checked={!params.row.paused}
             onChange={async (event: React.ChangeEvent<HTMLInputElement>, checked: boolean) => {
-              if (checked) {
+              if (!checked) {
                 const response =
                   params.row.type === 'object'
                     ? await pauseSync({
