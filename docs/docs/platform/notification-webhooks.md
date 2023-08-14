@@ -5,14 +5,34 @@ sidebar_position: 4
 
 # Notification webhooks
 
-You can configure Supaglue to fire webhooks to your application when certain system events occur. These webhooks don't contain Provider data but are used to notify your application or trigger related workflows.
+You can configure Supaglue to fire webhooks to your application for important events. These webhooks don't contain Provider data but are used to notify your application or trigger related workflows.
 
-For example, you can configure a webhook to fire when new connections get created or when managed syncs finish. Some of the things you can do with webhooks include:
+## Use cases
+
+Your integration can listen for these webhooks to do the following:
 
 - Notify customers when initial syncs complete
-- Display appropriate UI upon connection success or failure
-- Trigger data transformation workflows are new data syncs to your database
+- Alert on sync errors
+- Transform synced data for your application
+- Cleanup old data after a customer deletes their account or disconnects their integration
+- Backfill data after a customer changes configuration settings
+- Clean data after a customer changes [EntityMappings](../platform/entities/overview#entity-mapping)
 
-Configure webhook notifications via the Management Portal.
+## Setup
 
-![webhook-config](/img/webhook_config.png)
+Configure webhook notifications via the Management Portal by navigating to **Settings --> Webhooks**.
+
+![webhook-config](/img/webhooks-tutorial-step-2a.png)
+
+## Event types
+
+- `sync.complete`
+- `connection.created`
+
+## Timeout
+
+Webhook events must be processed within 15 seconds.
+
+## More information
+
+You can read our [Listening for Webhooks tutorial](../tutorials/listen-for-webhooks) to go more in-depth on consuming webhook notifications.

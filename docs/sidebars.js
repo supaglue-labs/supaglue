@@ -147,6 +147,11 @@ const sidebars = {
       type: 'doc',
     },
     {
+      id: 'tutorials/listen-for-webhooks',
+      label: 'Listen for webhooks',
+      type: 'doc',
+    },
+    {
       id: 'tutorials/read-write-contacts',
       label: 'Read/write contacts',
       type: 'doc',
