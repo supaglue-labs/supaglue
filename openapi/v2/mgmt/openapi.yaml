@@ -246,6 +246,18 @@ x-webhooks: &x-webhooks
     $ref: ./webhooks/salesforce_cdc.undelete.yaml
   sync.complete:
     $ref: ./webhooks/sync.complete.yaml
-  connection.create:
-    $ref: ./webhooks/connection.create.yaml
+  connection.created:
+    $ref: ./webhooks/connection.created.yaml
+  connection.deleted:
+    $ref: ./webhooks/connection.deleted.yaml
+  entity.entity_mapping.created:
+    $ref: ./webhooks/entity.entity_mapping.created.yaml
+  entity.entity_mapping.updated:
+    $ref: ./webhooks/entity.entity_mapping.updated.yaml
+  entity.entity_mapping.deleted:
+    $ref: ./webhooks/entity.entity_mapping.deleted.yaml
+  object.field_mapping.created:
+    $ref: ./webhooks/object.field_mapping.created.yaml
+  object.field_mapping.updated:
+    $ref: ./webhooks/object.field_mapping.updated.yaml
 webhooks: *x-webhooks

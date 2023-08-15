@@ -15,7 +15,7 @@ import {
   PROCESS_SYNC_CHANGES_WORKFLOW_ID,
 } from '@supaglue/sync-workflows/workflows/process_sync_changes';
 import { getRunObjectSyncScheduleId } from '@supaglue/sync-workflows/workflows/run_object_sync';
-import type { ProviderName } from '@supaglue/types';
+import type { ProviderCategory, ProviderName } from '@supaglue/types';
 import type {
   ConnectionCreateParams,
   ConnectionCreateParamsAny,
@@ -396,10 +396,10 @@ export class ConnectionAndSyncService {
     } finally {
       const { credentials: _, ...paramsWithoutCredentials } = params;
       await this.#webhookService.sendMessage(
-        'connection.create',
+        'connection.created',
         { ...snakecaseKeys(paramsWithoutCredentials), result: errored ? 'ERROR' : 'SUCCESS' },
-        application,
-        connectionId
+        application.id,
+        `${connectionId}-create`
       );
 
       // TODO remove this after all customers migrate to the svix webhooks
@@ -414,6 +414,7 @@ export class ConnectionAndSyncService {
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
+    let errored = false;
     const connection = await this.#prisma.connection.findFirst({
       where: {
         id,
@@ -434,26 +435,45 @@ export class ConnectionAndSyncService {
       throw new NotFoundError(`Could not find connection ${id} with application id ${applicationId}`);
     }
 
-    await this.#prisma.$transaction([
-      // Delete the object syncs, if they exist
-      ...connection.syncs.flatMap((sync) => [
-        this.#prisma.sync.delete({
+    try {
+      await this.#prisma.$transaction([
+        // Delete the object syncs, if they exist
+        ...connection.syncs.flatMap((sync) => [
+          this.#prisma.sync.delete({
+            where: {
+              id: sync.id,
+            },
+          }),
+          this.#prisma.syncChange.create({
+            data: {
+              syncId: sync.id,
+            },
+          }),
+        ]),
+        this.#prisma.connection.delete({
           where: {
-            id: sync.id,
+            id,
           },
         }),
-        this.#prisma.syncChange.create({
-          data: {
-            syncId: sync.id,
-          },
-        }),
-      ]),
-      this.#prisma.connection.delete({
-        where: {
-          id,
+      ]);
+    } catch (e) {
+      errored = true;
+      throw e;
+    } finally {
+      await this.#webhookService.sendMessage(
+        'connection.deleted',
+        {
+          connection_id: id,
+          customer_id: connection.customerId,
+          provider_id: connection.providerId,
+          category: connection.category as ProviderCategory,
+          provider_name: connection.providerName as ProviderName,
+          result: errored ? 'ERROR' : 'SUCCESS',
         },
-      }),
-    ]);
+        applicationId,
+        `${id}-delete`
+      );
+    }
   }
 
   async #triggerProcessSyncChangesTemporalSchedule(): Promise<void> {

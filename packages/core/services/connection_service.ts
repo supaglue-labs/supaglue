@@ -19,7 +19,7 @@ import type { ConnectionEntityMapping, MergedEntityMapping } from '@supaglue/typ
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import retry from 'async-retry';
-import type { ProviderService, SchemaService } from '.';
+import type { ProviderService, SchemaService, WebhookService } from '.';
 import { BadRequestError, NotFoundError } from '../errors';
 import { decrypt, encrypt } from '../lib/crypt';
 import { createFieldMappingConfigForEntity, validateEntityOrSchemaFieldName } from '../lib/entity';
@@ -33,17 +33,20 @@ export class ConnectionService {
   #providerService: ProviderService;
   #schemaService: SchemaService;
   #entityService: EntityService;
+  #webhookService: WebhookService;
 
   constructor(
     prisma: PrismaClient,
     providerService: ProviderService,
     schemaService: SchemaService,
-    entityService: EntityService
+    entityService: EntityService,
+    webhookService: WebhookService
   ) {
     this.#prisma = prisma;
     this.#providerService = providerService;
     this.#schemaService = schemaService;
     this.#entityService = entityService;
+    this.#webhookService = webhookService;
   }
 
   public async getUnsafeById<T extends ProviderName>(id: string): Promise<ConnectionUnsafe<T>> {
@@ -284,41 +287,68 @@ export class ConnectionService {
       fieldMappings: params.fieldMappings,
     };
 
-    // Validate
-    this.validateObjectFieldMappingUpdateParams(params, schema);
+    let error: Error | undefined = undefined;
+    let isNew = false;
 
-    const { id, schemaMappingsConfig } = connection;
-    const newSchemaMappingsConfig = {
-      ...schemaMappingsConfig,
-    };
-    if (params.type === 'common') {
-      newSchemaMappingsConfig.commonObjects = addSchemaMappingsConfigForObject(
-        newSchemaMappingsConfig.commonObjects ?? [],
-        newObjectMapping
+    try {
+      // Validate
+      this.validateObjectFieldMappingUpdateParams(params, schema);
+
+      const { id, schemaMappingsConfig } = connection;
+      const newSchemaMappingsConfig = {
+        ...schemaMappingsConfig,
+      };
+      if (params.type === 'common') {
+        const existingConfigs = newSchemaMappingsConfig.commonObjects ?? [];
+        if (existingConfigs.length === 0) {
+          isNew = true;
+        }
+        newSchemaMappingsConfig.commonObjects = addSchemaMappingsConfigForObject(existingConfigs, newObjectMapping);
+      } else if (params.type === 'standard') {
+        const existingConfigs = newSchemaMappingsConfig.standardObjects ?? [];
+        if (existingConfigs.length === 0) {
+          isNew = true;
+        }
+        newSchemaMappingsConfig.standardObjects = addSchemaMappingsConfigForObject(existingConfigs, newObjectMapping);
+      } else {
+        throw new BadRequestError(`Object mappings not supported for custom objects`);
+      }
+      await this.#prisma.connection.update({
+        where: {
+          id,
+        },
+        data: {
+          schemaMappingsConfig: newSchemaMappingsConfig,
+        },
+      });
+      return {
+        objectName: params.name,
+        objectType: params.type,
+        schemaId: schema.id,
+        allowAdditionalFieldMappings: schema.config.allowAdditionalFieldMappings,
+        fields: getFieldMappingInfo(schema, params.fieldMappings),
+      };
+    } catch (e) {
+      error = e as Error;
+      throw e;
+    } finally {
+      await this.#webhookService.sendMessage(
+        isNew ? 'object.field_mapping.created' : 'object.field_mapping.updated',
+        {
+          connection_id: connection.id,
+          application_id: connection.applicationId,
+          customer_id: connection.customerId,
+          object_name: params.name,
+          object_type: params.type,
+          provider_name: connection.providerName,
+          schema_id: schema.id,
+          result: error ? 'ERROR' : 'SUCCESS',
+          error_message: error?.message,
+        },
+        connection.applicationId,
+        `${connection.id}-${params.name}-${params.type}-${isNew ? 'create' : 'update'}`
       );
-    } else if (params.type === 'standard') {
-      newSchemaMappingsConfig.standardObjects = addSchemaMappingsConfigForObject(
-        newSchemaMappingsConfig.standardObjects ?? [],
-        newObjectMapping
-      );
-    } else {
-      throw new BadRequestError(`Object mappings not supported for custom objects`);
     }
-    await this.#prisma.connection.update({
-      where: {
-        id,
-      },
-      data: {
-        schemaMappingsConfig: newSchemaMappingsConfig,
-      },
-    });
-    return {
-      objectName: params.name,
-      objectType: params.type,
-      schemaId: schema.id,
-      allowAdditionalFieldMappings: schema.config.allowAdditionalFieldMappings,
-      fields: getFieldMappingInfo(schema, params.fieldMappings),
-    };
   }
 
   private async getSchema(
@@ -398,40 +428,96 @@ export class ConnectionService {
     entityId: string,
     entityMapping: ConnectionEntityMapping
   ): Promise<void> {
-    // Validate fields
-    for (const { entityField } of entityMapping.fieldMappings ?? []) {
-      validateEntityOrSchemaFieldName(entityField);
-    }
-
+    let isUpdate = false;
+    let error: Error | undefined = undefined;
     const connection = await this.getSafeById(connectionId);
 
-    // upsert entity mapping with `entityId` from `connection.entityMappings` and write back to DB
-    const entityMappings =
-      connection.entityMappings?.filter((entityMapping) => entityMapping.entityId !== entityId) ?? [];
-    entityMappings.push(entityMapping);
-    await this.#prisma.connection.update({
-      where: {
-        id: connectionId,
-      },
-      data: {
-        entityMappings,
-      },
-    });
+    try {
+      // Validate fields
+      for (const { entityField } of entityMapping.fieldMappings ?? []) {
+        validateEntityOrSchemaFieldName(entityField);
+      }
+
+      // upsert entity mapping with `entityId` from `connection.entityMappings` and write back to DB
+      isUpdate = connection.entityMappings?.some((entityMapping) => entityMapping.entityId === entityId) ?? false;
+      const entityMappings =
+        connection.entityMappings?.filter((entityMapping) => entityMapping.entityId !== entityId) ?? [];
+      entityMappings.push(entityMapping);
+      await this.#prisma.connection.update({
+        where: {
+          id: connectionId,
+        },
+        data: {
+          entityMappings,
+        },
+      });
+    } catch (e) {
+      error = e as Error;
+      throw e;
+    } finally {
+      await this.#webhookService.sendMessage(
+        isUpdate ? 'entity.entity_mapping.updated' : 'entity.entity_mapping.created',
+        {
+          connection_id: connectionId,
+          application_id: connection.applicationId,
+          customer_id: connection.customerId,
+          entity_id: entityId,
+          provider_name: connection.providerName,
+          object_name: entityMapping.object?.name,
+          object_type: entityMapping.object?.type,
+          result: error ? 'ERROR' : 'SUCCESS',
+          error_message: error?.message,
+        },
+        connection.applicationId,
+        `${entityId}-${isUpdate ? 'update' : 'create'}`
+      );
+    }
   }
 
   public async deleteEntityMapping(connectionId: string, entityId: string): Promise<void> {
     const connection = await this.getSafeById(connectionId);
 
     // remove entity mapping with `entityId` from `connection.entityMappings` and write back to DB
-    const entityMappings = connection.entityMappings?.filter((entityMapping) => entityMapping.entityId !== entityId);
-    await this.#prisma.connection.update({
-      where: {
-        id: connectionId,
-      },
-      data: {
-        entityMappings,
-      },
-    });
+    const deletedEntityMapping = connection.entityMappings?.find(
+      (entityMapping) => entityMapping.entityId === entityId
+    );
+
+    if (!deletedEntityMapping) {
+      throw new NotFoundError(`Entity mapping with id ${entityId} not found`);
+    }
+
+    let error: Error | undefined = undefined;
+    try {
+      const entityMappings = connection.entityMappings?.filter((entityMapping) => entityMapping.entityId !== entityId);
+      await this.#prisma.connection.update({
+        where: {
+          id: connectionId,
+        },
+        data: {
+          entityMappings,
+        },
+      });
+    } catch (e) {
+      error = e as Error;
+      throw e;
+    } finally {
+      await this.#webhookService.sendMessage(
+        'entity.entity_mapping.deleted',
+        {
+          connection_id: connectionId,
+          application_id: connection.applicationId,
+          customer_id: connection.customerId,
+          entity_id: entityId,
+          provider_name: connection.providerName,
+          object_name: deletedEntityMapping.object?.name,
+          object_type: deletedEntityMapping.object?.type,
+          result: error ? 'ERROR' : 'SUCCESS',
+          error_message: error?.message,
+        },
+        connection.applicationId,
+        `${entityId}-delete`
+      );
+    }
   }
 
   public async getObjectAndFieldMappingConfigForEntity(

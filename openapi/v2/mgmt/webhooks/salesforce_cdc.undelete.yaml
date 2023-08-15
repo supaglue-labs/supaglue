@@ -7,7 +7,7 @@ post:
   operationId: salesforceCdcUndelete
   x-event-type: salesforce_cdc.undelete
   tags:
-    - Webhook Events
+    - Salesforce CDC Events (beta)
   requestBody:
     content:
       application/json:
@@ -19,6 +19,10 @@ post:
         schema:
           type: object
           properties:
+            webhook_event_type:
+              type: string
+              description: The type of webhook event
+              example: salesforce_cdc.undelete
             id:
               type: string
               description: The Salesforce ID of the record that was undeleted
@@ -32,6 +36,7 @@ post:
               description: The fields that were set when the record was undeleted
               example: { Name: 'Acme' }
           required:
+            - webhook_event_type
             - id
             - entity_name
             - fields

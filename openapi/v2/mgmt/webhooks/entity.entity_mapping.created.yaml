@@ -1,0 +1,72 @@
+post:
+  summary: Entity mapping created
+  description: Notification of the creation of an entity mapping
+  operationId: entityEntityMappingCreated
+  x-event-type: entity.entity_mapping.created
+  tags:
+    - Webhook Events
+  requestBody:
+    content:
+      application/json:
+        example:
+          webhook_event_type: entity.entity_mapping.created
+          entity_id: e30cbb93-5b05-4186-b6de-1acc10013795
+          application_id: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
+          connection_id: a7052919-e024-4985-bd08-856056b66f59
+          customer_id: 1a2b3c4d5e6f
+          provider_name: salesforce
+          object_name: opportunity
+          object_type: standard
+          result: SUCCESS
+        schema:
+          type: object
+          properties:
+            webhook_event_type:
+              type: string
+              enum:
+                - entity.entity_mapping.created
+              example: entity.entity_mapping.created
+            entity_id:
+              type: string
+              example: e30cbb93-5b05-4186-b6de-1acc10013795
+            application_id:
+              type: string
+              example: 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6
+            connection_id:
+              type: string
+              example: a7052919-e024-4985-bd08-856056b66f59
+            customer_id:
+              type: string
+              example: 1a2b3c4d5e6f
+            provider_name:
+              type: string
+              example: salesforce
+            object_name:
+              type: string
+              example: opportunity
+            object_type:
+              type: string
+              enum:
+                - standard
+                - custom
+              example: standard
+            result:
+              type: string
+              enum:
+                - SUCCESS
+                - ERROR
+            error_message:
+              type: string
+              example: Error message
+          required:
+            - webhook_event_type
+            - entity_id
+            - application_id
+            - connection_id
+            - customer_id
+            - provider_name
+            - result
+
+  responses:
+    '200':
+      description: Return a 200 status to indicate that the data was received successfully

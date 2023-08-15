@@ -332,12 +332,54 @@ export interface webhooks {
      */
     post: operations["syncComplete"];
   };
-  "connection.create": {
+  "connection.created": {
     /**
      * Customer connection created 
      * @description Notification of the creation of a connection for a customer
      */
-    post: operations["connectionCreate"];
+    post: operations["connectionCreated"];
+  };
+  "connection.deleted": {
+    /**
+     * Customer connection deleted 
+     * @description Notification of the deletion of a connection for a customer
+     */
+    post: operations["connectionDeleted"];
+  };
+  "entity.entity_mapping.created": {
+    /**
+     * Entity mapping created 
+     * @description Notification of the creation of an entity mapping
+     */
+    post: operations["entityEntityMappingCreated"];
+  };
+  "entity.entity_mapping.updated": {
+    /**
+     * Entity mapping updated 
+     * @description Notification of an update to an entity mapping
+     */
+    post: operations["entityEntityMappingUpdated"];
+  };
+  "entity.entity_mapping.deleted": {
+    /**
+     * Entity mapping deleted 
+     * @description Notification of the deletion of an entity mapping
+     */
+    post: operations["entityEntityMappingDeleted"];
+  };
+  "object.field_mapping.created": {
+    /**
+     * Object field mapping created 
+     * @description Notification of the creation of am object field mapping
+     */
+    post: operations["objectFieldMappingCreated"];
+  };
+  "object.field_mapping.updated": {
+    /**
+     * Object field mapping updated 
+     * @description Notification of an update to an object field mapping
+     */
+    post: operations["objectFieldMappingUpdated"];
   };
 }
 
@@ -2327,6 +2369,11 @@ export interface operations {
          */
         "application/json": {
           /**
+           * @description The type of webhook event 
+           * @example salesforce_cdc.create
+           */
+          webhook_event_type: string;
+          /**
            * @description The Salesforce ID of the record that was created 
            * @example 0011t00000B0G6uAAF
            */
@@ -2375,6 +2422,11 @@ export interface operations {
          * }
          */
         "application/json": {
+          /**
+           * @description The type of webhook event 
+           * @example salesforce_cdc.update
+           */
+          webhook_event_type: string;
           /**
            * @description The Salesforce ID of the record that was updated 
            * @example 0011t00000B0G6uAAF
@@ -2433,6 +2485,11 @@ export interface operations {
          */
         "application/json": {
           /**
+           * @description The type of webhook event 
+           * @example salesforce_cdc.delete
+           */
+          webhook_event_type: string;
+          /**
            * @description The Salesforce ID of the record that was deleted 
            * @example 0011t00000B0G6uAAF
            */
@@ -2469,6 +2526,11 @@ export interface operations {
          * }
          */
         "application/json": {
+          /**
+           * @description The type of webhook event 
+           * @example salesforce_cdc.undelete
+           */
+          webhook_event_type: string;
           /**
            * @description The Salesforce ID of the record that was undeleted 
            * @example 0011t00000B0G6uAAF
@@ -2507,12 +2569,19 @@ export interface operations {
          *   "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "provider_name": "salesforce",
          *   "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+         *   "type": "object",
          *   "object_type": "standard",
          *   "object": "contact",
+         *   "result": "ERROR",
          *   "error_message": "Error message"
          * }
          */
         "application/json": ({
+          /**
+           * @example sync.complete 
+           * @enum {string}
+           */
+          webhook_event_type: "sync.complete";
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2549,11 +2618,12 @@ export interface operations {
    * Customer connection created 
    * @description Notification of the creation of a connection for a customer
    */
-  connectionCreate: {
+  connectionCreated: {
     requestBody?: {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "connection.created",
          *   "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
          *   "category": "crm",
@@ -2562,6 +2632,11 @@ export interface operations {
          * }
          */
         "application/json": {
+          /**
+           * @example connection.created 
+           * @enum {string}
+           */
+          webhook_event_type: "connection.created";
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           customer_id: string;
           /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
@@ -2570,6 +2645,317 @@ export interface operations {
           provider_name: components["schemas"]["provider_name"];
           /** @enum {string} */
           result: "SUCCESS" | "ERROR";
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Customer connection deleted 
+   * @description Notification of the deletion of a connection for a customer
+   */
+  connectionDeleted: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "webhook_event_type": "connection.deleted",
+         *   "connection_id": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b",
+         *   "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
+         *   "category": "crm",
+         *   "provider_name": "salesforce",
+         *   "result": "SUCCESS"
+         * }
+         */
+        "application/json": {
+          /**
+           * @example connection.deleted 
+           * @enum {string}
+           */
+          webhook_event_type: "connection.deleted";
+          /** @example 6b0abaf8-076d-48e7-9cdf-f12c68e86e2b */
+          connection_id: string;
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          customer_id: string;
+          /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
+          provider_id: string;
+          category: components["schemas"]["category"];
+          provider_name: components["schemas"]["provider_name"];
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Entity mapping created 
+   * @description Notification of the creation of an entity mapping
+   */
+  entityEntityMappingCreated: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "webhook_event_type": "entity.entity_mapping.created",
+         *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+         *   "customer_id": "1a2b3c4d5e6f",
+         *   "provider_name": "salesforce",
+         *   "object_name": "opportunity",
+         *   "object_type": "standard",
+         *   "result": "SUCCESS"
+         * }
+         */
+        "application/json": {
+          /**
+           * @example entity.entity_mapping.created 
+           * @enum {string}
+           */
+          webhook_event_type: "entity.entity_mapping.created";
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          entity_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example a7052919-e024-4985-bd08-856056b66f59 */
+          connection_id: string;
+          /** @example 1a2b3c4d5e6f */
+          customer_id: string;
+          /** @example salesforce */
+          provider_name: string;
+          /** @example opportunity */
+          object_name?: string;
+          /**
+           * @example standard 
+           * @enum {string}
+           */
+          object_type?: "standard" | "custom";
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Entity mapping updated 
+   * @description Notification of an update to an entity mapping
+   */
+  entityEntityMappingUpdated: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "webhook_event_type": "entity.entity_mapping.updated",
+         *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+         *   "customer_id": "1a2b3c4d5e6f",
+         *   "provider_name": "salesforce",
+         *   "object_name": "opportunity",
+         *   "object_type": "standard",
+         *   "result": "SUCCESS"
+         * }
+         */
+        "application/json": {
+          /**
+           * @example entity.entity_mapping.updated 
+           * @enum {string}
+           */
+          webhook_event_type: "entity.entity_mapping.updated";
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          entity_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example a7052919-e024-4985-bd08-856056b66f59 */
+          connection_id: string;
+          /** @example 1a2b3c4d5e6f */
+          customer_id: string;
+          /** @example salesforce */
+          provider_name: string;
+          /** @example opportunity */
+          object_name?: string;
+          /**
+           * @example standard 
+           * @enum {string}
+           */
+          object_type?: "standard" | "custom";
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Entity mapping deleted 
+   * @description Notification of the deletion of an entity mapping
+   */
+  entityEntityMappingDeleted: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "webhook_event_type": "entity.entity_mapping.deleted",
+         *   "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+         *   "customer_id": "1a2b3c4d5e6f",
+         *   "provider_name": "salesforce",
+         *   "object_name": "opportunity",
+         *   "object_type": "standard",
+         *   "result": "SUCCESS"
+         * }
+         */
+        "application/json": {
+          /**
+           * @example entity.entity_mapping.deleted 
+           * @enum {string}
+           */
+          webhook_event_type: "entity.entity_mapping.deleted";
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          entity_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example a7052919-e024-4985-bd08-856056b66f59 */
+          connection_id: string;
+          /** @example 1a2b3c4d5e6f */
+          customer_id: string;
+          /** @example salesforce */
+          provider_name: string;
+          /** @example opportunity */
+          object_name?: string;
+          /**
+           * @example standard 
+           * @enum {string}
+           */
+          object_type?: "standard" | "custom";
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Object field mapping created 
+   * @description Notification of the creation of am object field mapping
+   */
+  objectFieldMappingCreated: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "webhook_event_type": "object.field_mapping.created",
+         *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
+         *   "provider_name": "salesforce",
+         *   "object_name": "Contact",
+         *   "object_type": "common",
+         *   "schema_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+         *   "result": "ERROR",
+         *   "error_message": "Error message"
+         * }
+         */
+        "application/json": {
+          /**
+           * @example object.field_mapping.created 
+           * @enum {string}
+           */
+          webhook_event_type: "object.field_mapping.created";
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          connection_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example c7c5204a-61d3-44a7-b581-a1f29b239f89 */
+          customer_id: string;
+          provider_name: components["schemas"]["provider_name"];
+          /** @example Contact */
+          object_name: string;
+          /** @enum {string} */
+          object_type: "common" | "standard";
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          schema_id: string;
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Object field mapping updated 
+   * @description Notification of an update to an object field mapping
+   */
+  objectFieldMappingUpdated: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "webhook_event_type": "object.field_mapping.updated",
+         *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
+         *   "provider_name": "salesforce",
+         *   "object_name": "Contact",
+         *   "object_type": "common",
+         *   "schema_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+         *   "result": "ERROR",
+         *   "error_message": "Error message"
+         * }
+         */
+        "application/json": {
+          /**
+           * @example object.field_mapping.updated 
+           * @enum {string}
+           */
+          webhook_event_type: "object.field_mapping.updated";
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          connection_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          application_id: string;
+          /** @example c7c5204a-61d3-44a7-b581-a1f29b239f89 */
+          customer_id: string;
+          provider_name: components["schemas"]["provider_name"];
+          /** @example Contact */
+          object_name: string;
+          /** @enum {string} */
+          object_type: "common" | "standard";
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          schema_id: string;
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example Error message */
+          error_message?: string;
         };
       };
     };

@@ -7,7 +7,7 @@ post:
   operationId: salesforceCdcUpdate
   x-event-type: salesforce_cdc.update
   tags:
-    - Webhook Events
+    - Salesforce CDC Events (beta)
   requestBody:
     content:
       application/json:
@@ -22,6 +22,10 @@ post:
         schema:
           type: object
           properties:
+            webhook_event_type:
+              type: string
+              description: The type of webhook event
+              example: salesforce_cdc.update
             id:
               type: string
               description: The Salesforce ID of the record that was updated
@@ -52,6 +56,7 @@ post:
               type: object
               description: The fields that were set when the record was created
           required:
+            - webhook_event_type
             - id
             - entity_name
             - fields

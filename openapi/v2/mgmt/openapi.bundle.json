@@ -4842,7 +4842,7 @@
         "operationId": "salesforceCdcCreate",
         "x-event-type": "salesforce_cdc.create",
         "tags": [
-          "Webhook Events"
+          "Salesforce CDC Events (beta)"
         ],
         "requestBody": {
           "content": {
@@ -4857,6 +4857,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.create"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was created",
@@ -4876,6 +4881,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields"
@@ -4898,7 +4904,7 @@
         "operationId": "salesforceCdcUpdate",
         "x-event-type": "salesforce_cdc.update",
         "tags": [
-          "Webhook Events"
+          "Salesforce CDC Events (beta)"
         ],
         "requestBody": {
           "content": {
@@ -4918,6 +4924,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.update"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was updated",
@@ -4964,6 +4975,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields",
@@ -4989,7 +5001,7 @@
         "operationId": "salesforceCdcDelete",
         "x-event-type": "salesforce_cdc.delete",
         "tags": [
-          "Webhook Events"
+          "Salesforce CDC Events (beta)"
         ],
         "requestBody": {
           "content": {
@@ -5001,6 +5013,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.delete"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was deleted",
@@ -5013,6 +5030,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name"
                 ]
@@ -5034,7 +5052,7 @@
         "operationId": "salesforceCdcUndelete",
         "x-event-type": "salesforce_cdc.undelete",
         "tags": [
-          "Webhook Events"
+          "Salesforce CDC Events (beta)"
         ],
         "requestBody": {
           "content": {
@@ -5049,6 +5067,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.undelete"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was undeleted",
@@ -5068,6 +5091,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields"
@@ -5100,8 +5124,10 @@
                 "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "provider_name": "salesforce",
                 "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+                "type": "object",
                 "object_type": "standard",
                 "object": "contact",
+                "result": "ERROR",
                 "error_message": "Error message"
               },
               "schema": {
@@ -5109,6 +5135,13 @@
                   {
                     "type": "object",
                     "properties": {
+                      "webhook_event_type": {
+                        "type": "string",
+                        "enum": [
+                          "sync.complete"
+                        ],
+                        "example": "sync.complete"
+                      },
                       "connection_id": {
                         "type": "string",
                         "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5141,6 +5174,7 @@
                       }
                     },
                     "required": [
+                      "webhook_event_type",
                       "connection_id",
                       "customer_id",
                       "provider_name",
@@ -5209,12 +5243,12 @@
         }
       }
     },
-    "connection.create": {
+    "connection.created": {
       "post": {
         "summary": "Customer connection created",
         "description": "Notification of the creation of a connection for a customer",
-        "operationId": "connectionCreate",
-        "x-event-type": "connection.create",
+        "operationId": "connectionCreated",
+        "x-event-type": "connection.created",
         "tags": [
           "Webhook Events"
         ],
@@ -5222,6 +5256,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "connection.created",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -5231,6 +5266,13 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "connection.created"
+                    ],
+                    "example": "connection.created"
+                  },
                   "customer_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5254,10 +5296,575 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "customer_id",
                   "provider_id",
                   "category",
                   "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "connection.deleted": {
+      "post": {
+        "summary": "Customer connection deleted",
+        "description": "Notification of the deletion of a connection for a customer",
+        "operationId": "connectionDeleted",
+        "x-event-type": "connection.deleted",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "connection.deleted",
+                "connection_id": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b",
+                "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
+                "category": "crm",
+                "provider_name": "salesforce",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "connection.deleted"
+                    ],
+                    "example": "connection.deleted"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "provider_id": {
+                    "type": "string",
+                    "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
+                  },
+                  "category": {
+                    "$ref": "#/components/schemas/category"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "connection_id",
+                  "customer_id",
+                  "provider_id",
+                  "category",
+                  "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "entity.entity_mapping.created": {
+      "post": {
+        "summary": "Entity mapping created",
+        "description": "Notification of the creation of an entity mapping",
+        "operationId": "entityEntityMappingCreated",
+        "x-event-type": "entity.entity_mapping.created",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "entity.entity_mapping.created",
+                "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+                "customer_id": "1a2b3c4d5e6f",
+                "provider_name": "salesforce",
+                "object_name": "opportunity",
+                "object_type": "standard",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "entity.entity_mapping.created"
+                    ],
+                    "example": "entity.entity_mapping.created"
+                  },
+                  "entity_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "a7052919-e024-4985-bd08-856056b66f59"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "1a2b3c4d5e6f"
+                  },
+                  "provider_name": {
+                    "type": "string",
+                    "example": "salesforce"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "opportunity"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "custom"
+                    ],
+                    "example": "standard"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "entity_id",
+                  "application_id",
+                  "connection_id",
+                  "customer_id",
+                  "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "entity.entity_mapping.updated": {
+      "post": {
+        "summary": "Entity mapping updated",
+        "description": "Notification of an update to an entity mapping",
+        "operationId": "entityEntityMappingUpdated",
+        "x-event-type": "entity.entity_mapping.updated",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "entity.entity_mapping.updated",
+                "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+                "customer_id": "1a2b3c4d5e6f",
+                "provider_name": "salesforce",
+                "object_name": "opportunity",
+                "object_type": "standard",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "entity.entity_mapping.updated"
+                    ],
+                    "example": "entity.entity_mapping.updated"
+                  },
+                  "entity_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "a7052919-e024-4985-bd08-856056b66f59"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "1a2b3c4d5e6f"
+                  },
+                  "provider_name": {
+                    "type": "string",
+                    "example": "salesforce"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "opportunity"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "custom"
+                    ],
+                    "example": "standard"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "entity_id",
+                  "application_id",
+                  "connection_id",
+                  "customer_id",
+                  "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "entity.entity_mapping.deleted": {
+      "post": {
+        "summary": "Entity mapping deleted",
+        "description": "Notification of the deletion of an entity mapping",
+        "operationId": "entityEntityMappingDeleted",
+        "x-event-type": "entity.entity_mapping.deleted",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "entity.entity_mapping.deleted",
+                "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+                "customer_id": "1a2b3c4d5e6f",
+                "provider_name": "salesforce",
+                "object_name": "opportunity",
+                "object_type": "standard",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "entity.entity_mapping.deleted"
+                    ],
+                    "example": "entity.entity_mapping.deleted"
+                  },
+                  "entity_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "a7052919-e024-4985-bd08-856056b66f59"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "1a2b3c4d5e6f"
+                  },
+                  "provider_name": {
+                    "type": "string",
+                    "example": "salesforce"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "opportunity"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "custom"
+                    ],
+                    "example": "standard"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "entity_id",
+                  "application_id",
+                  "connection_id",
+                  "customer_id",
+                  "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "object.field_mapping.created": {
+      "post": {
+        "summary": "Object field mapping created",
+        "description": "Notification of the creation of am object field mapping",
+        "operationId": "objectFieldMappingCreated",
+        "x-event-type": "object.field_mapping.created",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "object.field_mapping.created",
+                "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
+                "provider_name": "salesforce",
+                "object_name": "Contact",
+                "object_type": "common",
+                "schema_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+                "result": "ERROR",
+                "error_message": "Error message"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "object.field_mapping.created"
+                    ],
+                    "example": "object.field_mapping.created"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "c7c5204a-61d3-44a7-b581-a1f29b239f89"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "Contact"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard"
+                    ]
+                  },
+                  "schema_id": {
+                    "type": "string",
+                    "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "connection_id",
+                  "application_id",
+                  "customer_id",
+                  "provider_name",
+                  "object_name",
+                  "object_type",
+                  "schema_id",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "object.field_mapping.updated": {
+      "post": {
+        "summary": "Object field mapping updated",
+        "description": "Notification of an update to an object field mapping",
+        "operationId": "objectFieldMappingUpdated",
+        "x-event-type": "object.field_mapping.updated",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "object.field_mapping.updated",
+                "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
+                "provider_name": "salesforce",
+                "object_name": "Contact",
+                "object_type": "common",
+                "schema_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+                "result": "ERROR",
+                "error_message": "Error message"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "object.field_mapping.updated"
+                    ],
+                    "example": "object.field_mapping.updated"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "c7c5204a-61d3-44a7-b581-a1f29b239f89"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "Contact"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard"
+                    ]
+                  },
+                  "schema_id": {
+                    "type": "string",
+                    "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "connection_id",
+                  "application_id",
+                  "customer_id",
+                  "provider_name",
+                  "object_name",
+                  "object_type",
+                  "schema_id",
                   "result"
                 ]
               }
@@ -5280,7 +5887,7 @@
         "operationId": "salesforceCdcCreate",
         "x-event-type": "salesforce_cdc.create",
         "tags": [
-          "Webhook Events"
+          "Salesforce CDC Events (beta)"
         ],
         "requestBody": {
           "content": {
@@ -5295,6 +5902,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.create"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was created",
@@ -5314,6 +5926,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields"
@@ -5336,7 +5949,7 @@
         "operationId": "salesforceCdcUpdate",
         "x-event-type": "salesforce_cdc.update",
         "tags": [
-          "Webhook Events"
+          "Salesforce CDC Events (beta)"
         ],
         "requestBody": {
           "content": {
@@ -5356,6 +5969,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.update"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was updated",
@@ -5402,6 +6020,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields",
@@ -5427,7 +6046,7 @@
         "operationId": "salesforceCdcDelete",
         "x-event-type": "salesforce_cdc.delete",
         "tags": [
-          "Webhook Events"
+          "Salesforce CDC Events (beta)"
         ],
         "requestBody": {
           "content": {
@@ -5439,6 +6058,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.delete"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was deleted",
@@ -5451,6 +6075,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name"
                 ]
@@ -5472,7 +6097,7 @@
         "operationId": "salesforceCdcUndelete",
         "x-event-type": "salesforce_cdc.undelete",
         "tags": [
-          "Webhook Events"
+          "Salesforce CDC Events (beta)"
         ],
         "requestBody": {
           "content": {
@@ -5487,6 +6112,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "description": "The type of webhook event",
+                    "example": "salesforce_cdc.undelete"
+                  },
                   "id": {
                     "type": "string",
                     "description": "The Salesforce ID of the record that was undeleted",
@@ -5506,6 +6136,7 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "id",
                   "entity_name",
                   "fields"
@@ -5538,8 +6169,10 @@
                 "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "provider_name": "salesforce",
                 "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+                "type": "object",
                 "object_type": "standard",
                 "object": "contact",
+                "result": "ERROR",
                 "error_message": "Error message"
               },
               "schema": {
@@ -5547,6 +6180,13 @@
                   {
                     "type": "object",
                     "properties": {
+                      "webhook_event_type": {
+                        "type": "string",
+                        "enum": [
+                          "sync.complete"
+                        ],
+                        "example": "sync.complete"
+                      },
                       "connection_id": {
                         "type": "string",
                         "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5579,6 +6219,7 @@
                       }
                     },
                     "required": [
+                      "webhook_event_type",
                       "connection_id",
                       "customer_id",
                       "provider_name",
@@ -5647,12 +6288,12 @@
         }
       }
     },
-    "connection.create": {
+    "connection.created": {
       "post": {
         "summary": "Customer connection created",
         "description": "Notification of the creation of a connection for a customer",
-        "operationId": "connectionCreate",
-        "x-event-type": "connection.create",
+        "operationId": "connectionCreated",
+        "x-event-type": "connection.created",
         "tags": [
           "Webhook Events"
         ],
@@ -5660,6 +6301,7 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "connection.created",
                 "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
                 "category": "crm",
@@ -5669,6 +6311,13 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "connection.created"
+                    ],
+                    "example": "connection.created"
+                  },
                   "customer_id": {
                     "type": "string",
                     "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
@@ -5692,10 +6341,575 @@
                   }
                 },
                 "required": [
+                  "webhook_event_type",
                   "customer_id",
                   "provider_id",
                   "category",
                   "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "connection.deleted": {
+      "post": {
+        "summary": "Customer connection deleted",
+        "description": "Notification of the deletion of a connection for a customer",
+        "operationId": "connectionDeleted",
+        "x-event-type": "connection.deleted",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "connection.deleted",
+                "connection_id": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b",
+                "customer_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "provider_id": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024",
+                "category": "crm",
+                "provider_name": "salesforce",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "connection.deleted"
+                    ],
+                    "example": "connection.deleted"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "6b0abaf8-076d-48e7-9cdf-f12c68e86e2b"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "provider_id": {
+                    "type": "string",
+                    "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
+                  },
+                  "category": {
+                    "$ref": "#/components/schemas/category"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "connection_id",
+                  "customer_id",
+                  "provider_id",
+                  "category",
+                  "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "entity.entity_mapping.created": {
+      "post": {
+        "summary": "Entity mapping created",
+        "description": "Notification of the creation of an entity mapping",
+        "operationId": "entityEntityMappingCreated",
+        "x-event-type": "entity.entity_mapping.created",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "entity.entity_mapping.created",
+                "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+                "customer_id": "1a2b3c4d5e6f",
+                "provider_name": "salesforce",
+                "object_name": "opportunity",
+                "object_type": "standard",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "entity.entity_mapping.created"
+                    ],
+                    "example": "entity.entity_mapping.created"
+                  },
+                  "entity_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "a7052919-e024-4985-bd08-856056b66f59"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "1a2b3c4d5e6f"
+                  },
+                  "provider_name": {
+                    "type": "string",
+                    "example": "salesforce"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "opportunity"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "custom"
+                    ],
+                    "example": "standard"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "entity_id",
+                  "application_id",
+                  "connection_id",
+                  "customer_id",
+                  "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "entity.entity_mapping.updated": {
+      "post": {
+        "summary": "Entity mapping updated",
+        "description": "Notification of an update to an entity mapping",
+        "operationId": "entityEntityMappingUpdated",
+        "x-event-type": "entity.entity_mapping.updated",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "entity.entity_mapping.updated",
+                "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+                "customer_id": "1a2b3c4d5e6f",
+                "provider_name": "salesforce",
+                "object_name": "opportunity",
+                "object_type": "standard",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "entity.entity_mapping.updated"
+                    ],
+                    "example": "entity.entity_mapping.updated"
+                  },
+                  "entity_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "a7052919-e024-4985-bd08-856056b66f59"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "1a2b3c4d5e6f"
+                  },
+                  "provider_name": {
+                    "type": "string",
+                    "example": "salesforce"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "opportunity"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "custom"
+                    ],
+                    "example": "standard"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "entity_id",
+                  "application_id",
+                  "connection_id",
+                  "customer_id",
+                  "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "entity.entity_mapping.deleted": {
+      "post": {
+        "summary": "Entity mapping deleted",
+        "description": "Notification of the deletion of an entity mapping",
+        "operationId": "entityEntityMappingDeleted",
+        "x-event-type": "entity.entity_mapping.deleted",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "entity.entity_mapping.deleted",
+                "entity_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "connection_id": "a7052919-e024-4985-bd08-856056b66f59",
+                "customer_id": "1a2b3c4d5e6f",
+                "provider_name": "salesforce",
+                "object_name": "opportunity",
+                "object_type": "standard",
+                "result": "SUCCESS"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "entity.entity_mapping.deleted"
+                    ],
+                    "example": "entity.entity_mapping.deleted"
+                  },
+                  "entity_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "a7052919-e024-4985-bd08-856056b66f59"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "1a2b3c4d5e6f"
+                  },
+                  "provider_name": {
+                    "type": "string",
+                    "example": "salesforce"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "opportunity"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "standard",
+                      "custom"
+                    ],
+                    "example": "standard"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "entity_id",
+                  "application_id",
+                  "connection_id",
+                  "customer_id",
+                  "provider_name",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "object.field_mapping.created": {
+      "post": {
+        "summary": "Object field mapping created",
+        "description": "Notification of the creation of am object field mapping",
+        "operationId": "objectFieldMappingCreated",
+        "x-event-type": "object.field_mapping.created",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "object.field_mapping.created",
+                "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
+                "provider_name": "salesforce",
+                "object_name": "Contact",
+                "object_type": "common",
+                "schema_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+                "result": "ERROR",
+                "error_message": "Error message"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "object.field_mapping.created"
+                    ],
+                    "example": "object.field_mapping.created"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "c7c5204a-61d3-44a7-b581-a1f29b239f89"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "Contact"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard"
+                    ]
+                  },
+                  "schema_id": {
+                    "type": "string",
+                    "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "connection_id",
+                  "application_id",
+                  "customer_id",
+                  "provider_name",
+                  "object_name",
+                  "object_type",
+                  "schema_id",
+                  "result"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "object.field_mapping.updated": {
+      "post": {
+        "summary": "Object field mapping updated",
+        "description": "Notification of an update to an object field mapping",
+        "operationId": "objectFieldMappingUpdated",
+        "x-event-type": "object.field_mapping.updated",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "object.field_mapping.updated",
+                "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "application_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "customer_id": "c7c5204a-61d3-44a7-b581-a1f29b239f89",
+                "provider_name": "salesforce",
+                "object_name": "Contact",
+                "object_type": "common",
+                "schema_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+                "result": "ERROR",
+                "error_message": "Error message"
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "object.field_mapping.updated"
+                    ],
+                    "example": "object.field_mapping.updated"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "application_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "c7c5204a-61d3-44a7-b581-a1f29b239f89"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "object_name": {
+                    "type": "string",
+                    "example": "Contact"
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard"
+                    ]
+                  },
+                  "schema_id": {
+                    "type": "string",
+                    "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                  },
+                  "result": {
+                    "type": "string",
+                    "enum": [
+                      "SUCCESS",
+                      "ERROR"
+                    ]
+                  },
+                  "error_message": {
+                    "type": "string",
+                    "example": "Error message"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "connection_id",
+                  "application_id",
+                  "customer_id",
+                  "provider_name",
+                  "object_name",
+                  "object_type",
+                  "schema_id",
                   "result"
                 ]
               }

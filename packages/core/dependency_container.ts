@@ -90,10 +90,16 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const syncConfigService = new SyncConfigService(prisma);
   const schemaService = new SchemaService(prisma);
   const entityService = new EntityService(prisma);
-  const connectionService = new ConnectionService(prisma, providerService, schemaService, entityService);
   const customerService = new CustomerService(prisma);
+  const webhookService = new WebhookService({ prisma, applicationService });
+  const connectionService = new ConnectionService(
+    prisma,
+    providerService,
+    schemaService,
+    entityService,
+    webhookService
+  );
   const remoteService = new RemoteService(connectionService, providerService);
-  const webhookService = new WebhookService({ prisma });
   const destinationService = new DestinationService(prisma);
 
   const syncService = new SyncService(prisma, connectionService);
