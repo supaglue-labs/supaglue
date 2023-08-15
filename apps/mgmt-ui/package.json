@@ -18,7 +18,7 @@
     "@mui/x-data-grid-pro": "^6.11.0",
     "@mui/x-date-pickers": "^6.0.0",
     "@mui/x-license-pro": "^6.10.2",
-    "@sentry/nextjs": "^7.44.2",
+    "@sentry/nextjs": "^7.64.0",
     "@supaglue/schemas": "workspace:^",
     "@supaglue/types": "workspace:^",
     "@supaglue/utils": "workspace:^",
