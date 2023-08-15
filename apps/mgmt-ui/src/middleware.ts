@@ -33,8 +33,8 @@ const cloudMiddleware = authMiddleware({
     }
 
     // redirect them to create an organization if they don't have one
-    if (userId && !orgId && request.nextUrl.pathname !== '/create-organization') {
-      const createOrganizationUrl = new URL('/create-organization', request.url);
+    if (userId && !orgId && !request.nextUrl.pathname.startsWith('/create-organization')) {
+      const createOrganizationUrl = new URL('/create-organization?switcher=1', request.url);
       return NextResponse.redirect(createOrganizationUrl);
     }
 
