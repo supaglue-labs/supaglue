@@ -339,7 +339,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         _supaglue_emitted_at: new Date(),
         _supaglue_is_deleted: record.metadata.isDeleted,
         _supaglue_raw_data: record.rawData,
-        _supaglue_mapped_data: record.mappedData,
+        _supaglue_mapped_data: record.mappedProperties,
       };
       const columns = Object.keys(mappedRecord);
       const columnsToUpdate = columns.filter(

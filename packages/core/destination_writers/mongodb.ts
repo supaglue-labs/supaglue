@@ -220,7 +220,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     collectionName: string,
     record: BaseFullRecord
   ): Promise<void> {
-    const { additionalFields: additionalMappedData, ...otherMappedData } = record.mappedData;
+    const { additional_fields: additionalMappedData, ...otherMappedData } = record.mappedProperties;
 
     const mappedRecord = {
       _supaglue_application_id: applicationId,
@@ -230,7 +230,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       _supaglue_emitted_at: new Date(),
       _supaglue_is_deleted: record.metadata.isDeleted,
       _supaglue_raw_data: record.rawData,
-      _supaglue_mapped_data: record.mappedData,
+      _supaglue_mapped_data: record.mappedProperties,
       ...otherMappedData,
       _supaglue_additional_fields: additionalMappedData,
     };

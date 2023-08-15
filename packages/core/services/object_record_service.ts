@@ -109,7 +109,7 @@ export class ObjectRecordService {
     return {
       id: recordId,
       standardObjectName: objectName,
-      mappedData: mapObjectToSchema(record.data, fieldMappingConfig),
+      mappedProperties: mapObjectToSchema(record.data, fieldMappingConfig),
       rawData: record.data,
       metadata: record.metadata,
     };
@@ -120,11 +120,11 @@ export class ObjectRecordService {
     objectName: string,
     recordId: string
   ): Promise<StandardObjectRecord> {
-    const { id, standardObjectName, mappedData } = await this.#getStandardFullObjectRecord(
-      connection,
-      objectName,
-      recordId
-    );
+    const {
+      id,
+      standardObjectName,
+      mappedProperties: mappedData,
+    } = await this.#getStandardFullObjectRecord(connection, objectName, recordId);
     return {
       id,
       standardObjectName,
@@ -207,7 +207,7 @@ function mapObjectToSchema(data: ObjectRecordData, fieldMappingConfig: FieldMapp
 
       return {
         ...coreFields,
-        additionalFields,
+        additional_fields: additionalFields,
       };
     }
   }

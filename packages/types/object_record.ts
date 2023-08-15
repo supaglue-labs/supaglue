@@ -32,6 +32,8 @@ export type SnakecasedKeysObjectRecord<T extends Record<string, unknown> = Recor
 
 export type PropertiesWithAdditionalFields = {
   [key: string]: unknown;
+  // IMPORTANT: this is intentionally snakecase so that when we write to destination, we don't need to snakecase-ify it
+  // If you change this back to camelcase, make sure that you address this in all destination writers
   additional_fields?: Record<string, unknown>;
 };
 
@@ -45,10 +47,7 @@ export type CreatedStandardObjectRecord = BaseCreatedObjectRecord & {
 
 export type ObjectRecordUpsertData = Record<string, unknown>;
 
-export type ObjectRecordData = {
-  additionalFields?: Record<string, unknown>;
-  [key: string]: unknown;
-};
+export type ObjectRecordData = PropertiesWithAdditionalFields;
 
 type BaseObjectRecord = {
   id: string;
@@ -72,7 +71,7 @@ export type ObjectMetadata = {
 
 export type BaseFullRecord = {
   id: string;
-  mappedData: ObjectRecordData;
+  mappedProperties: ObjectRecordData;
   rawData: Record<string, unknown>;
   metadata: ObjectMetadata;
 };

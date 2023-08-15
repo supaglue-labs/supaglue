@@ -100,7 +100,7 @@ export class EntityRecordService {
         id: entity.id,
         name: entity.name,
       },
-      mappedData: mapObjectToEntityFields(record.data, fieldMappingConfig),
+      mappedProperties: mapObjectToEntityFields(record.data, fieldMappingConfig),
       rawData: record.data,
       metadata: record.metadata,
     };
@@ -111,7 +111,11 @@ export class EntityRecordService {
     entityName: string,
     recordId: string
   ): Promise<EntityRecord> {
-    const { id, entity, mappedData } = await this.#getFullEntityRecord(connection, entityName, recordId);
+    const {
+      id,
+      entity,
+      mappedProperties: mappedData,
+    } = await this.#getFullEntityRecord(connection, entityName, recordId);
     return {
       id,
       entity,
@@ -257,7 +261,7 @@ function mapObjectToEntityFields(data: EntityRecordData, fieldMappingConfig: Fie
 
       return {
         ...coreFields,
-        additionalFields,
+        additional_fields: additionalFields,
       };
     }
   }
