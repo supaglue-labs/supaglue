@@ -290,6 +290,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_provider_name: providerName,
               _supaglue_customer_id: customerId,
               _supaglue_emitted_at: record.emittedAt,
+              _supaglue_last_modified_at: record.lastModifiedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
               _supaglue_mapped_data: record.mappedProperties,
