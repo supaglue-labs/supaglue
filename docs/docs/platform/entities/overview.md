@@ -232,13 +232,13 @@ A few things to note:
 }
 ```
 
-If the customer defined additional fields, like `email`, they will also be included in `_supaglue_raw_data` under the `additional_fields` key:
+If the customer defined additional fields, like `email`, they will also be included in `_supaglue_raw_data` under the `_supaglue_additional_fields` key:
 
 ```json
 {
   "first_name": "Alice",
   "last_name": "Smith",
-  "additional_fields": {
+  "_supaglue_additional_fields": {
     "email": "alicesmith@gmail.com"
   }
 }
