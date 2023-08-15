@@ -1,8 +1,6 @@
 import type { CategoryOfProviderName, ProviderName, SchemaMappingsConfig } from '.';
 import type { ConnectionEntityMapping } from './entity_mapping';
 
-export type ConnectionStatus = 'available' | 'added' | 'authorized' | 'callable';
-
 export type ApiKeyConnectionCredentialsDecrypted = {
   type: 'api_key';
   apiKey: string;
@@ -95,7 +93,6 @@ export type ConnectionUpdateParams = {
 
 export type ConnectionSafe<T extends ProviderName> = Omit<ConnectionCreateParams<T>, 'credentials'> & {
   id: string;
-  status: ConnectionStatus;
   category: CategoryOfProviderName<T>;
   providerName: T;
 };
@@ -104,7 +101,6 @@ export type ConnectionSafeAny = ConnectionSafe<ProviderName>;
 
 export type ConnectionUnsafe<T extends ProviderName> = ConnectionCreateParams<T> & {
   id: string;
-  status: ConnectionStatus;
   category: CategoryOfProviderName<T>;
   providerName: T;
 };

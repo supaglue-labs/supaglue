@@ -3,14 +3,6 @@ properties:
   id:
     type: string
     example: e888cedf-e9d0-42c5-9485-2d72984faef2
-  status:
-    type: string
-    enum:
-      - available
-      - added
-      - authorized
-      - callable
-    example: available
   application_id:
     type: string
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
@@ -34,7 +26,6 @@ properties:
     $ref: ./connection_entity_mappings.yaml
 required:
   - id
-  - status
   - application_id
   - customer_id
   - provider_id

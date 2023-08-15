@@ -20,7 +20,6 @@ import type {
   ConnectionCreateParams,
   ConnectionCreateParamsAny,
   ConnectionSafeAny,
-  ConnectionStatus,
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
   ImportedConnectionCredentials,
@@ -127,7 +126,7 @@ export class ConnectionAndSyncService {
     if (!provider) {
       throw new Error(`No provider found for ${params.providerName}`);
     }
-    const status: ConnectionStatus = 'added';
+    const status = 'added';
     const customerId = getCustomerIdPk(params.applicationId, params.customerId);
     const connection = await this.#prisma.connection.upsert({
       create: {
@@ -271,7 +270,7 @@ export class ConnectionAndSyncService {
 
     const connectionId = uuidv4();
     try {
-      const status: ConnectionStatus = 'added';
+      const status = 'added';
 
       const connectionModel = await this.#prisma.$transaction(async (tx) => {
         const connectionModel = await tx.connection.create({
