@@ -336,9 +336,25 @@ const sidebars = {
       value: sidebarHeader('Passthrough API'),
     },
     {
-      id: 'api/v2/actions/send-passthrough-request',
-      label: 'Passthrough API',
+      type: 'category',
+      label: 'Passthrough',
+      link: { type: 'doc', id: 'api/v2/actions/passthrough' },
+      collapsed: true,
+      items: [
+        {
+          type: 'doc',
+          id: 'api/v2/actions/send-passthrough-request',
+          label: 'Send passthrough request',
+          className: 'api-method post',
+        },
+      ],
+      className: 'hidden',
+    },
+    {
       type: 'doc',
+      id: 'api/v2/actions/send-passthrough-request',
+      label: 'Send passthrough request',
+      className: 'api-method post',
     },
   ],
 };
