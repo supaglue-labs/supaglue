@@ -73,8 +73,8 @@ export class ObjectRecordService {
     }
     const [writer] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
-      const object = await this.#getStandardFullObjectRecord(connection, objectName, id);
-      await writer.upsertStandardObjectRecord(connection, objectName, object);
+      const record = await this.#getStandardFullObjectRecord(connection, objectName, id);
+      await writer.upsertStandardObjectRecord(connection, objectName, record);
     }
   }
 
