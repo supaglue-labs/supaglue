@@ -242,16 +242,62 @@ const sidebars = {
       type: 'html',
       value: sidebarHeader('Actions API'),
     },
+    { type: 'doc', id: 'api/v2/actions/actions-api' },
     {
       type: 'category',
-      label: 'Entities/Objects',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      items: require('./docs/api/v2/actions/sidebar.js'),
+      label: 'Entity Records',
+      link: { type: 'doc', id: 'api/v2/actions/entity-records' },
+      collapsed: true,
+      items: [
+        {
+          type: 'doc',
+          id: 'api/v2/actions/create-entity-record',
+          label: 'Create Entity record',
+          className: 'api-method post',
+        },
+        {
+          type: 'doc',
+          id: 'api/v2/actions/get-entity-record',
+          label: 'Get Entity Record',
+          className: 'api-method get',
+        },
+        {
+          type: 'doc',
+          id: 'api/v2/actions/update-entity-record',
+          label: 'Update entity record',
+          className: 'api-method patch',
+        },
+      ],
     },
     {
       type: 'category',
-      label: 'Common Schema',
+      label: 'Object Records',
+      link: { type: 'doc', id: 'api/v2/actions/object-records' },
+      collapsed: true,
+      items: [
+        {
+          type: 'doc',
+          id: 'api/v2/actions/create-standard-object-record',
+          label: 'Create Standard Object record',
+          className: 'api-method post',
+        },
+        {
+          type: 'doc',
+          id: 'api/v2/actions/get-standard-object-record',
+          label: 'Get Standard Object record',
+          className: 'api-method get',
+        },
+        {
+          type: 'doc',
+          id: 'api/v2/actions/update-standard-object-record',
+          label: 'Update Standard Object record',
+          className: 'api-method patch',
+        },
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Common Schema Records',
       items: [
         {
           type: 'category',
@@ -266,6 +312,20 @@ const sidebars = {
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           items: require('./docs/api/v2/engagement/sidebar.js'),
+        },
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Associations',
+      collapsed: true,
+      items: [
+        { type: 'doc', id: 'api/v2/actions/get-associations', label: 'List associations', className: 'api-method get' },
+        {
+          type: 'doc',
+          id: 'api/v2/actions/create-association',
+          label: 'Create association',
+          className: 'api-method put',
         },
       ],
     },
