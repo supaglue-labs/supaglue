@@ -36,7 +36,7 @@ import type {
 } from '@supaglue/types/entity_mapping';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export { getServerSideProps };
 
@@ -305,20 +305,38 @@ type EntityObjectMappingProps = {
   setObject: (selected: FriendlyStandardOrCustomObject | undefined) => void;
 };
 function EntityObjectMapping({ entity, customerId, providerName, object, setObject }: EntityObjectMappingProps) {
-  const { data: standardObjectOptions = [] } = useStandardObjects(customerId, providerName);
-  const { data: customObjectOptions = [] } = useCustomObjects(customerId, providerName);
+  const { data: standardObjectOptions = [], error: standardObjectOptionsError } = useStandardObjects(
+    customerId,
+    providerName
+  );
+  const { data: customObjectOptions = [], error: customObjectOptionsError } = useCustomObjects(
+    customerId,
+    providerName
+  );
+  const [objectOptions, setObjectOptions] = useState<FriendlyStandardOrCustomObject[]>([]);
+  const { addNotification } = useNotification();
 
-  const objectOptions = [
-    ...standardObjectOptions.map(({ name }) => ({
-      type: 'standard' as const,
-      name,
-    })),
-    ...customObjectOptions.map((object) => ({
-      type: 'custom' as const,
-      id: object.id,
-      name: object.name,
-    })),
-  ];
+  useEffect(() => {
+    if (standardObjectOptionsError || customObjectOptionsError) {
+      setObjectOptions([]);
+      addNotification({
+        message: `Error loading objects types: ${(standardObjectOptionsError || customObjectOptionsError).message}`,
+        severity: 'error',
+      });
+      return;
+    }
+    setObjectOptions([
+      ...standardObjectOptions.map(({ name }) => ({
+        type: 'standard' as const,
+        name,
+      })),
+      ...customObjectOptions.map((object) => ({
+        type: 'custom' as const,
+        id: object.id,
+        name: object.name,
+      })),
+    ]);
+  }, [standardObjectOptions, customObjectOptions, customObjectOptionsError, standardObjectOptionsError]);
 
   return (
     <>
