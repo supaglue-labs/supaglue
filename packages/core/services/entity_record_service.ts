@@ -261,7 +261,7 @@ function mapObjectToEntityFields(data: EntityRecordData, fieldMappingConfig: Fie
 
       return {
         ...coreFields,
-        additional_fields: additionalFields,
+        additionalFields: additionalFields,
       };
     }
   }

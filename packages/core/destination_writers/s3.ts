@@ -15,7 +15,7 @@ import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
-import { BaseDestinationWriter } from './base';
+import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 const CHUNK_SIZE = 1000;
@@ -216,7 +216,7 @@ export class S3DestinationWriter extends BaseDestinationWriter {
               _supaglue_last_modified_at: record.lastModifiedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
-              _supaglue_mapped_data: record.mappedProperties,
+              _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
             };
             data.push(mappedRecord);
 

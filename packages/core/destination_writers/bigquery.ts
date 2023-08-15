@@ -36,7 +36,7 @@ import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequ
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
-import { BaseDestinationWriter } from './base';
+import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 export class BigQueryDestinationWriter extends BaseDestinationWriter {
@@ -343,7 +343,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
               _supaglue_last_modified_at: record.lastModifiedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
-              _supaglue_mapped_data: record.mappedProperties,
+              _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
             };
 
             ++tempTableRowCount;
@@ -370,7 +370,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     // Copy from deduped temp table
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [IN PROGRESS]');
     // IMPORTANT: we need to use `QUALIFY ROW_NUMBER() OVER (PARTITION BY _supaglue_id ORDER BY _supaglue_last_modified_at DESC) = 1)`
-    // because we may have multiple records with the same _id
+    // because we may have multiple records with the same _supaglue_id
     // For example, hubspot will return the same record twice when querying for `archived: true` if
     // the record was archived, restored, and archived again.
     // TODO: This may have performance implications. We should look into this later.

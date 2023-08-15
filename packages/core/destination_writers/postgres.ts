@@ -36,7 +36,7 @@ import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequ
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
-import { BaseDestinationWriter } from './base';
+import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
@@ -339,7 +339,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         _supaglue_emitted_at: new Date(),
         _supaglue_is_deleted: record.metadata.isDeleted,
         _supaglue_raw_data: record.rawData,
-        _supaglue_mapped_data: record.mappedProperties,
+        _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
       };
       const columns = Object.keys(mappedRecord);
       const columnsToUpdate = columns.filter(
@@ -425,7 +425,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
           c !== '_supaglue_application_id' &&
           c !== '_supaglue_provider_name' &&
           c !== '_supaglue_customer_id' &&
-          c !== '_id'
+          c !== '_supaglue_id'
       );
 
       // Output
@@ -465,7 +465,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 _supaglue_last_modified_at: record.lastModifiedAt,
                 _supaglue_is_deleted: record.isDeleted,
                 _supaglue_raw_data: record.rawData,
-                _supaglue_mapped_data: record.mappedProperties,
+                _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
               };
 
               ++tempTableRowCount;

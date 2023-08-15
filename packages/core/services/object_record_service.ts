@@ -207,7 +207,7 @@ function mapObjectToSchema(data: ObjectRecordData, fieldMappingConfig: FieldMapp
 
       return {
         ...coreFields,
-        additional_fields: additionalFields,
+        additionalFields: additionalFields,
       };
     }
   }

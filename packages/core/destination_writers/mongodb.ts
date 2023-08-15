@@ -23,7 +23,7 @@ import { Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
-import { BaseDestinationWriter } from './base';
+import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 const BATCH_SIZE = 1000;
@@ -220,7 +220,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     collectionName: string,
     record: BaseFullRecord
   ): Promise<void> {
-    const { additional_fields: additionalMappedData, ...otherMappedData } = record.mappedProperties;
+    const { additionalFields, ...otherMappedProperties } = record.mappedProperties;
 
     const mappedRecord = {
       _supaglue_application_id: applicationId,
@@ -230,9 +230,9 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       _supaglue_emitted_at: new Date(),
       _supaglue_is_deleted: record.metadata.isDeleted,
       _supaglue_raw_data: record.rawData,
-      _supaglue_mapped_data: record.mappedProperties,
-      ...otherMappedData,
-      _supaglue_additional_fields: additionalMappedData,
+      _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
+      ...otherMappedProperties,
+      _supaglue_additional_fields: additionalFields,
     };
     const { database } = this.#destination.config;
 
@@ -289,7 +289,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
         objectMode: true,
         transform: (record: MappedListedObjectRecord, encoding, callback) => {
           try {
-            const { additional_fields: additionalMappedProperties, ...otherMappedProperties } = record.mappedProperties;
+            const { additionalFields, ...otherMappedProperties } = record.mappedProperties;
 
             const mappedRecord = {
               _supaglue_application_id: applicationId,
@@ -300,9 +300,9 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_last_modified_at: record.lastModifiedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
-              _supaglue_mapped_data: record.mappedProperties,
+              _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
               ...otherMappedProperties,
-              _supaglue_additional_fields: additionalMappedProperties,
+              _supaglue_additional_fields: additionalFields,
             };
 
             ++rowCount;

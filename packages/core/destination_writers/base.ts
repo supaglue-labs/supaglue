@@ -3,8 +3,10 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  PropertiesWithAdditionalFields,
   ProviderCategory,
   StandardFullObjectRecord,
+  TransformedPropertiesWithAdditionalFields,
 } from '@supaglue/types';
 import type { FullEntityRecord } from '@supaglue/types/entity_record';
 import type { Readable } from 'stream';
@@ -135,4 +137,14 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     stream: Readable,
     heartbeat: () => void
   ): Promise<WriteEntityRecordsResult>;
+}
+
+export function toTransformedPropertiesWithAdditionalFields(
+  properties: PropertiesWithAdditionalFields
+): TransformedPropertiesWithAdditionalFields {
+  const { additionalFields, ...rest } = properties;
+  return {
+    ...rest,
+    _supaglue_additional_fields: additionalFields,
+  };
 }

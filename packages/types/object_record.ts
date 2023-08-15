@@ -32,9 +32,12 @@ export type SnakecasedKeysObjectRecord<T extends Record<string, unknown> = Recor
 
 export type PropertiesWithAdditionalFields = {
   [key: string]: unknown;
-  // IMPORTANT: this is intentionally snakecase so that when we write to destination, we don't need to snakecase-ify it
-  // If you change this back to camelcase, make sure that you address this in all destination writers
-  additional_fields?: Record<string, unknown>;
+  additionalFields?: Record<string, unknown>;
+};
+
+export type TransformedPropertiesWithAdditionalFields = {
+  [key: string]: unknown;
+  _supaglue_additional_fields?: Record<string, unknown>;
 };
 
 type BaseCreatedObjectRecord = {
