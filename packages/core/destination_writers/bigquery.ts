@@ -286,6 +286,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       '_supaglue_provider_name',
       '_supaglue_customer_id',
       '_supaglue_emitted_at',
+      '_supaglue_last_modified_at',
       '_supaglue_is_deleted',
       '_supaglue_raw_data',
       '_supaglue_mapped_data',
@@ -298,7 +299,6 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
         c !== '_supaglue_customer_id' &&
         c !== 'id'
     );
-    const columnsWithLastModifiedAt = [...columns, '_supaglue_last_modified_at'];
 
     // Output
     const stream = client
@@ -313,7 +313,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
 
     // Input
     const stringifier = stringify({
-      columns: columnsWithLastModifiedAt,
+      columns,
       cast: {
         boolean: (value: boolean) => value.toString(),
         object: (value: object) => JSON.stringify(value).replace(/\\u0000/g, ''),
@@ -339,12 +339,11 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
               _supaglue_provider_name: providerName,
               _supaglue_customer_id: customerId,
               _supaglue_emitted_at: record.emittedAt,
+              _supaglue_last_modified_at: record.lastModifiedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
               _supaglue_mapped_data: record.mappedProperties,
               id: record.id,
-              // We're only writing this to the temp table so that we can deduplicate.
-              _supaglue_last_modified_at: record.lastModifiedAt,
             };
 
             ++tempTableRowCount;
