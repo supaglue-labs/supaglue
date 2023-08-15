@@ -579,3 +579,7 @@ li > a.menu__link {
   content: "head";
   background-color: var(--ifm-color-secondary-darkest);
 }
+
+.hidden {
+  display: none;
+}
