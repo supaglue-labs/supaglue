@@ -335,8 +335,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         _supaglue_application_id: applicationId,
         _supaglue_provider_name: providerName,
         _supaglue_customer_id: customerId,
+        _supaglue_id: record.id,
         _supaglue_emitted_at: new Date(),
-        id: record.id,
         _supaglue_is_deleted: record.metadata.isDeleted,
         _supaglue_raw_data: record.rawData,
         _supaglue_mapped_data: record.mappedData,
@@ -347,7 +347,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
           c !== '_supaglue_application_id' &&
           c !== '_supaglue_provider_name' &&
           c !== '_supaglue_customer_id' &&
-          c !== 'id'
+          c !== '_supaglue_id'
       );
 
       const columnsStr = columns.join(',');
@@ -373,7 +373,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         `INSERT INTO ${qualifiedTable} (${columnsStr})
 VALUES
   (${columnPlaceholderValuesStr})
-ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         values
       );
@@ -404,26 +404,28 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(getObjectOrEntitySchemaSetupSql(table, schema, /* temp */ true));
-      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, _supaglue_last_modified_at DESC)`);
+      await client.query(
+        `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_id ASC, _supaglue_last_modified_at DESC)`
+      );
 
       // TODO: Make this type-safe
       const columns = [
         '_supaglue_application_id',
         '_supaglue_provider_name',
         '_supaglue_customer_id',
+        '_supaglue_id',
         '_supaglue_emitted_at',
         '_supaglue_last_modified_at',
         '_supaglue_is_deleted',
         '_supaglue_raw_data',
         '_supaglue_mapped_data',
-        'id',
       ];
       const columnsToUpdate = columns.filter(
         (c) =>
           c !== '_supaglue_application_id' &&
           c !== '_supaglue_provider_name' &&
           c !== '_supaglue_customer_id' &&
-          c !== 'id'
+          c !== '_id'
       );
 
       // Output
@@ -458,12 +460,12 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 _supaglue_application_id: applicationId,
                 _supaglue_provider_name: providerName,
                 _supaglue_customer_id: customerId,
+                _supaglue_id: record.id,
                 _supaglue_emitted_at: record.emittedAt,
                 _supaglue_last_modified_at: record.lastModifiedAt,
                 _supaglue_is_deleted: record.isDeleted,
                 _supaglue_raw_data: record.rawData,
                 _supaglue_mapped_data: record.mappedProperties,
-                id: record.id,
               };
 
               ++tempTableRowCount;
@@ -492,7 +494,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       // overwrite the newer record with the older record in the main table.
       childLogger.info('Writing deduped temp table records into deduped temp table [IN PROGRESS]');
       await client.query(
-        `CREATE TEMP TABLE IF NOT EXISTS ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY id ASC, _supaglue_last_modified_at DESC`
+        `CREATE TEMP TABLE IF NOT EXISTS ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC`
       );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
@@ -519,8 +521,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
-SELECT DISTINCT ON (id) ${columns.join(',')} FROM ${dedupedTempTable} OFFSET ${offset} limit ${batchSize}
-ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+SELECT DISTINCT ON (_supaglue_id) ${columns.join(',')} FROM ${dedupedTempTable} OFFSET ${offset} limit ${batchSize}
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
         heartbeat();
@@ -613,14 +615,18 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `"${tableName}"` 
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_id" TEXT NOT NULL,
   "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "_supaglue_last_modified_at" TIMESTAMP(3) NOT NULL,
   "_supaglue_is_deleted" BOOLEAN NOT NULL,
   "_supaglue_raw_data" JSONB NOT NULL,
-  "_supaglue_mapped_data" JSONB NOT NULL,
-  "id" TEXT NOT NULL
+  "_supaglue_mapped_data" JSONB NOT NULL
 
-  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
+  ${
+    temp
+      ? ''
+      : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "_supaglue_id")'
+  }
 );`;
 };
 

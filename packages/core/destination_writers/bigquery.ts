@@ -285,19 +285,19 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       '_supaglue_application_id',
       '_supaglue_provider_name',
       '_supaglue_customer_id',
+      '_supaglue_id',
       '_supaglue_emitted_at',
       '_supaglue_last_modified_at',
       '_supaglue_is_deleted',
       '_supaglue_raw_data',
       '_supaglue_mapped_data',
-      'id',
     ];
     const columnsToUpdate = columns.filter(
       (c) =>
         c !== '_supaglue_application_id' &&
         c !== '_supaglue_provider_name' &&
         c !== '_supaglue_customer_id' &&
-        c !== 'id'
+        c !== '_supaglue_id'
     );
 
     // Output
@@ -338,12 +338,12 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
               _supaglue_application_id: applicationId,
               _supaglue_provider_name: providerName,
               _supaglue_customer_id: customerId,
+              _supaglue_id: record.id,
               _supaglue_emitted_at: record.emittedAt,
               _supaglue_last_modified_at: record.lastModifiedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
               _supaglue_mapped_data: record.mappedProperties,
-              id: record.id,
             };
 
             ++tempTableRowCount;
@@ -369,8 +369,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
 
     // Copy from deduped temp table
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [IN PROGRESS]');
-    // IMPORTANT: we need to use `QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY last_modified_at DESC) = 1)`
-    // because we may have multiple records with the same id
+    // IMPORTANT: we need to use `QUALIFY ROW_NUMBER() OVER (PARTITION BY _supaglue_id ORDER BY _supaglue_last_modified_at DESC) = 1)`
+    // because we may have multiple records with the same _id
     // For example, hubspot will return the same record twice when querying for `archived: true` if
     // the record was archived, restored, and archived again.
     // TODO: This may have performance implications. We should look into this later.
@@ -379,11 +379,11 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
 -- Upsert into ${qualifiedTable}
     MERGE INTO ${qualifiedTable} AS table USING (SELECT ${columns.join(
       ','
-    )} FROM (SELECT * FROM ${qualifiedTempTable} QUALIFY ROW_NUMBER() OVER (PARTITION BY id ORDER BY _supaglue_last_modified_at DESC) = 1)) AS temp
+    )} FROM (SELECT * FROM ${qualifiedTempTable} QUALIFY ROW_NUMBER() OVER (PARTITION BY _supaglue_id ORDER BY _supaglue_last_modified_at DESC) = 1)) AS temp
 ON table._supaglue_application_id = temp._supaglue_application_id
   AND table._supaglue_provider_name = temp._supaglue_provider_name
   AND table._supaglue_customer_id = temp._supaglue_customer_id
-  AND table.id = temp.id
+  AND table._supaglue_id = temp._supaglue_id
 WHEN NOT MATCHED THEN INSERT (${columns.join(',')}) VALUES (${columns.map((col) => `temp.${col}`).join(', ')})
 WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col}`).join(', ')}`);
     heartbeat();
@@ -483,6 +483,11 @@ const getObjectSchema = (temp?: boolean): TableSchema => {
         mode: 'REQUIRED',
       },
       {
+        name: '_supaglue_id',
+        type: 'STRING',
+        mode: 'REQUIRED',
+      },
+      {
         name: '_supaglue_emitted_at',
         type: 'TIMESTAMP',
         mode: 'REQUIRED',
@@ -501,11 +506,6 @@ const getObjectSchema = (temp?: boolean): TableSchema => {
         name: '_supaglue_mapped_data',
         type: 'JSON',
         mode: 'NULLABLE',
-      },
-      {
-        name: 'id',
-        type: 'STRING',
-        mode: 'REQUIRED',
       },
     ],
   };
