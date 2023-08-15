@@ -48,7 +48,7 @@ Your integration can listen for these webhooks to do the following:
 
 At their core, they are just a `POST` request to a pre-determined endpoint. The endpoint can be whatever you want, and you can just add them from the Management Portal. You normally use one endpoint that listens to all of the event types. For example, if you receive webhooks from Acme Inc., you can structure your URL like: `https://www.example.com/webhooks/`.
 
-The way to indicate that a webhook has been processed is by returning a `2xx` (status code `200-299`) response to the webhook message within a reasonable time frame (**15s\*\***). It's also important to disable `CSRF` protection for this endpoint if the framework you use enables them by default.
+The way to indicate that a webhook has been processed is by returning a `2xx` (status code `200-299`) response to the webhook message within a reasonable time frame (**15 seconds**). It's also important to disable `CSRF` protection for this endpoint if the framework you use enables them by default.
 
 Below is an example using Typescript, Nodejs+Expressjs:
 
@@ -57,7 +57,7 @@ import express from 'express';
 
 const app = express();
 
-app.get('/webhooks', async (req: Request, res: Response) {
+app.post('/webhooks', async (req: Request, res: Response) {
     // Do stuff here...
 
     return res.status(200).send();
@@ -71,7 +71,7 @@ Another important aspect of handling webhooks is to verify the signature and tim
 
 ### 2. Subscribe to the webhook events
 
-Navigate to **Settings --> Webhooks** in the Management Portal and enter the URL of your API from Step 1.
+Navigate to **Settings --> Webhooks** in the Management Portal and enter your API URL from Step 1.
 
 <ThemedImage
 alt="webhook tutorial step 2a"
@@ -93,19 +93,19 @@ sources={{
   }}
 />
 
-In the example above, `connection.create` and `sync.complete` are selected.
+In the example above, `connection.created` and `sync.complete` are selected.
 
 ### 3. Process the webhook events
 
-You can process webhooks synchronously or asynchronously. If you are testing or building out a proof-of-concept, synchronous processing is fine. For production-grade integrations, asynchronous processing is recommended.
+You can process webhooks synchronously or asynchronously. Synchronous processing is fine if you are testing or building out a proof-of-concept. We recommend asynchronous processing for production-grade integrations.
 
 #### Synchronous processing
 
-Processing webhook events synchronously means that you run business logic before returning a `2xx` to Supaglue. This is fast to implement and doesn't require additional infrastructure, but runs into problems in failure scenarios, or when your processing time begins to exceed the 15s timeout, which then causes back pressure issues.
+Processing webhook events synchronously means running business logic before returning a `2xx` to Supaglue. Synchronous processing is fast to implement and doesn't require additional infrastructure, but it runs into back pressure and correctness problems if there are errors or times out.
 
 #### Asynchronous processing (recommended)
 
-In a production setting where you need to scale the consumption of webhooks, it is recommended that you enqueue the webhook events into an internal queue for later processing.
+In a production setting, we recommended adding webhook events into an internal queue for later processing.
 
 <ThemedImage
 alt="webhook tutorial diagram 2"
@@ -116,10 +116,10 @@ sources={{
   }}
 />
 
-The sequence for processing webhook events asynchronously is the following:
+The sequence for processing webhook events asynchronously looks like the following:
 
 1. Supaglue fires a webhook event
-2. You enqueue it successfully to an internal queue
+2. You enqueue it to an internal queue
 3. You respond with a 200 to Supaglue
 4. You dequeue from your internal queue and process the events
 
@@ -132,7 +132,7 @@ import { Queue } from 'bullmq';
 const supaglueEventsQueue = new Queue('supaglueEventsQueue');
 const app = express();
 
-app.get('/webhooks', async (req: Request, res: Response) {
+app.post('/webhooks', async (req: Request, res: Response) {
     const supaglueEvent = JSON.parse(req.body);
 
     supaglueEventsQueue.add(supaglueEvent.webhook_event_type, { data: req.body })
@@ -144,7 +144,7 @@ app.listen(8080);
 
 ```
 
-The shape of the `sync.completed` event looks like the following:
+The shape of the `sync.complete` event looks like the following:
 
 ```json
 {
@@ -162,7 +162,7 @@ The shape of the `sync.completed` event looks like the following:
 }
 ```
 
-You can view the other events in our [Management Portal API Reference](../api/v2/mgmt/management-api)
+You can view the complete list of webhook events in our [Management Portal API Reference](../api/v2/mgmt/management-api)
 
 Several popular queue or message broker technologies include the following:
 
