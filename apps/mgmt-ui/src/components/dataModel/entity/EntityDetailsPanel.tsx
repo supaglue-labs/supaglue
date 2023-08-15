@@ -31,6 +31,7 @@ function EntityDetailsPanelImpl({ entityId }: EntityDetailsPanelImplProps) {
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [name, setName] = useState<string | undefined>();
   const [fields, setFields] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState<string>('');
   const [allowAdditionalFieldMappings, setAllowAdditionalFieldMappings] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
 
@@ -147,7 +148,8 @@ function EntityDetailsPanelImpl({ entityId }: EntityDetailsPanelImplProps) {
               multiple
               id="fields"
               options={[]}
-              defaultValue={entity?.config.fields.map((field) => field.name) ?? []}
+              value={fields}
+              inputValue={inputValue}
               autoSelect
               freeSolo
               renderTags={(value: readonly string[], getTagProps) =>
@@ -155,11 +157,22 @@ function EntityDetailsPanelImpl({ entityId }: EntityDetailsPanelImplProps) {
                   <Chip variant="outlined" label={option} {...getTagProps({ index })} />
                 ))
               }
+              onInputChange={(event, newInputValue) => {
+                if (newInputValue.endsWith(',')) {
+                  const newField = newInputValue.slice(0, -1).trim();
+                  if (newField) {
+                    setFields([...fields, newField]);
+                  }
+                  setInputValue('');
+                  return;
+                }
+                setInputValue(newInputValue);
+              }}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Fields"
-                  helperText={`Enter entity fields here. (Note: names are case-sensitive. Use "enter" to add multiple fields.)`}
+                  helperText={`Enter entity fields here. (Note: names are case-sensitive. Press enter or comma to add multiple fields.)`}
                 />
               )}
               onChange={(event: any, value: string[]) => {
