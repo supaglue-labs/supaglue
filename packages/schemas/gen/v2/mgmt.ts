@@ -761,11 +761,6 @@ export interface components {
     connection: {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
-      /**
-       * @example available 
-       * @enum {string}
-       */
-      status: "available" | "added" | "authorized" | "callable";
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
       /** @example my-customer-1 */
