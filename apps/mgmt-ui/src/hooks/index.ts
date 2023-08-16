@@ -1,7 +1,8 @@
 export const fetcher = async <T>(input: RequestInfo, init: RequestInit): Promise<T> => {
   const res = await fetch(input, init);
   if (!res.ok) {
-    throw new Error(res.statusText);
+    const errorMessage = await getErrorMessage(res);
+    throw new Error(errorMessage);
   }
   const result: T = await res.json();
   return result;
@@ -19,7 +20,8 @@ export const fetcherWithApplication = async <T>(
 
   const res = await fetch(path, { headers: supaglueHeaders, ...init });
   if (!res.ok) {
-    throw new Error(res.statusText);
+    const errorMessage = await getErrorMessage(res);
+    throw new Error(errorMessage);
   }
   const result = await res.json();
   if (transform) {
@@ -27,3 +29,10 @@ export const fetcherWithApplication = async <T>(
   }
   return result;
 };
+
+async function getErrorMessage(res: Response): Promise<string> {
+  const data = await res.json();
+  return (
+    data.errors?.map((error: any) => `${error.title}: ${error.detail}`).join('\n') ?? res.statusText ?? 'Unknown error'
+  );
+}
