@@ -48,7 +48,7 @@ export class EntityRecordService {
     );
     const mappedData = mapEntityToObjectFields(data, fieldMappingConfig);
     const id = await remoteClient.createObjectRecord(object, mappedData);
-    await this.#cacheInvalidateEntityRecord(connection, entityName, id);
+    await this.#cacheInvalidateEntityRecord(connection, entityName, entity.id, id);
     return {
       id,
       entity: {
@@ -58,15 +58,20 @@ export class EntityRecordService {
     };
   }
 
-  async #cacheInvalidateEntityRecord(connection: ConnectionSafeAny, entityName: string, id: string): Promise<void> {
-    const sync = await this.#syncService.findByConnectionIdAndEntity(connection.id, entityName);
+  async #cacheInvalidateEntityRecord(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    entityId: string,
+    id: string
+  ): Promise<void> {
+    const sync = await this.#syncService.findByConnectionIdAndEntity(connection.id, entityId);
     if (!sync || sync.paused) {
       return;
     }
     const [writer] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
-      const entity = await this.#getFullEntityRecord(connection, entityName, id);
-      await writer.upsertEntityRecord(connection, entityName, entity);
+      const record = await this.#getFullEntityRecord(connection, entityName, id);
+      await writer.upsertEntityRecord(connection, entityName, record);
     }
   }
 
@@ -100,7 +105,7 @@ export class EntityRecordService {
         id: entity.id,
         name: entity.name,
       },
-      mappedData: mapObjectToEntityFields(record.data, fieldMappingConfig),
+      mappedProperties: mapObjectToEntityFields(record.data, fieldMappingConfig),
       rawData: record.data,
       metadata: record.metadata,
     };
@@ -111,7 +116,11 @@ export class EntityRecordService {
     entityName: string,
     recordId: string
   ): Promise<EntityRecord> {
-    const { id, entity, mappedData } = await this.#getFullEntityRecord(connection, entityName, recordId);
+    const {
+      id,
+      entity,
+      mappedProperties: mappedData,
+    } = await this.#getFullEntityRecord(connection, entityName, recordId);
     return {
       id,
       entity,
@@ -134,7 +143,7 @@ export class EntityRecordService {
     const mappedData = mapEntityToObjectFields(data, fieldMappingConfig);
     await remoteClient.updateObjectRecord(object, recordId, mappedData);
 
-    await this.#cacheInvalidateEntityRecord(connection, entityName, recordId);
+    await this.#cacheInvalidateEntityRecord(connection, entityName, entity.id, recordId);
   }
 
   public async listAssociations(connectionId: string, params: ListAssociationsParams): Promise<Association[]> {
@@ -257,7 +266,7 @@ function mapObjectToEntityFields(data: EntityRecordData, fieldMappingConfig: Fie
 
       return {
         ...coreFields,
-        additionalFields,
+        additionalFields: additionalFields,
       };
     }
   }

@@ -1,4 +1,4 @@
-import type { BaseFullRecord, ObjectRecordUpsertData } from './object_record';
+import type { BaseFullRecord, ObjectRecordUpsertData, PropertiesWithAdditionalFields } from './object_record';
 
 export type SimpleEntity = {
   id: string;
@@ -12,10 +12,7 @@ export type CreatedEntityRecord = {
 
 export type EntityRecordUpsertData = ObjectRecordUpsertData;
 
-export type EntityRecordData = {
-  additionalFields?: Record<string, unknown>;
-  [key: string]: unknown;
-};
+export type EntityRecordData = PropertiesWithAdditionalFields;
 
 export type EntityRecord = {
   id: string;
