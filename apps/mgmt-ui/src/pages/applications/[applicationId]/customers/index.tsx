@@ -8,9 +8,9 @@ import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useCustomers } from '@/hooks/useCustomers';
-import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
 import { useProviders } from '@/hooks/useProviders';
 import Header from '@/layout/Header';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { getDisplayName } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
@@ -27,7 +27,7 @@ import { useState } from 'react';
 
 export { getServerSideProps };
 
-export default function Home() {
+export default function Home(props: SupaglueProps) {
   const { addNotification } = useNotification();
   const { customers = [], isLoading, mutate } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -98,7 +98,7 @@ export default function Home() {
       headerName: 'Embed Link',
       width: 100,
       renderCell: (params) => {
-        return <EmbedLinkMenu customerId={params.id as string} />;
+        return <EmbedLinkMenu customerId={params.id as string} {...props} />;
       },
     },
     {
@@ -145,7 +145,7 @@ export default function Home() {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <Header title="Customers" onDrawerToggle={handleDrawerToggle} />
+      <Header title="Customers" onDrawerToggle={handleDrawerToggle} {...props} />
       <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
         {isLoading ? (
           <Spinner />
@@ -196,8 +196,7 @@ export default function Home() {
   );
 }
 
-function EmbedLinkMenu({ customerId }: { customerId: string }) {
-  const { nextLambdaEnv } = useNextLambdaEnv();
+function EmbedLinkMenu({ customerId, API_HOST }: { customerId: string } & SupaglueProps) {
   const origin = typeof window !== 'undefined' && window.location.origin ? window.location.origin : '';
   const router = useRouter();
   const returnUrl = `${origin}${router.asPath}`;
@@ -209,7 +208,7 @@ function EmbedLinkMenu({ customerId }: { customerId: string }) {
   const handleEmbedLinkClick = async (providerName: string) => {
     addNotification({ message: 'Copied to clipboard', severity: 'success' });
     await navigator.clipboard.writeText(
-      `${nextLambdaEnv?.API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+      `${API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
         customerId
       )}&returnUrl=${returnUrl}&providerName=${providerName}`
     );

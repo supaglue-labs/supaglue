@@ -4,6 +4,7 @@ import { TabContainer } from '@/components/TabContainer';
 import { TabPanel } from '@/components/TabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { Box, Tab, Tabs } from '@mui/material';
 import { useRouter } from 'next/router';
@@ -27,12 +28,12 @@ const settingsHeaderTabs: SettingsHeaderTab[] = [
   },
 ];
 
-export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | null }) {
+export default function Home(props: SupaglueProps) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { tab = [] } = router.query;
   const [value, setValue] = React.useState(0);
-
+  const { svixDashboardUrl } = props;
   const activeApplicationId = useActiveApplicationId();
 
   React.useEffect(() => {
@@ -47,6 +48,7 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       <Header
+        {...props}
         tabs={
           <Tabs value={value} textColor="inherit">
             {svixDashboardUrl ? (

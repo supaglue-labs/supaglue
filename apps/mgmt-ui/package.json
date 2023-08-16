@@ -12,6 +12,7 @@
     "@clerk/nextjs": "^4.23.1",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
+    "@lekko/node-server-sdk": "^0.0.9",
     "@mui/icons-material": "^5.11.11",
     "@mui/material": "^5.11.12",
     "@mui/x-data-grid": "^6.0.0",
