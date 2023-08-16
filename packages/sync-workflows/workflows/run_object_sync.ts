@@ -78,7 +78,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
 
     if (sync.type === 'object') {
       await maybeSendSyncFinishWebhook({
-        historyId: runId,
+        id: runId,
         status: 'SYNC_ERROR',
         connectionId,
         // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
@@ -93,7 +93,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
         entity: { name: entityName },
       } = await getEntity({ entityId: sync.entityId });
       await maybeSendSyncFinishWebhook({
-        historyId: runId,
+        id: runId,
         status: 'SYNC_ERROR',
         connectionId,
         // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
@@ -121,7 +121,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
   });
   if (sync.type === 'object') {
     await maybeSendSyncFinishWebhook({
-      historyId: runId,
+      id: runId,
       status: 'SYNC_SUCCESS',
       connectionId,
       numRecordsSynced,
@@ -135,7 +135,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
     } = await getEntity({ entityId: sync.entityId });
 
     await maybeSendSyncFinishWebhook({
-      historyId: runId,
+      id: runId,
       status: 'SYNC_SUCCESS',
       connectionId,
       numRecordsSynced,

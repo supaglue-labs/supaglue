@@ -2560,10 +2560,11 @@ export interface operations {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "sync.complete",
+         *   "id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
          *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "provider_name": "salesforce",
-         *   "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
          *   "type": "object",
          *   "object_type": "standard",
          *   "object": "contact",
@@ -2577,13 +2578,13 @@ export interface operations {
            * @enum {string}
            */
           webhook_event_type: "sync.complete";
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          id: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
           customer_id: string;
           provider_name: components["schemas"]["provider_name"];
-          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
-          history_id: string;
           /** @enum {string} */
           result: "SUCCESS" | "ERROR";
           /** @example 100 */
@@ -2602,13 +2603,13 @@ export interface operations {
            * @enum {string}
            */
           webhook_event_type: "sync.complete";
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          id: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
           customer_id: string;
           provider_name: components["schemas"]["provider_name"];
-          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
-          history_id: string;
           /** @enum {string} */
           result: "SUCCESS" | "ERROR";
           /** @example 100 */
