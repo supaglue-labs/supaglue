@@ -232,7 +232,7 @@ function toMappedProperties(
     ...Object.fromEntries(
       fieldMappingConfig.coreFieldMappings.map(({ schemaField, mappedField }) => [schemaField, properties[mappedField]])
     ),
-    additional_fields: Object.fromEntries(
+    additionalFields: Object.fromEntries(
       fieldMappingConfig.additionalFieldMappings.map(({ schemaField, mappedField }) => [
         schemaField,
         properties[mappedField],

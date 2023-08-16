@@ -23,7 +23,7 @@ import { Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
-import { BaseDestinationWriter } from './base';
+import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import { getSnakecasedKeysMapper } from './util';
 
 const BATCH_SIZE = 1000;
@@ -220,15 +220,20 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     collectionName: string,
     record: BaseFullRecord
   ): Promise<void> {
+    const { additionalFields, ...otherMappedProperties } = record.mappedProperties;
+
     const mappedRecord = {
       _supaglue_application_id: applicationId,
       _supaglue_provider_name: providerName,
       _supaglue_customer_id: customerId,
+      _supaglue_id: record.id,
       _supaglue_emitted_at: new Date(),
-      id: record.id,
+      _supaglue_last_modified_at: record.metadata.lastModifiedAt,
       _supaglue_is_deleted: record.metadata.isDeleted,
       _supaglue_raw_data: record.rawData,
-      _supaglue_mapped_data: record.mappedData,
+      _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
+      ...otherMappedProperties,
+      _supaglue_additional_fields: additionalFields,
     };
     const { database } = this.#destination.config;
 
@@ -237,10 +242,10 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
 
     await collection.replaceOne(
       {
-        id: mappedRecord.id,
         _supaglue_application_id: mappedRecord._supaglue_application_id,
         _supaglue_provider_name: mappedRecord._supaglue_provider_name,
         _supaglue_customer_id: mappedRecord._supaglue_customer_id,
+        _supaglue_id: mappedRecord._supaglue_id,
       },
       mappedRecord,
       { upsert: true }
@@ -285,17 +290,20 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
         objectMode: true,
         transform: (record: MappedListedObjectRecord, encoding, callback) => {
           try {
+            const { additionalFields, ...otherMappedProperties } = record.mappedProperties;
+
             const mappedRecord = {
               _supaglue_application_id: applicationId,
               _supaglue_provider_name: providerName,
               _supaglue_customer_id: customerId,
+              _supaglue_id: record.id,
               _supaglue_emitted_at: record.emittedAt,
               _supaglue_last_modified_at: record.lastModifiedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
-              _supaglue_mapped_data: record.mappedProperties,
-              id: record.id,
-              ...record.mappedProperties,
+              _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
+              ...otherMappedProperties,
+              _supaglue_additional_fields: additionalFields,
             };
 
             ++rowCount;
