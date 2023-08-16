@@ -1332,6 +1332,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'MALFORMED_ID':
       case 'INVALID_EMAIL_ADDRESS':
       case 'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST':
+      case 'TOO_MANY_ENUM_VALUE':
       case 'ERROR_HTTP_400':
         return new BadRequestError(error.message, error);
       case 'INVALID_ID_FIELD':
@@ -1341,6 +1342,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         return new NotFoundError(error.message, error);
       case 'CLIENT_NOT_ACCESSIBLE_FOR_USER':
       case 'INSUFFICIENT_ACCESS':
+      case 'sf:INSUFFICIENT_ACCESS': // SOAP api returns this
       case 'ERROR_HTTP_403':
       case 'API_DISABLED_FOR_ORG':
         return new ForbiddenError(error.message, error);
