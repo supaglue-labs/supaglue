@@ -391,8 +391,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
   ): Promise<WriteObjectRecordsResult> {
     const { schema } = this.#destination.config;
     const qualifiedTable = `"${schema}"."${table}"`;
-    const tempTable = `temp_${table}`;
-    const dedupedTempTable = `deduped_temp_${table}`;
+    const tempTable = `"temp_${table}"`;
+    const dedupedTempTable = `"deduped_temp_${table}"`;
 
     const client = await this.#getClient();
 
