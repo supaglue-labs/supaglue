@@ -15,7 +15,7 @@ const { syncObjectRecords, syncEntityRecords } = proxyActivities<ReturnType<type
   },
 });
 
-const { getSync, updateSyncState, clearSyncArgsForNextRun, logSyncStart, logSyncFinish } = proxyActivities<
+const { getSync, updateSyncState, clearSyncArgsForNextRun, logSyncStart, logSyncFinish, getEntity } = proxyActivities<
   ReturnType<typeof createActivities>
 >({
   startToCloseTimeout: '10 second',
@@ -78,7 +78,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
 
     if (sync.type === 'object') {
       await maybeSendSyncFinishWebhook({
-        historyId: runId,
+        runId,
         status: 'SYNC_ERROR',
         connectionId,
         // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
@@ -89,8 +89,11 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
         errorMessage,
       });
     } else {
+      const {
+        entity: { name: entityName },
+      } = await getEntity({ entityId: sync.entityId });
       await maybeSendSyncFinishWebhook({
-        historyId: runId,
+        runId,
         status: 'SYNC_ERROR',
         connectionId,
         // TODO: This is potentially inaccurate. Maybe the activity should still return a result if it fails in the middle.
@@ -98,6 +101,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
         type: 'entity',
         entityId: sync.entityId,
         errorMessage,
+        entityName,
       });
     }
 
@@ -117,7 +121,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
   });
   if (sync.type === 'object') {
     await maybeSendSyncFinishWebhook({
-      historyId: runId,
+      runId,
       status: 'SYNC_SUCCESS',
       connectionId,
       numRecordsSynced,
@@ -126,13 +130,18 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
       object: sync.object,
     });
   } else {
+    const {
+      entity: { name: entityName },
+    } = await getEntity({ entityId: sync.entityId });
+
     await maybeSendSyncFinishWebhook({
-      historyId: runId,
+      runId,
       status: 'SYNC_SUCCESS',
       connectionId,
       numRecordsSynced,
       type: 'entity',
       entityId: sync.entityId,
+      entityName,
     });
   }
 }

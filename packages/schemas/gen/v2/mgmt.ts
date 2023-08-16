@@ -327,7 +327,7 @@ export interface webhooks {
   };
   "sync.complete": {
     /**
-     * Sync completed 
+     * Sync complete 
      * @description Notification of the completion of a sync
      */
     post: operations["syncComplete"];
@@ -2552,7 +2552,7 @@ export interface operations {
     };
   };
   /**
-   * Sync completed 
+   * Sync complete 
    * @description Notification of the completion of a sync
    */
   syncComplete: {
@@ -2560,10 +2560,11 @@ export interface operations {
       content: {
         /**
          * @example {
+         *   "webhook_event_type": "sync.complete",
+         *   "run_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
          *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "provider_name": "salesforce",
-         *   "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
          *   "type": "object",
          *   "object_type": "standard",
          *   "object": "contact",
@@ -2571,26 +2572,25 @@ export interface operations {
          *   "error_message": "Error message"
          * }
          */
-        "application/json": ({
+        "application/json": OneOf<[{
           /**
            * @example sync.complete 
            * @enum {string}
            */
           webhook_event_type: "sync.complete";
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          run_id: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
           customer_id: string;
           provider_name: components["schemas"]["provider_name"];
-          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
-          history_id: string;
           /** @enum {string} */
           result: "SUCCESS" | "ERROR";
           /** @example 100 */
           num_records_synced?: number;
           /** @example Error message */
           error_message?: string;
-        }) & (OneOf<[{
           /** @enum {string} */
           type: "object";
           /** @enum {string} */
@@ -2598,10 +2598,29 @@ export interface operations {
           /** @example contact */
           object: string;
         }, {
+          /**
+           * @example sync.complete 
+           * @enum {string}
+           */
+          webhook_event_type: "sync.complete";
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          run_id: string;
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          connection_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          customer_id: string;
+          provider_name: components["schemas"]["provider_name"];
+          /** @enum {string} */
+          result: "SUCCESS" | "ERROR";
+          /** @example 100 */
+          num_records_synced?: number;
+          /** @example Error message */
+          error_message?: string;
           /** @enum {string} */
           type: "entity";
           entity_id: string;
-        }]>);
+          entity_name: string;
+        }]>;
       };
     };
     responses: {

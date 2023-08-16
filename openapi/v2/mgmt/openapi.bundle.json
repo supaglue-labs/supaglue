@@ -5098,7 +5098,7 @@
     },
     "sync.complete": {
       "post": {
-        "summary": "Sync completed",
+        "summary": "Sync complete",
         "description": "Notification of the completion of a sync",
         "operationId": "syncComplete",
         "x-event-type": "sync.complete",
@@ -5109,10 +5109,11 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "sync.complete",
+                "run_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
                 "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "provider_name": "salesforce",
-                "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
                 "type": "object",
                 "object_type": "standard",
                 "object": "contact",
@@ -5120,9 +5121,10 @@
                 "error_message": "Error message"
               },
               "schema": {
-                "allOf": [
+                "oneOf": [
                   {
                     "type": "object",
+                    "title": "Object Sync Complete",
                     "properties": {
                       "webhook_event_type": {
                         "type": "string",
@@ -5130,6 +5132,10 @@
                           "sync.complete"
                         ],
                         "example": "sync.complete"
+                      },
+                      "run_id": {
+                        "type": "string",
+                        "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
                       },
                       "connection_id": {
                         "type": "string",
@@ -5141,10 +5147,6 @@
                       },
                       "provider_name": {
                         "$ref": "#/components/schemas/provider_name"
-                      },
-                      "history_id": {
-                        "type": "string",
-                        "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
                       },
                       "result": {
                         "type": "string",
@@ -5160,64 +5162,101 @@
                       "error_message": {
                         "type": "string",
                         "example": "Error message"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "object"
+                        ]
+                      },
+                      "object_type": {
+                        "type": "string",
+                        "enum": [
+                          "common",
+                          "standard"
+                        ]
+                      },
+                      "object": {
+                        "type": "string",
+                        "example": "contact"
                       }
                     },
                     "required": [
                       "webhook_event_type",
+                      "run_id",
                       "connection_id",
                       "customer_id",
                       "provider_name",
-                      "history_id",
-                      "result"
+                      "result",
+                      "type",
+                      "object_type",
+                      "object"
                     ]
                   },
                   {
-                    "oneOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "enum": [
-                              "object"
-                            ]
-                          },
-                          "object_type": {
-                            "type": "string",
-                            "enum": [
-                              "common",
-                              "standard"
-                            ]
-                          },
-                          "object": {
-                            "type": "string",
-                            "example": "contact"
-                          }
-                        },
-                        "required": [
-                          "type",
-                          "object_type",
-                          "object"
+                    "type": "object",
+                    "title": "Entity Sync Complete",
+                    "properties": {
+                      "webhook_event_type": {
+                        "type": "string",
+                        "enum": [
+                          "sync.complete"
+                        ],
+                        "example": "sync.complete"
+                      },
+                      "run_id": {
+                        "type": "string",
+                        "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                      },
+                      "connection_id": {
+                        "type": "string",
+                        "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                      },
+                      "provider_name": {
+                        "$ref": "#/components/schemas/provider_name"
+                      },
+                      "result": {
+                        "type": "string",
+                        "enum": [
+                          "SUCCESS",
+                          "ERROR"
                         ]
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "enum": [
-                              "entity"
-                            ]
-                          },
-                          "entity_id": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "type",
-                          "entity_id"
+                      "num_records_synced": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "error_message": {
+                        "type": "string",
+                        "example": "Error message"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "entity"
                         ]
+                      },
+                      "entity_id": {
+                        "type": "string"
+                      },
+                      "entity_name": {
+                        "type": "string"
                       }
+                    },
+                    "required": [
+                      "webhook_event_type",
+                      "run_id",
+                      "connection_id",
+                      "customer_id",
+                      "provider_name",
+                      "result",
+                      "type",
+                      "entity_id",
+                      "entity_name"
                     ]
                   }
                 ]
@@ -6143,7 +6182,7 @@
     },
     "sync.complete": {
       "post": {
-        "summary": "Sync completed",
+        "summary": "Sync complete",
         "description": "Notification of the completion of a sync",
         "operationId": "syncComplete",
         "x-event-type": "sync.complete",
@@ -6154,10 +6193,11 @@
           "content": {
             "application/json": {
               "example": {
+                "webhook_event_type": "sync.complete",
+                "run_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
                 "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
                 "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
                 "provider_name": "salesforce",
-                "history_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
                 "type": "object",
                 "object_type": "standard",
                 "object": "contact",
@@ -6165,9 +6205,10 @@
                 "error_message": "Error message"
               },
               "schema": {
-                "allOf": [
+                "oneOf": [
                   {
                     "type": "object",
+                    "title": "Object Sync Complete",
                     "properties": {
                       "webhook_event_type": {
                         "type": "string",
@@ -6175,6 +6216,10 @@
                           "sync.complete"
                         ],
                         "example": "sync.complete"
+                      },
+                      "run_id": {
+                        "type": "string",
+                        "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
                       },
                       "connection_id": {
                         "type": "string",
@@ -6186,10 +6231,6 @@
                       },
                       "provider_name": {
                         "$ref": "#/components/schemas/provider_name"
-                      },
-                      "history_id": {
-                        "type": "string",
-                        "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
                       },
                       "result": {
                         "type": "string",
@@ -6205,64 +6246,101 @@
                       "error_message": {
                         "type": "string",
                         "example": "Error message"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "object"
+                        ]
+                      },
+                      "object_type": {
+                        "type": "string",
+                        "enum": [
+                          "common",
+                          "standard"
+                        ]
+                      },
+                      "object": {
+                        "type": "string",
+                        "example": "contact"
                       }
                     },
                     "required": [
                       "webhook_event_type",
+                      "run_id",
                       "connection_id",
                       "customer_id",
                       "provider_name",
-                      "history_id",
-                      "result"
+                      "result",
+                      "type",
+                      "object_type",
+                      "object"
                     ]
                   },
                   {
-                    "oneOf": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "enum": [
-                              "object"
-                            ]
-                          },
-                          "object_type": {
-                            "type": "string",
-                            "enum": [
-                              "common",
-                              "standard"
-                            ]
-                          },
-                          "object": {
-                            "type": "string",
-                            "example": "contact"
-                          }
-                        },
-                        "required": [
-                          "type",
-                          "object_type",
-                          "object"
+                    "type": "object",
+                    "title": "Entity Sync Complete",
+                    "properties": {
+                      "webhook_event_type": {
+                        "type": "string",
+                        "enum": [
+                          "sync.complete"
+                        ],
+                        "example": "sync.complete"
+                      },
+                      "run_id": {
+                        "type": "string",
+                        "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                      },
+                      "connection_id": {
+                        "type": "string",
+                        "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                      },
+                      "customer_id": {
+                        "type": "string",
+                        "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                      },
+                      "provider_name": {
+                        "$ref": "#/components/schemas/provider_name"
+                      },
+                      "result": {
+                        "type": "string",
+                        "enum": [
+                          "SUCCESS",
+                          "ERROR"
                         ]
                       },
-                      {
-                        "type": "object",
-                        "properties": {
-                          "type": {
-                            "type": "string",
-                            "enum": [
-                              "entity"
-                            ]
-                          },
-                          "entity_id": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "type",
-                          "entity_id"
+                      "num_records_synced": {
+                        "type": "integer",
+                        "example": 100
+                      },
+                      "error_message": {
+                        "type": "string",
+                        "example": "Error message"
+                      },
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "entity"
                         ]
+                      },
+                      "entity_id": {
+                        "type": "string"
+                      },
+                      "entity_name": {
+                        "type": "string"
                       }
+                    },
+                    "required": [
+                      "webhook_event_type",
+                      "run_id",
+                      "connection_id",
+                      "customer_id",
+                      "provider_name",
+                      "result",
+                      "type",
+                      "entity_id",
+                      "entity_name"
                     ]
                   }
                 ]
