@@ -148,7 +148,7 @@ The shape of the `sync.complete` event looks like the following:
 
 ```json
 {
-  "webhook_event_type": "sync.completed",
+  "webhook_event_type": "sync.complete",
   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
   "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
   "provider_name": "hubspot",
