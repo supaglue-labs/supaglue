@@ -268,7 +268,10 @@ export const toHubspotAccountUpdateParams = toHubspotAccountCreateParams;
 const getPipelineId = (
   pipelineNameOrId: string | null | undefined,
   pipelineStageMapping: PipelineStageMapping
-): string | null => {
+): string | null | undefined => {
+  if (pipelineNameOrId === undefined) {
+    return undefined;
+  }
   if (!pipelineNameOrId) {
     return null;
   }
@@ -283,10 +286,13 @@ const getPipelineId = (
 };
 
 const getStageId = (
-  pipelineId: string | null,
+  pipelineId: string | null | undefined,
   stageNameOrId: string | undefined | null,
   pipelineStageMapping: PipelineStageMapping
-): string | null => {
+): string | null | undefined => {
+  if (pipelineId === undefined || stageNameOrId === undefined) {
+    return undefined;
+  }
   if (!pipelineId || !stageNameOrId) {
     return null;
   }
