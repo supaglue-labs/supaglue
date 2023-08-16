@@ -19,6 +19,8 @@ import { BadRequestError } from '../../../errors';
 import { maxDate, removeUndefinedValues } from '../../../lib';
 import { getFullName } from '../../utils/name';
 
+const MAX_NUM_EMPLOYEES = 7000000000;
+
 export const fromObjectToHubspotObjectType = (object: StandardOrCustomObject): string => {
   return object.name;
 };
@@ -60,6 +62,11 @@ export const fromHubSpotCompanyToAccount = ({
       ]
     : [];
 
+  let numberOfEmployees = properties.numberofemployees ? parseInt(properties.numberofemployees) : null;
+  if (numberOfEmployees && numberOfEmployees > MAX_NUM_EMPLOYEES) {
+    numberOfEmployees = null;
+  }
+
   return {
     id,
     name: properties.name ?? null,
@@ -67,7 +74,7 @@ export const fromHubSpotCompanyToAccount = ({
     ownerId: properties.hubspot_owner_id ?? null,
     industry: properties.industry ?? null,
     website: properties.website ?? null,
-    numberOfEmployees: properties.numberofemployees ? parseInt(properties.numberofemployees) : null,
+    numberOfEmployees,
     addresses,
     phoneNumbers,
     lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
