@@ -1,4 +1,5 @@
 import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
+
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import GroupIcon from '@mui/icons-material/Group';
 import { Link as MUILink, ListItemIcon, MenuItem } from '@mui/material';
@@ -10,6 +11,64 @@ import Tooltip from '@mui/material/Tooltip';
 import NextLink from 'next/link';
 import * as React from 'react';
 import { Logout } from '../Logout';
+
+import { API_HOST, IS_CLOUD, LEKKO_API_KEY } from '@/pages/api';
+import { ClientContext, initAPIClient } from '@lekko/node-server-sdk';
+
+type HomeCtaButton = {
+  buttonMessage: string;
+  buttonLink: string;
+};
+
+export type PublicEnvProps = {
+  API_HOST: string;
+  IS_CLOUD: boolean;
+  CLERK_ACCOUNT_URL: string;
+  CLERK_ORGANIZATION_URL: string;
+  lekko: {
+    homeCtaButtonConfig: HomeCtaButton;
+  };
+};
+
+export const getServerSideProps = async () => {
+  // Lekko defaults
+  let homeCtaButtonConfig: HomeCtaButton = {
+    buttonMessage: 'Quickstart Guide',
+    buttonLink: 'https://docs.supaglue.io/docs/quickstart',
+  };
+
+  if (LEKKO_API_KEY) {
+    const client = await initAPIClient({
+      apiKey: LEKKO_API_KEY,
+      repositoryOwner: 'supaglue-labs',
+      repositoryName: 'dynamic-config',
+    });
+
+    homeCtaButtonConfig = (await client.getJSONFeature('mgmt-ui', 'home_cta', new ClientContext())) as HomeCtaButton;
+  }
+
+  const CLERK_ACCOUNT_URL =
+    API_HOST === 'https://api.supaglue.io'
+      ? 'https://accounts.supaglue.io/user'
+      : 'https://witty-eft-29.accounts.dev/user';
+
+  const CLERK_ORGANIZATION_URL =
+    API_HOST === 'https://api.supaglue.io'
+      ? 'https://accounts.supaglue.io/organization'
+      : 'https://witty-eft-29.accounts.dev/organization';
+
+  return {
+    props: {
+      API_HOST,
+      IS_CLOUD,
+      CLERK_ACCOUNT_URL,
+      CLERK_ORGANIZATION_URL,
+      lekko: {
+        homeCtaButtonConfig,
+      },
+    },
+  };
+};
 
 function Profile() {
   const { nextLambdaEnv } = useNextLambdaEnv();
@@ -49,8 +108,8 @@ function Organization() {
   );
 }
 
-export default function AccountMenu() {
-  const { nextLambdaEnv } = useNextLambdaEnv();
+export default function AccountMenu(props: PublicEnvProps) {
+  const { IS_CLOUD } = props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -110,8 +169,8 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {nextLambdaEnv?.IS_CLOUD ? <Profile /> : null}
-        {nextLambdaEnv?.IS_CLOUD ? <Organization /> : null}
+        {IS_CLOUD ? <Profile /> : null}
+        {IS_CLOUD ? <Organization /> : null}
         <Logout />
       </Menu>
     </React.Fragment>
