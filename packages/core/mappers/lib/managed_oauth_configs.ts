@@ -21,6 +21,8 @@ export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {
       'crm.objects.deals.read',
       'crm.objects.deals.write',
       'crm.objects.owners.read',
+      'crm.objects.custom.read',
+      'crm.schemas.custom.read',
       'crm.schemas.companies.read',
       'crm.schemas.companies.write',
       'crm.schemas.contacts.read',
