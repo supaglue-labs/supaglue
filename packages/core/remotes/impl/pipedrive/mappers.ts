@@ -275,6 +275,10 @@ export const toPipedriveLeadCreateParams = (params: LeadCreateParams, fields: Pi
   if (!params.convertedAccountId && !params.convertedContactId) {
     throw new BadRequestError('Either convertedAccountId or convertedContactId must be provided');
   }
+  return toPipedriveLeadUpdateParams(params, fields);
+};
+
+export const toPipedriveLeadUpdateParams = (params: LeadCreateParams, fields: PipedriveObjectField[]) => {
   const mappedCustomFields = params.customFields
     ? mapCustomFieldsFromNamesToKeys(params.customFields, fields)
     : undefined;
@@ -286,7 +290,6 @@ export const toPipedriveLeadCreateParams = (params: LeadCreateParams, fields: Pi
     ...mappedCustomFields,
   };
 };
-export const toPipedriveLeadUpdateParams = toPipedriveLeadCreateParams;
 
 export const toPipedriveOrganizationCreateParams = (params: AccountCreateParams, fields: PipedriveObjectField[]) => {
   const mappedCustomFields = params.customFields
