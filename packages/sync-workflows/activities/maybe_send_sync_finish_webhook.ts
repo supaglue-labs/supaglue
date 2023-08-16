@@ -18,6 +18,7 @@ export type MaybeSendSyncFinishWebhookArgs = {
   | {
       type: 'entity';
       entityId: string;
+      entityName: string;
     }
 );
 

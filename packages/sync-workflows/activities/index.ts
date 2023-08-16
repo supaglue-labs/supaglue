@@ -12,6 +12,7 @@ import type { SystemSettingsService } from '@supaglue/core/services/system_setti
 import type { ApplicationService, SyncService } from '../services';
 import { createClearSyncArgsForNextRun } from './clear_sync_args_for_next_run';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
+import { createGetEntity } from './get_entity';
 import { createGetSync } from './get_sync';
 import { createLogSyncFinish } from './log_sync_finish';
 import { createLogSyncStart } from './log_sync_start';
@@ -79,5 +80,6 @@ export const createActivities = ({
       applicationService,
       webhookService,
     }),
+    getEntity: createGetEntity(entityService),
   };
 };

@@ -15,7 +15,7 @@ const { syncObjectRecords, syncEntityRecords } = proxyActivities<ReturnType<type
   },
 });
 
-const { getSync, updateSyncState, clearSyncArgsForNextRun, logSyncStart, logSyncFinish } = proxyActivities<
+const { getSync, updateSyncState, clearSyncArgsForNextRun, logSyncStart, logSyncFinish, getEntity } = proxyActivities<
   ReturnType<typeof createActivities>
 >({
   startToCloseTimeout: '10 second',
@@ -89,6 +89,9 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
         errorMessage,
       });
     } else {
+      const {
+        entity: { name: entityName },
+      } = await getEntity({ entityId: sync.entityId });
       await maybeSendSyncFinishWebhook({
         historyId: runId,
         status: 'SYNC_ERROR',
@@ -98,6 +101,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
         type: 'entity',
         entityId: sync.entityId,
         errorMessage,
+        entityName,
       });
     }
 
@@ -126,6 +130,10 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
       object: sync.object,
     });
   } else {
+    const {
+      entity: { name: entityName },
+    } = await getEntity({ entityId: sync.entityId });
+
     await maybeSendSyncFinishWebhook({
       historyId: runId,
       status: 'SYNC_SUCCESS',
@@ -133,6 +141,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
       numRecordsSynced,
       type: 'entity',
       entityId: sync.entityId,
+      entityName,
     });
   }
 }
