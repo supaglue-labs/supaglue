@@ -1342,6 +1342,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         return new NotFoundError(error.message, error);
       case 'CLIENT_NOT_ACCESSIBLE_FOR_USER':
       case 'INSUFFICIENT_ACCESS':
+      case 'sf:INSUFFICIENT_ACCESS': // SOAP api returns this
       case 'ERROR_HTTP_403':
       case 'API_DISABLED_FOR_ORG':
         return new ForbiddenError(error.message, error);
