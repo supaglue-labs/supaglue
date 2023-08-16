@@ -2561,7 +2561,7 @@ export interface operations {
         /**
          * @example {
          *   "webhook_event_type": "sync.complete",
-         *   "id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
+         *   "run_id": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d",
          *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
          *   "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
          *   "provider_name": "salesforce",
@@ -2579,7 +2579,7 @@ export interface operations {
            */
           webhook_event_type: "sync.complete";
           /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
-          id: string;
+          run_id: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
@@ -2604,7 +2604,7 @@ export interface operations {
            */
           webhook_event_type: "sync.complete";
           /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
-          id: string;
+          run_id: string;
           /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
           connection_id: string;
           /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */

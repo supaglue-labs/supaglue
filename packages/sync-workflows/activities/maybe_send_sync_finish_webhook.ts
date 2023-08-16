@@ -4,7 +4,7 @@ import { snakecaseKeys } from '@supaglue/utils';
 import type { ApplicationService } from '../services';
 
 export type MaybeSendSyncFinishWebhookArgs = {
-  id: string;
+  runId: string;
   connectionId: string;
   status: 'SYNC_SUCCESS' | 'SYNC_ERROR';
   numRecordsSynced: number;
@@ -51,18 +51,18 @@ export function createMaybeSendSyncFinishWebhook({
         result: status === 'SYNC_SUCCESS' ? 'SUCCESS' : 'ERROR',
       },
       provider.applicationId,
-      args.id
+      args.runId
     );
 
     // TODO remove this after all customers migrate to the svix webhooks
     const application = await applicationService.getById(provider.applicationId);
     const { config } = application;
     if (config.webhook) {
-      const { id, ...argsWithoutId } = args;
+      const { runId, ...argsWithoutId } = args;
       await maybeSendWebhookPayload(config.webhook, status, {
         customerId: connection.customerId,
         providerName: connection.providerName,
-        historyId: id,
+        historyId: runId,
         ...argsWithoutId,
       });
     }
