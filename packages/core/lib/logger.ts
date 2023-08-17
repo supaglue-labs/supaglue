@@ -39,6 +39,13 @@ if (sentryEnabled) {
 
       scope.setUser({ id: data.orgId as string });
     },
+    beforeSend(event) {
+      if (event.request?.headers) {
+        delete event.request.headers['X-Api-Key'];
+      }
+
+      return event;
+    },
   });
   streams.push(sentryStream);
 }
