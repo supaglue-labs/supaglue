@@ -34,6 +34,7 @@ if (sentryEnabled) {
     beforeSend(event) {
       if (event.request?.headers) {
         delete event.request.headers['X-Api-Key'];
+        delete event.request.headers['x-api-key'];
       }
 
       return event;
