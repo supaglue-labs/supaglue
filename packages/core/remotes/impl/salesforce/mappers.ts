@@ -258,17 +258,20 @@ export const fromSalesforceLeadToLead = (
     // TODO: support associated fields
     convertedAccountId: record.ConvertedAccountId ?? null,
     convertedContactId: record.ConvertedContactId ?? null,
-    addresses: [
-      {
-        street1: record.Street ?? null,
-        street2: null,
-        city: record.City ?? null,
-        state: record.State ?? null,
-        country: record.Country ?? null,
-        postalCode: record.PostalCode ?? null,
-        addressType: 'primary',
-      },
-    ],
+    addresses:
+      record.Street || record.City || record.State || record.Country || record.PostalCode
+        ? [
+            {
+              street1: record.Street ?? null,
+              street2: null,
+              city: record.City ?? null,
+              state: record.State ?? null,
+              country: record.Country ?? null,
+              postalCode: record.PostalCode ?? null,
+              addressType: 'primary',
+            },
+          ]
+        : [],
     emailAddresses: record.Email ? [{ emailAddress: record.Email, emailAddressType: 'primary' }] : [],
     phoneNumbers: record.Phone
       ? [
@@ -356,7 +359,7 @@ export const toSalesforceOpportunityUpdateParams = (params: OpportunityUpdatePar
   };
 };
 
-const toSalesforceAccountAddressCreateParams = (addresses?: Address[]): Record<string, string> => {
+export const toSalesforceAccountAddressCreateParams = (addresses?: Address[]): Record<string, string> => {
   if (!addresses) {
     return {};
   }
@@ -376,7 +379,7 @@ const toSalesforceAccountAddressCreateParams = (addresses?: Address[]): Record<s
   };
 };
 
-const toSalesforceContactAddressCreateParams = (addresses?: Address[]): Record<string, string> => {
+export const toSalesforceContactAddressCreateParams = (addresses?: Address[]): Record<string, string> => {
   if (!addresses) {
     return {};
   }

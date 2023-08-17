@@ -18,7 +18,10 @@ import { maxDate } from '../../../lib';
 import { getFullName } from '../../utils/name';
 import type { PipedriveObjectField } from './types';
 
-const mapCustomFieldsFromNamesToKeys = (customFields: CustomFields, fields: PipedriveObjectField[]): CustomFields => {
+export const mapCustomFieldsFromNamesToKeys = (
+  customFields: CustomFields,
+  fields: PipedriveObjectField[]
+): CustomFields => {
   const mappedCustomFields: CustomFields = {};
   for (const [name, value] of Object.entries(customFields)) {
     const field = fields.find((field) => field.name === name);
@@ -50,7 +53,10 @@ const mapCustomFieldsFromNamesToKeys = (customFields: CustomFields, fields: Pipe
  * 3. For fields that are enums or sets, rewrite the value with the corresponding label.
  *
  */
-const rewriteCustomFieldsInRecord = (record: PipedriveRecord, fields: PipedriveObjectField[]): PipedriveRecord => {
+export const rewriteCustomFieldsInRecord = (
+  record: PipedriveRecord,
+  fields: PipedriveObjectField[]
+): PipedriveRecord => {
   const mappedRecord: PipedriveRecord = {};
 
   for (const [key, value] of Object.entries(record)) {
@@ -250,11 +256,16 @@ export const toPipedrivePersonCreateParams = (params: ContactCreateParams, field
   if (!name) {
     throw new BadRequestError('Either firstName or lastName must be provided');
   }
+  return toPipedrivePersonUpdateParams(params, fields);
+};
+
+export const toPipedrivePersonUpdateParams = (params: ContactCreateParams, fields: PipedriveObjectField[]) => {
+  const name = getFullName(params.firstName, params.lastName);
   const mappedCustomFields = params.customFields
     ? mapCustomFieldsFromNamesToKeys(params.customFields, fields)
     : undefined;
   return {
-    name,
+    name: name === null ? undefined : name,
     email: params.emailAddresses?.map(({ emailAddress, emailAddressType }) => ({
       label: emailAddressType,
       value: emailAddress,
@@ -268,8 +279,6 @@ export const toPipedrivePersonCreateParams = (params: ContactCreateParams, field
     ...mappedCustomFields,
   };
 };
-
-export const toPipedrivePersonUpdateParams = toPipedrivePersonCreateParams;
 
 export const toPipedriveLeadCreateParams = (params: LeadCreateParams, fields: PipedriveObjectField[]) => {
   if (!params.convertedAccountId && !params.convertedContactId) {
@@ -303,7 +312,7 @@ export const toPipedriveOrganizationCreateParams = (params: AccountCreateParams,
 };
 export const toPipedriveOrganizationUpdateParams = toPipedriveOrganizationCreateParams;
 
-const getPipelineId = (
+export const getPipelineId = (
   pipelineNameOrId: string | null | undefined,
   pipelineStageMapping: PipelineStageMapping
 ): string | null => {
@@ -320,7 +329,7 @@ const getPipelineId = (
   throw new BadRequestError(`Pipeline not found: ${pipelineNameOrId}`);
 };
 
-const getStageId = (
+export const getStageId = (
   pipelineId: string | null,
   stageNameOrId: string | undefined | null,
   pipelineStageMapping: PipelineStageMapping
