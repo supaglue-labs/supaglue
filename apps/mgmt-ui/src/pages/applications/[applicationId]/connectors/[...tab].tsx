@@ -4,6 +4,7 @@ import { TabContainer } from '@/components/TabContainer';
 import { TabPanel } from '@/components/TabPanel';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import Header from '@/layout/Header';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import { Box, Tab, Tabs } from '@mui/material';
 import Head from 'next/head';
@@ -25,7 +26,7 @@ const connectorsHeaderTabs: ConnectorsHeaderTab[] = [
   },
 ];
 
-export default function Home() {
+export default function Home(props: SupaglueProps) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { tab = [] } = router.query;
@@ -53,6 +54,7 @@ export default function Home() {
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Header
+          {...props}
           tabs={
             <Tabs value={value} textColor="inherit">
               <Tab

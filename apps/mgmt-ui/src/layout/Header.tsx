@@ -1,4 +1,5 @@
 import AccountMenu from '@/components/AccountMenu';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
 import Grid from '@mui/material/Grid';
@@ -16,7 +17,7 @@ interface HeaderProps {
   onDrawerToggle: () => void;
 }
 
-export default function Header(props: HeaderProps) {
+export default function Header(props: HeaderProps & SupaglueProps) {
   const { onDrawerToggle, title, tabs } = props;
 
   return (
@@ -49,7 +50,7 @@ export default function Header(props: HeaderProps) {
             </Grid>
 
             <Grid item>
-              <AccountMenu />
+              <AccountMenu {...props} />
             </Grid>
           </Grid>
         </Toolbar>
