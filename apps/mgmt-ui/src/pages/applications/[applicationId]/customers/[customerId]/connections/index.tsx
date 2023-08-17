@@ -6,6 +6,7 @@ import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useActiveCustomerId } from '@/hooks/useActiveCustomerId';
 import { useConnections } from '@/hooks/useConnections';
 import Header from '@/layout/Header';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import providerToIcon from '@/utils/providerToIcon';
 import { Box, Breadcrumbs, Stack, Typography } from '@mui/material';
@@ -16,7 +17,7 @@ import { useState } from 'react';
 
 export { getServerSideProps };
 
-export default function Home() {
+export default function Home(props: SupaglueProps) {
   const activeCustomerId = useActiveCustomerId();
   const { connections = [], isLoading, mutate } = useConnections(activeCustomerId);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -92,7 +93,7 @@ export default function Home() {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <Header title="Connections" onDrawerToggle={handleDrawerToggle} />
+      <Header title="Connections" onDrawerToggle={handleDrawerToggle} {...props} />
       <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
         {isLoading ? (
           <Spinner />

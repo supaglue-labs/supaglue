@@ -9,6 +9,7 @@ import { toListEntityMappingsResponse, useEntityMappings } from '@/hooks/useEnti
 import { useProperties } from '@/hooks/useProperties';
 import { useStandardObjects } from '@/hooks/useStandardObjects';
 import Header from '@/layout/Header';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getServerSideProps } from '@/pages/applications/[applicationId]';
 import providerToIcon from '@/utils/providerToIcon';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -64,7 +65,7 @@ type FriendlyStandardOrCustomObjectWithAttribution =
       from: 'developer' | 'customer';
     };
 
-export default function Home() {
+export default function Home(props: SupaglueProps) {
   const applicationId = useActiveApplicationId();
   const customerId = useActiveCustomerId();
   const { providerName } = useRouter().query;
@@ -112,7 +113,7 @@ export default function Home() {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <Header title="Connection" onDrawerToggle={handleDrawerToggle} />
+      <Header title="Connection" onDrawerToggle={handleDrawerToggle} {...props} />
       <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
         {isLoading ? (
           <Spinner />

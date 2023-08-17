@@ -1,13 +1,36 @@
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { buildClerkProps, getAuth } from '@clerk/nextjs/server';
+import { ClientContext, initAPIClient } from '@lekko/node-server-sdk';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { type GetServerSideProps } from 'next';
 import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { useState } from 'react';
 import { Svix } from 'svix';
-import { IS_CLOUD } from '../../api';
+import { API_HOST, IS_CLOUD, LEKKO_API_KEY } from '../../api';
+
+type HomeCtaButton = {
+  buttonMessage: string;
+  buttonLink: string;
+};
+
+export type SupaglueProps = {
+  session: Session | null;
+  signedIn: boolean;
+  svixDashboardUrl: string | null;
+} & PublicEnvProps &
+  Record<string, unknown>;
+
+export type PublicEnvProps = {
+  API_HOST: string;
+  IS_CLOUD: boolean;
+  CLERK_ACCOUNT_URL: string;
+  CLERK_ORGANIZATION_URL: string;
+  lekko: {
+    homeCtaButtonConfig: HomeCtaButton;
+  };
+};
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res, query, resolvedUrl }) => {
   let session: Session | null = null;
@@ -42,12 +65,48 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
     svixDashboardUrl = (await svix.authentication.appPortalAccess(applicationId, {})).url;
   }
 
+  // Lekko defaults
+  let homeCtaButtonConfig: HomeCtaButton = {
+    buttonMessage: 'Quickstart Guide',
+    buttonLink: 'https://docs.supaglue.io/docs/quickstart',
+  };
+
+  if (LEKKO_API_KEY) {
+    const client = await initAPIClient({
+      apiKey: LEKKO_API_KEY,
+      repositoryOwner: 'supaglue-labs',
+      repositoryName: 'dynamic-config',
+    });
+
+    homeCtaButtonConfig = (await client.getJSONFeature('mgmt-ui', 'home_cta', new ClientContext())) as HomeCtaButton;
+  }
+
+  const CLERK_ACCOUNT_URL =
+    API_HOST === 'https://api.supaglue.io'
+      ? 'https://accounts.supaglue.io/user'
+      : 'https://witty-eft-29.accounts.dev/user';
+
+  const CLERK_ORGANIZATION_URL =
+    API_HOST === 'https://api.supaglue.io'
+      ? 'https://accounts.supaglue.io/organization'
+      : 'https://witty-eft-29.accounts.dev/organization';
+
   return {
-    props: { session, signedIn: true, svixDashboardUrl, ...buildClerkProps(req) },
+    props: {
+      session,
+      signedIn: true,
+      svixDashboardUrl,
+      ...buildClerkProps(req),
+      API_HOST,
+      IS_CLOUD,
+      CLERK_ACCOUNT_URL,
+      CLERK_ORGANIZATION_URL,
+      lekko: { homeCtaButtonConfig },
+    },
   };
 };
 
-export default function Home() {
+export default function Home(props: SupaglueProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleDrawerToggle = () => {
@@ -56,7 +115,7 @@ export default function Home() {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <Header title="Getting Started" onDrawerToggle={handleDrawerToggle} />
+      <Header title="Getting Started" onDrawerToggle={handleDrawerToggle} {...props} />
       <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
         <Stack>
           <Box>

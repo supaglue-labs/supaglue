@@ -1,4 +1,4 @@
-import { useNextLambdaEnv } from '@/hooks/useNextLambdaEnv';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import GroupIcon from '@mui/icons-material/Group';
 import { Link as MUILink, ListItemIcon, MenuItem } from '@mui/material';
@@ -11,15 +11,11 @@ import NextLink from 'next/link';
 import * as React from 'react';
 import { Logout } from '../Logout';
 
-function Profile() {
-  const { nextLambdaEnv } = useNextLambdaEnv();
+function Profile(props: SupaglueProps) {
+  const { CLERK_ACCOUNT_URL } = props;
 
   return (
-    <MUILink
-      href={nextLambdaEnv?.CLERK_ACCOUNT_URL}
-      component={NextLink}
-      sx={{ color: 'inherit', textDecoration: 'inherit' }}
-    >
+    <MUILink href={CLERK_ACCOUNT_URL} component={NextLink} sx={{ color: 'inherit', textDecoration: 'inherit' }}>
       <MenuItem>
         <ListItemIcon>
           <AccountCircleIcon />
@@ -30,15 +26,11 @@ function Profile() {
   );
 }
 
-function Organization() {
-  const { nextLambdaEnv } = useNextLambdaEnv();
+function Organization(props: SupaglueProps) {
+  const { CLERK_ORGANIZATION_URL } = props;
 
   return (
-    <MUILink
-      href={nextLambdaEnv?.CLERK_ORGANIZATION_URL}
-      component={NextLink}
-      sx={{ color: 'inherit', textDecoration: 'inherit' }}
-    >
+    <MUILink href={CLERK_ORGANIZATION_URL} component={NextLink} sx={{ color: 'inherit', textDecoration: 'inherit' }}>
       <MenuItem>
         <ListItemIcon>
           <GroupIcon />
@@ -49,8 +41,8 @@ function Organization() {
   );
 }
 
-export default function AccountMenu() {
-  const { nextLambdaEnv } = useNextLambdaEnv();
+export default function AccountMenu(props: SupaglueProps) {
+  const { IS_CLOUD } = props;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -110,8 +102,8 @@ export default function AccountMenu() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        {nextLambdaEnv?.IS_CLOUD ? <Profile /> : null}
-        {nextLambdaEnv?.IS_CLOUD ? <Organization /> : null}
+        {IS_CLOUD ? <Profile {...props} /> : null}
+        {IS_CLOUD ? <Organization {...props} /> : null}
         <Logout />
       </Menu>
     </React.Fragment>
