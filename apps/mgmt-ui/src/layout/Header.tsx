@@ -1,3 +1,4 @@
+import type { PublicEnvProps } from '@/components/AccountMenu';
 import AccountMenu from '@/components/AccountMenu';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
@@ -14,10 +15,11 @@ interface HeaderProps {
   title: string;
   tabs?: React.ReactNode;
   onDrawerToggle: () => void;
+  accountMenuProps: PublicEnvProps;
 }
 
 export default function Header(props: HeaderProps) {
-  const { onDrawerToggle, title, tabs } = props;
+  const { onDrawerToggle, title, tabs, accountMenuProps } = props;
 
   return (
     <React.Fragment>
@@ -49,7 +51,7 @@ export default function Header(props: HeaderProps) {
             </Grid>
 
             <Grid item>
-              <AccountMenu />
+              <AccountMenu {...accountMenuProps} />
             </Grid>
           </Grid>
         </Toolbar>

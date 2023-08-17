@@ -1,3 +1,4 @@
+import type { PublicEnvProps } from '@/components/AccountMenu';
 import DestinationTabPanelContainer from '@/components/connectors/destination/DestinationTabPanelContainer';
 import ProviderTabPanelContainer from '@/components/connectors/provider/ProviderTabPanelContainer';
 import { TabContainer } from '@/components/TabContainer';
@@ -25,7 +26,7 @@ const connectorsHeaderTabs: ConnectorsHeaderTab[] = [
   },
 ];
 
-export default function Home() {
+export default function Home({ accountMenuProps }: { accountMenuProps: PublicEnvProps }) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { tab = [] } = router.query;
@@ -53,6 +54,7 @@ export default function Home() {
 
       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <Header
+          accountMenuProps={accountMenuProps}
           tabs={
             <Tabs value={value} textColor="inherit">
               <Tab

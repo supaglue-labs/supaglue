@@ -1,3 +1,4 @@
+import type { PublicEnvProps } from '@/components/AccountMenu';
 import SyncRunsTable from '@/components/logs/SyncRunsTable';
 import { useSyncRuns } from '@/hooks/useSyncRuns';
 import Header from '@/layout/Header';
@@ -8,7 +9,7 @@ import { useState } from 'react';
 
 export { getServerSideProps };
 
-export default function Home() {
+export default function Home({ accountMenuProps }: { accountMenuProps: PublicEnvProps }) {
   const [currentCursor, setCurrentCursor] = useState<string | undefined>();
   const [filterParams, setFilterParams] = useState<SyncRunFilterParams[] | undefined>();
   const { syncRuns, isLoading } = useSyncRuns(currentCursor, filterParams);
@@ -37,7 +38,7 @@ export default function Home() {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <Header title="Sync Runs" onDrawerToggle={handleDrawerToggle} />
+      <Header title="Sync Runs" onDrawerToggle={handleDrawerToggle} accountMenuProps={accountMenuProps} />
       <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
         <SyncRunsTable
           handleNextPage={handleNextPage}

@@ -1,4 +1,5 @@
 import { createCustomer, createMagicLink, deleteCustomer } from '@/client';
+import type { PublicEnvProps } from '@/components/AccountMenu';
 import { DeleteCustomer } from '@/components/customers/DeleteCustomer';
 import { NewCustomer } from '@/components/customers/NewCustomer';
 import MetricCard from '@/components/MetricCard';
@@ -27,7 +28,7 @@ import { useState } from 'react';
 
 export { getServerSideProps };
 
-export default function Home() {
+export default function Home({ accountMenuProps }: { accountMenuProps: PublicEnvProps }) {
   const { addNotification } = useNotification();
   const { customers = [], isLoading, mutate } = useCustomers();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -145,7 +146,7 @@ export default function Home() {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <Header title="Customers" onDrawerToggle={handleDrawerToggle} />
+      <Header title="Customers" onDrawerToggle={handleDrawerToggle} accountMenuProps={accountMenuProps} />
       <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
         {isLoading ? (
           <Spinner />

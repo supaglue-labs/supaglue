@@ -1,3 +1,4 @@
+import type { PublicEnvProps } from '@/components/AccountMenu';
 import ApiKeyTabPanel from '@/components/settings/ApiKeyTabPanel';
 import WebhookTabPanel from '@/components/settings/WebhookTabPanel';
 import { TabContainer } from '@/components/TabContainer';
@@ -27,7 +28,13 @@ const settingsHeaderTabs: SettingsHeaderTab[] = [
   },
 ];
 
-export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | null }) {
+export default function Home({
+  svixDashboardUrl,
+  accountMenuProps,
+}: {
+  svixDashboardUrl: string | null;
+  accountMenuProps: PublicEnvProps;
+}) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { tab = [] } = router.query;
@@ -47,6 +54,7 @@ export default function Home({ svixDashboardUrl }: { svixDashboardUrl: string | 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       <Header
+        accountMenuProps={accountMenuProps}
         tabs={
           <Tabs value={value} textColor="inherit">
             {svixDashboardUrl ? (

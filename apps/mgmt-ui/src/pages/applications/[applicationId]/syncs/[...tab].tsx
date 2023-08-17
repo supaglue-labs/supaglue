@@ -1,3 +1,4 @@
+import type { PublicEnvProps } from '@/components/AccountMenu';
 import SyncConfigTabPanelContainer from '@/components/syncs/syncConfig/SyncConfigTabPanelContainer';
 import SyncsListPanel from '@/components/syncs/SyncsListPanel';
 import { TabContainer } from '@/components/TabContainer';
@@ -27,7 +28,7 @@ const settingsHeaderTabs: SettingsHeaderTab[] = [
   },
 ];
 
-export default function Home() {
+export default function Home({ accountMenuProps }: { accountMenuProps: PublicEnvProps }) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { tab = [] } = router.query;
@@ -47,6 +48,7 @@ export default function Home() {
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
       <Header
+        accountMenuProps={accountMenuProps}
         tabs={
           <Tabs value={value} textColor="inherit">
             <Tab

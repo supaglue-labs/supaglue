@@ -1,4 +1,5 @@
 import { deleteConnection } from '@/client';
+import type { PublicEnvProps } from '@/components/AccountMenu';
 import { DeleteConnection } from '@/components/connections/DeleteConnection';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
@@ -16,7 +17,7 @@ import { useState } from 'react';
 
 export { getServerSideProps };
 
-export default function Home() {
+export default function Home({ accountMenuProps }: { accountMenuProps: PublicEnvProps }) {
   const activeCustomerId = useActiveCustomerId();
   const { connections = [], isLoading, mutate } = useConnections(activeCustomerId);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -92,7 +93,7 @@ export default function Home() {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <Header title="Connections" onDrawerToggle={handleDrawerToggle} />
+      <Header title="Connections" onDrawerToggle={handleDrawerToggle} accountMenuProps={accountMenuProps} />
       <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
         {isLoading ? (
           <Spinner />

@@ -1,4 +1,5 @@
 import { updateCustomerEntityMapping } from '@/client';
+import type { PublicEnvProps } from '@/components/AccountMenu';
 import Spinner from '@/components/Spinner';
 import { TabPanel } from '@/components/TabPanel';
 import { useNotification } from '@/context/notification';
@@ -64,7 +65,7 @@ type FriendlyStandardOrCustomObjectWithAttribution =
       from: 'developer' | 'customer';
     };
 
-export default function Home() {
+export default function Home({ accountMenuProps }: { accountMenuProps: PublicEnvProps }) {
   const applicationId = useActiveApplicationId();
   const customerId = useActiveCustomerId();
   const { providerName } = useRouter().query;
@@ -112,7 +113,7 @@ export default function Home() {
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <Header title="Connection" onDrawerToggle={handleDrawerToggle} />
+      <Header title="Connection" onDrawerToggle={handleDrawerToggle} accountMenuProps={accountMenuProps} />
       <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
         {isLoading ? (
           <Spinner />
