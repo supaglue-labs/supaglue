@@ -79,6 +79,8 @@ export type PostgresConfigSafeOnly = {
   database: string;
   schema: string;
   user: string;
+  // TODO: support more options
+  sslMode?: 'disable' | 'allow' | 'prefer' | 'require';
 };
 
 // TODO(670): encrypt

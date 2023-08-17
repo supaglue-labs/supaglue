@@ -77,6 +77,7 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
           database: config.database,
           schema: config.schema,
           user: config.user,
+          sslMode: config.sslMode,
         },
       };
     }
