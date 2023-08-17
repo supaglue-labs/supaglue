@@ -508,6 +508,11 @@ export interface components {
       schema: string;
       /** @example myuser */
       user: string;
+      /**
+       * @example disable 
+       * @enum {string}
+       */
+      ssl_mode?: "disable" | "allow" | "prefer" | "require";
     };
     bigquery_config_safe: {
       /** @example my-gcp-project-id */
@@ -594,6 +599,11 @@ export interface components {
       schema: string;
       /** @example myuser */
       user: string;
+      /**
+       * @example disable 
+       * @enum {string}
+       */
+      ssl_mode?: "disable" | "allow" | "prefer" | "require";
       /** @example mysensitivepassword */
       password: string;
     };

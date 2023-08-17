@@ -48,7 +48,11 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   }
 
   async #getClient(): Promise<PoolClient> {
-    const pool = new Pool(this.#destination.config);
+    const { sslMode, ...rest } = this.#destination.config;
+    const pool = new Pool({
+      ...rest,
+      ssl: sslMode === 'disable' || sslMode === 'allow' ? undefined : true,
+    });
     return await pool.connect();
   }
 
@@ -404,6 +408,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
 
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
+      await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
       await client.query(getObjectOrEntitySchemaSetupSql(table, schema, /* temp */ true));
       await client.query(
         `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_id ASC, _supaglue_last_modified_at DESC)`
@@ -494,8 +499,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       // appears as the last record of a page and also the first record of the next page, we will
       // overwrite the newer record with the older record in the main table.
       childLogger.info('Writing deduped temp table records into deduped temp table [IN PROGRESS]');
+      await client.query(`DROP TABLE IF EXISTS ${dedupedTempTable}`);
       await client.query(
-        `CREATE TEMP TABLE IF NOT EXISTS ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC`
+        `CREATE TEMP TABLE ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC`
       );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 

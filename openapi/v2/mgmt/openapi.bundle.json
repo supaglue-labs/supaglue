@@ -2484,6 +2484,16 @@
           "user": {
             "type": "string",
             "example": "myuser"
+          },
+          "ssl_mode": {
+            "type": "string",
+            "enum": [
+              "disable",
+              "allow",
+              "prefer",
+              "require"
+            ],
+            "example": "disable"
           }
         },
         "required": [
@@ -2718,6 +2728,16 @@
           "user": {
             "type": "string",
             "example": "myuser"
+          },
+          "ssl_mode": {
+            "type": "string",
+            "enum": [
+              "disable",
+              "allow",
+              "prefer",
+              "require"
+            ],
+            "example": "disable"
           },
           "password": {
             "type": "string",
