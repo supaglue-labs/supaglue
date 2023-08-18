@@ -140,8 +140,10 @@ export class DestinationService {
       case 'postgres':
         {
           try {
+            const { sslMode, ...rest } = params.config;
             const pgClient = new Client({
-              ...params.config,
+              ...rest,
+              ssl: sslMode === 'disable' || sslMode === 'allow' ? undefined : true,
               password:
                 params.config.password ??
                 (existingDestination as DestinationUnsafe<'postgres'> | null)?.config.password,

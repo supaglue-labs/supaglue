@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createDestination, testDestination, updateDestination } from '@/client';
+import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
@@ -33,6 +34,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const [schema, setSchema] = useState<string>('');
   const [user, setUser] = useState<string>('');
   const [password, setPassword] = useState<KnownOrUnknownValue>({ type: 'known', value: '' });
+  const [sslMode, setSslMode] = useState<'disable' | 'allow' | 'prefer' | 'require' | undefined>(undefined);
   const [isTestSuccessful, setIsTestSuccessful] = useState<boolean>(false);
   const [isTesting, setIsTesting] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -59,6 +61,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
     setSchema(destination.config.schema);
     setUser(destination.config.user);
     setPassword({ type: 'unknown' });
+    setSslMode(destination.config.sslMode);
   }, [destination?.id]);
 
   const createOrUpdateDestination = async (): Promise<DestinationSafeAny | undefined> => {
@@ -74,6 +77,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           database,
           user,
           password: password.type === 'known' ? password.value : undefined,
+          sslMode,
         },
       });
       if (!response.ok) {
@@ -93,6 +97,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
         schema,
         user,
         password: password.type === 'known' ? password.value : '', // TODO: shouldn't allow empty string
+        sslMode,
       },
     });
     if (!response.ok) {
@@ -150,6 +155,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
               schema,
               user,
               password: password.type === 'known' ? password.value : undefined,
+              sslMode,
             },
           } as any); // TODO: fix typing
           setIsTesting(false);
@@ -238,6 +244,20 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
               setIsDirty(true);
               setIsTestSuccessful(false);
             }}
+          />
+        </Stack>
+
+        <Stack className="gap-2">
+          <Typography variant="subtitle1">SSL Mode</Typography>
+          <Select
+            name="SSL Mode"
+            onChange={(value: string) => {
+              setSslMode(value as 'disable' | 'allow' | 'prefer' | 'require');
+              setIsDirty(true);
+              setIsTestSuccessful(false);
+            }}
+            value={sslMode ?? 'disable'}
+            options={[{ value: 'disable' }, { value: 'allow' }, { value: 'prefer' }, { value: 'require' }]}
           />
         </Stack>
 
