@@ -6932,6 +6932,7 @@ __metadata:
   dependencies:
     "@tsconfig/node18": ^1.0.1
     camelcase-keys: 7.0.2
+    slugify: ^1.6.6
     snakecase-keys: ^5.4.6
     typescript: ^4.9.5
   languageName: unknown
@@ -21079,7 +21080,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"slugify@npm:^1.6.5":
+"slugify@npm:^1.6.5, slugify@npm:^1.6.6":
   version: 1.6.6
   resolution: "slugify@npm:1.6.6"
   checksum: 04773c2d3b7aea8d2a61fa47cc7e5d29ce04e1a96cbaec409da57139df906acb3a449fac30b167d203212c806e73690abd4ff94fbad0a9a7b7ea109a2a638ae9
