@@ -13,6 +13,7 @@ import type {
 } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
+import { slugifyForTableName } from '@supaglue/utils';
 import { stringify } from 'csv-stringify';
 import type { PoolClient } from 'pg';
 import { Pool } from 'pg';
@@ -66,7 +67,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     }
     const { schema } = this.#destination.config;
     const table = getCommonObjectTableName(category, commonObjectType);
-    const qualifiedTable = `"${schema}"."${table}"`;
+    const qualifiedTable = `"${schema}".${table}`;
 
     const client = await this.#getClient();
 
@@ -136,7 +137,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
 
     const { schema } = this.#destination.config;
     const table = getCommonObjectTableName(category, commonObjectType);
-    const qualifiedTable = `"${schema}"."${table}"`;
+    const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `temp_${table}`;
     const dedupedTempTable = `deduped_temp_${table}`;
 
@@ -327,7 +328,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     record: BaseFullRecord
   ): Promise<void> {
     const { schema } = this.#destination.config;
-    const qualifiedTable = `"${schema}"."${table}"`;
+    const qualifiedTable = `"${schema}".${table}`;
     const client = await this.#getClient();
 
     try {
@@ -395,7 +396,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     childLogger: pino.Logger
   ): Promise<WriteObjectRecordsResult> {
     const { schema } = this.#destination.config;
-    const qualifiedTable = `"${schema}"."${table}"`;
+    const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
     const dedupedTempTable = `"deduped_temp_${table}"`;
 
@@ -550,11 +551,12 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 }
 
 const getObjectTableName = (providerName: ProviderName, object: string) => {
-  return `${providerName}_${object}`;
+  const cleanObjectName = slugifyForTableName(object);
+  return `${providerName}_${cleanObjectName}`;
 };
 
 const getEntityTableName = (entityName: string) => {
-  const cleanEntityName = entityName.replace(/[^a-zA-Z0-9]/g, '');
+  const cleanEntityName = slugifyForTableName(entityName);
   return `entity_${cleanEntityName}`;
 };
 
@@ -618,7 +620,7 @@ const getObjectOrEntitySchemaSetupSql = (baseTableName: string, schema: string, 
   const tableName = temp ? `temp_${baseTableName}` : baseTableName;
 
   return `-- CreateTable
-CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `"${tableName}"` : `"${schema}"."${tableName}"`} (
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `${tableName}` : `"${schema}".${tableName}`} (
   "_supaglue_application_id" TEXT NOT NULL,
   "_supaglue_provider_name" TEXT NOT NULL,
   "_supaglue_customer_id" TEXT NOT NULL,

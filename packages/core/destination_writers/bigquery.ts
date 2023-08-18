@@ -15,7 +15,7 @@ import type {
 } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
-import { snakecaseKeys } from '@supaglue/utils';
+import { slugifyForTableName, snakecaseKeys } from '@supaglue/utils';
 import { stringify } from 'csv-stringify';
 import type pino from 'pino';
 import type { Readable } from 'stream';
@@ -400,11 +400,12 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
 }
 
 const getObjectTableName = (providerName: ProviderName, object: string) => {
-  return `${providerName}_${object}`;
+  const cleanObjectName = slugifyForTableName(object);
+  return `${providerName}_${cleanObjectName}`;
 };
 
 const getEntityTableName = (entityName: string) => {
-  const cleanEntityName = entityName.replace(/[^a-zA-Z0-9]/g, '');
+  const cleanEntityName = slugifyForTableName(entityName);
   return `entity_${cleanEntityName}`;
 };
 
