@@ -2,4 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 yarn turbo run lint-staged "--filter=[HEAD^1]"
-yarn turbo run generate "--filter=!salesforce-pub-sub"
+yarn generate "--filter=!salesforce-pub-sub"
+yarn test

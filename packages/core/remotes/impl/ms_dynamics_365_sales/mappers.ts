@@ -53,12 +53,12 @@ const industryCodeToName = {
   33: 'Wholesale',
 };
 
-const industryNameToCode = Object.entries(industryCodeToName).reduce(
+export const industryNameToCode = Object.entries(industryCodeToName).reduce(
   (acc, [code, name]) => ({ ...acc, [name]: parseInt(code) }),
   {}
 ) as { [key: string]: number };
 
-type DynamicsAccount = {
+export type DynamicsAccount = {
   accountid: string;
   name: string | null;
   description: string | null;
@@ -198,7 +198,7 @@ export const fromDynamicsAccountToRemoteAccount = (
   };
 };
 
-type DynamicsContact = {
+export type DynamicsContact = {
   contactid: string;
   firstname: string | null;
   lastname: string | null;
@@ -364,7 +364,7 @@ export const fromDynamicsContactToRemoteContact = (
   };
 };
 
-type DynamicsOpportunity = {
+export type DynamicsOpportunity = {
   opportunityid: string;
   name: string | null;
   description: string | null;
@@ -434,7 +434,7 @@ export const fromDynamicsOpportunityToRemoteOpportunity = (
   };
 };
 
-type DynamicsLead = {
+export type DynamicsLead = {
   leadid: string;
   firstname: string | null;
   lastname: string | null;
@@ -516,11 +516,11 @@ export const fromDynamicsLeadToRemoteLead = (
     dynamicsLead.address2_country
   ) {
     const addressType =
-      dynamicsLead.address1_addresstypecode === 1
+      dynamicsLead.address2_addresstypecode === 1
         ? 'billing'
-        : dynamicsLead.address1_addresstypecode === 2
+        : dynamicsLead.address2_addresstypecode === 2
         ? 'shipping'
-        : dynamicsLead.address1_addresstypecode === 3
+        : dynamicsLead.address2_addresstypecode === 3
         ? 'primary'
         : 'other';
     addresses.push({
@@ -604,7 +604,7 @@ export const fromDynamicsLeadToRemoteLead = (
   };
 };
 
-type DynamicsUser = {
+export type DynamicsUser = {
   systemuserid: string;
   fullname: string | null;
   internalemailaddress: string | null;
@@ -721,7 +721,7 @@ export const toDynamicsAccountUpdateParams = (account: AccountUpdateParams): Rec
   return toDynamicsAccountCreateParams(account);
 };
 
-const toDynamicsAddresses = (addresses: Address[] | undefined, count: number): Record<string, string | null> => {
+export const toDynamicsAddresses = (addresses: Address[] | undefined, count: number): Record<string, string | null> => {
   if (!addresses) {
     return {};
   }
@@ -762,7 +762,7 @@ const toDynamicsAddresses = (addresses: Address[] | undefined, count: number): R
   }, {});
 };
 
-const toDynamicsEmailAddresses = (emailAddresses: EmailAddress[] | undefined): Record<string, string | null> => {
+export const toDynamicsEmailAddresses = (emailAddresses: EmailAddress[] | undefined): Record<string, string | null> => {
   if (!emailAddresses) {
     return {};
   }
@@ -785,7 +785,7 @@ const toDynamicsEmailAddresses = (emailAddresses: EmailAddress[] | undefined): R
   }, {});
 };
 
-const toDynamicsPhoneNumbers = (phoneNumbers: PhoneNumber[] | undefined): Record<string, string | null> => {
+export const toDynamicsPhoneNumbers = (phoneNumbers: PhoneNumber[] | undefined): Record<string, string | null> => {
   if (!phoneNumbers) {
     return {};
   }
