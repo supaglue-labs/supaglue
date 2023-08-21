@@ -52,7 +52,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const { sslMode, ...rest } = this.#destination.config;
     const pool = new Pool({
       ...rest,
-      ssl: sslMode === 'disable' || sslMode === 'allow' ? undefined : true,
+      ssl: sslMode === undefined || sslMode === 'disable' || sslMode === 'allow' ? undefined : true,
     });
     return await pool.connect();
   }

@@ -181,57 +181,61 @@ export class SyncService {
         }
       }
 
-      await this.#prisma.$transaction(async (tx) => {
-        // Create Syncs and ignore duplicates
-        if (syncArgs.length) {
-          await tx.sync.createMany({
-            data: syncArgs,
-            skipDuplicates: true,
-          });
-        }
+      // Create Syncs and ignore duplicates
+      logger.info('processSyncChanges: Creating Syncs [IN PROGRESS]');
+      if (syncArgs.length) {
+        await this.#prisma.sync.createMany({
+          data: syncArgs,
+          skipDuplicates: true,
+        });
+      }
+      logger.info('processSyncChanges: Creating Syncs [DONE]');
 
-        // Create SyncChanges
-        // The field names here reference `object_sync_id` because we didn't migrate the actual column
-        // names in the DB when we merged Object and Entity Syncs.
-        await tx.$executeRawUnsafe(`INSERT INTO ${SYNC_CHANGES_TABLE} (id, object_sync_id)
+      // Create SyncChanges
+      // The field names here reference `object_sync_id` because we didn't migrate the actual column
+      // names in the DB when we merged Object and Entity Syncs.
+      logger.info('processSyncChanges: Creating SyncChanges [IN PROGRESS]');
+      await this.#prisma.$executeRawUnsafe(`INSERT INTO ${SYNC_CHANGES_TABLE} (id, object_sync_id)
 SELECT gen_random_uuid(), s.id
 FROM ${SYNCS_TABLE} s
 JOIN ${CONNECTIONS_TABLE} c on s.connection_id = c.id
 WHERE c.provider_id = '${syncConfig.providerId}'`);
+      logger.info('processSyncChanges: Creating SyncChanges [DONE]');
 
-        // Delete Syncs
-        await tx.sync.deleteMany({
-          where: {
-            AND: [
-              {
-                connection: {
-                  providerId: syncConfig.providerId,
-                },
+      // Delete Syncs
+      logger.info('processSyncChanges: Deleting Syncs [IN PROGRESS]');
+      await this.#prisma.sync.deleteMany({
+        where: {
+          AND: [
+            {
+              connection: {
+                providerId: syncConfig.providerId,
               },
-              {
-                NOT: {
-                  OR: [
-                    ...(syncConfig.config.commonObjects?.map((commonObject) => ({
-                      type: 'object',
-                      objectType: 'common',
-                      object: commonObject.object,
-                    })) ?? []),
-                    ...(syncConfig.config.standardObjects?.map((standardObject) => ({
-                      type: 'object',
-                      objectType: 'standard',
-                      object: standardObject.object,
-                    })) ?? []),
-                    ...(syncConfig.config.entities?.map((entity) => ({
-                      type: 'entity',
-                      entityId: entity.entityId,
-                    })) ?? []),
-                  ],
-                },
+            },
+            {
+              NOT: {
+                OR: [
+                  ...(syncConfig.config.commonObjects?.map((commonObject) => ({
+                    type: 'object',
+                    objectType: 'common',
+                    object: commonObject.object,
+                  })) ?? []),
+                  ...(syncConfig.config.standardObjects?.map((standardObject) => ({
+                    type: 'object',
+                    objectType: 'standard',
+                    object: standardObject.object,
+                  })) ?? []),
+                  ...(syncConfig.config.entities?.map((entity) => ({
+                    type: 'entity',
+                    entityId: entity.entityId,
+                  })) ?? []),
+                ],
               },
-            ],
-          },
-        });
+            },
+          ],
+        },
       });
+      logger.info('processSyncChanges: Deleting Syncs [DONE]');
     }
 
     // Delete the SyncConfigChange objects
