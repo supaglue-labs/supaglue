@@ -135,6 +135,7 @@ model Connection {
   syncs                Sync[]
 
   @@unique([customerId, providerId])
+  @@index([providerId])
   @@map("connections")
 }
 
