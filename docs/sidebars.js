@@ -193,6 +193,11 @@ const sidebars = {
       value: sidebarHeader('Recipes'),
     },
     {
+      id: 'recipes/overview',
+      label: 'Overview',
+      type: 'doc',
+    },
+    {
       id: 'recipes/nextjs-prisma',
       label: 'Nextjs + Prisma',
       type: 'doc',
