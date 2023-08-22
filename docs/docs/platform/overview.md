@@ -6,7 +6,7 @@ Supaglue is designed to support a diverse range of product integration use cases
 
 <ThemedImage
 alt="managed auth"
-width="85%"
+width="50%"
 sources={{
     light: '/img/platform-overview-diagram.png',
     dark: '/img/platform-overview-diagram.png',
@@ -21,31 +21,12 @@ Underlying everything is **[Managed Authentication](./managed-auth)**. We let yo
 
 There are two core access patterns when using Supaglue:
 
-1. **Managed syncs**: Syncing data from providers to a database Destination in your cloud. Managed Syncs allows you to query third-party Provider data in your infrastructure.
-2. **Actions API**: Write real-time data synchronously to Providers using modern HTTP APIs.
+1. **Managed syncs (reads)**: Syncing data from providers to a database Destination in your cloud. Managed Syncs allows you to query third-party Provider data in your infrastructure.
+2. **Passthrough API (writes)**: Write real-time data synchronously to Providers using underlying native APIs.
+
+### Transformations
 
 Both access patterns operate on objects.
-
-## Data modeling
-
-There are three ways to data model objects in Supaglue:
-
-1. **[Entities](./entities/overview)**: You, the developer, define the data models.
-2. **[Objects](./objects/overview)**: Let you take the Provider's data model as-is.
-3. **[Common schema](./common-schema/overview)**: Lets Supaglue define the data model.
-
-Here's an example using Hubspot `organization` standard object:
-
-<ThemedImage
-alt="data models example"
-width="70%"
-sources={{
-    light: '/img/data-models-example.png',
-    dark: '/img/data-models-example.png',
-  }}
-/>
-
-Which data model you choose to adopt is based on the [integration patterns](../integration-patterns/overview) you are building into your product.
 
 ## Metadata APIs
 
@@ -57,4 +38,4 @@ Metadata APIs get used regardless of whether it's for syncing, writing, or how y
 
 ## Passthrough APIs
 
-The platform features above help accelerate development time for integrations and aim at covering 80% of the most frequently occurring use cases, but they don't cover them all. For the remaining 20%, we expose **[Passthrough APIs](passthrough)** that allow you to call the underlying Provider's native APIs.
+The platform features above help accelerate development time for integrations and aim at covering 80% of the most frequently occurring use cases, but they don't cover them all. For the remaining 20%, we expose **[Passthrough APIs](./passthrough)** that allow you to call the underlying Provider's native APIs.

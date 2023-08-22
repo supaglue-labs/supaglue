@@ -75,12 +75,12 @@ const sidebars = {
     },
     {
       id: 'integration-patterns/actions-api',
-      label: 'Actions API (writes)',
+      label: 'Writing data',
       type: 'doc',
     },
     {
       id: 'integration-patterns/real-time-events',
-      label: 'Real-time events (triggers/cdc)',
+      label: 'Triggers/CDC',
       type: 'doc',
     },
 
@@ -100,30 +100,9 @@ const sidebars = {
       type: 'doc',
     },
     {
-      label: 'Data models',
-      type: 'category',
-      link: {
-        title: 'Data models',
-        description: 'There are three ways to data model objects in Supaglue.',
-        type: 'generated-index',
-      },
-      items: [
-        {
-          id: 'platform/entities/overview',
-          label: 'Entities',
-          type: 'doc',
-        },
-        {
-          id: 'platform/objects/overview',
-          label: 'Objects',
-          type: 'doc',
-        },
-        {
-          id: 'platform/common-schema/overview',
-          label: 'Common Schema',
-          type: 'doc',
-        },
-      ],
+      id: 'platform/objects/overview',
+      label: 'Objects',
+      type: 'doc',
     },
     {
       id: 'platform/passthrough',
@@ -133,6 +112,11 @@ const sidebars = {
     {
       id: 'platform/notification-webhooks',
       label: 'Notification webhooks',
+      type: 'doc',
+    },
+    {
+      id: 'platform/cli',
+      label: 'CLI',
       type: 'doc',
     },
 
@@ -167,13 +151,50 @@ const sidebars = {
       type: 'doc',
     },
     {
-      id: 'tutorials/unify-objects-with-entities',
-      label: "Unify your customers' objects",
+      label: 'Transformations',
+      type: 'category',
+      link: {
+        title: 'Transformations',
+        description: 'Transformations',
+        type: 'generated-index',
+      },
+      items: [
+        {
+          id: 'tutorials/transformations/overview',
+          type: 'doc',
+          label: 'Overview',
+        },
+      ],
+    },
+
+    // section
+    {
+      type: 'html',
+      value: sidebarHeader('Recipes'),
+    },
+    {
+      id: 'recipes/nextjs-prisma',
+      label: 'Nextjs + Prisma',
       type: 'doc',
     },
     {
-      id: 'tutorials/build-field-mapping-ui',
-      label: 'Build field mapping UI',
+      id: 'recipes/nextjs-inngest',
+      label: 'Nextjs + Inngest',
+      type: 'doc',
+    },
+    {
+      id: 'recipes/nextjs-triggerdev',
+      label: 'Nextjs + Trigger.dev',
+      type: 'doc',
+    },
+    {
+      id: 'recipes/nextjs-render',
+      label: 'Nextjs + Render',
+      type: 'doc',
+    },
+    {
+      id: 'recipes/expressjs-temporal',
+      label: 'Expressjs + Temporal',
       type: 'doc',
     },
 

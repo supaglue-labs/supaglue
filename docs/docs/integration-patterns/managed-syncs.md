@@ -1,16 +1,18 @@
 import ThemedImage from '@theme/ThemedImage';
 import BrowserWindow from '@site/src/components/BrowserWindow';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-# Managed syncs (reads)
+# Managed Syncs
 
-Managed syncs let you sync data from your customers’ third-party provider directly into your own application database or data warehouse.
+Supaglue writes directly into a database.
 
 <ThemedImage
-alt="managed syncs diagram"
-width="75%"
+alt="integration patterns syncs"
+width="50%"
 sources={{
-    light: '/img/managed-syncs-diagram-2.png',
-    dark: '/img/managed-syncs-diagram-2.png',
+    light: '/img/integration-patterns-syncs.png',
+    dark: '/img/integration-patterns-syncs.png',
   }}
 />
 
@@ -19,10 +21,6 @@ sources={{
 1. Use the [Management Portal](https://app.supaglue.io) to create a sync configuration ([SyncConfig](#syncconfig)) that defines "what" and "how" to sync from a third-party [Provider](#provider) to a [Destination](#destination).
 2. Your customer connects via our [Managed Authentication](../platform/managed-auth) feature.
 3. Supaglue starts fetching data from your customers’ third-party Providers and landing them in your Destination (e.g. Postgres).
-
-:::info
-Choose from three ways to data model how Provider objects should map to Destination objects: [Objects](../platform/objects/overview), [Entities](../platform/entities/overview), or [Common Schema](../platform/common-schema/overview).
-:::
 
 ## Concepts
 
@@ -41,6 +39,10 @@ A Provider is a third-party SaaS tool that Supaglue can connect to, to sync data
 
 Use the **Connectors --> Providers** page in the Management Portal to configure Oauth app credentials:
 
+<Tabs>
+
+<TabItem value="provider-mgmt-ui" label="Mgmt UI" default>
+
 <BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/connectors/providers/crm/salesforce">
 
 <ThemedImage
@@ -54,7 +56,9 @@ sources={{
 
 </BrowserWindow>
 
-Example Provider json configuration:
+</TabItem>
+
+<TabItem value="provider-json" label="JSON" default>
 
 ```json
 {
@@ -75,14 +79,19 @@ Example Provider json configuration:
 }
 ```
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+</TabItem>
+
+</Tabs>
 
 ### Destination
 
 A Destination is a database or data warehouse in your infrastructure where Supaglue can write third-party Provider data to.
 
 Use the **Connectors --> Destinations** page in the Management Portal to configure Oauth app credentials:
+
+<Tabs>
+
+<TabItem value="destination-mgmt-ui" label="Mgmt UI" default>
 
 <BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/connectors/destinations/postgres">
 
@@ -97,11 +106,9 @@ sources={{
 
 </BrowserWindow>
 
-<Tabs>
+</TabItem>
 
-<TabItem value="postgres-provider-config" label="Postgres" default>
-
-Example Destination (Postgres) json configuration:
+<TabItem value="destination-json" label="JSON">
 
 ```json
 {
@@ -131,6 +138,10 @@ Before syncing data, Supaglue generates the destination tables and columns in yo
 
 A SyncConfig ties a Provider (source) to a Destination. It defines what objects to sync and how to sync them (frequency, strategy, etc).
 
+<Tabs>
+
+<TabItem value="sync-config-mgmt-ui" label="Mgmt UI" default>
+
 <BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/syncs/sync_configs/4427eb3f-3c64-4d1e-bf3a-0646475fc71c">
 
 <ThemedImage
@@ -144,7 +155,9 @@ sources={{
 
 </BrowserWindow>
 
-Example SyncConfig json configuration:
+</TabItem>
+
+<TabItem value="sync-config-json" label="JSON">
 
 ```json
 {
@@ -158,11 +171,6 @@ Example SyncConfig json configuration:
       "strategy": "full then incremental",
       "auto_start_on_connection": true
     },
-    "common_objects": [
-      {
-        "object": "contact"
-      }
-    ],
     "standard_objects": [
       {
         "object": "Account"
@@ -172,11 +180,6 @@ Example SyncConfig json configuration:
       {
         "object": "BattleCard__c"
       }
-    ],
-    "entities": [
-      {
-        "entity_id": "3a82409f-c98f-4d25-bbd8-3335de3f12cc"
-      }
     ]
   }
 }
@@ -184,44 +187,80 @@ Example SyncConfig json configuration:
 
 The SyncConfig above defines references a Salesforce Provider config and a Postgres Destination config that does the following:
 
-- Sync the `contact` Supaglue [Common Object](../platform/common-schema/overview).
 - Sync `Account` [standard object](../platform/objects/overview) from Salesforce.
 - Sync the `BattleCard__c` [custom object](../platform/objects/overview) from Salesforce.
-- Sync a customer-mapped object and fields to an [Entity](../platform/entities/overview).
+
+</TabItem>
+
+</Tabs>
+
+## Hosting Destinations
+
+You can choose between two methods of hosting Destinations:
+
+1. **Your Destination:** Supaglue will land raw data in your database.
+2. **Supaglue-hosted Destination:** Supaglue will land raw data in a Supaglue-hosted Postgres database.
+
+### Deciding on a hosting method
+
+There are several differences between the two methods of hosting Destinations:
+
+| Dimension       | Your application database                                     | Supaglue-hosted database                                    |
+| --------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
+| Transformations | Ideal if you have existing transformation pipelines           | Ideal if you don't have an existing transformation pipeline |
+| Compliance      | Your customer data is never stored in Supaglue at-rest        | Your customer data is stored in Supaglue at-rest            |
+| Security        | Your database needs to be accessible from the public internet | Your final target database can be behind a VPC              |
+| Operational     | You need to ensure your database is up                        | Supaglue will ensure the uptime and sync reliability        |
+
+## Query patterns
+
+### Pattern 1: Direct query
+
+The quickest way to query data is to query the raw JSONB data that Supaglue lands: this is well-suited if you can easily do transforms upon reading the raw data in your application using code. You may optionally add indexes to help query performance.
+
+### Pattern 2: Logical SQL view
+
+You can create Postgres views if you need to rename fields or run transformations easily expressed using SQL.
+
+### Pattern 3: Postgres Generated Columns
+
+Building on Pattern 2, if your SQL transformations are expensive to run at query time, you can use Postgres [Generated Columns](https://www.postgresql.org/docs/current/ddl-generated-columns.html) to speed up queries by pushing the transformation work to be maintained at write time.
+
+### Pattern 4: Transformation pipeline
+
+If you have well-structured tables that you wish to write Supaglue-synced data into, you can paginate over the Supaglue-synced tables, run your transformations, and write the transformed data into your tables.
+
+## Transformation patterns
+
+This section covers how developers can model their application data and how to write Supaglue-synced data into them.
+
+### Common schema
+
+...
+
+### Normalized relations (bridge tables)
+
+...
+
+### Object/field mapping
+
+...
+
+### Value mapping
+
+...
+
+### Datetime conversion
+
+...
 
 ## Data schema in Destination
 
-The exact schema of the data that Supaglue creates in your Destination varies on the data model ([Objects](../platform/objects/overview), [Entities](../platform/entities/overview), [Common Schema](../platform/common-schema/overview)) you choose to use, but all of them contain three types of information:
+The schema of the data that Supaglue creates in your Destination contains three types of information:
 
 1. **Supaglue metadata fields**: These specify the application, customer, provider, and timestamps associated with the managed sync.
 1. **Raw data**: The raw third-party Provider data. We pass these through as-is.
-1. **Normalized data**: The raw data is normalized (hoisted to top-level fields/columns) and mapped based on the [data model](../platform/overview#data-modeling) you chose.
-1. (**Mapped data**: This is the same as raw data, but mapped based on the [data model](../platform/overview#data-modeling) you chose. We are working on consolidating Normalized data and Mapped data.)
-
-### Entities
-
-Tables are named `entity_${Entity name}`, e.g. `entity_apolla_contact`.
-
-Example:
-
-```sql
-postgres=> \d entity_battlecard
-                            Table "staging.entity_battlecard"
-          Column          |              Type              | Collation | Nullable | Default
---------------------------+--------------------------------+-----------+----------+---------
- _supaglue_application_id | text                           |           | not null |
- _supaglue_provider_name  | text                           |           | not null |
- _supaglue_customer_id    | text                           |           | not null |
- _supaglue_emitted_at     | timestamp(3) without time zone |           | not null |
- _supaglue_is_deleted     | boolean                        |           | not null |
- _supaglue_raw_data       | jsonb                          |           | not null |
- _supaglue_mapped_data    | jsonb                          |           | not null |
- id                       | text                           |           | not null |
-Indexes:
-    "entity_battlecard_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
-```
-
-### Objects
+1. **Normalized data**: The raw data is normalized (hoisted to top-level fields/columns).
 
 Tables are named `${Provider}_${Object name}`, e.g. `salesforce_Account`.
 
@@ -238,45 +277,9 @@ postgres=> \d gong_call
  _supaglue_emitted_at     | timestamp(3) without time zone |           | not null |
  _supaglue_is_deleted     | boolean                        |           | not null |
  _supaglue_raw_data       | jsonb                          |           | not null |
- _supaglue_mapped_data    | jsonb                          |           | not null |
- id                       | text                           |           | not null |
+ _supaglue_id             | text                           |           | not null |
 Indexes:
-    "gong_call_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
-```
-
-### Common Schema
-
-Tables are named `${category}_${Supaglue Common Object name}`, e.g. `crm_accounts`.
-
-Example:
-
-```sql
-postgres=> \d crm_accounts;
-                                Table "staging.crm_accounts"
-          Column          |              Type              | Collation | Nullable | Default
---------------------------+--------------------------------+-----------+----------+---------
- _supaglue_application_id | text                           |           | not null |
- _supaglue_provider_name  | text                           |           | not null |
- _supaglue_customer_id    | text                           |           | not null |
- _supaglue_emitted_at     | timestamp(3) without time zone |           | not null |
- id                       | text                           |           | not null |
- created_at               | timestamp(3) without time zone |           |          |
- updated_at               | timestamp(3) without time zone |           |          |
- is_deleted               | boolean                        |           | not null |
- last_modified_at         | timestamp(3) without time zone |           | not null |
- name                     | text                           |           |          |
- description              | text                           |           |          |
- industry                 | text                           |           |          |
- website                  | text                           |           |          |
- number_of_employees      | integer                        |           |          |
- addresses                | jsonb                          |           |          |
- phone_numbers            | jsonb                          |           |          |
- last_activity_at         | timestamp(3) without time zone |           |          |
- lifecycle_stage          | text                           |           |          |
- owner_id                 | text                           |           |          |
- raw_data                 | jsonb                          |           |          |
-Indexes:
-    "crm_accounts_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+    "gong_call_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id)
 ```
 
 ## Sync strategies
@@ -294,8 +297,4 @@ S3 is the only Destination that does not support the `full then incremental` syn
 
 ## Sync behavior
 
-Supaglue executes syncs on a per Entity/Object/Common Schema basis. For example, ten syncs will be created if you are syncing ten Standard Objects. Supaglue schedules them to run simultaneously at the frequency you set. Each sync run is independent, i.e., a failure in one sync will not affect the others.
-
-## Query patterns
-
-Refer to [Destination](/category/destinations) documentation for best practices in each destination, e.g. [Postgres](../destinations/postgres#query-patterns).
+Supaglue executes syncs on a per Object basis. For example, Supaglue will create ten syncs if you are syncing ten Standard Objects. Supaglue schedules them to run simultaneously at the frequency you set. Each sync run is independent, i.e., a failure in one sync will not affect the others.
