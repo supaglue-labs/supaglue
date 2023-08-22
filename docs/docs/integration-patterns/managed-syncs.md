@@ -234,25 +234,11 @@ If you have well-structured tables that you wish to write Supaglue-synced data i
 
 This section covers how developers can model their application data and how to write Supaglue-synced data into them.
 
-### Common schema
-
-...
-
-### Normalized relations (bridge tables)
-
-...
-
-### Object/field mapping
-
-...
-
-### Value mapping
-
-...
-
-### Datetime conversion
-
-...
+- [Common schema](../tutorials/transformations/common-schema)
+- [Normalized relations (bridge tables)](../tutorials/transformations/normalized-relations)
+- [Object/field mapping](../tutorials/transformations/object-field-mapping)
+- [Value mapping](../tutorials/transformations/value-mapping)
+- [Date time conversion](../tutorials/transformations/date-time-conversion)
 
 ## Data schema in Destination
 
