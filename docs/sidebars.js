@@ -114,11 +114,6 @@ const sidebars = {
       label: 'Notification webhooks',
       type: 'doc',
     },
-    {
-      id: 'platform/cli',
-      label: 'CLI',
-      type: 'doc',
-    },
 
     // section
     {
@@ -163,6 +158,31 @@ const sidebars = {
           id: 'tutorials/transformations/overview',
           type: 'doc',
           label: 'Overview',
+        },
+        {
+          id: 'tutorials/transformations/common-schema',
+          type: 'doc',
+          label: 'Common schema',
+        },
+        {
+          id: 'tutorials/transformations/normalized-relations',
+          type: 'doc',
+          label: 'Normalized relations',
+        },
+        {
+          id: 'tutorials/transformations/object-field-mapping',
+          type: 'doc',
+          label: 'Object and field mapping',
+        },
+        {
+          id: 'tutorials/transformations/value-mapping',
+          type: 'doc',
+          label: 'Value mapping',
+        },
+        {
+          id: 'tutorials/transformations/date-time-conversion',
+          type: 'doc',
+          label: 'Date time conversion',
         },
       ],
     },

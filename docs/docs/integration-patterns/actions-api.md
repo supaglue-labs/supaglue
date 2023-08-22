@@ -6,8 +6,6 @@ import ThemedImage from '@theme/ThemedImage';
 
 The Passthrough API lets you call the underlying third-party Providers' native APIs.
 
-[...diagram]
-
-## How it works
-
-...
+:::info
+This is under construction.
+:::
