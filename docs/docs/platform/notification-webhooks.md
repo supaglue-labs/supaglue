@@ -24,7 +24,6 @@ Your integration can listen for these webhooks to do the following:
 - Transform synced data for your application
 - Cleanup old data after a customer deletes their account or disconnects their integration
 - Backfill data after a customer changes configuration settings
-- Clean data after a customer changes [EntityMappings](../platform/entities/overview#entity-mapping)
 
 ## Setup
 
@@ -61,6 +60,10 @@ To mitigate this attack, Supaglue includes a timestamp for when the webhook atte
 
 Supaglue uses an underlying webhook framework called Svix. Look more about how to validate the signature of webhook events in their [docs here](https://docs.svix.com/receiving/verifying-payloads/how).
 
+## Reliable processing of webhook events
+
+In some situations, after consuming notification webhooks, you will want to ensure the reliability and eventual consistency of processing webhook events, e.g. for transformations that involve multiple steps. Refer to our [Recipes section](../recipes/overview) for more details.
+
 ## More information
 
-You can read our [Listening for Webhooks tutorial](../tutorials/listen-for-webhooks) to go more in-depth guide on consuming webhook notifications.
+You can read our [Listening for Webhooks tutorial](../tutorials/listen-for-webhooks) for a more in-depth guide on consuming webhook notifications.
