@@ -184,6 +184,11 @@ const sidebars = {
           type: 'doc',
           label: 'Date time conversion',
         },
+        {
+          id: 'tutorials/transformations/association-bridge-table',
+          type: 'doc',
+          label: 'Association bridge table',
+        },
       ],
     },
 
