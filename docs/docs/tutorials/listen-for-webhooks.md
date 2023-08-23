@@ -174,3 +174,7 @@ Several popular queue or message broker technologies include the following:
 - GCP Cloud Tasks
 - GCP PubSub
 - ...
+
+## Using workflow engines
+
+In some situations, you will want to ensure the reliability and eventual consistency of processing webhook events, e.g. for transformations that involve multiple steps. In those cases, a workflow engine can help orchestrate the processing -- some will even remove the need for a separate queueing system. Refer to our [Recipes section](../recipes/overview) for more details.
