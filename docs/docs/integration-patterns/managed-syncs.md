@@ -230,15 +230,16 @@ Building on Pattern 2, if your SQL transformations are expensive to run at query
 
 If you have well-structured tables that you wish to write Supaglue-synced data into, you can paginate over the Supaglue-synced tables, run your transformations, and write the transformed data into your tables.
 
-## Transformation patterns
+<ThemedImage
+alt="transformation pipeline"
+width="75%"
+sources={{
+    light: '/img/transformation-pipeline.png',
+    dark: '/img/transformation-pipeline.png',
+  }}
+/>
 
-This section covers how developers can model their application data and how to write Supaglue-synced data into them.
-
-- [Common schema](../tutorials/transformations/common-schema)
-- [Normalized relations (bridge tables)](../tutorials/transformations/normalized-relations)
-- [Object/field mapping](../tutorials/transformations/object-field-mapping)
-- [Value mapping](../tutorials/transformations/value-mapping)
-- [Date time conversion](../tutorials/transformations/date-time-conversion)
+Read more about transformation pipelines and patterns in our [transformation tutorial section](../tutorials/transformations/overview).
 
 ## Data schema in Destination
 
