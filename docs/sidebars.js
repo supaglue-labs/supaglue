@@ -160,6 +160,11 @@ const sidebars = {
           label: 'Overview',
         },
         {
+          id: 'tutorials/transformations/pagination',
+          type: 'doc',
+          label: 'Pagination',
+        },
+        {
           id: 'tutorials/transformations/common-schema',
           type: 'doc',
           label: 'Common schema',
