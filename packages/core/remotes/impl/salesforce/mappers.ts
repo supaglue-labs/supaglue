@@ -66,8 +66,8 @@ export const fromSalesforceAccountToAccount = (record: Record<string, any>): Acc
           street2: null,
           city: record.BillingCity ?? null,
           state: record.BillingState ?? null,
-          postalCode: record.postalCode ?? null,
-          country: record.country ?? null,
+          postalCode: record.BillingPostalCode ?? null,
+          country: record.BillingCountry ?? null,
           addressType: 'billing',
         }
       : null;
@@ -83,8 +83,8 @@ export const fromSalesforceAccountToAccount = (record: Record<string, any>): Acc
           street2: null,
           city: record.ShippingCity ?? null,
           state: record.ShippingState ?? null,
-          postalCode: record.postalCode ?? null,
-          country: record.country ?? null,
+          postalCode: record.ShippingPostalCode ?? null,
+          country: record.ShippingCountry ?? null,
           addressType: 'shipping',
         }
       : null;

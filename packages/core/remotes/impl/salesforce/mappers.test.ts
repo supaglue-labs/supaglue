@@ -52,8 +52,8 @@ describe('Salesforce Mappers', () => {
           street2: null,
           city: 'Test City',
           state: 'Test State',
-          postalCode: null,
-          country: null,
+          postalCode: '12345',
+          country: 'Test Country',
           addressType: 'billing',
         },
         {
@@ -61,8 +61,8 @@ describe('Salesforce Mappers', () => {
           street2: null,
           city: 'Ship City',
           state: 'Ship State',
-          postalCode: null,
-          country: null,
+          postalCode: '67890',
+          country: 'Ship Country',
           addressType: 'shipping',
         },
       ]);
