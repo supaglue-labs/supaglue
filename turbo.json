@@ -31,7 +31,10 @@
       "outputs": ["build/**"]
     },
     "mgmt-ui#build": {
-      "outputs": [".next/**", "!.next/cache/**"]
+      "inputs": ["package.json", "tsconfig.json", "*.config.js", "src/**/*", "public/**/*"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": ["NEXT_PUBLIC_*"],
+      "dotEnv": [".env"]
     },
     "lint-staged": {
       "outputMode": "errors-only"
@@ -40,9 +43,7 @@
       "inputs": ["**/*.{js,ts,tsx}"],
       "outputMode": "errors-only"
     },
-    "test": {
-      "dependsOn": ["build"]
-    },
+    "test": {},
     "test:watch": {
       "cache": false,
       "persistent": true
