@@ -33,6 +33,10 @@ const nextConfig = {
       },
     ];
   },
+  sentry: {
+    disableServerWebpackPlugin: !process.env.VERCEL,
+    disableClientWebpackPlugin: !process.env.VERCEL,
+  },
 };
 
 module.exports = nextConfig;
