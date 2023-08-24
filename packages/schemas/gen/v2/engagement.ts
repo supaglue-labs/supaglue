@@ -286,7 +286,7 @@ export interface components {
       mailbox_id?: string;
       /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
       sequence_id: string;
-      /** @description The ID of the user who is performing the action. Required for Salesloft, optional for Apollo and Outreach. */
+      /** @description The ID of the user who is performing the action. Required for Salesloft, optional for Apollo, unused for Outreach. */
       user_id?: string;
     };
     mailbox: {

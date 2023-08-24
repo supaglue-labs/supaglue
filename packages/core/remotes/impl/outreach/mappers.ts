@@ -274,7 +274,6 @@ export const toOutreachSequenceStateCreateParams = ({
   mailboxId,
   sequenceId,
   contactId,
-  userId,
 }: SequenceStateCreateParams): Record<string, any> => {
   if (!mailboxId) {
     throw new BadRequestError('Mailbox ID is required for Outreach');
@@ -301,14 +300,6 @@ export const toOutreachSequenceStateCreateParams = ({
             id: parseInt(mailboxId, 10),
           },
         },
-        creator: userId
-          ? {
-              data: {
-                type: 'user',
-                id: parseInt(userId, 10),
-              },
-            }
-          : undefined,
       },
     },
   };

@@ -1211,7 +1211,7 @@
           },
           "user_id": {
             "type": "string",
-            "description": "The ID of the user who is performing the action. Required for Salesloft, optional for Apollo and Outreach."
+            "description": "The ID of the user who is performing the action. Required for Salesloft, optional for Apollo, unused for Outreach."
           }
         },
         "required": [
