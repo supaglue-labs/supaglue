@@ -24,7 +24,7 @@ The tutorials here cover the second step: transformations. We will cover tutoria
 You will likely want to run different transformations on the raw data that Supaglue syncs. The types of transformations range from simple ones (like renaming fields) to complex ones (like fetching data from external resources). Below are common transformations:
 
 - Implementing a [common schema](./common-schema)
-- [Normalizing relationships](./normalized-relations) between objects
+- [Association bridge table](./association-bridge-table) between objects
 - [Object and field mapping](./object-field-mapping) for different customers and providers
 - [Mapping values](./value-mapping)
 - Converting between formats (like [date time formats](./date-time-conversion.md))

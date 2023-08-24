@@ -170,9 +170,9 @@ const sidebars = {
           label: 'Common schema',
         },
         {
-          id: 'tutorials/transformations/normalized-relations',
+          id: 'tutorials/transformations/association-bridge-table',
           type: 'doc',
-          label: 'Normalized relations',
+          label: 'Association bridge table',
         },
         {
           id: 'tutorials/transformations/object-field-mapping',
@@ -215,11 +215,6 @@ const sidebars = {
     {
       id: 'recipes/nextjs-triggerdev',
       label: 'Nextjs + Trigger.dev',
-      type: 'doc',
-    },
-    {
-      id: 'recipes/nextjs-render',
-      label: 'Nextjs + Render',
       type: 'doc',
     },
     {

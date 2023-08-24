@@ -1,5 +1,5 @@
 # Nextjs + Render
 
 :::info
-This is under constructions.
+This is under construction.
 :::
