@@ -45,9 +45,9 @@ In this tutorial, we'll use three example customers: `user-`, `user-2`, and `use
 | `contact`           | Hubspot `contact` | Salesforce `Lead`        | Salesforce `Contact`     |
 | `opportunity`       | Hubspot `deal`    | Salesforce `Opportunity` | Salesforce `Opportunity` |
 
-## Writing mapped records to your database
+## Write mapped records to your database
 
-In the following steps we will go over how to do the following:
+We will go over how to do the following:
 
 1. Listen for Supaglue's `sync.complete` webhook event to trigger a transformation function
 2. Define the transformation function that will map per-provider/customer/object records to your application entities
@@ -59,7 +59,7 @@ In the following steps we will go over how to do the following:
 
 ### 1. Listen for Supaglue's webhook event
 
-Supaglue emits different kinds of notification webhooks. For object and field mapping, we want to process the `sync.complete` event which is emitted after a full or incremental sync has completed.
+Supaglue [emits different kinds](../../platform/notification-webhooks) of notification webhooks. For object and field mapping, we want to process the `sync.complete` event which Supaglue emits after a full or incremental sync completes.
 
 ```ts
 export async function POST(request: NextRequest) {
@@ -78,6 +78,10 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({});
 }
 ```
+
+:::info
+Please refer to the [consuming webhooks](../listen-for-webhooks) tutorial for more details on how to do it.
+:::
 
 ### 2. Define the transformation function
 
@@ -249,20 +253,21 @@ const mapper = getMapper(data.provider_name, data.customer_id, data.object);
 
 Now, we want to transform the newly-synced records to write into your existing database tables. We'll use the mapper that we wrote earlier to do this.
 
+:::info
+Please refer to the [Pagination](./pagination) tutorial for more details on pagination over newly-synced records.
+:::
+
 <Tabs>
 
 <TabItem value="Algorithm" label="Algorithm" default>
 
 Upon a `sync.complete` webhook event:
 
-1. Read all provider/customer/object records since the last high watermark
-2. For each record, transform it using the mapper
-3. Upsert the transformed record into your database table
-4. Set the new high watermark
-
-:::info
-Please refer to the [Pagination](./pagination) tutorial for more details on pagination over newly-synced records.
-:::
+1. Read all provider/customer/object records since the last [high-water mark](./pagination)
+2. For each record:
+   - Transform it using the mapper
+   - Upsert the transformed record into your database table
+3. Set the new high watermark
 
 </TabItem>
 
