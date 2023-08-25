@@ -2300,6 +2300,32 @@
         "oneOf": [
           {
             "type": "object",
+            "title": "supaglue",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "d455d20b-f6dc-4bc3-ab14-b4f21c4b4835"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "726fb798-d854-4c59-9a23-57e3e2f73eae"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "supaglue"
+                ],
+                "example": "supaglue"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "type"
+            ]
+          },
+          {
+            "type": "object",
             "title": "postgres",
             "properties": {
               "id": {
@@ -4255,6 +4281,22 @@
       },
       "create_destination": {
         "oneOf": [
+          {
+            "type": "object",
+            "title": "postgres",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "supaglue"
+                ],
+                "example": "supaglue"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
           {
             "type": "object",
             "title": "postgres",

@@ -12,6 +12,7 @@ import type {
   DestinationUnsafeAny,
   DestinationUpdateParamsAny,
 } from '@supaglue/types';
+import { SUPAGLUE_MANAGED_DESTINATION } from '@supaglue/utils';
 import fs from 'fs';
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import path from 'path';
@@ -72,6 +73,17 @@ export class DestinationService {
   }
 
   public async createDestination(params: DestinationCreateParamsAny): Promise<DestinationSafeAny> {
+    if (params.type === 'supaglue') {
+      const model = await this.#prisma.destination.create({
+        data: {
+          name: SUPAGLUE_MANAGED_DESTINATION,
+          applicationId: params.applicationId,
+          type: params.type,
+          encryptedConfig: await encrypt(JSON.stringify({})),
+        },
+      });
+      return fromDestinationModelToSafe(model);
+    }
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
@@ -87,6 +99,12 @@ export class DestinationService {
   }
 
   public async testDestination(params: DestinationTestParamsAny): Promise<DestinationTestResult> {
+    if (params.type === 'supaglue') {
+      return {
+        success: true,
+        message: null,
+      };
+    }
     let success = false;
     let message: string | null = null;
 
@@ -228,6 +246,9 @@ export class DestinationService {
   }
 
   public async updateDestination(params: DestinationUpdateParamsAny): Promise<DestinationSafeAny> {
+    if (params.type === 'supaglue') {
+      throw new BadRequestError('Updating not supported for supaglue managed destination');
+    }
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
@@ -322,5 +343,7 @@ function mergeDestinationConfig(
         ...params.config,
         password: params.config.password ?? existingDestination.config.password,
       };
+    case 'supaglue':
+      throw new BadRequestError('cannot update supaglue managed destination');
   }
 }

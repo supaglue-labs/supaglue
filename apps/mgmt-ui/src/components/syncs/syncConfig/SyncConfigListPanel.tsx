@@ -8,6 +8,7 @@ import { useEntities } from '@/hooks/useEntities';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import getIcon from '@/utils/companyToIcon';
+import { getDestinationName } from '@/utils/destination';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
@@ -88,7 +89,7 @@ export default function SyncConfigListPanel() {
             className="flex flex-row gap-2 items-center w-full h-full"
           >
             {getIcon(destination.type)}
-            <p>{destination.name}</p>
+            <p>{getDestinationName(destination)}</p>
           </Link>
         );
       },
