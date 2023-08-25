@@ -26,8 +26,8 @@ You will likely want to run different transformations on the raw data that Supag
 - Implementing a [common schema](./common-schema)
 - [Association bridge table](./association-bridge-table) between objects
 - [Object and field mapping](./object-field-mapping) for different customers and providers
-- [Mapping values](./value-mapping)
-- Converting between formats (like [date time formats](./date-time-conversion.md))
+- Mapping values
+- Converting between formats (like date time formats)
 
 ## Triggering and running transformations
 
