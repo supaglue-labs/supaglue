@@ -394,6 +394,10 @@ const sidebars = {
     },
 
     {
+      type: 'html',
+      value: sidebarHeader('Data API'),
+    },
+    {
       type: 'category',
       label: 'Data API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
