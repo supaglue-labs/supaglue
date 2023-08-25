@@ -3,7 +3,9 @@ import TabItem from '@theme/TabItem';
 
 # Common schema
 
-A common way that users typically want to be able to consume data that has been synced to their database by Supaglue is to have a common schema that is shared across all of their data sources. This allows your application code to expect the data to be in the same schema regardless of the source. This tutorial will walk through some examples of transfoming the synced data into a common schema for consumption. We will be transforming data synced from a Salesforce instance in our examples.
+Suppose your application integrates with multiple third-party [Providers](../../integration-patterns/managed-syncs#provider) in one category, like Salesforce, Hubspot, and Pipedrive in CRM. In that case, you likely want to read their data in a unified way. For example, for reading contacts from these CRMs, use one table in your database instead of three tables.
+
+This tutorial will teach you how to structure your transformation code and how to build a common schema using Salesforce as an example.
 
 ## Prerequisites
 
@@ -17,7 +19,7 @@ We also will use the following technologies:
 
 ## Scenario
 
-Suppose that you want to have a common model for each of the users, opportunities, leads, accounts, and contacts that you can use in your application. The schemas for these models might look something like these:
+Our example application has the concepts of users, opportunities, leads, accounts, and contacts and you want to create a table for each to store data from Salesforce, Hubspot, and Pipedrive. The schemas for these models (using Prisma syntax) look like the following:
 
 <Tabs>
 
@@ -38,6 +40,10 @@ model User {
   @@map("users")
 }
 ```
+
+:::note
+A `User` is a person who can log into your customer's third-party [Provider](../../integration-patterns/managed-syncs#provider) account.
+:::
 
 </TabItem>
 
@@ -162,9 +168,16 @@ model Contact {
 
 ## Setup
 
-To trigger the transform of data after it has been synced to your database, you will need to listen for the `sync.complete` webhook and trigger some mapping code. Please see our documentation on [listening for webhooks](../listen-for-webhooks) for more information.
+Trigger your transformation code after it is synced to Supaglue-managed tables by listening for the `sync.complete` webhook. For more information, please see our documentation on [listening for webhooks](../listen-for-webhooks).
 
 ## Transforming data
+
+You can map data from each provider to your common schema using two approaches:
+
+- SQL selects, aliasing, and functions for simple transformations like renaming fields and format conversion
+- Code for more complex transformations like operating on objects and arrays
+
+In the examples below, we rename fields using SQL aliasing and use code for more complex transformations.
 
 <Tabs>
 
@@ -185,7 +198,7 @@ Please refer to the [Pagination](./pagination) tutorial for more details on pagi
 
 <TabItem value="simple_example" label="Simple Example (User)" default>
 
-For a straightforward mapping of just names and basic values, you can use something like the following code:
+This example maps Salesforce's `User` fields to our `User` model fields using SQL:
 
 ```typescript
 import prisma from '@prisma/client';
@@ -275,7 +288,7 @@ for (const row of rows) {
 
 <TabItem value="complex_example" label="Complex Example (Contact)" default>
 
-For a more complex case, like where we have to map phone numbers, addresses, and email addresses to JSONB columns, we can use something like the following code:
+This example maps Salesforce's `Contact` fields using SQL for field renaming and then code for mapping phone numbers, addresses, and email addresses:
 
 ```typescript
 import prisma from '@prisma/client';
