@@ -203,7 +203,12 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
               disabled={isLoadingDestinations || !!syncConfig}
               onChange={setDestinationId}
               value={destinationId ?? ''}
-              options={destinations?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
+              options={
+                destinations?.map((destination) => ({
+                  value: destination.id,
+                  displayValue: destination.type === 'supaglue' ? 'Supaglue Managed Destination' : destination.name,
+                })) ?? []
+              }
             />
           </Stack>
           <Stack className="gap-2">
