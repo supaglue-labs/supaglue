@@ -25,6 +25,8 @@ import { BadRequestError } from '../errors';
 import { encrypt } from '../lib/crypt';
 import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
 
+const SUPAGLUE_MANAGED_DESTINATION = 'Supaglue Managed Destination';
+
 const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
 
 export class DestinationService {
@@ -72,6 +74,17 @@ export class DestinationService {
   }
 
   public async createDestination(params: DestinationCreateParamsAny): Promise<DestinationSafeAny> {
+    if (params.type === 'supaglue') {
+      const model = await this.#prisma.destination.create({
+        data: {
+          name: SUPAGLUE_MANAGED_DESTINATION,
+          applicationId: params.applicationId,
+          type: params.type,
+          encryptedConfig: await encrypt(JSON.stringify({})),
+        },
+      });
+      return fromDestinationModelToSafe(model);
+    }
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
@@ -87,6 +100,12 @@ export class DestinationService {
   }
 
   public async testDestination(params: DestinationTestParamsAny): Promise<DestinationTestResult> {
+    if (params.type === 'supaglue') {
+      return {
+        success: true,
+        message: null,
+      };
+    }
     let success = false;
     let message: string | null = null;
 
@@ -228,6 +247,9 @@ export class DestinationService {
   }
 
   public async updateDestination(params: DestinationUpdateParamsAny): Promise<DestinationSafeAny> {
+    if (params.type === 'supaglue') {
+      throw new BadRequestError('Updating not supported for supaglue managed destination');
+    }
     if (!params.name) {
       throw new BadRequestError('name is required');
     }
@@ -322,5 +344,7 @@ function mergeDestinationConfig(
         ...params.config,
         password: params.config.password ?? existingDestination.config.password,
       };
+    case 'supaglue':
+      throw new BadRequestError('cannot update supaglue managed destination');
   }
 }

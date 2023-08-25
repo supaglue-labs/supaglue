@@ -20,9 +20,6 @@ oneOf:
       application_id:
         type: string
         example: 726fb798-d854-4c59-9a23-57e3e2f73eae
-      name:
-        type: string
-        example: My Postgres Destination
       type:
         type: string
         enum:
@@ -31,7 +28,6 @@ oneOf:
     required:
       - id
       - application_id
-      - name
       - type
   - type: object
     title: postgres

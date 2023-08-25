@@ -37,6 +37,12 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
         type: model.type,
         config: decryptedConfig,
       };
+    case 'supaglue':
+      return {
+        id: model.id,
+        applicationId: model.applicationId,
+        type: model.type,
+      };
     default:
       throw new Error(`Unknown destination type: ${model.type}`);
   }
@@ -103,6 +109,13 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
           database: config.database,
           user: config.user,
         },
+      };
+    }
+    case 'supaglue': {
+      return {
+        id: model.id,
+        applicationId: model.applicationId,
+        type: 'supaglue',
       };
     }
     default:

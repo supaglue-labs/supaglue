@@ -441,8 +441,6 @@ export interface components {
       id: string;
       /** @example 726fb798-d854-4c59-9a23-57e3e2f73eae */
       application_id: string;
-      /** @example My Postgres Destination */
-      name: string;
       /**
        * @example supaglue 
        * @enum {string}
@@ -1177,6 +1175,12 @@ export interface components {
       config: components["schemas"]["entity_config"];
     };
     create_destination: OneOf<[{
+      /**
+       * @example supaglue 
+       * @enum {string}
+       */
+      type: "supaglue";
+    }, {
       /** @example My Postgres Destination */
       name: string;
       /**
