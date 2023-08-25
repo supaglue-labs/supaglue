@@ -1,0 +1,43 @@
+openapi: 3.0.3
+info:
+  version: 0.13.13
+  title: Supaglue Data API
+  contact:
+    name: Supaglue
+    email: docs@supaglue.com
+    url: 'https://supaglue.com'
+  description: |
+    #### Introduction
+
+    Welcome to the Data API documentation. You can use this API to list objects that have been synced to Supaglue's managed destination.
+
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
+
+    #### Base API URL
+    ```
+    https://api.supaglue.io/data/v2
+    ```
+servers:
+  - url: 'https://api.supaglue.io/data/v2'
+    description: Supaglue API
+paths:
+  '/objects/{object_name}':
+    $ref: paths/objects@{object_name}.yaml
+components:
+  securitySchemes:
+    x-api-key:
+      $ref: ../../common/components/securitySchemes/x-api-key.yaml
+  schemas:
+    object_record:
+      $ref: ./components/schemas/objects/object_record.yaml
+    pagination:
+      $ref: ../../common/components/schemas/pagination.yaml
+    errors:
+      $ref: ../../common/components/schemas/errors.yaml
+    warnings:
+      $ref: ../../common/components/schemas/warnings.yaml
+  parameters:
+    x-customer-id:
+      $ref: ../../common/components/parameters/header/x-customer-id.yaml
+    x-provider-name:
+      $ref: ../../common/components/parameters/header/x-provider-name.yaml

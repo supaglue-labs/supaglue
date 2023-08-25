@@ -1,0 +1,313 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "0.13.13",
+    "title": "Supaglue Data API",
+    "contact": {
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
+    },
+    "description": "#### Introduction\n\nWelcome to the Data API documentation. You can use this API to list objects that have been synced to Supaglue's managed destination.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/data/v2\n```\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.supaglue.io/data/v2",
+      "description": "Supaglue API"
+    }
+  ],
+  "paths": {
+    "/objects/{object_name}": {
+      "get": {
+        "operationId": "listObjects",
+        "summary": "List objects",
+        "tags": [
+          "Objects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "modified_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified after this datetime"
+          },
+          {
+            "name": "modified_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified before this datetime"
+          },
+          {
+            "name": "created_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created after this datetime"
+          },
+          {
+            "name": "created_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created before this datetime"
+          },
+          {
+            "name": "include_deleted_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include data that was deleted in providers."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/object_record"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "object_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "contact"
+          }
+        }
+      ]
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "x-api-key": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header",
+        "description": "API key to allow developers to access the API"
+      }
+    },
+    "schemas": {
+      "object_record": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "001Fn00023f8oYYIB0"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "pagination": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+          },
+          "total_count": {
+            "type": "number",
+            "example": 100
+          }
+        },
+        "required": [
+          "next",
+          "previous",
+          "total_count"
+        ]
+      },
+      "errors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string",
+              "example": "name is a required field on model."
+            },
+            "problem_type": {
+              "type": "string",
+              "example": "MISSING_REQUIRED_FIELD"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string",
+                  "example": "irure consectetur"
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "example": "Missing Required Field"
+            }
+          },
+          "example": [
+            {
+              "detail": "name is a required field on model.",
+              "problem_type": "MISSING_REQUIRED_FIELD",
+              "source": {
+                "pointer": "irure consectetur"
+              },
+              "title": "Missing Required Field"
+            },
+            {
+              "detail": "name is a required field on model.",
+              "problem_type": "MISSING_REQUIRED_FIELD",
+              "source": {
+                "pointer": "et"
+              },
+              "title": "Missing Required Field"
+            }
+          ]
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string",
+              "example": "An unrecognized field, age, was passed in with request data."
+            },
+            "problem_type": {
+              "type": "string",
+              "example": "UNRECOGNIZED_FIELD"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string",
+                  "example": "Lorem ipsum"
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "example": "Unrecognized Field"
+            }
+          }
+        },
+        "example": [
+          {
+            "detail": "An unrecognized field, age, was passed in with request data.",
+            "problem_type": "UNRECOGNIZED_FIELD",
+            "source": {
+              "pointer": "Lorem ipsum"
+            },
+            "title": "Unrecognized Field"
+          },
+          {
+            "detail": "An unrecognized field, age, was passed in with request data.",
+            "problem_type": "UNRECOGNIZED_FIELD",
+            "source": {
+              "pointer": "in"
+            },
+            "title": "Unrecognized Field"
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "x-customer-id": {
+        "name": "x-customer-id",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "my-customer-1"
+        },
+        "description": "The customer ID that uniquely identifies the customer in your application",
+        "required": true
+      },
+      "x-provider-name": {
+        "name": "x-provider-name",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name",
+        "required": true
+      }
+    }
+  }
+}

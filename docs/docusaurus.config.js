@@ -384,6 +384,7 @@ const config = {
                 '../openapi/v2/engagement/openapi.bundle.json',
                 '../openapi/v2/metadata/openapi.bundle.json',
                 '../openapi/v2/actions/openapi.bundle.json',
+                '../openapi/v2/data/openapi.bundle.json',
               ],
             }),
           ],
@@ -439,6 +440,17 @@ const config = {
             },
             downloadUrl:
               'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/metadata/openapi.bundle.json',
+          },
+          data: {
+            specPath: '../openapi/v2/data/openapi.bundle.json',
+            outputDir: 'docs/api/v2/data',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsed: true,
+            },
+            downloadUrl:
+              'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/data/openapi.bundle.json',
           },
           actions: {
             specPath: '../openapi/v2/actions/openapi.bundle.json',
