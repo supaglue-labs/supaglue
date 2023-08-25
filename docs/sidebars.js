@@ -179,16 +179,6 @@ const sidebars = {
           type: 'doc',
           label: 'Object and field mapping',
         },
-        {
-          id: 'tutorials/transformations/value-mapping',
-          type: 'doc',
-          label: 'Value mapping',
-        },
-        {
-          id: 'tutorials/transformations/date-time-conversion',
-          type: 'doc',
-          label: 'Date time conversion',
-        },
       ],
     },
 

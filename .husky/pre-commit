@@ -3,4 +3,4 @@
 
 yarn turbo run lint-staged "--filter=[HEAD^1]"
 yarn generate "--filter=!salesforce-pub-sub"
-yarn test
+yarn test --output-logs=errors-only "--filter=[HEAD^1]"
