@@ -1,0 +1,1 @@
+module.exports = [{"type":"doc","id":"api/v2/data/supaglue-data-api"},{"type":"category","label":"Objects","collapsed":true,"items":[{"type":"doc","id":"api/v2/data/list-objects","label":"List objects","className":"api-method get"}]}];
