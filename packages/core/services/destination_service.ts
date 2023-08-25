@@ -12,6 +12,7 @@ import type {
   DestinationUnsafeAny,
   DestinationUpdateParamsAny,
 } from '@supaglue/types';
+import { SUPAGLUE_MANAGED_DESTINATION } from '@supaglue/utils';
 import fs from 'fs';
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import path from 'path';
@@ -24,8 +25,6 @@ import { S3DestinationWriter } from '../destination_writers/s3';
 import { BadRequestError } from '../errors';
 import { encrypt } from '../lib/crypt';
 import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
-
-const SUPAGLUE_MANAGED_DESTINATION = 'Supaglue Managed Destination';
 
 const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8'));
 

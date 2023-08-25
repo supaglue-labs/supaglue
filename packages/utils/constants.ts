@@ -1177,3 +1177,5 @@ export const INTERCOM_STANDARD_OBJECTS = ['admin', 'contact', 'company', 'articl
 export const PROVIDERS_THAT_SUPPORT_SCHEMAS = ['salesforce', 'hubspot', 'pipedrive'] as const;
 
 export const LINEAR_STANDARD_OBJECTS = ['issues', 'comments', 'users', 'projects', 'teams'] as const;
+
+export const SUPAGLUE_MANAGED_DESTINATION = 'Supaglue Managed Destination';
