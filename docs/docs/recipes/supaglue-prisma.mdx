@@ -1,0 +1,42 @@
+import ThemedImage from '@theme/ThemedImage';
+
+# Supaglue + Prisma
+
+Supaglue hands off synced data to you using a database as the interface (regardless of [who hosts](../integration-patterns/managed-syncs#hosting-destinations) it). This recipe shows how to use [Prisma ORM](https://prisma.io) to read the synced data quickly.
+
+There's two recommended ways to use Prisma with your application depending on whether your Supaglue Destination is your production database:
+
+- If you're using a Supaglue-hosted Destination or a Destination different from your production database, follow the [multiple databases](#multiple-databases) section below.
+- If you're using a Supaglue Destination that's the same as your production database, follow the [multiple schemas](#multiple-schemas) section below.
+
+## Multiple databases
+
+We recommend you generate a second Prisma client - one for your production database and one for the Supaglue Destination database.
+
+You can follow Prisma's documentation on [generating clients](https://www.prisma.io/docs/concepts/components/prisma-client/working-with-prismaclient/generating-prisma-client) to do this. There is also a [helpful GitHub comment](https://github.com/prisma/prisma/issues/2443#issuecomment-630679118) on how to do it.
+
+This way, you continue to use your existing client as is and follow the workflow for using Prisma [with an existing project](https://www.prisma.io/docs/getting-started/setup-prisma/add-to-existing-project/relational-databases-typescript-postgresql) for the Supaglue Destination database.
+
+<ThemedImage
+  alt="two prisma clients"
+  width="35%"
+  sources={{
+    light: '/img/two-prisma-clients.png',
+    dark: '/img/two-prisma-clients.png',
+  }}
+/>
+
+## Multiple schemas
+
+We recommend you use Prisma's [`multiSchema` feature](https://www.prisma.io/docs/guides/other/multi-schema) to continue using your existing Prisma client.
+
+This approach involves turning on the `multiSchema` preview feature, declaring a Supaglue schema in your `schema.prisma` file, and introspecting Supaglue's models so you can continue to use your existing client for both your current models and Supaglue's models.
+
+<ThemedImage
+  alt="two prisma schemas"
+  width="25%"
+  sources={{
+    light: '/img/two-prisma-schemas.png',
+    dark: '/img/two-prisma-schemas.png',
+  }}
+/>
