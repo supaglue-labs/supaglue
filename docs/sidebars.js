@@ -193,24 +193,46 @@ const sidebars = {
       type: 'doc',
     },
     {
-      id: 'recipes/nextjs-prisma',
-      label: 'Nextjs + Prisma',
-      type: 'doc',
+      label: 'ORMs',
+      type: 'category',
+      link: {
+        title: 'ORMs',
+        description: 'ORMs',
+        type: 'generated-index',
+      },
+      items: [
+        {
+          id: 'recipes/supaglue-prisma',
+          label: 'Supaglue + Prisma',
+          type: 'doc',
+        },
+      ],
     },
     {
-      id: 'recipes/nextjs-inngest',
-      label: 'Nextjs + Inngest',
-      type: 'doc',
-    },
-    {
-      id: 'recipes/nextjs-triggerdev',
-      label: 'Nextjs + Trigger.dev',
-      type: 'doc',
-    },
-    {
-      id: 'recipes/expressjs-temporal',
-      label: 'Expressjs + Temporal',
-      type: 'doc',
+      label: 'Workflow Engines',
+      type: 'category',
+      link: {
+        title: 'Workflow Engines',
+        description: 'Workflow Engines',
+        type: 'generated-index',
+      },
+      items: [
+        {
+          id: 'recipes/nextjs-inngest',
+          label: 'Supaglue + Inngest',
+          type: 'doc',
+        },
+        {
+          id: 'recipes/nextjs-triggerdev',
+          label: 'Supaglue + Trigger.dev',
+          type: 'doc',
+        },
+        {
+          id: 'recipes/expressjs-temporal',
+          label: 'Supaglue + Temporal',
+          type: 'doc',
+        },
+      ],
     },
 
     // section
