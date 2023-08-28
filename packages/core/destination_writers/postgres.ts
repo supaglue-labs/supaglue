@@ -52,7 +52,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const { sslMode, ...rest } = this.#destination.config;
     const pool = new Pool({
       ...rest,
-      ssl: sslMode === undefined || sslMode === 'disable' || sslMode === 'allow' ? undefined : true,
+      ssl: getSsl(sslMode),
     });
     return await pool.connect();
   }
@@ -925,4 +925,8 @@ function jsonStringifyWithoutNullChars(obj: object) {
     }
     return value;
   });
+}
+
+export function getSsl(sslMode: 'disable' | 'allow' | 'prefer' | 'require' | undefined): boolean | undefined {
+  return sslMode === undefined || sslMode === 'disable' || sslMode === 'allow' ? undefined : true;
 }
