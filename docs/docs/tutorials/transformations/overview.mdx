@@ -3,9 +3,9 @@ import ThemedImage from '@theme/ThemedImage';
 # Overview
 
 <ThemedImage
-alt="transform step diagram"
-width="20%"
-sources={{
+  alt="transform step diagram"
+  width="20%"
+  sources={{
     light: '/img/transform-step-diagram.png',
     dark: '/img/transform-step-diagram.png',
   }}
@@ -21,7 +21,7 @@ The tutorials here cover the second step: transformations. We will cover tutoria
 
 ## Types of transformations
 
-You will likely want to run different transformations on the raw data that Supaglue syncs. The types of transformations range from simple ones (like renaming fields) to complex ones (like fetching data from external resources). Below are common transformations:
+You will likely want to run different transformations on the raw data that Supaglue syncs. The transformations range from simple ones (like renaming fields) to complex ones (like fetching data from external resources). Below are common transformations:
 
 - Implementing a [common schema](./common-schema)
 - [Association bridge table](./association-bridge-table) between objects
@@ -34,9 +34,9 @@ You will likely want to run different transformations on the raw data that Supag
 Use [notification webhooks](../../platform/notification-webhooks) to trigger transformations on sync completion.
 
 <ThemedImage
-alt="transformation steps"
-width="75%"
-sources={{
+  alt="transformation steps"
+  width="75%"
+  sources={{
     light: '/img/transformation-steps.png',
     dark: '/img/transformation-steps.png',
   }}
@@ -44,7 +44,6 @@ sources={{
 
 We wrote a [Listen for webhooks](../listen-for-webhooks) tutorial that goes more in-depth. You can also follow one of our [Recipes](../../recipes/overview) for pairing your Nextjs or Typescript app with a workflow engine to build a reliable transformation pipeline:
 
-- [Nextjs + Inngest](../../recipes/nextjs-inngest)
-- [Nextjs + Trigger.dev](../../recipes/nextjs-triggerdev)
-- [Expressjs + Temporal](../../recipes/expressjs-temporal)
-- More to come...
+- [Supaglue + Inngest](../../recipes/supaglue-inngest)
+- [Supaglue + Trigger.dev](../../recipes/supaglue-triggerdev)
+- [Supaglue + Temporal](../../recipes/supaglue-temporal)
