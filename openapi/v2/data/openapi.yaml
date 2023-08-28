@@ -20,16 +20,23 @@ info:
 servers:
   - url: 'https://api.supaglue.io/data/v2'
     description: Supaglue API
+tags:
+  - name: Salesforce
+    description: Salesforce is a CRM Provider.
 paths:
-  '/objects/{object_name}':
-    $ref: paths/objects@{object_name}.yaml
+  '/salesforce/contact':
+    $ref: paths/salesforce/contacts.yaml
+  '/salesforce/account':
+    $ref: paths/salesforce/accounts.yaml
 components:
   securitySchemes:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
-    object_record:
-      $ref: ./components/schemas/objects/object_record.yaml
+    salesforce_contact:
+      $ref: ./components/schemas/objects/salesforce/contact.yaml
+    salesforce_account:
+      $ref: ./components/schemas/objects/salesforce/account.yaml
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     errors:

@@ -1,8 +1,0 @@
-type: object
-additionalProperties: true
-properties:
-  id:
-    type: string
-    example: 001Fn00023f8oYYIB0
-required:
-  - id
