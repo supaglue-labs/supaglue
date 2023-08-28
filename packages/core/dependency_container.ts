@@ -26,6 +26,9 @@ import { WebhookService } from './services/webhook_service';
 
 export type CoreDependencyContainer = {
   pgPool: Pool;
+
+  // Managed destination data
+  managedPgPool: Pool;
   prisma: PrismaClient;
 
   systemSettingsService: SystemSettingsService;
@@ -56,8 +59,7 @@ export type CoreDependencyContainer = {
 // global
 let coreDependencyContainer: CoreDependencyContainer | undefined = undefined;
 
-function createCoreDependencyContainer(): CoreDependencyContainer {
-  const connectionString = process.env.SUPAGLUE_DATABASE_URL!;
+const getPgPool = (connectionString: string): Pool => {
   // parse the connectionString URL to get the ssl config from the query string
   const parsedConnectionString = new URL(connectionString);
   const caCertPath = parsedConnectionString.searchParams.get('sslcert');
@@ -75,11 +77,16 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
         }
       : undefined;
 
-  const pgPool = new Pool({
+  return new Pool({
     connectionString: parsedConnectionString.toString(),
     max: 5,
     ssl,
   });
+};
+
+function createCoreDependencyContainer(): CoreDependencyContainer {
+  const pgPool = getPgPool(process.env.SUPAGLUE_DATABASE_URL!);
+  const managedPgPool = getPgPool(process.env.SUPAGLUE_MANAGED_DATABASE_URL!);
 
   const systemSettingsService = new SystemSettingsService(prisma);
 
@@ -131,6 +138,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
 
   return {
     pgPool,
+    managedPgPool,
     prisma,
     systemSettingsService,
     // mgmt
