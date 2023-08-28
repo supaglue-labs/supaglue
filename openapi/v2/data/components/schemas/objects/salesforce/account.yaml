@@ -1,0 +1,75 @@
+type: object
+properties:
+  Id:
+    type: string
+    description: The unique identifier for this account.
+  Description:
+    type: string
+    description: A description of the contact.
+  BillingCity:
+    type: string
+    description: The city of the billing address of this contact.
+  BillingCountry:
+    type: string
+    description: The country of the billing address of this contact.
+  BillingPostalCode:
+    type: string
+    description: The postal code of the billing address of this contact.
+  BillingState:
+    type: string
+    description: The state of the billing address of this contact.
+  BillingStreet:
+    type: string
+    description: The street of the billing address of this contact.
+  ShippingCity:
+    type: string
+    description: The city of the shipping address of this contact.
+  ShippingCountry:
+    type: string
+    description: The country of the shipping address of this contact.
+  ShippingPostalCode:
+    type: string
+    description: The postal code of the shipping address of this contact.
+  ShippingState:
+    type: string
+    description: The state of the shipping address of this contact.
+  ShippingStreet:
+    type: string
+    description: The street of the shipping address of this contact.
+  Phone:
+    type: string
+    description: The account's phone number.
+  Fax:
+    type: string
+    description: The account's fax number.
+  Industry:
+    type: string
+    description: The type of industry in which the account operates.
+  LastActivityDate:
+    type: string
+    description: The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record.
+  Name:
+    type: string
+    description: The name of the account. Maximum size is 255 characters.
+  NumberOfEmployees:
+    type: integer
+    description: The number of employees that work at the account.
+  OwnerId:
+    type: string
+    description: ID of the user who owns this account. This is a relationship field.
+  Website:
+    type: string
+    description: The account's website URL.
+  IsDeleted:
+    type: boolean
+    description: Indicates whether the object has been moved to the Recycle Bin (true) or not (false).
+  CreatedDate:
+    type: string
+    description: The date and time when this contact was created.
+  SystemModstamp:
+    type: string
+    description: The date and time when this contact was last modified.
+  raw_data:
+    type: object
+    description: The raw data returned by the provider.
+    additionalProperties: true

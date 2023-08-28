@@ -1,0 +1,563 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "0.13.13",
+    "title": "Supaglue Data API",
+    "contact": {
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
+    },
+    "description": "#### Introduction\n\nWelcome to the Data API documentation. You can use this API to list objects that have been synced to Supaglue's managed destination.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/data/v2\n```\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.supaglue.io/data/v2",
+      "description": "Supaglue API"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Salesforce",
+      "description": "Salesforce is a CRM Provider."
+    }
+  ],
+  "paths": {
+    "/salesforce/contact": {
+      "get": {
+        "operationId": "listContacts",
+        "summary": "List contacts",
+        "tags": [
+          "Salesforce"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "modified_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified after this datetime"
+          },
+          {
+            "name": "modified_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects modified before this datetime"
+          },
+          {
+            "name": "created_after",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created after this datetime"
+          },
+          {
+            "name": "created_before",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2023-02-23T00:00:00.000Z"
+            },
+            "description": "If provided, will only return objects created before this datetime"
+          },
+          {
+            "name": "include_deleted_data",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            },
+            "description": "Whether to include data that was deleted in providers."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "3804695"
+            },
+            "description": "Number of results to return per page"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+            },
+            "description": "The pagination cursor value"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/salesforce_contact"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        }
+      ]
+    },
+    "/salesforce/account": {
+      "get": {
+        "operationId": "listAccounts",
+        "summary": "List accounts",
+        "tags": [
+          "Salesforce"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1salesforce~1contact/get/parameters/0"
+          },
+          {
+            "$ref": "#/paths/~1salesforce~1contact/get/parameters/1"
+          },
+          {
+            "$ref": "#/paths/~1salesforce~1contact/get/parameters/2"
+          },
+          {
+            "$ref": "#/paths/~1salesforce~1contact/get/parameters/3"
+          },
+          {
+            "$ref": "#/paths/~1salesforce~1contact/get/parameters/4"
+          },
+          {
+            "$ref": "#/paths/~1salesforce~1contact/get/parameters/5"
+          },
+          {
+            "$ref": "#/paths/~1salesforce~1contact/get/parameters/6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Accounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/salesforce_account"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        }
+      ]
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "x-api-key": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header",
+        "description": "API key to allow developers to access the API"
+      }
+    },
+    "schemas": {
+      "salesforce_contact": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "description": "The unique identifier for this contact."
+          },
+          "Description": {
+            "type": "string",
+            "description": "A description of the contact."
+          },
+          "Email": {
+            "type": "string",
+            "description": "The contact's email address."
+          },
+          "AccountId": {
+            "type": "string",
+            "description": "ID of the account that's the parent of this contact. This is a relationship field."
+          },
+          "FirstName": {
+            "type": "string",
+            "description": "The contact's first name up to 40 characters."
+          },
+          "HomePHone": {
+            "type": "string",
+            "description": "The contact's home phone number."
+          },
+          "IsDeleted": {
+            "type": "boolean",
+            "description": "Indicates whether the object has been moved to the Recycle Bin (true) or not (false)."
+          },
+          "LastActivityDate": {
+            "type": "string",
+            "description": "The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record."
+          },
+          "LastName": {
+            "type": "string",
+            "description": "The contact's last name. Maximum size is 80 characters."
+          },
+          "LeadSource": {
+            "type": "string",
+            "description": "The source of the lead."
+          },
+          "MailingCity": {
+            "type": "string",
+            "description": "The city of the mailing address of this contact."
+          },
+          "MailingCountry": {
+            "type": "string",
+            "description": "The country of the mailing address of this contact."
+          },
+          "MailingPostalCode": {
+            "type": "string",
+            "description": "The postal code of the mailing address of this contact."
+          },
+          "MailingState": {
+            "type": "string",
+            "description": "The state of the mailijng address of this contact."
+          },
+          "MailingStreet": {
+            "type": "string",
+            "description": "The street of the mailing address of this contact."
+          },
+          "MobilePhone": {
+            "type": "string",
+            "description": "The contact's mobile phone number."
+          },
+          "OwnerId": {
+            "type": "string",
+            "description": "ID of the user who owns this contact. This is a relationship field."
+          },
+          "Phone": {
+            "type": "string",
+            "description": "The contact's phone number."
+          },
+          "Fax": {
+            "type": "string",
+            "description": "The contact's fax number."
+          },
+          "Title": {
+            "type": "string",
+            "description": "The contact's title."
+          },
+          "CreatedDate": {
+            "type": "string",
+            "description": "The date and time when this contact was created."
+          },
+          "SystemModstamp": {
+            "type": "string",
+            "description": "The date and time when this contact was last modified."
+          },
+          "raw_data": {
+            "type": "object",
+            "description": "The raw data returned by the provider.",
+            "additionalProperties": true
+          }
+        }
+      },
+      "salesforce_account": {
+        "type": "object",
+        "properties": {
+          "Id": {
+            "type": "string",
+            "description": "The unique identifier for this account."
+          },
+          "Description": {
+            "type": "string",
+            "description": "A description of the contact."
+          },
+          "BillingCity": {
+            "type": "string",
+            "description": "The city of the billing address of this contact."
+          },
+          "BillingCountry": {
+            "type": "string",
+            "description": "The country of the billing address of this contact."
+          },
+          "BillingPostalCode": {
+            "type": "string",
+            "description": "The postal code of the billing address of this contact."
+          },
+          "BillingState": {
+            "type": "string",
+            "description": "The state of the billing address of this contact."
+          },
+          "BillingStreet": {
+            "type": "string",
+            "description": "The street of the billing address of this contact."
+          },
+          "ShippingCity": {
+            "type": "string",
+            "description": "The city of the shipping address of this contact."
+          },
+          "ShippingCountry": {
+            "type": "string",
+            "description": "The country of the shipping address of this contact."
+          },
+          "ShippingPostalCode": {
+            "type": "string",
+            "description": "The postal code of the shipping address of this contact."
+          },
+          "ShippingState": {
+            "type": "string",
+            "description": "The state of the shipping address of this contact."
+          },
+          "ShippingStreet": {
+            "type": "string",
+            "description": "The street of the shipping address of this contact."
+          },
+          "Phone": {
+            "type": "string",
+            "description": "The account's phone number."
+          },
+          "Fax": {
+            "type": "string",
+            "description": "The account's fax number."
+          },
+          "Industry": {
+            "type": "string",
+            "description": "The type of industry in which the account operates."
+          },
+          "LastActivityDate": {
+            "type": "string",
+            "description": "The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record."
+          },
+          "Name": {
+            "type": "string",
+            "description": "The name of the account. Maximum size is 255 characters."
+          },
+          "NumberOfEmployees": {
+            "type": "integer",
+            "description": "The number of employees that work at the account."
+          },
+          "OwnerId": {
+            "type": "string",
+            "description": "ID of the user who owns this account. This is a relationship field."
+          },
+          "Website": {
+            "type": "string",
+            "description": "The account's website URL."
+          },
+          "IsDeleted": {
+            "type": "boolean",
+            "description": "Indicates whether the object has been moved to the Recycle Bin (true) or not (false)."
+          },
+          "CreatedDate": {
+            "type": "string",
+            "description": "The date and time when this contact was created."
+          },
+          "SystemModstamp": {
+            "type": "string",
+            "description": "The date and time when this contact was last modified."
+          },
+          "raw_data": {
+            "type": "object",
+            "description": "The raw data returned by the provider.",
+            "additionalProperties": true
+          }
+        }
+      },
+      "pagination": {
+        "type": "object",
+        "properties": {
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+          },
+          "total_count": {
+            "type": "number",
+            "example": 100
+          }
+        },
+        "required": [
+          "next",
+          "previous",
+          "total_count"
+        ]
+      },
+      "errors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string",
+              "example": "name is a required field on model."
+            },
+            "problem_type": {
+              "type": "string",
+              "example": "MISSING_REQUIRED_FIELD"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string",
+                  "example": "irure consectetur"
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "example": "Missing Required Field"
+            }
+          },
+          "example": [
+            {
+              "detail": "name is a required field on model.",
+              "problem_type": "MISSING_REQUIRED_FIELD",
+              "source": {
+                "pointer": "irure consectetur"
+              },
+              "title": "Missing Required Field"
+            },
+            {
+              "detail": "name is a required field on model.",
+              "problem_type": "MISSING_REQUIRED_FIELD",
+              "source": {
+                "pointer": "et"
+              },
+              "title": "Missing Required Field"
+            }
+          ]
+        }
+      },
+      "warnings": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "detail": {
+              "type": "string",
+              "example": "An unrecognized field, age, was passed in with request data."
+            },
+            "problem_type": {
+              "type": "string",
+              "example": "UNRECOGNIZED_FIELD"
+            },
+            "source": {
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string",
+                  "example": "Lorem ipsum"
+                }
+              }
+            },
+            "title": {
+              "type": "string",
+              "example": "Unrecognized Field"
+            }
+          }
+        },
+        "example": [
+          {
+            "detail": "An unrecognized field, age, was passed in with request data.",
+            "problem_type": "UNRECOGNIZED_FIELD",
+            "source": {
+              "pointer": "Lorem ipsum"
+            },
+            "title": "Unrecognized Field"
+          },
+          {
+            "detail": "An unrecognized field, age, was passed in with request data.",
+            "problem_type": "UNRECOGNIZED_FIELD",
+            "source": {
+              "pointer": "in"
+            },
+            "title": "Unrecognized Field"
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "x-customer-id": {
+        "name": "x-customer-id",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "my-customer-1"
+        },
+        "description": "The customer ID that uniquely identifies the customer in your application",
+        "required": true
+      },
+      "x-provider-name": {
+        "name": "x-provider-name",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name",
+        "required": true
+      }
+    }
+  }
+}

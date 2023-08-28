@@ -1,0 +1,72 @@
+type: object
+properties:
+  Id:
+    type: string
+    description: The unique identifier for this contact.
+  Description:
+    type: string
+    description: A description of the contact.
+  Email:
+    type: string
+    description: The contact's email address.
+  AccountId:
+    type: string
+    description: ID of the account that's the parent of this contact. This is a relationship field.
+  FirstName:
+    type: string
+    description: The contact's first name up to 40 characters.
+  HomePHone:
+    type: string
+    description: The contact's home phone number.
+  IsDeleted:
+    type: boolean
+    description: Indicates whether the object has been moved to the Recycle Bin (true) or not (false). 
+  LastActivityDate:
+    type: string
+    description: The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record.
+  LastName:
+    type: string
+    description: The contact's last name. Maximum size is 80 characters.
+  LeadSource:
+    type: string
+    description: The source of the lead.
+  MailingCity:
+    type: string
+    description: The city of the mailing address of this contact.
+  MailingCountry:
+    type: string
+    description: The country of the mailing address of this contact.
+  MailingPostalCode:
+    type: string
+    description: The postal code of the mailing address of this contact.
+  MailingState:
+    type: string
+    description: The state of the mailijng address of this contact.
+  MailingStreet:
+    type: string
+    description: The street of the mailing address of this contact.
+  MobilePhone:
+    type: string
+    description: The contact's mobile phone number.
+  OwnerId:
+    type: string
+    description: ID of the user who owns this contact. This is a relationship field.
+  Phone:
+    type: string
+    description: The contact's phone number.
+  Fax:
+    type: string
+    description: The contact's fax number.
+  Title:
+    type: string
+    description: The contact's title.
+  CreatedDate:
+    type: string
+    description: The date and time when this contact was created.
+  SystemModstamp:
+    type: string
+    description: The date and time when this contact was last modified.
+  raw_data:
+    type: object
+    description: The raw data returned by the provider.
+    additionalProperties: true

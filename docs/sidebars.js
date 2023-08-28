@@ -414,6 +414,18 @@ const sidebars = {
       label: 'Send passthrough request',
       className: 'api-method post',
     },
+
+    {
+      type: 'html',
+      value: sidebarHeader('Data API'),
+    },
+    {
+      type: 'category',
+      label: 'Data API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/data/sidebar.js'),
+    },
   ],
 };
 
