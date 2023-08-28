@@ -218,17 +218,17 @@ const sidebars = {
       },
       items: [
         {
-          id: 'recipes/nextjs-inngest',
+          id: 'recipes/supaglue-inngest',
           label: 'Supaglue + Inngest',
           type: 'doc',
         },
         {
-          id: 'recipes/nextjs-triggerdev',
+          id: 'recipes/supaglue-triggerdev',
           label: 'Supaglue + Trigger.dev',
           type: 'doc',
         },
         {
-          id: 'recipes/expressjs-temporal',
+          id: 'recipes/supaglue-temporal',
           label: 'Supaglue + Temporal',
           type: 'doc',
         },

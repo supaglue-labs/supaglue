@@ -4,7 +4,7 @@ import ThemedImage from '@theme/ThemedImage';
 
 Supaglue hands off synced data to you using a database as the interface (regardless of [who hosts](../integration-patterns/managed-syncs#hosting-destinations) it). This recipe shows how to use [Prisma ORM](https://prisma.io) to read the synced data quickly.
 
-There's two recommended ways to use Prisma with your application depending on whether your Supaglue Destination is your production database:
+There are two recommended ways to use Prisma with your application depending on whether your Supaglue Destination is your production database:
 
 - If you're using a Supaglue-hosted Destination or a Destination different from your production database, follow the [multiple databases](#multiple-databases) section below.
 - If you're using a Supaglue Destination that's the same as your production database, follow the [multiple schemas](#multiple-schemas) section below.
