@@ -141,6 +141,7 @@ export const fromOutreachProspectToContact = (record: OutreachRecord): Contact =
     isDeleted: false,
     lastModifiedAt: new Date(attributes.updatedAt as string),
     ownerId: relationships.owner?.data?.id?.toString() ?? null,
+    accountId: relationships.account?.data?.id?.toString() ?? null,
     rawData: record,
   };
 };
@@ -222,6 +223,7 @@ export const toOutreachProspectCreateParams = ({
   phoneNumbers,
   customFields,
   ownerId,
+  accountId,
 }: ContactCreateParams): Record<string, any> => {
   const attributes = {
     firstName,
@@ -233,7 +235,7 @@ export const toOutreachProspectCreateParams = ({
     ...customFields,
   };
   removeUndefinedValues(attributes);
-  if (ownerId === undefined) {
+  if (ownerId === undefined && accountId === undefined) {
     return {
       data: {
         type: 'prospect',
@@ -246,15 +248,22 @@ export const toOutreachProspectCreateParams = ({
       type: 'prospect',
       attributes,
       relationships: {
-        owner:
-          ownerId === null
-            ? null
-            : {
-                data: {
-                  type: 'user',
-                  id: ownerId,
-                },
+        owner: !ownerId
+          ? ownerId
+          : {
+              data: {
+                type: 'user',
+                id: ownerId,
               },
+            },
+        account: !accountId
+          ? accountId
+          : {
+              data: {
+                type: 'account',
+                id: accountId,
+              },
+            },
       },
     },
   };

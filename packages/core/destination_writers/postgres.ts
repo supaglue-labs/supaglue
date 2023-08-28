@@ -52,7 +52,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const { sslMode, ...rest } = this.#destination.config;
     const pool = new Pool({
       ...rest,
-      ssl: sslMode === undefined || sslMode === 'disable' || sslMode === 'allow' ? undefined : true,
+      ssl: getSsl(sslMode),
     });
     return await pool.connect();
   }
@@ -147,6 +147,11 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
       await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema));
+
+      // TODO: Delete once all of our customers have been migrated to the new schema including account_id
+      if (category === 'engagement' && commonObjectType === 'contact') {
+        await ensureAccountIdColumnExists(client, qualifiedTable);
+      }
 
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
@@ -819,6 +824,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "email_addresses" JSONB NOT NULL,
   "phone_numbers" JSONB NOT NULL,
   "owner_id" TEXT,
+  "account_id" TEXT,
   "open_count" INTEGER NOT NULL,
   "click_count" INTEGER NOT NULL,
   "reply_count" INTEGER NOT NULL,
@@ -925,4 +931,27 @@ function jsonStringifyWithoutNullChars(obj: object) {
     }
     return value;
   });
+}
+
+async function ensureAccountIdColumnExists(client: PoolClient, tableName: string): Promise<void> {
+  // Query to check if the account_id column exists in the given table
+  const checkColumnExistsQuery = `
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_name = $1 AND column_name = 'account_id';
+    `;
+
+  const result = await client.query(checkColumnExistsQuery, [tableName]);
+
+  // If the column does not exist, then add it
+  if (result.rows.length === 0) {
+    const addColumnQuery = `
+        ALTER TABLE ${tableName} ADD COLUMN account_id TEXT;
+      `;
+    await client.query(addColumnQuery);
+  }
+}
+
+export function getSsl(sslMode: 'disable' | 'allow' | 'prefer' | 'require' | undefined): boolean | undefined {
+  return sslMode === undefined || sslMode === 'disable' || sslMode === 'allow' ? undefined : true;
 }
