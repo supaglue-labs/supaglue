@@ -1,6 +1,7 @@
 import type { Router } from 'express';
 import actions from './actions';
 import crm from './crm';
+import data from './data';
 import engagement from './engagement';
 import internal from './internal';
 import metadata from './metadata';
@@ -17,4 +18,5 @@ export default function initRoutes(app: Router): void {
   actions(app);
   internal(app);
   privateRoutes(app);
+  data(app);
 }
