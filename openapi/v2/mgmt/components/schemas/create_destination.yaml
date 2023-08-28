@@ -2,6 +2,16 @@ oneOf:
   - type: object
     title: postgres
     properties:
+      type:
+        type: string
+        enum:
+          - supaglue
+        example: supaglue
+    required:
+      - type
+  - type: object
+    title: postgres
+    properties:
       name:
         type: string
         example: My Postgres Destination

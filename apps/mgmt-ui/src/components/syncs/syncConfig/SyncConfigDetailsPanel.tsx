@@ -9,6 +9,7 @@ import { useDestinations } from '@/hooks/useDestinations';
 import { useEntities } from '@/hooks/useEntities';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
+import { getDestinationName } from '@/utils/destination';
 import { getStandardObjectOptions } from '@/utils/provider';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
@@ -203,7 +204,12 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
               disabled={isLoadingDestinations || !!syncConfig}
               onChange={setDestinationId}
               value={destinationId ?? ''}
-              options={destinations?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
+              options={
+                destinations?.map((destination) => ({
+                  value: destination.id,
+                  displayValue: getDestinationName(destination),
+                })) ?? []
+              }
             />
           </Stack>
           <Stack className="gap-2">
