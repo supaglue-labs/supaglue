@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/types",
-  "version": "0.13.15",
+  "version": "0.13.16",
   "private": true,
   "index": "dist/index.js",
   "types": "index.ts",
