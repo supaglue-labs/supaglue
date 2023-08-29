@@ -43,6 +43,7 @@ export const fromSalesloftPersonToContact = (record: Record<string, any>): Conta
     emailAddresses: fromSalesloftPersonToEmailAddresses(record),
     phoneNumbers: fromSalesloftPersonToPhoneNumbers(record.phone_numbers ?? []),
     ownerId: record.owner?.id?.toString() ?? null,
+    accountId: record.account?.id?.toString() ?? null,
     openCount: record.counts?.emails_viewed ?? 0,
     clickCount: record.counts?.emails_clicked ?? 0,
     bouncedCount: record.counts?.emails_bounced ?? 0,
@@ -169,6 +170,8 @@ export const toSalesloftContactCreateParams = (contact: ContactCreateParams): Re
     phone: contact.phoneNumbers?.find((e) => e.phoneNumberType === 'primary')?.phoneNumber,
     home_phone: contact.phoneNumbers?.find((e) => e.phoneNumberType === 'home')?.phoneNumber,
     mobile_phone: contact.phoneNumbers?.find((e) => e.phoneNumberType === 'mobile')?.phoneNumber,
+    owner_id: contact.ownerId ? parseInt(contact.ownerId) : contact.ownerId,
+    account_id: contact.accountId ? parseInt(contact.accountId) : contact.accountId,
     ...contact.customFields,
   };
 };

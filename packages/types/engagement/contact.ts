@@ -21,6 +21,7 @@ type CoreContact = {
   replyCount: number;
   bouncedCount: number;
   ownerId: string | null;
+  accountId: string | null;
 };
 
 export type Contact = BaseEngagementModel & CoreContact;

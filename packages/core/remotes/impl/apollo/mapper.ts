@@ -50,6 +50,7 @@ export const fromApolloContactToContact = (record: Record<string, any>): Contact
     ],
     phoneNumbers: fromApolloPhonesToPhoneNumbers(record.phone_numbers ?? []),
     ownerId: record.owner_id ?? null,
+    accountId: record.account_id ?? null,
     openCount: 0,
     clickCount: 0,
     bouncedCount: 0,
@@ -179,6 +180,7 @@ export const toApolloContactCreateParams = (params: ContactCreateParams): Record
     title: params.jobTitle,
     email: params.emailAddresses?.[0]?.emailAddress,
     present_raw_address: params.address ? getRawAddressString(params.address) : undefined,
+    account_id: params.accountId,
     ...params.customFields,
   };
 };
@@ -193,6 +195,7 @@ export const toApolloContactUpdateParams = (params: ContactUpdateParams): Record
     home_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'home')?.phoneNumber,
     mobile_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber,
     other_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'other')?.phoneNumber,
+    account_id: params.accountId,
     ...params.customFields,
   };
 };

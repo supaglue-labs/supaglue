@@ -148,6 +148,11 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       // TODO: We should only need to do this once at the beginning
       await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema));
 
+      // TODO: Delete once all of our customers have been migrated to the new schema including account_id
+      if (category === 'engagement' && commonObjectType === 'contact') {
+        await ensureAccountIdColumnExists(client, schema, table);
+      }
+
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ true));
@@ -819,6 +824,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "email_addresses" JSONB NOT NULL,
   "phone_numbers" JSONB NOT NULL,
   "owner_id" TEXT,
+  "account_id" TEXT,
   "open_count" INTEGER NOT NULL,
   "click_count" INTEGER NOT NULL,
   "reply_count" INTEGER NOT NULL,
@@ -925,6 +931,25 @@ function jsonStringifyWithoutNullChars(obj: object) {
     }
     return value;
   });
+}
+
+async function ensureAccountIdColumnExists(client: PoolClient, schemaName: string, tableName: string): Promise<void> {
+  // Query to check if the account_id column exists in the given table
+  const checkColumnExistsQuery = `
+      SELECT column_name 
+      FROM information_schema.columns 
+      WHERE table_schema = $1 AND table_name = $2 AND column_name = 'account_id';
+    `;
+
+  const result = await client.query(checkColumnExistsQuery, [schemaName, tableName]);
+
+  // If the column does not exist, then add it
+  if (result.rows.length === 0) {
+    const addColumnQuery = `
+        ALTER TABLE ${tableName} ADD COLUMN account_id TEXT;
+      `;
+    await client.query(addColumnQuery);
+  }
 }
 
 export function getSsl(sslMode: 'disable' | 'allow' | 'prefer' | 'require' | undefined): boolean | undefined {

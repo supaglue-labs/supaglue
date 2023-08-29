@@ -4,6 +4,7 @@ import { toSnakecasedKeysAddress, toSnakecasedKeysEmailAddress, toSnakecasedKeys
 export const toSnakecasedKeysEngagementContact = (contact: Contact): SnakecasedKeysEngagementContact => {
   return {
     owner_id: contact.ownerId,
+    account_id: contact.accountId,
     last_modified_at: contact.lastModifiedAt,
     id: contact.id,
     first_name: contact.firstName,
