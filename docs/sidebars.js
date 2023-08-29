@@ -131,6 +131,11 @@ const sidebars = {
       type: 'doc',
     },
     {
+      id: 'tutorials/search-across-data',
+      label: 'Search across data',
+      type: 'doc',
+    },
+    {
       id: 'tutorials/read-write-contacts',
       label: 'Read/write contacts',
       type: 'doc',
