@@ -150,7 +150,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
 
       // TODO: Delete once all of our customers have been migrated to the new schema including account_id
       if (category === 'engagement' && commonObjectType === 'contact') {
-        await ensureAccountIdColumnExists(client, qualifiedTable);
+        await ensureAccountIdColumnExists(client, schema, table);
       }
 
       // Create a temporary table
@@ -933,15 +933,15 @@ function jsonStringifyWithoutNullChars(obj: object) {
   });
 }
 
-async function ensureAccountIdColumnExists(client: PoolClient, tableName: string): Promise<void> {
+async function ensureAccountIdColumnExists(client: PoolClient, schemaName: string, tableName: string): Promise<void> {
   // Query to check if the account_id column exists in the given table
   const checkColumnExistsQuery = `
       SELECT column_name 
       FROM information_schema.columns 
-      WHERE table_name = $1 AND column_name = 'account_id';
+      WHERE table_schema = $1 AND table_name = $2 AND column_name = 'account_id';
     `;
 
-  const result = await client.query(checkColumnExistsQuery, [tableName]);
+  const result = await client.query(checkColumnExistsQuery, [schemaName, tableName]);
 
   // If the column does not exist, then add it
   if (result.rows.length === 0) {
