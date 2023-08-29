@@ -18,6 +18,7 @@ export const keysOfSnakecasedEngagementContactWithTenant = arrayOfAllKeys<Snakec
   'email_addresses',
   'phone_numbers',
   'owner_id',
+  'account_id',
   'open_count',
   'click_count',
   'reply_count',

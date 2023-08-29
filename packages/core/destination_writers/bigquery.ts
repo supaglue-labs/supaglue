@@ -1182,6 +1182,11 @@ const schemaByCommonObjectType: {
           mode: 'NULLABLE',
         },
         {
+          name: 'contact_id',
+          type: 'STRING',
+          mode: 'NULLABLE',
+        },
+        {
           name: 'open_count',
           type: 'INTEGER',
           mode: 'REQUIRED',
@@ -1340,28 +1345,8 @@ const schemaByCommonObjectType: {
           mode: 'REQUIRED',
         },
         {
-          name: 'schedule_count',
-          type: 'INTEGER',
-          mode: 'REQUIRED',
-        },
-        {
-          name: 'click_count',
-          type: 'INTEGER',
-          mode: 'REQUIRED',
-        },
-        {
-          name: 'reply_count',
-          type: 'INTEGER',
-          mode: 'REQUIRED',
-        },
-        {
-          name: 'open_count',
-          type: 'INTEGER',
-          mode: 'REQUIRED',
-        },
-        {
-          name: 'opt_out_count',
-          type: 'INTEGER',
+          name: 'metrics',
+          type: 'JSON',
           mode: 'REQUIRED',
         },
         {
@@ -1435,6 +1420,11 @@ const schemaByCommonObjectType: {
         },
         {
           name: 'mailbox_id',
+          type: 'STRING',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'user_id',
           type: 'STRING',
           mode: 'NULLABLE',
         },

@@ -20,7 +20,7 @@ import { Client } from 'pg';
 import type { DestinationWriter } from '../destination_writers/base';
 import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
 import { MongoDBDestinationWriter } from '../destination_writers/mongodb';
-import { PostgresDestinationWriter } from '../destination_writers/postgres';
+import { getSsl, PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
 import { BadRequestError } from '../errors';
 import { encrypt } from '../lib/crypt';
@@ -161,7 +161,7 @@ export class DestinationService {
             const { sslMode, ...rest } = params.config;
             const pgClient = new Client({
               ...rest,
-              ssl: sslMode === 'disable' || sslMode === 'allow' ? undefined : true,
+              ssl: getSsl(sslMode),
               password:
                 params.config.password ??
                 (existingDestination as DestinationUnsafe<'postgres'> | null)?.config.password,
