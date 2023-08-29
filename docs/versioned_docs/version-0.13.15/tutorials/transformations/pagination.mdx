@@ -1,0 +1,82 @@
+import ThemedImage from '@theme/ThemedImage';
+
+# Pagination
+
+Supaglue provides a `_supaglue_last_modified_at` timestamp field on the tables it syncs, representing the last time a record was modified in the upstream provider. Use this field as a [high-water mark](<https://en.wikipedia.org/wiki/Watermark_(data_synchronization)>) to sync from Supaglue-managed tables into tables you manage.
+
+A Supaglue Sync runs on a per-[Object](../../platform/objects/overview), [Provider](../../integration-patterns/managed-syncs#provider), and Customer basis. Therefore, you should keep track of high-water marks for each combination of Customer-Provider-Object.
+
+<ThemedImage
+  alt="pagination diagram"
+  width="75%"
+  sources={{
+    light: '/img/pagination-diagram.png',
+    dark: '/img/pagination-diagram.png',
+  }}
+/>
+
+## How to paginate
+
+Use the following process to paginate on a per Provider-Customer-Object basis:
+
+1. Read the last high-water mark (use an epoch of 0 if none).
+2. Read the newly-synced records since the last high-water mark. Transform and upsert from Supaglue-managed tables into tables you manage. Keep track of the new high-water mark.
+3. Save the new high-water mark.
+
+## Storing and reading high-water mark state
+
+Supaglue Syncs operates on a per Customer-Provider-Object basis. We recommend you keep track of high-water mark state at that granularity. For example, you can store it in a database table named `SyncState` that looks like the following:
+
+```sql
+                                 Table "production.sync_state"
+          Column          |              Type              | Collation | Nullable | Default
+--------------------------+--------------------------------+-----------+----------+---------
+ provider_name            | text                           |           | not null |
+ customer_id              | text                           |           | not null |
+ object_name              | text                           |           | not null |
+ maxLastModifiedAt        | text                           |           | not null |
+Indexes:
+    "sync_state_pkey" PRIMARY KEY, btree (provider_name, customer_id, object_name)
+```
+
+### Read the last high watermark
+
+```ts
+function getLastHighWatermark(webhookEvent) {
+  const state = await prismaApp.syncState.findUnique({
+    where: {
+      providerName_customerId_object: {
+        providerName: webhookEvent.provider_name,
+        customerId: webhookEvent.customer_id,
+        object: webhookEvent.object_name,
+      },
+    },
+  });
+
+  return state?.maxLastModifiedAt?.getTime();
+}
+```
+
+### Update the high watermark
+
+```ts
+function updateHighWatermark(webhookEvent) {
+  const state = {
+    providerName: webhookEvent.provider_name,
+    customerId: webhookEvent.customer_id,
+    object: webhookEvent.object_name,
+    maxLastModifiedAt: newMaxLastModifiedAtMs ? new Date(newMaxLastModifiedAtMs) : undefined,
+  };
+  await prismaApp.syncState.upsert({
+    create: state,
+    update: state,
+    where: {
+      providerName_customerId_object: {
+        providerName: data.provider_name,
+        customerId: data.customer_id,
+        object: data.object,
+      },
+    },
+  });
+}
+```
