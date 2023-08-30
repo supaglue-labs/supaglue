@@ -11,19 +11,16 @@ import type {
 } from '@supaglue/types';
 import { slugifyForTableName } from '@supaglue/utils';
 import { stringify } from 'csv-stringify';
-import type { PoolClient } from 'pg';
+import type { Pool, PoolClient } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
 import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { getCoreDependencyContainer } from '../dependency_container';
 import { NotImplementedError } from '../errors';
-import { logger } from '../lib';
+import { getPgPool, logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
-
-const { managedPgPool } = getCoreDependencyContainer();
 
 function convertDashesToUnderscores(input: string): string {
   return input.replace(/-/g, '_');
@@ -46,8 +43,13 @@ async function createPartitionIfNotExists(client: PoolClient, tableName: string,
 }
 
 export class SupaglueDestinationWriter extends BaseDestinationWriter {
+  #pgPool: Pool;
+  constructor() {
+    super();
+    this.#pgPool = getPgPool(process.env.SUPAGLUE_MANAGED_DATABASE_URL!);
+  }
   async #getClient(): Promise<PoolClient> {
-    return await managedPgPool.connect();
+    return await this.#pgPool.connect();
   }
 
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
@@ -125,6 +127,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
+      await client.query(getSchemaSetupSql(schema));
       await client.query(getTableSetupSql(table, schema));
       await createPartitionIfNotExists(client, qualifiedTable, customerId);
 
@@ -274,6 +277,10 @@ const getObjectTableName = (providerName: ProviderName, object: string) => {
   return `${providerName}_${cleanObjectName}`;
 };
 
+const getSchemaSetupSql = (schema: string) => {
+  return `CREATE SCHEMA IF NOT EXISTS ${schema};`;
+};
+
 const getTableSetupSql = (baseTableName: string, schema: string, temp?: boolean) => {
   const tableName = temp ? `temp_${baseTableName}` : baseTableName;
 
@@ -293,9 +300,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `${tableName}` : 
       ? ''
       : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "_supaglue_id")'
   }
-  ${temp ? '' : ', PARTITION BY LIST (_supaglue_customer_id)'}
     
-);`;
+)${temp ? ';' : ' PARTITION BY LIST ( _supaglue_customer_id );'}`;
 };
 
 function stripNullCharsFromString(str: string) {

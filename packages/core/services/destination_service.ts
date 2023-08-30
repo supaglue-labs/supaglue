@@ -22,6 +22,7 @@ import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
 import { MongoDBDestinationWriter } from '../destination_writers/mongodb';
 import { getSsl, PostgresDestinationWriter } from '../destination_writers/postgres';
 import { S3DestinationWriter } from '../destination_writers/s3';
+import { SupaglueDestinationWriter } from '../destination_writers/supaglue';
 import { BadRequestError } from '../errors';
 import { encrypt } from '../lib/crypt';
 import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
@@ -297,6 +298,8 @@ export class DestinationService {
         return new BigQueryDestinationWriter(destination);
       case 'mongodb':
         return new MongoDBDestinationWriter(destination);
+      case 'supaglue':
+        return new SupaglueDestinationWriter();
       default:
         return null;
     }

@@ -157,8 +157,11 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
 
   const selectedProvider = providers.find((p) => p.id === providerId);
   const selectedDestination = destinations?.find((d) => d.id === destinationId);
-  const supportsStandardDestinations = ['postgres', 'bigquery', 'mongodb'];
+  const supportsStandardDestinations = ['postgres', 'bigquery', 'mongodb', 'supaglue'];
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
+
+  const commonObjectsSupported =
+    selectedProvider?.category !== 'no_category' && selectedDestination?.type !== 'supaglue';
 
   const standardObjectsOptions = getStandardObjectOptions(selectedProvider?.name);
 
@@ -245,7 +248,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 <Typography variant="subtitle1">Common objects</Typography>
                 <Autocomplete
                   size="small"
-                  disabled={selectedProvider?.category === 'no_category'}
+                  disabled={!commonObjectsSupported}
                   key={providerId}
                   multiple
                   id="common-objects"
