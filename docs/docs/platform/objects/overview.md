@@ -62,9 +62,7 @@ Indexes:
 
 ### Writing
 
-:::info
-The Actions API for Standard Objects is under construction.
-:::
+Please see the documentation for [writing data](../../integration-patterns/actions-api).
 
 ## Custom object
 
@@ -112,6 +110,4 @@ Indexes:
 
 ### Writing
 
-:::info
-The Actions API for Custom Objects is under construction.
-:::
+Please see the documentation for [writing data](../../integration-patterns/actions-api).

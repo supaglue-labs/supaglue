@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   version: 0.13.13
-  title: Supaglue Data API
+  title: Data API
   contact:
     name: Supaglue
     email: docs@supaglue.com
@@ -9,7 +9,7 @@ info:
   description: |
     #### Introduction
 
-    Welcome to the Data API documentation. You can use this API to list objects that have been synced to Supaglue's managed destination.
+    Welcome to the Data Listing API documentation. You can use this API to list objects to sync them from Supaglue to your database.
 
     [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
