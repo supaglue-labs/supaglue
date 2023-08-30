@@ -5,60 +5,79 @@ properties:
     description: The unique identifier for this account.
   Description:
     type: string
+    nullable: true
     description: A description of the contact.
   BillingCity:
     type: string
+    nullable: true
     description: The city of the billing address of this contact.
   BillingCountry:
     type: string
+    nullable: true
     description: The country of the billing address of this contact.
   BillingPostalCode:
     type: string
+    nullable: true
     description: The postal code of the billing address of this contact.
   BillingState:
     type: string
+    nullable: true
     description: The state of the billing address of this contact.
   BillingStreet:
     type: string
+    nullable: true
     description: The street of the billing address of this contact.
   ShippingCity:
     type: string
+    nullable: true
     description: The city of the shipping address of this contact.
   ShippingCountry:
     type: string
+    nullable: true
     description: The country of the shipping address of this contact.
   ShippingPostalCode:
     type: string
+    nullable: true
     description: The postal code of the shipping address of this contact.
   ShippingState:
     type: string
+    nullable: true
     description: The state of the shipping address of this contact.
   ShippingStreet:
     type: string
+    nullable: true
     description: The street of the shipping address of this contact.
   Phone:
     type: string
+    nullable: true
     description: The account's phone number.
   Fax:
     type: string
+    nullable: true
     description: The account's fax number.
   Industry:
     type: string
+    nullable: true
     description: The type of industry in which the account operates.
   LastActivityDate:
     type: string
+    nullable: true
     description: The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record.
   Name:
     type: string
+    nullable: true
     description: The name of the account. Maximum size is 255 characters.
   NumberOfEmployees:
     type: integer
+    nullable: true
     description: The number of employees that work at the account.
   OwnerId:
     type: string
+    nullable: true
     description: ID of the user who owns this account. This is a relationship field.
   Website:
     type: string
+    nullable: true
     description: The account's website URL.
   IsDeleted:
     type: boolean
@@ -73,3 +92,28 @@ properties:
     type: object
     description: The raw data returned by the provider.
     additionalProperties: true
+required:
+  - Id
+  - Description
+  - OwnerId
+  - BillingCity
+  - BillingCountry
+  - BillingPostalCode
+  - BillingState
+  - BillingStreet
+  - ShippingCity
+  - ShippingCountry
+  - ShippingPostalCode
+  - ShippingState
+  - ShippingStreet
+  - Phone
+  - Fax
+  - Industry
+  - LastActivityDate
+  - Name
+  - NumberOfEmployees
+  - Website
+  - IsDeleted
+  - CreatedDate
+  - SystemModstamp
+  - raw_data

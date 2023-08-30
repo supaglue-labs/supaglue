@@ -23,7 +23,7 @@
     }
   ],
   "paths": {
-    "/salesforce/contact": {
+    "/salesforce/contacts": {
       "get": {
         "operationId": "listContacts",
         "summary": "List contacts",
@@ -138,7 +138,7 @@
         }
       ]
     },
-    "/salesforce/account": {
+    "/salesforce/accounts": {
       "get": {
         "operationId": "listAccounts",
         "summary": "List accounts",
@@ -152,25 +152,25 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/0"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/1"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/1"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/2"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/2"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/3"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/3"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/4"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/4"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/5"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/6"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
           }
         ],
         "responses": {
@@ -206,6 +206,154 @@
           "$ref": "#/components/parameters/x-customer-id"
         }
       ]
+    },
+    "/salesforce/list_views/{object_type}": {
+      "get": {
+        "operationId": "listListViewss",
+        "summary": "List list views",
+        "tags": [
+          "Salesforce"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
+          },
+          {
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List Views",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/salesforce_list_view_metadata"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "name": "object_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "account",
+              "lead",
+              "opportunity"
+            ]
+          }
+        }
+      ]
+    },
+    "/salesforce/list_views/{object_type}/{list_id}": {
+      "get": {
+        "operationId": "getListViewMembership",
+        "summary": "Get list view membership",
+        "tags": [
+          "Salesforce"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
+          },
+          {
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List Views",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/salesforce_list_view_membership"
+                      }
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/salesforce_list_view_metadata"
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "name": "object_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "account",
+              "lead",
+              "opportunity"
+            ]
+          }
+        },
+        {
+          "name": "list_view_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "220e715a-0cbc-4d2d-8420-cd729f12f094"
+          }
+        }
+      ]
     }
   },
   "components": {
@@ -227,22 +375,27 @@
           },
           "Description": {
             "type": "string",
+            "nullable": true,
             "description": "A description of the contact."
           },
           "Email": {
             "type": "string",
+            "nullable": true,
             "description": "The contact's email address."
           },
           "AccountId": {
             "type": "string",
+            "nullable": true,
             "description": "ID of the account that's the parent of this contact. This is a relationship field."
           },
           "FirstName": {
             "type": "string",
+            "nullable": true,
             "description": "The contact's first name up to 40 characters."
           },
-          "HomePHone": {
+          "HomePhone": {
             "type": "string",
+            "nullable": true,
             "description": "The contact's home phone number."
           },
           "IsDeleted": {
@@ -251,54 +404,67 @@
           },
           "LastActivityDate": {
             "type": "string",
+            "nullable": true,
             "description": "The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record."
           },
           "LastName": {
             "type": "string",
+            "nullable": true,
             "description": "The contact's last name. Maximum size is 80 characters."
           },
           "LeadSource": {
             "type": "string",
+            "nullable": true,
             "description": "The source of the lead."
           },
           "MailingCity": {
             "type": "string",
+            "nullable": true,
             "description": "The city of the mailing address of this contact."
           },
           "MailingCountry": {
             "type": "string",
+            "nullable": true,
             "description": "The country of the mailing address of this contact."
           },
           "MailingPostalCode": {
             "type": "string",
+            "nullable": true,
             "description": "The postal code of the mailing address of this contact."
           },
           "MailingState": {
             "type": "string",
+            "nullable": true,
             "description": "The state of the mailijng address of this contact."
           },
           "MailingStreet": {
             "type": "string",
+            "nullable": true,
             "description": "The street of the mailing address of this contact."
           },
           "MobilePhone": {
             "type": "string",
+            "nullable": true,
             "description": "The contact's mobile phone number."
           },
           "OwnerId": {
             "type": "string",
+            "nullable": true,
             "description": "ID of the user who owns this contact. This is a relationship field."
           },
           "Phone": {
             "type": "string",
+            "nullable": true,
             "description": "The contact's phone number."
           },
           "Fax": {
             "type": "string",
+            "nullable": true,
             "description": "The contact's fax number."
           },
           "Title": {
             "type": "string",
+            "nullable": true,
             "description": "The contact's title."
           },
           "CreatedDate": {
@@ -314,7 +480,32 @@
             "description": "The raw data returned by the provider.",
             "additionalProperties": true
           }
-        }
+        },
+        "required": [
+          "Id",
+          "Description",
+          "Email",
+          "AccountId",
+          "FirstName",
+          "HomePhone",
+          "IsDeleted",
+          "LastActivityDate",
+          "LastName",
+          "LeadSource",
+          "MailingCity",
+          "MailingCountry",
+          "MailingPostalCode",
+          "MailingState",
+          "MailingStreet",
+          "MobilePhone",
+          "OwnerId",
+          "Phone",
+          "Fax",
+          "Title",
+          "CreatedDate",
+          "SystemModstamp",
+          "raw_data"
+        ]
       },
       "salesforce_account": {
         "type": "object",
@@ -325,78 +516,97 @@
           },
           "Description": {
             "type": "string",
+            "nullable": true,
             "description": "A description of the contact."
           },
           "BillingCity": {
             "type": "string",
+            "nullable": true,
             "description": "The city of the billing address of this contact."
           },
           "BillingCountry": {
             "type": "string",
+            "nullable": true,
             "description": "The country of the billing address of this contact."
           },
           "BillingPostalCode": {
             "type": "string",
+            "nullable": true,
             "description": "The postal code of the billing address of this contact."
           },
           "BillingState": {
             "type": "string",
+            "nullable": true,
             "description": "The state of the billing address of this contact."
           },
           "BillingStreet": {
             "type": "string",
+            "nullable": true,
             "description": "The street of the billing address of this contact."
           },
           "ShippingCity": {
             "type": "string",
+            "nullable": true,
             "description": "The city of the shipping address of this contact."
           },
           "ShippingCountry": {
             "type": "string",
+            "nullable": true,
             "description": "The country of the shipping address of this contact."
           },
           "ShippingPostalCode": {
             "type": "string",
+            "nullable": true,
             "description": "The postal code of the shipping address of this contact."
           },
           "ShippingState": {
             "type": "string",
+            "nullable": true,
             "description": "The state of the shipping address of this contact."
           },
           "ShippingStreet": {
             "type": "string",
+            "nullable": true,
             "description": "The street of the shipping address of this contact."
           },
           "Phone": {
             "type": "string",
+            "nullable": true,
             "description": "The account's phone number."
           },
           "Fax": {
             "type": "string",
+            "nullable": true,
             "description": "The account's fax number."
           },
           "Industry": {
             "type": "string",
+            "nullable": true,
             "description": "The type of industry in which the account operates."
           },
           "LastActivityDate": {
             "type": "string",
+            "nullable": true,
             "description": "The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record."
           },
           "Name": {
             "type": "string",
+            "nullable": true,
             "description": "The name of the account. Maximum size is 255 characters."
           },
           "NumberOfEmployees": {
             "type": "integer",
+            "nullable": true,
             "description": "The number of employees that work at the account."
           },
           "OwnerId": {
             "type": "string",
+            "nullable": true,
             "description": "ID of the user who owns this account. This is a relationship field."
           },
           "Website": {
             "type": "string",
+            "nullable": true,
             "description": "The account's website URL."
           },
           "IsDeleted": {
@@ -416,7 +626,132 @@
             "description": "The raw data returned by the provider.",
             "additionalProperties": true
           }
-        }
+        },
+        "required": [
+          "Id",
+          "Description",
+          "OwnerId",
+          "BillingCity",
+          "BillingCountry",
+          "BillingPostalCode",
+          "BillingState",
+          "BillingStreet",
+          "ShippingCity",
+          "ShippingCountry",
+          "ShippingPostalCode",
+          "ShippingState",
+          "ShippingStreet",
+          "Phone",
+          "Fax",
+          "Industry",
+          "LastActivityDate",
+          "Name",
+          "NumberOfEmployees",
+          "Website",
+          "IsDeleted",
+          "CreatedDate",
+          "SystemModstamp",
+          "raw_data"
+        ]
+      },
+      "salesforce_list_view_metadata": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": 12345,
+            "description": "The unique identifier for this list view."
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "account",
+              "lead",
+              "opportunity"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "example": "my-list",
+            "description": "The developer name of this list view."
+          },
+          "label": {
+            "type": "string",
+            "example": "My List",
+            "description": "The label for this list view."
+          },
+          "raw_data": {
+            "type": "object",
+            "description": "The raw data for this list view.",
+            "additionalProperties": true,
+            "example": {
+              "describeUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
+              "developerName": "NewThisWeek",
+              "id": "00BD0000005WcBeMAK",
+              "label": "New This Week",
+              "resultsUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results",
+              "soqlCompatible": true,
+              "url": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "label",
+          "raw_data"
+        ]
+      },
+      "salesforce_list_view_membership": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for a member of this list view."
+          },
+          "raw_data": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "The raw data for this list view membership.",
+            "example": {
+              "columns": [
+                {
+                  "fieldNameOrPath": "Id",
+                  "value": "0012800000bbzSAAAY"
+                },
+                {
+                  "fieldNameOrPath": "Email",
+                  "value": "jdoe@example.com"
+                },
+                {
+                  "fieldNameOrPath": "FirstName",
+                  "value": "John"
+                },
+                {
+                  "fieldNameOrPath": "LastName",
+                  "value": "Doe"
+                },
+                {
+                  "fieldNameOrPath": "CreatedDate",
+                  "value": "Fri Aug 01 21:15:46 GMT 2014"
+                },
+                {
+                  "fieldNameOrPath": "LastModifiedDate",
+                  "value": "Fri Aug 01 21:15:46 GMT 2014"
+                },
+                {
+                  "fieldNameOrPath": "SystemModstamp",
+                  "value": "Fri Aug 01 21:15:46 GMT 2014"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "raw_data"
+        ]
       },
       "pagination": {
         "type": "object",

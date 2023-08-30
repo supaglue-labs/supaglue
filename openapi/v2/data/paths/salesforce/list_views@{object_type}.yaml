@@ -1,0 +1,35 @@
+get:
+  operationId: listListViewss
+  summary: List list views
+  tags:
+    - Salesforce
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../../common/components/parameters/query/cursor.yaml
+  responses:
+    200:
+      description: List Views
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../../components/schemas/objects/salesforce/list_view_metadata.yaml
+            required:
+              - pagination
+              - records
+parameters:
+  - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
+  - name: object_type
+    in: path
+    required: true
+    schema:
+      type: string
+      enum: [contact, account, lead, opportunity]
