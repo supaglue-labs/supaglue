@@ -25,11 +25,16 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     enriched_company: {
+      /** @example 6sense */
       name: string | null;
+      /** @example Software and Technology */
       industry: string | null;
+      /** @example 104000000 */
       annual_revenue: number | null;
+      /** @example 6sense.com */
       domain: string | null;
-      employee_count: string | null;
+      /** @example 1192 */
+      employee_count: number | null;
     };
   };
   responses: never;
@@ -53,8 +58,6 @@ export interface operations {
     parameters: {
       query: {
         email: string;
-        /** @description Whether to include raw data fetched from the 3rd party provider. */
-        include_raw_data?: boolean;
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];

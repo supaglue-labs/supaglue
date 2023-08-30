@@ -1,4 +1,10 @@
-import type { ConnectionUnsafe, CRMProvider, EngagementProvider, OauthProvider } from '@supaglue/types';
+import type {
+  ConnectionUnsafe,
+  CRMProvider,
+  EngagementProvider,
+  EnrichmentProvider,
+  OauthProvider,
+} from '@supaglue/types';
 import type { ProviderService } from '.';
 import { InternalServerError } from '../errors';
 import { logger } from '../lib';
@@ -8,6 +14,8 @@ import { getCrmRemoteClient } from '../remotes/categories/crm';
 import type { CrmRemoteClient } from '../remotes/categories/crm/base';
 import { getEngagementRemoteClient } from '../remotes/categories/engagement';
 import type { EngagementRemoteClient } from '../remotes/categories/engagement/base';
+import { getEnrichmentRemoteClient } from '../remotes/categories/enrichment';
+import type { EnrichmentRemoteClient } from '../remotes/categories/enrichment/base';
 import type { ConnectionService } from './connection_service';
 
 export class RemoteService {
@@ -61,6 +69,27 @@ export class RemoteService {
     }
 
     const client = getEngagementRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
+    this.#persistRefreshedToken(connectionId, client);
+    return [client, provider.name];
+  }
+
+  public async getEnrichmentRemoteClient(
+    connectionId: string
+  ): Promise<[EnrichmentRemoteClient, EnrichmentProvider['name']]> {
+    const connection = await this.#connectionService.getUnsafeById(connectionId);
+    const provider = await this.#providerService.getById(connection.providerId);
+
+    if (connection.category !== 'enrichment' || provider.category !== 'enrichment') {
+      throw new Error(`Connection or provider category was unexpectedly not 'engagement'`);
+    }
+
+    if (connection.providerName !== provider.name) {
+      throw new InternalServerError(
+        `Connection providerName ${connection.providerName} unexpectedly does not match provider providerName ${provider.name}.`
+      );
+    }
+
+    const client = getEnrichmentRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
     this.#persistRefreshedToken(connectionId, client);
     return [client, provider.name];
   }

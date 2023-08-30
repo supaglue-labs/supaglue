@@ -5,8 +5,6 @@ get:
     - Persons
   security:
     - x-api-key: []
-  parameters:
-    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
   responses:
     200:
       description: PersonEnrichmentData
@@ -19,15 +17,6 @@ get:
                 $ref: ../components/schemas/objects/enriched_company.yaml
             required:
               - company
-          examples:
-            Example:
-              value:
-                company:
-                  name: 6sense.com
-                  industry: Software and Technology
-                  annual_revenue: 104000000
-                  domain: 6sense.com
-                  employee_count: 1192
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml

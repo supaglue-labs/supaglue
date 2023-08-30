@@ -65,6 +65,8 @@ export type ConnectionCredentialsDecrypted<T extends ProviderName> = {
   gong: AccessKeySecretConnectionCredentialsDecrypted | OauthConnectionCredentialsDecrypted;
   intercom: OauthConnectionCredentialsDecrypted;
   linear: OauthConnectionCredentialsDecrypted;
+  clearbit: ApiKeyConnectionCredentialsDecrypted;
+  '6sense': ApiKeyConnectionCredentialsDecrypted;
 }[T];
 
 export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;

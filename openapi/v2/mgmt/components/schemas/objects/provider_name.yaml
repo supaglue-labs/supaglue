@@ -13,4 +13,6 @@ enum:
   - salesloft
   - intercom
   - linear
+  - clearbit
+  - 6sense
 example: hubspot

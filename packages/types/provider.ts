@@ -52,6 +52,14 @@ export type NoCategoryProvider = BaseOauthProvider & {
 // TODO: Template based on provider name
 export type EngagementProvider = EngagementOauthProvider | EngagementApiKeyProvider;
 
+export type EnrichmentApiKeyProvider = BaseApiKeyProvider & {
+  category: 'enrichment';
+  name: 'clearbit' | '6sense';
+  objects?: ProviderObjects<'enrichment'>;
+};
+
+export type EnrichmentProvider = EnrichmentApiKeyProvider;
+
 export type OauthProvider = CRMProvider | EngagementOauthProvider | NoCategoryProvider;
 
 export type ProviderObjects<T extends ProviderCategory> = {
@@ -87,18 +95,23 @@ export type CRMProviderUpdateParams = Omit<CRMProvider, 'id' | 'applicationId'>;
 export type EngagementProviderCreateParams = Omit<EngagementProvider, 'id'>;
 export type EngagementProviderUpdateParams = Omit<EngagementProvider, 'id' | 'applicationId'>;
 
+export type EnrichmentProviderCreateParams = Omit<EnrichmentProvider, 'id'>;
+export type EnrichmentProviderUpdateParams = Omit<EnrichmentProvider, 'id' | 'applicationId'>;
+
 export type NoCategoryProviderCreateParams = Omit<NoCategoryProvider, 'id'>;
 export type NoCategoryProviderUpdateParams = Omit<NoCategoryProvider, 'id' | 'applicationId'>;
 
-export type Provider = CRMProvider | EngagementProvider | NoCategoryProvider;
+export type Provider = CRMProvider | EngagementProvider | EnrichmentProvider | NoCategoryProvider;
 
 export type ProviderCreateParams =
   | CRMProviderCreateParams
   | EngagementProviderCreateParams
+  | EnrichmentProviderCreateParams
   | NoCategoryProviderCreateParams;
 export type ProviderUpdateParams =
   | CRMProviderUpdateParams
   | EngagementProviderUpdateParams
+  | EnrichmentProviderUpdateParams
   | NoCategoryProviderUpdateParams;
 
 export type ProviderConfigMapperArgs = {

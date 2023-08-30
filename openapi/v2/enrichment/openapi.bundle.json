@@ -29,17 +29,6 @@
             "x-api-key": []
           }
         ],
-        "parameters": [
-          {
-            "name": "include_raw_data",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to include raw data fetched from the 3rd party provider."
-          }
-        ],
         "responses": {
           "200": {
             "description": "PersonEnrichmentData",
@@ -55,19 +44,6 @@
                   "required": [
                     "company"
                   ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "company": {
-                        "name": "6sense.com",
-                        "industry": "Software and Technology",
-                        "annual_revenue": 104000000,
-                        "domain": "6sense.com",
-                        "employee_count": 1192
-                      }
-                    }
-                  }
                 }
               }
             }
@@ -114,23 +90,28 @@
         "properties": {
           "name": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "example": "6sense"
           },
           "industry": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "example": "Software and Technology"
           },
           "annual_revenue": {
             "type": "number",
-            "nullable": true
+            "nullable": true,
+            "example": 104000000
           },
           "domain": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "example": "6sense.com"
           },
           "employee_count": {
-            "type": "string",
-            "nullable": true
+            "type": "number",
+            "nullable": true,
+            "example": 1192
           }
         },
         "required": [
