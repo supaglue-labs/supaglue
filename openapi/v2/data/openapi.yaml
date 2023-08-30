@@ -24,10 +24,14 @@ tags:
   - name: Salesforce
     description: Salesforce is a CRM Provider.
 paths:
-  '/salesforce/contact':
+  '/salesforce/contacts':
     $ref: paths/salesforce/contacts.yaml
-  '/salesforce/account':
+  '/salesforce/accounts':
     $ref: paths/salesforce/accounts.yaml
+  '/salesforce/list_views/{object_type}':
+    $ref: paths/salesforce/list_views@{object_type}.yaml
+  '/salesforce/list_views/{object_type}/{list_id}':
+    $ref: paths/salesforce/list_views@{object_type}@{list_view_id}.yaml
 components:
   securitySchemes:
     x-api-key:
@@ -37,6 +41,10 @@ components:
       $ref: ./components/schemas/objects/salesforce/contact.yaml
     salesforce_account:
       $ref: ./components/schemas/objects/salesforce/account.yaml
+    salesforce_list_view_metadata:
+      $ref: ./components/schemas/objects/salesforce/list_view_metadata.yaml
+    salesforce_list_view_membership:
+      $ref: ./components/schemas/objects/salesforce/list_view_membership.yaml
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     errors:
