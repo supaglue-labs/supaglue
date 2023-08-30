@@ -3,18 +3,23 @@ properties:
   name:
     type: string
     nullable: true
+    example: 6sense
   industry:
     type: string
     nullable: true
+    example: Software and Technology
   annual_revenue:
     type: number
     nullable: true
+    example: 104000000
   domain:
     type: string
     nullable: true
+    example: 6sense.com
   employee_count:
     type: number
     nullable: true
+    example: 1192
 required:
   - name
   - industry

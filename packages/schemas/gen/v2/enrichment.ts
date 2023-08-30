@@ -25,10 +25,15 @@ export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
     enriched_company: {
+      /** @example 6sense */
       name: string | null;
+      /** @example Software and Technology */
       industry: string | null;
+      /** @example 104000000 */
       annual_revenue: number | null;
+      /** @example 6sense.com */
       domain: string | null;
+      /** @example 1192 */
       employee_count: number | null;
     };
   };
