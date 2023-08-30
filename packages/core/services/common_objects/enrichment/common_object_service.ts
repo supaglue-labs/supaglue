@@ -1,12 +1,6 @@
 import type { PersonEnrichmentData } from '@supaglue/types/enrichment/person_enrichment_data';
-import { Histogram } from 'prom-client';
+import { remoteDuration } from '../../../lib/metrics';
 import type { RemoteService } from '../../remote_service';
-
-const histogram = new Histogram({
-  name: 'remote_operation_duration_seconds',
-  help: 'remote operation duration in seconds',
-  labelNames: ['operation', 'remote_name'],
-});
 
 export class EnrichmentCommonObjectService {
   readonly #remoteService: RemoteService;
@@ -18,7 +12,7 @@ export class EnrichmentCommonObjectService {
   public async enrichPerson(connectionId: string, email: string): Promise<PersonEnrichmentData> {
     const [remoteClient, providerName] = await this.#remoteService.getEnrichmentRemoteClient(connectionId);
 
-    const end = histogram.startTimer({ operation: 'enrichPerson', remote_name: providerName });
+    const end = remoteDuration.startTimer({ operation: 'enrichPerson', remote_name: providerName });
     const obj = await remoteClient.enrichPerson(email);
     end();
 
