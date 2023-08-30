@@ -1,0 +1,46 @@
+openapi: 3.0.3
+info:
+  version: 0.13.16
+  title: Unified Enrichment API
+  contact:
+    name: Supaglue
+    email: docs@supaglue.com
+    url: 'https://supaglue.com'
+  description: |
+    #### Introduction
+
+    Welcome to the Unified Actions API (Enrichment) documentation. You can use this API to write to third-party providers.
+
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
+
+    #### Reading data
+    To read data from third-party providers, refer to the [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.
+
+    #### Base API URL
+    ```
+    https://api.supaglue.io/enrichment/v2
+    ```
+  # externalDocs:
+  #   description:
+  #   url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
+servers:
+  - url: 'https://api.supaglue.io/enrichment/v2'
+    description: Supaglue API
+paths:
+  '/persons':
+    $ref: paths/persons.yaml
+tags:
+  - name: Persons
+    description: Relating to enrichment data that is derived from information about a Person. This may include demographic and firmographic data.
+components:
+  securitySchemes:
+    x-api-key:
+      $ref: ../../common/components/securitySchemes/x-api-key.yaml
+  schemas:
+    enriched_company:
+      $ref: ./components/schemas/objects/enriched_company.yaml
+  parameters:
+    x-customer-id:
+      $ref: ../../common/components/parameters/header/x-customer-id.yaml
+    x-provider-name:
+      $ref: ./components/parameters/header/x-provider-name.yaml
