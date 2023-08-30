@@ -1,4 +1,5 @@
 get:
+  deprecated: true
   operationId: listEntityMappings
   summary: List entity mappings.
   tags:

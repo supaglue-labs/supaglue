@@ -51,7 +51,10 @@ export interface paths {
     };
   };
   "/field_mappings": {
-    /** List schema mappings */
+    /**
+     * List schema mappings 
+     * @deprecated
+     */
     get: operations["listFieldMappings"];
     parameters: {
       header: {
@@ -79,7 +82,10 @@ export interface paths {
     };
   };
   "/field_mappings/_update_object": {
-    /** Update schema mappings */
+    /**
+     * Update schema mappings 
+     * @deprecated
+     */
     put: operations["updateObjectFieldMappings"];
     parameters: {
       header: {
@@ -89,7 +95,10 @@ export interface paths {
     };
   };
   "/entity_mappings": {
-    /** List entity mappings. */
+    /**
+     * List entity mappings. 
+     * @deprecated
+     */
     get: operations["listEntityMappings"];
     parameters: {
       header: {
@@ -99,7 +108,10 @@ export interface paths {
     };
   };
   "/entity_mappings/{entity_id}": {
-    /** Upsert entity mapping */
+    /**
+     * Upsert entity mapping 
+     * @deprecated
+     */
     put: operations["upsertEntityMapping"];
     /** Delete entity mapping */
     delete: operations["deleteEntityMapping"];
@@ -116,6 +128,7 @@ export interface paths {
   "/schemas": {
     /**
      * List schemas 
+     * @deprecated 
      * @description Get a list of schemas
      */
     get: operations["getSchemas"];
@@ -123,11 +136,20 @@ export interface paths {
     post: operations["createSchema"];
   };
   "/schemas/{schema_id}": {
-    /** Get schema */
+    /**
+     * Get schema 
+     * @deprecated
+     */
     get: operations["getSchema"];
-    /** Update schema */
+    /**
+     * Update schema 
+     * @deprecated
+     */
     put: operations["updateSchema"];
-    /** Delete schema */
+    /**
+     * Delete schema 
+     * @deprecated
+     */
     delete: operations["deleteSchema"];
     parameters: {
       path: {
@@ -1522,7 +1544,10 @@ export interface operations {
       };
     };
   };
-  /** List schema mappings */
+  /**
+   * List schema mappings 
+   * @deprecated
+   */
   listFieldMappings: {
     parameters: {
       header: {
@@ -1581,7 +1606,10 @@ export interface operations {
       204: never;
     };
   };
-  /** Update schema mappings */
+  /**
+   * Update schema mappings 
+   * @deprecated
+   */
   updateObjectFieldMappings: {
     parameters: {
       header: {
@@ -1603,7 +1631,10 @@ export interface operations {
       };
     };
   };
-  /** List entity mappings. */
+  /**
+   * List entity mappings. 
+   * @deprecated
+   */
   listEntityMappings: {
     parameters: {
       header: {
@@ -1620,7 +1651,10 @@ export interface operations {
       };
     };
   };
-  /** Upsert entity mapping */
+  /**
+   * Upsert entity mapping 
+   * @deprecated
+   */
   upsertEntityMapping: {
     parameters: {
       header: {
@@ -1659,6 +1693,7 @@ export interface operations {
   };
   /**
    * List schemas 
+   * @deprecated 
    * @description Get a list of schemas
    */
   getSchemas: {
@@ -1687,7 +1722,10 @@ export interface operations {
       };
     };
   };
-  /** Get schema */
+  /**
+   * Get schema 
+   * @deprecated
+   */
   getSchema: {
     parameters: {
       path: {
@@ -1703,7 +1741,10 @@ export interface operations {
       };
     };
   };
-  /** Update schema */
+  /**
+   * Update schema 
+   * @deprecated
+   */
   updateSchema: {
     parameters: {
       path: {
@@ -1724,7 +1765,10 @@ export interface operations {
       };
     };
   };
-  /** Delete schema */
+  /**
+   * Delete schema 
+   * @deprecated
+   */
   deleteSchema: {
     parameters: {
       path: {

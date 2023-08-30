@@ -1,4 +1,5 @@
 post:
+  deprecated: true
   operationId: sendPassthroughRequest
   tags:
     - Passthrough
@@ -19,7 +20,7 @@ post:
               description: The path to send the request to (do not pass the domain)
             method:
               type: string
-              enum: [GET, POST, PUT, PATCH, DELETE] 
+              enum: [GET, POST, PUT, PATCH, DELETE]
               example: GET
             headers:
               type: object

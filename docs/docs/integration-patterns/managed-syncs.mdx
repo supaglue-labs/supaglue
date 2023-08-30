@@ -3,37 +3,53 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Managed Syncs
+# Syncing data
 
-Supaglue writes directly into a database.
+Supaglue supports two ways of syncing data:
+
+1. [Managed Syncs](#managed-syncs) - Supaglue writes raw data directly into your database.
+1. [Data Listing API](#data-listing-api) - Supaglue writes to a Supaglue-hosted database and provides an API to paginate and transform data into your database schema.
 
 <ThemedImage
-alt="integration patterns syncs"
-width="50%"
-sources={{
+  alt="integration patterns syncs"
+  width="65%"
+  sources={{
     light: '/img/integration-patterns-syncs.png',
     dark: '/img/integration-patterns-syncs.png',
   }}
 />
 
-## How it works
+## Managed Syncs
+
+Supaglue writes raw data directly into your database.
+
+<ThemedImage
+  alt="managed syncs"
+  width="65%"
+  sources={{
+    light: '/img/managed-syncs.png',
+    dark: '/img/managed-syncs.png',
+  }}
+/>
+
+### How it works
 
 1. Use the [Management Portal](https://app.supaglue.io) to create a sync configuration ([SyncConfig](#syncconfig)) that defines "what" and "how" to sync from a third-party [Provider](#provider) to a [Destination](#destination).
 2. Your customer connects via our [Managed Authentication](../platform/managed-auth) feature.
 3. Supaglue starts fetching data from your customers’ third-party Providers and landing them in your Destination (e.g. Postgres).
 
-## Concepts
+### Concepts
 
 <ThemedImage
-alt="managed syncs concepts"
-width="50%"
-sources={{
+  alt="managed syncs concepts"
+  width="50%"
+  sources={{
     light: '/img/managed-syncs-concepts.png',
     dark: '/img/managed-syncs-concepts.png',
   }}
 />
 
-### Provider
+#### Provider
 
 A Provider is a third-party SaaS tool that Supaglue can connect to, to sync data.
 
@@ -46,9 +62,9 @@ Use the **Connectors --> Providers** page in the Management Portal to configure 
 <BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/connectors/providers/crm/salesforce">
 
 <ThemedImage
-alt="provider config"
-width="100%"
-sources={{
+  alt="provider config"
+  width="100%"
+  sources={{
     light: '/img/salesforce-provider-config.png',
     dark: '/img/salesforce-provider-config.png',
   }}
@@ -83,7 +99,7 @@ sources={{
 
 </Tabs>
 
-### Destination
+#### Destination
 
 A Destination is a database or data warehouse in your infrastructure where Supaglue can write third-party Provider data to.
 
@@ -96,9 +112,9 @@ Use the **Connectors --> Destinations** page in the Management Portal to configu
 <BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/connectors/destinations/postgres">
 
 <ThemedImage
-alt="destination config"
-width="100%"
-sources={{
+  alt="destination config"
+  width="100%"
+  sources={{
     light: '/img/postgres-destination-config.png',
     dark: '/img/postgres-destination-config.png',
   }}
@@ -134,7 +150,7 @@ sources={{
 Before syncing data, Supaglue generates the destination tables and columns in your database if they do not already exist.
 :::
 
-### SyncConfig
+#### SyncConfig
 
 A SyncConfig ties a Provider (source) to a Destination. It defines what objects to sync and how to sync them (frequency, strategy, etc).
 
@@ -145,9 +161,9 @@ A SyncConfig ties a Provider (source) to a Destination. It defines what objects 
 <BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/syncs/sync_configs/4427eb3f-3c64-4d1e-bf3a-0646475fc71c">
 
 <ThemedImage
-alt="sync config"
-width="100%"
-sources={{
+  alt="sync config"
+  width="100%"
+  sources={{
     light: '/img/salesforce-postgres-sync-config.png',
     dark: '/img/salesforce-postgres-sync-config.png',
   }}
@@ -194,46 +210,28 @@ The SyncConfig above defines references a Salesforce Provider config and a Postg
 
 </Tabs>
 
-## Hosting Destinations
+### Query patterns
 
-You can choose between two methods of hosting Destinations:
-
-1. **Your Destination:** Supaglue will land raw data in your database.
-2. **Supaglue-hosted Destination:** Supaglue will land raw data in a Supaglue-hosted Postgres database.
-
-### Deciding on a hosting method
-
-There are several differences between the two methods of hosting Destinations:
-
-| Dimension       | Your application database                                     | Supaglue-hosted database                                    |
-| --------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
-| Transformations | Ideal if you have existing transformation pipelines           | Ideal if you don't have an existing transformation pipeline |
-| Compliance      | Your customer data is never stored in Supaglue at-rest        | Your customer data is stored in Supaglue at-rest            |
-| Security        | Your database needs to be accessible from the public internet | Your final target database can be behind a VPC              |
-| Operational     | You need to ensure your database is up                        | Supaglue will ensure the uptime and sync reliability        |
-
-## Query patterns
-
-### Pattern 1: Direct query
+#### Pattern 1: Direct query
 
 The quickest way to query data is to query the raw JSONB data that Supaglue lands: this is well-suited if you can easily do transforms upon reading the raw data in your application using code. You may optionally add indexes to help query performance.
 
-### Pattern 2: Logical SQL view
+#### Pattern 2: Logical SQL view
 
 You can create Postgres views if you need to rename fields or run transformations easily expressed using SQL.
 
-### Pattern 3: Postgres Generated Columns
+#### Pattern 3: Postgres Generated Columns
 
 Building on Pattern 2, if your SQL transformations are expensive to run at query time, you can use Postgres [Generated Columns](https://www.postgresql.org/docs/current/ddl-generated-columns.html) to speed up queries by pushing the transformation work to be maintained at write time.
 
-### Pattern 4: Transformation pipeline
+#### Pattern 4: Transformation pipeline
 
 If you have well-structured tables that you wish to write Supaglue-synced data into, you can paginate over the Supaglue-synced tables, run your transformations, and write the transformed data into your tables.
 
 <ThemedImage
-alt="transformation pipeline"
-width="75%"
-sources={{
+  alt="transformation pipeline"
+  width="75%"
+  sources={{
     light: '/img/transformation-pipeline.png',
     dark: '/img/transformation-pipeline.png',
   }}
@@ -241,7 +239,7 @@ sources={{
 
 Read more about transformation pipelines and patterns in our [transformation tutorial section](../tutorials/transformations/overview).
 
-## Data schema in Destination
+### Data schema in Destination
 
 The schema of the data that Supaglue creates in your Destination contains three types of information:
 
@@ -269,7 +267,7 @@ Indexes:
     "gong_call_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id)
 ```
 
-## Sync strategies
+### Sync strategies
 
 Supaglue implements two sync strategies:
 
@@ -282,6 +280,29 @@ Supaglue implements two sync strategies:
 S3 is the only Destination that does not support the `full then incremental` sync strategy.
 :::
 
-## Sync behavior
+### Sync behavior
 
 Supaglue executes syncs on a per Object basis. For example, Supaglue will create ten syncs if you are syncing ten Standard Objects. Supaglue schedules them to run simultaneously at the frequency you set. Each sync run is independent, i.e., a failure in one sync will not affect the others.
+
+## Data Listing API
+
+<ThemedImage
+  alt="data listing api"
+  width="65%"
+  sources={{
+    light: '/img/data-listing-api.png',
+    dark: '/img/data-listing-api.png',
+  }}
+/>
+
+## Managed Syncs vs Data Listing API
+
+There are several differences between the two methods of hosting Destinations:
+
+| Dimension        | Your application database                                     | Data Listing API                                            |
+| ---------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
+| Transformations  | Ideal if you have existing transformation pipelines           | Ideal if you don't have an existing transformation pipeline |
+| Compliance       | Your customer data is never stored in Supaglue at-rest        | Your customer data is stored in Supaglue at-rest            |
+| Security         | Your database needs to be accessible from the public internet | Your final target database can be behind a VPC              |
+| Operational      | You need to ensure your database is up                        | Supaglue will ensure the uptime and sync reliability        |
+| Performance/Load | Supaglue determines how fast to sync to your database         | You want to control how fast to sync to your database       |

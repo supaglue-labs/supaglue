@@ -323,6 +323,7 @@
     },
     "/field_mappings": {
       "get": {
+        "deprecated": true,
         "operationId": "listFieldMappings",
         "summary": "List schema mappings",
         "tags": [
@@ -456,6 +457,7 @@
     },
     "/field_mappings/_update_object": {
       "put": {
+        "deprecated": true,
         "operationId": "updateObjectFieldMappings",
         "summary": "Update schema mappings",
         "tags": [
@@ -501,6 +503,7 @@
     },
     "/entity_mappings": {
       "get": {
+        "deprecated": true,
         "operationId": "listEntityMappings",
         "summary": "List entity mappings.",
         "tags": [
@@ -539,6 +542,7 @@
     },
     "/entity_mappings/{entity_id}": {
       "put": {
+        "deprecated": true,
         "operationId": "upsertEntityMapping",
         "summary": "Upsert entity mapping",
         "tags": [
@@ -598,6 +602,7 @@
     },
     "/schemas": {
       "get": {
+        "deprecated": true,
         "operationId": "getSchemas",
         "tags": [
           "Schemas"
@@ -663,6 +668,7 @@
     },
     "/schemas/{schema_id}": {
       "get": {
+        "deprecated": true,
         "operationId": "getSchema",
         "summary": "Get schema",
         "tags": [
@@ -687,6 +693,7 @@
         }
       },
       "put": {
+        "deprecated": true,
         "operationId": "updateSchema",
         "summary": "Update schema",
         "tags": [
@@ -717,6 +724,7 @@
         }
       },
       "delete": {
+        "deprecated": true,
         "operationId": "deleteSchema",
         "summary": "Delete schema",
         "tags": [
