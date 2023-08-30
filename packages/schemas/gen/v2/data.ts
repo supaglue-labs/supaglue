@@ -5,7 +5,7 @@
 
 
 export interface paths {
-  "/salesforce/contact": {
+  "/salesforce/contacts": {
     /** List contacts */
     get: operations["listContacts"];
     parameters: {

@@ -23,7 +23,7 @@
     }
   ],
   "paths": {
-    "/salesforce/contact": {
+    "/salesforce/contacts": {
       "get": {
         "operationId": "listContacts",
         "summary": "List contacts",
@@ -152,25 +152,25 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/0"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/0"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/1"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/1"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/2"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/2"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/3"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/3"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/4"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/4"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/5"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/6"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
           }
         ],
         "responses": {
@@ -221,10 +221,10 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/5"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/6"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
           }
         ],
         "responses": {
@@ -289,10 +289,10 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/5"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contact/get/parameters/6"
+            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
           }
         ],
         "responses": {

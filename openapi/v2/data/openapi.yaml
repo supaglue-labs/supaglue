@@ -24,7 +24,7 @@ tags:
   - name: Salesforce
     description: Salesforce is a CRM Provider.
 paths:
-  '/salesforce/contact':
+  '/salesforce/contacts':
     $ref: paths/salesforce/contacts.yaml
   '/salesforce/accounts':
     $ref: paths/salesforce/accounts.yaml
