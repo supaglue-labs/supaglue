@@ -58,47 +58,47 @@ export interface components {
       /** @description The unique identifier for this contact. */
       Id: string;
       /** @description A description of the contact. */
-      Description?: string;
+      Description: string;
       /** @description The contact's email address. */
-      Email?: string;
+      Email: string;
       /** @description ID of the account that's the parent of this contact. This is a relationship field. */
-      AccountId?: string;
+      AccountId: string;
       /** @description The contact's first name up to 40 characters. */
-      FirstName?: string;
+      FirstName: string;
       /** @description The contact's home phone number. */
-      HomePHone?: string;
+      HomePHone: string;
       /** @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). */
-      IsDeleted?: boolean;
+      IsDeleted: boolean;
       /** @description The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record. */
-      LastActivityDate?: string;
+      LastActivityDate: string;
       /** @description The contact's last name. Maximum size is 80 characters. */
-      LastName?: string;
+      LastName: string;
       /** @description The source of the lead. */
-      LeadSource?: string;
+      LeadSource: string;
       /** @description The city of the mailing address of this contact. */
-      MailingCity?: string;
+      MailingCity: string;
       /** @description The country of the mailing address of this contact. */
-      MailingCountry?: string;
+      MailingCountry: string;
       /** @description The postal code of the mailing address of this contact. */
-      MailingPostalCode?: string;
+      MailingPostalCode: string;
       /** @description The state of the mailijng address of this contact. */
-      MailingState?: string;
+      MailingState: string;
       /** @description The street of the mailing address of this contact. */
-      MailingStreet?: string;
+      MailingStreet: string;
       /** @description The contact's mobile phone number. */
-      MobilePhone?: string;
+      MobilePhone: string;
       /** @description ID of the user who owns this contact. This is a relationship field. */
-      OwnerId?: string;
+      OwnerId: string;
       /** @description The contact's phone number. */
-      Phone?: string;
+      Phone: string;
       /** @description The contact's fax number. */
-      Fax?: string;
+      Fax: string;
       /** @description The contact's title. */
-      Title?: string;
+      Title: string;
       /** @description The date and time when this contact was created. */
-      CreatedDate?: string;
+      CreatedDate: string;
       /** @description The date and time when this contact was last modified. */
-      SystemModstamp?: string;
+      SystemModstamp: string;
       /** @description The raw data returned by the provider. */
       raw_data: {
         [key: string]: unknown;
@@ -106,53 +106,53 @@ export interface components {
     };
     salesforce_account: {
       /** @description The unique identifier for this account. */
-      Id?: string;
+      Id: string;
       /** @description A description of the contact. */
-      Description?: string;
+      Description: string;
       /** @description The city of the billing address of this contact. */
-      BillingCity?: string;
+      BillingCity: string;
       /** @description The country of the billing address of this contact. */
-      BillingCountry?: string;
+      BillingCountry: string;
       /** @description The postal code of the billing address of this contact. */
-      BillingPostalCode?: string;
+      BillingPostalCode: string;
       /** @description The state of the billing address of this contact. */
-      BillingState?: string;
+      BillingState: string;
       /** @description The street of the billing address of this contact. */
-      BillingStreet?: string;
+      BillingStreet: string;
       /** @description The city of the shipping address of this contact. */
-      ShippingCity?: string;
+      ShippingCity: string;
       /** @description The country of the shipping address of this contact. */
-      ShippingCountry?: string;
+      ShippingCountry: string;
       /** @description The postal code of the shipping address of this contact. */
-      ShippingPostalCode?: string;
+      ShippingPostalCode: string;
       /** @description The state of the shipping address of this contact. */
-      ShippingState?: string;
+      ShippingState: string;
       /** @description The street of the shipping address of this contact. */
-      ShippingStreet?: string;
+      ShippingStreet: string;
       /** @description The account's phone number. */
-      Phone?: string;
+      Phone: string;
       /** @description The account's fax number. */
-      Fax?: string;
+      Fax: string;
       /** @description The type of industry in which the account operates. */
-      Industry?: string;
+      Industry: string;
       /** @description The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record. */
-      LastActivityDate?: string;
+      LastActivityDate: string;
       /** @description The name of the account. Maximum size is 255 characters. */
-      Name?: string;
+      Name: string;
       /** @description The number of employees that work at the account. */
-      NumberOfEmployees?: number;
+      NumberOfEmployees: number;
       /** @description ID of the user who owns this account. This is a relationship field. */
-      OwnerId?: string;
+      OwnerId: string;
       /** @description The account's website URL. */
-      Website?: string;
+      Website: string;
       /** @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). */
-      IsDeleted?: boolean;
+      IsDeleted: boolean;
       /** @description The date and time when this contact was created. */
-      CreatedDate?: string;
+      CreatedDate: string;
       /** @description The date and time when this contact was last modified. */
-      SystemModstamp?: string;
+      SystemModstamp: string;
       /** @description The raw data returned by the provider. */
-      raw_data?: {
+      raw_data: {
         [key: string]: unknown;
       };
     };
@@ -177,7 +177,7 @@ export interface components {
       /**
        * @description The raw data for this list. 
        * @example {
-       *   "describeUrl\"": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
+       *   "describeUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
        *   "developerName": "NewThisWeek",
        *   "id": "00BD0000005WcBeMAK",
        *   "label": "New This Week",

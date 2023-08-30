@@ -73,3 +73,28 @@ properties:
     type: object
     description: The raw data returned by the provider.
     additionalProperties: true
+required:
+  - Id
+  - Description
+  - OwnerId
+  - BillingCity
+  - BillingCountry
+  - BillingPostalCode
+  - BillingState
+  - BillingStreet
+  - ShippingCity
+  - ShippingCountry
+  - ShippingPostalCode
+  - ShippingState
+  - ShippingStreet
+  - Phone
+  - Fax
+  - Industry
+  - LastActivityDate
+  - Name
+  - NumberOfEmployees
+  - Website
+  - IsDeleted
+  - CreatedDate
+  - SystemModstamp
+  - raw_data

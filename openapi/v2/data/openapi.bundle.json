@@ -465,6 +465,27 @@
         },
         "required": [
           "Id",
+          "Description",
+          "Email",
+          "AccountId",
+          "FirstName",
+          "HomePHone",
+          "IsDeleted",
+          "LastActivityDate",
+          "LastName",
+          "LeadSource",
+          "MailingCity",
+          "MailingCountry",
+          "MailingPostalCode",
+          "MailingState",
+          "MailingStreet",
+          "MobilePhone",
+          "OwnerId",
+          "Phone",
+          "Fax",
+          "Title",
+          "CreatedDate",
+          "SystemModstamp",
           "raw_data"
         ]
       },
@@ -568,7 +589,33 @@
             "description": "The raw data returned by the provider.",
             "additionalProperties": true
           }
-        }
+        },
+        "required": [
+          "Id",
+          "Description",
+          "OwnerId",
+          "BillingCity",
+          "BillingCountry",
+          "BillingPostalCode",
+          "BillingState",
+          "BillingStreet",
+          "ShippingCity",
+          "ShippingCountry",
+          "ShippingPostalCode",
+          "ShippingState",
+          "ShippingStreet",
+          "Phone",
+          "Fax",
+          "Industry",
+          "LastActivityDate",
+          "Name",
+          "NumberOfEmployees",
+          "Website",
+          "IsDeleted",
+          "CreatedDate",
+          "SystemModstamp",
+          "raw_data"
+        ]
       },
       "salesforce_list_metadata": {
         "type": "object",
@@ -602,7 +649,7 @@
             "description": "The raw data for this list.",
             "additionalProperties": true,
             "example": {
-              "describeUrl\"": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
+              "describeUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
               "developerName": "NewThisWeek",
               "id": "00BD0000005WcBeMAK",
               "label": "New This Week",

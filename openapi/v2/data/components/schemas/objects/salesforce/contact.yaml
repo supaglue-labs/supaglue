@@ -72,4 +72,25 @@ properties:
     additionalProperties: true
 required:
   - Id
+  - Description
+  - Email
+  - AccountId
+  - FirstName
+  - HomePHone
+  - IsDeleted
+  - LastActivityDate
+  - LastName
+  - LeadSource
+  - MailingCity
+  - MailingCountry
+  - MailingPostalCode
+  - MailingState
+  - MailingStreet
+  - MobilePhone
+  - OwnerId
+  - Phone
+  - Fax
+  - Title
+  - CreatedDate
+  - SystemModstamp
   - raw_data
