@@ -4,12 +4,12 @@ import { Router } from 'express';
 import v2 from './v2';
 
 export default function init(app: Router): void {
-  const engagementRouter = Router();
+  const enrichmentRouter = Router();
 
-  engagementRouter.use(apiKeyHeaderMiddleware);
-  engagementRouter.use(connectionHeaderMiddleware);
+  enrichmentRouter.use(apiKeyHeaderMiddleware);
+  enrichmentRouter.use(connectionHeaderMiddleware);
 
-  v2(engagementRouter);
+  v2(enrichmentRouter);
 
-  app.use('/engagement', engagementRouter);
+  app.use('/engagement', enrichmentRouter);
 }

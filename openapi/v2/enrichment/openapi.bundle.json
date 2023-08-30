@@ -29,17 +29,6 @@
             "x-api-key": []
           }
         ],
-        "parameters": [
-          {
-            "name": "include_raw_data",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to include raw data fetched from the 3rd party provider."
-          }
-        ],
         "responses": {
           "200": {
             "description": "PersonEnrichmentData",
@@ -129,7 +118,7 @@
             "nullable": true
           },
           "employee_count": {
-            "type": "string",
+            "type": "number",
             "nullable": true
           }
         },

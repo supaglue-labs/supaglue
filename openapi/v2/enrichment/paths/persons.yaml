@@ -5,8 +5,6 @@ get:
     - Persons
   security:
     - x-api-key: []
-  parameters:
-    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
   responses:
     200:
       description: PersonEnrichmentData

@@ -29,7 +29,7 @@ export interface components {
       industry: string | null;
       annual_revenue: number | null;
       domain: string | null;
-      employee_count: string | null;
+      employee_count: number | null;
     };
   };
   responses: never;
@@ -53,8 +53,6 @@ export interface operations {
     parameters: {
       query: {
         email: string;
-        /** @description Whether to include raw data fetched from the 3rd party provider. */
-        include_raw_data?: boolean;
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];

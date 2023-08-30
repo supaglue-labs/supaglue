@@ -13,7 +13,7 @@ properties:
     type: string
     nullable: true
   employee_count:
-    type: string
+    type: number
     nullable: true
 required:
   - name
