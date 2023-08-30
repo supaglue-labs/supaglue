@@ -5511,6 +5511,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mongodb-js/saslprep@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "@mongodb-js/saslprep@npm:1.1.0"
+  dependencies:
+    sparse-bitfield: ^3.0.3
+  checksum: 1479a43e216734672f8eb1a2a55165b6896841bd00fb5bd645390a24374ef6c29f0f6d19a43618a19b8f1912fcbd2b2cc2210a62361103d1f28dce6852cf31d4
+  languageName: node
+  linkType: hard
+
 "@mui/base@npm:5.0.0-alpha.119":
   version: 5.0.0-alpha.119
   resolution: "@mui/base@npm:5.0.0-alpha.119"
@@ -7452,7 +7461,7 @@ __metadata:
     csv-stringify: ^6.3.0
     jest: ^29.6.2
     jsforce: ^2.0.0-beta.20
-    mongodb: ^5.7.0
+    mongodb: ^5.8.0
     odata: ^1.3.2
     pg: ^8.10.2
     pg-copy-streams: ^6.0.6
@@ -18205,22 +18214,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mongodb@npm:^5.7.0":
-  version: 5.7.0
-  resolution: "mongodb@npm:5.7.0"
+"mongodb@npm:^5.8.0":
+  version: 5.8.1
+  resolution: "mongodb@npm:5.8.1"
   dependencies:
+    "@mongodb-js/saslprep": ^1.1.0
     bson: ^5.4.0
     mongodb-connection-string-url: ^2.6.0
-    saslprep: ^1.0.3
     socks: ^2.7.1
   peerDependencies:
-    "@aws-sdk/credential-providers": ^3.201.0
-    "@mongodb-js/zstd": ^1.1.0
-    kerberos: ^2.0.1
+    "@aws-sdk/credential-providers": ^3.188.0
+    "@mongodb-js/zstd": ^1.0.0
+    kerberos: ^1.0.0 || ^2.0.0
     mongodb-client-encryption: ">=2.3.0 <3"
     snappy: ^7.2.2
   dependenciesMeta:
-    saslprep:
+    "@mongodb-js/saslprep":
       optional: true
   peerDependenciesMeta:
     "@aws-sdk/credential-providers":
@@ -18233,7 +18242,7 @@ __metadata:
       optional: true
     snappy:
       optional: true
-  checksum: 16357b6229abac165aecea15a6efa873ec8662a00411ecb9e49853f05a590be31aab63d404486125778eedaafe76d70e84eea682fa89b138decc247f4870d2ec
+  checksum: da8fc05952266f9b636000d74e6c8889306fc287922651526029a61ede3c75f793edb504a02c1f64fec9fea9aa17323bf95eb4902776778a1def5eba07b32b72
   languageName: node
   linkType: hard
 
@@ -21988,15 +21997,6 @@ __metadata:
     typescript: ^4.9.5
   languageName: unknown
   linkType: soft
-
-"saslprep@npm:^1.0.3":
-  version: 1.0.3
-  resolution: "saslprep@npm:1.0.3"
-  dependencies:
-    sparse-bitfield: ^3.0.3
-  checksum: 4fdc0b70fb5e523f977de405e12cca111f1f10dd68a0cfae0ca52c1a7919a94d1556598ba2d35f447655c3b32879846c77f9274c90806f6673248ae3cea6ee43
-  languageName: node
-  linkType: hard
 
 "sass-loader@npm:^10.1.1":
   version: 10.4.1
