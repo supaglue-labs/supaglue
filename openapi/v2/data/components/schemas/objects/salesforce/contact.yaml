@@ -70,3 +70,6 @@ properties:
     type: object
     description: The raw data returned by the provider.
     additionalProperties: true
+required:
+  - Id
+  - raw_data

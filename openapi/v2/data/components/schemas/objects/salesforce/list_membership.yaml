@@ -1,0 +1,28 @@
+type: object
+properties:
+  id:
+    type: string
+    description: The unique identifier for a member of this list.
+  raw_data:
+    type: object
+    additionalProperties: true
+    description: The raw data for this list membership.
+    example: 
+      columns:
+        - fieldNameOrPath: Id
+          value: 0012800000bbzSAAAY
+        - fieldNameOrPath: Email
+          value: jdoe@example.com
+        - fieldNameOrPath: FirstName
+          value: John
+        - fieldNameOrPath: LastName
+          value: Doe
+        - fieldNameOrPath: CreatedDate
+          value: Fri Aug 01 21:15:46 GMT 2014
+        - fieldNameOrPath: LastModifiedDate
+          value: Fri Aug 01 21:15:46 GMT 2014
+        - fieldNameOrPath: SystemModstamp
+          value: Fri Aug 01 21:15:46 GMT 2014
+required:
+  - id
+  - raw_data

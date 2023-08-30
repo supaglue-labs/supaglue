@@ -26,8 +26,12 @@ tags:
 paths:
   '/salesforce/contact':
     $ref: paths/salesforce/contacts.yaml
-  '/salesforce/account':
+  '/salesforce/accounts':
     $ref: paths/salesforce/accounts.yaml
+  '/salesforce/lists/{object_type}':
+    $ref: paths/salesforce/lists@{object_type}.yaml
+  '/salesforce/lists/{object_type}/{list_id}':
+    $ref: paths/salesforce/lists@{object_type}@{list_id}.yaml
 components:
   securitySchemes:
     x-api-key:
@@ -37,6 +41,10 @@ components:
       $ref: ./components/schemas/objects/salesforce/contact.yaml
     salesforce_account:
       $ref: ./components/schemas/objects/salesforce/account.yaml
+    salesforce_list_metadata:
+      $ref: ./components/schemas/objects/salesforce/list_metadata.yaml
+    salesforce_list_membership:
+      $ref: ./components/schemas/objects/salesforce/list_membership.yaml
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     errors:
