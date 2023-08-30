@@ -95,7 +95,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
 
   useEffect(() => {
     setFriendlyProviderId(provider?.id ?? '--');
-    if (provider?.category === 'crm' || provider?.name !== 'apollo') {
+    if (provider?.authType === 'oauth2') {
       setClientId(provider?.config?.oauth?.credentials?.oauthClientId ?? '');
 
       setClientSecret(provider?.config?.oauth?.credentials?.oauthClientSecret ?? '');
@@ -106,7 +106,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
       );
     }
 
-    setCommonObjects(provider?.category === 'no_category' ? [] : provider?.objects?.common ?? []);
+    setCommonObjects(
+      provider?.category === 'no_category' || provider?.category === 'enrichment' ? [] : provider?.objects?.common ?? []
+    );
     setStandardObjects(provider?.objects?.standard ?? []);
   }, [provider?.id]);
 
