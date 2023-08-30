@@ -35,7 +35,7 @@ A **SyncRun** is an execution of a Sync. Triggering a Sync creates a SyncRun and
 
 You can use the [SyncRuns Management API](../api/v2/mgmt/get-sync-runs) to get the latest SyncRun for a Sync. The response will include the SyncRun's status, the number of records synced, and other metadata about the SyncRun.
 
-Below we use a Nextjs [Server Component](https://nextjs.org/docs/getting-started/react-essentials#server-components) to fetch the latest SyncRun for a Sync and display the status and number of records synced for a [Common Object](../platform/common-schema/overview), `contact`.
+Below we use a Nextjs [Server Component](https://nextjs.org/docs/getting-started/react-essentials#server-components) to fetch the latest SyncRun for a Sync and display the status and number of records synced for an object, `contact`.
 
 :::info
 You will need a Supaglue API key to call the Management API. You can obtain one by following [these steps](../api/introduction#api-authentication).
@@ -112,7 +112,7 @@ export async function POST(request: Request) {
 }
 ```
 
-We will use [Client Component](https://nextjs.org/docs/getting-started/react-essentials#client-components) to handle the button's `onClick` and call the [Route Handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers). In this example, we are triggering a refresh on a [Common Object](../platform/common-schema/overview), `contact`.
+We will use [Client Component](https://nextjs.org/docs/getting-started/react-essentials#client-components) to handle the button's `onClick` and call the [Route Handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers). In this example, we are triggering a refresh on an object, `contact`.
 
 ```jsx
 'use client';

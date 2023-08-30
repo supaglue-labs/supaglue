@@ -1,5 +1,6 @@
 # TODO: rename endpoints and files from field mappings to schema mappings
 get:
+  deprecated: true
   operationId: listFieldMappings
   summary: List schema mappings
   tags:

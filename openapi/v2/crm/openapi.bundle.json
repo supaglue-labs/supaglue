@@ -8,7 +8,7 @@
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "#### Introduction\n\nWelcome to the Unified Actions API (CRM) documentation. You can use this API to write to third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Reading data\nTo read data from third-party providers, refer to the [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.\n\n#### Base API URL\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
+    "description": "#### Introduction\n\nWelcome to the Unified API documentation for CRM. You can use this API to write to multiple third-party providers within the CRM category.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Reading data\nTo read data from third-party providers, refer to the [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.\n\n#### Base API URL\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
   },
   "servers": [
     {
@@ -831,6 +831,7 @@
     },
     "/passthrough": {
       "post": {
+        "deprecated": true,
         "operationId": "sendPassthroughRequest",
         "tags": [
           "Passthrough"
@@ -988,23 +989,23 @@
   "tags": [
     {
       "name": "Accounts",
-      "description": "The `Account` Common Object is used to represent a \"company\" in CRMs."
+      "description": "The `Account` Common Object represents a \"company\" in CRMs."
     },
     {
       "name": "Contacts",
-      "description": "The `Contact` Common Object is used to represent a \"contact\" in CRMs."
+      "description": "The `Contact` Common Object represents a \"contact\" in CRMs."
     },
     {
       "name": "Leads",
-      "description": "The `Lead` Common Object is used to represent a \"potential customer\" in CRMs."
+      "description": "The `Lead` Common Object represents a \"potential customer\" in CRMs."
     },
     {
       "name": "Opportunities",
-      "description": "The `Opportunity` Common Object is used to represent a \"deal opportunity\" in CRMs."
+      "description": "The `Opportunity` Common Object represents a \"deal opportunity\" in CRMs."
     },
     {
       "name": "Users",
-      "description": "The `User` Common Object is used to represent a \"user\" that can login to CRMs."
+      "description": "The `User` Common Object represents a \"user\" that can log in to CRMs."
     },
     {
       "name": "Passthrough",

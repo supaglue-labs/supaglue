@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   version: 0.13.13
-  title: Supaglue Data API
+  title: Data API
   contact:
     name: Supaglue
     email: docs@supaglue.com
@@ -9,7 +9,7 @@ info:
   description: |
     #### Introduction
 
-    Welcome to the Data API documentation. You can use this API to list objects that have been synced to Supaglue's managed destination.
+    Welcome to the Data Listing API documentation. You can use this API to list objects to sync them from Supaglue to your database.
 
     [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
@@ -28,10 +28,10 @@ paths:
     $ref: paths/salesforce/contacts.yaml
   '/salesforce/accounts':
     $ref: paths/salesforce/accounts.yaml
-  '/salesforce/lists/{object_type}':
-    $ref: paths/salesforce/lists@{object_type}.yaml
-  '/salesforce/lists/{object_type}/{list_id}':
-    $ref: paths/salesforce/lists@{object_type}@{list_id}.yaml
+  '/salesforce/list_views/{object_type}':
+    $ref: paths/salesforce/list_views@{object_type}.yaml
+  '/salesforce/list_views/{object_type}/{list_id}':
+    $ref: paths/salesforce/list_views@{object_type}@{list_view_id}.yaml
 components:
   securitySchemes:
     x-api-key:
@@ -41,10 +41,10 @@ components:
       $ref: ./components/schemas/objects/salesforce/contact.yaml
     salesforce_account:
       $ref: ./components/schemas/objects/salesforce/account.yaml
-    salesforce_list_metadata:
-      $ref: ./components/schemas/objects/salesforce/list_metadata.yaml
-    salesforce_list_membership:
-      $ref: ./components/schemas/objects/salesforce/list_membership.yaml
+    salesforce_list_view_metadata:
+      $ref: ./components/schemas/objects/salesforce/list_view_metadata.yaml
+    salesforce_list_view_membership:
+      $ref: ./components/schemas/objects/salesforce/list_view_membership.yaml
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     errors:

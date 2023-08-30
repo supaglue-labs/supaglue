@@ -1,6 +1,6 @@
 get:
-  operationId: getListMembership
-  summary: Get list membership
+  operationId: listListViewss
+  summary: List list views
   tags:
     - Salesforce
   security:
@@ -10,7 +10,7 @@ get:
     - $ref: ../../../../common/components/parameters/query/cursor.yaml
   responses:
     200:
-      description: Lists
+      description: List Views
       content:
         application/json:
           schema:
@@ -18,12 +18,10 @@ get:
             properties:
               pagination:
                 $ref: ../../../../common/components/schemas/pagination.yaml
-              members:
+              records:
                 type: array
                 items:
-                  $ref: ../../components/schemas/objects/salesforce/list_membership.yaml
-              metadata:
-                $ref: ../../components/schemas/objects/salesforce/list_metadata.yaml
+                  $ref: ../../components/schemas/objects/salesforce/list_view_metadata.yaml
             required:
               - pagination
               - records
@@ -35,9 +33,3 @@ parameters:
     schema:
       type: string
       enum: [contact, account, lead, opportunity]
-  - name: list_id
-    in: path
-    required: true
-    schema:
-      type: string
-      example: 220e715a-0cbc-4d2d-8420-cd729f12f094
