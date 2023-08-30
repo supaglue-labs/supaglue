@@ -24,6 +24,7 @@ There are two core access patterns when using Supaglue:
 1. **Reads:**
    - [**Managed syncs**](../integration-patterns/managed-syncs) - Supaglue will land raw data in a database. You can choose between your database or a Supaglue-hosted database as a Destination.
    - [**Data Listing API**](../api/v2/data/data-api) - Paginate through raw third-party data and transform it to your database schema.
+   - **Unified API** - Read from multiple third-party providers with a single API for [`crm`](../api/v2/crm/unified-crm-api, [`engagement`](../api/v2/engagement/unified-engagement-api), or [`enrichment`](../api/v2/enrichment/unified-enrichment-api).
 2. **Writes:**
    - **Unified API** - Write to multiple third-party providers with a single API for [`crm`](../api/v2/crm/unified-crm-api) and [`engagement`](../api/v2/engagement/unified-engagement-api).
    - [**Actions API**](../api/v2/actions/actions-api) - Write to provider-scoped APIs that range from CRUD to complex actions.

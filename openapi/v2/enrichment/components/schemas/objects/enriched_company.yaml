@@ -1,0 +1,23 @@
+type: object
+properties:
+  name:
+    type: string
+    nullable: true
+  industry:
+    type: string
+    nullable: true
+  annual_revenue:
+    type: number
+    nullable: true
+  domain:
+    type: string
+    nullable: true
+  employee_count:
+    type: string
+    nullable: true
+required:
+  - name
+  - industry
+  - annual_revenue
+  - domain
+  - employee_count

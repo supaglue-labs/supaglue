@@ -305,6 +305,13 @@ const sidebars = {
       // @ts-ignore
       items: require('./docs/api/v2/engagement/sidebar.js'),
     },
+    {
+      type: 'category',
+      label: 'Enrichment API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/enrichment/sidebar.js'),
+    },
 
     // section
     {
