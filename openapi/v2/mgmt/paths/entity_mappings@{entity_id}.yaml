@@ -1,4 +1,5 @@
 put:
+  deprecated: true
   operationId: upsertEntityMapping
   summary: Upsert entity mapping
   tags:

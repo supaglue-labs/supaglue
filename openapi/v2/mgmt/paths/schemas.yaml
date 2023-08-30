@@ -1,4 +1,5 @@
 get:
+  deprecated: true
   operationId: getSchemas
   tags:
     - Schemas

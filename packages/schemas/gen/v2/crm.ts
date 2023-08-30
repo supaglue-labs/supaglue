@@ -126,6 +126,7 @@ export interface paths {
   "/passthrough": {
     /**
      * Send passthrough request 
+     * @deprecated 
      * @description Send request directly to a provider
      */
     post: operations["sendPassthroughRequest"];
@@ -965,6 +966,7 @@ export interface operations {
   };
   /**
    * Send passthrough request 
+   * @deprecated 
    * @description Send request directly to a provider
    */
   sendPassthroughRequest: {

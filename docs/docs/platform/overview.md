@@ -21,20 +21,25 @@ Underlying everything is **[Managed Authentication](./managed-auth)**. We let yo
 
 There are two core access patterns when using Supaglue:
 
-1. **Managed syncs (reads)**: Syncing data from providers to a database Destination in your cloud. Managed Syncs allows you to query third-party Provider data in your infrastructure.
-2. **Passthrough API (writes)**: Write real-time data synchronously to Providers using underlying native APIs.
+1. **Reads:**
+   - [**Managed syncs**](../integration-patterns/managed-syncs) - Supaglue will land raw data in a database. You can choose between your database or a Supaglue-hosted database as a Destination.
+   - [**Data Listing API**](../api/v2/data/data-api) - Paginate through raw third-party data and transform it to your database schema.
+2. **Writes:**
+   - **Unified API** - Write to multiple third-party providers with a single API for [`crm`](../api/v2/crm/unified-crm-api) and [`engagement`](../api/v2/engagement/unified-engagement-api).
+   - [**Actions API**](../api/v2/actions/actions-api) - Write to provider-scoped APIs that range from CRUD to complex actions.
+   - [**Passthrough API**](../platform/passthrough) - Use the underlying Provider's native API to write data back to their systems.
+3. **Triggers/CDC:** [**Realtime events**](../integration-patterns/real-time-events) - Receive real-time notifications when data changes in your customers' third-party Providers to trigger actions in your application or use it to build a real-time mirror of your third-party Providers' data.
 
-### Transformations
+## Notification webhooks
 
-Both access patterns operate on objects.
+Supaglue [notification webhooks](./notification-webhooks) are HTTP requests that Supaglue sends to your API endpoint to notify you of important events like syncs completing, errors occurring, and more.
 
-## Metadata APIs
+Your integration can listen for these webhooks to do the following:
 
-Metadata APIs get used regardless of whether it's for syncing, writing, or how you data model objects. Examples of this include:
-
-- Properties API: Get all objects and fields available for a Provider.
-- Custom Objects API: Define and create custom objects for a Provider.
-- Get the schema definition for a Provider object.
+- Alert on sync errors
+- Transform synced data for your application
+- Cleanup old data after a customer deletes their account or disconnects their integration
+- Backfill data after a customer changes configuration settings
 
 ## Passthrough APIs
 

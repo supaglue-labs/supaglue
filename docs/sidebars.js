@@ -70,7 +70,7 @@ const sidebars = {
     },
     {
       id: 'integration-patterns/managed-syncs',
-      label: 'Managed syncs (reads)',
+      label: 'Syncing data',
       type: 'doc',
     },
     {
@@ -126,11 +126,6 @@ const sidebars = {
       type: 'doc',
     },
     {
-      id: 'tutorials/listen-for-webhooks',
-      label: 'Listen for webhooks',
-      type: 'doc',
-    },
-    {
       id: 'tutorials/read-write-contacts',
       label: 'Read/write contacts',
       type: 'doc',
@@ -180,6 +175,11 @@ const sidebars = {
           label: 'Object and field mapping',
         },
       ],
+    },
+    {
+      id: 'tutorials/listen-for-webhooks',
+      label: 'Listen for webhooks',
+      type: 'doc',
     },
 
     // section
@@ -285,14 +285,25 @@ const sidebars = {
     // section
     {
       type: 'html',
-      value: sidebarHeader('Metadata API'),
+      value: sidebarHeader('Unified API'),
     },
     {
       type: 'category',
-      label: 'Metadata API',
+      label: 'CRM API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: require('./docs/api/v2/metadata/sidebar.js'),
+      items: [
+        ...require('./docs/api/v2/crm/sidebar.js'),
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        ...require('./docs/api/v2/metadata/sidebar.js'),
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Engagement API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/engagement/sidebar.js'),
     },
 
     // section
@@ -303,89 +314,10 @@ const sidebars = {
     { type: 'doc', id: 'api/v2/actions/actions-api' },
     {
       type: 'category',
-      label: 'Entity Records',
-      link: { type: 'doc', id: 'api/v2/actions/entity-records' },
-      collapsed: true,
-      items: [
-        {
-          type: 'doc',
-          id: 'api/v2/actions/create-entity-record',
-          label: 'Create Entity record',
-          className: 'api-method post',
-        },
-        {
-          type: 'doc',
-          id: 'api/v2/actions/get-entity-record',
-          label: 'Get Entity Record',
-          className: 'api-method get',
-        },
-        {
-          type: 'doc',
-          id: 'api/v2/actions/update-entity-record',
-          label: 'Update entity record',
-          className: 'api-method patch',
-        },
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Object Records',
-      link: { type: 'doc', id: 'api/v2/actions/object-records' },
-      collapsed: true,
-      items: [
-        {
-          type: 'doc',
-          id: 'api/v2/actions/create-standard-object-record',
-          label: 'Create Standard Object record',
-          className: 'api-method post',
-        },
-        {
-          type: 'doc',
-          id: 'api/v2/actions/get-standard-object-record',
-          label: 'Get Standard Object record',
-          className: 'api-method get',
-        },
-        {
-          type: 'doc',
-          id: 'api/v2/actions/update-standard-object-record',
-          label: 'Update Standard Object record',
-          className: 'api-method patch',
-        },
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Common Schema Records',
-      items: [
-        {
-          type: 'category',
-          label: 'CRM API',
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          items: require('./docs/api/v2/crm/sidebar.js'),
-        },
-        {
-          type: 'category',
-          label: 'Engagement API',
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          items: require('./docs/api/v2/engagement/sidebar.js'),
-        },
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Associations',
-      collapsed: true,
-      items: [
-        { type: 'doc', id: 'api/v2/actions/get-associations', label: 'List associations', className: 'api-method get' },
-        {
-          type: 'doc',
-          id: 'api/v2/actions/create-association',
-          label: 'Create association',
-          className: 'api-method put',
-        },
-      ],
+      label: 'Data listing',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/data/sidebar.js'),
     },
 
     // section
@@ -413,18 +345,6 @@ const sidebars = {
       id: 'api/v2/actions/send-passthrough-request',
       label: 'Send passthrough request',
       className: 'api-method post',
-    },
-
-    {
-      type: 'html',
-      value: sidebarHeader('Data API'),
-    },
-    {
-      type: 'category',
-      label: 'Data API',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      items: require('./docs/api/v2/data/sidebar.js'),
     },
   ],
 };

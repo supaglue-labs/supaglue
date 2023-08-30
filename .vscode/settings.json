@@ -70,6 +70,21 @@
     {
       "language": "mdx",
       "scheme": "file"
+    },
+    {
+      "language": "yaml",
+      "scheme": "file",
+      "pattern": "openapi/v2/actions/openapi.yaml"
+    },
+    {
+      "language": "yaml",
+      "scheme": "file",
+      "pattern": "openapi/v2/crm/openapi.yaml"
+    },
+    {
+      "language": "yaml",
+      "scheme": "file",
+      "pattern": "openapi/v2/engagement/openapi.yaml"
     }
   ],
   "editor.inlayHints.enabled": "on"
