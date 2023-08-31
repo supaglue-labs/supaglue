@@ -307,15 +307,11 @@ const sidebars = {
       // @ts-ignore
       items: [
         ...require('./docs/api/v2/crm/sidebar.js'),
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        ...require('./docs/api/v2/metadata/sidebar.js').map((item) => {
-          // we're merging two openapi specs for expediency. hide the second intro.
-          if (['api/v2/metadata/metadata-api'].includes(item.id)) {
-            item.className += ' hidden';
-          }
-
-          return item;
-        }),
+        {
+          type: 'html',
+          value: sidebarHeader('Metadata API'),
+        },
+        ...require('./docs/api/v2/metadata/sidebar.js'),
       ],
     },
     {

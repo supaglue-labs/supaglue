@@ -229,9 +229,9 @@ The schema of the data that Supaglue creates in your Destination contains three 
 
 1. **Supaglue metadata fields**: These specify the application, customer, provider, and timestamps associated with the managed sync.
 1. **Raw data**: The raw third-party Provider data. We pass these through as-is.
-1. **Normalized data**: The raw data is normalized (hoisted to top-level fields/columns).
+1. (**Normalized data**: The raw data is normalized: we hoist top-level raw data fields into table columns.)\*
 
-Tables are named `${Provider}_${Object name}`, e.g. `salesforce_Account`.
+[*]: This is an optional feature.
 
 Example:
 
@@ -251,14 +251,16 @@ Indexes:
     "gong_call_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id)
 ```
 
+Read more about [Objects](../platform/objects/overview) which will cover object names, table names, and table schemas.
+
 ### Sync strategies
 
 Supaglue implements two sync strategies:
 
 - `full only`: Every sync fetches all records from the Provider.
-- `full then incremental`: The initial sync performs a full sync, then incremental after that using a persistent high watermark.
+- `full then incremental`: The initial sync performs a full sync, then incremental after using a persistent high watermark.
 
-`full then incremental` is used where we can, but for specific objects and Providers, we may only be able to offer `full only` sync strategies. We list these out in the [Providers](/category/providers) documentation.
+`full then incremental` is used where we can, but for specific objects and Providers, we may only be able to offer `full only` sync strategies. We list these in the [Providers](/category/providers) documentation.
 
 :::note
 S3 is the only Destination that does not support the `full then incremental` sync strategy.
@@ -266,14 +268,14 @@ S3 is the only Destination that does not support the `full then incremental` syn
 
 ### Sync behavior
 
-Supaglue executes syncs on a per Object basis. For example, Supaglue will create ten syncs if you are syncing ten Standard Objects. Supaglue schedules them to run simultaneously at the frequency you set. Each sync run is independent, i.e., a failure in one sync will not affect the others.
+Supaglue executes syncs on a per-[Object](../platform/objects/overview) basis. For example, Supaglue will create ten syncs if you sync ten Standard Objects. Supaglue schedules them to run simultaneously at the frequency you set. Each sync run is independent, i.e., a failure in one sync will not affect the others.
 
 ## Destination options
 
-You can decide where the database that Supaglue syncs to is hosted:
+You can decide where to host the database that Supaglue syncs to:
 
 1. **Self-host your database**: Supaglue writes raw data directly into your database.
-1. **Use a Supaglue-hosted database + API**: Supaglue writes to a Supaglue-hosted database and provides an API for you to paginate, transform, and write data into your database schema.
+1. **Use a Supaglue-hosted database + [API](../api/v2/data/data-listing-api)**: Supaglue writes to a Supaglue-hosted database and provides an API to paginate, transform, and write data into your database schema.
 
 ### Option 1: Your database
 
@@ -288,9 +290,9 @@ Supaglue writes raw data directly into your database.
   }}
 />
 
-### Option 2: Supaglue-hosted database + Data Listing API
+### Option 2: Supaglue-hosted database + [Data Listing API](../api/v2/data/data-listing-api)
 
-Supaglue writes raw data into a Supaglue-hosted database and provides a convenient API to paginate over records. This is useful if you don't have an existing transformation pipeline.
+Supaglue writes raw data into a Supaglue-hosted database and provides a [convenient API](../api/v2/data/data-listing-api) to paginate over records, which is helpful if you don't have an existing transformation pipeline.
 
 <ThemedImage
   alt="data listing api"
@@ -301,7 +303,7 @@ Supaglue writes raw data into a Supaglue-hosted database and provides a convenie
   }}
 />
 
-### Your database vs Supaglue-hosted database + Data Listing API
+### Your database vs Supaglue-hosted database + [Data Listing API](../api/v2/data/data-listing-api)
 
 There are several differences between the two methods of hosting Destinations:
 
