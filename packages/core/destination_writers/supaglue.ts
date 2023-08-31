@@ -37,20 +37,14 @@ function sanitizeForPostgres(tableName: string): string {
   return sanitized;
 }
 
-async function createPartitionIfNotExists(client: PoolClient, tableName: string, customerId: string) {
-  const partitionName = `${tableName}_${sanitizeForPostgres(customerId)}`;
+async function createPartitionIfNotExists(client: PoolClient, schema: string, table: string, customerId: string) {
+  const partitionName = `${table}_${sanitizeForPostgres(customerId)}`;
 
-  // Check if the partition already exists
-  const checkQuery = `SELECT to_regclass('${partitionName}')`;
-  const checkResult = await client.query(checkQuery);
-
-  if (checkResult.rows[0].to_regclass === null) {
-    // If partition doesn't exist, create it
-    const createPartitionQuery = `CREATE TABLE ${partitionName} PARTITION OF ${tableName} FOR VALUES IN ('${customerId}')`;
-    const createIndexQuery = `CREATE INDEX ${partitionName}_id_index ON ${partitionName} (_supaglue_last_modified_at);`;
-    await client.query(createPartitionQuery);
-    await client.query(createIndexQuery);
-  }
+  // If partition doesn't exist, create it
+  const createPartitionQuery = `CREATE TABLE IF NOT EXISTS ${schema}.${partitionName} PARTITION OF ${schema}.${table} FOR VALUES IN ('${customerId}')`;
+  const createIndexQuery = `CREATE INDEX IF NOT EXISTS ${partitionName}_id_index ON ${schema}.${partitionName} (_supaglue_last_modified_at);`;
+  await client.query(createPartitionQuery);
+  await client.query(createIndexQuery);
 }
 
 export class SupaglueDestinationWriter extends BaseDestinationWriter {
@@ -140,7 +134,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
       // TODO: We should only need to do this once at the beginning
       await client.query(getSchemaSetupSql(schema));
       await client.query(getTableSetupSql(table, schema));
-      await createPartitionIfNotExists(client, qualifiedTable, customerId);
+      await createPartitionIfNotExists(client, schema, table, customerId);
 
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
