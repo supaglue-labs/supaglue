@@ -14,7 +14,7 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 
 ## Introduction
 
-**Standard Objects** and **Custom Objects** (known as **Objects**) have a 1-1 relationship between your application object and your Provider object. For example, a `Contact` in Salesforce is a `salesforce_Contact` in your application, and a Hubspot `company` is a `hubspot_company` in your application.
+**Standard Objects** and **Custom Objects** (known as **Objects**) have a 1-1 relationship between your application and Provider objects. For example, a `Contact` in Salesforce is a `salesforce_Contact` in your application, and a Hubspot `company` is a `hubspot_company` in your application.
 
 You can use Objects as part of [Managed Syncs](../../integration-patterns/managed-syncs).
 
@@ -22,11 +22,7 @@ You can use Objects as part of [Managed Syncs](../../integration-patterns/manage
 
 Supaglue Standard Objects are pre-defined objects in third-party providers, e.g. `Contacts`, `Accounts`, and `Leads` are pre-defined objects in Salesforce and are Standard Objects in Supaglue.
 
-### Syncing
-
-Sync Standard Objects to your Destination using Managed Syncs.
-
-#### Configuration
+### Configuration
 
 Use the **Syncs --> Sync Configs** page in the Management Portal to specify the Standard Objects you wish to sync to your Destination.
 
@@ -38,9 +34,11 @@ Use the **Syncs --> Sync Configs** page in the Management Portal to specify the 
 
 The screenshot above shows a Sync Config that specifies `OpportunityLineItem`, `Contract`, and `Quote` Standard Objects. Supaglue will sync these Standard Objects.
 
+### Object names
+
 Since Standard Objects vary by Provider, you need to select the Standard Objects separately for each Provider. The casing of the Standard Objects is also provider-specific, e.g. Standard Objects for Salesforce are "PascalCase".
 
-#### Destination data schema
+### Table schema
 
 Supaglue will land the data in your Destination with the following schema:
 
@@ -60,17 +58,17 @@ Indexes:
     "salesforce_Contract_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 ```
 
+### Table names
+
+Tables are case-sensitive and named `${Provider}_${Object name}`, e.g. `salesforce_Account`.
+
 ## Custom object
 
 Custom Objects are objects that are not pre-defined by third-party Providers. You or your customers may create them.
 
 For example, `ContactDailyMetric` and `ContactMonthlyMetric` are the only contact metric Standard Objects in Salesforce, but your customer may have defined a third Custom Object, `ContactBiannualMetric`.
 
-### Syncing
-
-Sync Custom Objects to your Destination using Managed Syncs.
-
-#### Configuration
+### Configuration
 
 Use the **Syncs --> Sync Configs** page in the Management Portal to specify the Custom Objects you wish to sync to your Destination.
 
@@ -82,9 +80,11 @@ Use the **Syncs --> Sync Configs** page in the Management Portal to specify the 
 
 The screenshot above shows a Sync Config that specifies `ContactBiannualMetric` and `BattleCard` Custom Objects. Supaglue will sync these Custom Objects.
 
+### Object names
+
 The casing of Custom Objects is provider-specific.
 
-#### Destination data schema
+### Table schema
 
 Supaglue will land the data in your Destination with the following schema:
 
@@ -103,3 +103,11 @@ postgres=> \d "salesforce_BattleCard"
 Indexes:
     "salesforce_BattleCard_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 ```
+
+### Table names
+
+Tables are case-sensitive and named `${Provider}_${slugify(Object name)}`, e.g. `salesforce_BattleCard__c` becomes `salesforce_BattleCardC`.
+
+:::info
+We use [slugify](https://github.com/simov/slugify) to normalize names for Supaglue Destinations such as Postgres.
+:::
