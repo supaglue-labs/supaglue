@@ -1,5 +1,6 @@
 import type { GetSyncConfigResponse } from '@supaglue/schemas/v2/mgmt';
-import type { CommonObjectConfig, SyncConfig } from '@supaglue/types';
+import type { SyncConfig } from '@supaglue/types';
+import type { CommonObjectConfig } from '@supaglue/types/sync_object_config';
 import { camelcaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';
 

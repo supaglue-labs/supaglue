@@ -1,5 +1,6 @@
 import type { CategoryOfProviderName, ProviderName, SchemaMappingsConfig } from '.';
 import type { ConnectionEntityMapping } from './entity_mapping';
+import type { CustomObjectConfig, StandardObjectConfig } from './sync_object_config';
 
 export type ApiKeyConnectionCredentialsDecrypted = {
   type: 'api_key';
@@ -81,6 +82,11 @@ export type ConnectionCredentialsDecrypted<T extends ProviderName> = {
 
 export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;
 
+export type ConnectionSyncConfig = {
+  standardObjects?: StandardObjectConfig[];
+  customObjects?: CustomObjectConfig[];
+};
+
 export type ConnectionCreateParams<T extends ProviderName> = {
   applicationId: string;
   customerId: string; // external customer id
@@ -90,6 +96,7 @@ export type ConnectionCreateParams<T extends ProviderName> = {
   credentials: ConnectionCredentialsDecrypted<T>;
   schemaMappingsConfig?: SchemaMappingsConfig;
   entityMappings?: ConnectionEntityMapping[];
+  connectionSyncConfig?: ConnectionSyncConfig;
   instanceUrl: string;
 };
 
@@ -98,10 +105,6 @@ export type ConnectionCreateParamsAny = ConnectionCreateParams<ProviderName>;
 export type ConnectionUpsertParams<T extends ProviderName> = ConnectionCreateParams<T>;
 
 export type ConnectionUpsertParamsAny = ConnectionUpsertParams<ProviderName>;
-
-export type ConnectionUpdateParams = {
-  schemaMappingsConfig?: SchemaMappingsConfig | null;
-};
 
 export type ConnectionSafe<T extends ProviderName> = Omit<ConnectionCreateParams<T>, 'credentials'> & {
   id: string;
