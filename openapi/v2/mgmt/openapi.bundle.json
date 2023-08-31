@@ -3979,7 +3979,8 @@
                 "type": "string",
                 "enum": [
                   "common",
-                  "standard"
+                  "standard",
+                  "custom"
                 ]
               },
               "object": {

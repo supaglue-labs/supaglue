@@ -1090,7 +1090,7 @@ export interface components {
     }]>;
     sync_run: OneOf<[{
       /** @enum {string} */
-      object_type: "common" | "standard";
+      object_type: "common" | "standard" | "custom";
       object: string;
       error_message: string | null;
       /** @example 2023-02-22T19:55:17.559Z */
