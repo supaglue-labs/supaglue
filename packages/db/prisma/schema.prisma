@@ -132,6 +132,7 @@ model Connection {
   providerId           String     @map("provider_id")
   schemaMappingsConfig Json?      @map("schema_mappings_config")
   entityMappings       Json?      @map("entity_mappings")
+  connectionSyncConfig Json?      @map("connection_sync_config")
   syncs                Sync[]
 
   @@unique([customerId, providerId])
