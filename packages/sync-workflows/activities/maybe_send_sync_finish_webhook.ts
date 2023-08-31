@@ -12,7 +12,7 @@ export type MaybeSendSyncFinishWebhookArgs = {
 } & (
   | {
       type: 'object';
-      objectType: 'common' | 'standard';
+      objectType: 'common' | 'standard' | 'custom';
       object: string;
     }
   | {

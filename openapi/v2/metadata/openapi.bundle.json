@@ -8,7 +8,7 @@
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "#### Introduction\n\nWelcome to the Metadata API documentation. You can use this API to operate on Object metadata in third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/metadata/v2\n```\n"
+    "description": "#### Introduction\n\nWelcome to the Metadata API documentation for CRM. You can use this API to operate on metadata across multiple third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/metadata/v2\n```\n"
   },
   "servers": [
     {
