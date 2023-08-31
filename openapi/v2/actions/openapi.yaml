@@ -24,6 +24,10 @@ servers:
   - url: 'https://api.supaglue.io/actions/v2'
     description: Supaglue API
 paths:
+  '/salesforce/list_views/{object_type}':
+    $ref: paths/salesforce/list_views@{object_type}.yaml
+  '/salesforce/list_views/{object_type}/{list_id}':
+    $ref: paths/salesforce/list_views@{object_type}@{list_view_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
 tags:
@@ -34,6 +38,12 @@ components:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
+    salesforce_list_view_metadata:
+      $ref: ./components/schemas/objects/salesforce/list_view_metadata.yaml
+    salesforce_list_view_membership:
+      $ref: ./components/schemas/objects/salesforce/list_view_membership.yaml
+    pagination:
+      $ref: ../../common/components/schemas/pagination.yaml
     errors:
       $ref: ../../common/components/schemas/errors.yaml
     warnings:
