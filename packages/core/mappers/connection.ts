@@ -2,6 +2,7 @@ import type { Connection as ConnectionModel } from '@supaglue/db';
 import type {
   CategoryOfProviderName,
   ConnectionSafeAny,
+  ConnectionSyncConfig,
   ConnectionUnsafe,
   ProviderName,
   SchemaMappingsConfig,
@@ -19,6 +20,7 @@ export async function fromConnectionModelToConnectionUnsafe<T extends ProviderNa
   credentials,
   schemaMappingsConfig,
   entityMappings,
+  connectionSyncConfig,
   instanceUrl,
 }: ConnectionModel): Promise<ConnectionUnsafe<T>> {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
@@ -32,6 +34,7 @@ export async function fromConnectionModelToConnectionUnsafe<T extends ProviderNa
     credentials: JSON.parse(await decrypt(credentials)),
     schemaMappingsConfig: schemaMappingsConfig as SchemaMappingsConfig | undefined,
     entityMappings: entityMappings as ConnectionEntityMapping[] | undefined,
+    connectionSyncConfig: connectionSyncConfig as ConnectionSyncConfig | undefined,
     instanceUrl,
   };
 }
@@ -44,6 +47,7 @@ export function fromConnectionModelToConnectionSafe({
   providerName,
   schemaMappingsConfig,
   entityMappings,
+  connectionSyncConfig,
   instanceUrl,
 }: ConnectionModel): ConnectionSafeAny {
   const { applicationId, externalCustomerId } = parseCustomerIdPk(customerId);
@@ -56,6 +60,7 @@ export function fromConnectionModelToConnectionSafe({
     providerName: providerName as ProviderName,
     schemaMappingsConfig: schemaMappingsConfig as SchemaMappingsConfig | undefined,
     entityMappings: entityMappings as ConnectionEntityMapping[] | undefined,
+    connectionSyncConfig: connectionSyncConfig as ConnectionSyncConfig | undefined,
     instanceUrl,
   };
 }

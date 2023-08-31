@@ -2,6 +2,7 @@ import { type PrismaClient } from '@supaglue/db';
 import type {
   ConnectionCredentialsDecryptedAny,
   ConnectionSafeAny,
+  ConnectionSyncConfig,
   ConnectionUnsafe,
   ConnectionUnsafeAny,
   FieldMappingInfo,
@@ -421,6 +422,27 @@ export class ConnectionService {
     const connectionEntityMappings = connection.entityMappings ?? [];
 
     return mergeEntityMappingsList(entities, providerEntityMappings, connectionEntityMappings);
+  }
+
+  public async upsertConnectionSyncConfig(
+    connectionId: string,
+    config: ConnectionSyncConfig
+  ): Promise<ConnectionSyncConfig> {
+    const params = {
+      standardObjects: config.standardObjects,
+      customObjects: config.customObjects,
+    };
+
+    await this.#prisma.connection.update({
+      where: {
+        id: connectionId,
+      },
+      data: {
+        connectionSyncConfig: params,
+      },
+    });
+
+    return params;
   }
 
   public async upsertEntityMapping(

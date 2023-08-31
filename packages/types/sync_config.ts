@@ -1,5 +1,5 @@
-import type { CommonObjectType } from '.';
 import type { SyncStrategyType } from './sync';
+import type { CommonObjectConfig, StandardObjectConfig } from './sync_object_config';
 
 export type SyncConfig = {
   id: string;
@@ -27,12 +27,4 @@ export type SyncStrategyConfig = {
   strategy: SyncStrategyType;
   // default: true
   autoStartOnConnection?: boolean;
-};
-
-export type CommonObjectConfig = {
-  object: CommonObjectType;
-};
-
-export type StandardObjectConfig = {
-  object: string;
 };

@@ -321,45 +321,6 @@
         }
       ]
     },
-    "/field_mappings": {
-      "get": {
-        "deprecated": true,
-        "operationId": "listFieldMappings",
-        "summary": "List schema mappings",
-        "tags": [
-          "SchemaMappings"
-        ],
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "List of objects and their field mappings (if set)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/object_field_mappings"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
     "/magic_links": {
       "get": {
         "operationId": "getMagicLinks",
@@ -452,6 +413,45 @@
             "type": "string",
             "example": "6bf954f9-dba3-4c34-9275-3830dccb0030"
           }
+        }
+      ]
+    },
+    "/field_mappings": {
+      "get": {
+        "deprecated": true,
+        "operationId": "listFieldMappings",
+        "summary": "List schema mappings",
+        "tags": [
+          "SchemaMappings"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of objects and their field mappings (if set)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/object_field_mappings"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -1223,6 +1223,86 @@
             "type": "string",
             "example": "d583ec72-55d4-4f35-9668-f6c759674cc1"
           }
+        }
+      ]
+    },
+    "/connection_sync_configs": {
+      "get": {
+        "operationId": "getConnectionSyncConfig",
+        "summary": "Get connection sync config",
+        "tags": [
+          "ConnectionSyncConfigs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Connection Sync Config",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection_sync_config"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/connection_sync_configs/_upsert": {
+      "put": {
+        "operationId": "upsertConnectionSyncConfig",
+        "summary": "Upsert connection sync config",
+        "tags": [
+          "SchemaMappings"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/upsert_connection_sync_config"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection Sync Config",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection_sync_config"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -2163,6 +2243,10 @@
     {
       "name": "Syncs",
       "description": "A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule."
+    },
+    {
+      "name": "ConnectionSyncConfigs",
+      "description": "A `ConnectionSyncConfig` is a configuration for how to sync a specific Customer's data from a Provider to a Destination on a schedule."
     },
     {
       "name": "SyncRuns",
@@ -3394,23 +3478,6 @@
                   "type": "string",
                   "description": "The Provider object name (case sensitive)",
                   "example": "Contact"
-                }
-              },
-              "required": [
-                "object"
-              ]
-            }
-          },
-          "custom_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "object": {
-                  "type": "string",
-                  "description": "The Supaglue object name (case sensitive)",
-                  "example": "Contact__c"
                 }
               },
               "required": [
@@ -4667,6 +4734,45 @@
           }
         ]
       },
+      "upsert_connection_sync_config": {
+        "type": "object",
+        "properties": {
+          "standard_objects": {
+            "description": "A list of case-sensitive Provider objects to be synced.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "description": "The Provider object name (case sensitive)",
+                  "example": "Contact"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          },
+          "custom_objects": {
+            "description": "A list of case-sensitive Provider objects to be synced.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "description": "The Supaglue object name (case sensitive)",
+                  "example": "Contact__c"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          }
+        }
+      },
       "standard_object": {
         "type": "object",
         "properties": {
@@ -4835,6 +4941,45 @@
           "entity_field",
           "mapped_field"
         ]
+      },
+      "connection_sync_config": {
+        "type": "object",
+        "properties": {
+          "standard_objects": {
+            "description": "A list of case-sensitive Provider objects to be synced.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "description": "The Provider object name (case sensitive)",
+                  "example": "Contact"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          },
+          "custom_objects": {
+            "description": "A list of case-sensitive Provider objects to be synced.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "description": "The Supaglue object name (case sensitive)",
+                  "example": "Contact__c"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          }
+        }
       }
     },
     "parameters": {

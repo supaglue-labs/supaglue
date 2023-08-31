@@ -1,0 +1,18 @@
+get:
+  operationId: getConnectionSyncConfig
+  summary: Get connection sync config
+  tags:
+    - ConnectionSyncConfigs
+  security:
+    - x-api-key: []
+  parameters: []
+  responses:
+    '200':
+      description: Connection Sync Config
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/connection_sync_config.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

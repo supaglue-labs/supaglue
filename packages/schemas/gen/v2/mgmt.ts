@@ -50,19 +50,6 @@ export interface paths {
       };
     };
   };
-  "/field_mappings": {
-    /**
-     * List schema mappings 
-     * @deprecated
-     */
-    get: operations["listFieldMappings"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-  };
   "/magic_links": {
     /**
      * List magic links 
@@ -78,6 +65,19 @@ export interface paths {
     parameters: {
       path: {
         magic_link_id: string;
+      };
+    };
+  };
+  "/field_mappings": {
+    /**
+     * List schema mappings 
+     * @deprecated
+     */
+    get: operations["listFieldMappings"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -220,6 +220,26 @@ export interface paths {
     parameters: {
       path: {
         sync_config_id: string;
+      };
+    };
+  };
+  "/connection_sync_configs": {
+    /** Get connection sync config */
+    get: operations["getConnectionSyncConfig"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/connection_sync_configs/_upsert": {
+    /** Upsert connection sync config */
+    put: operations["upsertConnectionSyncConfig"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -886,14 +906,6 @@ export interface components {
            */
           object: string;
         })[];
-      /** @description A list of case-sensitive Provider objects to be synced. */
-      custom_objects?: ({
-          /**
-           * @description The Supaglue object name (case sensitive) 
-           * @example Contact__c
-           */
-          object: string;
-        })[];
       entities?: ({
           /** @example 3a82409f-c98f-4d25-bbd8-3335de3f12cc */
           entity_id: string;
@@ -1337,6 +1349,24 @@ export interface components {
         provider_name: "hubspot" | "salesforce";
       };
     }]>;
+    upsert_connection_sync_config: {
+      /** @description A list of case-sensitive Provider objects to be synced. */
+      standard_objects?: ({
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact
+           */
+          object: string;
+        })[];
+      /** @description A list of case-sensitive Provider objects to be synced. */
+      custom_objects?: ({
+          /**
+           * @description The Supaglue object name (case sensitive) 
+           * @example Contact__c
+           */
+          object: string;
+        })[];
+    };
     standard_object: {
       /**
        * @example standard 
@@ -1389,6 +1419,24 @@ export interface components {
        * @example FirstName
        */
       mapped_field: string;
+    };
+    connection_sync_config: {
+      /** @description A list of case-sensitive Provider objects to be synced. */
+      standard_objects?: ({
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact
+           */
+          object: string;
+        })[];
+      /** @description A list of case-sensitive Provider objects to be synced. */
+      custom_objects?: ({
+          /**
+           * @description The Supaglue object name (case sensitive) 
+           * @example Contact__c
+           */
+          object: string;
+        })[];
     };
   };
   responses: never;
@@ -1545,26 +1593,6 @@ export interface operations {
     };
   };
   /**
-   * List schema mappings 
-   * @deprecated
-   */
-  listFieldMappings: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    responses: {
-      /** @description List of objects and their field mappings (if set) */
-      200: {
-        content: {
-          "application/json": (components["schemas"]["object_field_mappings"])[];
-        };
-      };
-    };
-  };
-  /**
    * List magic links 
    * @description Get a list of magic links
    */
@@ -1604,6 +1632,26 @@ export interface operations {
     responses: {
       /** @description Magic Link deleted */
       204: never;
+    };
+  };
+  /**
+   * List schema mappings 
+   * @deprecated
+   */
+  listFieldMappings: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description List of objects and their field mappings (if set) */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["object_field_mappings"])[];
+        };
+      };
     };
   };
   /**
@@ -2029,6 +2077,45 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["sync_config"];
+        };
+      };
+    };
+  };
+  /** Get connection sync config */
+  getConnectionSyncConfig: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Connection Sync Config */
+      200: {
+        content: {
+          "application/json": components["schemas"]["connection_sync_config"];
+        };
+      };
+    };
+  };
+  /** Upsert connection sync config */
+  upsertConnectionSyncConfig: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["upsert_connection_sync_config"];
+      };
+    };
+    responses: {
+      /** @description Connection Sync Config */
+      200: {
+        content: {
+          "application/json": components["schemas"]["connection_sync_config"];
         };
       };
     };
