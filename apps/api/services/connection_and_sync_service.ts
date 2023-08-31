@@ -184,6 +184,36 @@ export class ConnectionAndSyncService {
         };
         return await this.create(params);
       }
+      case 'clearbit': {
+        const params: ConnectionCreateParams<'clearbit'> = {
+          applicationId,
+          providerName: importedCredentials.providerName,
+          providerId: provider.id,
+          category: 'enrichment',
+          customerId,
+          credentials: {
+            type: importedCredentials.type,
+            apiKey: importedCredentials.apiKey,
+          },
+          instanceUrl: '',
+        };
+        return await this.create(params);
+      }
+      case '6sense': {
+        const params: ConnectionCreateParams<'6sense'> = {
+          applicationId,
+          providerName: importedCredentials.providerName,
+          providerId: provider.id,
+          category: 'enrichment',
+          customerId,
+          credentials: {
+            type: importedCredentials.type,
+            apiKey: importedCredentials.apiKey,
+          },
+          instanceUrl: '',
+        };
+        return await this.create(params);
+      }
       case 'gong': {
         const params: ConnectionCreateParams<'gong'> = {
           applicationId,

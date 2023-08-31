@@ -57,8 +57,8 @@ export default function init(app: Router): void {
         throw new BadRequestError('Missing returnUrl');
       }
 
-      if (providerName === 'apollo') {
-        throw new BadRequestError('Oauth is not supported for Apollo');
+      if (providerName === 'apollo' || providerName === 'clearbit' || providerName === '6sense') {
+        throw new BadRequestError(`Oauth is not supported for ${providerName}`);
       }
 
       let provider: OauthProvider | null = null;

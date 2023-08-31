@@ -11,5 +11,5 @@ export default function init(app: Router): void {
 
   v2(enrichmentRouter);
 
-  app.use('/engagement', enrichmentRouter);
+  app.use('/enrichment', enrichmentRouter);
 }

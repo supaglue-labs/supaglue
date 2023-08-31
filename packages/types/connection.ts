@@ -38,6 +38,16 @@ export type ImportedConnectionCredentials =
       apiKey: string;
     }
   | {
+      providerName: 'clearbit';
+      type: 'api_key';
+      apiKey: string;
+    }
+  | {
+      providerName: '6sense';
+      type: 'api_key';
+      apiKey: string;
+    }
+  | {
       providerName: 'gong';
       type: 'access_key_secret';
       accessKey: string;

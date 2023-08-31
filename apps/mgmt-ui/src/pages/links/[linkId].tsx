@@ -48,6 +48,8 @@ export default function Home(props: PublicEnvProps) {
 
   switch (data.magicLink.providerName) {
     case 'apollo':
+    case 'clearbit':
+    case '6sense':
       return (
         <ApiKeyCard
           returnUrl={data.magicLink.returnUrl}
