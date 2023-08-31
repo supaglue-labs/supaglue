@@ -65,8 +65,6 @@ paths:
     $ref: paths/sync_configs@{sync_config_id}.yaml
   '/connection_sync_configs':
     $ref: paths/connection_sync_configs.yaml
-  '/connection_sync_configs/_upsert':
-    $ref: paths/connection_sync_configs@_upsert.yaml
   '/customers/{customer_id}/connections':
     $ref: paths/connections.yaml
   '/customers/{customer_id}/connections/_provider_user_id':

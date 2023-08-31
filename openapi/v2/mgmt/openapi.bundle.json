@@ -1252,21 +1252,11 @@
           }
         }
       },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
-    "/connection_sync_configs/_upsert": {
       "put": {
         "operationId": "upsertConnectionSyncConfig",
         "summary": "Upsert connection sync config",
         "tags": [
-          "SchemaMappings"
+          "ConnectionSyncConfigs"
         ],
         "security": [
           {
@@ -1294,6 +1284,23 @@
                 }
               }
             }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteConnectionSyncConfig",
+        "summary": "Delete connection sync config",
+        "tags": [
+          "ConnectionSyncConfigs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Connection Sync Config"
           }
         }
       },
