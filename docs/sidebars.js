@@ -70,17 +70,22 @@ const sidebars = {
     },
     {
       id: 'integration-patterns/managed-syncs',
-      label: 'Syncing data',
+      label: 'Managed Syncs',
+      type: 'doc',
+    },
+    {
+      id: 'integration-patterns/unified-api',
+      label: 'Unified API',
       type: 'doc',
     },
     {
       id: 'integration-patterns/actions-api',
-      label: 'Writing data',
+      label: 'Actions API',
       type: 'doc',
     },
     {
       id: 'integration-patterns/real-time-events',
-      label: 'Triggers/CDC',
+      label: 'Real-time Events',
       type: 'doc',
     },
 
@@ -319,9 +324,15 @@ const sidebars = {
       value: sidebarHeader('Actions API'),
     },
     { type: 'doc', id: 'api/v2/actions/actions-api' },
+
+    // section
+    {
+      type: 'html',
+      value: sidebarHeader('Data Listing API'),
+    },
     {
       type: 'category',
-      label: 'Data listing',
+      label: 'Data API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/data/sidebar.js'),

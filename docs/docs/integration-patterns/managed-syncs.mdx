@@ -3,12 +3,9 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Syncing data
+# Managed Syncs
 
-Supaglue supports two ways of syncing data:
-
-1. [Managed Syncs](#managed-syncs) - Supaglue writes raw data directly into your database.
-1. [Data Listing API](#data-listing-api) - Supaglue writes to a Supaglue-hosted database and provides an API to paginate and transform data into your database schema.
+Managed Syncs lets you offload dealing with third-party provider authentication, APIs, rate limits, retries, and more to Supaglue. We will sync data from third-party providers into a database that you can host or Supaglue can host.
 
 <ThemedImage
   alt="integration patterns syncs"
@@ -19,26 +16,13 @@ Supaglue supports two ways of syncing data:
   }}
 />
 
-## Managed Syncs
-
-Supaglue writes raw data directly into your database.
-
-<ThemedImage
-  alt="managed syncs"
-  width="65%"
-  sources={{
-    light: '/img/managed-syncs.png',
-    dark: '/img/managed-syncs.png',
-  }}
-/>
-
-### How it works
+## How it works
 
 1. Use the [Management Portal](https://app.supaglue.io) to create a sync configuration ([SyncConfig](#syncconfig)) that defines "what" and "how" to sync from a third-party [Provider](#provider) to a [Destination](#destination).
 2. Your customer connects via our [Managed Authentication](../platform/managed-auth) feature.
-3. Supaglue starts fetching data from your customers’ third-party Providers and landing them in your Destination (e.g. Postgres).
+3. Supaglue starts fetching data from your customers’ third-party Providers and landing them in a Destination (e.g. Postgres).
 
-### Concepts
+## Concepts
 
 <ThemedImage
   alt="managed syncs concepts"
@@ -49,7 +33,7 @@ Supaglue writes raw data directly into your database.
   }}
 />
 
-#### Provider
+### Provider
 
 A Provider is a third-party SaaS tool that Supaglue can connect to, to sync data.
 
@@ -99,9 +83,9 @@ Use the **Connectors --> Providers** page in the Management Portal to configure 
 
 </Tabs>
 
-#### Destination
+### Destination
 
-A Destination is a database or data warehouse in your infrastructure where Supaglue can write third-party Provider data to.
+A Destination is a database that Supaglue syncs third-party provider data to. You can choose one in your [infrastructure](#option-1-your-database) a [Supaglue's infrastructure](#option-2-supaglue-hosted-database--data-listing-api).
 
 Use the **Connectors --> Destinations** page in the Management Portal to configure Oauth app credentials:
 
@@ -150,7 +134,7 @@ Use the **Connectors --> Destinations** page in the Management Portal to configu
 Before syncing data, Supaglue generates the destination tables and columns in your database if they do not already exist.
 :::
 
-#### SyncConfig
+### SyncConfig
 
 A SyncConfig ties a Provider (source) to a Destination. It defines what objects to sync and how to sync them (frequency, strategy, etc).
 
@@ -239,7 +223,7 @@ If you have well-structured tables that you wish to write Supaglue-synced data i
 
 Read more about transformation pipelines and patterns in our [transformation tutorial section](../tutorials/transformations/overview).
 
-### Data schema in Destination
+### Table schema in Destination
 
 The schema of the data that Supaglue creates in your Destination contains three types of information:
 
@@ -284,7 +268,29 @@ S3 is the only Destination that does not support the `full then incremental` syn
 
 Supaglue executes syncs on a per Object basis. For example, Supaglue will create ten syncs if you are syncing ten Standard Objects. Supaglue schedules them to run simultaneously at the frequency you set. Each sync run is independent, i.e., a failure in one sync will not affect the others.
 
-## Data Listing API
+## Destination options
+
+You can decide where the database that Supaglue syncs to is hosted:
+
+1. **Self-host your database**: Supaglue writes raw data directly into your database.
+1. **Use a Supaglue-hosted database + API**: Supaglue writes to a Supaglue-hosted database and provides an API for you to paginate, transform, and write data into your database schema.
+
+### Option 1: Your database
+
+Supaglue writes raw data directly into your database.
+
+<ThemedImage
+  alt="managed syncs"
+  width="65%"
+  sources={{
+    light: '/img/managed-syncs.png',
+    dark: '/img/managed-syncs.png',
+  }}
+/>
+
+### Option 2: Supaglue-hosted database + Data Listing API
+
+Supaglue writes raw data into a Supaglue-hosted database and provides a convenient API to paginate over records. This is useful if you don't have an existing transformation pipeline.
 
 <ThemedImage
   alt="data listing api"
@@ -295,11 +301,11 @@ Supaglue executes syncs on a per Object basis. For example, Supaglue will create
   }}
 />
 
-## Managed Syncs vs Data Listing API
+### Your database vs Supaglue-hosted database + Data Listing API
 
 There are several differences between the two methods of hosting Destinations:
 
-| Dimension        | Your application database                                     | Data Listing API                                            |
+| Dimension        | Your application database                                     | Supaglue-hosted database + Data Listing API                 |
 | ---------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
 | Transformations  | Ideal if you have existing transformation pipelines           | Ideal if you don't have an existing transformation pipeline |
 | Compliance       | Your customer data is never stored in Supaglue at-rest        | Your customer data is stored in Supaglue at-rest            |

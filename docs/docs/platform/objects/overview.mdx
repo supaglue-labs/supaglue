@@ -4,23 +4,23 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 # Standard & Custom Objects
 
 <ThemedImage
-alt="standard and custom objects"
-width="20%"
-sources={{
-      light: '/img/object-diagram.png',
-      dark: '/img/object-diagram.png',
-    }}
+  alt="standard and custom objects"
+  width="20%"
+  sources={{
+    light: '/img/object-diagram.png',
+    dark: '/img/object-diagram.png',
+  }}
 />
 
 ## Introduction
 
 **Standard Objects** and **Custom Objects** (known as **Objects**) have a 1-1 relationship between your application object and your Provider object. For example, a `Contact` in Salesforce is a `salesforce_Contact` in your application, and a Hubspot `company` is a `hubspot_company` in your application.
 
+You can use Objects as part of [Managed Syncs](../../integration-patterns/managed-syncs).
+
 ## Standard object
 
 Supaglue Standard Objects are pre-defined objects in third-party providers, e.g. `Contacts`, `Accounts`, and `Leads` are pre-defined objects in Salesforce and are Standard Objects in Supaglue.
-
-You can use Standard Objects as part of [Managed Syncs](../../integration-patterns/managed-syncs) and [Actions API](../../integration-patterns/actions-api).
 
 ### Syncing
 
@@ -59,10 +59,6 @@ postgres=> \d "salesforce_Contract"
 Indexes:
     "salesforce_Contract_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 ```
-
-### Writing
-
-Please see the documentation for [writing data](../../integration-patterns/actions-api).
 
 ## Custom object
 
@@ -107,7 +103,3 @@ postgres=> \d "salesforce_BattleCard"
 Indexes:
     "salesforce_BattleCard_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 ```
-
-### Writing
-
-Please see the documentation for [writing data](../../integration-patterns/actions-api).
