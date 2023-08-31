@@ -2,6 +2,9 @@ import { getDependencyContainer } from '@/dependency_container';
 import { connectionHeaderMiddleware } from '@/middleware/connection';
 import { BadRequestError } from '@supaglue/core/errors';
 import type {
+  DeleteConnectionSyncConfigPathParams,
+  DeleteConnectionSyncConfigRequest,
+  DeleteConnectionSyncConfigResponse,
   GetConnectionSyncConfigPathParams,
   GetConnectionSyncConfigRequest,
   GetConnectionSyncConfigResponse,
@@ -36,7 +39,7 @@ export default function init(app: Router): void {
   );
 
   connectionSyncConfigRouter.put(
-    '/_upsert',
+    '/',
     async (
       req: Request<
         UpsertConnectionSyncConfigPathParams,
@@ -50,6 +53,21 @@ export default function init(app: Router): void {
         camelcaseKeys(req.body)
       );
       return res.status(200).send(snakecaseKeys(result));
+    }
+  );
+
+  connectionSyncConfigRouter.delete(
+    '/',
+    async (
+      req: Request<
+        DeleteConnectionSyncConfigPathParams,
+        DeleteConnectionSyncConfigResponse,
+        DeleteConnectionSyncConfigRequest
+      >,
+      res: Response<DeleteConnectionSyncConfigResponse>
+    ) => {
+      await connectionService.deleteConnectionSyncConfig(req.customerConnection.id);
+      return res.status(204).send();
     }
   );
 

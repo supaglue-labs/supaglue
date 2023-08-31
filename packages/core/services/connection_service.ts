@@ -1,4 +1,4 @@
-import { type PrismaClient } from '@supaglue/db';
+import { Prisma, type PrismaClient } from '@supaglue/db';
 import type {
   ConnectionCredentialsDecryptedAny,
   ConnectionSafeAny,
@@ -73,6 +73,22 @@ export class ConnectionService {
   public async getSafeByIds(ids: string[]): Promise<ConnectionSafeAny[]> {
     const connections = await this.#prisma.connection.findMany({
       where: { id: { in: ids } },
+    });
+    return connections.map(fromConnectionModelToConnectionSafe);
+  }
+
+  public async listAllSafe(): Promise<ConnectionSafeAny[]> {
+    const connections = await this.#prisma.connection.findMany();
+    return connections.map(fromConnectionModelToConnectionSafe);
+  }
+
+  public async getSafeByProviderIds(providerIds: string[]): Promise<ConnectionSafeAny[]> {
+    const connections = await this.#prisma.connection.findMany({
+      where: {
+        providerId: {
+          in: providerIds,
+        },
+      },
     });
     return connections.map(fromConnectionModelToConnectionSafe);
   }
@@ -433,16 +449,41 @@ export class ConnectionService {
       customObjects: config.customObjects,
     };
 
-    await this.#prisma.connection.update({
-      where: {
-        id: connectionId,
-      },
-      data: {
-        connectionSyncConfig: params,
-      },
-    });
+    await this.#prisma.$transaction([
+      this.#prisma.connection.update({
+        where: {
+          id: connectionId,
+        },
+        data: {
+          connectionSyncConfig: params,
+        },
+      }),
+      this.#prisma.connectionSyncConfigChange.create({
+        data: {
+          connectionId,
+        },
+      }),
+    ]);
 
     return params;
+  }
+
+  public async deleteConnectionSyncConfig(connectionId: string): Promise<void> {
+    await this.#prisma.$transaction([
+      this.#prisma.connection.update({
+        where: {
+          id: connectionId,
+        },
+        data: {
+          connectionSyncConfig: Prisma.DbNull,
+        },
+      }),
+      this.#prisma.connectionSyncConfigChange.create({
+        data: {
+          connectionId,
+        },
+      }),
+    ]);
   }
 
   public async upsertEntityMapping(

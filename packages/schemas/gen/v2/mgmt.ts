@@ -226,16 +226,10 @@ export interface paths {
   "/connection_sync_configs": {
     /** Get connection sync config */
     get: operations["getConnectionSyncConfig"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-  };
-  "/connection_sync_configs/_upsert": {
     /** Upsert connection sync config */
     put: operations["upsertConnectionSyncConfig"];
+    /** Delete connection sync config */
+    delete: operations["deleteConnectionSyncConfig"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -2118,6 +2112,19 @@ export interface operations {
           "application/json": components["schemas"]["connection_sync_config"];
         };
       };
+    };
+  };
+  /** Delete connection sync config */
+  deleteConnectionSyncConfig: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Connection Sync Config */
+      204: never;
     };
   };
   /**
