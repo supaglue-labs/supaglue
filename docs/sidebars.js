@@ -284,7 +284,15 @@ const sidebars = {
       label: 'Management API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: require('./docs/api/v2/mgmt/sidebar.js'),
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      items: require('./docs/api/v2/mgmt/sidebar.js').map((item) => {
+        // hide deprecated items. we hide it because removing it from the sidebar causes docusaurus build issues.
+        if (['Entities', 'EntityMappings', 'Schemas', 'SchemaMappings'].includes(item.label)) {
+          item.className += ' hidden';
+        }
+
+        return item;
+      }),
     },
 
     // section
@@ -300,7 +308,14 @@ const sidebars = {
       items: [
         ...require('./docs/api/v2/crm/sidebar.js'),
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        ...require('./docs/api/v2/metadata/sidebar.js'),
+        ...require('./docs/api/v2/metadata/sidebar.js').map((item) => {
+          // we're merging two openapi specs for expediency. hide the second intro.
+          if (['api/v2/metadata/metadata-api'].includes(item.id)) {
+            item.className += ' hidden';
+          }
+
+          return item;
+        }),
       ],
     },
     {
