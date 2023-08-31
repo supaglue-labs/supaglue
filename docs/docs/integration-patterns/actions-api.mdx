@@ -2,20 +2,15 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import ThemedImage from '@theme/ThemedImage';
 
-# Writing data
+# Actions API
 
-Supaglue supports APIs and a beta SDK client for writing data to third-party providers.
+<ThemedImage
+  alt="actions-api"
+  width="65%"
+  sources={{
+    light: '/img/actions-api.png',
+    dark: '/img/actions-api.png',
+  }}
+/>
 
-## APIs
-
-Supaglue supports three ways to write data to the underlying third-party providers:
-
-1. **Unified API**: Write to multiple third-party providers with a single API for [`crm`](../api/v2/crm/unified-crm-api) and [`engagement`](../api/v2/engagement/unified-engagement-api).
-1. [**Actions API**](../api/v2/actions/actions-api): Write to provider-scoped APIs that range from CRUD to complex actions.
-1. [**Passthrough**](../api/v2/actions/send-passthrough-request): Call underlying native third-party provider APIs using credentials managed by Supaglue.
-
-## Unified SDK Clients (beta)
-
-Supaglue supports Unified SDK Clients for `crm`. Similar to Unified APIs, Unified SDK Clients provide a single interface to write to multiple third-party providers. However, developers can fork or generate new unified clients, which makes them more flexible than Unified APIs.
-
-Please reach out to ([team@supaglue.com](mailto:team@supaglue.com)) if you'd like early access to these clients.
+[**Actions API**](../api/v2/actions/actions-api): Write to provider-scoped APIs that range from basic CRUD operations to complex actions.
