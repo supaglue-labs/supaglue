@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/db",
-  "version": "0.13.16",
+  "version": "0.14.0",
   "private": true,
   "packageManager": "yarn@3.4.1",
   "index": "dist/index.js",
