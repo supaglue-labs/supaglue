@@ -262,8 +262,8 @@ export interface paths {
   };
   "/customers/{customer_id}/connections/_provider_user_id": {
     /**
-     * Get logged in user ID 
-     * @description This endpoint returns the ID of the logged in user. This is sometimes known as the owner ID.
+     * Get logged in user ID and details 
+     * @description This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.
      */
     get: operations["getProviderUserId"];
     parameters: {
@@ -2227,13 +2227,13 @@ export interface operations {
     };
   };
   /**
-   * Get logged in user ID 
-   * @description This endpoint returns the ID of the logged in user. This is sometimes known as the owner ID.
+   * Get logged in user ID and details 
+   * @description This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.
    */
   getProviderUserId: {
     parameters: {
       query: {
-        provider_name: components["schemas"]["provider_name"];
+        provider_name: "hubspot" | "ms_dynamics_365_sales";
       };
       path: {
         customer_id: string;
@@ -2244,8 +2244,12 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            /** @description The ID of the logged in user. The ID originates from your customer's third-party Provider (e.g. MS Dynamics 365 Sales). */
+            /** @description The ID of the logged in user. The ID originates from your customer's third-party Provider. */
             user_id?: string;
+            /** @description The raw data from the your customer's third-party Provider. */
+            raw_details?: {
+              [key: string]: unknown;
+            };
           };
         };
       };

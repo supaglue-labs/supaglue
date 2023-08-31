@@ -2,6 +2,7 @@ import type {
   ObjectRecordUpsertData,
   ObjectRecordWithMetadata,
   Property,
+  RemoteUserIdAndDetails,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
@@ -74,7 +75,7 @@ export interface RemoteClient {
 
   sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse>;
 
-  getUserId(): Promise<string | undefined>;
+  getUserIdAndDetails(): Promise<RemoteUserIdAndDetails>;
 }
 
 export abstract class AbstractRemoteClient extends EventEmitter implements RemoteClient {
@@ -179,7 +180,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new Error('Not implemented');
   }
 
-  public async getUserId(): Promise<string | undefined> {
+  public async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {
     throw new NotImplementedError();
   }
 
