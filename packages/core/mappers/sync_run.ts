@@ -31,7 +31,7 @@ export const fromObjectSyncRunModelAndSyncWithObject = (
     return {
       ...base,
       type: 'object',
-      objectType: args.sync.objectType as 'common' | 'standard',
+      objectType: args.sync.objectType as 'common' | 'standard' | 'custom',
       object: args.sync.object as string,
     };
   }

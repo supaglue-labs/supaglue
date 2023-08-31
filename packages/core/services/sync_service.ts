@@ -68,7 +68,7 @@ export class SyncService {
 
   public async findByConnectionIdAndObjectTypeAndObject(
     connectionId: string,
-    objectType: 'common' | 'standard',
+    objectType: 'common' | 'standard' | 'custom',
     object: string
   ): Promise<Sync | undefined> {
     const model = await this.#prisma.sync.findUnique({
@@ -89,7 +89,7 @@ export class SyncService {
 
   public async getByConnectionIdAndObjectTypeAndObject(
     connectionId: string,
-    objectType: 'common' | 'standard',
+    objectType: 'common' | 'standard' | 'custom',
     object: string
   ): Promise<Sync> {
     const sync = await this.findByConnectionIdAndObjectTypeAndObject(connectionId, objectType, object);

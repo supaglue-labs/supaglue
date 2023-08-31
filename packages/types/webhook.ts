@@ -25,7 +25,7 @@ export type SyncWebhookPayload = {
   errorMessage?: string;
 } & (
   | {
-      objectType: 'common' | 'standard';
+      objectType: 'common' | 'standard' | 'custom';
       object: string;
     }
   | {

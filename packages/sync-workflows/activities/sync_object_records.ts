@@ -21,7 +21,7 @@ import type { ApplicationService, SyncService } from '../services';
 export type SyncObjectRecordsArgs = {
   syncId: string;
   connectionId: string;
-  objectType: 'common' | 'standard';
+  objectType: 'common' | 'standard' | 'custom';
   object: string;
   updatedAfterMs?: number;
 };
@@ -29,7 +29,7 @@ export type SyncObjectRecordsArgs = {
 export type SyncObjectRecordsResult = {
   syncId: string;
   connectionId: string;
-  objectType: 'common' | 'standard';
+  objectType: 'common' | 'standard' | 'custom';
   object: string;
   maxLastModifiedAtMs: number | null;
   numRecordsSynced: number;
@@ -109,6 +109,22 @@ export function createSyncObjectRecords(
             const fieldMappingConfig = await connectionService.getFieldMappingConfig(connectionId, 'standard', object);
             const fieldsToFetch = getFieldsToFetch(fieldMappingConfig);
             const stream = await client.listStandardObjectRecords(object, fieldsToFetch, updatedAfter, heartbeat);
+            return await writer.writeObjectRecords(
+              connection,
+              object,
+              toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
+              heartbeat
+            );
+          }
+          break;
+        case 'custom':
+          {
+            const client = await remoteService.getRemoteClient(connectionId);
+            const fieldMappingConfig = {
+              type: 'inherit_all_fields' as const,
+            };
+            const fieldsToFetch = getFieldsToFetch(fieldMappingConfig);
+            const stream = await client.listCustomObjectRecords(object, fieldsToFetch, updatedAfter, heartbeat);
             return await writer.writeObjectRecords(
               connection,
               object,

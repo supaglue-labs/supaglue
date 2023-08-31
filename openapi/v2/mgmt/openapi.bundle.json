@@ -1725,7 +1725,8 @@
               "type": "string",
               "enum": [
                 "common",
-                "standard"
+                "standard",
+                "custom"
               ],
               "example": "standard"
             },
@@ -1818,7 +1819,8 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard"
+                          "standard",
+                          "custom"
                         ],
                         "example": "standard",
                         "description": "The object type to filter by"
@@ -1924,7 +1926,8 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard"
+                          "standard",
+                          "custom"
                         ],
                         "example": "standard",
                         "description": "The object type to filter by"
@@ -2017,7 +2020,8 @@
                       "object_type": {
                         "type": "string",
                         "enum": [
-                          "standard"
+                          "standard",
+                          "custom"
                         ],
                         "description": "The object type to filter by",
                         "example": "standard"
@@ -2148,7 +2152,8 @@
               "type": "string",
               "enum": [
                 "common",
-                "standard"
+                "standard",
+                "custom"
               ],
               "example": "standard"
             }
@@ -3763,7 +3768,8 @@
                 "type": "string",
                 "enum": [
                   "common",
-                  "standard"
+                  "standard",
+                  "custom"
                 ],
                 "example": "standard"
               },
@@ -3919,7 +3925,8 @@
                 "type": "string",
                 "enum": [
                   "common",
-                  "standard"
+                  "standard",
+                  "custom"
                 ],
                 "example": "standard"
               },
@@ -5417,7 +5424,8 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard"
+                          "standard",
+                          "custom"
                         ]
                       },
                       "object": {
@@ -6501,7 +6509,8 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard"
+                          "standard",
+                          "custom"
                         ]
                       },
                       "object": {

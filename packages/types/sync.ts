@@ -16,7 +16,7 @@ type BaseSync = {
 
 export type ObjectSyncArgs = {
   type: 'object';
-  objectType: 'common' | 'standard';
+  objectType: 'common' | 'standard' | 'custom';
   object: string;
 };
 
@@ -85,7 +85,7 @@ export type SyncFilter = {
   paginationParams: PaginationInternalParams;
 } & (
   | {
-      objectType: 'common' | 'standard';
+      objectType: 'common' | 'standard' | 'custom';
       object: string;
     }
   | {

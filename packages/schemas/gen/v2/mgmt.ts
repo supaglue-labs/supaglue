@@ -1005,7 +1005,7 @@ export interface components {
        * @example standard 
        * @enum {string}
        */
-      object_type: "common" | "standard";
+      object_type: "common" | "standard" | "custom";
       /**
        * @description The Provider's object name (case sensitive) 
        * @example contact
@@ -1074,7 +1074,7 @@ export interface components {
        * @example standard 
        * @enum {string}
        */
-      object_type: "common" | "standard";
+      object_type: "common" | "standard" | "custom";
       /** @example contact */
       object: string;
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
@@ -2311,7 +2311,7 @@ export interface operations {
         /** @description The provider name */
         provider_name?: string;
         /** @description The object type to filter by */
-        object_type?: "common" | "standard";
+        object_type?: "common" | "standard" | "custom";
         /** @description The object to filter by */
         object?: string;
         /** @description The entity id to filter by */
@@ -2348,7 +2348,7 @@ export interface operations {
            * @example standard 
            * @enum {string}
            */
-          object_type: "common" | "standard";
+          object_type: "common" | "standard" | "custom";
           /**
            * @description The Provider object to filter by (case sensitive) 
            * @example Contact
@@ -2400,7 +2400,7 @@ export interface operations {
            * @example standard 
            * @enum {string}
            */
-          object_type: "common" | "standard";
+          object_type: "common" | "standard" | "custom";
           /**
            * @description The object to filter by 
            * @example contact
@@ -2439,7 +2439,7 @@ export interface operations {
            * @example standard 
            * @enum {string}
            */
-          object_type: "standard";
+          object_type: "standard" | "custom";
           /**
            * @description The Provider object to filter by (case sensitive) 
            * @example contact
@@ -2488,7 +2488,7 @@ export interface operations {
         customer_id?: string;
         /** @description The provider name */
         provider_name?: string;
-        object_type?: "common" | "standard";
+        object_type?: "common" | "standard" | "custom";
         /** @description The object to filter by */
         object?: string;
         /** @description The entity id to filter by */
@@ -2762,7 +2762,7 @@ export interface operations {
           /** @enum {string} */
           type: "object";
           /** @enum {string} */
-          object_type: "common" | "standard";
+          object_type: "common" | "standard" | "custom";
           /** @example contact */
           object: string;
         }, {
