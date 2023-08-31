@@ -22,12 +22,23 @@ import { getPgPool, logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
 
-function convertDashesToUnderscores(input: string): string {
-  return input.replace(/-/g, '_');
+function sanitizeForPostgres(tableName: string): string {
+  // Replace dashes with underscores
+  let sanitized = tableName.replace(/-/g, '_');
+
+  // Remove characters that are not letters, numbers, or underscores
+  sanitized = sanitized.replace(/[^a-zA-Z0-9_]/g, '');
+
+  // Make sure the table name starts with a letter or an underscore
+  if (!sanitized.match(/^[a-zA-Z_]/)) {
+    sanitized = '_' + sanitized;
+  }
+
+  return sanitized;
 }
 
 async function createPartitionIfNotExists(client: PoolClient, tableName: string, customerId: string) {
-  const partitionName = `${tableName}_${convertDashesToUnderscores(customerId)}`;
+  const partitionName = `${tableName}_${sanitizeForPostgres(customerId)}`;
 
   // Check if the partition already exists
   const checkQuery = `SELECT to_regclass('${partitionName}')`;
@@ -117,10 +128,10 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     heartbeat: () => void,
     childLogger: pino.Logger
   ): Promise<WriteObjectRecordsResult> {
-    const schema = convertDashesToUnderscores(applicationId);
+    const schema = sanitizeForPostgres(applicationId);
     const qualifiedTable = `${schema}.${table}`;
-    const tempTable = `"temp_${table}"`;
-    const dedupedTempTable = `"deduped_temp_${table}"`;
+    const tempTable = `temp_${table}`;
+    const dedupedTempTable = `deduped_temp_${table}`;
 
     const client = await this.#getClient();
 
