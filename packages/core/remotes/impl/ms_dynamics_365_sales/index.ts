@@ -2,7 +2,13 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import type { ConnectionUnsafe, CRMProvider, ListedObjectRecord, Provider } from '@supaglue/types';
+import type {
+  ConnectionUnsafe,
+  CRMProvider,
+  ListedObjectRecord,
+  Provider,
+  RemoteUserIdAndDetails,
+} from '@supaglue/types';
 import type {
   Account,
   Contact,
@@ -273,13 +279,16 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async getUserId(): Promise<string | undefined> {
+  public override async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {
     await this.maybeRefreshAccessToken();
     const { accessToken } = this.#credentials;
     const jwtTokenParts = accessToken.split('.');
     const jwtTokenPayload = JSON.parse(Buffer.from(jwtTokenParts[1], 'base64').toString('utf-8'));
     const activeDirectoryUserId = jwtTokenPayload.oid;
-    return await this.getUserIdForActiveDirectoryUserId(activeDirectoryUserId);
+    const systemUserId = await this.getUserIdForActiveDirectoryUserId(activeDirectoryUserId);
+    return {
+      userId: systemUserId,
+    };
   }
 
   private async getUserIdForActiveDirectoryUserId(activeDirectoryUserId: string): Promise<string | undefined> {

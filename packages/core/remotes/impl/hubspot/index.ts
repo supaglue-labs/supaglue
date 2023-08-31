@@ -24,6 +24,7 @@ import type {
   PropertiesWithAdditionalFields,
   Property,
   Provider,
+  RemoteUserIdAndDetails,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
@@ -399,6 +400,15 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return {
       Authorization: `Bearer ${this.#config.accessToken}`,
     };
+  }
+
+  public override async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {
+    await this.maybeRefreshAccessToken();
+    const { accessToken } = this.#config;
+    const response = await this.#client.oauth.accessTokensApi.get(accessToken);
+    const { userId } = response;
+    const { token: _, ...rawDetails } = response;
+    return { userId: String(userId), rawDetails };
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {

@@ -2,6 +2,11 @@ import type { CategoryOfProviderName, ProviderName, SchemaMappingsConfig } from 
 import type { ConnectionEntityMapping } from './entity_mapping';
 import type { CustomObjectConfig, StandardObjectConfig } from './sync_object_config';
 
+export type RemoteUserIdAndDetails = {
+  userId?: string;
+  rawDetails?: Record<string, unknown>;
+};
+
 export type ApiKeyConnectionCredentialsDecrypted = {
   type: 'api_key';
   apiKey: string;
