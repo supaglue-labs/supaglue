@@ -89,7 +89,7 @@ const fromProviderConfigModel = async (
 
 export const toProviderModel = async (params: ProviderCreateParams) => {
   const { applicationId, category, authType, name, objects, entityMappings } = params;
-  if (category === 'engagement' && authType === 'api_key') {
+  if (authType === 'api_key') {
     return {
       applicationId,
       category,

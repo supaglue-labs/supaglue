@@ -1,0 +1,149 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "0.13.16",
+    "title": "Unified Enrichment API",
+    "contact": {
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
+    },
+    "description": "#### Introduction\n\nWelcome to the Unified Actions API (Enrichment) documentation. You can use this API to write to third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Reading data\nTo read data from third-party providers, refer to the [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.\n\n#### Base API URL\n```\nhttps://api.supaglue.io/enrichment/v2\n```\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.supaglue.io/enrichment/v2",
+      "description": "Supaglue API"
+    }
+  ],
+  "paths": {
+    "/persons": {
+      "get": {
+        "operationId": "enrichPerson",
+        "summary": "Enrich person",
+        "tags": [
+          "Persons"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "PersonEnrichmentData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "company": {
+                      "$ref": "#/components/schemas/enriched_company"
+                    }
+                  },
+                  "required": [
+                    "company"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "email",
+          "in": "query",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "alicesmith@gmail.com"
+          }
+        }
+      ]
+    }
+  },
+  "tags": [
+    {
+      "name": "Persons",
+      "description": "Relating to enrichment data that is derived from information about a Person. This may include demographic and firmographic data."
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "x-api-key": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header",
+        "description": "API key to allow developers to access the API"
+      }
+    },
+    "schemas": {
+      "enriched_company": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "6sense"
+          },
+          "industry": {
+            "type": "string",
+            "nullable": true,
+            "example": "Software and Technology"
+          },
+          "annual_revenue": {
+            "type": "number",
+            "nullable": true,
+            "example": 104000000
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "example": "6sense.com"
+          },
+          "employee_count": {
+            "type": "number",
+            "nullable": true,
+            "example": 1192
+          }
+        },
+        "required": [
+          "name",
+          "industry",
+          "annual_revenue",
+          "domain",
+          "employee_count"
+        ]
+      }
+    },
+    "parameters": {
+      "x-customer-id": {
+        "name": "x-customer-id",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "my-customer-1"
+        },
+        "description": "The customer ID that uniquely identifies the customer in your application",
+        "required": true
+      },
+      "x-provider-name": {
+        "name": "x-provider-name",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name",
+        "required": true
+      }
+    }
+  }
+}

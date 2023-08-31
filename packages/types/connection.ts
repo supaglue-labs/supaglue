@@ -38,6 +38,16 @@ export type ImportedConnectionCredentials =
       apiKey: string;
     }
   | {
+      providerName: 'clearbit';
+      type: 'api_key';
+      apiKey: string;
+    }
+  | {
+      providerName: '6sense';
+      type: 'api_key';
+      apiKey: string;
+    }
+  | {
       providerName: 'gong';
       type: 'access_key_secret';
       accessKey: string;
@@ -65,6 +75,8 @@ export type ConnectionCredentialsDecrypted<T extends ProviderName> = {
   gong: AccessKeySecretConnectionCredentialsDecrypted | OauthConnectionCredentialsDecrypted;
   intercom: OauthConnectionCredentialsDecrypted;
   linear: OauthConnectionCredentialsDecrypted;
+  clearbit: ApiKeyConnectionCredentialsDecrypted;
+  '6sense': ApiKeyConnectionCredentialsDecrypted;
 }[T];
 
 export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;

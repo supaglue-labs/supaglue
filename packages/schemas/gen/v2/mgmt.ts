@@ -839,7 +839,7 @@ export interface components {
      * @example crm 
      * @enum {string}
      */
-    category: "crm" | "engagement" | "no_category";
+    category: "crm" | "engagement" | "enrichment" | "no_category";
     sync_config: {
       /** @example 465fdcb7-26b4-4090-894c-67cab41022bb */
       id: string;
@@ -964,7 +964,7 @@ export interface components {
      * @example hubspot 
      * @enum {string}
      */
-    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear";
+    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear" | "clearbit" | "6sense";
     /** @enum {string} */
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */

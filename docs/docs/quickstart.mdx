@@ -9,7 +9,7 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Quickstart
 
-This guide will show you how to integrate Supaglue with your application in less than 10 minutes. By the end, you will have synced data from a sample customer's Hubspot to your Postgres database and queried it.
+This quickstart will show you how to integrate Supaglue with your application in approximately 10 minutes. By the end, you will have synced data from a sample customer's Hubspot to your Postgres database and queried it.
 
 <iframe
   width="640"
@@ -51,9 +51,13 @@ The default login credentials are `username: admin` and `password: admin`. Alter
 
 ## 2. Configure a provider
 
-**Providers** are third-party SaaS applications that your customers use. Supaglue supports a growing list of Providers, including Salesforce, Hubspot, and more.
+[**Providers**](./category/providers) are third-party SaaS tools that your customers use. Supaglue supports a growing list of Providers, including Salesforce, Hubspot, and more.
 
-Go to the **Configuration --> Providers** tab and configure a Hubspot Oauth app for this quickstart. We offer Supaglue-managed Oauth apps if you don't have one (keep the "Managed OAuth2 App" switch enabled and click "Save"), or you can read our [Provider docs](./category/providers) to set up your own Oauth app for a Provider.
+1. Go to the **Configuration --> Providers** tab and configure a Hubspot Oauth app for this quickstart.
+
+:::note
+We offer Supaglue-managed Oauth apps if you don't have one. Keep the "Managed OAuth2 App" switch enabled and click "Save" or you can read our [Provider docs](./category/providers) to set up your own Oauth app for a Provider.
+:::
 
 <BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/providers/crm/hubspot">
 
@@ -63,24 +67,27 @@ Go to the **Configuration --> Providers** tab and configure a Hubspot Oauth app 
 
 ## 3. Configure destination
 
-Supaglue will sync Provider data to Destinations. **Destinations** are databases, data warehouses, or other data stores you use in your application.
+Supaglue will sync Provider data to Destinations. [**Destinations**](./category/destinations) are databases in your [infrastructure](./integration-patterns/managed-syncs#destination-options) or [Supaglue's infrastructure](./integration-patterns/managed-syncs#destination-options).
 
-Navigate to the **Destinations** tab and select "Postgres".
-
-Use your existing Postgres database and role to create a schema for Supaglue (e.g., `supaglue`) and grant appropriate privileges on the schema and future tables. Supaglue will need to read and write to them.
+1. Navigate to the **Destinations** tab and select "Postgres".
+1. Use your existing Postgres database and role to create a schema for Supaglue (e.g., `supaglue`) and grant appropriate privileges on the schema and future tables. Supaglue will need to read and write to them.
 
 ```sql
-create schema supaglue;
+    create schema supaglue;
 
-create role supaglue_role;
-grant connect on database <your db name> to supaglue_role;
-grant all privileges on schema supaglue to supaglue_role;
-grant all privileges on all tables in schema supaglue to supaglue_role;
-alter default privileges in schema supaglue grant all privileges on tables to supaglue_role;
-grant supaglue_role to supaglue_user;
+    create role supaglue_role;
+    grant connect on database <your db name> to supaglue_role;
+    grant all privileges on schema supaglue to supaglue_role;
+    grant all privileges on all tables in schema supaglue to supaglue_role;
+    alter default privileges in schema supaglue grant all privileges on tables to supaglue_role;
+    grant supaglue_role to supaglue_user;
 ```
 
-Fill out the connection form in the Management Portal, test, and save the connection credentials.
+3. Fill out the connection form in the Management Portal, test, and save the connection credentials.
+
+:::info
+Ensure your Postgres is publicly available to the internet using appropriate firewall and subnet rules.
+:::
 
 <BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/destinations/postgres">
 
@@ -88,15 +95,12 @@ Fill out the connection form in the Management Portal, test, and save the connec
 
 </BrowserWindow>
 
-:::info
-Ensure your Postgres is publicly available to the internet using appropriate firewall and subnet rules.
-:::
-
 ## 4. Create a sync configuration
 
-A **Sync Config** ties a Provider to a Destination and specifies which objects to sync.
+A [**Sync Config**](./integration-patterns/managed-syncs#syncconfig) ties a Provider to a Destination and specifies which objects to sync.
 
-Go to the **Sync Configs** tab and click the "Add" button to add a new Sync Config. Select the Provider and Destination you configured earlier, then under "[Common objects](./platform/common-schema/overview)" select `contact`, and click "Save".
+1. Go to the **Sync Configs** tab and click the "Add" button to add a new Sync Config.
+1. Select the Provider and Destination you configured earlier, then under "[Common objects](./platform/common-schema/overview)" select `contact`, and click "Save".
 
 <BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/sync_configs/e8a88575-efdb-4560-ae94-3871e8e51b18">
 
@@ -108,11 +112,10 @@ Go to the **Sync Configs** tab and click the "Add" button to add a new Sync Conf
 
 A **Customer** is an end-user in your application that connects their third-party SaaS accounts to your application using Supaglue's [Managed Authentication](./platform/managed-auth).
 
-Navigate to the Customers page and click on the plus button to create a sample customer:
-
-- **customer_id**: `1234` (the primary key you use in your application that uniquely identifies this customer)
-- **name**: `Jane Doe`
-- **email**: `jane@acmecorp.com`
+1. Navigate to the Customers page and click on the plus button to create a sample customer:
+   - customer_id: `1234` (the primary key you use in your application that uniquely identifies this customer)
+   - name: `Jane Doe`
+   - email: `jane@acmecorp.com`
 
 <BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/customers">
 
@@ -120,15 +123,12 @@ Navigate to the Customers page and click on the plus button to create a sample c
 
 </BrowserWindow>
 
-## 6. Add an embedded link to your application
+## 6. Generated an embedded link
 
-In your frontend application, add an [Embedded Link](platform/managed-auth#embedded-links) to let customers authenticate their Provider accounts (like Hubspot) with your application using Supaglue.
+In your frontend application, you can add an [**Embedded Link**](platform/managed-auth#embedded-links) to let customers authenticate their Provider account with your application using Supaglue.
 
-The format of the link is:
-
-> `https://api.supaglue.io/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}`
-
-You can wrap the link with additional styling:
+1. We can now grab the Embedded Link from the Management Portal.
+1. Navigate to the Customer page you created in step 5 and click the "Embed Link" button.
 
 export const IntegrationCard = ({ icon, provider, description, to }) => (
   <div className="mb-4 p-6 max-w-4xl flex flex-col border rounded-md border-slate-200 border-solid items-start">
@@ -146,40 +146,33 @@ export const IntegrationCard = ({ icon, provider, description, to }) => (
   </div>
 );
 
-<div className="grid grid-cols-2 gap-4">
-
-<IntegrationCard
-  icon="/img/hubspot.svg"
-  provider="Hubspot"
-  description="Sync your leads in and out of Hubspot"
-  to="http://localhost:8080/oauth/connect?applicationId=a4398523-03a2-42dd-9681-c91e3e2efaf4&customerId=external-customer-hubspot&providerName=hubspot&returnUrl=https%3A%2F%2Fdocs.supaglue.com%2Fquickstart%233-query-the-supaglue-unified-api"
-/>
-
-</div>
-
-:::info
-You can also use the "Embed Link" button on the Customer page from step 5 to generate the link.
+:::note
+The format of the Embedded Link looks like the following: `https://api.supaglue.io/oauth/connect?applicationId={APPLICATION_ID}&customerId={CUSTOMER_ID}&providerName={PROVIDER_NAME}&returnUrl={RETURN_URL}`
 :::
 
 ## 7. Create a connection
 
-Navigate to the Embedded Link URL you generated above as if you were the customer. Go through the OAuth flow, which installs your Oauth app in your Hubspot account with the requested scopes.
-
-Completing the Oauth flow creates a Supaglue **Connection**, which you can verify by checking the Customer page in the Management Portal. Hubspot Contacts will now sync to your Postgres database.
-
 <div className="grid grid-cols-2 gap-4 justify-items-center">
-<div>
-  <ThemedImage
-    alt="Hubspot Example App"
-    width="100%"
-    sources={{
-      light: '/img/hubspot_app.png',
-      dark: '/img/hubspot_app.png',
-    }}
-  />
+  <div>
+    <ThemedImage
+      alt="Hubspot Example App"
+      width="100%"
+      sources={{
+        light: '/img/hubspot_app.png',
+        dark: '/img/hubspot_app.png',
+      }}
+    />
+  </div>
 </div>
 
-</div>
+1. Paste the URL you copied from Step 6 into a browser. This emulates your user clicking on the Embedded Link.
+1. Go through the Hubspot OAuth flow, which installs the Supaglue-managed Oauth app in your Hubspot account with the requested scopes.
+1. Completing the Oauth flow creates a Supaglue **Connection**, which you can verify by checking the Customer page in the Management Portal.
+1. Hubspot Contacts will now sync to your Postgres database.
+
+:::note
+For production, you would use your own Hubspot Oauth app.
+:::
 
 ## 8. Query your destination
 
@@ -189,16 +182,18 @@ Once the sync has finished, you can query your customer's Hubspot contacts in th
 
 ## 9. Create an object
 
-Use the [Action API](api/introduction) to create a contact object in Hubspot.
+Use the [Actions API](api/v2/actions/actions-api) or [Unified API](api/introduction) to create a contact object in Hubspot.
 
-<Tabs>
+Below is an example curl to create a Hubspot contact using the [Unified CRM API](api/v2/crm/unified-crm-api).
 
-<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
+1. Generate your [API key](api/introduction#api-authentication).
+1. Copy and paste the curl.
+1. Replace `{API_KEY}` with yours and run it.
 
 ```
 curl --location 'https://api.supaglue.io/crm/v2/contacts' \
---header 'x-customer-id: {CUSTOMER_ID}' \
---header 'x-provider-name: {PROVIDER_NAME}' \
+--header 'x-customer-id: 1234' \
+--header 'x-provider-name: hubspot' \
 --header 'x-api-key: {API_KEY}' \
 --header 'Content-Type: application/json' \
 --data-raw '{
@@ -214,11 +209,3 @@ curl --location 'https://api.supaglue.io/crm/v2/contacts' \
     }
 }'
 ```
-
-- CUSTOMER_ID: `1234` (your customer's ID from step 5)
-- PROVIDER_NAME: `hubspot`
-- API_KEY: generate an API key from the **API key** tab
-
-</TabItem>
-
-</Tabs>

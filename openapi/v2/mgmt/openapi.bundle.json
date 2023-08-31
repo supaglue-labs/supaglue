@@ -3300,6 +3300,7 @@
         "enum": [
           "crm",
           "engagement",
+          "enrichment",
           "no_category"
         ],
         "example": "crm"
@@ -3573,7 +3574,9 @@
           "apollo",
           "salesloft",
           "intercom",
-          "linear"
+          "linear",
+          "clearbit",
+          "6sense"
         ],
         "example": "hubspot"
       },

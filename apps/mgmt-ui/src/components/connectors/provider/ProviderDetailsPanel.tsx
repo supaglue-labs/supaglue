@@ -69,7 +69,8 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   ];
   // These providers either don't allow you to pass in scopes or make you pass scopes another way.
   const noScopes = ['salesloft', 'intercom', 'ms_dynamics_365_sales'].includes(providerName);
-  const isOauth = category === 'crm' || providerName !== 'apollo';
+  const isApiKey = category === 'enrichment' || providerName === 'apollo';
+  const isOauth = !isApiKey;
   const activeApplicationId = useActiveApplicationId();
   const { schemas, isLoading: isLoadingSchemas } = useSchemas();
   const { addNotification } = useNotification();
@@ -95,7 +96,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
 
   useEffect(() => {
     setFriendlyProviderId(provider?.id ?? '--');
-    if (provider?.category === 'crm' || provider?.name !== 'apollo') {
+    if (provider?.authType === 'oauth2') {
       setClientId(provider?.config?.oauth?.credentials?.oauthClientId ?? '');
 
       setClientSecret(provider?.config?.oauth?.credentials?.oauthClientSecret ?? '');
@@ -106,7 +107,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
       );
     }
 
-    setCommonObjects(provider?.category === 'no_category' ? [] : provider?.objects?.common ?? []);
+    setCommonObjects(
+      provider?.category === 'no_category' || provider?.category === 'enrichment' ? [] : provider?.objects?.common ?? []
+    );
     setStandardObjects(provider?.objects?.standard ?? []);
   }, [provider?.id]);
 
@@ -336,7 +339,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
                 setIsSaving(false);
               }}
             >
-              {providerName === 'apollo' ? 'Enable' : 'Save'}
+              {isApiKey ? 'Enable' : 'Save'}
             </Button>
           </Stack>
         </Stack>

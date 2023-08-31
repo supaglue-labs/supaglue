@@ -1,6 +1,7 @@
 import type { ProviderCategory } from './common';
 import type { CRMCommonObjectType, CRMProviderCategory, CRMProviderName } from './crm';
 import type { EngagementCommonObjectType, EngagementProviderCategory, EngagementProviderName } from './engagement';
+import type { EnrichmentProviderCategory, EnrichmentProviderName } from './enrichment';
 import type { NoCategoryProviderName } from './no_category';
 
 export * from './application';
@@ -23,16 +24,19 @@ export * from './sg_user';
 export * from './sync_config';
 export * from './webhook';
 
-export type ProviderName = CRMProviderName | EngagementProviderName | NoCategoryProviderName;
+export type ProviderName = CRMProviderName | EngagementProviderName | EnrichmentProviderName | NoCategoryProviderName;
 export type CategoryOfProviderName<T extends ProviderName> = T extends CRMProviderName
   ? CRMProviderCategory
   : T extends EngagementProviderName
   ? EngagementProviderCategory
+  : T extends EnrichmentProviderName
+  ? EnrichmentProviderCategory
   : 'no_category';
 
 export type CommonObjectForCategory<T extends ProviderCategory> = {
   crm: CRMCommonObjectType;
   engagement: EngagementCommonObjectType;
+  enrichment: null;
   no_category: null;
 }[T];
 
