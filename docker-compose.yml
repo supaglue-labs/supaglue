@@ -2,6 +2,7 @@ x-common-env: &common-env
   NODE_ENV: production
   SUPAGLUE_ENVIRONMENT: docker
   SUPAGLUE_DATABASE_URL: ${SUPAGLUE_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres?schema=api}
+  SUPAGLUE_MANAGED_DATABASE_URL: ${SUPAGLUE_MANAGED_DATABASE_URL:-postgres://postgres:supaglue@postgres:5432/postgres}
   SUPAGLUE_PRETTY_LOGS: 1
   SUPAGLUE_POSTHOG_API_KEY: ${SUPAGLUE_POSTHOG_API_KEY:-phc_thv3N2dFQcJDh2vPz6FtGE9oKDiBSdYp5oKS1Cu9U8j}
   SUPAGLUE_API_ENCRYPTION_SECRET: ${SUPAGLUE_API_ENCRYPTION_SECRET:-some-per-customer-secret-salt}

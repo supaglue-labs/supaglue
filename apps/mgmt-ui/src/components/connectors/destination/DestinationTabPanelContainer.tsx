@@ -2,6 +2,7 @@ import BigQueryIcon from '@/assets/destination_icons/bigquery.png';
 import MongoDBIcon from '@/assets/destination_icons/mongodb.png';
 import PostgresIcon from '@/assets/destination_icons/postgres.png';
 import S3Icon from '@/assets/destination_icons/s3.png';
+import SupaglueIcon from '@/assets/supaglue.png';
 import { TabPanel } from '@/components/TabPanel';
 import { useDestinations } from '@/hooks/useDestinations';
 import Image from 'next/image';
@@ -15,7 +16,7 @@ const ICON_SIZE = 35;
 export type DestinationCardInfo = {
   icon?: React.ReactNode;
   name: string;
-  type: 's3' | 'postgres' | 'bigquery' | 'mongodb';
+  type: 's3' | 'postgres' | 'bigquery' | 'mongodb' | 'supaglue';
   description: string;
 };
 
@@ -47,11 +48,19 @@ export const mongoDBDestinationCardInfo: DestinationCardInfo = {
   description: 'Configure your MongoDB destination.',
 };
 
+export const supaglueDestinationCardInfo: DestinationCardInfo = {
+  icon: <Image alt="supaglue" src={SupaglueIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+  name: 'Supaglue',
+  type: 'supaglue',
+  description: 'Use the Supaglue Managed destination and query for your data using the Supaglue Data API.',
+};
+
 export const destinationCardsInfo: DestinationCardInfo[] = [
   s3DestinationCardInfo,
   postgresDestinationCardInfo,
   bigQueryDestinationCardInfo,
   mongoDBDestinationCardInfo,
+  supaglueDestinationCardInfo,
 ];
 
 export default function DestinationTabPanelContainer() {
