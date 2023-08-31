@@ -179,6 +179,8 @@ export interface components {
       domain?: string | null;
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
+      /** @example ae4be028-9078-4850-a0bf-d2112b7c4d11 */
+      account_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     contact: {
@@ -244,6 +246,8 @@ export interface components {
       email_addresses?: components["schemas"]["email_addresses"];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
+      /** @example ae4be028-9078-4850-a0bf-d2112b7c4d11 */
+      account_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     sequence_state: {
