@@ -140,6 +140,14 @@ model Connection {
   @@map("connections")
 }
 
+model ConnectionSyncConfigChange {
+  id           String   @id @default(uuid())
+  connectionId String   @map("connection_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("connection_sync_config_changes")
+}
+
 model Sync {
   id             String     @id @default(uuid())
   type           String     @default("object") // object | entity
