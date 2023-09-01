@@ -27,7 +27,7 @@ post:
             properties:
               errors:
                 $ref: ../../../common/components/schemas/errors.yaml
-              records:
+              record:
                 $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml

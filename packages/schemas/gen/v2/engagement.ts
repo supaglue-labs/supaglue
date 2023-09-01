@@ -123,7 +123,7 @@ export interface paths {
       };
     };
   };
-  "/sequences/{sequence_id}/steps/_batch_create": {
+  "/sequence_steps": {
     /** Create sequence steps */
     post: operations["createSequenceSteps"];
     parameters: {
@@ -401,7 +401,7 @@ export interface components {
       last_modified_at: Date;
     };
     create_sequence: {
-      name: string | null;
+      name: string;
       tags?: (string)[];
       /**
        * @description The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner. 
@@ -411,6 +411,8 @@ export interface components {
       custom_fields?: components["schemas"]["custom_fields"];
     };
     create_sequence_step: {
+      /** @description The ID of the sequence. */
+      sequence_id: string;
       /** @description The name of the sequence step. */
       name: string;
       /** @description The body of the email (HTML). */
@@ -895,7 +897,7 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            records?: components["schemas"]["created_record"];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -939,7 +941,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          steps?: (components["schemas"]["create_sequence_step"])[];
+          record: components["schemas"]["create_sequence_step"];
         };
       };
     };
@@ -949,7 +951,7 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            records?: (components["schemas"]["created_record"])[];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
