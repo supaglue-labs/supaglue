@@ -100,9 +100,32 @@ export interface paths {
       };
     };
   };
+  "/sequences": {
+    /** Create sequence */
+    post: operations["createSequence"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/sequences/{sequence_id}": {
     /** Get sequence */
     get: operations["getSequence"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        sequence_id: string;
+      };
+    };
+  };
+  "/sequences/{sequence_id}/steps/_batch_create": {
+    /** Create sequence steps */
+    post: operations["createSequenceSteps"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -376,6 +399,33 @@ export interface components {
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
+    };
+    create_sequence: {
+      name: string | null;
+      tags?: (string)[];
+      /**
+       * @description The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner. 
+       * @enum {string}
+       */
+      type: "team" | "private";
+      custom_fields?: components["schemas"]["custom_fields"];
+    };
+    create_sequence_step: {
+      /** @description The name of the sequence step. */
+      name: string;
+      /** @description The body of the email (HTML). */
+      body?: string;
+      /** @description The number of days after the previous step that this step should be sent. */
+      days_after?: number;
+      /** @description If true, this step will be sent as a reply to the previous step. */
+      is_reply?: boolean;
+      /** @description The subject of the email. */
+      subject?: string;
+      /** @description The name of the template to use for this step. */
+      template_name?: string;
+      /** @enum {string} */
+      type: "auto" | "manual";
+      custom_fields?: components["schemas"]["custom_fields"];
     };
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
@@ -824,6 +874,34 @@ export interface operations {
       };
     };
   };
+  /** Create sequence */
+  createSequence: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_sequence"];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            records?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
   /** Get sequence */
   getSequence: {
     parameters: {
@@ -843,6 +921,37 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["sequence"];
+        };
+      };
+    };
+  };
+  /** Create sequence steps */
+  createSequenceSteps: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        sequence_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          steps?: (components["schemas"]["create_sequence_step"])[];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence steps created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            records?: (components["schemas"]["created_record"])[];
+            warnings?: components["schemas"]["warnings"];
+          };
         };
       };
     };

@@ -1,0 +1,46 @@
+post:
+  operationId: createSequenceSteps
+  summary: Create sequence steps
+  tags:
+    - Sequences
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            steps:
+              type: array
+              items:
+                $ref: ../components/schemas/create_sequence_step.yaml
+          required:
+            - record
+  responses:
+    '201':
+      description: Sequence steps created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../../../common/components/schemas/created_model.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - name: sequence_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
