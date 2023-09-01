@@ -1,7 +1,6 @@
 type: object
 properties:
   name:
-    nullable: true
     type: string
   tags:
     type: array

@@ -13,10 +13,8 @@ post:
         schema:
           type: object
           properties:
-            steps:
-              type: array
-              items:
-                $ref: ../components/schemas/create_sequence_step.yaml
+            record:
+              $ref: ../components/schemas/create_sequence_step.yaml
           required:
             - record
   responses:
@@ -29,10 +27,8 @@ post:
             properties:
               errors:
                 $ref: ../../../common/components/schemas/errors.yaml
-              records:
-                type: array
-                items:
-                  $ref: ../../../common/components/schemas/created_model.yaml
+              record:
+                $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
 parameters:
