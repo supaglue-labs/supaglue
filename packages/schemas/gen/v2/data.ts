@@ -190,6 +190,20 @@ export interface components {
     "x-customer-id": string;
     /** @description The provider name */
     "x-provider-name": string;
+    /** @description If provided, will only return objects modified after this datetime */
+    modified_after?: Date;
+    /** @description If provided, will only return objects modified before this datetime */
+    modified_before?: Date;
+    /** @description If provided, will only return objects created after this datetime */
+    created_after?: Date;
+    /** @description If provided, will only return objects created before this datetime */
+    created_before?: Date;
+    /** @description Whether to include data that was deleted in providers. */
+    include_deleted_data?: boolean;
+    /** @description Number of results to return per page. (Max: 1000) */
+    page_size?: string;
+    /** @description The pagination cursor value */
+    cursor?: string;
   };
   requestBodies: never;
   headers: never;
@@ -204,20 +218,13 @@ export interface operations {
   listContacts: {
     parameters: {
       query?: {
-        /** @description If provided, will only return objects modified after this datetime */
-        modified_after?: Date;
-        /** @description If provided, will only return objects modified before this datetime */
-        modified_before?: Date;
-        /** @description If provided, will only return objects created after this datetime */
-        created_after?: Date;
-        /** @description If provided, will only return objects created before this datetime */
-        created_before?: Date;
-        /** @description Whether to include data that was deleted in providers. */
-        include_deleted_data?: boolean;
-        /** @description Number of results to return per page */
-        page_size?: string;
-        /** @description The pagination cursor value */
-        cursor?: string;
+        modified_after?: components["parameters"]["modified_after"];
+        modified_before?: components["parameters"]["modified_before"];
+        created_after?: components["parameters"]["created_after"];
+        created_before?: components["parameters"]["created_before"];
+        include_deleted_data?: components["parameters"]["include_deleted_data"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -238,6 +245,15 @@ export interface operations {
   /** List accounts */
   listAccounts: {
     parameters: {
+      query?: {
+        modified_after?: components["parameters"]["modified_after"];
+        modified_before?: components["parameters"]["modified_before"];
+        created_after?: components["parameters"]["created_after"];
+        created_before?: components["parameters"]["created_before"];
+        include_deleted_data?: components["parameters"]["include_deleted_data"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
       };

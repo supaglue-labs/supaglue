@@ -1,12 +1,18 @@
 import { configureScope } from '@sentry/node';
 import { NotImplementedError, UnauthorizedError } from '@supaglue/core/errors';
 import { addLogContext, getCustomerIdPk } from '@supaglue/core/lib';
+import type {
+  ListAccountsPathParams,
+  ListAccountsQueryParams,
+  ListAccountsRequest,
+  ListAccountsResponse,
+} from '@supaglue/schemas/v2/data';
 import type { NextFunction, Request, Response } from 'express';
 import { Router } from 'express';
 
 import { getDependencyContainer } from '../../../../dependency_container';
 
-const { connectionService } = getDependencyContainer();
+const { connectionService, managedDataService } = getDependencyContainer();
 
 async function salesforceConnectionMiddleware(req: Request, res: Response, next: NextFunction) {
   const externalCustomerId = req.headers['x-customer-id'] as string;
@@ -38,9 +44,22 @@ export default function init(app: Router): void {
   const router = Router();
   router.use(salesforceConnectionMiddleware);
 
-  router.get('/accounts', async (req: Request, res: Response) => {
-    throw new NotImplementedError('Not implemented');
-  });
+  router.get(
+    '/accounts',
+    async (
+      req: Request<ListAccountsPathParams, ListAccountsResponse, ListAccountsRequest, ListAccountsQueryParams>,
+      res: Response<ListAccountsResponse>
+    ) => {
+      const result = await managedDataService.getRecords(
+        req.supaglueApplication.id,
+        'salesforce',
+        req.customerId,
+        'account',
+        req.query?.cursor,
+        req.query?.modified_after
+      );
+    }
+  );
 
   router.get('/contacts', async (req: Request, res: Response) => {
     throw new NotImplementedError('Not implemented');

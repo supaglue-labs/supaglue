@@ -48,3 +48,17 @@ components:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml
     x-provider-name:
       $ref: ../../common/components/parameters/header/x-provider-name.yaml
+    modified_after:
+      $ref: ../../common/components/parameters/query/modified_after.yaml
+    modified_before:
+      $ref: ../../common/components/parameters/query/modified_before.yaml
+    created_after:
+      $ref: ../../common/components/parameters/query/created_after.yaml
+    created_before:
+      $ref: ../../common/components/parameters/query/created_before.yaml
+    include_deleted_data:
+      $ref: ../../common/components/parameters/query/include_deleted_data.yaml
+    page_size:
+      $ref: ../../common/components/parameters/query/page_size.yaml
+    cursor:
+      $ref: ../../common/components/parameters/query/cursor.yaml

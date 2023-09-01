@@ -203,7 +203,7 @@ export interface operations {
   listListViewss: {
     parameters: {
       query?: {
-        /** @description Number of results to return per page */
+        /** @description Number of results to return per page. (Max: 1000) */
         page_size?: string;
         /** @description The pagination cursor value */
         cursor?: string;

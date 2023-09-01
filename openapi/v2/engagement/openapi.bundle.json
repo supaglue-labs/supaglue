@@ -1690,9 +1690,9 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "3804695"
+          "example": "123"
         },
-        "description": "Number of results to return per page"
+        "description": "Number of results to return per page. (Max: 1000)"
       },
       "x-customer-id": {
         "name": "x-customer-id",

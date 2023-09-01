@@ -2,7 +2,7 @@ import type { CoreDependencyContainer } from '@supaglue/core';
 import { getCoreDependencyContainer } from '@supaglue/core';
 import { Client, Connection } from '@temporalio/client';
 import fs from 'fs';
-import { ConnectionAndSyncService, MagicLinkService, PassthroughService } from './services';
+import { ConnectionAndSyncService, MagicLinkService, ManagedDataService, PassthroughService } from './services';
 
 const TEMPORAL_ADDRESS =
   process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
@@ -16,6 +16,7 @@ type DependencyContainer = CoreDependencyContainer & {
   connectionAndSyncService: ConnectionAndSyncService;
   passthroughService: PassthroughService;
   magicLinkService: MagicLinkService;
+  managedDataService: ManagedDataService;
 };
 
 // global
@@ -63,12 +64,15 @@ function createDependencyContainer(): DependencyContainer {
 
   const magicLinkService = new MagicLinkService(prisma, customerService, providerService, connectionAndSyncService);
 
+  const managedDataService = new ManagedDataService();
+
   return {
     ...coreDependencyContainer,
     temporalClient,
     connectionAndSyncService,
     passthroughService,
     magicLinkService,
+    managedDataService,
   };
 }
 
