@@ -45,8 +45,20 @@ export type ProviderDetailsPanelProps = {
   isLoading: boolean;
 };
 
+function isOauthProvider(provider: Provider | undefined): provider is OauthProvider {
+  return provider?.authType === 'oauth2';
+}
+
 export default function ProviderDetailsPanel({ providerName, category, isLoading }: ProviderDetailsPanelProps) {
-  const shouldAllowManagedOauth = ['salesforce', 'hubspot', 'gong', 'salesloft', 'outreach'].includes(providerName);
+  const shouldAllowManagedOauth = [
+    'salesforce',
+    'salesforce_marketing_cloud_account_engagement',
+    'hubspot',
+    'gong',
+    'salesloft',
+    'outreach',
+  ].includes(providerName);
+
   const notYetSupported = [
     'asana',
     'box',
@@ -55,11 +67,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     'google_calendar',
     'google_drive',
     'linkedin',
-    'marketo',
     'messenger',
     'onedrive',
     'outlook',
-    'pardot',
     'slack',
     'ms_teams',
     'whatsapp',
@@ -69,7 +79,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   ];
   // These providers either don't allow you to pass in scopes or make you pass scopes another way.
   const noScopes = ['salesloft', 'intercom', 'ms_dynamics_365_sales'].includes(providerName);
-  const isApiKey = category === 'enrichment' || providerName === 'apollo';
+  const isApiKey = category === 'enrichment' || providerName === 'apollo' || providerName === 'marketo';
   const isOauth = !isApiKey;
   const activeApplicationId = useActiveApplicationId();
   const { schemas, isLoading: isLoadingSchemas } = useSchemas();
@@ -79,7 +89,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [useManagedOauth, setUseManagedOauth] = useState<boolean>(true);
+  const [useManagedOauth, setUseManagedOauth] = useState<boolean>(shouldAllowManagedOauth);
   const [commonObjects, setCommonObjects] = useState<ProviderObject[]>([]);
   const [standardObjects, setStandardObjects] = useState<ProviderObject[]>([]);
   const router = useRouter();
@@ -96,7 +106,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
 
   useEffect(() => {
     setFriendlyProviderId(provider?.id ?? '--');
-    if (provider?.authType === 'oauth2') {
+    if (isOauthProvider(provider)) {
       setClientId(provider?.config?.oauth?.credentials?.oauthClientId ?? '');
 
       setClientSecret(provider?.config?.oauth?.credentials?.oauthClientSecret ?? '');
@@ -117,12 +127,12 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     if (provider) {
       const newProvider = {
         ...provider,
-        config: isOauth
+        config: isOauthProvider(provider)
           ? {
-              ...(provider as OauthProvider).config,
+              ...provider.config,
               providerAppId: '', // TODO: add input field for this
               oauth: {
-                ...(provider as OauthProvider).config.oauth,
+                ...provider.config.oauth,
                 credentials: {
                   oauthClientId: clientId,
                   oauthClientSecret: clientSecret,
@@ -145,9 +155,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     }
     const response = await createRemoteProvider(activeApplicationId, {
       applicationId: activeApplicationId,
-      authType: isOauth ? 'oauth2' : 'api_key',
+      authType: isOauth ? 'oauth2' : providerName === 'marketo' ? 'marketo_oauth2' : 'api_key',
       category,
-      name: providerName as ProviderName,
+      name: providerName,
       config: isOauth
         ? {
             providerAppId: '', // TODO: add input field for this

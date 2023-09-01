@@ -3416,6 +3416,7 @@
           "crm",
           "engagement",
           "enrichment",
+          "marketing_automation",
           "no_category"
         ],
         "example": "crm"
@@ -3674,7 +3675,9 @@
           "intercom",
           "linear",
           "clearbit",
-          "6sense"
+          "6sense",
+          "marketo",
+          "salesforce_marketing_cloud_account_engagement"
         ],
         "example": "hubspot"
       },
@@ -4008,14 +4011,10 @@
                 "example": "my-customer-1"
               },
               "provider_name": {
-                "type": "string",
-                "example": "hubspot"
+                "$ref": "#/components/schemas/provider_name"
               },
               "category": {
-                "type": "string",
-                "enum": [
-                  "crm"
-                ]
+                "$ref": "#/components/schemas/category"
               },
               "connection_id": {
                 "type": "string",
@@ -4079,14 +4078,10 @@
                 "example": "my-customer-1"
               },
               "provider_name": {
-                "type": "string",
-                "example": "hubspot"
+                "$ref": "#/components/schemas/provider_name"
               },
               "category": {
-                "type": "string",
-                "enum": [
-                  "crm"
-                ]
+                "$ref": "#/components/schemas/category"
               },
               "connection_id": {
                 "type": "string",
@@ -4739,18 +4734,10 @@
                     "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
                   },
                   "category": {
-                    "type": "string",
-                    "enum": [
-                      "crm"
-                    ]
+                    "$ref": "#/components/schemas/category"
                   },
                   "provider_name": {
-                    "type": "string",
-                    "enum": [
-                      "hubspot",
-                      "salesforce"
-                    ],
-                    "example": "hubspot"
+                    "$ref": "#/components/schemas/provider_name"
                   }
                 },
                 "required": [

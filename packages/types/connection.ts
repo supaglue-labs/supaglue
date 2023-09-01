@@ -25,6 +25,20 @@ export type OauthConnectionCredentialsDecrypted = {
   expiresAt: string | null; // null means unknown expiry time
 };
 
+export type MarketoOauthConnectionCredentialsDecrypted = {
+  type: 'marketo_oauth2';
+  clientId: string;
+  clientSecret: string;
+  instanceUrl: string;
+  accessToken?: string;
+  expiresAt?: string;
+};
+
+export type SalesforceMarketingCloudAccountEngagementCredentialsDecrypted = OauthConnectionCredentialsDecrypted & {
+  businessUnitId: string;
+  loginUrl?: string;
+};
+
 export type ImportedConnectionCredentials =
   | {
       providerName: 'salesforce';
@@ -58,6 +72,20 @@ export type ImportedConnectionCredentials =
       type: 'access_key_secret';
       accessKey: string;
       accessKeySecret: string;
+    }
+  | {
+      providerName: 'marketo';
+      type: 'marketo_oauth2';
+      clientId: string;
+      clientSecret: string;
+      instanceUrl: string;
+    }
+  | {
+      providerName: 'salesforce_marketing_cloud_account_engagement';
+      type: 'oauth2';
+      refreshToken: string;
+      businessUnitId: string;
+      loginUrl?: string;
     };
 
 export type ConnectionCredentialsDecrypted<T extends ProviderName> = {
@@ -83,6 +111,8 @@ export type ConnectionCredentialsDecrypted<T extends ProviderName> = {
   linear: OauthConnectionCredentialsDecrypted;
   clearbit: ApiKeyConnectionCredentialsDecrypted;
   '6sense': ApiKeyConnectionCredentialsDecrypted;
+  marketo: MarketoOauthConnectionCredentialsDecrypted;
+  salesforce_marketing_cloud_account_engagement: SalesforceMarketingCloudAccountEngagementCredentialsDecrypted;
 }[T];
 
 export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;

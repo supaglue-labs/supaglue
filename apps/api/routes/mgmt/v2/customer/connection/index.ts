@@ -114,7 +114,7 @@ export default function init(app: Router): void {
     ) => {
       // TODO: revoke token from provider?
       await connectionAndSyncService.delete(req.params.connection_id, req.supaglueApplication.id);
-      return res.status(204).send();
+      return res.status(204).end();
     }
   );
 

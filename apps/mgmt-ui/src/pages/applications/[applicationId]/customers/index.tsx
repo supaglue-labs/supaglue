@@ -237,17 +237,19 @@ function EmbedLinkMenu({ customerId, API_HOST }: { customerId: string } & Supagl
           'aria-labelledby': 'basic-button',
         }}
       >
-        {providers.map(({ name: providerName }) => (
-          <MenuItem
-            key={providerName}
-            onClick={async () => {
-              await handleEmbedLinkClick(providerName);
-              handleClose();
-            }}
-          >
-            {getDisplayName(providerName)}
-          </MenuItem>
-        ))}
+        {providers
+          .filter(({ name: providerName }) => providerName !== 'apollo' && providerName !== 'marketo')
+          .map(({ name: providerName }) => (
+            <MenuItem
+              key={providerName}
+              onClick={async () => {
+                await handleEmbedLinkClick(providerName);
+                handleClose();
+              }}
+            >
+              {getDisplayName(providerName)}
+            </MenuItem>
+          ))}
       </Menu>
     </>
   );

@@ -31,7 +31,7 @@ export default async function handler(
         const r = await result.json();
         return res.status(result.status).json(r);
       }
-      return res.status(204).json(null);
+      return res.status(204).end();
     }
   }
 }

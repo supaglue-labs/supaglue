@@ -104,7 +104,7 @@ export default function init(app: Router): void {
       res: Response<DeleteSyncConfigResponse>
     ) => {
       await syncConfigService.delete(req.params.sync_config_id, req.supaglueApplication.id);
-      return res.status(204).send();
+      return res.status(204).end();
     }
   );
 

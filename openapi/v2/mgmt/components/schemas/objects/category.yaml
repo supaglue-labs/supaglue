@@ -3,5 +3,6 @@ enum:
   - crm
   - engagement
   - enrichment
+  - marketing_automation
   - no_category
 example: crm

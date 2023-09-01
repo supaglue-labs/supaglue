@@ -1,0 +1,163 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "0.14.0",
+    "title": "Unified Enrichment API",
+    "contact": {
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
+    },
+    "description": "#### Introduction\n\nWelcome to the Unified Actions API (Marketing Automation) documentation. You can use this API to write to third-party providers.\n\n[View common schema for Marketing Automation](https://docs.supaglue.com/platform/common-schemas/marketing-automation)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/marketing-automation/v2\n```\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.supaglue.io/marketing-automation/v2",
+      "description": "Supaglue API"
+    }
+  ],
+  "paths": {
+    "/forms/{form_id}/_submit": {
+      "post": {
+        "operationId": "submitForm",
+        "summary": "Submit form",
+        "tags": [
+          "Forms"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "formFields": {
+                    "type": "object",
+                    "description": "a mapping of field name to value for each field in the form",
+                    "example": {
+                      "email": "me@supaglue.com",
+                      "firstName": "George",
+                      "lastName": "Xing"
+                    },
+                    "properties": {
+                      "email": {
+                        "type": "string",
+                        "description": "the email address of the lead",
+                        "example": "me@supaglue.com"
+                      }
+                    },
+                    "required": [
+                      "email"
+                    ],
+                    "additionalProperties": true
+                  }
+                },
+                "required": [
+                  "formFields"
+                ],
+                "example": {
+                  "formFields": {
+                    "email": "me@supaglue.com",
+                    "firstName": "George",
+                    "lastName": "Xing"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information about the lead created or updated by the form submission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/submit_form_response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "form_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "12345"
+          }
+        }
+      ]
+    }
+  },
+  "tags": [
+    {
+      "name": "Forms",
+      "description": "Endpoints for managing and submitting forms"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "x-api-key": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header",
+        "description": "API key to allow developers to access the API"
+      }
+    },
+    "schemas": {
+      "submit_form_response": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the lead that was created/updated as a result of submitting the form",
+            "example": 12345
+          },
+          "status": {
+            "type": "string",
+            "example": "updated"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      }
+    },
+    "parameters": {
+      "x-customer-id": {
+        "name": "x-customer-id",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "my-customer-1"
+        },
+        "description": "The customer ID that uniquely identifies the customer in your application",
+        "required": true
+      },
+      "x-provider-name": {
+        "name": "x-provider-name",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name",
+        "required": true
+      }
+    }
+  }
+}

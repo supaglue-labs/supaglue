@@ -15,6 +15,7 @@ import { ApplicationService } from './services/application_service';
 import { CrmCommonObjectService } from './services/common_objects/crm/common_object_service';
 import { EngagementCommonObjectService } from './services/common_objects/engagement/common_object_service';
 import { EnrichmentCommonObjectService } from './services/common_objects/enrichment';
+import { MarketingAutomationCommonObjectService } from './services/common_objects/marketing_automation';
 import { DestinationService } from './services/destination_service';
 import { EntityRecordService } from './services/entity_record_service';
 import { EntityService } from './services/entity_service';
@@ -49,6 +50,7 @@ export type CoreDependencyContainer = {
   crmCommonObjectService: CrmCommonObjectService;
   engagementCommonObjectService: EngagementCommonObjectService;
   enrichmentCommonObjectService: EnrichmentCommonObjectService;
+  marketingAutomationCommonObjectService: MarketingAutomationCommonObjectService;
 
   metadataService: MetadataService;
   entityRecordService: EntityRecordService;
@@ -92,6 +94,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   );
   const engagementCommonObjectService = new EngagementCommonObjectService(remoteService, destinationService);
   const enrichmentCommonObjectService = new EnrichmentCommonObjectService(remoteService);
+  const marketingAutomationCommonObjectService = new MarketingAutomationCommonObjectService(remoteService);
 
   const metadataService = new MetadataService(remoteService, connectionService);
 
@@ -128,6 +131,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     crmCommonObjectService,
     engagementCommonObjectService,
     enrichmentCommonObjectService,
+    marketingAutomationCommonObjectService,
     metadataService,
     syncService,
     syncRunService,

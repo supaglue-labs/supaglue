@@ -54,7 +54,7 @@ export default function init(app: Router): void {
       res: Response<DeleteEntityMappingResponse>
     ) => {
       await connectionService.deleteEntityMapping(req.customerConnection.id, req.params.entity_id);
-      return res.status(204).send();
+      return res.status(204).end();
     }
   );
 

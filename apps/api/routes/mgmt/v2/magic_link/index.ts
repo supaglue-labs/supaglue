@@ -49,7 +49,7 @@ export default function init(app: Router): void {
       res: Response<DeleteMagicLinkResponse>
     ) => {
       await magicLinkService.deleteMagicLink(req.supaglueApplication.id, req.params.magic_link_id);
-      return res.status(204).send();
+      return res.status(204).end();
     }
   );
 
