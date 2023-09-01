@@ -15,7 +15,6 @@ import type {
   SequenceCreateParams,
   SequenceStateCreateParams,
 } from '@supaglue/types/engagement';
-import type { SequenceStepCreateParams } from '@supaglue/types/engagement/sequence_step';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
 import {
@@ -235,7 +234,6 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'sequence':
         return await this.createSequence(params as SequenceCreateParams);
       case 'sequence_step':
-        return await this.createSequenceStep(params as SequenceStepCreateParams);
       case 'mailbox':
       case 'user':
         throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
@@ -292,17 +290,17 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return response.data.data.id.toString();
   }
 
-  async createSequenceSteps(params: SequenceStepCreateParams): Promise<string> {
-    await this.maybeRefreshAccessToken();
-    const response = await axios.post<{ data: OutreachRecord }>(
-      `${this.#baseURL}/api/v2/sequences`,
-      toOutreachSequenceStepCreateParams(params),
-      {
-        headers: this.#headers,
-      }
-    );
-    return response.data.data.id.toString();
-  }
+  // async createSequenceSteps(params: SequenceStepCreateParams): Promise<string> {
+  //   await this.maybeRefreshAccessToken();
+  //   const response = await axios.post<{ data: OutreachRecord }>(
+  //     `${this.#baseURL}/api/v2/sequences`,
+  //     toOutreachSequenceStepCreateParams(params),
+  //     {
+  //       headers: this.#headers,
+  //     }
+  //   );
+  //   return response.data.data.id.toString();
+  // }
 
   public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
