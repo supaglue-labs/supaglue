@@ -11,6 +11,12 @@ export class NotImplementedError extends SGError {
   }
 }
 
+export class CacheInvalidationError extends SGError {
+  constructor(message?: string) {
+    super(message || 'Cache invalidation error');
+  }
+}
+
 export class HTTPError extends SGError {
   code = 500;
   problemType = 'INTERNAL_SERVER_ERROR';
