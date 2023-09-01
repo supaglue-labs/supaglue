@@ -11,12 +11,6 @@ export class NotImplementedError extends SGError {
   }
 }
 
-export class CacheInvalidationError extends SGError {
-  constructor(message?: string) {
-    super(message || 'Cache invalidation error');
-  }
-}
-
 export class HTTPError extends SGError {
   code = 500;
   problemType = 'INTERNAL_SERVER_ERROR';
@@ -32,6 +26,13 @@ export class InternalServerError extends HTTPError {
   problemType = 'INTERNAL_SERVER_ERROR';
   constructor(message: string, cause?: Error) {
     super(message, cause);
+  }
+}
+
+export class CacheInvalidationError extends InternalServerError {
+  problemType = 'CACHE_INVALIDATION_ERROR';
+  constructor(message?: string) {
+    super(message || 'Cache invalidation error');
   }
 }
 
