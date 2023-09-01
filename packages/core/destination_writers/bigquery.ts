@@ -1182,6 +1182,11 @@ const schemaByCommonObjectType: {
           mode: 'NULLABLE',
         },
         {
+          name: 'account_id',
+          type: 'STRING',
+          mode: 'NULLABLE',
+        },
+        {
           name: 'contact_id',
           type: 'STRING',
           mode: 'NULLABLE',
