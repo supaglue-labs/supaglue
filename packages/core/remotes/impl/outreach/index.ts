@@ -12,8 +12,10 @@ import type {
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
+  SequenceCreateParams,
   SequenceStateCreateParams,
 } from '@supaglue/types/engagement';
+import type { SequenceStepCreateParams } from '@supaglue/types/engagement/sequence_step';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
 import {
@@ -40,6 +42,7 @@ import {
   toOutreachAccountUpdateParams,
   toOutreachProspectCreateParams,
   toOutreachProspectUpdateParams,
+  toOutreachSequenceCreateParams,
   toOutreachSequenceStateCreateParams,
 } from './mappers';
 
@@ -230,6 +233,9 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'account':
         return await this.createAccount(params as AccountCreateParams);
       case 'sequence':
+        return await this.createSequence(params as SequenceCreateParams);
+      case 'sequence_step':
+        return await this.createSequenceStep(params as SequenceStepCreateParams);
       case 'mailbox':
       case 'user':
         throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
@@ -267,6 +273,30 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     const response = await axios.post<{ data: OutreachRecord }>(
       `${this.#baseURL}/api/v2/sequenceStates`,
       toOutreachSequenceStateCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.data.id.toString();
+  }
+
+  async createSequence(params: SequenceCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/sequences`,
+      toOutreachSequenceCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.data.id.toString();
+  }
+
+  async createSequenceSteps(params: SequenceStepCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/sequences`,
+      toOutreachSequenceStepCreateParams(params),
       {
         headers: this.#headers,
       }

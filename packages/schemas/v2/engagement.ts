@@ -73,6 +73,23 @@ export type GetSequenceRequest = never;
 export type GetSequenceResponse =
   operations['getSequence']['responses'][keyof operations['getSequence']['responses']]['content']['application/json'];
 
+export type CreateSequencePathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type CreateSequenceQueryParams = Required<operations['createSequence']>['parameters']['query'];
+export type CreateSequenceQueryParams = any;
+export type CreateSequenceRequest = operations['createSequence']['requestBody']['content']['application/json'];
+export type CreateSequenceResponse =
+  operations['createSequence']['responses'][keyof operations['createSequence']['responses']]['content']['application/json'];
+
+export type CreateSequenceStepsPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type CreateSequenceStepsQueryParams = Required<operations['createSequenceSteps']>['parameters']['query'];
+export type CreateSequenceStepsQueryParams = any;
+export type CreateSequenceStepsRequest =
+  operations['createSequenceSteps']['requestBody']['content']['application/json'];
+export type CreateSequenceStepsResponse =
+  operations['createSequenceSteps']['responses'][keyof operations['createSequenceSteps']['responses']]['content']['application/json'];
+
 export type GetMailboxPathParams = paths[`/mailboxes/{mailbox_id}`]['parameters']['path'];
 // TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
 // export type GetMailboxQueryParams = Required<operations['getMailbox']>['parameters']['query'];

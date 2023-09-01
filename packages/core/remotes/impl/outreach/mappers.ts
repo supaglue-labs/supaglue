@@ -10,6 +10,7 @@ import type {
   Mailbox,
   PhoneNumber,
   Sequence,
+  SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
   User,
@@ -310,6 +311,23 @@ export const toOutreachSequenceStateCreateParams = ({
           },
         },
       },
+    },
+  };
+};
+
+export const toOutreachSequenceCreateParams = ({
+  name,
+  tags,
+  customFields,
+}: SequenceCreateParams): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        name,
+        tags,
+        ...customFields,
+      },
+      type: 'sequence',
     },
   };
 };

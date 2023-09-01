@@ -717,7 +717,7 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "records": {
+                    "record": {
                       "$ref": "#/components/schemas/created_record"
                     },
                     "warnings": {
@@ -815,7 +815,7 @@
                   }
                 },
                 "required": [
-                  "record"
+                  "steps"
                 ]
               }
             }
@@ -1549,7 +1549,6 @@
         "type": "object",
         "properties": {
           "name": {
-            "nullable": true,
             "type": "string"
           },
           "tags": {

@@ -401,7 +401,7 @@ export interface components {
       last_modified_at: Date;
     };
     create_sequence: {
-      name: string | null;
+      name: string;
       tags?: (string)[];
       /**
        * @description The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner. 
@@ -895,7 +895,7 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            records?: components["schemas"]["created_record"];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
@@ -939,7 +939,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          steps?: (components["schemas"]["create_sequence_step"])[];
+          steps: (components["schemas"]["create_sequence_step"])[];
         };
       };
     };

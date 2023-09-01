@@ -18,7 +18,7 @@ post:
               items:
                 $ref: ../components/schemas/create_sequence_step.yaml
           required:
-            - record
+            - steps
   responses:
     '201':
       description: Sequence steps created

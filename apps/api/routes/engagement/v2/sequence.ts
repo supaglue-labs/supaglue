@@ -1,6 +1,14 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { toSnakecasedKeysSequence } from '@supaglue/core/mappers/engagement';
-import type { GetSequencePathParams, GetSequenceRequest, GetSequenceResponse } from '@supaglue/schemas/v2/engagement';
+import type {
+  CreateSequencePathParams,
+  CreateSequenceRequest,
+  CreateSequenceResponse,
+  GetSequencePathParams,
+  GetSequenceRequest,
+  GetSequenceResponse,
+} from '@supaglue/schemas/v2/engagement';
+import { camelcaseKeysSansCustomFields } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
@@ -28,9 +36,20 @@ export default function init(app: Router): void {
     throw new Error('Not implemented');
   });
 
-  router.post('/', async (req: Request, res: Response) => {
-    throw new Error('Not implemented');
-  });
+  router.post(
+    '/',
+    async (
+      req: Request<CreateSequencePathParams, CreateSequenceResponse, CreateSequenceRequest>,
+      res: Response<CreateSequenceResponse>
+    ) => {
+      const id = await engagementCommonObjectService.create(
+        'sequence',
+        req.customerConnection,
+        camelcaseKeysSansCustomFields(req.body.record)
+      );
+      return res.status(200).send({ record: { id } });
+    }
+  );
 
   router.patch('/:sequence_id', async (req: Request, res: Response) => {
     throw new Error('Not implemented');
