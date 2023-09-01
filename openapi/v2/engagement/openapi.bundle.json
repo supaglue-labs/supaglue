@@ -787,10 +787,10 @@
         }
       ]
     },
-    "/sequences/{sequence_id}/steps/_batch_create": {
+    "/sequence_steps": {
       "post": {
-        "operationId": "createSequenceSteps",
-        "summary": "Create sequence steps",
+        "operationId": "createSequenceStep",
+        "summary": "Create sequence step",
         "tags": [
           "Sequences"
         ],
@@ -807,15 +807,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "steps": {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/create_sequence_step"
-                    }
+                  "record": {
+                    "$ref": "#/components/schemas/create_sequence_step"
                   }
                 },
                 "required": [
-                  "steps"
+                  "record"
                 ]
               }
             }
@@ -823,7 +820,7 @@
         },
         "responses": {
           "201": {
-            "description": "Sequence steps created",
+            "description": "Sequence step created",
             "content": {
               "application/json": {
                 "schema": {
@@ -832,11 +829,8 @@
                     "errors": {
                       "$ref": "#/components/schemas/errors"
                     },
-                    "records": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/created_record"
-                      }
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -1577,6 +1571,10 @@
       "create_sequence_step": {
         "type": "object",
         "properties": {
+          "sequence_id": {
+            "type": "string",
+            "description": "The ID of the sequence."
+          },
           "name": {
             "type": "string",
             "description": "The name of the sequence step."
@@ -1613,6 +1611,7 @@
           }
         },
         "required": [
+          "sequence_id",
           "name",
           "type"
         ]

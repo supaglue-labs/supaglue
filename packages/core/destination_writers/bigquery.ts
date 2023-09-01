@@ -33,6 +33,7 @@ import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/
 import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
 import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
+import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
@@ -431,6 +432,7 @@ const tableNamesByCommonObjectType: {
     account: 'engagement_accounts',
     contact: 'engagement_contacts',
     sequence_state: 'engagement_sequence_states',
+    sequence_step: 'engagement_sequence_steps',
     user: 'engagement_users',
     sequence: 'engagement_sequences',
     mailbox: 'engagement_mailboxes',
@@ -459,6 +461,7 @@ const columnsByCommonObjectType: {
     account: keysOfSnakecasedEngagementAccountWithTenant,
     contact: keysOfSnakecasedEngagementContactWithTenant,
     sequence_state: keysOfSnakecasedSequenceStateWithTenant,
+    sequence_step: keysOfSnakecasedSequenceStepWithTenant,
     user: keysOfSnakecasedEngagementUserWithTenant,
     sequence: keysOfSnakecasedSequenceWithTenant,
     mailbox: keysOfSnakecasedMailboxWithTenant,
@@ -1357,6 +1360,70 @@ const schemaByCommonObjectType: {
         {
           name: 'is_enabled',
           type: 'BOOLEAN',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'raw_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+      ],
+    },
+    sequence_step: {
+      fields: [
+        {
+          name: '_supaglue_application_id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_provider_name',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_customer_id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_emitted_at',
+          type: 'TIMESTAMP',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'created_at',
+          type: 'TIMESTAMP',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'updated_at',
+          type: 'TIMESTAMP',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'is_deleted',
+          type: 'BOOLEAN',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'last_modified_at',
+          type: 'TIMESTAMP',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'sequence_id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'name',
+          type: 'STRING',
           mode: 'REQUIRED',
         },
         {

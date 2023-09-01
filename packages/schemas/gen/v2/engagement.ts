@@ -123,9 +123,9 @@ export interface paths {
       };
     };
   };
-  "/sequences/{sequence_id}/steps/_batch_create": {
-    /** Create sequence steps */
-    post: operations["createSequenceSteps"];
+  "/sequence_steps": {
+    /** Create sequence step */
+    post: operations["createSequenceStep"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -411,6 +411,8 @@ export interface components {
       custom_fields?: components["schemas"]["custom_fields"];
     };
     create_sequence_step: {
+      /** @description The ID of the sequence. */
+      sequence_id: string;
       /** @description The name of the sequence step. */
       name: string;
       /** @description The body of the email (HTML). */
@@ -925,8 +927,8 @@ export interface operations {
       };
     };
   };
-  /** Create sequence steps */
-  createSequenceSteps: {
+  /** Create sequence step */
+  createSequenceStep: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -939,17 +941,17 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
-          steps: (components["schemas"]["create_sequence_step"])[];
+          record: components["schemas"]["create_sequence_step"];
         };
       };
     };
     responses: {
-      /** @description Sequence steps created */
+      /** @description Sequence step created */
       201: {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            records?: (components["schemas"]["created_record"])[];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };

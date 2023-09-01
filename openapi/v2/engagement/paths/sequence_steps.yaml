@@ -1,6 +1,6 @@
 post:
-  operationId: createSequenceSteps
-  summary: Create sequence steps
+  operationId: createSequenceStep
+  summary: Create sequence step
   tags:
     - Sequences
   security:
@@ -13,15 +13,13 @@ post:
         schema:
           type: object
           properties:
-            steps:
-              type: array
-              items:
-                $ref: ../components/schemas/create_sequence_step.yaml
+            record:
+              $ref: ../components/schemas/create_sequence_step.yaml
           required:
-            - steps
+            - record
   responses:
     '201':
-      description: Sequence steps created
+      description: Sequence step created
       content:
         application/json:
           schema:
@@ -29,10 +27,8 @@ post:
             properties:
               errors:
                 $ref: ../../../common/components/schemas/errors.yaml
-              records:
-                type: array
-                items:
-                  $ref: ../../../common/components/schemas/created_model.yaml
+              record:
+                $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
 parameters:

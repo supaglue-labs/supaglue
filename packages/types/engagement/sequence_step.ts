@@ -5,6 +5,7 @@ export type SnakecasedKeysSequenceStep = SnakecasedKeys<SequenceStep>;
 export type SnakecasedKeysSequenceStepWithTenant = SnakecasedKeysSequenceStep & SnakecasedEngagementTenantFields;
 
 type CoreSequenceStep = {
+  sequenceId: string;
   name: string;
   // This is unused -- add more fields later.
 };
@@ -20,7 +21,7 @@ export type SequenceStepCreateParams = {
   subject?: string;
   templateName?: string;
   type: 'auto' | 'manual';
-  customFields: Record<string, unknown>;
+  customFields?: Record<string, unknown>;
 };
 
 export type RemoteSequenceStepTypes = {

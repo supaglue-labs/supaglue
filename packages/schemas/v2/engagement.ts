@@ -81,15 +81,6 @@ export type CreateSequenceRequest = operations['createSequence']['requestBody'][
 export type CreateSequenceResponse =
   operations['createSequence']['responses'][keyof operations['createSequence']['responses']]['content']['application/json'];
 
-export type CreateSequenceStepsPathParams = never;
-// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
-// export type CreateSequenceStepsQueryParams = Required<operations['createSequenceSteps']>['parameters']['query'];
-export type CreateSequenceStepsQueryParams = any;
-export type CreateSequenceStepsRequest =
-  operations['createSequenceSteps']['requestBody']['content']['application/json'];
-export type CreateSequenceStepsResponse =
-  operations['createSequenceSteps']['responses'][keyof operations['createSequenceSteps']['responses']]['content']['application/json'];
-
 export type GetMailboxPathParams = paths[`/mailboxes/{mailbox_id}`]['parameters']['path'];
 // TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
 // export type GetMailboxQueryParams = Required<operations['getMailbox']>['parameters']['query'];
@@ -114,3 +105,11 @@ export type CreateSequenceStateRequest =
   operations['createSequenceState']['requestBody']['content']['application/json'];
 export type CreateSequenceStateResponse =
   operations['createSequenceState']['responses'][keyof operations['createSequenceState']['responses']]['content']['application/json'];
+
+export type CreateSequenceStepPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type CreateSequenceStepQueryParams = Required<operations['createSequenceStep']>['parameters']['query'];
+export type CreateSequenceStepQueryParams = any;
+export type CreateSequenceStepRequest = operations['createSequenceStep']['requestBody']['content']['application/json'];
+export type CreateSequenceStepResponse =
+  operations['createSequenceStep']['responses'][keyof operations['createSequenceStep']['responses']]['content']['application/json'];

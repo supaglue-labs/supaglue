@@ -45,8 +45,8 @@ paths:
     $ref: paths/sequences.yaml
   '/sequences/{sequence_id}':
     $ref: paths/sequences@{sequence_id}.yaml
-  '/sequences/{sequence_id}/steps/_batch_create':
-    $ref: paths/sequences@{sequence_id}@steps@_batch_create.yaml
+  '/sequence_steps':
+    $ref: paths/sequence_steps.yaml
   '/sequence_states':
     $ref: paths/sequence_states.yaml
   '/sequence_states/{sequence_state_id}':

@@ -15,6 +15,7 @@ import {
   toSnakecasedKeysMailbox,
   toSnakecasedKeysSequence,
   toSnakecasedKeysSequenceState,
+  toSnakecasedKeysSequenceStep,
 } from '../mappers/engagement';
 
 export const getSnakecasedKeysMapper = (category: ProviderCategory, commonObjectType: CommonObjectType) => {
@@ -41,6 +42,7 @@ const snakecasedKeysMapperByCommonObjectType: {
     mailbox: toSnakecasedKeysMailbox,
     sequence: toSnakecasedKeysSequence,
     sequence_state: toSnakecasedKeysSequenceState,
+    sequence_step: toSnakecasedKeysSequenceStep,
     user: toSnakecasedKeysEngagementUser,
   },
 };
