@@ -26,6 +26,5 @@ export type SequenceStepCreateParams = {
 export type RemoteSequenceStepTypes = {
   object: SequenceStep;
   createParams: SequenceStepCreateParams;
-  batchCreateParams: never;
   updateParams: never;
 };

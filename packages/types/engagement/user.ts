@@ -15,6 +15,5 @@ export type User = BaseEngagementModel & CoreUser;
 export type RemoteUserTypes = {
   object: User;
   createParams: never;
-  batchCreateParams: never;
   updateParams: never;
 };

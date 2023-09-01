@@ -40,6 +40,5 @@ export type ContactUpdateParams = ContactCreateParams & {
 export type RemoteContactTypes = {
   object: Contact;
   createParams: ContactCreateParams;
-  batchCreateParams: never;
   updateParams: ContactUpdateParams;
 };
