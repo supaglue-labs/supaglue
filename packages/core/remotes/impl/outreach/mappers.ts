@@ -13,11 +13,14 @@ import type {
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
+  SequenceStepCreateParams,
   User,
 } from '@supaglue/types/engagement';
 import type { OutreachRecord } from '.';
 import { BadRequestError } from '../../../errors';
 import { removeUndefinedValues } from '../../../lib';
+
+const SECS_IN_DAY = 86400;
 
 export const fromOutreachUserToUser = (record: OutreachRecord): User => {
   const { id, attributes } = record;
@@ -329,6 +332,33 @@ export const toOutreachSequenceCreateParams = ({
       },
       type: 'sequence',
     },
+  };
+};
+
+export const toOutreachSequenceStepCreateParams = ({
+  sequenceId,
+  name,
+  body,
+  daysAfter,
+  isReply,
+  subject,
+  templateName,
+  type,
+  customFields,
+}: SequenceStepCreateParams): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        interval: daysAfter ? daysAfter * SECS_IN_DAY : undefined,
+      },
+      relationships: {
+        sequence: {
+          id: sequenceId,
+          type: 'sequence',
+        },
+      },
+    },
+    type: 'sequenceStep',
   };
 };
 

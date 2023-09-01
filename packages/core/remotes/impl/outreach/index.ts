@@ -14,6 +14,7 @@ import type {
   EngagementCommonObjectTypeMap,
   SequenceCreateParams,
   SequenceStateCreateParams,
+  SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
@@ -290,17 +291,17 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return response.data.data.id.toString();
   }
 
-  // async createSequenceSteps(params: SequenceStepCreateParams): Promise<string> {
-  //   await this.maybeRefreshAccessToken();
-  //   const response = await axios.post<{ data: OutreachRecord }>(
-  //     `${this.#baseURL}/api/v2/sequences`,
-  //     toOutreachSequenceStepCreateParams(params),
-  //     {
-  //       headers: this.#headers,
-  //     }
-  //   );
-  //   return response.data.data.id.toString();
-  // }
+  async createSequenceStep(params: SequenceStepCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/sequences`,
+      toOutreachSequenceStepCreateParams(params),
+      {
+        headers: this.#headers,
+      }
+    );
+    return response.data.data.id.toString();
+  }
 
   public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,

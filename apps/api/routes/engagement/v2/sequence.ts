@@ -32,10 +32,6 @@ export default function init(app: Router): void {
     }
   );
 
-  router.post('/:sequence_id/steps/_batch_create', async (req: Request, res: Response) => {
-    throw new Error('Not implemented');
-  });
-
   router.post(
     '/',
     async (
