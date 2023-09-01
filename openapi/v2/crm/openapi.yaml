@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.14.0
+  version: 0.14.1
   title: Unified CRM API
   contact:
     name: Supaglue

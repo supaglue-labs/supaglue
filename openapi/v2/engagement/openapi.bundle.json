@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.14.0",
+    "version": "0.14.1",
     "title": "Unified Engagement API",
     "contact": {
       "name": "Supaglue",
