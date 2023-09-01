@@ -37,71 +37,13 @@
         ],
         "parameters": [
           {
-            "name": "modified_after",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects modified after this datetime"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "name": "modified_before",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects modified before this datetime"
+            "$ref": "#/components/parameters/page_size"
           },
           {
-            "name": "created_after",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects created after this datetime"
-          },
-          {
-            "name": "created_before",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects created before this datetime"
-          },
-          {
-            "name": "include_deleted_data",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to include data that was deleted in providers."
-          },
-          {
-            "name": "page_size",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "3804695"
-            },
-            "description": "Number of results to return per page"
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
-            },
-            "description": "The pagination cursor value"
+            "$ref": "#/components/parameters/cursor"
           }
         ],
         "responses": {
@@ -152,25 +94,13 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/0"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/1"
+            "$ref": "#/components/parameters/page_size"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/2"
-          },
-          {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/3"
-          },
-          {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/4"
-          },
-          {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
-          },
-          {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
+            "$ref": "#/components/parameters/cursor"
           }
         ],
         "responses": {
@@ -256,6 +186,7 @@
           },
           "LastActivityDate": {
             "type": "string",
+            "format": "date-time",
             "nullable": true,
             "description": "The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record."
           },
@@ -321,10 +252,12 @@
           },
           "CreatedDate": {
             "type": "string",
+            "format": "date-time",
             "description": "The date and time when this contact was created."
           },
           "SystemModstamp": {
             "type": "string",
+            "format": "date-time",
             "description": "The date and time when this contact was last modified."
           },
           "raw_data": {
@@ -439,6 +372,7 @@
           "LastActivityDate": {
             "type": "string",
             "nullable": true,
+            "format": "date-time",
             "description": "The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record."
           },
           "Name": {
@@ -467,10 +401,12 @@
           },
           "CreatedDate": {
             "type": "string",
+            "format": "date-time",
             "description": "The date and time when this contact was created."
           },
           "SystemModstamp": {
             "type": "string",
+            "format": "date-time",
             "description": "The date and time when this contact was last modified."
           },
           "raw_data": {
@@ -645,6 +581,73 @@
         },
         "description": "The provider name",
         "required": true
+      },
+      "modified_after": {
+        "name": "modified_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified after this datetime"
+      },
+      "modified_before": {
+        "name": "modified_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified before this datetime"
+      },
+      "created_after": {
+        "name": "created_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created after this datetime"
+      },
+      "created_before": {
+        "name": "created_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created before this datetime"
+      },
+      "include_deleted_data": {
+        "name": "include_deleted_data",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to include data that was deleted in providers."
+      },
+      "page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "123"
+        },
+        "description": "Number of results to return per page. (Max: 1000)"
+      },
+      "cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+        },
+        "description": "The pagination cursor value"
       }
     }
   }

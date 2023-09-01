@@ -6,10 +6,8 @@ import type {
   FullEntityRecord,
   MappedListedObjectRecord,
   ProviderCategory,
-  ProviderName,
   StandardFullObjectRecord,
 } from '@supaglue/types';
-import { slugifyForTableName } from '@supaglue/utils';
 import { stringify } from 'csv-stringify';
 import type { Pool, PoolClient } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
@@ -18,24 +16,9 @@ import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import { NotImplementedError } from '../errors';
-import { getPgPool, logger } from '../lib';
+import { getObjectTableName, getPgPool, getSchemaName, logger, sanitizeForPostgres } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
-
-function sanitizeForPostgres(tableName: string): string {
-  // Replace dashes with underscores
-  let sanitized = tableName.replace(/-/g, '_');
-
-  // Remove characters that are not letters, numbers, or underscores
-  sanitized = sanitized.replace(/[^a-zA-Z0-9_]/g, '');
-
-  // Make sure the table name starts with a letter or an underscore
-  if (!sanitized.match(/^[a-zA-Z_]/)) {
-    sanitized = '_' + sanitized;
-  }
-
-  return sanitized;
-}
 
 async function createPartitionIfNotExists(client: PoolClient, schema: string, table: string, customerId: string) {
   const partitionName = `${table}_${sanitizeForPostgres(customerId)}`;
@@ -122,7 +105,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     heartbeat: () => void,
     childLogger: pino.Logger
   ): Promise<WriteObjectRecordsResult> {
-    const schema = sanitizeForPostgres(applicationId);
+    const schema = getSchemaName(applicationId);
     const qualifiedTable = `${schema}.${table}`;
     const tempTable = `temp_${table}`;
     const dedupedTempTable = `deduped_temp_${table}`;
@@ -276,11 +259,6 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     }
   }
 }
-
-const getObjectTableName = (providerName: ProviderName, object: string) => {
-  const cleanObjectName = slugifyForTableName(object);
-  return `${providerName}_${cleanObjectName}`;
-};
 
 const getSchemaSetupSql = (schema: string) => {
   return `CREATE SCHEMA IF NOT EXISTS ${schema};`;

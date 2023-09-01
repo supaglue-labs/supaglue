@@ -493,7 +493,7 @@ export interface components {
     modified_before?: Date;
     /** @description The pagination cursor value */
     cursor?: string;
-    /** @description Number of results to return per page */
+    /** @description Number of results to return per page. (Max: 1000) */
     page_size?: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
     "x-customer-id": string;
