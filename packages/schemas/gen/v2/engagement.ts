@@ -188,6 +188,8 @@ export interface components {
       id: string;
       /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
       owner_id: string | null;
+      /** @example 45edea5a-0b9a-44ff-bd45-4452014eb4fa */
+      account_id?: string | null;
       /** @example George */
       first_name: string | null;
       /** @example Xing */
