@@ -1,15 +1,20 @@
 import { configureScope } from '@sentry/node';
-import { NotImplementedError, UnauthorizedError } from '@supaglue/core/errors';
+import { UnauthorizedError } from '@supaglue/core/errors';
 import { addLogContext, getCustomerIdPk } from '@supaglue/core/lib';
 import type {
   ListAccountsPathParams,
   ListAccountsQueryParams,
   ListAccountsRequest,
   ListAccountsResponse,
+  ListContactsPathParams,
+  ListContactsQueryParams,
+  ListContactsRequest,
+  ListContactsResponse,
 } from '@supaglue/schemas/v2/data';
 import type { NextFunction, Request, Response } from 'express';
 import { Router } from 'express';
 
+import { toSalesforceAccount, toSalesforceContact } from '@/mappers';
 import { getDependencyContainer } from '../../../../dependency_container';
 
 const { connectionService, managedDataService } = getDependencyContainer();
@@ -25,12 +30,12 @@ async function salesforceConnectionMiddleware(req: Request, res: Response, next:
     scope.setTag('providerName', 'salesforce');
   });
 
-  req.customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
+  req.customerId = externalCustomerId;
   addLogContext('customerId', req.customerId);
   configureScope((scope) => scope.setTag('customerId', req.customerId));
 
   req.customerConnection = await connectionService.getSafeByCustomerIdAndApplicationIdAndProviderName({
-    customerId: req.customerId,
+    customerId: getCustomerIdPk(req.supaglueApplication.id, externalCustomerId),
     applicationId: req.supaglueApplication.id,
     providerName: 'salesforce',
   });
@@ -50,20 +55,37 @@ export default function init(app: Router): void {
       req: Request<ListAccountsPathParams, ListAccountsResponse, ListAccountsRequest, ListAccountsQueryParams>,
       res: Response<ListAccountsResponse>
     ) => {
-      const result = await managedDataService.getRecords(
+      const { pagination, records } = await managedDataService.getRecords(
         req.supaglueApplication.id,
         'salesforce',
         req.customerId,
         'account',
         req.query?.cursor,
-        req.query?.modified_after
+        req.query?.modified_after as unknown as string | undefined,
+        req.query?.page_size ? parseInt(req.query.page_size) : undefined
       );
+      return res.status(200).send({ pagination, records: records.map(toSalesforceAccount) });
     }
   );
 
-  router.get('/contacts', async (req: Request, res: Response) => {
-    throw new NotImplementedError('Not implemented');
-  });
+  router.get(
+    '/contacts',
+    async (
+      req: Request<ListContactsPathParams, ListContactsResponse, ListContactsRequest, ListContactsQueryParams>,
+      res: Response<ListContactsResponse>
+    ) => {
+      const { pagination, records } = await managedDataService.getRecords(
+        req.supaglueApplication.id,
+        'salesforce',
+        req.customerId,
+        'contact',
+        req.query?.cursor,
+        req.query?.modified_after as unknown as string | undefined,
+        req.query?.page_size ? parseInt(req.query.page_size) : undefined
+      );
+      return res.status(200).send({ pagination, records: records.map(toSalesforceContact) });
+    }
+  );
 
   app.use('/salesforce', router);
 }

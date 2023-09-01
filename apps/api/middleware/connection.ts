@@ -20,12 +20,12 @@ export async function connectionHeaderMiddleware(req: Request, res: Response, ne
     scope.setTag('providerName', providerName);
   });
 
-  req.customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
+  req.customerId = externalCustomerId;
   addLogContext('customerId', req.customerId);
   configureScope((scope) => scope.setTag('customerId', req.customerId));
 
   req.customerConnection = await connectionService.getSafeByCustomerIdAndApplicationIdAndProviderName({
-    customerId: req.customerId,
+    customerId: getCustomerIdPk(req.supaglueApplication.id, externalCustomerId),
     applicationId: req.supaglueApplication.id,
     providerName,
   });

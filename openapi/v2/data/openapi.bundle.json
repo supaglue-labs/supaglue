@@ -40,18 +40,6 @@
             "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/components/parameters/modified_before"
-          },
-          {
-            "$ref": "#/components/parameters/created_after"
-          },
-          {
-            "$ref": "#/components/parameters/created_before"
-          },
-          {
-            "$ref": "#/components/parameters/include_deleted_data"
-          },
-          {
             "$ref": "#/components/parameters/page_size"
           },
           {
@@ -107,18 +95,6 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/modified_after"
-          },
-          {
-            "$ref": "#/components/parameters/modified_before"
-          },
-          {
-            "$ref": "#/components/parameters/created_after"
-          },
-          {
-            "$ref": "#/components/parameters/created_before"
-          },
-          {
-            "$ref": "#/components/parameters/include_deleted_data"
           },
           {
             "$ref": "#/components/parameters/page_size"
@@ -210,6 +186,7 @@
           },
           "LastActivityDate": {
             "type": "string",
+            "format": "date-time",
             "nullable": true,
             "description": "The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record."
           },
@@ -275,10 +252,12 @@
           },
           "CreatedDate": {
             "type": "string",
+            "format": "date-time",
             "description": "The date and time when this contact was created."
           },
           "SystemModstamp": {
             "type": "string",
+            "format": "date-time",
             "description": "The date and time when this contact was last modified."
           },
           "raw_data": {
@@ -393,6 +372,7 @@
           "LastActivityDate": {
             "type": "string",
             "nullable": true,
+            "format": "date-time",
             "description": "The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record."
           },
           "Name": {
@@ -421,10 +401,12 @@
           },
           "CreatedDate": {
             "type": "string",
+            "format": "date-time",
             "description": "The date and time when this contact was created."
           },
           "SystemModstamp": {
             "type": "string",
+            "format": "date-time",
             "description": "The date and time when this contact was last modified."
           },
           "raw_data": {
