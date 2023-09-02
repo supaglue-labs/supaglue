@@ -789,8 +789,8 @@
     },
     "/sequence_steps": {
       "post": {
-        "operationId": "createSequenceSteps",
-        "summary": "Create sequence steps",
+        "operationId": "createSequenceStep",
+        "summary": "Create sequence step",
         "tags": [
           "Sequences"
         ],
@@ -820,7 +820,7 @@
         },
         "responses": {
           "201": {
-            "description": "Sequence steps created",
+            "description": "Sequence step created",
             "content": {
               "application/json": {
                 "schema": {
@@ -1599,6 +1599,10 @@
             "type": "string",
             "description": "The name of the template to use for this step."
           },
+          "order": {
+            "type": "number",
+            "description": "The step's display order within its sequence."
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -1613,6 +1617,7 @@
         "required": [
           "sequence_id",
           "name",
+          "order",
           "type"
         ]
       },

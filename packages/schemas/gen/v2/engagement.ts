@@ -124,8 +124,8 @@ export interface paths {
     };
   };
   "/sequence_steps": {
-    /** Create sequence steps */
-    post: operations["createSequenceSteps"];
+    /** Create sequence step */
+    post: operations["createSequenceStep"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -425,6 +425,8 @@ export interface components {
       subject?: string;
       /** @description The name of the template to use for this step. */
       template_name?: string;
+      /** @description The step's display order within its sequence. */
+      order: number;
       /** @enum {string} */
       type: "auto" | "manual";
       custom_fields?: components["schemas"]["custom_fields"];
@@ -927,8 +929,8 @@ export interface operations {
       };
     };
   };
-  /** Create sequence steps */
-  createSequenceSteps: {
+  /** Create sequence step */
+  createSequenceStep: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -946,7 +948,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Sequence steps created */
+      /** @description Sequence step created */
       201: {
         content: {
           "application/json": {

@@ -21,6 +21,9 @@ properties:
   template_name:
     type: string
     description: The name of the template to use for this step.
+  order:
+    type: number
+    description: The step's display order within its sequence.
   type:
     type: string
     enum: [auto, manual]
@@ -29,4 +32,5 @@ properties:
 required:
   - sequence_id
   - name
+  - order
   - type
