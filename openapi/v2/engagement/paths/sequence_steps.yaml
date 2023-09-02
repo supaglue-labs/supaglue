@@ -1,6 +1,6 @@
 post:
-  operationId: createSequenceSteps
-  summary: Create sequence steps
+  operationId: createSequenceStep
+  summary: Create sequence step
   tags:
     - Sequences
   security:
@@ -19,7 +19,7 @@ post:
             - record
   responses:
     '201':
-      description: Sequence steps created
+      description: Sequence step created
       content:
         application/json:
           schema:
