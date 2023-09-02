@@ -29,13 +29,6 @@ export class InternalServerError extends HTTPError {
   }
 }
 
-export class CacheInvalidationError extends InternalServerError {
-  problemType = 'CACHE_INVALIDATION_ERROR';
-  constructor(message?: string) {
-    super(message || 'Cache invalidation error');
-  }
-}
-
 export class BadGatewayError extends HTTPError {
   code = 502;
   problemType = 'BAD_GATEWAY_ERROR';

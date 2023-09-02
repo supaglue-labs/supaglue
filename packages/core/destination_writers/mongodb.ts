@@ -21,7 +21,6 @@ import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
-import { CacheInvalidationError } from '../errors';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
@@ -73,24 +72,18 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     const collectionName = getCommonObjectCollectionName(category, commonObjectType);
 
     const client = this.#getClient();
-    const childLogger = logger.child({ providerName, customerId, commonObjectType });
-    try {
-      const collection = client.db(database).collection(collectionName);
+    const collection = client.db(database).collection(collectionName);
 
-      await collection.replaceOne(
-        {
-          id: mappedRecord.id,
-          _supaglue_application_id: mappedRecord._supaglue_application_id,
-          _supaglue_provider_name: mappedRecord._supaglue_provider_name,
-          _supaglue_customer_id: mappedRecord._supaglue_customer_id,
-        },
-        mappedRecord,
-        { upsert: true }
-      );
-    } catch (err) {
-      childLogger.error({ err }, 'Error upserting common object record');
-      throw new CacheInvalidationError('Cache invalidation error for common object record on MongoDB');
-    }
+    await collection.replaceOne(
+      {
+        id: mappedRecord.id,
+        _supaglue_application_id: mappedRecord._supaglue_application_id,
+        _supaglue_provider_name: mappedRecord._supaglue_provider_name,
+        _supaglue_customer_id: mappedRecord._supaglue_customer_id,
+      },
+      mappedRecord,
+      { upsert: true }
+    );
   }
 
   public override async writeCommonObjectRecords(
@@ -245,25 +238,18 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     const { database } = this.#destination.config;
 
     const client = this.#getClient();
-    const childLogger = logger.child({ providerName, customerId });
+    const collection = client.db(database).collection(collectionName);
 
-    try {
-      const collection = client.db(database).collection(collectionName);
-
-      await collection.replaceOne(
-        {
-          _supaglue_application_id: mappedRecord._supaglue_application_id,
-          _supaglue_provider_name: mappedRecord._supaglue_provider_name,
-          _supaglue_customer_id: mappedRecord._supaglue_customer_id,
-          _supaglue_id: mappedRecord._supaglue_id,
-        },
-        mappedRecord,
-        { upsert: true }
-      );
-    } catch (err) {
-      childLogger.error({ err }, 'Error upserting common object record');
-      throw new CacheInvalidationError('Cache invalidation error for object record on MongoDB');
-    }
+    await collection.replaceOne(
+      {
+        _supaglue_application_id: mappedRecord._supaglue_application_id,
+        _supaglue_provider_name: mappedRecord._supaglue_provider_name,
+        _supaglue_customer_id: mappedRecord._supaglue_customer_id,
+        _supaglue_id: mappedRecord._supaglue_id,
+      },
+      mappedRecord,
+      { upsert: true }
+    );
   }
 
   async #writeRecords(
