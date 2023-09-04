@@ -79,7 +79,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [useManagedOauth, setUseManagedOauth] = useState<boolean>(true);
+  const [useManagedOauth, setUseManagedOauth] = useState<boolean>(shouldAllowManagedOauth);
   const [commonObjects, setCommonObjects] = useState<ProviderObject[]>([]);
   const [standardObjects, setStandardObjects] = useState<ProviderObject[]>([]);
   const router = useRouter();
