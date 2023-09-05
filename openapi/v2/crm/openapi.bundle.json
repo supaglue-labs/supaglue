@@ -84,7 +84,7 @@
     "/accounts/upsert": {
       "post": {
         "operationId": "upsertAccount",
-        "summary": "upsert account",
+        "summary": "Upsert account",
         "tags": [
           "Accounts"
         ],

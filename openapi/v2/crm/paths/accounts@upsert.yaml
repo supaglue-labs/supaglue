@@ -1,6 +1,6 @@
 post:
   operationId: upsertAccount
-  summary: upsert account
+  summary: Upsert account
   tags:
     - Accounts
   parameters: []

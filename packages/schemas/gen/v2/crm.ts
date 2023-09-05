@@ -21,7 +21,7 @@ export interface paths {
     };
   };
   "/accounts/upsert": {
-    /** upsert account */
+    /** Upsert account */
     post: operations["upsertAccount"];
     parameters: {
       header: {
@@ -632,7 +632,7 @@ export interface operations {
       };
     };
   };
-  /** upsert account */
+  /** Upsert account */
   upsertAccount: {
     parameters: {
       header: {
