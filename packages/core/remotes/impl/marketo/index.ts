@@ -75,6 +75,24 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
     return await super.sendPassthroughRequest(request);
   }
 
+  public override async getForms() {
+    await this.#maybeRefreshAccessToken();
+
+    const response = await axios.get(`${this.baseUrl}/rest/asset/v1/forms.json`);
+    console.log(`response: `, response);
+
+    return [];
+  }
+
+  public override async getFormFields(id: string) {
+    await this.#maybeRefreshAccessToken();
+
+    const response = await axios.get(`${this.baseUrl}/rest/asset/v1/form/${id}/fields.json`);
+    console.log(`response: `, response);
+
+    return [];
+  }
+
   public override async submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
     await this.#maybeRefreshAccessToken();
 

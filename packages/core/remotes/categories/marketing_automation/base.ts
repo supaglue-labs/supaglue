@@ -14,6 +14,14 @@ export abstract class AbstractMarketingAutomationRemoteClient
     super(...args);
   }
 
+  public async getForms(): Promise<unknown[]> {
+    throw new Error('Not implemented');
+  }
+
+  public async getFormFields(formId: string): Promise<unknown[]> {
+    throw new Error('Not implemented');
+  }
+
   public async submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
     throw new Error('Not implemented');
   }

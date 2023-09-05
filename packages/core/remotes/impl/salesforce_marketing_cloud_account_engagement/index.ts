@@ -82,6 +82,26 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
     return await super.sendPassthroughRequest(request);
   }
 
+  public override async getForms() {
+    await this.#maybeRefreshAccessToken();
+
+    const response = await axios.get(`${this.baseUrl}/api/v5/objects/form-handlers?fields=???`);
+    console.log(`response: `, response);
+
+    return [];
+  }
+
+  public override async getFormFields(id: string) {
+    await this.#maybeRefreshAccessToken();
+
+    const response = await axios.get(
+      `${this.baseUrl}/api/v5/objects/form-handler-fields?formHandlerId=${id}&fields=id,name,formHandlerId,isMaintainInitialValue,isRequired,createdAt,createdById,dataFormat,errorMessage,prospectApiFieldId`
+    );
+    console.log(`response: `, response);
+
+    return [];
+  }
+
   public override async submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
     await this.#maybeRefreshAccessToken();
 
