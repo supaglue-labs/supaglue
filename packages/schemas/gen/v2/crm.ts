@@ -20,7 +20,7 @@ export interface paths {
       };
     };
   };
-  "/accounts/upsert": {
+  "/accounts/_upsert": {
     /** Upsert account */
     post: operations["upsertAccount"];
     parameters: {
@@ -55,7 +55,7 @@ export interface paths {
       };
     };
   };
-  "/contacts/upsert": {
+  "/contacts/_upsert": {
     /** Upsert contact */
     post: operations["upsertContact"];
     parameters: {

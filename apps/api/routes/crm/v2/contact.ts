@@ -55,7 +55,7 @@ export default function init(app: Router): void {
   );
 
   router.post(
-    '/upsert',
+    '/_upsert',
     async (
       req: Request<UpsertContactPathParams, UpsertContactResponse, UpsertContactRequest>,
       res: Response<UpsertContactResponse>

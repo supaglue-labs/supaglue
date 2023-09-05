@@ -81,7 +81,7 @@
         }
       ]
     },
-    "/accounts/upsert": {
+    "/accounts/_upsert": {
       "post": {
         "operationId": "upsertAccount",
         "summary": "Upsert account",
@@ -381,7 +381,7 @@
         }
       ]
     },
-    "/contacts/upsert": {
+    "/contacts/_upsert": {
       "post": {
         "operationId": "upsertContact",
         "summary": "Upsert contact",

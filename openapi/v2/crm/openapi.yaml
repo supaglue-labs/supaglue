@@ -28,13 +28,13 @@ servers:
 paths:
   '/accounts':
     $ref: paths/accounts.yaml
-  '/accounts/upsert':
+  '/accounts/_upsert':
     $ref: paths/accounts@upsert.yaml
   '/accounts/{account_id}':
     $ref: paths/accounts@{account_id}.yaml
   '/contacts':
     $ref: paths/contacts.yaml
-  '/contacts/upsert':
+  '/contacts/_upsert':
     $ref: paths/contacts@upsert.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
