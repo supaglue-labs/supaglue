@@ -853,7 +853,7 @@ export interface components {
      * @example crm 
      * @enum {string}
      */
-    category: "crm" | "engagement" | "enrichment" | "no_category";
+    category: "crm" | "engagement" | "enrichment" | "marketing_automation" | "no_category";
     sync_config: {
       /** @example 465fdcb7-26b4-4090-894c-67cab41022bb */
       id: string;
@@ -970,7 +970,7 @@ export interface components {
      * @example hubspot 
      * @enum {string}
      */
-    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear" | "clearbit" | "6sense";
+    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear" | "clearbit" | "6sense" | "marketo" | "salesforce_marketing_cloud_account_engagement";
     /** @enum {string} */
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */
@@ -1101,10 +1101,8 @@ export interface components {
       application_id: string;
       /** @example my-customer-1 */
       customer_id: string;
-      /** @example hubspot */
-      provider_name: string;
-      /** @enum {string} */
-      category: "crm";
+      provider_name: components["schemas"]["provider_name"];
+      category: components["schemas"]["category"];
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
       connection_id: string;
       /** @enum {string} */
@@ -1122,10 +1120,8 @@ export interface components {
       application_id: string;
       /** @example my-customer-1 */
       customer_id: string;
-      /** @example hubspot */
-      provider_name: string;
-      /** @enum {string} */
-      category: "crm";
+      provider_name: components["schemas"]["provider_name"];
+      category: components["schemas"]["category"];
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
       connection_id: string;
       /** @enum {string} */
@@ -1334,13 +1330,8 @@ export interface components {
         customer_id: string;
         /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
         provider_id: string;
-        /** @enum {string} */
-        category: "crm";
-        /**
-         * @example hubspot 
-         * @enum {string}
-         */
-        provider_name: "hubspot" | "salesforce";
+        category: components["schemas"]["category"];
+        provider_name: components["schemas"]["provider_name"];
       };
     }]>;
     upsert_connection_sync_config: {

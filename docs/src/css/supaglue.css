@@ -280,14 +280,14 @@ li > a.menu__link {
   background-repeat: no-repeat;
 }
 
-.theme-doc-sidebar-item-category-level-1 a[href$="/providers/pardot"]::before {
+.theme-doc-sidebar-item-category-level-1 a[href$="/providers/salesforce_marketing_cloud_account_engagement"]::before {
   padding-right: 0.25rem;
   background-size: 20px 20px;
   display: inline-block;
   width: 20px;
   height: 20px;
   content:"";
-  background-image: url(/static/img/connector_icons/pardot.png);
+  background-image: url(/static/img/connector_icons/salesforce.png);
   background-repeat: no-repeat;
 }
 

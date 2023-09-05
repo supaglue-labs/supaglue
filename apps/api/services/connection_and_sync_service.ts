@@ -289,6 +289,47 @@ export class ConnectionAndSyncService {
         };
         return await this.create(params);
       }
+      case 'marketo': {
+        const params: ConnectionCreateParams<'marketo'> = {
+          applicationId,
+          providerName: importedCredentials.providerName,
+          providerId: provider.id,
+          category: 'marketing_automation',
+          customerId,
+          credentials: {
+            type: importedCredentials.type,
+            instanceUrl: importedCredentials.instanceUrl,
+            clientId: importedCredentials.clientId,
+            clientSecret: importedCredentials.clientSecret,
+          },
+          instanceUrl: importedCredentials.instanceUrl,
+        };
+        return await this.create(params);
+      }
+      case 'salesforce_marketing_cloud_account_engagement': {
+        // TODO: actually fetch an access token and store it
+        const params: ConnectionCreateParams<'salesforce_marketing_cloud_account_engagement'> = {
+          applicationId,
+          providerName: importedCredentials.providerName,
+          providerId: provider.id,
+          category: 'marketing_automation',
+          customerId,
+          credentials: {
+            type: importedCredentials.type,
+            refreshToken: importedCredentials.refreshToken,
+            // TODO: we should not require access token if you have refresh token
+            accessToken: '',
+            expiresAt: null,
+            businessUnitId: importedCredentials.businessUnitId,
+            loginUrl: importedCredentials.loginUrl,
+          },
+          instanceUrl: '',
+        };
+        return await this.create(params);
+      }
+
+      default:
+        throw new BadRequestError(`Provider name ${(importedCredentials as any).providerName} is not supported`);
     }
   }
 

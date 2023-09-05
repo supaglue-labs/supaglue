@@ -244,8 +244,8 @@ const config = {
                 to: '/providers/outreach',
               },
               {
-                label: 'Pardot',
-                to: '/providers/pardot',
+                label: 'Salesforce Marketing Cloud Account Engagement (Pardot)',
+                to: '/providers/salesforce_account_engagement',
               },
               {
                 label: 'Pipedrive',

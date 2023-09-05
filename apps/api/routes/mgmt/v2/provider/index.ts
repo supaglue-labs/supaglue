@@ -89,7 +89,7 @@ export default function init(app: Router): void {
       res: Response<DeleteProviderResponse>
     ) => {
       await providerService.delete(req.params.provider_id, req.supaglueApplication.id);
-      return res.status(204).send();
+      return res.status(204).end();
     }
   );
 

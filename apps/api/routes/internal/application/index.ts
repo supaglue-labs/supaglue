@@ -30,7 +30,7 @@ export default function init(app: Router): void {
 
   applicationRouter.delete('/:application_id', async (req: Request, res: Response) => {
     await applicationService.delete(req.params.application_id, req.orgId);
-    return res.status(204).send();
+    return res.status(204).end();
   });
 
   app.use('/applications', applicationRouter);

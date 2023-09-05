@@ -1,7 +1,9 @@
 import type {
   AccessKeySecretConnectionCredentialsDecrypted,
   ApiKeyConnectionCredentialsDecrypted,
+  MarketoOauthConnectionCredentialsDecrypted,
   ProviderName,
+  SalesforceMarketingCloudAccountEngagementCredentialsDecrypted,
 } from '.';
 
 export type MagicLink = {
@@ -41,4 +43,6 @@ export type InvalidMagicLinkData = {
 
 export type MagicLinkConsumeParams =
   | ApiKeyConnectionCredentialsDecrypted
-  | AccessKeySecretConnectionCredentialsDecrypted;
+  | AccessKeySecretConnectionCredentialsDecrypted
+  | MarketoOauthConnectionCredentialsDecrypted
+  | SalesforceMarketingCloudAccountEngagementCredentialsDecrypted;

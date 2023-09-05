@@ -1,0 +1,18 @@
+type: object
+properties:
+  formFields:
+    type: object
+    description: a mapping of field name to value for each field in the form
+    example: { 'email': 'me@supaglue.com', 'firstName': 'George', 'lastName': 'Xing' }
+    properties:
+      email:
+        type: string
+        description: the email address of the lead
+        example: me@supaglue.com
+    required:
+      - email
+    additionalProperties: true
+required:
+  - formFields
+example:
+  formFields: { 'email': 'me@supaglue.com', 'firstName': 'George', 'lastName': 'Xing' }

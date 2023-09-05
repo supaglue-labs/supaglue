@@ -60,7 +60,8 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
   {
     name: 'Box',
     providerName: 'box',
-    category: 'file storage',
+    category: 'file_storage',
+    displayCategory: 'file storage',
     description: 'Configure your Box provider.',
   },
   {
@@ -78,7 +79,7 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
   {
     name: 'Dropbox',
     providerName: 'dropbox',
-    category: 'file storage',
+    category: 'file_storage',
     description: 'Configure your Dropbox provider.',
   },
   {
@@ -109,7 +110,8 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
   {
     name: 'Google Drive',
     providerName: 'google_drive',
-    category: 'file storage',
+    category: 'file_storage',
+    displayCategory: 'file storage',
     description: 'Configure your Google Drive provider.',
   },
   {
@@ -141,7 +143,8 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
   {
     name: 'Marketo',
     providerName: 'marketo',
-    category: 'marketing automation',
+    category: 'marketing_automation',
+    displayCategory: 'marketing automation',
     description: 'Configure your Marketo provider.',
   },
   {
@@ -171,7 +174,8 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
   {
     name: 'OneDrive',
     providerName: 'onedrive',
-    category: 'file storage',
+    category: 'file_storage',
+    displayCategory: 'file storage',
     description: 'Configure your OneDrive provider.',
   },
   {
@@ -187,10 +191,11 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
     description: 'Configure your Outreach provider.',
   },
   {
-    name: 'Pardot',
-    providerName: 'pardot',
-    category: 'marketing automation',
-    description: 'Configure your Pardot provider.',
+    name: 'Salesforce Marketing Cloud Account Engagement (Pardot)',
+    providerName: 'salesforce_marketing_cloud_account_engagement',
+    category: 'marketing_automation',
+    displayCategory: 'marketing automation',
+    description: 'Configure your Salesforce Marketing Cloud Account Engagement provider.',
   },
   {
     name: 'Pipedrive',

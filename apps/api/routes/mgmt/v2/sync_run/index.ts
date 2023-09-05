@@ -61,7 +61,8 @@ export default function init(app: Router) {
           endTimestamp: result.endTimestamp?.toISOString() ?? null,
         })
       );
-      return res.status(200).send({ next, previous, results: snakeCaseResults, total_count: totalCount });
+      // TODO fix the types here
+      return res.status(200).send({ next, previous, results: snakeCaseResults as any, total_count: totalCount });
     }
   );
 

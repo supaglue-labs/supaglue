@@ -1,0 +1,29 @@
+post:
+  operationId: submitForm
+  summary: Submit form
+  tags:
+    - Forms
+  security:
+    - x-api-key: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/submit_form.yaml
+  responses:
+    200:
+      description: Information about the lead created or updated by the form submission
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/submit_form_response.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - name: form_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: '12345'
