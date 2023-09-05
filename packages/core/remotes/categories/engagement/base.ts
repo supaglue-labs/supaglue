@@ -4,7 +4,11 @@ import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
 export interface EngagementRemoteClient extends RemoteClient {
-  listCommonObjectRecords(commonObjectType: EngagementCommonObjectType, updatedAfter?: Date): Promise<Readable>;
+  listCommonObjectRecords(
+    commonObjectType: EngagementCommonObjectType,
+    updatedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable>;
   getCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     id: string
@@ -30,7 +34,8 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
 
   public async listCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
-    updatedAfter?: Date
+    updatedAfter?: Date,
+    heartbeat?: () => void
   ): Promise<Readable> {
     throw new Error('Not implemented');
   }
