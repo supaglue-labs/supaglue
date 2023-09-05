@@ -57,8 +57,7 @@ export default function init(app: Router): void {
         providerName,
         req.supaglueApplication.id
       );
-
-      const [client] = await remoteService.getCrmRemoteClient(connection.id);
+      const client = await remoteService.getRemoteClient(connection.id);
       try {
         const { userId, rawDetails } = await client.getUserIdAndDetails();
         return res.status(200).send({ user_id: userId, raw_details: rawDetails });

@@ -2231,7 +2231,7 @@ export interface operations {
   getProviderUserId: {
     parameters: {
       query: {
-        provider_name: "hubspot" | "ms_dynamics_365_sales";
+        provider_name: "hubspot" | "ms_dynamics_365_sales" | "intercom";
       };
       path: {
         customer_id: string;

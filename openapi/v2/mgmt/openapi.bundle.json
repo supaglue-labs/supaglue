@@ -1541,7 +1541,8 @@
               "type": "string",
               "enum": [
                 "hubspot",
-                "ms_dynamics_365_sales"
+                "ms_dynamics_365_sales",
+                "intercom"
               ],
               "example": "hubspot"
             }
