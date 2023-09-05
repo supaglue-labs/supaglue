@@ -81,6 +81,93 @@
         }
       ]
     },
+    "/accounts/_upsert": {
+      "post": {
+        "operationId": "upsertAccount",
+        "summary": "Upsert account",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_account"
+                  },
+                  "upsert_on": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "enum": [
+                          "domain"
+                        ]
+                      },
+                      "values": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "example": "mydomain.com"
+                        }
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "values"
+                    ]
+                  }
+                },
+                "required": [
+                  "record",
+                  "upsert_on"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account upserted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/accounts/{account_id}": {
       "get": {
         "operationId": "getAccount",
@@ -257,6 +344,93 @@
                   "last_name": "Xing",
                   "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
                 }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/contacts/_upsert": {
+      "post": {
+        "operationId": "upsertContact",
+        "summary": "Upsert contact",
+        "tags": [
+          "Contacts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_contact"
+                  },
+                  "upsert_on": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "enum": [
+                          "email"
+                        ]
+                      },
+                      "values": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "example": "hello@example.com"
+                        }
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "values"
+                    ]
+                  }
+                },
+                "required": [
+                  "record",
+                  "upsert_on"
+                ]
               }
             }
           }

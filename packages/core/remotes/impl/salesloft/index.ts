@@ -81,6 +81,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
   readonly #headers: Record<string, string>;
   readonly #baseURL: string;
+
   public constructor(credentials: Credentials) {
     super('https://api.salesloft.com');
     this.#baseURL = 'https://api.salesloft.com';

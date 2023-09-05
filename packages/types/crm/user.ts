@@ -16,4 +16,5 @@ export type RemoteUserTypes = {
   object: User;
   createParams: never;
   updateParams: never;
+  upsertParams: never;
 };

@@ -8,6 +8,14 @@ export type CreateAccountRequest = operations['createAccount']['requestBody']['c
 export type CreateAccountResponse =
   operations['createAccount']['responses'][keyof operations['createAccount']['responses']]['content']['application/json'];
 
+export type UpsertAccountPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type UpsertAccountQueryParams = Required<operations['upsertAccount']>['parameters']['query'];
+export type UpsertAccountQueryParams = any;
+export type UpsertAccountRequest = operations['upsertAccount']['requestBody']['content']['application/json'];
+export type UpsertAccountResponse =
+  operations['upsertAccount']['responses'][keyof operations['upsertAccount']['responses']]['content']['application/json'];
+
 export type GetAccountPathParams = paths[`/accounts/{account_id}`]['parameters']['path'];
 // TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
 // export type GetAccountQueryParams = Required<operations['getAccount']>['parameters']['query'];
@@ -31,6 +39,14 @@ export type CreateContactQueryParams = any;
 export type CreateContactRequest = operations['createContact']['requestBody']['content']['application/json'];
 export type CreateContactResponse =
   operations['createContact']['responses'][keyof operations['createContact']['responses']]['content']['application/json'];
+
+export type UpsertContactPathParams = never;
+// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
+// export type UpsertContactQueryParams = Required<operations['upsertContact']>['parameters']['query'];
+export type UpsertContactQueryParams = any;
+export type UpsertContactRequest = operations['upsertContact']['requestBody']['content']['application/json'];
+export type UpsertContactResponse =
+  operations['upsertContact']['responses'][keyof operations['upsertContact']['responses']]['content']['application/json'];
 
 export type GetContactPathParams = paths[`/contacts/{contact_id}`]['parameters']['path'];
 // TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript

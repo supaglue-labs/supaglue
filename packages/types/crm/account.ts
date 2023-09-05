@@ -29,6 +29,14 @@ export type AccountUpdateParams = AccountCreateParams & {
   id: string;
 };
 
+export type AccountUpsertParams = {
+  record: AccountCreateParams;
+  upsertOn: {
+    key: 'domain';
+    values: string[];
+  };
+};
+
 export type AccountFilters = {
   website?: Filter;
   remoteId?: EqualsFilter;
@@ -38,4 +46,5 @@ export type RemoteAccountTypes = {
   object: Account;
   createParams: AccountCreateParams;
   updateParams: AccountUpdateParams;
+  upsertParams: AccountUpsertParams;
 };

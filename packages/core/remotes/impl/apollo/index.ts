@@ -139,8 +139,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     return fromApolloSequenceToSequence(response.data.emailer_campaign);
   }
 
-  async #getAccountPage(page = 1, updatedAfter?: Date): Promise<ApolloPaginatedAccounts> {
+  async #getAccountPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedAccounts> {
     return await retryWhenAxiosRateLimited(async () => {
+      if (heartbeat) {
+        heartbeat();
+      }
       const response = await axios.post<ApolloPaginatedAccounts>(
         `${this.#baseURL}/v1/accounts/search`,
         {
@@ -155,9 +158,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listAccounts(updatedAfter?: Date): Promise<Readable> {
+  async #listAccounts(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getAccountPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter);
+      await this.#getAccountPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -175,8 +178,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  async #getContactPage(page = 1, updatedAfter?: Date): Promise<ApolloPaginatedContacts> {
+  async #getContactPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedContacts> {
     return await retryWhenAxiosRateLimited(async () => {
+      if (heartbeat) {
+        heartbeat();
+      }
       const response = await axios.post<ApolloPaginatedContacts>(
         `${this.#baseURL}/v1/contacts/search`,
         {
@@ -193,9 +199,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listContacts(updatedAfter?: Date): Promise<Readable> {
+  async #listContacts(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getContactPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter);
+      await this.#getContactPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -213,8 +219,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  async #getUserPage(page = 1, updatedAfter?: Date): Promise<ApolloPaginatedUsers> {
+  async #getUserPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedUsers> {
     return await retryWhenAxiosRateLimited(async () => {
+      if (heartbeat) {
+        heartbeat();
+      }
       const response = await axios.get<ApolloPaginatedUsers>(`${this.#baseURL}/v1/users/search`, {
         headers: this.#headers,
         params: {
@@ -226,9 +235,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listUsers(updatedAfter?: Date): Promise<Readable> {
+  async #listUsers(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getUserPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter);
+      await this.#getUserPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -246,8 +255,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  async #getSequencePage(page = 1, updatedAfter?: Date): Promise<ApolloPaginatedSequences> {
+  async #getSequencePage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedSequences> {
     return await retryWhenAxiosRateLimited(async () => {
+      if (heartbeat) {
+        heartbeat();
+      }
       const response = await axios.post<ApolloPaginatedSequences>(
         `${this.#baseURL}/v1/emailer_campaigns/search`,
         {
@@ -262,9 +274,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listSequences(updatedAfter?: Date): Promise<Readable> {
+  async #listSequences(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getSequencePage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter);
+      await this.#getSequencePage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -282,8 +294,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  async #listMailboxes(updatedAfter?: Date): Promise<Readable> {
+  async #listMailboxes(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     return await retryWhenAxiosRateLimited(async () => {
+      if (heartbeat) {
+        heartbeat();
+      }
       const response = await axios.get<{ email_accounts: Record<string, any>[] }>(
         `${this.#baseURL}/v1/email_accounts`,
         {
@@ -303,9 +318,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listSequenceStates(updatedAfter?: Date): Promise<Readable> {
+  async #listSequenceStates(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getContactPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter);
+      await this.#getContactPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -325,21 +340,22 @@ class ApolloClient extends AbstractEngagementRemoteClient {
 
   public override async listCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
-    updatedAfter?: Date | undefined
+    updatedAfter?: Date | undefined,
+    heartbeat?: () => void
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'account':
-        return await this.#listAccounts(updatedAfter);
+        return await this.#listAccounts(updatedAfter, heartbeat);
       case 'contact':
-        return await this.#listContacts(updatedAfter);
+        return await this.#listContacts(updatedAfter, heartbeat);
       case 'user':
-        return await this.#listUsers(updatedAfter);
+        return await this.#listUsers(updatedAfter, heartbeat);
       case 'sequence':
-        return await this.#listSequences(updatedAfter);
+        return await this.#listSequences(updatedAfter, heartbeat);
       case 'mailbox':
-        return await this.#listMailboxes(updatedAfter);
+        return await this.#listMailboxes(updatedAfter, heartbeat);
       case 'sequence_state':
-        return await this.#listSequenceStates(updatedAfter);
+        return await this.#listSequenceStates(updatedAfter, heartbeat);
       default:
         throw new BadRequestError(`Common object type ${commonObjectType} not supported for the Apollo API`);
     }

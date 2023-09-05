@@ -28,6 +28,14 @@ export type ContactUpdateParams = ContactCreateParams & {
   id: string;
 };
 
+export type ContactUpsertParams = {
+  record: ContactCreateParams;
+  upsertOn: {
+    key: 'email';
+    values: string[];
+  };
+};
+
 export type ContactFilters = {
   emailAddress?: EqualsFilter;
   remoteId?: EqualsFilter;
@@ -37,4 +45,5 @@ export type RemoteContactTypes = {
   object: Contact;
   createParams: ContactCreateParams;
   updateParams: ContactUpdateParams;
+  upsertParams: ContactUpsertParams;
 };
