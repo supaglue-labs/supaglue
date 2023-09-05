@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.14.0",
+    "version": "0.14.2",
     "title": "Actions API",
     "contact": {
       "name": "Supaglue",
@@ -35,9 +35,9 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "example": "3804695"
+              "example": "123"
             },
-            "description": "Number of results to return per page"
+            "description": "Number of results to return per page. (Max: 1000)"
           },
           {
             "name": "cursor",

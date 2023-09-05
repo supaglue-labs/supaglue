@@ -157,6 +157,23 @@ const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, strin
   task: 'tasks',
 };
 
+const hubspotStandardObjectPluralizedToType: Record<string, HubSpotStandardObjectType> = {
+  companies: 'company',
+  contacts: 'contact',
+  deals: 'deal',
+  'line items': 'line_item',
+  products: 'product',
+  tickets: 'ticket',
+  quotes: 'quote',
+  calls: 'call',
+  communications: 'communication',
+  emails: 'email',
+  meetings: 'meeting',
+  notes: 'note',
+  'postal mails': 'postal_mail',
+  tasks: 'task',
+};
+
 const hubspotStandardObjectTypeToAssociatedStandardObjectTypes: Record<
   HubSpotStandardObjectType,
   HubSpotStandardObjectType[]
@@ -753,20 +770,24 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         ...response.data,
         results: response.data.results.map(({ associations, ...rest }) => ({
           ...rest,
-          associations: Object.entries(associations ?? {}).reduce((acc, [associatedObjectType, { results }]) => {
-            // If associatedObjectType is for a standard object, it will be pluralized
-            if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectType)) {
-              acc[associatedObjectType] = results.map(({ id }) => id);
+          associations: Object.entries(associations ?? {}).reduce((acc, [associatedObjectTypeKey, { results }]) => {
+            // If associatedObjectType is for a standard object, it will be pluralized, and we should use the singular form
+            if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectTypeKey)) {
+              if (!(associatedObjectTypeKey in hubspotStandardObjectPluralizedToType)) {
+                throw new Error(`Couldn't find matching standard object type for ${associatedObjectTypeKey}`);
+              }
+              const standardObjectType = hubspotStandardObjectPluralizedToType[associatedObjectTypeKey];
+              acc[standardObjectType] = results.map(({ id }) => id);
               return acc;
             }
 
             // If associatedObjectType is for a custom object, it will be the fullyQualifiedName,
             // and we want to use the objectTypeId for consistency
             const matchingCustomObjectSchema = associatedCustomObjectSchemas.find(
-              (schema) => schema.fullyQualifiedName === associatedObjectType
+              (schema) => schema.fullyQualifiedName === associatedObjectTypeKey
             );
             if (!matchingCustomObjectSchema) {
-              throw new Error(`Couldn't find matching custom object schema for ${associatedObjectType}`);
+              throw new Error(`Couldn't find matching custom object schema for ${associatedObjectTypeKey}`);
             }
             acc[matchingCustomObjectSchema.objectTypeId] = results.map(({ id }) => id);
             return acc;
@@ -838,8 +859,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         }
         const validatedAssociatedStandardObjectType = toStandardObjectType(associatedStandardObjectType);
         // In the full fetcher, the associations use the plural object types, so we should do the same here
-        result.associations[hubspotStandardObjectTypeToPlural[validatedAssociatedStandardObjectType]] =
-          associationMap[result.id];
+        result.associations[validatedAssociatedStandardObjectType] = associationMap[result.id];
       });
     }
 

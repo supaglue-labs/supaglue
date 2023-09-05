@@ -1,3 +1,5 @@
+import type { ProviderName } from '@supaglue/types';
+import { slugifyForTableName } from '@supaglue/utils';
 import fs from 'fs';
 import { Pool } from 'pg';
 
@@ -24,4 +26,28 @@ export const getPgPool = (connectionString: string): Pool => {
     max: 5,
     ssl,
   });
+};
+
+export function sanitizeForPostgres(tableName: string): string {
+  // Replace dashes with underscores
+  let sanitized = tableName.replace(/-/g, '_');
+
+  // Remove characters that are not letters, numbers, or underscores
+  sanitized = sanitized.replace(/[^a-zA-Z0-9_]/g, '');
+
+  // Make sure the table name starts with a letter or an underscore
+  if (!sanitized.match(/^[a-zA-Z_]/)) {
+    sanitized = '_' + sanitized;
+  }
+
+  return sanitized;
+}
+
+export const getSchemaName = (applicationId: string) => {
+  return sanitizeForPostgres(applicationId);
+};
+
+export const getObjectTableName = (providerName: ProviderName, object: string) => {
+  const cleanObjectName = slugifyForTableName(object);
+  return `${providerName}_${cleanObjectName}`;
 };

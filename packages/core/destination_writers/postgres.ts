@@ -22,6 +22,7 @@ import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
+import { CacheInvalidationError } from '../errors';
 import {
   keysOfSnakecasedCrmAccountWithTenant,
   keysOfSnakecasedCrmContactWithTenant,
@@ -68,6 +69,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const { schema } = this.#destination.config;
     const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `"${schema}".${table}`;
+    const childLogger = logger.child({ providerName, customerId, commonObjectType });
 
     const client = await this.#getClient();
 
@@ -122,6 +124,9 @@ ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_custom
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         values
       );
+    } catch (err) {
+      childLogger.error({ err }, 'Error upserting common object record');
+      throw new CacheInvalidationError('Cache invalidation error for common object record on Postgres');
     } finally {
       client.release();
     }
@@ -330,6 +335,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     const { schema } = this.#destination.config;
     const qualifiedTable = `"${schema}".${table}`;
     const client = await this.#getClient();
+    const childLogger = logger.child({ providerName, customerId });
 
     try {
       // Create tables if necessary
@@ -383,6 +389,9 @@ ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_custom
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         values
       );
+    } catch (err) {
+      childLogger.error({ err }, 'Error upserting common object record');
+      throw new CacheInvalidationError('Cache invalidation error for object record on Postgres');
     } finally {
       client.release();
     }

@@ -1,0 +1,17 @@
+type: object
+properties:
+  name:
+    type: string
+  tags:
+    type: array
+    items:
+      type: string
+  type:
+    type: string
+    description: The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner.
+    enum: [team, private]
+  custom_fields:
+    $ref: ./objects/custom_fields.yaml
+required:
+  - name
+  - type

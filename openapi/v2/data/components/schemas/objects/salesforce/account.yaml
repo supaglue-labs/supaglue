@@ -62,6 +62,7 @@ properties:
   LastActivityDate:
     type: string
     nullable: true
+    format: date-time
     description: The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record.
   Name:
     type: string
@@ -84,9 +85,11 @@ properties:
     description: Indicates whether the object has been moved to the Recycle Bin (true) or not (false).
   CreatedDate:
     type: string
+    format: date-time
     description: The date and time when this contact was created.
   SystemModstamp:
     type: string
+    format: date-time
     description: The date and time when this contact was last modified.
   raw_data:
     type: object

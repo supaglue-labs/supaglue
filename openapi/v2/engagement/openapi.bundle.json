@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.14.0",
+    "version": "0.14.2",
     "title": "Unified Engagement API",
     "contact": {
       "name": "Supaglue",
@@ -675,6 +675,70 @@
         }
       ]
     },
+    "/sequences": {
+      "post": {
+        "operationId": "createSequence",
+        "summary": "Create sequence",
+        "tags": [
+          "Sequences"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_sequence"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sequence created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/sequences/{sequence_id}": {
       "get": {
         "operationId": "getSequence",
@@ -699,6 +763,79 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/sequence"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "sequence_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/sequence_steps": {
+      "post": {
+        "operationId": "createSequenceStep",
+        "summary": "Create sequence step",
+        "tags": [
+          "Sequences"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_sequence_step"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sequence step created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
                 }
               }
             }
@@ -1402,6 +1539,88 @@
           "last_modified_at"
         ]
       },
+      "create_sequence": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "type": {
+            "type": "string",
+            "description": "The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner.",
+            "enum": [
+              "team",
+              "private"
+            ]
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "create_sequence_step": {
+        "type": "object",
+        "properties": {
+          "sequence_id": {
+            "type": "string",
+            "description": "The ID of the sequence."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the sequence step."
+          },
+          "body": {
+            "type": "string",
+            "description": "The body of the email (HTML)."
+          },
+          "days_after": {
+            "type": "number",
+            "description": "The number of days after the previous step that this step should be sent."
+          },
+          "is_reply": {
+            "type": "boolean",
+            "description": "If true, this step will be sent as a reply to the previous step."
+          },
+          "subject": {
+            "type": "string",
+            "description": "The subject of the email."
+          },
+          "template_name": {
+            "type": "string",
+            "description": "The name of the template to use for this step."
+          },
+          "order": {
+            "type": "number",
+            "description": "The step's display order within its sequence."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "auto",
+              "manual"
+            ]
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
+          }
+        },
+        "required": [
+          "sequence_id",
+          "name",
+          "order",
+          "type"
+        ]
+      },
       "pagination": {
         "type": "object",
         "properties": {
@@ -1695,9 +1914,9 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "3804695"
+          "example": "123"
         },
-        "description": "Number of results to return per page"
+        "description": "Number of results to return per page. (Max: 1000)"
       },
       "x-customer-id": {
         "name": "x-customer-id",

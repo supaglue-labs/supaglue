@@ -100,9 +100,32 @@ export interface paths {
       };
     };
   };
+  "/sequences": {
+    /** Create sequence */
+    post: operations["createSequence"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/sequences/{sequence_id}": {
     /** Get sequence */
     get: operations["getSequence"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        sequence_id: string;
+      };
+    };
+  };
+  "/sequence_steps": {
+    /** Create sequence step */
+    post: operations["createSequenceStep"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -377,6 +400,37 @@ export interface components {
        */
       last_modified_at: Date;
     };
+    create_sequence: {
+      name: string;
+      tags?: (string)[];
+      /**
+       * @description The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner. 
+       * @enum {string}
+       */
+      type: "team" | "private";
+      custom_fields?: components["schemas"]["custom_fields"];
+    };
+    create_sequence_step: {
+      /** @description The ID of the sequence. */
+      sequence_id: string;
+      /** @description The name of the sequence step. */
+      name: string;
+      /** @description The body of the email (HTML). */
+      body?: string;
+      /** @description The number of days after the previous step that this step should be sent. */
+      days_after?: number;
+      /** @description If true, this step will be sent as a reply to the previous step. */
+      is_reply?: boolean;
+      /** @description The subject of the email. */
+      subject?: string;
+      /** @description The name of the template to use for this step. */
+      template_name?: string;
+      /** @description The step's display order within its sequence. */
+      order: number;
+      /** @enum {string} */
+      type: "auto" | "manual";
+      custom_fields?: components["schemas"]["custom_fields"];
+    };
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
       next: string | null;
@@ -493,7 +547,7 @@ export interface components {
     modified_before?: Date;
     /** @description The pagination cursor value */
     cursor?: string;
-    /** @description Number of results to return per page */
+    /** @description Number of results to return per page. (Max: 1000) */
     page_size?: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
     "x-customer-id": string;
@@ -824,6 +878,34 @@ export interface operations {
       };
     };
   };
+  /** Create sequence */
+  createSequence: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_sequence"];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
   /** Get sequence */
   getSequence: {
     parameters: {
@@ -843,6 +925,37 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["sequence"];
+        };
+      };
+    };
+  };
+  /** Create sequence step */
+  createSequenceStep: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        sequence_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_sequence_step"];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence step created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
         };
       };
     };

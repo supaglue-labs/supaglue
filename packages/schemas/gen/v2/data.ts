@@ -44,8 +44,11 @@ export interface components {
       HomePhone: string | null;
       /** @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). */
       IsDeleted: boolean;
-      /** @description The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record. */
-      LastActivityDate: string | null;
+      /**
+       * Format: date-time 
+       * @description The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record.
+       */
+      LastActivityDate: Date | null;
       /** @description The contact's last name. Maximum size is 80 characters. */
       LastName: string | null;
       /** @description The source of the lead. */
@@ -70,10 +73,16 @@ export interface components {
       Fax: string | null;
       /** @description The contact's title. */
       Title: string | null;
-      /** @description The date and time when this contact was created. */
-      CreatedDate: string;
-      /** @description The date and time when this contact was last modified. */
-      SystemModstamp: string;
+      /**
+       * Format: date-time 
+       * @description The date and time when this contact was created.
+       */
+      CreatedDate: Date;
+      /**
+       * Format: date-time 
+       * @description The date and time when this contact was last modified.
+       */
+      SystemModstamp: Date;
       /** @description The raw data returned by the provider. */
       raw_data: {
         [key: string]: unknown;
@@ -110,8 +119,11 @@ export interface components {
       Fax: string | null;
       /** @description The type of industry in which the account operates. */
       Industry: string | null;
-      /** @description The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record. */
-      LastActivityDate: string | null;
+      /**
+       * Format: date-time 
+       * @description The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record.
+       */
+      LastActivityDate: Date | null;
       /** @description The name of the account. Maximum size is 255 characters. */
       Name: string | null;
       /** @description The number of employees that work at the account. */
@@ -122,10 +134,16 @@ export interface components {
       Website: string | null;
       /** @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). */
       IsDeleted: boolean;
-      /** @description The date and time when this contact was created. */
-      CreatedDate: string;
-      /** @description The date and time when this contact was last modified. */
-      SystemModstamp: string;
+      /**
+       * Format: date-time 
+       * @description The date and time when this contact was created.
+       */
+      CreatedDate: Date;
+      /**
+       * Format: date-time 
+       * @description The date and time when this contact was last modified.
+       */
+      SystemModstamp: Date;
       /** @description The raw data returned by the provider. */
       raw_data: {
         [key: string]: unknown;
@@ -190,6 +208,20 @@ export interface components {
     "x-customer-id": string;
     /** @description The provider name */
     "x-provider-name": string;
+    /** @description If provided, will only return objects modified after this datetime */
+    modified_after?: Date;
+    /** @description If provided, will only return objects modified before this datetime */
+    modified_before?: Date;
+    /** @description If provided, will only return objects created after this datetime */
+    created_after?: Date;
+    /** @description If provided, will only return objects created before this datetime */
+    created_before?: Date;
+    /** @description Whether to include data that was deleted in providers. */
+    include_deleted_data?: boolean;
+    /** @description Number of results to return per page. (Max: 1000) */
+    page_size?: string;
+    /** @description The pagination cursor value */
+    cursor?: string;
   };
   requestBodies: never;
   headers: never;
@@ -204,20 +236,9 @@ export interface operations {
   listContacts: {
     parameters: {
       query?: {
-        /** @description If provided, will only return objects modified after this datetime */
-        modified_after?: Date;
-        /** @description If provided, will only return objects modified before this datetime */
-        modified_before?: Date;
-        /** @description If provided, will only return objects created after this datetime */
-        created_after?: Date;
-        /** @description If provided, will only return objects created before this datetime */
-        created_before?: Date;
-        /** @description Whether to include data that was deleted in providers. */
-        include_deleted_data?: boolean;
-        /** @description Number of results to return per page */
-        page_size?: string;
-        /** @description The pagination cursor value */
-        cursor?: string;
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -238,6 +259,11 @@ export interface operations {
   /** List accounts */
   listAccounts: {
     parameters: {
+      query?: {
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
       };
