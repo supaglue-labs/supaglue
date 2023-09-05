@@ -39,9 +39,11 @@ import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
+  AccountUpsertParams,
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
+  ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
   Lead,
@@ -947,6 +949,20 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
+  public override async upsertCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'account':
+        return this.upsertAccount(params as AccountUpsertParams);
+      case 'contact':
+        return this.upsertContact(params as ContactUpsertParams);
+      default:
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
+    }
+  }
+
   public override async updateCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['updateParams']
@@ -1221,6 +1237,35 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       properties: toHubspotAccountUpdateParams(params),
     });
     return response.id;
+  }
+
+  public async upsertAccount(params: AccountUpsertParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const searchResponse = await this.#client.crm.companies.searchApi.doSearch({
+      filterGroups: [
+        {
+          filters: [
+            {
+              values: params.upsertOn.values,
+              propertyName: params.upsertOn.key,
+              operator: 'IN',
+            },
+          ],
+        },
+      ],
+      sorts: [params.upsertOn.key],
+      properties: ['id', params.upsertOn.key],
+      limit: 2,
+      after: 0,
+    });
+    if (searchResponse.results.length > 1) {
+      throw new BadRequestError('More than one account found for upsert query');
+    }
+    if (searchResponse.results.length === 0) {
+      return this.createAccount(params.record);
+    }
+    const existingAccountId = searchResponse.results[0].id;
+    return this.updateAccount({ ...params.record, id: existingAccountId });
   }
 
   async #getPipelineStageMapping(): Promise<
@@ -1609,6 +1654,35 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         : [],
     });
     return contact.id;
+  }
+
+  public async upsertContact(params: ContactUpsertParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const searchResponse = await this.#client.crm.contacts.searchApi.doSearch({
+      filterGroups: [
+        {
+          filters: [
+            {
+              values: params.upsertOn.values,
+              propertyName: params.upsertOn.key,
+              operator: 'IN',
+            },
+          ],
+        },
+      ],
+      sorts: [params.upsertOn.key],
+      properties: ['id', params.upsertOn.key],
+      limit: 2,
+      after: 0,
+    });
+    if (searchResponse.results.length > 1) {
+      throw new BadRequestError('More than one contact found for upsert query');
+    }
+    if (searchResponse.results.length === 0) {
+      return this.createContact(params.record);
+    }
+    const existingContactId = searchResponse.results[0].id;
+    return this.updateContact({ ...params.record, id: existingContactId });
   }
 
   public async updateContact(params: ContactUpdateParams): Promise<string> {

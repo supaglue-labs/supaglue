@@ -59,6 +59,30 @@ export class CrmCommonObjectService {
     return id;
   }
 
+  public async upsert<T extends CRMCommonObjectType>(
+    objectName: T,
+    connection: ConnectionSafeAny,
+    params: CRMCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<string> {
+    if (objectName !== 'account' && objectName !== 'contact') {
+      throw new BadRequestError(`Upsert is not supported for ${objectName}`);
+    }
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
+    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
+    const mappedRecord = {
+      ...params.record,
+      customFields: mapCustomFields(fieldMappingConfig, params.record.customFields),
+    };
+
+    const end = remoteDuration.startTimer({ operation: 'upsert', remote_name: providerName });
+    const id = await remoteClient.upsertCommonObjectRecord(objectName, { ...params, record: mappedRecord });
+    end();
+
+    await this.#cacheInvalidateObjectRecord(connection, objectName, id);
+
+    return id;
+  }
+
   async #cacheInvalidateObjectRecord<T extends CRMCommonObjectType>(
     connection: ConnectionSafeAny,
     objectName: T,

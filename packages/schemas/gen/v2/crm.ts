@@ -20,6 +20,16 @@ export interface paths {
       };
     };
   };
+  "/accounts/upsert": {
+    /** upsert account */
+    post: operations["upsertAccount"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/accounts/{account_id}": {
     /** Get account */
     get: operations["getAccount"];
@@ -38,6 +48,16 @@ export interface paths {
   "/contacts": {
     /** Create contact */
     post: operations["createContact"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/contacts/upsert": {
+    /** Upsert contact */
+    post: operations["upsertContact"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -612,6 +632,39 @@ export interface operations {
       };
     };
   };
+  /** upsert account */
+  upsertAccount: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_update_account"];
+          upsert_on: {
+            /** @enum {string} */
+            key: "domain";
+            values: (string)[];
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Account upserted */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
   /** Get account */
   getAccount: {
     parameters: {
@@ -687,6 +740,39 @@ export interface operations {
          */
         "application/json": {
           record: components["schemas"]["create_update_contact"];
+        };
+      };
+    };
+    responses: {
+      /** @description Contact created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** Upsert contact */
+  upsertContact: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_update_contact"];
+          upsert_on: {
+            /** @enum {string} */
+            key: "email";
+            values: (string)[];
+          };
         };
       };
     };
