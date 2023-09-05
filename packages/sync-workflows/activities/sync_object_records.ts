@@ -67,7 +67,6 @@ export function createSyncObjectRecords(
                   'common',
                   object
                 );
-
                 const readable = await client.listCommonObjectRecords(
                   object as CRMCommonObjectType,
                   fieldMappingConfig,
@@ -85,7 +84,8 @@ export function createSyncObjectRecords(
                 const [client] = await remoteService.getEngagementRemoteClient(connectionId);
                 const readable = await client.listCommonObjectRecords(
                   object as EngagementCommonObjectType,
-                  updatedAfter
+                  updatedAfter,
+                  heartbeat
                 );
                 return await writer.writeCommonObjectRecords(
                   connection,
