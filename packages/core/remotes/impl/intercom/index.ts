@@ -1,4 +1,10 @@
-import type { ConnectionUnsafe, ListedObjectRecord, NoCategoryProvider, Provider } from '@supaglue/types';
+import type {
+  ConnectionUnsafe,
+  ListedObjectRecord,
+  NoCategoryProvider,
+  Provider,
+  RemoteUserIdAndDetails,
+} from '@supaglue/types';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -35,11 +41,23 @@ type IntercomClientConfig = {
   clientSecret: string;
 };
 
+type IntercomMeResponse = {
+  id: string;
+  [key: string]: unknown;
+};
+
 class IntercomClient extends AbstractNoCategoryRemoteClient {
   readonly #config: IntercomClientConfig;
   public constructor(config: IntercomClientConfig) {
     super('https://api.intercom.io');
     this.#config = config;
+  }
+
+  public override async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {
+    const response = await axios.get<IntercomMeResponse>(`${this.baseUrl}/me`, {
+      headers: this.#getAuthHeaders(),
+    });
+    return { userId: String(response.data.id), rawDetails: response.data };
   }
 
   #getAuthHeaders(): Record<string, string> {

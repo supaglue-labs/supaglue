@@ -15,6 +15,7 @@ get:
         enum:
           - hubspot
           - ms_dynamics_365_sales
+          - intercom
         example: hubspot
   responses:
     200:
