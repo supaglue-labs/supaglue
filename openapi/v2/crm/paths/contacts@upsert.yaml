@@ -1,0 +1,51 @@
+post:
+  operationId: upsertContact
+  summary: Upsert contact
+  tags:
+    - Contacts
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            record:
+              $ref: ../components/schemas/create_update_contact.yaml
+            upsert_on:
+              type: object
+              properties:
+                key:
+                  type: string
+                  enum: [email]
+                values:
+                  type: array
+                  items:
+                    type: string
+                    example: hello@example.com
+              required:
+                - key
+                - values
+          required:
+            - record
+            - upsert_on
+  responses:
+    '201':
+      description: Contact created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              record:
+                $ref: ../../../common/components/schemas/created_model.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml

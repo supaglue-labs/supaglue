@@ -40,4 +40,5 @@ export type RemoteOpportunityTypes = {
   object: Opportunity;
   createParams: OpportunityCreateParams;
   updateParams: OpportunityUpdateParams;
+  upsertParams: never;
 };

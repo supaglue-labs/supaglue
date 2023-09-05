@@ -27,6 +27,10 @@ export interface CrmRemoteClient extends RemoteClient {
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string>;
+  upsertCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<string>;
 }
 
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
@@ -62,6 +66,12 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
   public async updateCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['updateParams']
+  ): Promise<string> {
+    throw new Error('Not implemented');
+  }
+  public async upsertCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['upsertParams']
   ): Promise<string> {
     throw new Error('Not implemented');
   }
