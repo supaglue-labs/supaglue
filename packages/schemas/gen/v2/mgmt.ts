@@ -1348,6 +1348,16 @@ export interface components {
       };
     }]>;
     upsert_connection_sync_config: {
+      /** @description Config specific to the destination */
+      destination_config?: {
+        /** @enum {string} */
+        type: "postgres";
+        /**
+         * @description The schema you'd like to sync to. If not specified, the schema specified in the postgres Destination will be used. 
+         * @example customer_1_schema
+         */
+        schema: string;
+      };
       /** @description A list of case-sensitive Provider objects to be synced. */
       standard_objects?: ({
           /**
@@ -1419,6 +1429,16 @@ export interface components {
       mapped_field: string;
     };
     connection_sync_config: {
+      /** @description Config specific to the destination */
+      destination_config?: {
+        /** @enum {string} */
+        type: "postgres";
+        /**
+         * @description The schema you'd like to sync to. If not specified, the schema specified in the postgres Destination will be used. 
+         * @example customer_1_schema
+         */
+        schema: string;
+      };
       /** @description A list of case-sensitive Provider objects to be synced. */
       standard_objects?: ({
           /**
