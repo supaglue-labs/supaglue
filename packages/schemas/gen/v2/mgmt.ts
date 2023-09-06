@@ -482,6 +482,7 @@ export interface components {
        * @enum {string}
        */
       type: "supaglue";
+      version: number;
     }, {
       /** @example d455d20b-f6dc-4bc3-ab14-b4f21c4b4835 */
       id: string;
@@ -495,6 +496,7 @@ export interface components {
        */
       type: "postgres";
       config: components["schemas"]["postgres_config_safe"];
+      version: number;
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -508,6 +510,7 @@ export interface components {
        */
       type: "s3";
       config: components["schemas"]["s3_config_safe"];
+      version: number;
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -521,6 +524,7 @@ export interface components {
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_safe"];
+      version: number;
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -534,6 +538,7 @@ export interface components {
        */
       type: "mongodb";
       config: components["schemas"]["mongodb_config_safe"];
+      version: number;
     }]>;
     s3_config_safe: {
       /** @example us-west-2 */
@@ -1264,6 +1269,8 @@ export interface components {
        */
       type: "postgres";
       config: components["schemas"]["postgres_config_at_least_safe"];
+      /** @example number */
+      version: number;
     }, {
       /** @example My S3 Destination */
       name: string;
@@ -1273,6 +1280,8 @@ export interface components {
        */
       type: "s3";
       config: components["schemas"]["s3_config_at_least_safe"];
+      /** @example number */
+      version: number;
     }, {
       /** @example My BigQuery Destination */
       name: string;
@@ -1282,6 +1291,8 @@ export interface components {
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_at_least_safe"];
+      /** @example number */
+      version: number;
     }, {
       /** @example My MongoDB Destination */
       name: string;
@@ -1291,6 +1302,8 @@ export interface components {
        */
       type: "mongodb";
       config: components["schemas"]["mongodb_config_at_least_safe"];
+      /** @example number */
+      version: number;
     }]>;
     create_update_sync_config: {
       /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */

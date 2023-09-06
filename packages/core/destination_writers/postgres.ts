@@ -53,6 +53,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const { sslMode, ...rest } = this.#destination.config;
     const pool = new Pool({
       ...rest,
+      max: 20,
       statement_timeout: 60 * 60 * 1000, // 1 hour - assuming that COPY FROM STDIN is subject to this timeout
       ssl: getSsl(sslMode),
     });
