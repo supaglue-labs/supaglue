@@ -79,6 +79,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           password: password.type === 'known' ? password.value : undefined,
           sslMode,
         },
+        version: destination.version,
       });
       if (!response.ok) {
         addNotification({ message: response.errorMessage, severity: 'error' });

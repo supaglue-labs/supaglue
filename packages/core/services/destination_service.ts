@@ -31,9 +31,17 @@ const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package
 
 export class DestinationService {
   #prisma: PrismaClient;
+  #writerCache: Record<
+    string,
+    {
+      version: number;
+      writer: DestinationWriter | null;
+    }
+  >;
 
   constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
+    this.#writerCache = {};
   }
 
   public async getDestinationsSafeByApplicationId(applicationId: string): Promise<DestinationSafeAny[]> {
@@ -81,6 +89,7 @@ export class DestinationService {
           applicationId: params.applicationId,
           type: params.type,
           encryptedConfig: await encrypt(JSON.stringify({})),
+          version: 1,
         },
       });
       return fromDestinationModelToSafe(model);
@@ -94,6 +103,7 @@ export class DestinationService {
         applicationId: params.applicationId,
         type: params.type,
         encryptedConfig: await encrypt(JSON.stringify(params.config)),
+        version: 1,
       },
     });
     return fromDestinationModelToSafe(model);
@@ -257,12 +267,13 @@ export class DestinationService {
     const existingDestination = await this.getDestinationUnsafeById(params.id);
     const mergedConfig = mergeDestinationConfig(existingDestination, params);
     const model = await this.#prisma.destination.update({
-      where: { id: params.id },
+      where: { id: params.id, version: params.version },
       data: {
         applicationId: params.applicationId,
         type: params.type,
         encryptedConfig: await encrypt(JSON.stringify(mergedConfig)),
         name: params.name,
+        version: params.version + 1,
       },
     });
     return fromDestinationModelToSafe(model);
@@ -289,6 +300,22 @@ export class DestinationService {
   }
 
   private getWriterByDestination(destination: DestinationUnsafeAny): DestinationWriter | null {
+    if (destination.id in this.#writerCache) {
+      const { version, writer } = this.#writerCache[destination.id];
+      if (destination.version === version) {
+        return writer;
+      }
+    }
+
+    const writer = this.getNewWriterByDestination(destination);
+    this.#writerCache[destination.id] = {
+      version: destination.version,
+      writer,
+    };
+    return writer;
+  }
+
+  private getNewWriterByDestination(destination: DestinationUnsafeAny): DestinationWriter | null {
     switch (destination.type) {
       case 's3':
         return new S3DestinationWriter(destination);

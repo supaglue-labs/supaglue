@@ -2440,12 +2440,16 @@
                   "supaglue"
                 ],
                 "example": "supaglue"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
               "id",
               "application_id",
-              "type"
+              "type",
+              "version"
             ]
           },
           {
@@ -2473,6 +2477,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/postgres_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2480,7 +2487,8 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -2508,6 +2516,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/s3_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2515,7 +2526,8 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -2543,6 +2555,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2550,7 +2565,8 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -2578,6 +2594,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/mongodb_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2585,7 +2604,8 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           }
         ]
@@ -4538,12 +4558,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/postgres_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -4563,12 +4588,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/s3_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -4588,12 +4618,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -4613,12 +4648,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/mongodb_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           }
         ]

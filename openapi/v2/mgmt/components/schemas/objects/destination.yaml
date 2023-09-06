@@ -25,10 +25,13 @@ oneOf:
         enum:
           - supaglue
         example: supaglue
+      version:
+        type: number
     required:
       - id
       - application_id
       - type
+      - version
   - type: object
     title: postgres
     properties:
@@ -48,12 +51,15 @@ oneOf:
         example: postgres
       config:
         $ref: ./postgres_config_safe.yaml
+      version:
+        type: number
     required:
       - id
       - application_id
       - name
       - type
       - config
+      - version
   - type: object
     title: s3
     properties:
@@ -73,12 +79,15 @@ oneOf:
         example: s3
       config:
         $ref: ./s3_config_safe.yaml
+      version:
+        type: number
     required:
       - id
       - application_id
       - name
       - type
       - config
+      - version
   - type: object
     title: bigquery
     properties:
@@ -98,12 +107,15 @@ oneOf:
         example: bigquery
       config:
         $ref: ./bigquery_config_safe.yaml
+      version:
+        type: number
     required:
       - id
       - application_id
       - name
       - type
       - config
+      - version
   - type: object
     title: mongodb
     properties:
@@ -123,9 +135,12 @@ oneOf:
         example: mongodb
       config:
         $ref: ./mongodb_config_safe.yaml
+      version:
+        type: number
     required:
       - id
       - application_id
       - name
       - type
       - config
+      - version

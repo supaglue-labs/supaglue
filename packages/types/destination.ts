@@ -8,6 +8,7 @@ type BaseDestinationCreateParams = {
 };
 type BaseDestination = BaseDestinationCreateParams & {
   id: string;
+  version: number;
 };
 type BaseDestinationUpdateParams = BaseDestination;
 
@@ -62,6 +63,7 @@ type SupaglueDestination = {
   id: string;
   applicationId: string;
   type: 'supaglue';
+  version: number;
 };
 
 type SupaglueDestinationCreateParams = {
