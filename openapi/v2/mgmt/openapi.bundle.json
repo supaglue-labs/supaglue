@@ -4821,7 +4821,7 @@
             ]
           },
           "standard_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
+            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
             "type": "array",
             "items": {
               "type": "object",
@@ -5050,7 +5050,7 @@
             ]
           },
           "standard_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
+            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
             "type": "array",
             "items": {
               "type": "object",

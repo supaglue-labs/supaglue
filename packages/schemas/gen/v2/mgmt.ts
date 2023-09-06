@@ -1358,7 +1358,7 @@ export interface components {
          */
         schema: string;
       };
-      /** @description A list of case-sensitive Provider objects to be synced. */
+      /** @description A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig. */
       standard_objects?: ({
           /**
            * @description The Provider object name (case sensitive) 
@@ -1439,7 +1439,7 @@ export interface components {
          */
         schema: string;
       };
-      /** @description A list of case-sensitive Provider objects to be synced. */
+      /** @description A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig. */
       standard_objects?: ({
           /**
            * @description The Provider object name (case sensitive) 
