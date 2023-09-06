@@ -118,8 +118,16 @@ export type ConnectionCredentialsDecrypted<T extends ProviderName> = {
 export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;
 
 export type ConnectionSyncConfig = {
+  // optionally specify the schema you'd like to write to for postgres
+  destinationConfig?: ConnectionSyncDestinationConfig;
   standardObjects?: StandardObjectConfig[];
   customObjects?: CustomObjectConfig[];
+};
+
+export type ConnectionSyncDestinationConfig = {
+  // TODO: make this a union type in the future to support other destination types
+  type: 'postgres';
+  schema: string;
 };
 
 export type ConnectionCreateParams<T extends ProviderName> = {

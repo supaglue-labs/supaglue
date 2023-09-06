@@ -69,6 +69,7 @@ export default function MongoDBDestinationDetailsPanel({ isLoading }: MongoDBDes
           user,
           password: password.type === 'known' ? password.value : undefined,
         },
+        version: destination.version,
       });
       if (!response.ok) {
         addNotification({ message: response.errorMessage, severity: 'error' });

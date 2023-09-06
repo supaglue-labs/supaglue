@@ -86,6 +86,7 @@ export default function BigQDestinationDetailsPanel({ isLoading }: BigQueryDesti
             privateKey,
           },
         },
+        version: destination.version,
       });
       if (!response.ok) {
         addNotification({ message: response.errorMessage, severity: 'error' });

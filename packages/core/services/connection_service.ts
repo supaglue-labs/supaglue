@@ -445,6 +445,7 @@ export class ConnectionService {
     config: ConnectionSyncConfig
   ): Promise<ConnectionSyncConfig> {
     const params = {
+      destinationConfig: config.destinationConfig,
       standardObjects: config.standardObjects,
       customObjects: config.customObjects,
     };

@@ -15,6 +15,7 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
     id: model.id,
     name: model.name,
     applicationId: model.applicationId,
+    version: model.version,
   };
 
   const decryptedConfig = JSON.parse(await decrypt(model.encryptedConfig));
@@ -42,6 +43,7 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
         id: model.id,
         applicationId: model.applicationId,
         type: model.type,
+        version: 1,
       };
     default:
       throw new Error(`Unknown destination type: ${model.type}`);
@@ -53,6 +55,7 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
     id: model.id,
     name: model.name,
     applicationId: model.applicationId,
+    version: model.version,
   };
 
   const decryptedConfig = JSON.parse(await decrypt(model.encryptedConfig));
@@ -116,6 +119,7 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
         id: model.id,
         applicationId: model.applicationId,
         type: 'supaglue',
+        version: 1,
       };
     }
     default:
