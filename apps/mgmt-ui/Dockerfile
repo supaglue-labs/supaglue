@@ -21,6 +21,7 @@ RUN --mount=type=cache,target=/app/.yarn/cache yarn install
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 COPY scripts/validate_and_bundle_openapi.ts scripts/validate_and_bundle_openapi.ts
+COPY scripts/bundle_openapi_specs.sh scripts/bundle_openapi_specs.sh
 COPY openapi openapi
 
 WORKDIR /app
