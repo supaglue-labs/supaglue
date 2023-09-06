@@ -400,13 +400,13 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
   }
 
   async #writeRecords(
-    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger
   ): Promise<WriteObjectRecordsResult> {
-    const { schema } = this.#destination.config;
+    const schema = connectionSyncConfig?.destinationConfig?.schema ?? this.#destination.config.schema;
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
     const dedupedTempTable = `"deduped_temp_${table}"`;

@@ -4799,8 +4799,29 @@
       "upsert_connection_sync_config": {
         "type": "object",
         "properties": {
+          "destination_config": {
+            "description": "Config specific to the destination",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
+                ]
+              },
+              "schema": {
+                "type": "string",
+                "description": "The schema you'd like to sync to. If not specified, the schema specified in the postgres Destination will be used.",
+                "example": "customer_1_schema"
+              }
+            },
+            "required": [
+              "type",
+              "schema"
+            ]
+          },
           "standard_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
+            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
             "type": "array",
             "items": {
               "type": "object",
@@ -5007,8 +5028,29 @@
       "connection_sync_config": {
         "type": "object",
         "properties": {
+          "destination_config": {
+            "description": "Config specific to the destination",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
+                ]
+              },
+              "schema": {
+                "type": "string",
+                "description": "The schema you'd like to sync to. If not specified, the schema specified in the postgres Destination will be used.",
+                "example": "customer_1_schema"
+              }
+            },
+            "required": [
+              "type",
+              "schema"
+            ]
+          },
           "standard_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
+            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
             "type": "array",
             "items": {
               "type": "object",
