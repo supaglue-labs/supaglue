@@ -101,6 +101,111 @@
           }
         }
       ]
+    },
+    "/forms": {
+      "get": {
+        "operationId": "listForms",
+        "summary": "List forms",
+        "tags": [
+          "Forms"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of forms and their metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "forms": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/form_metadata"
+                      }
+                    }
+                  },
+                  "required": [
+                    "forms"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "$ref": "#/components/parameters/include_raw_data"
+        }
+      ]
+    },
+    "/forms/{form_id}/_fields": {
+      "get": {
+        "operationId": "getFormFields",
+        "summary": "Get form fields",
+        "tags": [
+          "Forms"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of fields on the form with the given ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fields": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/form_field"
+                      }
+                    }
+                  },
+                  "required": [
+                    "fields"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "$ref": "#/components/parameters/include_raw_data"
+        },
+        {
+          "name": "form_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "12345"
+          }
+        }
+      ]
     }
   },
   "tags": [
@@ -135,6 +240,70 @@
         "required": [
           "status"
         ]
+      },
+      "form_metadata": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "raw_data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "form_field": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "data_format": {
+            "type": "string"
+          },
+          "validation_message": {
+            "type": "string",
+            "nullable": true
+          },
+          "raw_data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "required",
+          "form_id",
+          "data_format"
+        ]
       }
     },
     "parameters": {
@@ -157,6 +326,15 @@
         },
         "description": "The provider name",
         "required": true
+      },
+      "include_raw_data": {
+        "name": "include_raw_data",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to include raw data fetched from the 3rd party provider."
       }
     }
   }

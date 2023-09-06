@@ -14,6 +14,56 @@ import axios, { AxiosError } from 'axios';
 import simpleOauth2 from 'simple-oauth2';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractMarketingAutomationRemoteClient } from '../../categories/marketing_automation/base';
+import { fromPardotFormHandlerFieldToFormField, fromPardotFormHandlerToFormMetadata } from './mappers';
+
+const FORM_HANDLER_FIELDS = [
+  'id',
+  'name',
+  'folderId',
+  'campaignId',
+  'trackerDomainId',
+  'isDataForwarded',
+  'successLocation',
+  'errorLocation',
+  'isAlwaysEmail',
+  'isCookieLess',
+  'salesforceId',
+  'embedCode',
+  'createdAt',
+  'updatedAt',
+  'createdById',
+  'isDeleted',
+  'updatedById',
+];
+
+const FORM_HANDLER_FIELD_FIELDS = [
+  'id',
+  'name',
+  'formHandlerId',
+  'isRequired',
+  'dataFormat',
+  'prospectApiFieldId',
+  'isMaintainInitialValue',
+  'errorMessage',
+  'createdAt',
+  'createdById',
+];
+
+export type PardotFormHandler = {
+  id: number;
+  name: string;
+  updatedAt: string;
+  createdAt: string;
+};
+
+export type PardotFormHandlerField = {
+  id: number;
+  name: string;
+  formHandlerId: number;
+  dataFormat: string;
+  isRequired: boolean;
+  errorMessage?: string;
+};
 
 export type Credentials = {
   accessToken: string;
@@ -41,7 +91,7 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
     };
   }
 
-  async #maybeRefreshAccessToken(): Promise<void> {
+  async #refreshAccessToken(): Promise<void> {
     const oauthClient = new simpleOauth2.AuthorizationCode({
       client: {
         id: this.#credentials.clientId,
@@ -57,33 +107,63 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
       refresh_token: this.#credentials.refreshToken,
     });
 
-    if (token.expired()) {
-      const newToken = await token.refresh();
+    const newToken = await token.refresh();
 
-      const newAccessToken = newToken.token.access_token as string;
-      const newRefreshToken = newToken.token.refresh_token as string;
+    const newAccessToken = newToken.token.access_token as string;
+    const newRefreshToken = newToken.token.refresh_token as string;
 
-      this.#credentials.accessToken = newAccessToken;
-      this.#credentials.refreshToken = newRefreshToken;
+    this.#credentials.accessToken = newAccessToken;
+    this.#credentials.refreshToken = newRefreshToken;
 
-      this.emit('token_refreshed', {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-        expiresAt: null,
-      });
-    }
+    this.emit('token_refreshed', {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      expiresAt: null,
+    });
   }
 
   public override async sendPassthroughRequest(
     request: SendPassthroughRequestRequest
   ): Promise<SendPassthroughRequestResponse> {
     // TODO(735): We should have a periodic workflow for refreshing tokens for all connections
-    await this.#maybeRefreshAccessToken();
+    await this.#refreshAccessToken();
     return await super.sendPassthroughRequest(request);
   }
 
+  public override async listForms() {
+    await this.#refreshAccessToken();
+
+    const url = `${this.baseUrl}/api/v5/objects/form-handlers?fields=${FORM_HANDLER_FIELDS.join(',')}`;
+
+    const response = await axios.get<{ values: PardotFormHandler[] }>(url, {
+      headers: {
+        Authorization: `Bearer ${this.#credentials.accessToken}`,
+        'Pardot-Business-Unit-Id': this.#credentials.businessUnitId,
+      },
+    });
+
+    return response.data.values.map(fromPardotFormHandlerToFormMetadata);
+  }
+
+  public override async getFormFields(id: string) {
+    await this.#refreshAccessToken();
+
+    const url = `${
+      this.baseUrl
+    }/api/v5/objects/form-handler-fields?formHandlerId=${id}&fields=${FORM_HANDLER_FIELD_FIELDS.join(',')}`;
+
+    const response = await axios.get<{ values: PardotFormHandlerField[] }>(url, {
+      headers: {
+        Authorization: `Bearer ${this.#credentials.accessToken}`,
+        'Pardot-Business-Unit-Id': this.#credentials.businessUnitId,
+      },
+    });
+
+    return response.data.values.map(fromPardotFormHandlerFieldToFormField);
+  }
+
   public override async submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
-    await this.#maybeRefreshAccessToken();
+    await this.#refreshAccessToken();
 
     // get the form submit url
     const response = await axios.get<{ embedCode: string }>(

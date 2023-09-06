@@ -18,6 +18,35 @@ export interface paths {
       };
     };
   };
+  "/forms": {
+    /** List forms */
+    get: operations["listForms"];
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/forms/{form_id}/_fields": {
+    /** Get form fields */
+    get: operations["getFormFields"];
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        form_id: string;
+      };
+    };
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -33,6 +62,28 @@ export interface components {
       /** @example updated */
       status: string;
     };
+    form_metadata: {
+      id: string;
+      name: string;
+      /** Format: date-time */
+      created_at: Date;
+      /** Format: date-time */
+      updated_at: Date;
+      raw_data?: {
+        [key: string]: unknown;
+      };
+    };
+    form_field: {
+      id: string;
+      name: string;
+      required: boolean;
+      form_id: string;
+      data_format: string;
+      validation_message?: string | null;
+      raw_data?: {
+        [key: string]: unknown;
+      };
+    };
   };
   responses: never;
   parameters: {
@@ -40,6 +91,8 @@ export interface components {
     "x-customer-id": string;
     /** @description The provider name */
     "x-provider-name": string;
+    /** @description Whether to include raw data fetched from the 3rd party provider. */
+    include_raw_data?: boolean;
   };
   requestBodies: never;
   headers: never;
@@ -88,6 +141,53 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["submit_form_response"];
+        };
+      };
+    };
+  };
+  /** List forms */
+  listForms: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description List of forms and their metadata */
+      200: {
+        content: {
+          "application/json": {
+            forms: (components["schemas"]["form_metadata"])[];
+          };
+        };
+      };
+    };
+  };
+  /** Get form fields */
+  getFormFields: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        form_id: string;
+      };
+    };
+    responses: {
+      /** @description List of fields on the form with the given ID */
+      200: {
+        content: {
+          "application/json": {
+            fields: (components["schemas"]["form_field"])[];
+          };
         };
       };
     };
