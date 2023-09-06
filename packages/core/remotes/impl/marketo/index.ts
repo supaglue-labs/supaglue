@@ -5,6 +5,8 @@ import type {
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
+import type { FormField } from '@supaglue/types/marketing_automation/form_field';
+import type { FormMetadata } from '@supaglue/types/marketing_automation/form_metadata';
 import type { SubmitFormData, SubmitFormResult } from '@supaglue/types/marketing_automation/submit_form';
 import axios, { AxiosError } from 'axios';
 import simpleOauth2 from 'simple-oauth2';
@@ -20,6 +22,30 @@ import {
 import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractMarketingAutomationRemoteClient } from '../../categories/marketing_automation/base';
+import { fromMarketoFormFieldToFormField, fromMarketoFormToFormMetadata } from './mappers';
+
+export type MarketoForm = {
+  id: number;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type MarketoFormField = {
+  id: string;
+  label: string;
+  dataType: string;
+  validationMessage: string;
+  required: boolean;
+};
+
+type MarketoResponse<T> = {
+  success: boolean;
+  errors: any[];
+  requestId: string;
+  warnings: any[];
+  result: T;
+};
 
 type MarketoClientConfig = {
   credentials: MarketoOauthConnectionCredentialsDecrypted;
@@ -75,22 +101,39 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
     return await super.sendPassthroughRequest(request);
   }
 
-  public override async getForms() {
+  public override async listForms(): Promise<FormMetadata[]> {
     await this.#maybeRefreshAccessToken();
 
-    const response = await axios.get(`${this.baseUrl}/rest/asset/v1/forms.json`);
-    console.log(`response: `, response);
+    const response = await axios.get<MarketoResponse<MarketoForm[]>>(`${this.baseUrl}/rest/asset/v1/forms.json`, {
+      headers: {
+        Authorization: `Bearer ${this.#credentials.accessToken}`,
+      },
+    });
+    if (!response.data.success) {
+      // the error handler expects a thrown AxiosError, so we do that here
+      throw new AxiosError('Failed to list forms', undefined, response.config, response.request, response);
+    }
 
-    return [];
+    return response.data.result.map(fromMarketoFormToFormMetadata);
   }
 
-  public override async getFormFields(id: string) {
+  public override async getFormFields(id: string): Promise<FormField[]> {
     await this.#maybeRefreshAccessToken();
 
-    const response = await axios.get(`${this.baseUrl}/rest/asset/v1/form/${id}/fields.json`);
-    console.log(`response: `, response);
+    const response = await axios.get<MarketoResponse<MarketoFormField[]>>(
+      `${this.baseUrl}/rest/asset/v1/form/${id}/fields.json`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.#credentials.accessToken}`,
+        },
+      }
+    );
+    if (!response.data.success) {
+      // the error handler expects a thrown AxiosError, so we do that here
+      throw new AxiosError('Failed to get form fields', undefined, response.config, response.request, response);
+    }
 
-    return [];
+    return response.data.result.map((field) => fromMarketoFormFieldToFormField(field, id));
   }
 
   public override async submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {

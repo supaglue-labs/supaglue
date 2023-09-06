@@ -28,6 +28,10 @@ servers:
 paths:
   '/forms/{form_id}/_submit':
     $ref: paths/forms@{form_id}@_submit.yaml
+  '/forms':
+    $ref: paths/forms.yaml
+  '/forms/{form_id}/_fields':
+    $ref: paths/forms@{form_id}@_fields.yaml
 tags:
   - name: Forms
     description: Endpoints for managing and submitting forms
@@ -38,8 +42,14 @@ components:
   schemas:
     submit_form_response:
       $ref: ./components/schemas/submit_form_response.yaml
+    form_metadata:
+      $ref: ./components/schemas/form_metadata.yaml
+    form_field:
+      $ref: ./components/schemas/form_field.yaml
   parameters:
     x-customer-id:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml
     x-provider-name:
       $ref: ./components/parameters/header/x-provider-name.yaml
+    include_raw_data:
+      $ref: ../../common/components/parameters/query/include_raw_data.yaml

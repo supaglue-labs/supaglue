@@ -1,0 +1,31 @@
+get:
+  operationId: getFormFields
+  summary: Get form fields
+  tags:
+    - Forms
+  security:
+    - x-api-key: []
+  responses:
+    200:
+      description: List of fields on the form with the given ID
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              fields:
+                type: array
+                items:
+                  $ref: ../components/schemas/form_field.yaml
+            required:
+              - fields
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+  - name: form_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: '12345'

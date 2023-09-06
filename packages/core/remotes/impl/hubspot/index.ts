@@ -1258,6 +1258,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       limit: 2,
       after: 0,
     });
+
     if (searchResponse.results.length > 1) {
       throw new BadRequestError('More than one account found for upsert query');
     }
