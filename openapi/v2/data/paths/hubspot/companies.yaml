@@ -1,8 +1,8 @@
 get:
-  operationId: listSalesforceAccounts
-  summary: List accounts
+  operationId: listHubspotCompanies
+  summary: List companies
   tags:
-    - Salesforce
+    - Hubspot
   security:
     - x-api-key: []
   parameters:
@@ -11,7 +11,7 @@ get:
     - $ref: ../../../../common/components/parameters/query/cursor.yaml
   responses:
     200:
-      description: Accounts
+      description: Companies
       content:
         application/json:
           schema:
@@ -22,7 +22,7 @@ get:
               records:
                 type: array
                 items:
-                  $ref: ../../components/schemas/objects/salesforce/account.yaml
+                  $ref: ../../components/schemas/objects/hubspot/company.yaml
             required:
               - pagination
               - records
