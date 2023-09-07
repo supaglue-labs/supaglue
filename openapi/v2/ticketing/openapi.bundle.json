@@ -1,0 +1,2088 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "0.14.3",
+    "title": "Unified Ticketing API",
+    "contact": {
+      "name": "Supaglue",
+      "email": "docs@supaglue.com",
+      "url": "https://supaglue.com"
+    },
+    "description": "#### Introduction\n\nWelcome to the Unified Actions API (Ticketing) documentation. You can use this API to write to third-party providers.\n\n[View common schema for Ticketing](https://docs.supaglue.com/platform/common-schemas/ticketing)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/ticketing/v2\n```\n"
+  },
+  "servers": [
+    {
+      "url": "https://api.supaglue.io/ticketing/v2",
+      "description": "Supaglue API"
+    }
+  ],
+  "paths": {
+    "/accounts": {
+      "get": {
+        "operationId": "listAccounts",
+        "summary": "List accounts",
+        "description": "Returns a list of Account objects.",
+        "tags": [
+          "Accounts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AccountsData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/paths/~1tags/get/responses/200/content/application~1json/schema/properties/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/account"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        }
+      ]
+    },
+    "/accounts/{account_id}": {
+      "get": {
+        "operationId": "getAccount",
+        "summary": "Get account",
+        "description": "Returns an Account object with the given id.",
+        "tags": [
+          "Accounts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AccountData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/account"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "account_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/collections": {
+      "get": {
+        "operationId": "listCollections",
+        "summary": "List collections",
+        "description": "Returns a list of Collection objects.",
+        "tags": [
+          "Collections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CollectionsData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/paths/~1tags/get/responses/200/content/application~1json/schema/properties/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/collection"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        }
+      ]
+    },
+    "/collections/{collection_id}": {
+      "get": {
+        "operationId": "getCollection",
+        "summary": "Get collection",
+        "description": "Returns a Collection object with the given id.",
+        "tags": [
+          "Collections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CollectionData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/collection"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "collection_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/collections/{parent_id}/users": {
+      "get": {
+        "operationId": "listCollectionUsers",
+        "summary": "List collection users",
+        "description": "Returns a list of User objects.",
+        "tags": [
+          "Collections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CollectionUsersData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/paths/~1tags/get/responses/200/content/application~1json/schema/properties/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/user"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "parent_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/users": {
+      "get": {
+        "operationId": "listUsers",
+        "summary": "List users",
+        "description": "Returns a list of User objects.",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "UsersData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/paths/~1tags/get/responses/200/content/application~1json/schema/properties/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/user"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        }
+      ]
+    },
+    "/users/{user_id}": {
+      "get": {
+        "operationId": "getUser",
+        "summary": "Get user",
+        "description": "Returns a User object with the given id.",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "UserData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/user"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "user_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/contacts": {
+      "get": {
+        "operationId": "listContacts",
+        "summary": "List contacts",
+        "description": "Returns a list of Contact objects.",
+        "tags": [
+          "Contacts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ContactsData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/paths/~1tags/get/responses/200/content/application~1json/schema/properties/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/contact"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        }
+      ]
+    },
+    "/contacts/{contact_id}": {
+      "get": {
+        "operationId": "getContact",
+        "summary": "Get contact",
+        "description": "Returns a Contact object with the given id.",
+        "tags": [
+          "Contacts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ContactData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/contact"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "contact_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/teams": {
+      "get": {
+        "operationId": "listTeams",
+        "summary": "List teams",
+        "description": "Returns a list of Team objects.",
+        "tags": [
+          "Teams"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "TeamsData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/paths/~1tags/get/responses/200/content/application~1json/schema/properties/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/paths/~1teams~1%7Bteam_id%7D/get/responses/200/content/application~1json/schema"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        }
+      ]
+    },
+    "/teams/{team_id}": {
+      "get": {
+        "operationId": "getTeam",
+        "summary": "Get team",
+        "description": "Returns an Team object with the given id.",
+        "tags": [
+          "Teams"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "TeamData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Platform"
+                    },
+                    "decription": {
+                      "type": "string",
+                      "nullable": true,
+                      "example": "Platform and Integrations Team"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "team_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/tickets": {
+      "get": {
+        "operationId": "listTickets",
+        "summary": "List tickets",
+        "description": "Returns a list of Ticket objects.",
+        "tags": [
+          "Tickets"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "TicketsData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/paths/~1tags/get/responses/200/content/application~1json/schema/properties/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ticket"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createTicket",
+        "summary": "Create ticket",
+        "description": "Creates a Ticket object with the given values.",
+        "tags": [
+          "Tickets"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_ticket"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ticket created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "name is a required field on model."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "MISSING_REQUIRED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "irure consectetur"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Missing Required Field"
+                          }
+                        },
+                        "example": [
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "irure consectetur"
+                            },
+                            "title": "Missing Required Field"
+                          },
+                          {
+                            "detail": "name is a required field on model.",
+                            "problem_type": "MISSING_REQUIRED_FIELD",
+                            "source": {
+                              "pointer": "et"
+                            },
+                            "title": "Missing Required Field"
+                          }
+                        ]
+                      }
+                    },
+                    "record": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ]
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "detail": {
+                            "type": "string",
+                            "example": "An unrecognized field, age, was passed in with request data."
+                          },
+                          "problem_type": {
+                            "type": "string",
+                            "example": "UNRECOGNIZED_FIELD"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "pointer": {
+                                "type": "string",
+                                "example": "Lorem ipsum"
+                              }
+                            }
+                          },
+                          "title": {
+                            "type": "string",
+                            "example": "Unrecognized Field"
+                          }
+                        }
+                      },
+                      "example": [
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "Lorem ipsum"
+                          },
+                          "title": "Unrecognized Field"
+                        },
+                        {
+                          "detail": "An unrecognized field, age, was passed in with request data.",
+                          "problem_type": "UNRECOGNIZED_FIELD",
+                          "source": {
+                            "pointer": "in"
+                          },
+                          "title": "Unrecognized Field"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        }
+      ]
+    },
+    "/tickets/{ticket_id}": {
+      "get": {
+        "operationId": "getTicket",
+        "summary": "Get ticket",
+        "description": "Returns an Ticket object with the given id.",
+        "tags": [
+          "Tickets"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "TicketData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ticket"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateTicket",
+        "summary": "Update ticket",
+        "description": "Updates a Ticket object with the given values.",
+        "tags": [
+          "Tickets"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/update_ticket"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ticket updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/paths/~1tickets/post/responses/201/content/application~1json/schema/properties/errors"
+                    },
+                    "warnings": {
+                      "$ref": "#/paths/~1tickets/post/responses/201/content/application~1json/schema/properties/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "ticket_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/comments": {
+      "get": {
+        "operationId": "listComments",
+        "summary": "List comments",
+        "description": "Returns a list of Comment objects.",
+        "tags": [
+          "Comments"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CommentsData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/paths/~1tags/get/responses/200/content/application~1json/schema/properties/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/comment"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createComment",
+        "summary": "Create comment",
+        "description": "Creates a Comment object with the given values.",
+        "tags": [
+          "Comments"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "user": {
+                        "type": "string",
+                        "example": "17a54124-287f-494d-965e-3c5b330c9a68"
+                      },
+                      "contact": {
+                        "type": "string",
+                        "example": "dde3fb16-b8eb-483d-81c4-b78100816f15"
+                      },
+                      "body": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "When will these integrations be done? You all should use Supaglue."
+                      },
+                      "html_body": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "When will these integrations be done? You all should use <b>Supaglue<b>."
+                      },
+                      "ticket": {
+                        "type": "string",
+                        "nullable": true,
+                        "example": "fb8c55b6-1cb8-4b4c-9fb6-17924231619d"
+                      },
+                      "is_private": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    },
+                    "required": [
+                      "user",
+                      "body",
+                      "ticket",
+                      "is_private"
+                    ]
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Comment created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/paths/~1tickets/post/responses/201/content/application~1json/schema/properties/errors"
+                    },
+                    "record": {
+                      "$ref": "#/paths/~1tickets/post/responses/201/content/application~1json/schema/properties/record"
+                    },
+                    "warnings": {
+                      "$ref": "#/paths/~1tickets/post/responses/201/content/application~1json/schema/properties/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        }
+      ]
+    },
+    "/comments/{comment_id}": {
+      "get": {
+        "operationId": "getTicket",
+        "summary": "Get ticket",
+        "description": "Returns an Ticket object with the given id.",
+        "tags": [
+          "Tickets"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CommentData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/comment"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "comment_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/tags": {
+      "get": {
+        "operationId": "listTags",
+        "summary": "List tags",
+        "description": "Returns a list of Tag objects.",
+        "tags": [
+          "Tags"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "TagsData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "next": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ=="
+                        },
+                        "previous": {
+                          "type": "string",
+                          "nullable": true,
+                          "example": "eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9"
+                        },
+                        "total_count": {
+                          "type": "number",
+                          "example": 100
+                        }
+                      },
+                      "required": [
+                        "next",
+                        "previous",
+                        "total_count"
+                      ]
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/tag"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
+        }
+      ]
+    },
+    "/tags/{tag_id}": {
+      "get": {
+        "operationId": "getTag",
+        "summary": "Get tag",
+        "description": "Returns a Tag object with the given id.",
+        "tags": [
+          "Tags"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "TagData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tag"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "tag_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    },
+    "/attachments": {
+      "get": {
+        "operationId": "listAttachments",
+        "summary": "List attachments",
+        "description": "Returns a list of Attachment objects.",
+        "tags": [
+          "Attachments"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AttachmentsData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/paths/~1tags/get/responses/200/content/application~1json/schema/properties/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/paths/~1attachments~1%7Battachment_id%7D/get/responses/200/content/application~1json/schema"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createAttachment",
+        "summary": "Create attachment",
+        "description": "Creates a Attachment object with the given values.",
+        "tags": [
+          "Attachments"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "type": "object",
+                    "properties": {
+                      "file_name": {
+                        "type": "string",
+                        "example": "Screenshot.png"
+                      },
+                      "ticket": {
+                        "type": "string",
+                        "example": "0958cbc6-6040-430a-848e-aafacbadf4ae"
+                      },
+                      "file_url": {
+                        "type": "string",
+                        "example": "http://alturl.com/p749b"
+                      },
+                      "content_type": {
+                        "type": "string",
+                        "example": "jpeg"
+                      },
+                      "uploaded_by": {
+                        "type": "string",
+                        "example": "28b54125-287f-494d-965e-3c5b330c9a68"
+                      }
+                    },
+                    "required": [
+                      "file_name",
+                      "ticket",
+                      "file_url",
+                      "content_type",
+                      "uploaded_by"
+                    ]
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Attachment created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/paths/~1tickets/post/responses/201/content/application~1json/schema/properties/errors"
+                    },
+                    "record": {
+                      "$ref": "#/paths/~1tickets/post/responses/201/content/application~1json/schema/properties/record"
+                    },
+                    "warnings": {
+                      "$ref": "#/paths/~1tickets/post/responses/201/content/application~1json/schema/properties/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        }
+      ]
+    },
+    "/attachments/{attachment_id}": {
+      "get": {
+        "operationId": "getAttachment",
+        "summary": "Get attachment",
+        "description": "Returns an Attachment object with the given id.",
+        "tags": [
+          "Attachments"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "attachmentData",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "file_name": {
+                      "type": "string",
+                      "example": "Screenshot.png"
+                    },
+                    "ticket": {
+                      "type": "string",
+                      "example": "0958cbc6-6040-430a-848e-aafacbadf4ae"
+                    },
+                    "file_url": {
+                      "type": "string",
+                      "example": "http://alturl.com/p749b"
+                    },
+                    "content_type": {
+                      "type": "string",
+                      "example": "jpeg"
+                    },
+                    "uploaded_by": {
+                      "type": "string",
+                      "example": "28b54125-287f-494d-965e-3c5b330c9a68"
+                    }
+                  },
+                  "required": [
+                    "file_name",
+                    "ticket",
+                    "file_url",
+                    "content_type",
+                    "uploaded_by"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/paths/~1tags/parameters/1"
+        },
+        {
+          "name": "attachment_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+          }
+        }
+      ]
+    }
+  },
+  "tags": [
+    {
+      "name": "Accounts",
+      "description": "The Account object is used to represent the account that a ticket is associated with.\n\nThe account is a company that may be a customer. This does not represent the company that is receiving the ticket.\n"
+    },
+    {
+      "name": "Collections",
+      "description": "The Collection object is used to represent collections of tickets. Collections may include other collections as sub collections.\n"
+    },
+    {
+      "name": "Users",
+      "description": "The User object is used to represent an employee within a company.\n"
+    },
+    {
+      "name": "Contacts",
+      "description": "The Contact object is used to represent the customer, lead, or external user that a ticket is associated with.\n"
+    },
+    {
+      "name": "Teams",
+      "description": "The Team object is used to represent a team within the company receiving the ticket.\n"
+    },
+    {
+      "name": "Tickets",
+      "description": "The Ticket object is used to represent a ticket or a task within a system.\n"
+    },
+    {
+      "name": "Comments",
+      "description": "The Comment object is used to represent a comment on a ticket.\n"
+    },
+    {
+      "name": "Tags",
+      "description": "The Tag object is used to represent a tag or label for a ticket.\n"
+    },
+    {
+      "name": "Attachments",
+      "description": "The Attachment object is used to represent an attachment for a ticket.\n"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "x-api-key": {
+        "type": "apiKey",
+        "name": "x-api-key",
+        "in": "header",
+        "description": "API key to allow developers to access the API"
+      }
+    },
+    "schemas": {
+      "account": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Waystar Royco"
+          },
+          "domains": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "waystar-royco.com"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "domains"
+        ]
+      },
+      "contact": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Cousin Greg"
+          },
+          "email_address": {
+            "type": "string",
+            "example": "greg@waystar-royco.com"
+          },
+          "phone_number": {
+            "type": "string",
+            "nullable": true,
+            "example": "5108890293"
+          },
+          "details": {
+            "type": "string",
+            "nullable": true,
+            "example": "Executive Assistant to Tom Wambsgans"
+          },
+          "account": {
+            "type": "string",
+            "nullable": true,
+            "example": "8998e1ed-1c76-4b64-9097-9d37ee88bf6f"
+          }
+        },
+        "required": [
+          "name",
+          "email_address"
+        ]
+      },
+      "collection": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Q1 Platform"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "For tracking all tasks related to Platform for Q1"
+          },
+          "collection_type": {
+            "type": "string",
+            "nullable": true,
+            "example": "LIST"
+          },
+          "parent_collection": {
+            "type": "string",
+            "nullable": true,
+            "example": "681b0fd7-40e6-4b91-8e23-2814872090be"
+          },
+          "access_level": {
+            "type": "string",
+            "nullable": true,
+            "example": "PUBLIC"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "create_ticket": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Please add more integrations"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "17a54124-287f-494d-965e-3c5b330c9a68"
+            }
+          },
+          "creator": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "due_date": {
+            "type": "string",
+            "example": "2022-10-11T00:00:00Z"
+          },
+          "status": {
+            "type": "string",
+            "example": "OPEN"
+          },
+          "description": {
+            "type": "string",
+            "example": "Can you please add more integrations? It'll make syncing data much easier!"
+          },
+          "collections": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "fb8c55b6-1cb8-4b4c-9fb6-17924231619d"
+            }
+          },
+          "ticket_type": {
+            "type": "string",
+            "example": "incident"
+          },
+          "account": {
+            "type": "string",
+            "example": "0958cbc6-6040-430a-848e-aafacbadf4ae"
+          },
+          "contact": {
+            "type": "string",
+            "example": "65c345ba-6870-4974-87ba-dd31509c367a"
+          },
+          "parent_ticket": {
+            "type": "string",
+            "example": "75b33d04-30d2-4f3e-be45-27838bc94342"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "enterprise"
+            }
+          },
+          "completed_at": {
+            "type": "string",
+            "example": "2021-12-09T00:00:00Z"
+          },
+          "ticket_url": {
+            "type": "string",
+            "example": "https://thirdpartysoftware.com/project/3/issue/1"
+          },
+          "priority": {
+            "type": "string",
+            "example": "HIGH"
+          }
+        },
+        "required": [
+          "name",
+          "creator"
+        ]
+      },
+      "update_ticket": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Please add more integrations"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "17a54124-287f-494d-965e-3c5b330c9a68"
+            }
+          },
+          "creator": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "due_date": {
+            "type": "string",
+            "example": "2022-10-11T00:00:00Z"
+          },
+          "status": {
+            "type": "string",
+            "example": "OPEN"
+          },
+          "description": {
+            "type": "string",
+            "example": "Can you please add more integrations? It'll make syncing data much easier!"
+          },
+          "collections": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "fb8c55b6-1cb8-4b4c-9fb6-17924231619d"
+            }
+          },
+          "ticket_type": {
+            "type": "string",
+            "example": "incident"
+          },
+          "account": {
+            "type": "string",
+            "example": "0958cbc6-6040-430a-848e-aafacbadf4ae"
+          },
+          "contact": {
+            "type": "string",
+            "example": "65c345ba-6870-4974-87ba-dd31509c367a"
+          },
+          "parent_ticket": {
+            "type": "string",
+            "example": "75b33d04-30d2-4f3e-be45-27838bc94342"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "enterprise"
+            }
+          },
+          "completed_at": {
+            "type": "string",
+            "example": "2021-12-09T00:00:00Z"
+          },
+          "ticket_url": {
+            "type": "string",
+            "example": "https://thirdpartysoftware.com/project/3/issue/1"
+          },
+          "priority": {
+            "type": "string",
+            "example": "HIGH"
+          }
+        },
+        "required": [
+          "name",
+          "creator"
+        ]
+      },
+      "ticket": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Please add more integrations"
+          },
+          "assignees": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "17a54124-287f-494d-965e-3c5b330c9a68"
+            }
+          },
+          "creator": {
+            "type": "string",
+            "example": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          },
+          "due_date": {
+            "type": "string",
+            "example": "2022-10-11T00:00:00Z"
+          },
+          "status": {
+            "type": "string",
+            "example": "OPEN"
+          },
+          "description": {
+            "type": "string",
+            "example": "Can you please add more integrations? It'll make syncing data much easier!"
+          },
+          "collections": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "fb8c55b6-1cb8-4b4c-9fb6-17924231619d"
+            }
+          },
+          "ticket_type": {
+            "type": "string",
+            "example": "incident"
+          },
+          "account": {
+            "type": "string",
+            "example": "0958cbc6-6040-430a-848e-aafacbadf4ae"
+          },
+          "contact": {
+            "type": "string",
+            "example": "65c345ba-6870-4974-87ba-dd31509c367a"
+          },
+          "parent_ticket": {
+            "type": "string",
+            "example": "75b33d04-30d2-4f3e-be45-27838bc94342"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "example": "enterprise"
+            }
+          },
+          "completed_at": {
+            "type": "string",
+            "example": "2021-12-09T00:00:00Z"
+          },
+          "ticket_url": {
+            "type": "string",
+            "example": "https://thirdpartysoftware.com/project/3/issue/1"
+          },
+          "priority": {
+            "type": "string",
+            "example": "HIGH"
+          }
+        },
+        "required": [
+          "name",
+          "creator"
+        ]
+      },
+      "user": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Hil Feig"
+          },
+          "email_address": {
+            "type": "string",
+            "example": "help@supaglue.com"
+          },
+          "is_active": {
+            "type": "boolean",
+            "example": false
+          },
+          "teams": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "nullable": false,
+              "example": "681b0fd7-40e6-4b91-8e23-2814872090be"
+            }
+          },
+          "avatar": {
+            "type": "string",
+            "nullable": true,
+            "example": "https://supaglue.io/user_profile_pic.png"
+          }
+        },
+        "required": [
+          "name",
+          "email_address",
+          "is_active"
+        ]
+      },
+      "comment": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "type": "string",
+            "example": "17a54124-287f-494d-965e-3c5b330c9a68"
+          },
+          "contact": {
+            "type": "string",
+            "example": "dde3fb16-b8eb-483d-81c4-b78100816f15"
+          },
+          "body": {
+            "type": "string",
+            "nullable": true,
+            "example": "When will these integrations be done? You all should use Supaglue."
+          },
+          "html_body": {
+            "type": "string",
+            "nullable": true,
+            "example": "When will these integrations be done? You all should use <b>Supaglue<b>."
+          },
+          "ticket": {
+            "type": "string",
+            "nullable": true,
+            "example": "fb8c55b6-1cb8-4b4c-9fb6-17924231619d"
+          },
+          "is_private": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "user",
+          "body",
+          "ticket",
+          "is_private"
+        ]
+      },
+      "tag": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Ticketing API"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "parameters": {
+      "x-customer-id": {
+        "name": "x-customer-id",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "my-customer-1"
+        },
+        "description": "The customer ID that uniquely identifies the customer in your application",
+        "required": true
+      },
+      "x-provider-name": {
+        "name": "x-provider-name",
+        "in": "header",
+        "schema": {
+          "type": "string",
+          "example": "salesforce"
+        },
+        "description": "The provider name",
+        "required": true
+      },
+      "modified_after": {
+        "name": "modified_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified after this datetime"
+      },
+      "modified_before": {
+        "name": "modified_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified before this datetime"
+      },
+      "created_after": {
+        "name": "created_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created after this datetime"
+      },
+      "created_before": {
+        "name": "created_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created before this datetime"
+      },
+      "include_deleted_data": {
+        "name": "include_deleted_data",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to include data that was deleted in providers."
+      },
+      "include_raw_data": {
+        "name": "include_raw_data",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to include raw data fetched from the 3rd party provider."
+      },
+      "page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "123"
+        },
+        "description": "Number of results to return per page. (Max: 1000)"
+      },
+      "cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+        },
+        "description": "The pagination cursor value"
+      }
+    }
+  }
+}

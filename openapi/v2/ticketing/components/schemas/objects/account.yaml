@@ -1,0 +1,14 @@
+type: object
+properties:
+  name:
+    type: string
+    nullable: true # TODO: revisit
+    example: Waystar Royco
+  domains:
+    type: array
+    items:
+      type: string
+      example: waystar-royco.com
+required:
+  - name
+  - domains

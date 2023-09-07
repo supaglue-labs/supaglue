@@ -1,0 +1,26 @@
+get:
+  operationId: getContact
+  summary: Get contact
+  description: Returns a Contact object with the given id.
+  tags:
+    - Contacts
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+  responses:
+    200:
+      description: ContactData
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/contact.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - name: contact_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

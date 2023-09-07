@@ -1,0 +1,66 @@
+get:
+  operationId: listTickets
+  summary: List tickets
+  description: Returns a list of Ticket objects.
+  tags:
+    - Tickets
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/modified_after.yaml
+    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+  responses:
+    200:
+      description: TicketsData
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/ticket.yaml
+            required:
+              - pagination
+              - records
+post:
+  operationId: createTicket
+  summary: Create ticket
+  description: Creates a Ticket object with the given values.
+  tags:
+    - Tickets
+  parameters: []
+  security:
+    - x-api-key: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            record:
+              $ref: ../components/schemas/create_ticket.yaml
+          required:
+            - record
+  responses:
+    '201':
+      description: Ticket created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              record:
+                $ref: ../../../common/components/schemas/created_model.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml

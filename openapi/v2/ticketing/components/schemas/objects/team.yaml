@@ -1,0 +1,12 @@
+type: object
+properties:
+  name:
+    type: string
+    nullable: true # TODO: revisit
+    example: Platform
+  decription:
+    type: string
+    nullable: true
+    example: Platform and Integrations Team
+required:
+  - name

@@ -1,0 +1,24 @@
+type: object
+properties:
+  file_name:
+    type: string
+    example: Screenshot.png
+  ticket:
+    type: string
+    example: 0958cbc6-6040-430a-848e-aafacbadf4ae
+  file_url:
+    type: string
+    example: http://alturl.com/p749b
+  content_type:
+    type: string
+    example: jpeg
+  uploaded_by:
+    type: string
+    example: 28b54125-287f-494d-965e-3c5b330c9a68
+
+required:
+  - file_name
+  - ticket
+  - file_url
+  - content_type
+  - uploaded_by

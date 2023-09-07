@@ -328,6 +328,13 @@ const sidebars = {
       // @ts-ignore
       items: require('./docs/api/v2/enrichment/sidebar.js'),
     },
+    {
+      type: 'category',
+      label: 'Ticketing API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/ticketing/sidebar.js'),
+    },
 
     // section
     {
