@@ -1,0 +1,109 @@
+type: object
+properties:
+  id:
+    type: string
+    example: '101'
+    description: the unique identifier for the company. This field is set automatically and cannot be edited. This can be used when updating companies through importing or through API.
+  description:
+    type: string
+    nullable: true
+    example: 'Open-source developer platform for customer-facing integrations'
+    description: a short statement about the company's mission and goals.
+  city:
+    type: string
+    nullable: true
+    example: San Francisco
+    description: the city where the company is located.
+  country:
+    type: string
+    nullable: true
+    example: United States
+    description: the country where the company is located.
+  zip:
+    type: string
+    nullable: true
+    example: '94025'
+    description: postal or zip code for the company.
+  state:
+    type: string
+    nullable: true
+    example: CA
+    description: the state or region where the company is located.
+  address:
+    type: string
+    nullable: true
+    example: '525 Brannan St'
+    description: the street address of the company.
+  phone:
+    type: string
+    nullable: true
+    example: '(650) 450-8810'
+    description: the company's primary phone number.
+  industry:
+    type: string
+    nullable: true
+    example: 'COMPUTER SOFTWARE'
+    description: the type of business the company performs. By default, this property has approximately 150 pre-defined options to select from. These options cannot be deleted, as they are used by HubSpot Insights, but you can add new custom options to meet your needs.
+  name:
+    type: string
+    nullable: true
+    example: Supaglue
+    description: the name of the company.
+  numberofemployees:
+    type: string
+    nullable: true
+    example: '3000'
+    description: total number of people who work for the company.
+  hubspot_owner_id:
+    type: string
+    nullable: true
+    example: '101'
+    description: the HubSpot user that the company is assigned to. You can assign additional users to a company record by creating a custom HubSpot user property.
+  domain:
+    type: string
+    nullable: true
+    example: 'uos.com.sg'
+    description: the company's website domain. HubSpot Insights uses this domain to provide you with basic information about the company. Every property marked with an asterisk (*) can be populated automatically by HubSpot Insights once the domain name is populated.
+  website:
+    type: string
+    nullable: true
+    example: 'http://www.uos.com.sg'
+    description: the company's web address. Filling in this property will also fill in Company domain name.
+  is_deleted:
+    type: boolean
+    example: false
+    description: ''
+  createdate:
+    type: string
+    format: date-time
+    example: '2023-08-01T20:58:17.725Z'
+    description: the date the company was added to your account.
+  notes_last_updated:
+    type: string
+    format: date-time
+    example: '2023-08-01T20:58:17.725Z'
+    description: the last date and time a note, call, tracked and logged sales email, meeting, LinkedIn/SMS/WhatsApp message, task, or chat was logged on the company record. This is set automatically by HubSpot based on the most recent date/time set for an activity. For example, if a user logs a call and indicates that it occurred the day before, the Last activity date property will show yesterday's date.
+  raw_data:
+    type: object
+    description: The raw data returned by the provider.
+    additionalProperties: true
+required:
+  - id
+  - description
+  - hubspot_owner_id
+  - city
+  - country
+  - zip
+  - state
+  - address
+  - phone
+  - fax
+  - industry
+  - name
+  - numberofemployees
+  - website
+  - domain
+  - is_deleted
+  - createdate
+  - notes_last_updated
+  - raw_data

@@ -1,5 +1,5 @@
 get:
-  operationId: listContacts
+  operationId: listSalesforceContacts
   summary: List contacts
   tags:
     - Salesforce

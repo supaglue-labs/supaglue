@@ -1,5 +1,6 @@
 import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
+import hubspot from './hubspot';
 import salesforce from './salesforce';
 
 export default function init(app: Router): void {
@@ -8,6 +9,7 @@ export default function init(app: Router): void {
   v2Router.use(openapiMiddleware('data', 'v2'));
 
   salesforce(v2Router);
+  hubspot(v2Router);
 
   v2Router.use(openApiErrorHandlerMiddleware);
 

@@ -368,17 +368,13 @@ const sidebars = {
       type: 'html',
       value: sidebarHeader('Data Listing API'),
     },
-    { type: 'doc', id: 'api/v2/data/data-listing-api' }, // deep copied from data/sidebar.js
     {
       type: 'category',
-      label: 'Salesforce',
-      link: { type: 'doc', id: 'api/v2/data/salesforce' },
-      collapsed: true,
-      items: [
-        { type: 'doc', id: 'api/v2/data/list-contacts', label: 'List contacts', className: 'api-method get' },
-        { type: 'doc', id: 'api/v2/data/list-accounts', label: 'List accounts', className: 'api-method get' },
-      ],
-    }, // deep copied from data/sidebar.js
+      label: 'Data Listing API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/data/sidebar.js'),
+    },
 
     // section
     {
