@@ -1,6 +1,7 @@
 import type { ConnectionUnsafe, MarketingAutomationProvider } from '@supaglue/types';
 import type { MarketingAutomationProviderName } from '@supaglue/types/marketing_automation';
 import type { ConnectorAuthConfig } from '../../base';
+import * as hubspot from '../../impl/hubspot';
 import * as marketo from '../../impl/marketo';
 import * as salesforce_marketing_cloud_account_engagement from '../../impl/salesforce_marketing_cloud_account_engagement';
 import type { AbstractMarketingAutomationRemoteClient, MarketingAutomationRemoteClient } from './base';
@@ -18,6 +19,7 @@ export const marketingAutomationConnectorConfigMap: {
 } = {
   marketo,
   salesforce_marketing_cloud_account_engagement,
+  hubspot,
 };
 
 export function getMarketingAutmationRemoteClient<T extends MarketingAutomationProviderName>(

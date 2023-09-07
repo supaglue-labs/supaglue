@@ -1,6 +1,7 @@
 export type SubmitFormData = {
   email: string;
-} & Record<string, unknown>;
+  [key: string]: unknown;
+};
 
 export type SubmitFormResult = {
   id?: string;

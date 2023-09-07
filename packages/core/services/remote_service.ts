@@ -18,7 +18,7 @@ import type { EngagementRemoteClient } from '../remotes/categories/engagement/ba
 import { getEnrichmentRemoteClient } from '../remotes/categories/enrichment';
 import type { EnrichmentRemoteClient } from '../remotes/categories/enrichment/base';
 import type { MarketingAutomationRemoteClient } from '../remotes/categories/marketing_automation/base';
-import { getMarketingAutmationRemoteClient } from '../remotes/categories/marketing_automation/index';
+import { getMarketingAutmationRemoteClient as getMarketingAutomationRemoteClient } from '../remotes/categories/marketing_automation/index';
 import type { ConnectionService } from './connection_service';
 
 export class RemoteService {
@@ -103,9 +103,10 @@ export class RemoteService {
     const connection = await this.#connectionService.getUnsafeById(connectionId);
     const provider = await this.#providerService.getById(connection.providerId);
 
-    if (connection.category !== 'marketing_automation' || provider.category !== 'marketing_automation') {
-      throw new Error(`Connection or provider category was unexpectedly not 'marketing_automation'`);
-    }
+    // TODO: Restore this when we truly allow provider to be from multiple categories
+    // if (connection.category !== 'marketing_automation' || provider.category !== 'marketing_automation') {
+    //   throw new Error(`Connection or provider category was unexpectedly not 'marketing_automation'`);
+    // }
 
     if (connection.providerName !== provider.name) {
       throw new InternalServerError(
@@ -113,9 +114,13 @@ export class RemoteService {
       );
     }
 
-    const client = getMarketingAutmationRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
+    // const client = getMarketingAutomationRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
+    // TODO: fix this when we truly allow provider to be from multiple categories
+    const client = getMarketingAutomationRemoteClient(connection as any, provider as any);
     this.#persistRefreshedToken(connectionId, client);
-    return [client, provider.name];
+    // TODO: fix this when we truly allow provider to be from multiple categories
+    // return [client, provider.name];
+    return [client, provider.name as MarketingAutomationProvider['name']];
   }
 
   public async getRemoteClient(connectionId: string): Promise<RemoteClient> {
