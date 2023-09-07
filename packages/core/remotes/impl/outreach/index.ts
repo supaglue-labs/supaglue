@@ -76,17 +76,18 @@ type Credentials = {
 
 class OutreachClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
-  readonly #headers: Record<string, string>;
   readonly #baseURL: string;
+
   public constructor(credentials: Credentials) {
     super('https://api.outreach.io');
     this.#baseURL = 'https://api.outreach.io';
     this.#credentials = credentials;
-    this.#headers = { Authorization: `Bearer ${this.#credentials.accessToken}` };
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
-    return this.#headers;
+    return {
+      Authorization: `Bearer ${this.#credentials.accessToken}`,
+    };
   }
 
   public override async getCommonObjectRecord<T extends EngagementCommonObjectType>(
@@ -113,7 +114,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
 
   async #getRecord<T>(id: string, path: string, mapper: (record: OutreachRecord) => T): Promise<T> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}${path}/${id}`, {
-      headers: this.#headers,
+      headers: this.getAuthHeadersForPassthroughRequest(),
     });
     return mapper(response.data.data);
   }
@@ -181,7 +182,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         await this.maybeRefreshAccessToken();
         if (link) {
           const response = await axios.get<OutreachPaginatedRecords>(link, {
-            headers: this.#headers,
+            headers: this.getAuthHeadersForPassthroughRequest(),
           });
           return response.data;
         }
@@ -192,7 +193,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
                 ...getUpdatedAfterPathParam(updatedAfter),
               }
             : DEFAULT_LIST_PARAMS,
-          headers: this.#headers,
+          headers: this.getAuthHeadersForPassthroughRequest(),
         });
         return response.data;
       });
@@ -244,7 +245,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/prospects`,
       toOutreachProspectCreateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
@@ -256,7 +257,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/accounts`,
       toOutreachAccountCreateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
@@ -268,7 +269,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/sequenceStates`,
       toOutreachSequenceStateCreateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
@@ -294,7 +295,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/prospects/${params.id}`,
       toOutreachProspectUpdateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
@@ -306,7 +307,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/accounts/${params.id}`,
       toOutreachAccountUpdateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
