@@ -1,7 +1,6 @@
 import { apiKeyHeaderMiddleware } from '@/middleware/api_key';
 import { openapiMiddleware } from '@/middleware/openapi';
 import { Router } from 'express';
-import provider from '../../metadata/v2/property';
 import connectionSyncConfig from './connection_sync_config';
 import customer from './customer';
 import destination from './destination';
@@ -9,6 +8,7 @@ import entity from './entity';
 import entityMapping from './entity_mapping';
 import fieldMapping from './field_mapping';
 import magicLink from './magic_link';
+import provider from './provider';
 import schema from './schema';
 import sync from './sync';
 import syncConfig from './sync_config';
