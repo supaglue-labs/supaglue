@@ -335,7 +335,13 @@ const sidebars = {
       // @ts-ignore
       items: require('./docs/api/v2/ticketing/sidebar.js'),
     },
-
+    {
+      type: 'category',
+      label: 'Marketing Automation API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/marketing-automation/sidebar.js'),
+    },
     // section
     {
       type: 'html',
