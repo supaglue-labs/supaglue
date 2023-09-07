@@ -1,0 +1,25 @@
+type: object
+properties:
+  name:
+    type: string
+    nullable: true # TODO: revisit
+    example: Q1 Platform
+  description:
+    type: string
+    nullable: true
+    example: For tracking all tasks related to Platform for Q1
+  collection_type:
+    type: string # TODO: convert to enum
+    nullable: true
+    example: LIST
+  parent_collection:
+    type: string
+    nullable: true # TODO: revisit
+    example: 681b0fd7-40e6-4b91-8e23-2814872090be
+  access_level:
+    type: string # TODO: convert to enum
+    nullable: true
+    example: PUBLIC
+
+required:
+  - name

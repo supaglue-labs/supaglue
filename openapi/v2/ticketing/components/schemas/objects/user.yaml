@@ -1,0 +1,27 @@
+type: object
+properties:
+  name:
+    type: string
+    nullable: true # TODO: revisit
+    example: Hil Feig
+  email_address:
+    type: string
+    example: help@supaglue.com
+  is_active:
+    type: boolean
+    example: false
+  teams:
+    type: array
+    items:
+      type: string
+      nullable: false # TODO: revisit
+      example: 681b0fd7-40e6-4b91-8e23-2814872090be
+  avatar:
+    type: string
+    nullable: true
+    example: https://supaglue.io/user_profile_pic.png
+
+required:
+  - name
+  - email_address
+  - is_active

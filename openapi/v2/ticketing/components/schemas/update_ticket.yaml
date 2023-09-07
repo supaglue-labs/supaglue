@@ -1,0 +1,58 @@
+type: object
+properties:
+  name:
+    type: string
+    nullable: true # TODO: revisit
+    example: Please add more integrations
+  assignees:
+    type: array
+    items:
+      type: string
+      example: 17a54124-287f-494d-965e-3c5b330c9a68
+  creator:
+    type: string
+    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+  due_date:
+    type: string
+    example: '2022-10-11T00:00:00Z'
+  status:
+    type: string # TODO: revisit enum
+    example: 'OPEN'
+  description:
+    type: string
+    example: "Can you please add more integrations? It'll make syncing data much easier!"
+  collections:
+    type: array
+    items:
+      type: string
+      example: fb8c55b6-1cb8-4b4c-9fb6-17924231619d
+  ticket_type:
+    type: string # TODO: revisit enum
+    example: incident
+  account:
+    type: string
+    example: 0958cbc6-6040-430a-848e-aafacbadf4ae
+  contact:
+    type: string
+    example: 65c345ba-6870-4974-87ba-dd31509c367a
+  parent_ticket:
+    type: string
+    example: 75b33d04-30d2-4f3e-be45-27838bc94342
+  tags:
+    type: array
+    items:
+      type: string
+      example: enterprise
+  completed_at:
+    type: string
+    example: '2021-12-09T00:00:00Z'
+  ticket_url:
+    type: string
+    example: https://thirdpartysoftware.com/project/3/issue/1
+  priority:
+    type: string
+    example: HIGH
+
+required:
+  - name
+  - creator

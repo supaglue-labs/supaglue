@@ -383,6 +383,7 @@ const config = {
                 '../openapi/v2/crm/openapi.bundle.json',
                 '../openapi/v2/engagement/openapi.bundle.json',
                 '../openapi/v2/enrichment/openapi.bundle.json',
+                '../openapi/v2/ticketing/openapi.bundle.json',
                 '../openapi/v2/metadata/openapi.bundle.json',
                 '../openapi/v2/actions/openapi.bundle.json',
                 '../openapi/v2/data/openapi.bundle.json',
@@ -429,7 +430,18 @@ const config = {
               sidebarCollapsed: true,
             },
             downloadUrl:
-              'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/engagement/openapi.bundle.json',
+              'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/enrichment/openapi.bundle.json',
+          },
+          ticketing: {
+            specPath: '../openapi/v2/ticketing/openapi.bundle.json',
+            outputDir: 'docs/api/v2/ticketing', // Output directory for generated .mdx docs
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsed: true,
+            },
+            downloadUrl:
+              'https://raw.githubusercontent.com/supaglue-labs/supaglue/main/openapi/v2/ticketing/openapi.bundle.json',
           },
           mgmt: {
             specPath: '../openapi/v2/mgmt/openapi.bundle.json',
