@@ -94,6 +94,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     commonObjectType: T,
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
+    await this.maybeRefreshAccessToken();
     switch (commonObjectType) {
       case 'contact':
         return await this.#getRecord(id, '/api/v2/prospects', fromOutreachProspectToContact);
