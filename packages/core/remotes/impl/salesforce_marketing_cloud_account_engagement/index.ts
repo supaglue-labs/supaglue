@@ -130,7 +130,7 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
     return await super.sendPassthroughRequest(request);
   }
 
-  public override async listForms() {
+  public override async marketingAutomationListForms() {
     await this.#refreshAccessToken();
 
     const url = `${this.baseUrl}/api/v5/objects/form-handlers?fields=${FORM_HANDLER_FIELDS.join(',')}`;
@@ -145,7 +145,7 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
     return response.data.values.map(fromPardotFormHandlerToFormMetadata);
   }
 
-  public override async getFormFields(id: string) {
+  public override async marketingAutomationGetFormFields(id: string) {
     await this.#refreshAccessToken();
 
     const url = `${
@@ -162,7 +162,10 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
     return response.data.values.map(fromPardotFormHandlerFieldToFormField);
   }
 
-  public override async submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
+  public override async marketingAutomationSubmitForm(
+    formId: string,
+    formData: SubmitFormData
+  ): Promise<SubmitFormResult> {
     await this.#refreshAccessToken();
 
     // get the form submit url

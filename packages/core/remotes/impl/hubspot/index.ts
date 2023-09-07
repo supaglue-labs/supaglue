@@ -454,7 +454,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return Number(hubId);
   }
 
-  public async submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
+  public async marketingAutomationSubmitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
     await this.maybeRefreshAccessToken();
 
     const portalId = this.getHubId();
@@ -482,7 +482,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     };
   }
 
-  public async listForms(): Promise<FormMetadata[]> {
+  public async marketingAutomationListForms(): Promise<FormMetadata[]> {
     await this.maybeRefreshAccessToken();
     const response = await axios.get<HubSpotAPIV2ListFormsResponse>(`${this.baseUrl}/forms/v2/forms`, {
       headers: {
@@ -499,7 +499,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     }));
   }
 
-  public async getFormFields(formId: string): Promise<FormField[]> {
+  public async marketingAutomationGetFormFields(formId: string): Promise<FormField[]> {
     await this.maybeRefreshAccessToken();
     const response = await axios.get<HubSpotAPIV2ListFormsSingleForm>(`${this.baseUrl}/forms/v2/forms/${formId}`, {
       headers: {

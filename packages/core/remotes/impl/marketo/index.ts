@@ -101,7 +101,7 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
     return await super.sendPassthroughRequest(request);
   }
 
-  public override async listForms(): Promise<FormMetadata[]> {
+  public override async marketingAutomationListForms(): Promise<FormMetadata[]> {
     await this.#maybeRefreshAccessToken();
 
     const response = await axios.get<MarketoResponse<MarketoForm[]>>(`${this.baseUrl}/rest/asset/v1/forms.json`, {
@@ -117,7 +117,7 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
     return response.data.result.map(fromMarketoFormToFormMetadata);
   }
 
-  public override async getFormFields(id: string): Promise<FormField[]> {
+  public override async marketingAutomationGetFormFields(id: string): Promise<FormField[]> {
     await this.#maybeRefreshAccessToken();
 
     const response = await axios.get<MarketoResponse<MarketoFormField[]>>(
@@ -136,7 +136,10 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
     return response.data.result.map((field) => fromMarketoFormFieldToFormField(field, id));
   }
 
-  public override async submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
+  public override async marketingAutomationSubmitForm(
+    formId: string,
+    formData: SubmitFormData
+  ): Promise<SubmitFormResult> {
     await this.#maybeRefreshAccessToken();
 
     const response = await axios.post<{
