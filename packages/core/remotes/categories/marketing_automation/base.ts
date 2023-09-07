@@ -5,9 +5,9 @@ import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
 export interface MarketingAutomationRemoteClient extends RemoteClient {
-  submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult>;
-  listForms(): Promise<FormMetadata[]>;
-  getFormFields(formId: string): Promise<FormField[]>;
+  marketingAutomationSubmitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult>;
+  marketingAutomationListForms(): Promise<FormMetadata[]>;
+  marketingAutomationGetFormFields(formId: string): Promise<FormField[]>;
 }
 
 export abstract class AbstractMarketingAutomationRemoteClient
@@ -18,15 +18,15 @@ export abstract class AbstractMarketingAutomationRemoteClient
     super(...args);
   }
 
-  public async listForms(): Promise<FormMetadata[]> {
+  public async marketingAutomationListForms(): Promise<FormMetadata[]> {
     throw new Error('Not implemented');
   }
 
-  public async getFormFields(formId: string): Promise<FormField[]> {
+  public async marketingAutomationGetFormFields(formId: string): Promise<FormField[]> {
     throw new Error('Not implemented');
   }
 
-  public async submitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
+  public async marketingAutomationSubmitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
     throw new Error('Not implemented');
   }
 }

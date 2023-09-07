@@ -1,6 +1,7 @@
 export const SUPPORTED_MARKETING_AUTOMATION_PROVIDERS = [
   'marketo',
   'salesforce_marketing_cloud_account_engagement',
+  'hubspot',
 ] as const;
 
 export type MarketingAutomationProviderName = (typeof SUPPORTED_MARKETING_AUTOMATION_PROVIDERS)[number];

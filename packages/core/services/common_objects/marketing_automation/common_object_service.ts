@@ -15,7 +15,7 @@ export class MarketingAutomationCommonObjectService {
     const [remoteClient, providerName] = await this.#remoteService.getMarketingAutomationRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'submitForm', remote_name: providerName });
-    const obj = await remoteClient.submitForm(formId, formData);
+    const obj = await remoteClient.marketingAutomationSubmitForm(formId, formData);
     end();
 
     return obj;
@@ -25,7 +25,7 @@ export class MarketingAutomationCommonObjectService {
     const [remoteClient, providerName] = await this.#remoteService.getMarketingAutomationRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'listForms', remote_name: providerName });
-    const obj = await remoteClient.listForms();
+    const obj = await remoteClient.marketingAutomationListForms();
     end();
 
     return obj;
@@ -35,7 +35,7 @@ export class MarketingAutomationCommonObjectService {
     const [remoteClient, providerName] = await this.#remoteService.getMarketingAutomationRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'listForms', remote_name: providerName });
-    const obj = await remoteClient.getFormFields(formId);
+    const obj = await remoteClient.marketingAutomationGetFormFields(formId);
     end();
 
     return obj;
