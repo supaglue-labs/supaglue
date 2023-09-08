@@ -116,7 +116,10 @@ export default function Navigator(props: DrawerProps & SupaglueProps) {
     },
   ];
 
-  if (!lekko.schemasWhitelistConfig.applicationIds.includes(applicationId)) {
+  if (
+    !lekko.schemasWhitelistConfig.applicationIds.includes(applicationId) &&
+    !lekko.entitiesWhitelistConfig.applicationIds.includes(applicationId)
+  ) {
     categories[0].children = categories[0].children.filter((category) => category.id !== 'Data Model');
   }
 
