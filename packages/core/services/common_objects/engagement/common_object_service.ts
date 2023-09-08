@@ -35,20 +35,23 @@ export class EngagementCommonObjectService {
     const [remoteClient, providerName] = await this.#remoteService.getEngagementRemoteClient(connection.id);
 
     const end = remoteDuration.startTimer({ operation: 'create', remote_name: providerName });
-    const id = await remoteClient.createCommonObjectRecord(type, params);
+    const res = await remoteClient.createCommonObjectRecord(type, params);
     end();
 
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer && connection.providerName !== 'apollo') {
-      const object = await remoteClient.getCommonObjectRecord(type, id);
-
-      const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });
-      await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, object);
-      end();
+    if (writer) {
+      // TODO: we should move this logic into each individual provider instead of checking apollo here
+      const record =
+        connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
+      if (record) {
+        const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });
+        await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, record);
+        end();
+      }
     }
 
-    return id;
+    return res.id;
   }
 
   public async update<T extends EngagementCommonObjectType>(
@@ -59,17 +62,20 @@ export class EngagementCommonObjectService {
     const [remoteClient, providerName] = await this.#remoteService.getEngagementRemoteClient(connection.id);
 
     const end = remoteDuration.startTimer({ operation: 'update', remote_name: providerName });
-    await remoteClient.updateCommonObjectRecord(type, params);
+    const res = await remoteClient.updateCommonObjectRecord(type, params);
     end();
 
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer && connection.providerName !== 'apollo') {
-      const object = await remoteClient.getCommonObjectRecord(type, params.id);
-
-      const end = remoteDuration.startTimer({ operation: 'update', remote_name: destinationType! });
-      await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, object);
-      end();
+    if (writer) {
+      // TODO: we should move this logic into each individual provider instead of checking apollo here
+      const record =
+        connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
+      if (record) {
+        const end = remoteDuration.startTimer({ operation: 'update', remote_name: destinationType! });
+        await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, record);
+        end();
+      }
     }
   }
 }

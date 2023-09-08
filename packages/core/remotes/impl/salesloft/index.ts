@@ -291,17 +291,23 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
-  ): Promise<string> {
+  ): Promise<{ id: string; record?: EngagementCommonObjectTypeMap<T>['object'] }> {
     switch (commonObjectType) {
       case 'sequence_state':
-        return await this.#createRecord(
-          '/v2/cadence_memberships',
-          toSalesloftSequenceStateCreateParams(params as SequenceStateCreateParams)
-        );
+        return {
+          id: await this.#createRecord(
+            '/v2/cadence_memberships',
+            toSalesloftSequenceStateCreateParams(params as SequenceStateCreateParams)
+          ),
+        };
       case 'account':
-        return await this.#createRecord('/v2/accounts', toSalesloftAccountCreateParams(params as AccountCreateParams));
+        return {
+          id: await this.#createRecord('/v2/accounts', toSalesloftAccountCreateParams(params as AccountCreateParams)),
+        };
       case 'contact':
-        return await this.#createRecord('/v2/people', toSalesloftContactCreateParams(params as ContactCreateParams));
+        return {
+          id: await this.#createRecord('/v2/people', toSalesloftContactCreateParams(params as ContactCreateParams)),
+        };
       case 'sequence':
       case 'mailbox':
       case 'user':
@@ -314,20 +320,24 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
-  ): Promise<string> {
+  ): Promise<{ id: string; record?: EngagementCommonObjectTypeMap<T>['object'] }> {
     switch (commonObjectType) {
       case 'account':
-        return await this.#updateRecord(
-          params.id,
-          '/v2/accounts',
-          toSalesloftAccountCreateParams(params as AccountCreateParams)
-        );
+        return {
+          id: await this.#updateRecord(
+            params.id,
+            '/v2/accounts',
+            toSalesloftAccountCreateParams(params as AccountCreateParams)
+          ),
+        };
       case 'contact':
-        return await this.#updateRecord(
-          params.id,
-          '/v2/people',
-          toSalesloftContactCreateParams(params as ContactCreateParams)
-        );
+        return {
+          id: await this.#updateRecord(
+            params.id,
+            '/v2/people',
+            toSalesloftContactCreateParams(params as ContactCreateParams)
+          ),
+        };
       default:
         throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
