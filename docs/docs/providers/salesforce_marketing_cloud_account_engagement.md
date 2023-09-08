@@ -9,17 +9,33 @@ description: ''
 
 ## Overview
 
-| Feature          | Available |
-| ---------------- | --------- |
-| Authentication   | Yes       |
-| Managed syncs    | No        |
-| Actions API      | Yes       |
-| Real-time events | No        |
-| Passthrough API  | Yes       |
+**Status:** beta
 
-Supported common objects:
+**Category:** `marketing_automation`
 
-- Forms (Actions API only)
+Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
+
+| Feature                              | Available |
+| ------------------------------------ | --------- |
+| Authentication (`oauth2`)            | Yes       |
+| Managed syncs                        | No        |
+| &nbsp;&nbsp;&nbsp; Sync strategies   |           |
+| Unified API                          | Yes       |
+| &nbsp;&nbsp;&nbsp; Data invalidation | No        |
+| Real-time events                     | No        |
+| Passthrough API                      | Yes       |
+
+#### Supported common objects:
+
+- Forms
+
+#### Supported standard objects:
+
+N/A
+
+#### Supported custom objects:
+
+N/A
 
 ## Provider setup
 
@@ -61,9 +77,9 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
    </BrowserWindow>
 
-  :::info
-  Supaglue requires a set of minimum scopes to support reads and writes to common object records.
-  :::
+:::info
+Supaglue requires a set of minimum scopes to support reads and writes to common object records.
+:::
 
 1. Press the Save button at the bottom of the page.
 

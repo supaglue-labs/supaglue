@@ -9,20 +9,40 @@ description: ''
 
 ## Overview
 
-Supaglue interfaces with the Pipedrive V1 API.
+**Status:** beta
 
-| Feature                            | Available |
-| ---------------------------------- | --------- |
-| Authentication                     | Yes       |
-| Managed syncs                      | Yes       |
-| Actions API                        | Yes       |
-| Real-time events                   | No        |
-| Passthrough API                    | Yes       |
+**Category:** `crm`
 
-Supported common objects:
+Supaglue uses the Pipedrive V1 API.
+
+| Feature                              | Available                                       |
+| ------------------------------------ | ----------------------------------------------- |
+| Authentication (`oauth2`)            | Yes                                             |
+| Managed syncs                        | Yes                                             |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental` (soft delete supported) |
+| Unified API                          | Yes                                             |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                             |
+| Real-time events                     | No                                              |
+| Passthrough API                      | Yes                                             |
+
+#### Supported common objects:
 
 - Account
 - Contact
 - Lead
 - Opportunity
 - User
+
+#### Supported standard objects:
+
+N/A
+
+#### Supported custom objects:
+
+N/A
+
+## Provider setup
+
+:::info
+This is under construction.
+:::

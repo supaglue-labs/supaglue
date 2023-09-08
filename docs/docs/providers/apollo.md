@@ -9,30 +9,41 @@ description: ''
 
 ## Overview
 
+**Status:** beta
+
+**Category:** `engagement`, `enrichment`
+
 Apollo is both a sales engagement connector and a data enrichment provider.
 
-| Feature                            | Available |
-| ---------------------------------- | --------- |
-| Authentication                     | Yes       |
-| Managed syncs                      | Yes       |
-| Actions API                        | Yes       |
-| Real-time events                   | No        |
-| Passthrough API                    | Yes       |
+| Feature                              | Available   |
+| ------------------------------------ | ----------- |
+| Authentication (`api_key`)           | Yes         |
+| Managed syncs                        | Yes         |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | `full only` |
+| Unified API                          | Yes         |
+| &nbsp;&nbsp;&nbsp; Data invalidation | No          |
+| Real-time events                     | No          |
+| Passthrough API                      | Yes         |
 
-
-**Note: Only full (non-incremental) syncs are supported.
-
-Supported common objects:
+#### Supported Engagement common objects:
 
 - Users
 - Contacts
-- Sequences
+- Sequences (soft delete supported)
 - Sequence States
-- Mailboxes (also known as Email Accounts)
+- Mailboxes (aka Email Accounts)
+
+#### Supported standard objects:
+
+N/A
+
+#### Supported custom objects:
+
+N/A
 
 ## Provider setup
 
-To enable the Apollo provider on Supaglue, simply navigate to the Apollo Provider configuration page and click "Enable".
+To enable the Apollo provider on Supaglue, navigate to the Apollo Provider configuration page and click "Enable".
 
 ![apollo_auth](/img/apollo_auth.png 'apollo auth config')
 
