@@ -14,14 +14,26 @@ export type SequenceStep = BaseEngagementModel & CoreSequenceStep;
 
 export type SequenceStepCreateParams = {
   sequenceId: string;
-  name: string;
   order: number;
-  body?: string;
-  daysAfter?: number;
-  isReply?: boolean;
-  subject?: string;
-  templateName?: string;
+  date?: string;
+  intervalSeconds?: number;
+  isReply: boolean;
+  template: SequenceTemplateId | SequenceTemplateCreateParams;
   type: 'auto' | 'manual';
+  customFields?: Record<string, unknown>;
+};
+
+export type SequenceTemplateId = {
+  id: string;
+};
+
+export type SequenceTemplateCreateParams = {
+  body: string;
+  subject: string;
+  name: string;
+  to?: string[];
+  cc?: string[];
+  bcc?: string[];
   customFields?: Record<string, unknown>;
 };
 

@@ -14,6 +14,7 @@ import type {
   SequenceState,
   SequenceStateCreateParams,
   SequenceStepCreateParams,
+  SequenceTemplateCreateParams,
   User,
 } from '@supaglue/types/engagement';
 import type { OutreachRecord } from '.';
@@ -337,19 +338,20 @@ export const toOutreachSequenceCreateParams = ({
 
 export const toOutreachSequenceStepCreateParams = ({
   sequenceId,
-  name,
-  body,
-  daysAfter,
-  isReply,
-  subject,
-  templateName,
+  intervalSeconds,
+  date,
+  order,
   type,
   customFields,
 }: SequenceStepCreateParams): Record<string, any> => {
   return {
     data: {
       attributes: {
-        interval: daysAfter ? daysAfter * SECS_IN_DAY : undefined,
+        interval: intervalSeconds,
+        date,
+        stepType: type === 'auto' ? 'auto_email' : 'manual_email',
+        order,
+        ...customFields,
       },
       relationships: {
         sequence: {
@@ -359,6 +361,56 @@ export const toOutreachSequenceStepCreateParams = ({
       },
     },
     type: 'sequenceStep',
+  };
+};
+
+export const toOutreachSequenceTemplateCreateParams = (
+  { isReply }: SequenceStepCreateParams,
+  sequenceStepId: number,
+  templateId: number
+): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        isReply,
+      },
+      relationships: {
+        sequenceStep: {
+          id: sequenceStepId,
+          type: 'sequenceStep',
+        },
+        template: {
+          id: templateId,
+          type: 'template',
+        },
+      },
+    },
+    type: 'sequenceTemplate',
+  };
+};
+
+export const toOutreachTemplateCreateParams = ({
+  name,
+  body,
+  subject,
+  to,
+  cc,
+  bcc,
+  customFields,
+}: SequenceTemplateCreateParams): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        name,
+        bodyHtml: body,
+        subject,
+        toRecipients: to,
+        ccRecipients: cc,
+        bccRecipients: bcc,
+        ...customFields,
+      },
+      type: 'template',
+    },
   };
 };
 

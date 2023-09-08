@@ -14,6 +14,9 @@ import type {
   EngagementCommonObjectTypeMap,
   SequenceCreateParams,
   SequenceStateCreateParams,
+  SequenceStepCreateParams,
+  SequenceTemplateCreateParams,
+  SequenceTemplateId,
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
@@ -43,6 +46,9 @@ import {
   toOutreachProspectUpdateParams,
   toOutreachSequenceCreateParams,
   toOutreachSequenceStateCreateParams,
+  toOutreachSequenceStepCreateParams,
+  toOutreachSequenceTemplateCreateParams,
+  toOutreachTemplateCreateParams,
 } from './mappers';
 
 const OUTREACH_RECORD_LIMIT = 50;
@@ -300,16 +306,36 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return response.data.data.id.toString();
   }
 
-  // async createSequenceStep(params: SequenceStepCreateParams): Promise<string> {
-  //   await this.maybeRefreshAccessToken();
-  //   const response = await axios.post<{ data: OutreachRecord }>(
-  //     `${this.#baseURL}/api/v2/sequences`,
-  //     toOutreachSequenceStepCreateParams(params),
-  //     {
-  //       headers: this.getAuthHeadersForPassthroughRequest(),      }
-  //   );
-  //   return response.data.data.id.toString();
-  // }
+  async createSequenceStep(params: SequenceStepCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    let templateId = (params.template as SequenceTemplateId).id;
+    if (!templateId) {
+      const response = await axios.post<{ data: OutreachRecord }>(
+        `${this.#baseURL}/api/v2/templates`,
+        toOutreachTemplateCreateParams(params.template as SequenceTemplateCreateParams),
+        {
+          headers: this.getAuthHeadersForPassthroughRequest(),
+        }
+      );
+      templateId = response.data.data.id.toString();
+    }
+    const response = await axios.post<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/sequences`,
+      toOutreachSequenceStepCreateParams(params),
+      {
+        headers: this.getAuthHeadersForPassthroughRequest(),
+      }
+    );
+    const sequenceStepId = response.data.data.id.toString();
+    await axios.post<{ data: OutreachRecord }>(
+      `${this.#baseURL}/api/v2/sequenceTemplates`,
+      toOutreachSequenceTemplateCreateParams(params, parseInt(templateId), parseInt(sequenceStepId)),
+      {
+        headers: this.getAuthHeadersForPassthroughRequest(),
+      }
+    );
+    return sequenceStepId;
+  }
 
   public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,

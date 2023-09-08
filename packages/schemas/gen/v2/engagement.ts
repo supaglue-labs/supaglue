@@ -413,18 +413,33 @@ export interface components {
     create_sequence_step: {
       /** @description The ID of the sequence. */
       sequence_id: string;
-      /** @description The name of the sequence step. */
-      name: string;
-      /** @description The body of the email (HTML). */
-      body?: string;
-      /** @description The number of days after the previous step that this step should be sent. */
-      days_after?: number;
+      /** @description The interval (in seconds) until this step will activate; only applicable to interval-based sequences. */
+      interval_seconds?: number;
+      /**
+       * @description The date this step will activate; only applicable to date-based sequences. 
+       * @example 2023-01-01
+       */
+      date?: string;
+      template: OneOf<[{
+        /** @description The ID of the template to use for this step. */
+        id: string;
+      }, {
+        /** @description The body of the email (HTML). */
+        body: string;
+        /** @description The subject of the email. */
+        subject: string;
+        /** @description The name of the template. */
+        name: string;
+        /** @description A list of default person and email address pairs to receive this template in the "to" field */
+        to?: (string)[];
+        /** @description A list of default person and email address pairs to receive this template in the "cc" field */
+        cc?: (string)[];
+        /** @description A list of default person and email address pairs to receive this template in the "bcc" field */
+        bcc?: (string)[];
+        custom_fields?: components["schemas"]["custom_fields"];
+      }]>;
       /** @description If true, this step will be sent as a reply to the previous step. */
-      is_reply?: boolean;
-      /** @description The subject of the email. */
-      subject?: string;
-      /** @description The name of the template to use for this step. */
-      template_name?: string;
+      is_reply: boolean;
       /** @description The step's display order within its sequence. */
       order: number;
       /** @enum {string} */
