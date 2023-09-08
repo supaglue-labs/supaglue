@@ -6,6 +6,7 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useProviders } from '@/hooks/useProviders';
 import { useSchemas } from '@/hooks/useSchemas';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getStandardObjectOptions, PROVIDER_CARDS_INFO } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
 import AddIcon from '@mui/icons-material/Add';
@@ -49,7 +50,12 @@ function isOauthProvider(provider: Provider | undefined): provider is OauthProvi
   return provider?.authType === 'oauth2';
 }
 
-export default function ProviderDetailsPanel({ providerName, category, isLoading }: ProviderDetailsPanelProps) {
+export default function ProviderDetailsPanel({
+  providerName,
+  category,
+  isLoading,
+  lekko,
+}: ProviderDetailsPanelProps & SupaglueProps) {
   const shouldAllowManagedOauth = [
     'salesforce',
     'salesforce_marketing_cloud_account_engagement',
@@ -265,7 +271,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
             )}
           </Stack>
         )}
-        {supportsObjectToSchema && (
+        {supportsObjectToSchema && lekko.schemasWhitelistConfig.applicationIds.includes(activeApplicationId) && (
           <Stack className="gap-2">
             <Typography variant="subtitle1">Object to Schema Mapping</Typography>
             <SchemaToObjectMapping

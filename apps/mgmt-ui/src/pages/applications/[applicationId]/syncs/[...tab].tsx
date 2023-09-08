@@ -73,7 +73,7 @@ export default function Home(props: SupaglueProps) {
           <SyncsListPanel />
         </TabPanel>
         <TabPanel value={value} index={1} className="w-full">
-          <SyncConfigTabPanelContainer />
+          <SyncConfigTabPanelContainer {...props} />
         </TabPanel>
       </TabContainer>
     </Box>

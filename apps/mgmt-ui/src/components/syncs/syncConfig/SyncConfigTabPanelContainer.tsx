@@ -1,9 +1,10 @@
 import { TabPanel } from '@/components/TabPanel';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { useRouter } from 'next/router';
 import { NewSyncConfigPanel, SyncConfigDetailsPanel } from './SyncConfigDetailsPanel';
 import SyncConfigsListPanel from './SyncConfigListPanel';
 
-export default function SyncConfigTabPanelContainer() {
+export default function SyncConfigTabPanelContainer(props: SupaglueProps) {
   const router = useRouter();
   const { tab = [] } = router.query;
 
@@ -13,9 +14,9 @@ export default function SyncConfigTabPanelContainer() {
 
   return (
     <TabPanel value={0} index={0} className="w-full">
-      {isListPage && <SyncConfigsListPanel />}
-      {isNewPage && <NewSyncConfigPanel />}
-      {isDetailPage && <SyncConfigDetailsPanel syncConfigId={tab[1]} />}
+      {isListPage && <SyncConfigsListPanel {...props} />}
+      {isNewPage && <NewSyncConfigPanel {...props} />}
+      {isDetailPage && <SyncConfigDetailsPanel syncConfigId={tab[1]} {...props} />}
     </TabPanel>
   );
 }
