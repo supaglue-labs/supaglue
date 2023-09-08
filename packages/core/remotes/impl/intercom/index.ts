@@ -99,7 +99,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
               field: 'updated_at',
               value: (modifiedAfter?.getTime() ?? 0) / 1000,
             },
-            pagination: cursor ? { pagination: { starting_after: cursor } } : null,
+            pagination: cursor ? { starting_after: cursor } : null,
           },
           {
             headers: this.#getAuthHeaders(),
