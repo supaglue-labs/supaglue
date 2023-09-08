@@ -29,7 +29,7 @@ We support three kinds of authentication methods for your customers to authentic
 
 Your authentication method depends on the third-party provider you want to connect to. For example, Salesforce requires Oauth 2.0 authentication, while Apollo requires API key authentication.
 
-### Oauth 2.0
+### Oauth 2.0 (`oauth2`)
 
 Supaglue supports third-party providers that use [OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749) for authentication.
 
@@ -121,7 +121,7 @@ export const ApiKeyIntegrationCard = ({ icon, provider, description, to, custome
   );
 };
 
-### API key
+### API key (`api_key`)
 
 Supaglue supports third-party providers that use API keys for authentication. API keys range widely in their format and behavior. At a high level, your customers generate an API key in their third-party provider account, e.g. Apollo, and you pass this on to Supaglue.
 
@@ -133,7 +133,7 @@ Use Supaglue's Management API, the [Create Connection API](../api/v2/mgmt/create
 Since the API above is a cross-original POST request, you must proxy the call through your backend server.
 :::
 
-### Access keys
+### Access keys (`access_key_secret`)
 
 Supaglue supports third-party providers that use access keys for authentication. Access keys are similar to API keys but consist of two parts: an ID and secret.
 

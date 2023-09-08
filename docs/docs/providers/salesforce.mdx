@@ -9,19 +9,23 @@ description: ''
 
 ## Overview
 
+**Status:** beta
+
+**Category:** `crm`
+
 Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 
-| Feature                            | Available |
-| ---------------------------------- | --------- |
-| Authentication                     | Yes       |
-| Managed syncs                      | Yes       |
-| Actions API                        | Yes       |
-| Real-time events                   | Yes       |
-| Passthrough API                    | Yes       |
+| Feature                              | Available                                       |
+| ------------------------------------ | ----------------------------------------------- |
+| Authentication (`oauth2`)            | Yes                                             |
+| Managed syncs                        | Yes                                             |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental` (soft delete supported) |
+| Unified API                          | Yes                                             |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                             |
+| Real-time events (alpha)             | Yes                                             |
+| Passthrough API                      | Yes                                             |
 
-Note: When listing the custom objects you'd like to sync, omit the `__c` suffix.
-
-Supported common objects:
+#### Supported common objects:
 
 - Account
 - Contact
@@ -29,7 +33,13 @@ Supported common objects:
 - Opportunity
 - User
 
-Supported standard objects: use singular Pascal casing when specifying [Salesforce Standard Objects](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm).
+#### Supported standard objects:
+
+Use singular Pascal casing when specifying [Salesforce Standard Objects](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm).
+
+#### Supported custom objects:
+
+When listing custom objects you'd like to sync, omit the `__c` suffix.
 
 ## Provider setup
 
@@ -64,6 +74,7 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 <TabItem value="localhost" label="Localhost">
 
 `http://localhost:8080/oauth/callback`
+
 </TabItem>
 </Tabs>
 
@@ -75,9 +86,9 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
    </BrowserWindow>
 
-  :::info
-  Supaglue requires a set of minimum scopes to support reads and writes to common object records.
-  :::
+:::info
+Supaglue requires a set of minimum scopes to support reads and writes to common object records.
+:::
 
 1. Press the Save button at the bottom of the page.
 

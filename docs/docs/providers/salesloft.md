@@ -9,22 +9,36 @@ description: ''
 
 ## Overview
 
+**Status:** beta
+
+**Category:** `engagement`
+
 Supaglue uses the Salesloft v2 API.
 
-| Feature                            | Available |
-| ---------------------------------- | --------- |
-| Authentication                     | Yes       |
-| Managed syncs                      | Yes       |
-| Actions API                        | Yes       |
-| Real-time events                   | No        |
-| Passthrough API                    | Yes       |
+| Feature                              | Available                                           |
+| ------------------------------------ | --------------------------------------------------- |
+| Authentication (`oauth2`)            | Yes                                                 |
+| Managed syncs                        | Yes                                                 |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental` (soft delete not supported) |
+| Unified API                          | Yes                                                 |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                                 |
+| Real-time events                     | No                                                  |
+| Passthrough API                      | Yes                                                 |
 
-Supported common objects:
+#### Supported common objects:
 
 - Users
 - Accounts
 - Contacts
 - Emails
-- Sequences
+- Sequences (soft delete supported)
 - Sequence States
 - Mailboxes
+
+#### Supported standard objects:
+
+N/A
+
+#### Supported custom objects:
+
+N/A

@@ -200,14 +200,26 @@ export default function ProviderDetailsPanel({
   return (
     <Card>
       <Stack direction="column" className="gap-4" sx={{ padding: '2rem' }}>
-        <Stack direction="row" className="items-center gap-2">
-          {providerToIcon(providerCardInfo.providerName, 35)}
-          <Stack direction="column">
-            <Typography variant="subtitle1">{providerCardInfo.name}</Typography>
-            <Typography fontSize={12}>
-              {(providerCardInfo.displayCategory ?? providerCardInfo.category).toUpperCase()}
-            </Typography>
+        <Stack direction="row" className="justify-between items-center">
+          <Stack direction="row" className="items-center gap-2">
+            {providerToIcon(providerCardInfo.providerName, 35)}
+            <Stack direction="column">
+              <Typography variant="subtitle1">{providerCardInfo.name}</Typography>
+              <Typography fontSize={12}>
+                {(providerCardInfo.displayCategory ?? providerCardInfo.category).toUpperCase()}
+              </Typography>
+            </Stack>
+            (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`https://docs.supaglue.com/providers/${providerCardInfo.name.toLowerCase()}`}
+            >
+              docs
+            </a>
+            )
           </Stack>
+          <Chip label={providerCardInfo.status} size="small" />
         </Stack>
         <Stack className="gap-2">
           <Typography variant="subtitle1">Provider Metadata</Typography>

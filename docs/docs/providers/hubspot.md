@@ -9,30 +9,48 @@ description: ''
 
 ## Overview
 
-Supaglue interfaces with the HubSpot V3 API.
+**Status:** beta
 
-| Feature                                          | Available |
-| ------------------------------------------------ | --------- |
-| Auth                                             | Yes       |
-| Managed syncs (common, standard, custom objects) | Yes       |
-| Managed syncs: incremental deletes               | Yes       |
-| Action API (common, custom objects)              | Yes       |
-| Real-time events                                 | No        |
+**Category:** `crm`, `marketing_automation`
 
-Supported CRM common objects:
+Supaglue uses the HubSpot V3 API.
+
+| Feature                              | Available                                         |
+| ------------------------------------ | ------------------------------------------------- |
+| Authentication (`oauth2`)            | Yes                                               |
+| Managed syncs                        | Yes                                               |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental`\* (soft delete supported) |
+| Unified API                          | Yes                                               |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                               |
+| Real-time events                     | No                                                |
+| Passthrough API                      | Yes                                               |
+
+#### Supported CRM common objects:
 
 - Company
 - Contact
 - Deal
-- User
+- User ([*] Sync strategy: `full only`)
 
-Supported Marketing Automation common objects:
+:::info
+Note: if only associations change in between syncs, Supaglue syncs will not reflect it until the relevant common object is modified.
+:::
 
-- Forms (Actions API only)
+#### Supported CRM standard objects:
 
-Supported standard objects: `company`, `contact`, `deal`, `line_item`, `product`, `ticket`, `quote`, `call`, `communication`, `email`, `meeting`, `note`, `postal_mail`, `task`.
+`company`, `contact`, `deal`, `line_item`, `product`, `ticket`, `quote`, `call`, `communication`, `email`, `meeting`, `note`, `postal_mail`, `task`.
 
-For custom objects, you should use their internal names when configuring the `SyncConfig`. See [HubSpot's documentation](https://knowledge.hubspot.com/crm-setup/create-custom-objects) for more information. If you created the custom object through Supaglue's API, the internal name is equivalent to the `name` field.
+#### Supported CRM custom objects:
+
+Use the internal names when configuring the `SyncConfig`. See [HubSpot's documentation](https://knowledge.hubspot.com/crm-setup/create-custom-objects) for more information. If you created the custom object through Supaglue's API, the internal name is equivalent to the `name` field.
+
+#### Supported Marketing Automation common objects:
+
+- Forms
+
+:::note
+We only support Unified API for `marketing_automation`.
+:::
 
 ## Provider setup
 
@@ -49,58 +67,59 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 1. Log in to your HubSpot developer account: <https://app.hubspot.com/developer>
 1. Navigate to your Public Application under "Apps" and go to the "Auth" tab.
 
-    <BrowserWindow url="app.hubspot.com/developer/12345678/application/123456">
+   <BrowserWindow url="app.hubspot.com/developer/12345678/application/123456">
 
-    ![hubspot_connected_app_oauth](/img/hubspot_connected_app_oauth.png 'hubspot connected app oauth')
+   ![hubspot_connected_app_oauth](/img/hubspot_connected_app_oauth.png 'hubspot connected app oauth')
 
-    </BrowserWindow>
+   </BrowserWindow>
 
 1. Under "Redirect URLs", paste Supaglue's redirect URL:
 
-    <Tabs>
-    <TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
+   <Tabs>
+   <TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
 
-    ```
-    https://api.supaglue.io/oauth/callback
-    ```
+   ```
+   https://api.supaglue.io/oauth/callback
+   ```
 
-    </TabItem>
-    <TabItem value="localhost" label="Localhost">
+   </TabItem>
+   <TabItem value="localhost" label="Localhost">
 
-    ```
-    http://localhost:8080/oauth/callback
-    ```
-    </TabItem>
-    </Tabs>
+   ```
+   http://localhost:8080/oauth/callback
+   ```
+
+   </TabItem>
+   </Tabs>
 
 1. Check the following scopes under "Scopes":
 
-    Required for CRM reads:
+   Required for CRM reads (common objects):
 
-    - `crm.objects.owners.read`
-    - `crm.objects.companies.read`
-    - `crm.lists.read`
-    - `crm.objects.deals.read`
-    - `crm.objects.contacts.read`
-    - `crm.objects.custom.read` (required for custom objects)
-    - `crm.schemas.custom.read` (required for custom objects)
+   - `crm.objects.owners.read`
+   - `crm.objects.companies.read`
+   - `crm.lists.read`
+   - `crm.objects.deals.read`
+   - `crm.objects.contacts.read`
+   - `crm.objects.custom.read` (required for custom objects)
+   - `crm.schemas.custom.read` (required for custom objects)
 
-    Required for CRM writes:
+   Required for CRM writes (common objects):
 
-    - `crm.objects.contacts.write`
-    - `crm.objects.companies.write`
-    - `crm.objects.deals.write`
-    - `crm.lists.write`
-    - `crm.objects.custom.write`
-    - `crm.schemas.custom.write`
+   - `crm.objects.contacts.write`
+   - `crm.objects.companies.write`
+   - `crm.objects.deals.write`
+   - `crm.lists.write`
+   - `crm.objects.custom.write`
+   - `crm.schemas.custom.write`
 
-    Required for Forms:
+   Required for Forms:
 
-    - `forms`
+   - `forms`
 
-    :::info
-    Supaglue requires a set of minimum scopes to support reads and writes to common object records.
-    :::
+   :::info
+   Supaglue requires a set of minimum scopes to support reads and writes to common object records.
+   :::
 
 1. Click Save to update your changes.
 

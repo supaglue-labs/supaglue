@@ -9,13 +9,19 @@ description: ''
 
 ## Overview
 
-| Feature                            | Available |
-| ---------------------------------- | --------- |
-| Authentication                     | Yes       |
-| Managed syncs                      | Yes       |
-| Actions API                        | No        |
-| Real-time events                   | No        |
-| Passthrough API                    | Yes       |
+**Status:** beta
+
+**Category:** `ticketing`
+
+| Feature                              | Available                                           |
+| ------------------------------------ | --------------------------------------------------- |
+| Authentication (`oauth2`)            | Yes                                                 |
+| Managed syncs                        | No                                                  |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental` (soft delete not supported) |
+| Unified API                          | Yes                                                 |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                                 |
+| Real-time events                     | No                                                  |
+| Passthrough API                      | Yes                                                 |
 
 Supported standard objects:
 
@@ -42,28 +48,13 @@ Supaglue provides a redirect URL to send information to your integration. To add
 1. Click on the the App you want to edit.
 1. Click on Authentication, and press Edit.
 
-  <BrowserWindow url="https://app.intercom.com/a/apps/asdfg/developer-hub/app-packages/111111/oauth/edit">
-
-  ![gong_integration](/img/intercom_integration.png 'gong integration')
-
-  </BrowserWindow>
+   ![gong_integration](/img/intercom_integration.png 'gong integration')
 
 1. Under Redirect URLs, paste Supaglue's redirect URL:
-  <Tabs>
-  <TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
 
-  ```
-  https://api.supaglue.io/oauth/callback
-  ```
-
-  </TabItem>
-  <TabItem value="localhost" label="Localhost">
-
-  ```
-  http://localhost:8080/oauth/callback
-  ```
-  </TabItem>
-  </Tabs>
+   ```
+   https://api.supaglue.io/oauth/callback
+   ```
 
 1. Ensure all the necessary scopes are checked.
 1. Click Save to update your changes.
