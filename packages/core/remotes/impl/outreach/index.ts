@@ -223,14 +223,20 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
-  ): Promise<string> {
+  ): Promise<{ id: string; record?: EngagementCommonObjectTypeMap<T>['object'] }> {
     switch (commonObjectType) {
       case 'sequence_state':
-        return await this.createSequenceState(params as SequenceStateCreateParams);
+        return {
+          id: await this.createSequenceState(params as SequenceStateCreateParams),
+        };
       case 'contact':
-        return await this.createContact(params as ContactCreateParams);
+        return {
+          id: await this.createContact(params as ContactCreateParams),
+        };
       case 'account':
-        return await this.createAccount(params as AccountCreateParams);
+        return {
+          id: await this.createAccount(params as AccountCreateParams),
+        };
       case 'sequence':
       case 'mailbox':
       case 'user':
@@ -279,12 +285,14 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
-  ): Promise<string> {
+  ): Promise<{ id: string; record?: EngagementCommonObjectTypeMap<T>['object'] }> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.updateContact(params as ContactUpdateParams);
+        return {
+          id: await this.updateContact(params as ContactUpdateParams),
+        };
       case 'account':
-        return await this.updateAccount(params as AccountUpdateParams);
+        return { id: await this.updateAccount(params as AccountUpdateParams) };
       default:
         throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
