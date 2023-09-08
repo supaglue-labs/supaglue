@@ -10,15 +10,10 @@ description: ''
 Supaglue currently only supports MongoDB Atlas.
 :::
 
-| Feature                              | Available |
-| ------------------------------------ | --------- |
-| Syncs: Full refresh                  | Yes       |
-| Syncs: Incremental refresh           | Yes       |
-| Syncs: Supports incremental deletes  | Yes       |
-| Cache invalidation on write          | Yes       |
-| Common objects (unified by Supaglue) | Yes       |
-| Standard objects (per provider)      | Yes       |
-| Custom objects (per provider)        | Yes       |
+| Feature                                                       | Available |
+| ------------------------------------------------------------- | --------- |
+| Data normalization                                            | No        |
+| Data invalidation for Unified API (also see Provider details) | Yes       |
 
 ## Setup
 
