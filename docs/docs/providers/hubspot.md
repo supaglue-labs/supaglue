@@ -19,12 +19,16 @@ Supaglue interfaces with the HubSpot V3 API.
 | Action API (common, custom objects)              | Yes       |
 | Real-time events                                 | No        |
 
-Supported common objects:
+Supported CRM common objects:
 
 - Company
 - Contact
 - Deal
 - User
+
+Supported Marketing Automation common objects:
+
+- Forms (Actions API only)
 
 Supported standard objects: `company`, `contact`, `deal`, `line_item`, `product`, `ticket`, `quote`, `call`, `communication`, `email`, `meeting`, `note`, `postal_mail`, `task`.
 
@@ -71,7 +75,7 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
 1. Check the following scopes under "Scopes":
 
-    Required for reads:
+    Required for CRM reads:
 
     - `crm.objects.owners.read`
     - `crm.objects.companies.read`
@@ -81,7 +85,7 @@ Supaglue provides a redirect URL to send information to your app. To add the red
     - `crm.objects.custom.read` (required for custom objects)
     - `crm.schemas.custom.read` (required for custom objects)
 
-    Required for writes:
+    Required for CRM writes:
 
     - `crm.objects.contacts.write`
     - `crm.objects.companies.write`
@@ -89,6 +93,10 @@ Supaglue provides a redirect URL to send information to your app. To add the red
     - `crm.lists.write`
     - `crm.objects.custom.write`
     - `crm.schemas.custom.write`
+
+    Required for Forms:
+
+    - `forms`
 
     :::info
     Supaglue requires a set of minimum scopes to support reads and writes to common object records.
