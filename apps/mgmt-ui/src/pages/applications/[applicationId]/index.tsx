@@ -114,7 +114,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
       'mgmt-ui',
       'schemas_whitelist',
       new ClientContext()
-    )) as EntitiesWhitelist;
+    )) as SchemasWhitelist;
   }
 
   const CLERK_ACCOUNT_URL =
