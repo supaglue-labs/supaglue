@@ -76,7 +76,7 @@ export default function Home(props: SupaglueProps) {
         />
         <TabContainer>
           <TabPanel value={value} index={0} className="w-full">
-            <ProviderTabPanelContainer />
+            <ProviderTabPanelContainer {...props} />
           </TabPanel>
           <TabPanel value={value} index={1} className="w-full">
             <DestinationTabPanelContainer />

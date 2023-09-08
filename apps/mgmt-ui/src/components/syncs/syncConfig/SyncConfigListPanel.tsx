@@ -7,6 +7,7 @@ import { useDestinations } from '@/hooks/useDestinations';
 import { useEntities } from '@/hooks/useEntities';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import getIcon from '@/utils/companyToIcon';
 import { getDestinationName } from '@/utils/destination';
 import providerToIcon from '@/utils/providerToIcon';
@@ -18,7 +19,7 @@ import type { SyncConfig } from '@supaglue/types';
 import Link from 'next/link';
 import { DeleteSyncConfig } from './DeleteSyncConfig';
 
-export default function SyncConfigListPanel() {
+export default function SyncConfigListPanel(props: SupaglueProps) {
   const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations = [], isLoading: isLoadingDestinations } = useDestinations();

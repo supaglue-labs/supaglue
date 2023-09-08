@@ -10,10 +10,26 @@ import { useState } from 'react';
 import { Svix } from 'svix';
 import { API_HOST, IS_CLOUD, LEKKO_API_KEY } from '../../api';
 
+//
+// Lekkodefaults
+//
+
 type HomeCtaButton = {
   buttonMessage: string;
   buttonLink: string;
 };
+
+type EntitiesWhitelist = {
+  applicationIds: string[];
+};
+
+type SchemasWhitelist = {
+  applicationIds: string[];
+};
+
+//
+// server side props
+//
 
 export type SupaglueProps = {
   session: Session | null;
@@ -29,6 +45,8 @@ export type PublicEnvProps = {
   CLERK_ORGANIZATION_URL: string;
   lekko: {
     homeCtaButtonConfig: HomeCtaButton;
+    entitiesWhitelistConfig: EntitiesWhitelist;
+    schemasWhitelistConfig: SchemasWhitelist;
   };
 };
 
@@ -71,6 +89,14 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
     buttonLink: 'https://docs.supaglue.io/docs/quickstart',
   };
 
+  let entitiesWhitelistConfig: EntitiesWhitelist = {
+    applicationIds: [],
+  };
+
+  let schemasWhitelistConfig: SchemasWhitelist = {
+    applicationIds: [],
+  };
+
   if (LEKKO_API_KEY) {
     const client = await initAPIClient({
       apiKey: LEKKO_API_KEY,
@@ -79,6 +105,16 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
     });
 
     homeCtaButtonConfig = (await client.getJSONFeature('mgmt-ui', 'home_cta', new ClientContext())) as HomeCtaButton;
+    entitiesWhitelistConfig = (await client.getJSONFeature(
+      'mgmt-ui',
+      'entities_whitelist',
+      new ClientContext()
+    )) as EntitiesWhitelist;
+    schemasWhitelistConfig = (await client.getJSONFeature(
+      'mgmt-ui',
+      'schemas_whitelist',
+      new ClientContext()
+    )) as EntitiesWhitelist;
   }
 
   const CLERK_ACCOUNT_URL =
@@ -101,7 +137,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
       IS_CLOUD,
       CLERK_ACCOUNT_URL,
       CLERK_ORGANIZATION_URL,
-      lekko: { homeCtaButtonConfig },
+      lekko: { homeCtaButtonConfig, entitiesWhitelistConfig, schemasWhitelistConfig },
     },
   };
 };
