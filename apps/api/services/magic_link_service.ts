@@ -103,7 +103,16 @@ export class MagicLinkService {
         accessKey: params.accessKey,
         accessKeySecret: params.accessKeySecret,
       });
+    } else if (magicLink.providerName === 'marketo' && params?.type === 'marketo_oauth2') {
+      await this.#connectionAndSyncService.createManually(magicLink.applicationId, magicLink.customerId, {
+        providerName: 'marketo',
+        type: 'marketo_oauth2',
+        clientId: params.clientId,
+        clientSecret: params.clientSecret,
+        instanceUrl: params.instanceUrl,
+      });
     }
+
     const updatedMagicLink = await this.#prisma.magicLink.update({
       where: { id },
       data: {

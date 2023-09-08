@@ -90,6 +90,26 @@ export default function Home(props: PublicEnvProps) {
           {...props}
         />
       );
+    case 'marketo':
+      return (
+        <MarketoCard
+          linkId={data.magicLink.id}
+          providerName={data.magicLink.providerName}
+          returnUrl={data.magicLink.returnUrl}
+          {...props}
+        />
+      );
+    case 'salesforce_marketing_cloud_account_engagement':
+      return (
+        <SalesforceMarketingCloudAccountEngagementCard
+          linkId={data.magicLink.id}
+          applicationId={data.magicLink.applicationId}
+          customerId={data.magicLink.customerId}
+          providerName={data.magicLink.providerName}
+          returnUrl={data.magicLink.returnUrl}
+          {...props}
+        />
+      );
     default:
       return (
         <Oauth2RedirectPage
@@ -428,6 +448,137 @@ const SalesforceCard = ({
             if (isSandbox) {
               oauthUrl += `&loginUrl=${encodeURIComponent('https://test.salesforce.com')}`;
             }
+
+            await consumeMagicLink(linkId);
+            await router.push(oauthUrl);
+          }}
+        >
+          Authenticate
+        </Button>
+      </Stack>
+    </MagicLinkFormWrapper>
+  );
+};
+
+const MarketoCard = ({ linkId, providerName, returnUrl }: MagicLinkFormProps) => {
+  const router = useRouter();
+  const [instanceUrl, setInstanceUrl] = useState('');
+  const [clientId, setClientId] = useState('');
+  const [clientSecret, setClientSecret] = useState('');
+  return (
+    <MagicLinkFormWrapper providerName={providerName}>
+      <Stack className="gap-2">
+        <Typography variant="subtitle1">REST API Endpoint</Typography>
+        <TextField
+          required={true}
+          value={instanceUrl}
+          size="small"
+          label="REST API Endpoint"
+          variant="outlined"
+          helperText={`Enter your Marketo REST API Endpoint`}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            // the UI in marketo that shows the API endpoint appends `/rest` to it, so remove that.
+            setInstanceUrl(event.target.value.trim().replace(/\/rest$/, '/'));
+          }}
+        />
+      </Stack>
+
+      <Stack className="gap-2">
+        <Typography variant="subtitle1">Client ID</Typography>
+        <TextField
+          required={true}
+          value={clientId}
+          size="small"
+          label="Client ID"
+          variant="outlined"
+          type="password"
+          helperText={`Enter your Marketo Client ID`}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setClientId(event.target.value.trim());
+          }}
+        />
+      </Stack>
+
+      <Stack className="gap-2">
+        <Typography variant="subtitle1">Client Secret</Typography>
+        <TextField
+          required={true}
+          value={clientSecret}
+          size="small"
+          label="Client Secret"
+          variant="outlined"
+          type="password"
+          helperText={`Enter your Marketo Client Secret`}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setClientSecret(event.target.value.trim());
+          }}
+        />
+      </Stack>
+
+      <Stack direction="row" className="gap-2 justify-end">
+        <Button
+          disabled={!clientId || !clientSecret || !instanceUrl}
+          variant="contained"
+          onClick={async () => {
+            await consumeMagicLink(linkId, {
+              type: 'marketo_oauth2',
+              instanceUrl,
+              clientId,
+              clientSecret,
+            });
+            await router.push(returnUrl);
+          }}
+        >
+          Authenticate
+        </Button>
+      </Stack>
+    </MagicLinkFormWrapper>
+  );
+};
+
+const SalesforceMarketingCloudAccountEngagementCard = ({
+  applicationId,
+  customerId,
+  linkId,
+  providerName,
+  returnUrl,
+  API_HOST,
+}: Oauth2RedirectPageProps & PublicEnvProps) => {
+  const router = useRouter();
+  const { addNotification } = useNotification();
+  const [businessUnitId, setBusinessUnitId] = useState('');
+
+  return (
+    <MagicLinkFormWrapper providerName={providerName}>
+      <Stack className="gap-2">
+        <Typography variant="subtitle1">Business Unit ID</Typography>
+        <TextField
+          required={true}
+          value={businessUnitId}
+          size="small"
+          label="Business Unit ID"
+          variant="outlined"
+          helperText={`Enter your Salesforce Marketing Cloud Account Engagement Business Unit ID`}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            setBusinessUnitId(event.target.value.trim());
+          }}
+        />
+      </Stack>
+      <Stack direction="row" className="gap-2 justify-end">
+        <Button
+          variant="contained"
+          disabled={!businessUnitId}
+          onClick={async () => {
+            if (!API_HOST) {
+              addNotification({
+                message: 'Unknown error encountered. Please refresh and try again.',
+                severity: 'error',
+              });
+              return;
+            }
+            const oauthUrl = `${API_HOST}/oauth/connect?applicationId=${applicationId}&customerId=${encodeURIComponent(
+              customerId
+            )}&returnUrl=${returnUrl}&providerName=${providerName}&businessUnitId=${businessUnitId}`;
 
             await consumeMagicLink(linkId);
             await router.push(oauthUrl);

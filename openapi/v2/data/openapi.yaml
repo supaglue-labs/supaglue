@@ -23,20 +23,48 @@ servers:
 tags:
   - name: Salesforce
     description: Salesforce is a CRM Provider.
+  - name: Hubspot
+    description: Hubspot is a CRM Provider.
 paths:
+  #
+  # Salesforce
+  #
   '/salesforce/contacts':
     $ref: paths/salesforce/contacts.yaml
   '/salesforce/accounts':
     $ref: paths/salesforce/accounts.yaml
+
+  #
+  # Hubspot
+  #
+  '/hubspot/contacts':
+    $ref: paths/hubspot/contacts.yaml
+  '/hubspot/companies':
+    $ref: paths/hubspot/companies.yaml
 components:
   securitySchemes:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
+    #
+    # Salesforce
+    #
     salesforce_contact:
       $ref: ./components/schemas/objects/salesforce/contact.yaml
     salesforce_account:
       $ref: ./components/schemas/objects/salesforce/account.yaml
+
+    #
+    # Hubspot
+    #
+    hubspot_contact:
+      $ref: ./components/schemas/objects/hubspot/contact.yaml
+    hubspot_company:
+      $ref: ./components/schemas/objects/hubspot/company.yaml
+
+    #
+    # Shared
+    #
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     errors:

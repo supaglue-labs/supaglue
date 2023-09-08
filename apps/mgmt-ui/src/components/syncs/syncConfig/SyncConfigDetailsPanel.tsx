@@ -9,6 +9,7 @@ import { useDestinations } from '@/hooks/useDestinations';
 import { useEntities } from '@/hooks/useEntities';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getDestinationName } from '@/utils/destination';
 import { getStandardObjectOptions } from '@/utils/provider';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
@@ -31,19 +32,19 @@ const isSyncPeriodSecsValid = (syncPeriodSecs: number | undefined) => {
   return syncPeriodSecs < 60 ? false : true;
 };
 
-export function SyncConfigDetailsPanel({ syncConfigId }: { syncConfigId: string }) {
-  return <SyncConfigDetailsPanelImpl syncConfigId={syncConfigId} />;
+export function SyncConfigDetailsPanel(props: { syncConfigId: string } & SupaglueProps) {
+  return <SyncConfigDetailsPanelImpl {...props} />;
 }
 
-export function NewSyncConfigPanel() {
-  return <SyncConfigDetailsPanelImpl />;
+export function NewSyncConfigPanel(props: SupaglueProps) {
+  return <SyncConfigDetailsPanelImpl {...props} />;
 }
 
 type SyncConfigDetailsPanelImplProps = {
   syncConfigId?: string;
 };
 
-function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImplProps) {
+function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPanelImplProps & SupaglueProps) {
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
   const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
@@ -316,34 +317,36 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   }}
                 />
               </Stack>
-              <Stack className="gap-2">
-                <Typography variant="subtitle1">Entities</Typography>
-                <Autocomplete
-                  size="small"
-                  key={providerId}
-                  multiple
-                  id="entities"
-                  options={entities.map((entity) => entity.id)}
-                  defaultValue={entityIds}
-                  autoSelect
-                  renderTags={(value: readonly string[], getTagProps) =>
-                    value.map((option: string, index: number) => {
+              {lekko.entitiesWhitelistConfig.applicationIds.includes(activeApplicationId) && (
+                <Stack className="gap-2">
+                  <Typography variant="subtitle1">Entities</Typography>
+                  <Autocomplete
+                    size="small"
+                    key={providerId}
+                    multiple
+                    id="entities"
+                    options={entities.map((entity) => entity.id)}
+                    defaultValue={entityIds}
+                    autoSelect
+                    renderTags={(value: readonly string[], getTagProps) =>
+                      value.map((option: string, index: number) => {
+                        const entity = entities.find((e) => e.id === option);
+                        return <Chip variant="outlined" label={entity?.name ?? option} {...getTagProps({ index })} />;
+                      })
+                    }
+                    getOptionLabel={(option) => {
                       const entity = entities.find((e) => e.id === option);
-                      return <Chip variant="outlined" label={entity?.name ?? option} {...getTagProps({ index })} />;
-                    })
-                  }
-                  getOptionLabel={(option) => {
-                    const entity = entities.find((e) => e.id === option);
-                    return entity?.name ?? option;
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Entities" helperText={'Use "enter" to add multiple entities.'} />
-                  )}
-                  onChange={(event: any, value: string[]) => {
-                    setEntityIds(value.map((object) => object.trim()));
-                  }}
-                />
-              </Stack>
+                      return entity?.name ?? option;
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Entities" helperText={'Use "enter" to add multiple entities.'} />
+                    )}
+                    onChange={(event: any, value: string[]) => {
+                      setEntityIds(value.map((object) => object.trim()));
+                    }}
+                  />
+                </Stack>
+              )}
             </>
           )}
           <Stack direction="row" className="gap-2 justify-between">

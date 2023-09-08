@@ -2,14 +2,14 @@ import { configureScope } from '@sentry/node';
 import { UnauthorizedError } from '@supaglue/core/errors';
 import { addLogContext, getCustomerIdPk } from '@supaglue/core/lib';
 import type {
-  ListAccountsPathParams,
-  ListAccountsQueryParams,
-  ListAccountsRequest,
-  ListAccountsResponse,
-  ListContactsPathParams,
-  ListContactsQueryParams,
-  ListContactsRequest,
-  ListContactsResponse,
+  ListSalesforceAccountsPathParams,
+  ListSalesforceAccountsQueryParams,
+  ListSalesforceAccountsRequest,
+  ListSalesforceAccountsResponse,
+  ListSalesforceContactsPathParams,
+  ListSalesforceContactsQueryParams,
+  ListSalesforceContactsRequest,
+  ListSalesforceContactsResponse,
 } from '@supaglue/schemas/v2/data';
 import type { NextFunction, Request, Response } from 'express';
 import { Router } from 'express';
@@ -52,8 +52,13 @@ export default function init(app: Router): void {
   router.get(
     '/accounts',
     async (
-      req: Request<ListAccountsPathParams, ListAccountsResponse, ListAccountsRequest, ListAccountsQueryParams>,
-      res: Response<ListAccountsResponse>
+      req: Request<
+        ListSalesforceAccountsPathParams,
+        ListSalesforceAccountsResponse,
+        ListSalesforceAccountsRequest,
+        ListSalesforceAccountsQueryParams
+      >,
+      res: Response<ListSalesforceAccountsResponse>
     ) => {
       const { pagination, records } = await managedDataService.getRecords(
         req.supaglueApplication.id,
@@ -71,8 +76,13 @@ export default function init(app: Router): void {
   router.get(
     '/contacts',
     async (
-      req: Request<ListContactsPathParams, ListContactsResponse, ListContactsRequest, ListContactsQueryParams>,
-      res: Response<ListContactsResponse>
+      req: Request<
+        ListSalesforceContactsPathParams,
+        ListSalesforceContactsResponse,
+        ListSalesforceContactsRequest,
+        ListSalesforceContactsQueryParams
+      >,
+      res: Response<ListSalesforceContactsResponse>
     ) => {
       const { pagination, records } = await managedDataService.getRecords(
         req.supaglueApplication.id,

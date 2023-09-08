@@ -40,4 +40,5 @@ export type RemoteLeadTypes = {
   object: Lead;
   createParams: LeadCreateParams;
   updateParams: LeadUpdateParams;
+  upsertParams: never;
 };

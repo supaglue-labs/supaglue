@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.14.1",
+    "version": "0.14.6",
     "title": "Management API",
     "contact": {
       "name": "Supaglue",
@@ -1541,7 +1541,8 @@
               "type": "string",
               "enum": [
                 "hubspot",
-                "ms_dynamics_365_sales"
+                "ms_dynamics_365_sales",
+                "intercom"
               ],
               "example": "hubspot"
             }
@@ -2439,12 +2440,16 @@
                   "supaglue"
                 ],
                 "example": "supaglue"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
               "id",
               "application_id",
-              "type"
+              "type",
+              "version"
             ]
           },
           {
@@ -2472,6 +2477,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/postgres_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2479,7 +2487,8 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -2507,6 +2516,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/s3_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2514,7 +2526,8 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -2542,6 +2555,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2549,7 +2565,8 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -2577,6 +2594,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/mongodb_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2584,7 +2604,8 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           }
         ]
@@ -3416,6 +3437,7 @@
           "crm",
           "engagement",
           "enrichment",
+          "marketing_automation",
           "no_category"
         ],
         "example": "crm"
@@ -3674,7 +3696,9 @@
           "intercom",
           "linear",
           "clearbit",
-          "6sense"
+          "6sense",
+          "marketo",
+          "salesforce_marketing_cloud_account_engagement"
         ],
         "example": "hubspot"
       },
@@ -4008,14 +4032,10 @@
                 "example": "my-customer-1"
               },
               "provider_name": {
-                "type": "string",
-                "example": "hubspot"
+                "$ref": "#/components/schemas/provider_name"
               },
               "category": {
-                "type": "string",
-                "enum": [
-                  "crm"
-                ]
+                "$ref": "#/components/schemas/category"
               },
               "connection_id": {
                 "type": "string",
@@ -4079,14 +4099,10 @@
                 "example": "my-customer-1"
               },
               "provider_name": {
-                "type": "string",
-                "example": "hubspot"
+                "$ref": "#/components/schemas/provider_name"
               },
               "category": {
-                "type": "string",
-                "enum": [
-                  "crm"
-                ]
+                "$ref": "#/components/schemas/category"
               },
               "connection_id": {
                 "type": "string",
@@ -4542,12 +4558,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/postgres_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -4567,12 +4588,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/s3_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -4592,12 +4618,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -4617,12 +4648,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/mongodb_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           }
         ]
@@ -4739,18 +4775,10 @@
                     "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
                   },
                   "category": {
-                    "type": "string",
-                    "enum": [
-                      "crm"
-                    ]
+                    "$ref": "#/components/schemas/category"
                   },
                   "provider_name": {
-                    "type": "string",
-                    "enum": [
-                      "hubspot",
-                      "salesforce"
-                    ],
-                    "example": "hubspot"
+                    "$ref": "#/components/schemas/provider_name"
                   }
                 },
                 "required": [
@@ -4771,8 +4799,29 @@
       "upsert_connection_sync_config": {
         "type": "object",
         "properties": {
+          "destination_config": {
+            "description": "Config specific to the destination",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
+                ]
+              },
+              "schema": {
+                "type": "string",
+                "description": "The schema you'd like to sync to. If not specified, the schema specified in the postgres Destination will be used.",
+                "example": "customer_1_schema"
+              }
+            },
+            "required": [
+              "type",
+              "schema"
+            ]
+          },
           "standard_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
+            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
             "type": "array",
             "items": {
               "type": "object",
@@ -4979,8 +5028,29 @@
       "connection_sync_config": {
         "type": "object",
         "properties": {
+          "destination_config": {
+            "description": "Config specific to the destination",
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "postgres"
+                ]
+              },
+              "schema": {
+                "type": "string",
+                "description": "The schema you'd like to sync to. If not specified, the schema specified in the postgres Destination will be used.",
+                "example": "customer_1_schema"
+              }
+            },
+            "required": [
+              "type",
+              "schema"
+            ]
+          },
           "standard_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
+            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
             "type": "array",
             "items": {
               "type": "object",

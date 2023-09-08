@@ -1,0 +1,11 @@
+type: object
+properties:
+  id:
+    type: string
+    description: The id of the lead that was created/updated as a result of submitting the form
+    example: 12345
+  status:
+    type: string
+    example: updated
+required:
+  - status

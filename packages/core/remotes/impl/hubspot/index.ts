@@ -39,9 +39,11 @@ import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
+  AccountUpsertParams,
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
+  ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
   Lead,
@@ -61,6 +63,9 @@ import type {
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FormField } from '@supaglue/types/marketing_automation/form_field';
+import type { FormMetadata } from '@supaglue/types/marketing_automation/form_metadata';
+import type { SubmitFormData, SubmitFormResult } from '@supaglue/types/marketing_automation/submit_form';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
@@ -83,6 +88,7 @@ import {
 } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
+import type { MarketingAutomationRemoteClient } from '../../categories/marketing_automation/base';
 import { paginator } from '../../utils/paginator';
 import { toMappedProperties } from '../../utils/properties';
 import {
@@ -222,6 +228,31 @@ type HubSpotCustomSchema = {
   archived: boolean;
   name: string;
 };
+
+type HubSpotAPIV2ListFormsFormField = {
+  name: string;
+  label: string;
+  required: boolean;
+  fieldType: string;
+  validation: {
+    message: string;
+  };
+};
+
+type HubSpotAPIV2ListFormsFormFieldGroup = {
+  fields: HubSpotAPIV2ListFormsFormField[];
+};
+
+type HubSpotAPIV2ListFormsSingleForm = {
+  guid: string;
+  name: string;
+  createdAt: number; // ms since epoch
+  updatedAt: number; // ms since epoch
+  formFieldGroups: HubSpotAPIV2ListFormsFormFieldGroup[];
+  [key: string]: unknown;
+};
+
+type HubSpotAPIV2ListFormsResponse = HubSpotAPIV2ListFormsSingleForm[];
 
 type HubSpotAPIV3ListSchemasResponse = {
   results: HubSpotCustomSchema[];
@@ -398,9 +429,10 @@ type HubspotClientConfig = {
   expiresAt: string | null; // ISO string
   clientId: string;
   clientSecret: string;
+  instanceUrl: string; // looks like this: `https://app.hubspot.com/contacts/${hubId.toString()}`;
 };
 
-class HubSpotClient extends AbstractCrmRemoteClient {
+class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomationRemoteClient {
   readonly #client: Client;
   readonly #config: HubspotClientConfig;
 
@@ -411,6 +443,81 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       accessToken,
     });
     this.#config = config;
+  }
+
+  private getHubId(): number {
+    const { instanceUrl } = this.#config;
+    const hubId = instanceUrl.split('/').pop();
+    if (!hubId) {
+      throw new Error(`Could not determine hub id from instance url: ${instanceUrl}`);
+    }
+    return Number(hubId);
+  }
+
+  public async marketingAutomationSubmitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
+    await this.maybeRefreshAccessToken();
+
+    const portalId = this.getHubId();
+
+    // Submit the form
+    await axios.post(
+      `https://api.hsforms.com/submissions/v3/integration/secure/submit/${portalId}/${formId}`,
+      {
+        fields: Object.entries(formData).map(([name, value]) => ({
+          name,
+          value,
+        })),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${this.#config.accessToken}`,
+        },
+      }
+    );
+
+    // TODO there's no way to get the created/updated prospect id from the form submit, it seems.
+    //      There's also no way to tell if it was created or updated.
+    return {
+      status: 'created',
+    };
+  }
+
+  public async marketingAutomationListForms(): Promise<FormMetadata[]> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get<HubSpotAPIV2ListFormsResponse>(`${this.baseUrl}/forms/v2/forms`, {
+      headers: {
+        Authorization: `Bearer ${this.#config.accessToken}`,
+      },
+    });
+
+    return response.data.map((form) => ({
+      id: form.guid,
+      name: form.name,
+      createdAt: new Date(form.createdAt),
+      updatedAt: new Date(form.updatedAt),
+      rawData: form,
+    }));
+  }
+
+  public async marketingAutomationGetFormFields(formId: string): Promise<FormField[]> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get<HubSpotAPIV2ListFormsSingleForm>(`${this.baseUrl}/forms/v2/forms/${formId}`, {
+      headers: {
+        Authorization: `Bearer ${this.#config.accessToken}`,
+      },
+    });
+
+    return response.data.formFieldGroups.flatMap((group) =>
+      group.fields.map((field) => ({
+        id: field.name,
+        name: field.label,
+        required: field.required,
+        formId,
+        dataFormat: field.fieldType,
+        validationMessage: field.validation.message,
+        rawData: field,
+      }))
+    );
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
@@ -947,6 +1054,20 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     }
   }
 
+  public override async upsertCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'account':
+        return this.upsertAccount(params as AccountUpsertParams);
+      case 'contact':
+        return this.upsertContact(params as ContactUpsertParams);
+      default:
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
+    }
+  }
+
   public override async updateCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['updateParams']
@@ -1221,6 +1342,36 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       properties: toHubspotAccountUpdateParams(params),
     });
     return response.id;
+  }
+
+  public async upsertAccount(params: AccountUpsertParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const searchResponse = await this.#client.crm.companies.searchApi.doSearch({
+      filterGroups: [
+        {
+          filters: [
+            {
+              values: params.upsertOn.values,
+              propertyName: params.upsertOn.key,
+              operator: 'IN',
+            },
+          ],
+        },
+      ],
+      sorts: [params.upsertOn.key],
+      properties: ['id', params.upsertOn.key],
+      limit: 2,
+      after: 0,
+    });
+
+    if (searchResponse.results.length > 1) {
+      throw new BadRequestError('More than one account found for upsert query');
+    }
+    if (searchResponse.results.length === 0) {
+      return this.createAccount(params.record);
+    }
+    const existingAccountId = searchResponse.results[0].id;
+    return this.updateAccount({ ...params.record, id: existingAccountId });
   }
 
   async #getPipelineStageMapping(): Promise<
@@ -1611,6 +1762,35 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return contact.id;
   }
 
+  public async upsertContact(params: ContactUpsertParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const searchResponse = await this.#client.crm.contacts.searchApi.doSearch({
+      filterGroups: [
+        {
+          filters: [
+            {
+              values: params.upsertOn.values,
+              propertyName: params.upsertOn.key,
+              operator: 'IN',
+            },
+          ],
+        },
+      ],
+      sorts: [params.upsertOn.key],
+      properties: ['id', params.upsertOn.key],
+      limit: 2,
+      after: 0,
+    });
+    if (searchResponse.results.length > 1) {
+      throw new BadRequestError('More than one contact found for upsert query');
+    }
+    if (searchResponse.results.length === 0) {
+      return this.createContact(params.record);
+    }
+    const existingContactId = searchResponse.results[0].id;
+    return this.updateContact({ ...params.record, id: existingContactId });
+  }
+
   public async updateContact(params: ContactUpdateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.update(params.id, {
@@ -1993,6 +2173,7 @@ export function newClient(connection: ConnectionUnsafe<'hubspot'>, provider: Pro
     expiresAt: connection.credentials.expiresAt,
     clientId: (provider as CRMProvider).config.oauth.credentials.oauthClientId,
     clientSecret: (provider as CRMProvider).config.oauth.credentials.oauthClientSecret,
+    instanceUrl: connection.instanceUrl,
   });
 }
 

@@ -405,13 +405,13 @@ export class ConnectionService {
     }
 
     const oldCredentialsUnsafe: ConnectionCredentialsDecryptedAny = JSON.parse(await decrypt(connection.credentials));
-    if (oldCredentialsUnsafe.type !== 'oauth2') {
+    if (oldCredentialsUnsafe.type !== 'oauth2' && oldCredentialsUnsafe.type !== 'marketo_oauth2') {
       throw new BadRequestError(`Connection ${connectionId} is not an oauth connection`);
     }
     const newCredentials: OauthConnectionCredentialsDecrypted = {
       ...(oldCredentialsUnsafe as OauthConnectionCredentialsDecrypted),
       accessToken,
-      refreshToken: refreshToken ?? oldCredentialsUnsafe.refreshToken,
+      refreshToken: refreshToken ?? (oldCredentialsUnsafe as any).refreshToken,
       expiresAt,
     };
 
@@ -445,6 +445,7 @@ export class ConnectionService {
     config: ConnectionSyncConfig
   ): Promise<ConnectionSyncConfig> {
     const params = {
+      destinationConfig: config.destinationConfig,
       standardObjects: config.standardObjects,
       customObjects: config.customObjects,
     };

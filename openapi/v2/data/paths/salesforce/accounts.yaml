@@ -1,5 +1,5 @@
 get:
-  operationId: listAccounts
+  operationId: listSalesforceAccounts
   summary: List accounts
   tags:
     - Salesforce

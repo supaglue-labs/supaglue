@@ -92,7 +92,7 @@ export default function init(app: Router): void {
         name: suggestedName,
         ...rest,
       });
-      return res.status(204).send();
+      return res.status(204).end();
     }
   );
 

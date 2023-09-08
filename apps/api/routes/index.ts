@@ -5,6 +5,7 @@ import data from './data';
 import engagement from './engagement';
 import enrichment from './enrichment';
 import internal from './internal';
+import marketingAutomation from './marketing-automation';
 import metadata from './metadata';
 import mgmt from './mgmt';
 import oauth from './oauth';
@@ -21,4 +22,5 @@ export default function initRoutes(app: Router): void {
   internal(app);
   privateRoutes(app);
   data(app);
+  marketingAutomation(app);
 }

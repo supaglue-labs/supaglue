@@ -232,7 +232,7 @@ export const toOutreachProspectCreateParams = ({
   const attributes = {
     firstName,
     lastName,
-    jobTitle,
+    title: jobTitle,
     ...toOutreachProspectAddressParams(address),
     ...toOutreachProspectEmailParams(emailAddresses),
     ...toOutreachProspectPhoneNumbers(phoneNumbers),

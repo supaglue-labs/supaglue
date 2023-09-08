@@ -14,6 +14,7 @@ import { PostHogProvider, usePostHog } from 'posthog-js/react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { IS_CLOUD, MUI_LICENSE_KEY } from './api';
+import type { SupaglueProps } from './applications/[applicationId]';
 
 LicenseInfo.setLicenseKey(MUI_LICENSE_KEY!);
 
@@ -207,7 +208,7 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
           <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
               <NotificationManager>
-                <InnerApp signedIn={signedIn}>
+                <InnerApp signedIn={signedIn} {...pageProps}>
                   <Component {...pageProps} />
                 </InnerApp>
               </NotificationManager>
@@ -225,7 +226,7 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
           <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme}>
               <NotificationManager>
-                <InnerApp signedIn={signedIn}>
+                <InnerApp signedIn={signedIn} {...pageProps}>
                   {isPublicPage ? (
                     <Component {...pageProps} />
                   ) : (
@@ -267,7 +268,8 @@ const PosthogClerkUserIdentifier = (props: { children: ReactNode }) => {
   return <>{props.children}</>;
 };
 
-function InnerApp({ signedIn, children }: { signedIn: boolean; children: ReactNode }) {
+function InnerApp(props: { signedIn: boolean; children: ReactNode } & SupaglueProps) {
+  const { signedIn, children } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const isSmUp = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -287,9 +289,14 @@ function InnerApp({ signedIn, children }: { signedIn: boolean; children: ReactNo
               variant="temporary"
               open={mobileOpen}
               onClose={handleDrawerToggle}
+              {...props}
             />
           )}
-          <Navigator PaperProps={{ style: { width: drawerWidth } }} sx={{ display: { sm: 'block', xs: 'none' } }} />
+          <Navigator
+            PaperProps={{ style: { width: drawerWidth } }}
+            sx={{ display: { sm: 'block', xs: 'none' } }}
+            {...props}
+          />
         </Box>
       )}
       <SupaglueHead />

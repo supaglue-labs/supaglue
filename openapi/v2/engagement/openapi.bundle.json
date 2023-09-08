@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.14.1",
+    "version": "0.14.6",
     "title": "Unified Engagement API",
     "contact": {
       "name": "Supaglue",
@@ -1599,6 +1599,10 @@
             "type": "string",
             "description": "The name of the template to use for this step."
           },
+          "order": {
+            "type": "number",
+            "description": "The step's display order within its sequence."
+          },
           "type": {
             "type": "string",
             "enum": [
@@ -1613,6 +1617,7 @@
         "required": [
           "sequence_id",
           "name",
+          "order",
           "type"
         ]
       },

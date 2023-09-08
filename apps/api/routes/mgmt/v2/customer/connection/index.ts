@@ -57,8 +57,7 @@ export default function init(app: Router): void {
         providerName,
         req.supaglueApplication.id
       );
-
-      const [client] = await remoteService.getCrmRemoteClient(connection.id);
+      const client = await remoteService.getRemoteClient(connection.id);
       try {
         const { userId, rawDetails } = await client.getUserIdAndDetails();
         return res.status(200).send({ user_id: userId, raw_details: rawDetails });
@@ -114,7 +113,7 @@ export default function init(app: Router): void {
     ) => {
       // TODO: revoke token from provider?
       await connectionAndSyncService.delete(req.params.connection_id, req.supaglueApplication.id);
-      return res.status(204).send();
+      return res.status(204).end();
     }
   );
 

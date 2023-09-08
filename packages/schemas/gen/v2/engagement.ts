@@ -425,6 +425,8 @@ export interface components {
       subject?: string;
       /** @description The name of the template to use for this step. */
       template_name?: string;
+      /** @description The step's display order within its sequence. */
+      order: number;
       /** @enum {string} */
       type: "auto" | "manual";
       custom_fields?: components["schemas"]["custom_fields"];

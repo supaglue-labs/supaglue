@@ -43,6 +43,21 @@ export type EngagementApiKeyProvider = BaseApiKeyProvider & {
   objects?: ProviderObjects<'engagement'>;
 };
 
+type MarketoProvider = Omit<BaseOauthProvider, 'authType'> & {
+  authType: 'marketo_oauth2';
+  category: 'marketing_automation';
+  name: 'marketo';
+  objects?: ProviderObjects<'marketing_automation'>;
+};
+
+export type MarketingAutomationOauthProvider = BaseOauthProvider & {
+  category: 'marketing_automation';
+  name: 'salesforce_marketing_cloud_account_engagement';
+  objects?: ProviderObjects<'marketing_automation'>;
+};
+
+export type MarketingAutomationProvider = MarketingAutomationOauthProvider | MarketoProvider;
+
 export type NoCategoryProvider = BaseOauthProvider & {
   category: 'no_category';
   name: 'intercom' | 'gong' | 'linear';
@@ -60,7 +75,11 @@ export type EnrichmentApiKeyProvider = BaseApiKeyProvider & {
 
 export type EnrichmentProvider = EnrichmentApiKeyProvider;
 
-export type OauthProvider = CRMProvider | EngagementOauthProvider | NoCategoryProvider;
+export type OauthProvider =
+  | CRMProvider
+  | EngagementOauthProvider
+  | MarketingAutomationOauthProvider
+  | NoCategoryProvider;
 
 export type ProviderObjects<T extends ProviderCategory> = {
   common?: ProviderCommonObject<T>[];
@@ -98,20 +117,30 @@ export type EngagementProviderUpdateParams = Omit<EngagementProvider, 'id' | 'ap
 export type EnrichmentProviderCreateParams = Omit<EnrichmentProvider, 'id'>;
 export type EnrichmentProviderUpdateParams = Omit<EnrichmentProvider, 'id' | 'applicationId'>;
 
+export type MarketingAutomationProviderCreateParams = Omit<MarketingAutomationProvider, 'id'>;
+export type MarketingAutomationProviderUpdateParams = Omit<MarketingAutomationProvider, 'id' | 'applicationId'>;
+
 export type NoCategoryProviderCreateParams = Omit<NoCategoryProvider, 'id'>;
 export type NoCategoryProviderUpdateParams = Omit<NoCategoryProvider, 'id' | 'applicationId'>;
 
-export type Provider = CRMProvider | EngagementProvider | EnrichmentProvider | NoCategoryProvider;
+export type Provider =
+  | CRMProvider
+  | EngagementProvider
+  | EnrichmentProvider
+  | MarketingAutomationProvider
+  | NoCategoryProvider;
 
 export type ProviderCreateParams =
   | CRMProviderCreateParams
   | EngagementProviderCreateParams
   | EnrichmentProviderCreateParams
+  | MarketingAutomationProviderCreateParams
   | NoCategoryProviderCreateParams;
 export type ProviderUpdateParams =
   | CRMProviderUpdateParams
   | EngagementProviderUpdateParams
   | EnrichmentProviderUpdateParams
+  | MarketingAutomationProviderUpdateParams
   | NoCategoryProviderUpdateParams;
 
 export type ProviderConfigMapperArgs = {

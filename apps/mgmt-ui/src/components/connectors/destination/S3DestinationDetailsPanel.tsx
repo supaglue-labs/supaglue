@@ -68,6 +68,7 @@ export default function S3DestinationDetailsPanel({ isLoading }: S3DestinationDe
           accessKeyId,
           secretAccessKey: secretAccessKey.type === 'known' ? secretAccessKey.value : undefined,
         },
+        version: destination.version,
       });
       if (!response.ok) {
         addNotification({ message: response.errorMessage, severity: 'error' });

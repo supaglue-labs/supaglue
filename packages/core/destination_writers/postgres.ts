@@ -54,6 +54,8 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const { sslMode, ...rest } = this.#destination.config;
     const pool = new Pool({
       ...rest,
+      max: 20,
+      statement_timeout: 60 * 60 * 1000, // 1 hour - assuming that COPY FROM STDIN is subject to this timeout
       ssl: getSsl(sslMode),
     });
     return await pool.connect();
@@ -399,13 +401,13 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
   }
 
   async #writeRecords(
-    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger
   ): Promise<WriteObjectRecordsResult> {
-    const { schema } = this.#destination.config;
+    const schema = connectionSyncConfig?.destinationConfig?.schema ?? this.#destination.config.schema;
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
     const dedupedTempTable = `"deduped_temp_${table}"`;

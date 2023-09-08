@@ -56,7 +56,7 @@ export const supaglueDestinationCardInfo: DestinationCardInfo = {
 };
 
 export const destinationCardsInfo: DestinationCardInfo[] = [
-  s3DestinationCardInfo,
+  // s3DestinationCardInfo,
   postgresDestinationCardInfo,
   bigQueryDestinationCardInfo,
   mongoDBDestinationCardInfo,

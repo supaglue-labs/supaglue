@@ -1,13 +1,33 @@
 import type { operations } from '../gen/v2/data';
 
-export type ListAccountsPathParams = never;
-export type ListAccountsRequest = never;
-export type ListAccountsQueryParams = Required<operations['listAccounts']>['parameters']['query'];
-export type ListAccountsResponse =
-  operations['listAccounts']['responses'][keyof operations['listAccounts']['responses']]['content']['application/json'];
+//
+// Hubspot
+//
 
-export type ListContactsPathParams = never;
-export type ListContactsRequest = never;
-export type ListContactsQueryParams = Required<operations['listContacts']>['parameters']['query'];
-export type ListContactsResponse =
-  operations['listContacts']['responses'][keyof operations['listContacts']['responses']]['content']['application/json'];
+export type ListHubspotCompaniesPathParams = never;
+export type ListHubspotCompaniesRequest = never;
+export type ListHubspotCompaniesQueryParams = Required<operations['listHubspotCompanies']>['parameters']['query'];
+export type ListHubspotCompaniesResponse =
+  operations['listHubspotCompanies']['responses'][keyof operations['listHubspotCompanies']['responses']]['content']['application/json'];
+
+export type ListHubspotContactsPathParams = never;
+export type ListHubspotContactsRequest = never;
+export type ListHubspotContactsQueryParams = Required<operations['listHubspotContacts']>['parameters']['query'];
+export type ListHubspotContactsResponse =
+  operations['listHubspotContacts']['responses'][keyof operations['listHubspotContacts']['responses']]['content']['application/json'];
+
+//
+// Salesforce
+//
+
+export type ListSalesforceAccountsPathParams = never;
+export type ListSalesforceAccountsRequest = never;
+export type ListSalesforceAccountsQueryParams = Required<operations['listSalesforceAccounts']>['parameters']['query'];
+export type ListSalesforceAccountsResponse =
+  operations['listSalesforceAccounts']['responses'][keyof operations['listSalesforceAccounts']['responses']]['content']['application/json'];
+
+export type ListSalesforceContactsPathParams = never;
+export type ListSalesforceContactsRequest = never;
+export type ListSalesforceContactsQueryParams = Required<operations['listSalesforceContacts']>['parameters']['query'];
+export type ListSalesforceContactsResponse =
+  operations['listSalesforceContacts']['responses'][keyof operations['listSalesforceContacts']['responses']]['content']['application/json'];

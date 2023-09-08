@@ -15,6 +15,7 @@ export type SequenceStep = BaseEngagementModel & CoreSequenceStep;
 export type SequenceStepCreateParams = {
   sequenceId: string;
   name: string;
+  order: number;
   body?: string;
   daysAfter?: number;
   isReply?: boolean;

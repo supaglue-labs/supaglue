@@ -44,6 +44,15 @@ export class BadGatewayError extends HTTPError {
   }
 }
 
+export class GatewayTimeoutError extends HTTPError {
+  code = 504;
+  problemType = 'GATEWAY_TIMEOUT_ERROR';
+
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
 export class ServiceUnavailableError extends HTTPError {
   code = 503;
   problemType = 'SERVICE_UNAVAILABLE_ERROR';

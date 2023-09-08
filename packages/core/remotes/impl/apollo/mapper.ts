@@ -149,10 +149,19 @@ export const fromApolloContactToSequenceStates = (record: Record<string, any>): 
   if (!record.contact_campaign_statuses?.length) {
     return [];
   }
-  return record.contact_campaign_statuses.map((status: Record<string, any>) => ({
+  return record.contact_campaign_statuses.map((status: Record<string, any>) =>
+    fromApolloContactCampaignStatusToSequenceState(record.id, status)
+  );
+};
+
+export const fromApolloContactCampaignStatusToSequenceState = (
+  contactId: string,
+  status: Record<string, any>
+): SequenceState => {
+  return {
     id: status.id,
     sequenceId: status.emailer_campaign_id ?? null,
-    contactId: record.id ?? null,
+    contactId: contactId ?? null,
     mailboxId: status.send_email_from_email_account_id ?? null,
     userId: status.added_by_user_id ?? null,
     state: status.status ?? null,
@@ -161,7 +170,7 @@ export const fromApolloContactToSequenceStates = (record: Record<string, any>): 
     lastModifiedAt: new Date(status.added_at),
     isDeleted: false,
     rawData: status,
-  }));
+  };
 };
 
 export const toApolloAccountCreateParams = (params: AccountCreateParams): Record<string, any> => {

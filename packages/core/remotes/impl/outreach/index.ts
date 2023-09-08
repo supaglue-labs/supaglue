@@ -14,7 +14,6 @@ import type {
   EngagementCommonObjectTypeMap,
   SequenceCreateParams,
   SequenceStateCreateParams,
-  SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
@@ -79,23 +78,25 @@ type Credentials = {
 
 class OutreachClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
-  readonly #headers: Record<string, string>;
   readonly #baseURL: string;
+
   public constructor(credentials: Credentials) {
     super('https://api.outreach.io');
     this.#baseURL = 'https://api.outreach.io';
     this.#credentials = credentials;
-    this.#headers = { Authorization: `Bearer ${this.#credentials.accessToken}` };
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
-    return this.#headers;
+    return {
+      Authorization: `Bearer ${this.#credentials.accessToken}`,
+    };
   }
 
   public override async getCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
+    await this.maybeRefreshAccessToken();
     switch (commonObjectType) {
       case 'contact':
         return await this.#getRecord(id, '/api/v2/prospects', fromOutreachProspectToContact);
@@ -116,7 +117,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
 
   async #getRecord<T>(id: string, path: string, mapper: (record: OutreachRecord) => T): Promise<T> {
     const response = await axios.get<{ data: OutreachRecord }>(`${this.#baseURL}${path}/${id}`, {
-      headers: this.#headers,
+      headers: this.getAuthHeadersForPassthroughRequest(),
     });
     return mapper(response.data.data);
   }
@@ -184,7 +185,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         await this.maybeRefreshAccessToken();
         if (link) {
           const response = await axios.get<OutreachPaginatedRecords>(link, {
-            headers: this.#headers,
+            headers: this.getAuthHeadersForPassthroughRequest(),
           });
           return response.data;
         }
@@ -195,7 +196,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
                 ...getUpdatedAfterPathParam(updatedAfter),
               }
             : DEFAULT_LIST_PARAMS,
-          headers: this.#headers,
+          headers: this.getAuthHeadersForPassthroughRequest(),
         });
         return response.data;
       });
@@ -224,16 +225,24 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
-  ): Promise<string> {
+  ): Promise<{ id: string; record?: EngagementCommonObjectTypeMap<T>['object'] }> {
     switch (commonObjectType) {
       case 'sequence_state':
-        return await this.createSequenceState(params as SequenceStateCreateParams);
+        return {
+          id: await this.createSequenceState(params as SequenceStateCreateParams),
+        };
       case 'contact':
-        return await this.createContact(params as ContactCreateParams);
+        return {
+          id: await this.createContact(params as ContactCreateParams),
+        };
       case 'account':
-        return await this.createAccount(params as AccountCreateParams);
+        return {
+          id: await this.createAccount(params as AccountCreateParams),
+        };
       case 'sequence':
-        return await this.createSequence(params as SequenceCreateParams);
+        return {
+          id: await this.createSequence(params as SequenceCreateParams),
+        };
       case 'sequence_step':
       case 'mailbox':
       case 'user':
@@ -249,7 +258,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/prospects`,
       toOutreachProspectCreateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
@@ -261,7 +270,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/accounts`,
       toOutreachAccountCreateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
@@ -273,7 +282,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/sequenceStates`,
       toOutreachSequenceStateCreateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
@@ -285,33 +294,34 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/sequences`,
       toOutreachSequenceCreateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
   }
 
-  async createSequenceStep(params: SequenceStepCreateParams): Promise<string> {
-    await this.maybeRefreshAccessToken();
-    const response = await axios.post<{ data: OutreachRecord }>(
-      `${this.#baseURL}/api/v2/sequences`,
-      toOutreachSequenceStepCreateParams(params),
-      {
-        headers: this.#headers,
-      }
-    );
-    return response.data.data.id.toString();
-  }
+  // async createSequenceStep(params: SequenceStepCreateParams): Promise<string> {
+  //   await this.maybeRefreshAccessToken();
+  //   const response = await axios.post<{ data: OutreachRecord }>(
+  //     `${this.#baseURL}/api/v2/sequences`,
+  //     toOutreachSequenceStepCreateParams(params),
+  //     {
+  //       headers: this.getAuthHeadersForPassthroughRequest(),      }
+  //   );
+  //   return response.data.data.id.toString();
+  // }
 
   public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
-  ): Promise<string> {
+  ): Promise<{ id: string; record?: EngagementCommonObjectTypeMap<T>['object'] }> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.updateContact(params as ContactUpdateParams);
+        return {
+          id: await this.updateContact(params as ContactUpdateParams),
+        };
       case 'account':
-        return await this.updateAccount(params as AccountUpdateParams);
+        return { id: await this.updateAccount(params as AccountUpdateParams) };
       default:
         throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
@@ -323,7 +333,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/prospects/${params.id}`,
       toOutreachProspectUpdateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
@@ -335,7 +345,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       `${this.#baseURL}/api/v2/accounts/${params.id}`,
       toOutreachAccountUpdateParams(params),
       {
-        headers: this.#headers,
+        headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
     return response.data.data.id.toString();
