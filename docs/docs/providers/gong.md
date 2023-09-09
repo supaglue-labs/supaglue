@@ -9,7 +9,7 @@ description: ''
 
 ## Overview
 
-**Category:** `engagement`
+**Category:** engagement
 
 Supaglue uses the Gong V2 API.
 
