@@ -9,8 +9,6 @@ description: ''
 
 ## Overview
 
-**Status:** beta
-
 **Category:** `marketing_automation`
 
 Supaglue uses the Marketo REST API.

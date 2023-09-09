@@ -9,8 +9,6 @@ description: ''
 
 ## Overview
 
-**Status:** beta
-
 **Category:** `crm`, `marketing_automation`
 
 Supaglue uses the HubSpot V3 API.

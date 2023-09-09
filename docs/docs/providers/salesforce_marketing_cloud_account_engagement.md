@@ -5,11 +5,9 @@ sidebar_custom_props:
 description: ''
 ---
 
-# Salesforce Marketing Cloud Account Engagement (Pardot)
+# Pardot
 
 ## Overview
-
-**Status:** beta
 
 **Category:** `marketing_automation`
 

@@ -9,8 +9,6 @@ description: ''
 
 ## Overview
 
-**Status:** beta
-
 **Category:** `crm`
 
 Supaglue uses the Pipedrive V1 API.

@@ -9,8 +9,6 @@ description: ''
 
 ## Overview
 
-**Status:** alpha
-
 **Category:** `file_storage`
 
 | Feature                              | Available |

@@ -9,8 +9,6 @@ description: ''
 
 ## Overview
 
-**Status:** beta
-
 **Category:** `engagement`, `enrichment`
 
 Apollo is both a sales engagement connector and a data enrichment provider.
