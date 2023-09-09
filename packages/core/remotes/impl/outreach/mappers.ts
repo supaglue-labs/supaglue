@@ -355,12 +355,14 @@ export const toOutreachSequenceStepCreateParams = ({
       },
       relationships: {
         sequence: {
-          id: sequenceId,
-          type: 'sequence',
+          data: {
+            id: parseInt(sequenceId),
+            type: 'sequence',
+          },
         },
       },
+      type: 'sequenceStep',
     },
-    type: 'sequenceStep',
   };
 };
 
@@ -376,16 +378,20 @@ export const toOutreachSequenceTemplateCreateParams = (
       },
       relationships: {
         sequenceStep: {
-          id: sequenceStepId,
-          type: 'sequenceStep',
+          data: {
+            id: sequenceStepId,
+            type: 'sequenceStep',
+          },
         },
         template: {
-          id: templateId,
-          type: 'template',
+          data: {
+            id: templateId,
+            type: 'template',
+          },
         },
       },
+      type: 'sequenceTemplate',
     },
-    type: 'sequenceTemplate',
   };
 };
 

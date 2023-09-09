@@ -250,6 +250,9 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           id: await this.createSequence(params as SequenceCreateParams),
         };
       case 'sequence_step':
+        return {
+          id: await this.createSequenceStep(params as SequenceStepCreateParams),
+        };
       case 'mailbox':
       case 'user':
         throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
@@ -320,16 +323,17 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       templateId = response.data.data.id.toString();
     }
     const response = await axios.post<{ data: OutreachRecord }>(
-      `${this.#baseURL}/api/v2/sequences`,
+      `${this.#baseURL}/api/v2/sequenceSteps`,
       toOutreachSequenceStepCreateParams(params),
       {
         headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
+
     const sequenceStepId = response.data.data.id.toString();
     await axios.post<{ data: OutreachRecord }>(
       `${this.#baseURL}/api/v2/sequenceTemplates`,
-      toOutreachSequenceTemplateCreateParams(params, parseInt(templateId), parseInt(sequenceStepId)),
+      toOutreachSequenceTemplateCreateParams(params, parseInt(sequenceStepId), parseInt(templateId)),
       {
         headers: this.getAuthHeadersForPassthroughRequest(),
       }

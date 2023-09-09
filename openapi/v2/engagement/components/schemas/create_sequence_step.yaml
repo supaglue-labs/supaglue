@@ -1,8 +1,5 @@
 type: object
 properties:
-  sequence_id:
-    type: string
-    description: The ID of the sequence.
   interval_seconds:
     type: number
     description: The interval (in seconds) until this step will activate; only applicable to interval-based sequences.
@@ -63,7 +60,6 @@ properties:
   custom_fields:
     $ref: ./objects/custom_fields.yaml
 required:
-  - sequence_id
   - template
   - is_reply
   - order

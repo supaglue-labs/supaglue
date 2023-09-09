@@ -787,7 +787,7 @@
         }
       ]
     },
-    "/sequence_steps": {
+    "/sequences/{sequence_id}/sequence_steps": {
       "post": {
         "operationId": "createSequenceStep",
         "summary": "Create sequence step",
@@ -853,6 +853,7 @@
           "name": "sequence_id",
           "in": "path",
           "required": true,
+          "description": "The ID of the sequence.",
           "schema": {
             "type": "string",
             "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
@@ -1571,10 +1572,6 @@
       "create_sequence_step": {
         "type": "object",
         "properties": {
-          "sequence_id": {
-            "type": "string",
-            "description": "The ID of the sequence."
-          },
           "interval_seconds": {
             "type": "number",
             "description": "The interval (in seconds) until this step will activate; only applicable to interval-based sequences."
@@ -1666,7 +1663,6 @@
           }
         },
         "required": [
-          "sequence_id",
           "template",
           "is_reply",
           "order",

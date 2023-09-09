@@ -98,6 +98,9 @@ export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {
       'sequences.all',
       'sequenceStates.all',
       'mailboxes.all',
+      'sequenceSteps.all',
+      'sequenceTemplates.all',
+      'templates.all',
     ],
     credentials: {
       oauthClientId: process.env.OUTREACH_CLIENT_ID || '',

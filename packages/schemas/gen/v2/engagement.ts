@@ -123,7 +123,7 @@ export interface paths {
       };
     };
   };
-  "/sequence_steps": {
+  "/sequences/{sequence_id}/sequence_steps": {
     /** Create sequence step */
     post: operations["createSequenceStep"];
     parameters: {
@@ -132,6 +132,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @description The ID of the sequence. */
         sequence_id: string;
       };
     };
@@ -411,8 +412,6 @@ export interface components {
       custom_fields?: components["schemas"]["custom_fields"];
     };
     create_sequence_step: {
-      /** @description The ID of the sequence. */
-      sequence_id: string;
       /** @description The interval (in seconds) until this step will activate; only applicable to interval-based sequences. */
       interval_seconds?: number;
       /**
@@ -952,6 +951,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @description The ID of the sequence. */
         sequence_id: string;
       };
     };

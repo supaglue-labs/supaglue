@@ -4,6 +4,9 @@ import type {
   CreateSequencePathParams,
   CreateSequenceRequest,
   CreateSequenceResponse,
+  CreateSequenceStepPathParams,
+  CreateSequenceStepRequest,
+  CreateSequenceStepResponse,
   GetSequencePathParams,
   GetSequenceRequest,
   GetSequenceResponse,
@@ -43,6 +46,20 @@ export default function init(app: Router): void {
         req.customerConnection,
         camelcaseKeysSansCustomFields(req.body.record)
       );
+      return res.status(200).send({ record: { id } });
+    }
+  );
+
+  router.post(
+    '/:sequence_id/sequence_steps',
+    async (
+      req: Request<CreateSequenceStepPathParams, CreateSequenceStepResponse, CreateSequenceStepRequest>,
+      res: Response<CreateSequenceStepResponse>
+    ) => {
+      const id = await engagementCommonObjectService.create('sequence_step', req.customerConnection, {
+        ...camelcaseKeysSansCustomFields(req.body.record),
+        sequenceId: req.params.sequence_id,
+      });
       return res.status(200).send({ record: { id } });
     }
   );
