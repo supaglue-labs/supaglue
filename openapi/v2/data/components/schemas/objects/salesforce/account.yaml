@@ -62,6 +62,7 @@ properties:
   LastActivityDate:
     type: string
     nullable: true
+    example: '2022-02-27T00:00:00Z'
     format: date-time
     description: The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record.
   Name:
