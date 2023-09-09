@@ -86,10 +86,12 @@ properties:
   CreatedDate:
     type: string
     format: date-time
+    example: '2022-02-27T00:00:00Z'
     description: The date and time when this contact was created.
   SystemModstamp:
     type: string
     format: date-time
+    example: '2022-02-27T00:00:00Z'
     description: The date and time when this contact was last modified.
   raw_data:
     type: object

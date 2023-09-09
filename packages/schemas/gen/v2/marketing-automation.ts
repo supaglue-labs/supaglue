@@ -65,9 +65,15 @@ export interface components {
     form_metadata: {
       id: string;
       name: string;
-      /** Format: date-time */
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
       created_at: Date;
-      /** Format: date-time */
+      /**
+       * Format: date-time 
+       * @example 2022-02-27T00:00:00Z
+       */
       updated_at: Date;
       raw_data?: {
         [key: string]: unknown;

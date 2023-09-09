@@ -93,12 +93,14 @@ export interface components {
       Title: string | null;
       /**
        * Format: date-time 
-       * @description The date and time when this contact was created.
+       * @description The date and time when this contact was created. 
+       * @example 2022-02-27T00:00:00Z
        */
       CreatedDate: Date;
       /**
        * Format: date-time 
-       * @description The date and time when this contact was last modified.
+       * @description The date and time when this contact was last modified. 
+       * @example 2022-02-27T00:00:00Z
        */
       SystemModstamp: Date;
       /** @description The raw data returned by the provider. */
@@ -154,12 +156,14 @@ export interface components {
       IsDeleted: boolean;
       /**
        * Format: date-time 
-       * @description The date and time when this contact was created.
+       * @description The date and time when this contact was created. 
+       * @example 2022-02-27T00:00:00Z
        */
       CreatedDate: Date;
       /**
        * Format: date-time 
-       * @description The date and time when this contact was last modified.
+       * @description The date and time when this contact was last modified. 
+       * @example 2022-02-27T00:00:00Z
        */
       SystemModstamp: Date;
       /** @description The raw data returned by the provider. */
