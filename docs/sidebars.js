@@ -183,7 +183,7 @@ const sidebars = {
     },
     {
       id: 'tutorials/listen-for-webhooks',
-      label: 'Listen for webhooks',
+      label: 'Consume notification webhooks',
       type: 'doc',
     },
 

@@ -9,8 +9,6 @@ description: ''
 
 ## Overview
 
-**Status:** beta
-
 **Category:** `engagement`
 
 Supaglue uses the Outreach v2 API.

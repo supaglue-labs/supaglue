@@ -219,7 +219,6 @@ export default function ProviderDetailsPanel({
             </a>
             )
           </Stack>
-          <Chip label={providerCardInfo.status} size="small" />
         </Stack>
         <Stack className="gap-2">
           <Typography variant="subtitle1">Provider Metadata</Typography>

@@ -9,8 +9,6 @@ description: ''
 
 ## Overview
 
-**Status:** beta
-
 **Category:** `crm`
 
 Supaglue uses the Microsoft Dynamics 365 v9.2 API.
