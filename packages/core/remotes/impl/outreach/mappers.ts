@@ -10,13 +10,18 @@ import type {
   Mailbox,
   PhoneNumber,
   Sequence,
+  SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
+  SequenceStepCreateParams,
+  SequenceTemplateCreateParams,
   User,
 } from '@supaglue/types/engagement';
 import type { OutreachRecord } from '.';
 import { BadRequestError } from '../../../errors';
 import { removeUndefinedValues } from '../../../lib';
+
+const SECS_IN_DAY = 86400;
 
 export const fromOutreachUserToUser = (record: OutreachRecord): User => {
   const { id, attributes } = record;
@@ -310,6 +315,107 @@ export const toOutreachSequenceStateCreateParams = ({
           },
         },
       },
+    },
+  };
+};
+
+export const toOutreachSequenceCreateParams = ({
+  name,
+  tags,
+  customFields,
+}: SequenceCreateParams): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        name,
+        tags,
+        ...customFields,
+      },
+      type: 'sequence',
+    },
+  };
+};
+
+export const toOutreachSequenceStepCreateParams = ({
+  sequenceId,
+  intervalSeconds,
+  date,
+  order,
+  type,
+  customFields,
+}: SequenceStepCreateParams): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        interval: intervalSeconds,
+        date,
+        stepType: type === 'auto' ? 'auto_email' : 'manual_email',
+        order,
+        ...customFields,
+      },
+      relationships: {
+        sequence: {
+          data: {
+            id: parseInt(sequenceId),
+            type: 'sequence',
+          },
+        },
+      },
+      type: 'sequenceStep',
+    },
+  };
+};
+
+export const toOutreachSequenceTemplateCreateParams = (
+  { isReply }: SequenceStepCreateParams,
+  sequenceStepId: number,
+  templateId: number
+): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        isReply,
+      },
+      relationships: {
+        sequenceStep: {
+          data: {
+            id: sequenceStepId,
+            type: 'sequenceStep',
+          },
+        },
+        template: {
+          data: {
+            id: templateId,
+            type: 'template',
+          },
+        },
+      },
+      type: 'sequenceTemplate',
+    },
+  };
+};
+
+export const toOutreachTemplateCreateParams = ({
+  name,
+  body,
+  subject,
+  to,
+  cc,
+  bcc,
+  customFields,
+}: SequenceTemplateCreateParams): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        name,
+        bodyHtml: body,
+        subject,
+        toRecipients: to,
+        ccRecipients: cc,
+        bccRecipients: bcc,
+        ...customFields,
+      },
+      type: 'template',
     },
   };
 };

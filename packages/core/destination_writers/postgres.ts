@@ -35,6 +35,7 @@ import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/
 import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
 import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
+import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
@@ -593,6 +594,7 @@ const tableNamesByCommonObjectType: {
     account: 'engagement_accounts',
     contact: 'engagement_contacts',
     sequence_state: 'engagement_sequence_states',
+    sequence_step: 'engagement_sequence_steps',
     user: 'engagement_users',
     sequence: 'engagement_sequences',
     mailbox: 'engagement_mailboxes',
@@ -621,6 +623,7 @@ const columnsByCommonObjectType: {
     account: keysOfSnakecasedEngagementAccountWithTenant,
     contact: keysOfSnakecasedEngagementContactWithTenant,
     sequence_state: keysOfSnakecasedSequenceStateWithTenant,
+    sequence_step: keysOfSnakecasedSequenceStepWithTenant,
     user: keysOfSnakecasedEngagementUserWithTenant,
     sequence: keysOfSnakecasedSequenceWithTenant,
     mailbox: keysOfSnakecasedMailboxWithTenant,
@@ -899,6 +902,25 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "mailbox_id" TEXT,
   "user_id" TEXT,
   "state" TEXT,
+  "raw_data" JSONB
+
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
+);`,
+    sequence_step: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+      temp ? 'temp_engagement_sequence_steps' : `"${schema}".engagement_sequence_steps`
+    } (
+  "_supaglue_application_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "sequence_id" TEXT NOT NULL,
+  "name" TEXT NOT NULL,
   "raw_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}

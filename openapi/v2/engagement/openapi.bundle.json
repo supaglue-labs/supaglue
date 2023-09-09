@@ -787,7 +787,7 @@
         }
       ]
     },
-    "/sequence_steps": {
+    "/sequences/{sequence_id}/sequence_steps": {
       "post": {
         "operationId": "createSequenceStep",
         "summary": "Create sequence step",
@@ -853,6 +853,7 @@
           "name": "sequence_id",
           "in": "path",
           "required": true,
+          "description": "The ID of the sequence.",
           "schema": {
             "type": "string",
             "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
@@ -1571,33 +1572,80 @@
       "create_sequence_step": {
         "type": "object",
         "properties": {
-          "sequence_id": {
-            "type": "string",
-            "description": "The ID of the sequence."
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the sequence step."
-          },
-          "body": {
-            "type": "string",
-            "description": "The body of the email (HTML)."
-          },
-          "days_after": {
+          "interval_seconds": {
             "type": "number",
-            "description": "The number of days after the previous step that this step should be sent."
+            "description": "The interval (in seconds) until this step will activate; only applicable to interval-based sequences."
+          },
+          "date": {
+            "type": "string",
+            "example": "2023-01-01",
+            "description": "The date this step will activate; only applicable to date-based sequences."
+          },
+          "template": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "The ID of the template to use for this step."
+                  }
+                },
+                "required": [
+                  "id"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "description": "The body of the email (HTML)."
+                  },
+                  "subject": {
+                    "type": "string",
+                    "description": "The subject of the email."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the template."
+                  },
+                  "to": {
+                    "type": "array",
+                    "description": "A list of default person and email address pairs to receive this template in the \"to\" field",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "cc": {
+                    "type": "array",
+                    "description": "A list of default person and email address pairs to receive this template in the \"cc\" field",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "bcc": {
+                    "type": "array",
+                    "description": "A list of default person and email address pairs to receive this template in the \"bcc\" field",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "custom_fields": {
+                    "$ref": "#/components/schemas/custom_fields"
+                  }
+                },
+                "required": [
+                  "body",
+                  "subject",
+                  "name"
+                ]
+              }
+            ]
           },
           "is_reply": {
             "type": "boolean",
             "description": "If true, this step will be sent as a reply to the previous step."
-          },
-          "subject": {
-            "type": "string",
-            "description": "The subject of the email."
-          },
-          "template_name": {
-            "type": "string",
-            "description": "The name of the template to use for this step."
           },
           "order": {
             "type": "number",
@@ -1615,8 +1663,8 @@
           }
         },
         "required": [
-          "sequence_id",
-          "name",
+          "template",
+          "is_reply",
           "order",
           "type"
         ]

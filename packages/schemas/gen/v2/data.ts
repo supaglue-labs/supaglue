@@ -64,7 +64,8 @@ export interface components {
       IsDeleted: boolean;
       /**
        * Format: date-time 
-       * @description The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record.
+       * @description The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record. 
+       * @example 2022-02-27T00:00:00Z
        */
       LastActivityDate: Date | null;
       /** @description The contact's last name. Maximum size is 80 characters. */
@@ -93,12 +94,14 @@ export interface components {
       Title: string | null;
       /**
        * Format: date-time 
-       * @description The date and time when this contact was created.
+       * @description The date and time when this contact was created. 
+       * @example 2022-02-27T00:00:00Z
        */
       CreatedDate: Date;
       /**
        * Format: date-time 
-       * @description The date and time when this contact was last modified.
+       * @description The date and time when this contact was last modified. 
+       * @example 2022-02-27T00:00:00Z
        */
       SystemModstamp: Date;
       /** @description The raw data returned by the provider. */
@@ -139,7 +142,8 @@ export interface components {
       Industry: string | null;
       /**
        * Format: date-time 
-       * @description The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record.
+       * @description The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record. 
+       * @example 2022-02-27T00:00:00Z
        */
       LastActivityDate: Date | null;
       /** @description The name of the account. Maximum size is 255 characters. */
@@ -154,12 +158,14 @@ export interface components {
       IsDeleted: boolean;
       /**
        * Format: date-time 
-       * @description The date and time when this contact was created.
+       * @description The date and time when this contact was created. 
+       * @example 2022-02-27T00:00:00Z
        */
       CreatedDate: Date;
       /**
        * Format: date-time 
-       * @description The date and time when this contact was last modified.
+       * @description The date and time when this contact was last modified. 
+       * @example 2022-02-27T00:00:00Z
        */
       SystemModstamp: Date;
       /** @description The raw data returned by the provider. */
