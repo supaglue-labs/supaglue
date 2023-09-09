@@ -262,10 +262,6 @@ Supaglue implements two sync strategies:
 
 `full then incremental` is used where we can, but for specific objects and Providers, we may only be able to offer `full only` sync strategies. We list these in the [Providers](/category/providers) documentation.
 
-:::note
-S3 is the only Destination that does not support the `full then incremental` sync strategy.
-:::
-
 ### Sync behavior
 
 Supaglue executes syncs on a per-[Object](../platform/objects/overview) basis. For example, Supaglue will create ten syncs if you sync ten Standard Objects. Supaglue schedules them to run simultaneously at the frequency you set. Each sync run is independent, i.e., a failure in one sync will not affect the others.

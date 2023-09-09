@@ -305,10 +305,6 @@ const config = {
                 to: '/destinations/postgres',
               },
               {
-                label: 'AWS S3',
-                to: '/destinations/s3',
-              },
-              {
                 label: 'Snowflake',
                 to: '/destinations/snowflake',
               },
