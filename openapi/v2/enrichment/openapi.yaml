@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.14.6
+  version: 0.14.7
   title: Unified Enrichment API
   contact:
     name: Supaglue
