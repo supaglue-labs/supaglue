@@ -20,6 +20,15 @@ export const ENGAGEMENT_COMMON_OBJECT_TYPES = [
   'account',
   'sequence_step',
 ] as const;
+
+export const ENGAGEMENT_SYNCABLE_COMMON_OBJECTS = [
+  'contact',
+  'user',
+  'sequence',
+  'mailbox',
+  'sequence_state',
+  'account',
+] as const;
 export type EngagementCommonObjectType = (typeof ENGAGEMENT_COMMON_OBJECT_TYPES)[number];
 
 export type EngagementCommonObjectTypeMap<T extends EngagementCommonObjectType> = {
