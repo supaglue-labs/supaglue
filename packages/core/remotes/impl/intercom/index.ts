@@ -8,7 +8,6 @@ import type {
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import axios from 'axios';
 import { Readable } from 'stream';
-import { InternalServerError } from '../../../errors';
 import { retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractNoCategoryRemoteClient } from '../../categories/no_category/base';
@@ -36,9 +35,7 @@ type IntercomPaginatedSearchResponse<K extends string> = {
   total_count: number;
 } & Record<K, IntercomRecord[]>;
 
-type IntercomPaginatedNormalResponse = {
-  type: 'list';
-  data: IntercomRecord[];
+type IntercomPaginatedNormalResponse<K extends string> = {
   pages?: {
     type: 'pages';
     next?: string;
@@ -46,7 +43,11 @@ type IntercomPaginatedNormalResponse = {
     per_page: number;
     total_pages: number;
   };
-};
+} & Record<K, IntercomRecord[]>;
+
+// empirical behavior differs from actual response
+// https://developers.intercom.com/docs/references/rest-api/api.intercom.io/Companies/scrollOverAllCompanies/
+type IntercomPaginatedScrollResponse = IntercomPaginatedNormalResponse<'data'>;
 
 type IntercomClientConfig = {
   accessToken: string;
@@ -111,15 +112,32 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
     };
   }
 
-  // TODO: this is only for companies
-  #getNormalPaginatedListFetcher(
-    path: string,
-    modifiedAfter?: Date
-  ): (cursor?: string) => Promise<IntercomPaginatedNormalResponse> {
+  #getNormalPaginatedListFetcher<K extends string>(
+    path: string
+  ): (cursor?: string) => Promise<IntercomPaginatedNormalResponse<K>> {
     return async (cursor?: string) => {
       return await retryWhenAxiosRateLimited(async () => {
-        const { data } = await axios.get<IntercomPaginatedNormalResponse>(cursor ?? `${this.baseUrl}/${path}`, {
+        const { data } = await axios.get<IntercomPaginatedNormalResponse<K>>(`${this.baseUrl}/${path}`, {
           headers: this.#getAuthHeaders(),
+          params: {
+            per_page: PAGINATION_LIMIT,
+            starting_after: cursor,
+          },
+        });
+
+        return data;
+      });
+    };
+  }
+
+  #getScrollPaginatedListFetcher(path: string): (cursor?: string) => Promise<IntercomPaginatedScrollResponse> {
+    return async (cursor?: string) => {
+      return await retryWhenAxiosRateLimited(async () => {
+        const { data } = await axios.get<IntercomPaginatedScrollResponse>(cursor ?? `${this.baseUrl}/${path}`, {
+          headers: this.#getAuthHeaders(),
+          params: {
+            per_page: PAGINATION_LIMIT,
+          },
         });
 
         return data;
@@ -145,14 +163,32 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
     ]);
   }
 
-  #getNormalPaginator(
+  #getNormalPaginator<K extends string>(
     path: string,
-    mapper: (record: IntercomRecord, emittedAt: Date) => ListedObjectRecord<IntercomRecord>,
-    modifiedAfter?: Date
+    key: K,
+    mapper: (record: IntercomRecord, emittedAt: Date) => ListedObjectRecord<IntercomRecord>
   ): Promise<Readable> {
     return paginator([
       {
-        pageFetcher: this.#getNormalPaginatedListFetcher(path, modifiedAfter),
+        pageFetcher: this.#getNormalPaginatedListFetcher<K>(path),
+        createStreamFromPage: ({ [key]: records }) => {
+          const emittedAt = new Date();
+          return Readable.from(records.map((record) => mapper(record, emittedAt)));
+        },
+        getNextCursorFromPage: (response) => response.pages?.next,
+      },
+    ]);
+  }
+
+  #getScrollPaginator(
+    path: string,
+    mapper: (record: IntercomRecord, emittedAt: Date) => ListedObjectRecord<IntercomRecord>
+  ): Promise<Readable> {
+    // documentation says GET /companies/scroll uses scroll_param, but the actual response doesn't have it
+    // https://developers.intercom.com/docs/references/rest-api/api.intercom.io/Companies/scrollOverAllCompanies/
+    return paginator([
+      {
+        pageFetcher: this.#getScrollPaginatedListFetcher(path),
         createStreamFromPage: ({ data: records }) => {
           const emittedAt = new Date();
           return Readable.from(records.map((record) => mapper(record, emittedAt)));
@@ -189,62 +225,9 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
           modifiedAfter
         );
       case 'conversation':
-        throw new InternalServerError('Intercom conversations sync not supported yet');
-      // return await this.#getSearchPaginator<'conversations'>(
-      //   'conversations/search',
-      //   'conversations',
-      //   (record, emittedAt) => {
-      //     const ret: ListedObjectRecord<IntercomRecord> = {
-      //       id: record.id,
-      //       rawData: record,
-      //       rawProperties: record,
-      //       isDeleted: false,
-      //       lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
-      //       emittedAt,
-      //     };
-      //     return ret;
-      //   },
-      //   modifiedAfter
-      // );
-      case 'admin':
-        throw new InternalServerError('Intercom admins sync not supported yet');
-      // return await this.#getNormalPaginator(
-      //   'admins',
-      //   'admins',
-      //   (record, emittedAt) => {
-      //     const ret: ListedObjectRecord<IntercomRecord> = {
-      //       id: record.id,
-      //       rawData: record,
-      //       rawProperties: record,
-      //       isDeleted: false,
-      //       lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
-      //       emittedAt,
-      //     };
-      //     return ret;
-      //   },
-      //   modifiedAfter
-      // );
-      case 'article':
-        throw new InternalServerError('Intercom articles sync not supported yet');
-      // return await this.#getNormalPaginator(
-      //   'articles',
-      //   'data',
-      //   (record, emittedAt) => {
-      //     const ret: ListedObjectRecord<IntercomRecord> = {
-      //       id: record.id,
-      //       rawData: record,
-      //       rawProperties: record,
-      //       isDeleted: false,
-      //       lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
-      //       emittedAt,
-      //     };
-      //     return ret;
-      //   },
-      //   modifiedAfter
-      // );
-      case 'company':
-        return await this.#getNormalPaginator(
-          'companies',
+        return await this.#getSearchPaginator<'conversations'>(
+          'conversations/search',
+          'conversations',
           (record, emittedAt) => {
             const ret: ListedObjectRecord<IntercomRecord> = {
               id: record.id,
@@ -258,6 +241,42 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
           },
           modifiedAfter
         );
+      case 'admin':
+        return await this.#getNormalPaginator('admins', 'admins', (record, emittedAt) => {
+          const ret: ListedObjectRecord<IntercomRecord> = {
+            id: record.id,
+            rawData: record,
+            rawProperties: record,
+            isDeleted: false,
+            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            emittedAt,
+          };
+          return ret;
+        });
+      case 'article':
+        return await this.#getNormalPaginator('articles', 'data', (record, emittedAt) => {
+          const ret: ListedObjectRecord<IntercomRecord> = {
+            id: record.id,
+            rawData: record,
+            rawProperties: record,
+            isDeleted: false,
+            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            emittedAt,
+          };
+          return ret;
+        });
+      case 'company':
+        return await this.#getScrollPaginator('companies', (record, emittedAt) => {
+          const ret: ListedObjectRecord<IntercomRecord> = {
+            id: record.id,
+            rawData: record,
+            rawProperties: record,
+            isDeleted: false,
+            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            emittedAt,
+          };
+          return ret;
+        });
     }
   }
 }

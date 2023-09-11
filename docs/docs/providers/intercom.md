@@ -23,11 +23,11 @@ description: ''
 
 Supported standard objects:
 
-- `admin`
-- `article`
-- `company`
-- `contact`
-- `conversation`
+- `admin` (Sync strategy: `full only`. Soft delete not supported.)
+- `article` (Sync strategy: `full only`. Soft delete not supported.)
+- `company` (Sync strategy: `full only`. Soft delete not supported.)
+- `contact` (Sync strategy: `full then incremental`. Soft delete not supported.)
+- `conversation` (Sync strategy: `full then incremental`. Soft delete not supported.)
 
 ## Provider setup
 
