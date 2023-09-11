@@ -16,7 +16,7 @@ import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography }
 import Card from '@mui/material/Card';
 import type { CommonObjectType, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
-import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
+import { ENGAGEMENT_SYNCABLE_COMMON_OBJECTS } from '@supaglue/types/engagement';
 import type { SyncStrategyType } from '@supaglue/types/sync';
 import type { CommonObjectConfig } from '@supaglue/types/sync_object_config';
 import Link from 'next/link';
@@ -254,7 +254,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                   key={providerId}
                   multiple
                   id="common-objects"
-                  options={provider.category === 'crm' ? CRM_COMMON_OBJECT_TYPES : ENGAGEMENT_COMMON_OBJECT_TYPES}
+                  options={provider.category === 'crm' ? CRM_COMMON_OBJECT_TYPES : ENGAGEMENT_SYNCABLE_COMMON_OBJECTS}
                   defaultValue={commonObjects}
                   renderTags={(value: readonly string[], getTagProps) =>
                     value.map((option: string, index: number) => (
