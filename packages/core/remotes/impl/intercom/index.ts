@@ -45,9 +45,10 @@ type IntercomPaginatedNormalResponse<K extends string> = {
   };
 } & Record<K, IntercomRecord[]>;
 
-// empirical behavior differs from actual response
-// https://developers.intercom.com/docs/references/rest-api/api.intercom.io/Companies/scrollOverAllCompanies/
-type IntercomPaginatedScrollResponse = IntercomPaginatedNormalResponse<'data'>;
+type IntercomPaginatedScrollResponse = {
+  scroll_param?: string;
+  data: IntercomRecord[];
+};
 
 type IntercomClientConfig = {
   accessToken: string;
@@ -133,10 +134,11 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
   #getScrollPaginatedListFetcher(path: string): (cursor?: string) => Promise<IntercomPaginatedScrollResponse> {
     return async (cursor?: string) => {
       return await retryWhenAxiosRateLimited(async () => {
-        const { data } = await axios.get<IntercomPaginatedScrollResponse>(cursor ?? `${this.baseUrl}/${path}`, {
+        const { data } = await axios.get<IntercomPaginatedScrollResponse>(`${this.baseUrl}/${path}`, {
           headers: this.#getAuthHeaders(),
           params: {
             per_page: PAGINATION_LIMIT,
+            scroll_param: cursor,
           },
         });
 
@@ -184,8 +186,6 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
     path: string,
     mapper: (record: IntercomRecord, emittedAt: Date) => ListedObjectRecord<IntercomRecord>
   ): Promise<Readable> {
-    // documentation says GET /companies/scroll uses scroll_param, but the actual response doesn't have it
-    // https://developers.intercom.com/docs/references/rest-api/api.intercom.io/Companies/scrollOverAllCompanies/
     return paginator([
       {
         pageFetcher: this.#getScrollPaginatedListFetcher(path),
@@ -193,7 +193,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
           const emittedAt = new Date();
           return Readable.from(records.map((record) => mapper(record, emittedAt)));
         },
-        getNextCursorFromPage: (response) => response.pages?.next,
+        getNextCursorFromPage: (response) => (response.data.length ? response.scroll_param : undefined),
       },
     ]);
   }
@@ -266,7 +266,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
           return ret;
         });
       case 'company':
-        return await this.#getScrollPaginator('companies', (record, emittedAt) => {
+        return await this.#getScrollPaginator('companies/scroll', (record, emittedAt) => {
           const ret: ListedObjectRecord<IntercomRecord> = {
             id: record.id,
             rawData: record,
