@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.14.7
+  version: 0.14.8
   title: Unified Ticketing API
   contact:
     name: Supaglue
