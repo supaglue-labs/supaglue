@@ -497,6 +497,11 @@ const getObjectSchema = (temp?: boolean): TableSchema => {
         mode: 'REQUIRED',
       },
       {
+        name: '_supaglue_last_modified_at',
+        type: 'TIMESTAMP',
+        mode: 'REQUIRED',
+      },
+      {
         name: '_supaglue_is_deleted',
         type: 'BOOLEAN',
         mode: 'REQUIRED',
@@ -513,14 +518,6 @@ const getObjectSchema = (temp?: boolean): TableSchema => {
       },
     ],
   };
-
-  if (temp) {
-    schema.fields!.push({
-      name: '_supaglue_last_modified_at',
-      type: 'TIMESTAMP',
-      mode: 'REQUIRED',
-    });
-  }
 
   return schema;
 };
