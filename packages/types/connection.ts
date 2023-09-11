@@ -124,11 +124,15 @@ export type ConnectionSyncConfig = {
   customObjects?: CustomObjectConfig[];
 };
 
-export type ConnectionSyncDestinationConfig = {
-  // TODO: make this a union type in the future to support other destination types
-  type: 'postgres';
-  schema: string;
-};
+export type ConnectionSyncDestinationConfig =
+  | {
+      type: 'postgres';
+      schema: string;
+    }
+  | {
+      type: 'bigquery';
+      dataset: string;
+    };
 
 export type ConnectionCreateParams<T extends ProviderName> = {
   applicationId: string;
