@@ -1348,8 +1348,7 @@ export interface components {
       };
     }]>;
     upsert_connection_sync_config: {
-      /** @description Config specific to the destination */
-      destination_config?: {
+      destination_config?: OneOf<[{
         /** @enum {string} */
         type: "postgres";
         /**
@@ -1357,7 +1356,15 @@ export interface components {
          * @example customer_1_schema
          */
         schema: string;
-      };
+      }, {
+        /** @enum {string} */
+        type: "bigquery";
+        /**
+         * @description The dataset you'd like to sync to. If not specified, the dataset specified in the bigquery Destination will be used. 
+         * @example customer_1_dataset
+         */
+        dataset: string;
+      }]>;
       /** @description A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig. */
       standard_objects?: ({
           /**
@@ -1429,8 +1436,7 @@ export interface components {
       mapped_field: string;
     };
     connection_sync_config: {
-      /** @description Config specific to the destination */
-      destination_config?: {
+      destination_config?: OneOf<[{
         /** @enum {string} */
         type: "postgres";
         /**
@@ -1438,7 +1444,15 @@ export interface components {
          * @example customer_1_schema
          */
         schema: string;
-      };
+      }, {
+        /** @enum {string} */
+        type: "bigquery";
+        /**
+         * @description The dataset you'd like to sync to. If not specified, the dataset specified in the bigquery Destination will be used. 
+         * @example customer_1_dataset
+         */
+        dataset: string;
+      }]>;
       /** @description A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig. */
       standard_objects?: ({
           /**

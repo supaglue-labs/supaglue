@@ -6,6 +6,7 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  ConnectionSyncConfig,
   DestinationUnsafe,
   FullEntityRecord,
   MappedListedObjectRecord,
@@ -21,6 +22,7 @@ import type pino from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
+import { BadRequestError } from '../errors';
 import {
   keysOfSnakecasedCrmAccountWithTenant,
   keysOfSnakecasedCrmContactWithTenant,
@@ -55,6 +57,14 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
     });
   }
 
+  #getDataset(connectionSyncConfig?: ConnectionSyncConfig): string {
+    const type = connectionSyncConfig?.destinationConfig?.type;
+    if (type && type !== 'bigquery') {
+      throw new BadRequestError(`Connection sync has invalid destination config type: ${type}. Expected: bigquery`);
+    }
+    return connectionSyncConfig?.destinationConfig?.dataset ?? this.#destination.config.dataset;
+  }
+
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonObjectType: T,
@@ -65,14 +75,14 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
   }
 
   public override async writeCommonObjectRecords(
-    { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
+    { id: connectionId, providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
 
-    const { dataset } = this.#destination.config;
+    const dataset = this.#getDataset(connectionSyncConfig);
     const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `${dataset}.${table}`;
     const tempTable = `_temp_${providerName}_${table}`;
@@ -256,13 +266,13 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
   }
 
   async #writeRecords(
-    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger
   ): Promise<WriteObjectRecordsResult> {
-    const { dataset } = this.#destination.config;
+    const dataset = this.#getDataset(connectionSyncConfig);
     const qualifiedTable = `${dataset}.${table}`;
     const tempTable = `_temp_${providerName}_${table}`;
     const qualifiedTempTable = `${dataset}.${tempTable}`;

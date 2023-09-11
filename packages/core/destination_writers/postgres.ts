@@ -4,6 +4,7 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  ConnectionSyncConfig,
   DestinationUnsafe,
   FullEntityRecord,
   MappedListedObjectRecord,
@@ -22,7 +23,7 @@ import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { CacheInvalidationError } from '../errors';
+import { BadRequestError, CacheInvalidationError } from '../errors';
 import {
   keysOfSnakecasedCrmAccountWithTenant,
   keysOfSnakecasedCrmContactWithTenant,
@@ -61,15 +62,23 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     return await pool.connect();
   }
 
+  #getSchema(connectionSyncConfig?: ConnectionSyncConfig): string {
+    const type = connectionSyncConfig?.destinationConfig?.type;
+    if (type && type !== 'postgres') {
+      throw new BadRequestError(`Connection sync has invalid destination config type: ${type}. Expected: postgres`);
+    }
+    return connectionSyncConfig?.destinationConfig?.schema ?? this.#destination.config.schema;
+  }
+
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
-    { providerName, customerId, category, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     commonObjectType: T,
     record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
     if (category === 'no_category' || !commonObjectType) {
       throw new Error(`Common objects not supported for provider: ${providerName}`);
     }
-    const { schema } = this.#destination.config;
+    const schema = this.#getSchema(connectionSyncConfig);
     const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `"${schema}".${table}`;
     const childLogger = logger.child({ providerName, customerId, commonObjectType });
@@ -136,14 +145,13 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
   }
 
   public override async writeCommonObjectRecords(
-    { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
+    { id: connectionId, providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
     heartbeat: () => void
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
-
-    const { schema } = this.#destination.config;
+    const schema = this.#getSchema(connectionSyncConfig);
     const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `temp_${table}`;
@@ -331,11 +339,11 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 
   async #upsertRecord(
-    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     table: string,
     record: BaseFullRecord
   ): Promise<void> {
-    const { schema } = this.#destination.config;
+    const schema = this.#getSchema(connectionSyncConfig);
     const qualifiedTable = `"${schema}".${table}`;
     const client = await this.#getClient();
     const childLogger = logger.child({ providerName, customerId });
@@ -407,7 +415,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     heartbeat: () => void,
     childLogger: pino.Logger
   ): Promise<WriteObjectRecordsResult> {
-    const schema = connectionSyncConfig?.destinationConfig?.schema ?? this.#destination.config.schema;
+    const schema = this.#getSchema(connectionSyncConfig);
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
     const dedupedTempTable = `"deduped_temp_${table}"`;
