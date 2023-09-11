@@ -23,7 +23,7 @@ import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { BadRequestError, CacheInvalidationError } from '../errors';
+import { CacheInvalidationError } from '../errors';
 import {
   keysOfSnakecasedCrmAccountWithTenant,
   keysOfSnakecasedCrmContactWithTenant,
@@ -63,11 +63,9 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   }
 
   #getSchema(connectionSyncConfig?: ConnectionSyncConfig): string {
-    const type = connectionSyncConfig?.destinationConfig?.type;
-    if (type && type !== 'postgres') {
-      throw new BadRequestError(`Connection sync has invalid destination config type: ${type}. Expected: postgres`);
-    }
-    return connectionSyncConfig?.destinationConfig?.schema ?? this.#destination.config.schema;
+    return connectionSyncConfig?.destinationConfig?.type === 'postgres'
+      ? connectionSyncConfig.destinationConfig.schema
+      : this.#destination.config.schema;
   }
 
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(

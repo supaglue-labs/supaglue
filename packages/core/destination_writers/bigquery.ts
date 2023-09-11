@@ -22,7 +22,6 @@ import type pino from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { BadRequestError } from '../errors';
 import {
   keysOfSnakecasedCrmAccountWithTenant,
   keysOfSnakecasedCrmContactWithTenant,
@@ -58,11 +57,9 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
   }
 
   #getDataset(connectionSyncConfig?: ConnectionSyncConfig): string {
-    const type = connectionSyncConfig?.destinationConfig?.type;
-    if (type && type !== 'bigquery') {
-      throw new BadRequestError(`Connection sync has invalid destination config type: ${type}. Expected: bigquery`);
-    }
-    return connectionSyncConfig?.destinationConfig?.dataset ?? this.#destination.config.dataset;
+    return connectionSyncConfig?.destinationConfig?.type === 'bigquery'
+      ? connectionSyncConfig.destinationConfig.dataset
+      : this.#destination.config.dataset;
   }
 
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
