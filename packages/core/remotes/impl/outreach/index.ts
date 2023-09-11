@@ -51,7 +51,7 @@ import {
   toOutreachTemplateCreateParams,
 } from './mappers';
 
-const OUTREACH_RECORD_LIMIT = 50;
+const OUTREACH_RECORD_LIMIT = 1000;
 
 const DEFAULT_LIST_PARAMS = {
   'page[size]': OUTREACH_RECORD_LIMIT,
