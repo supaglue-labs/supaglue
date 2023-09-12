@@ -201,7 +201,7 @@ export const toOutreachAccountCreateParams = ({ name, domain, ownerId, customFie
             : {
                 data: {
                   type: 'user',
-                  id: ownerId,
+                  id: parseInt(ownerId, 10),
                 },
               },
       },
@@ -322,14 +322,35 @@ export const toOutreachSequenceStateCreateParams = ({
 export const toOutreachSequenceCreateParams = ({
   name,
   tags,
+  ownerId,
   customFields,
 }: SequenceCreateParams): Record<string, any> => {
+  if (ownerId === undefined) {
+    return {
+      data: {
+        attributes: {
+          name,
+          tags,
+          ...customFields,
+        },
+        type: 'sequence',
+      },
+    };
+  }
   return {
     data: {
       attributes: {
         name,
         tags,
         ...customFields,
+      },
+      relationships: {
+        owner: {
+          data: {
+            id: parseInt(ownerId, 10),
+            type: 'user',
+          },
+        },
       },
       type: 'sequence',
     },

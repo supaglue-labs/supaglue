@@ -409,6 +409,7 @@ export interface components {
        * @enum {string}
        */
       type: "team" | "private";
+      owner_id?: string;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     create_sequence_step: {
