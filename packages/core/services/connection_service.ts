@@ -22,6 +22,7 @@ import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_
 import retry from 'async-retry';
 import type { ProviderService, SchemaService, WebhookService } from '.';
 import { BadRequestError, NotFoundError } from '../errors';
+import { getCustomerIdPk } from '../lib';
 import { decrypt, encrypt } from '../lib/crypt';
 import { createFieldMappingConfigForEntity, validateEntityOrSchemaFieldName } from '../lib/entity';
 import { createFieldMappingConfig } from '../lib/schema';
@@ -134,13 +135,15 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connections[0]);
   }
 
-  public async getSafeByProviderNameAndApplicationId(
+  public async getSafeByCustomerIdProviderNameAndApplicationId(
+    externalCustomerId: string,
     providerName: string,
     applicationId: string
   ): Promise<ConnectionSafeAny> {
     const connections = await this.#prisma.connection.findMany({
       where: {
         providerName,
+        customerId: getCustomerIdPk(applicationId, externalCustomerId),
         provider: {
           applicationId,
         },

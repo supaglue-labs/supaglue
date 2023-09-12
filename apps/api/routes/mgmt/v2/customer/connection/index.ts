@@ -53,7 +53,8 @@ export default function init(app: Router): void {
       res: Response<GetProviderUserIdResponse>
     ) => {
       const providerName = req.query.provider_name;
-      const connection = await connectionService.getSafeByProviderNameAndApplicationId(
+      const connection = await connectionService.getSafeByCustomerIdProviderNameAndApplicationId(
+        req.params.customer_id,
         providerName,
         req.supaglueApplication.id
       );
