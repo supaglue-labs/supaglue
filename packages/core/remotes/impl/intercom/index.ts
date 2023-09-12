@@ -2,12 +2,15 @@ import type {
   ConnectionUnsafe,
   ListedObjectRecord,
   NoCategoryProvider,
+  Property,
   Provider,
   RemoteUserIdAndDetails,
+  StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import axios from 'axios';
 import { Readable } from 'stream';
+import { BadRequestError } from '../../../errors';
 import { retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractNoCategoryRemoteClient } from '../../categories/no_category/base';
@@ -86,6 +89,339 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
     return this.#getAuthHeaders();
+  }
+
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
+    if (object.type === 'custom') {
+      throw new BadRequestError('Custom objects are not supported for intercom');
+    }
+
+    const validatedObject = toIntercomStandardObject(object.name);
+    switch (validatedObject) {
+      case 'company':
+        return [
+          {
+            id: 'type',
+            label: 'type',
+            type: 'string',
+          },
+          {
+            id: 'id',
+            label: 'id',
+            type: 'string',
+          },
+          {
+            id: 'name',
+            label: 'name',
+            type: 'string',
+          },
+          {
+            id: 'app_id',
+            label: 'app_id',
+            type: 'string',
+          },
+          {
+            id: 'plan',
+            label: 'plan',
+            type: 'object',
+          },
+          {
+            id: 'company_id',
+            label: 'company_id',
+            type: 'string',
+          },
+          {
+            id: 'remote_created_at',
+            label: 'remote_created_at',
+            type: 'integer',
+          },
+          {
+            id: 'created_at',
+            label: 'created_at',
+            type: 'integer',
+          },
+          {
+            id: 'updated_at',
+            label: 'updated_at',
+            type: 'integer',
+          },
+          {
+            id: 'last_request_at',
+            label: 'last_request_at',
+            type: 'integer',
+          },
+          {
+            id: 'size',
+            label: 'size',
+            type: 'integer',
+          },
+          {
+            id: 'website',
+            label: 'website',
+            type: 'string',
+          },
+          {
+            id: 'industry',
+            label: 'industry',
+            type: 'string',
+          },
+          {
+            id: 'monthly_spend',
+            label: 'monthly_spend',
+            type: 'number',
+          },
+          {
+            id: 'session_count',
+            label: 'session_count',
+            type: 'integer',
+          },
+          {
+            id: 'user_count',
+            label: 'user_count',
+            type: 'integer',
+          },
+          {
+            id: 'custom_attributes',
+            label: 'custom_attributes',
+            type: 'object',
+          },
+          {
+            id: 'tags',
+            label: 'tags',
+            type: 'object',
+          },
+          {
+            id: 'segments',
+            label: 'segments',
+            type: 'object',
+          },
+        ];
+      case 'contact':
+        return [
+          {
+            id: 'type',
+            label: 'type',
+            type: 'string',
+          },
+          {
+            id: 'id',
+            label: 'id',
+            type: 'string',
+          },
+          {
+            id: 'external_id',
+            label: 'external_id',
+            type: 'string',
+          },
+          {
+            id: 'workspace_id',
+            label: 'workspace_id',
+            type: 'string',
+          },
+          {
+            id: 'role',
+            label: 'role',
+            type: 'string',
+          },
+          {
+            id: 'email',
+            label: 'email',
+            type: 'string',
+          },
+          {
+            id: 'phone',
+            label: 'phone',
+            type: 'string',
+          },
+          {
+            id: 'formatted_phone',
+            label: 'formatted_phone',
+            type: 'string',
+          },
+          {
+            id: 'name',
+            label: 'name',
+            type: 'string',
+          },
+          {
+            id: 'owner_id',
+            label: 'owner_id',
+            type: 'integer',
+          },
+          {
+            id: 'has_hard_bounced',
+            label: 'has_hard_bounced',
+            type: 'boolean',
+          },
+          {
+            id: 'marked_email_as_spam',
+            label: 'marked_email_as_spam',
+            type: 'boolean',
+          },
+          {
+            id: 'unsubscribed_from_emails',
+            label: 'unsubscribed_from_emails',
+            type: 'boolean',
+          },
+          {
+            id: 'created_at',
+            label: 'created_at',
+            type: 'integer',
+          },
+          {
+            id: 'updated_at',
+            label: 'updated_at',
+            type: 'integer',
+          },
+          {
+            id: 'signed_up_at',
+            label: 'signed_up_at',
+            type: 'integer',
+          },
+          {
+            id: 'last_seen_at',
+            label: 'last_seen_at',
+            type: 'integer',
+          },
+          {
+            id: 'last_replied_at',
+            label: 'last_replied_at',
+            type: 'integer',
+          },
+          {
+            id: 'last_contacted_at',
+            label: 'last_contacted_at',
+            type: 'integer',
+          },
+          {
+            id: 'last_email_opened_at',
+            label: 'last_email_opened_at',
+            type: 'integer',
+          },
+          {
+            id: 'last_email_clicked_at',
+            label: 'last_email_clicked_at',
+            type: 'integer',
+          },
+          {
+            id: 'language_override',
+            label: 'language_override',
+            type: 'string',
+          },
+          {
+            id: 'browser',
+            label: 'browser',
+            type: 'string',
+          },
+          {
+            id: 'browser_version',
+            label: 'browser_version',
+            type: 'string',
+          },
+          {
+            id: 'browser_language',
+            label: 'browser_language',
+            type: 'string',
+          },
+          {
+            id: 'os',
+            label: 'os',
+            type: 'string',
+          },
+          {
+            id: 'android_app_name',
+            label: 'android_app_name',
+            type: 'string',
+          },
+          {
+            id: 'android_app_version',
+            label: 'android_app_version',
+            type: 'string',
+          },
+          {
+            id: 'android_device',
+            label: 'android_device',
+            type: 'string',
+          },
+          {
+            id: 'android_os_version',
+            label: 'android_os_version',
+            type: 'string',
+          },
+          {
+            id: 'android_sdk_version',
+            label: 'android_sdk_version',
+            type: 'string',
+          },
+          {
+            id: 'android_last_seen_at',
+            label: 'android_last_seen_at',
+            type: 'integer',
+          },
+          {
+            id: 'ios_app_name',
+            label: 'ios_app_name',
+            type: 'string',
+          },
+          {
+            id: 'ios_app_version',
+            label: 'ios_app_version',
+            type: 'string',
+          },
+          {
+            id: 'ios_device',
+            label: 'ios_device',
+            type: 'string',
+          },
+          {
+            id: 'ios_os_version',
+            label: 'ios_os_version',
+            type: 'string',
+          },
+          {
+            id: 'ios_sdk_version',
+            label: 'ios_sdk_version',
+            type: 'string',
+          },
+          {
+            id: 'ios_last_seen_at',
+            label: 'ios_last_seen_at',
+            type: 'integer',
+          },
+          {
+            id: 'custom_attributes',
+            label: 'custom_attributes',
+            type: 'object',
+          },
+          {
+            id: 'avatar',
+            label: 'avatar',
+            type: 'object',
+          },
+          {
+            id: 'notes',
+            label: 'notes',
+            type: 'object',
+          },
+          {
+            id: 'companies',
+            label: 'companies',
+            type: 'object',
+          },
+          {
+            id: 'location',
+            label: 'location',
+            type: 'object',
+          },
+          {
+            id: 'social_profiles',
+            label: 'social_profiles',
+            type: 'object',
+          },
+        ];
+      default:
+        throw new BadRequestError('Only company and contact objects are supported for intercom');
+    }
   }
 
   #getSearchPaginatedListFetcher<K extends string>(

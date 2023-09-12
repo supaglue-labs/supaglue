@@ -23,27 +23,32 @@ export default function init(app: Router): void {
       req: Request<ListPropertiesPathParams, ListPropertiesResponse, ListPropertiesRequest, ListPropertiesQueryParams>,
       res: Response<ListPropertiesResponse>
     ) => {
-      if (req.customerConnection.category !== 'crm') {
-        throw new BadRequestError('Only CRM connections are supported for this operation');
-      }
-      const [client] = await remoteService.getCrmRemoteClient(req.customerConnection.id);
-      const { type, name } = req.query;
-      if (type === 'common' && !(CRM_COMMON_OBJECT_TYPES as unknown as string[]).includes(name)) {
+      if (req.customerConnection.category === 'crm') {
+        const [client] = await remoteService.getCrmRemoteClient(req.customerConnection.id);
+        const { type, name } = req.query;
+        if (type === 'common' && !(CRM_COMMON_OBJECT_TYPES as unknown as string[]).includes(name)) {
+          throw new BadRequestError(
+            `${name} is not a valid common object type for the ${req.customerConnection.category} category`
+          );
+        }
+        const properties =
+          req.query.type === 'common'
+            ? await client.listCommonProperties({
+                type: 'common',
+                name: req.query.name,
+              })
+            : await client.listProperties({
+                type: req.query.type,
+                name: req.query.name,
+              });
+        return res.status(200).send({ properties });
+      } else if (req.customerConnection.providerName === 'intercom') {
+        // TODO: implement intercom properties
+      } else {
         throw new BadRequestError(
-          `${name} is not a valid common object type for the ${req.customerConnection.category} category}`
+          'Only CRM common and standard objects AND intercom standard objects are supported for this operation'
         );
       }
-      const properties =
-        req.query.type === 'common'
-          ? await client.listCommonProperties({
-              type: 'common',
-              name: req.query.name,
-            })
-          : await client.listProperties({
-              type: req.query.type,
-              name: req.query.name,
-            });
-      return res.status(200).send({ properties });
     }
   );
 
