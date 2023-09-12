@@ -23,6 +23,7 @@ export type RemoteSequenceTypes = {
 
 export type SequenceCreateParams = {
   name: string;
+  ownerId?: string;
   tags?: string[];
   type: 'team' | 'private';
   customFields?: Record<string, unknown>;
