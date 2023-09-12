@@ -144,9 +144,6 @@ export class ConnectionService {
       where: {
         providerName,
         customerId: getCustomerIdPk(applicationId, externalCustomerId),
-        provider: {
-          applicationId,
-        },
       },
     });
 
