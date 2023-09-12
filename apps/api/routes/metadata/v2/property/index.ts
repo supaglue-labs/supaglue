@@ -43,7 +43,15 @@ export default function init(app: Router): void {
               });
         return res.status(200).send({ properties });
       } else if (req.customerConnection.providerName === 'intercom') {
-        // TODO: implement intercom properties
+        if (req.query.type === 'common') {
+          throw new BadRequestError('Only standard objects are supported for intercom');
+        }
+        const client = await remoteService.getRemoteClient(req.customerConnection.id);
+        const properties = await client.listProperties({
+          type: req.query.type,
+          name: req.query.name,
+        });
+        return res.status(200).send({ properties });
       } else {
         throw new BadRequestError(
           'Only CRM common and standard objects AND intercom standard objects are supported for this operation'
