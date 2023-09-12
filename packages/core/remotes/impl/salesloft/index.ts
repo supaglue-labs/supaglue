@@ -363,6 +363,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     switch (err.response?.status) {
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
+      // NOTE: `429` is omitted below since we process it differently for syncs
       case 400:
       case 401:
       case 402:
@@ -391,7 +392,6 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       case 426:
       case 427:
       case 428:
-      case 429:
       case 430:
       case 431:
       case 432:
