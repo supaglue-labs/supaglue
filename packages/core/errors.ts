@@ -109,6 +109,14 @@ export class UnprocessableEntityError extends HTTPError {
   }
 }
 
+export class RemoteProviderError extends HTTPError {
+  code = 499;
+  problemType = 'REMOTE_PROVIDER_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
 export class TooManyRequestsError extends HTTPError {
   code = 429;
   problemType = 'TOO_MANY_REQUESTS_ERROR';

@@ -32,6 +32,7 @@ import {
   BadRequestError,
   ForbiddenError,
   NotFoundError,
+  RemoteProviderError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -705,19 +706,70 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       return err;
     }
 
-    const jsonErrorMessage = err.response?.data?.data?.message;
+    // https://pipedrive.readme.io/docs/core-api-concepts-responses#error-response
+    const jsonErrorMessage = err.response?.data?.error;
 
     switch (err.response?.status) {
       case 400:
-        return new BadRequestError(jsonErrorMessage ?? err.message);
+        return new BadRequestError(jsonErrorMessage, err.response?.data);
       case 401:
-        return new UnauthorizedError(jsonErrorMessage ?? err.message);
+        return new UnauthorizedError(jsonErrorMessage, err.response?.data);
       case 403:
-        return new ForbiddenError(jsonErrorMessage ?? err.message);
+        return new ForbiddenError(jsonErrorMessage, err.response?.data);
       case 404:
-        return new NotFoundError(jsonErrorMessage ?? err.message);
+        return new NotFoundError(jsonErrorMessage, err.response?.data);
       case 429:
-        return new TooManyRequestsError(jsonErrorMessage ?? err.message);
+        return new TooManyRequestsError(jsonErrorMessage, err.response?.data);
+      // The following are unmapped to Supaglue errors, but we want to pass
+      // them back as 4xx so they aren't 500 and developers can view error messages
+      case 402:
+      case 405:
+      case 406:
+      case 407:
+      case 408:
+      case 409:
+      case 410:
+      case 411:
+      case 412:
+      case 413:
+      case 414:
+      case 415:
+      case 416:
+      case 417:
+      case 418:
+      case 419:
+      case 420:
+      case 421:
+      case 422:
+      case 423:
+      case 424:
+      case 425:
+      case 426:
+      case 427:
+      case 428:
+      case 430:
+      case 431:
+      case 432:
+      case 433:
+      case 434:
+      case 435:
+      case 436:
+      case 437:
+      case 438:
+      case 439:
+      case 440:
+      case 441:
+      case 442:
+      case 443:
+      case 444:
+      case 445:
+      case 446:
+      case 447:
+      case 448:
+      case 449:
+      case 450:
+      case 451:
+        return new RemoteProviderError(jsonErrorMessage, err.response?.data);
       default:
         return err;
     }
