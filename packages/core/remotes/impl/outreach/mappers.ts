@@ -21,8 +21,6 @@ import type { OutreachRecord } from '.';
 import { BadRequestError } from '../../../errors';
 import { removeUndefinedValues } from '../../../lib';
 
-const SECS_IN_DAY = 86400;
-
 export const fromOutreachUserToUser = (record: OutreachRecord): User => {
   const { id, attributes } = record;
   return {
