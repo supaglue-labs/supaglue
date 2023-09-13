@@ -13,7 +13,6 @@ import type {
 } from '@hubspot/api-client/lib/codegen/crm/deals';
 import type { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import type {
-  CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
   ListedObjectRecord,
@@ -1160,19 +1159,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         }
       );
     });
-  }
-
-  public override async listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
-    switch (object.name) {
-      case 'account':
-        return await this.listPropertiesForRawObjectName('company');
-      case 'lead':
-        throw new Error('common object "lead" is not supported for hubspot');
-      case 'user':
-        return hubspotUserProperties;
-      default:
-        return await this.listPropertiesForRawObjectName(object.name);
-    }
   }
 
   public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
