@@ -4,26 +4,28 @@ properties:
     oneOf:
       - description: Config specific to postgres destination
         type: object
+        title: postgres
         properties:
           type:
             type: string
             enum: [postgres]
           schema:
             type: string
-            description: The schema you'd like to sync to. If not specified, the schema specified in the postgres Destination will be used.
+            description: The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used.
             example: customer_1_schema
         required:
           - type
           - schema
       - description: Config specific to bigquery destination
         type: object
+        title: bigquery
         properties:
           type:
             type: string
             enum: [bigquery]
           dataset:
             type: string
-            description: The dataset you'd like to sync to. If not specified, the dataset specified in the bigquery Destination will be used.
+            description: The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used.
             example: customer_1_dataset
         required:
           - type

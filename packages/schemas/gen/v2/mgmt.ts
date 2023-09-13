@@ -1352,7 +1352,7 @@ export interface components {
         /** @enum {string} */
         type: "postgres";
         /**
-         * @description The schema you'd like to sync to. If not specified, the schema specified in the postgres Destination will be used. 
+         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used. 
          * @example customer_1_schema
          */
         schema: string;
@@ -1360,7 +1360,7 @@ export interface components {
         /** @enum {string} */
         type: "bigquery";
         /**
-         * @description The dataset you'd like to sync to. If not specified, the dataset specified in the bigquery Destination will be used. 
+         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used. 
          * @example customer_1_dataset
          */
         dataset: string;
@@ -1440,7 +1440,7 @@ export interface components {
         /** @enum {string} */
         type: "postgres";
         /**
-         * @description The schema you'd like to sync to. If not specified, the schema specified in the postgres Destination will be used. 
+         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used. 
          * @example customer_1_schema
          */
         schema: string;
@@ -1448,7 +1448,7 @@ export interface components {
         /** @enum {string} */
         type: "bigquery";
         /**
-         * @description The dataset you'd like to sync to. If not specified, the dataset specified in the bigquery Destination will be used. 
+         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used. 
          * @example customer_1_dataset
          */
         dataset: string;
