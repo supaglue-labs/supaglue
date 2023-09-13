@@ -11,15 +11,15 @@ description: ''
 
 **Category:** `ticketing`
 
-| Feature                              | Available                                           |
-| ------------------------------------ | --------------------------------------------------- |
-| Authentication (`oauth2`)            | Yes                                                 |
-| Managed syncs                        | No                                                  |
-| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental` (soft delete not supported) |
-| Unified API                          | Yes                                                 |
-| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                                 |
-| Real-time events                     | No                                                  |
-| Passthrough API                      | Yes                                                 |
+| Feature                              | Available                                                        |
+| ------------------------------------ | ---------------------------------------------------------------- |
+| Authentication (`oauth2`)            | Yes                                                              |
+| Managed syncs                        | Yes                                                              |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental`, `full only` (soft delete not supported) |
+| Unified API                          | Yes                                                              |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                                              |
+| Real-time events                     | No                                                               |
+| Passthrough API                      | Yes                                                              |
 
 Supported standard objects:
 
