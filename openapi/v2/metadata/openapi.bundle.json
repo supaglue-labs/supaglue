@@ -482,6 +482,11 @@
             "type": "string",
             "description": "The human-readable name of the property as provided by the third-party Provider.",
             "example": "First Name"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the property as provided by the third-party Provider. For Intercom, this is string, integer, boolean, or object.",
+            "example": "string"
           }
         },
         "required": [
