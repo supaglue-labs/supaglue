@@ -217,7 +217,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
               rawData: record,
               rawProperties: record,
               isDeleted: false,
-              lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+              lastModifiedAt: record.updated_at ? new Date((record.updated_at as number) * 1000) : new Date(0),
               emittedAt,
             };
             return ret;
@@ -234,7 +234,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
               rawData: record,
               rawProperties: record,
               isDeleted: false,
-              lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+              lastModifiedAt: record.updated_at ? new Date((record.updated_at as number) * 1000) : new Date(0),
               emittedAt,
             };
             return ret;
@@ -248,7 +248,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
             rawData: record,
             rawProperties: record,
             isDeleted: false,
-            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            lastModifiedAt: record.updated_at ? new Date((record.updated_at as number) * 1000) : new Date(0),
             emittedAt,
           };
           return ret;
@@ -260,7 +260,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
             rawData: record,
             rawProperties: record,
             isDeleted: false,
-            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            lastModifiedAt: record.updated_at ? new Date((record.updated_at as number) * 1000) : new Date(0),
             emittedAt,
           };
           return ret;
@@ -272,7 +272,7 @@ class IntercomClient extends AbstractNoCategoryRemoteClient {
             rawData: record,
             rawProperties: record,
             isDeleted: false,
-            lastModifiedAt: record.updated_at ? new Date(record.updated_at as number) : new Date(0),
+            lastModifiedAt: record.updated_at ? new Date((record.updated_at as number) * 1000) : new Date(0),
             emittedAt,
           };
           return ret;
