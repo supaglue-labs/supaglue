@@ -48,6 +48,7 @@ export const openApiErrorHandlerMiddleware = (err: any, req: Request, res: Respo
     if (!errors) {
       errors = [err];
     }
+
     return res.status(err.status || 400).json({
       errors: errors.map((e: any) => ({
         title: err.message,

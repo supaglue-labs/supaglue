@@ -161,7 +161,7 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
       errors: [
         {
           title: err.message,
-          detail: err.cause?.message ?? err.message,
+          detail: err.cause,
           problem_type: err.problemType,
         },
       ],

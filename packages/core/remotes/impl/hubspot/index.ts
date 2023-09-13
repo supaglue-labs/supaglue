@@ -76,6 +76,7 @@ import {
   ConflictError,
   ForbiddenError,
   NotFoundError,
+  RemoteProviderError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -2146,20 +2147,68 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public override handleErr(err: unknown): unknown {
     const error = err as any;
-
     switch (error.code) {
       case 400:
-        return new BadRequestError(error.message);
+        return new BadRequestError(error.body?.message, error);
       case 401:
-        return new UnauthorizedError(error.message);
+        return new UnauthorizedError(error.body?.message, error);
       case 403:
-        return new ForbiddenError(error.message);
+        return new ForbiddenError(error.body?.message, error);
       case 404:
-        return new NotFoundError(error.message);
+        return new NotFoundError(error.body?.message, error);
       case 409:
-        return new ConflictError(error.message);
+        return new ConflictError(error.body?.message, error);
       case 429:
-        return new TooManyRequestsError(error.message);
+        return new TooManyRequestsError(error.body?.message, error);
+      // The following are unmapped to Supaglue errors, but we want to pass
+      // them back as 4xx so they aren't 500 and developers can view error messages
+      case 402:
+      case 405:
+      case 406:
+      case 407:
+      case 408:
+      case 410:
+      case 411:
+      case 412:
+      case 413:
+      case 414:
+      case 415:
+      case 416:
+      case 417:
+      case 418:
+      case 419:
+      case 420:
+      case 421:
+      case 422:
+      case 423:
+      case 424:
+      case 425:
+      case 426:
+      case 427:
+      case 428:
+      case 430:
+      case 431:
+      case 432:
+      case 433:
+      case 434:
+      case 435:
+      case 436:
+      case 437:
+      case 438:
+      case 439:
+      case 440:
+      case 441:
+      case 442:
+      case 443:
+      case 444:
+      case 445:
+      case 446:
+      case 447:
+      case 448:
+      case 449:
+      case 450:
+      case 451:
+        return new RemoteProviderError(error.body?.message, error);
       default:
         return error;
     }

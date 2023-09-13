@@ -58,6 +58,7 @@ import {
   ForbiddenError,
   NotFoundError,
   NotModifiedError,
+  RemoteProviderError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -1318,7 +1319,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public override handleErr(err: unknown): unknown {
     const error = err as any;
-    // codes from:
+
+    // jsforce doesn't provide a stable jsonapi "title" so infer it from the message.
+    // assumed format: "Some Title: Array of json details" or "Some Title"
+    const inferredTitle = error.message.substring(0, Math.max(error.message.indexOf(':'), error.message.length));
+
     // https://developer.salesforce.com/docs/atlas.en-us.210.0.object_reference.meta/object_reference/sforce_api_calls_concepts_core_data_objects.htm#i1421192
     switch (error.errorCode) {
       case 'REQUIRED_FIELD_MISSING':
@@ -1334,25 +1339,188 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST':
       case 'TOO_MANY_ENUM_VALUE':
       case 'ERROR_HTTP_400':
-        return new BadRequestError(error.message, error);
+        return new BadRequestError(inferredTitle, error);
       case 'INVALID_ID_FIELD':
       case 'INVALID_LOCATOR':
       case 'ERROR_HTTP_404':
       case 'NOT_FOUND':
-        return new NotFoundError(error.message, error);
+        return new NotFoundError(inferredTitle, error);
       case 'CLIENT_NOT_ACCESSIBLE_FOR_USER':
       case 'INSUFFICIENT_ACCESS':
       case 'sf:INSUFFICIENT_ACCESS': // SOAP api returns this
       case 'ERROR_HTTP_403':
       case 'API_DISABLED_FOR_ORG':
-        return new ForbiddenError(error.message, error);
+        return new ForbiddenError(inferredTitle, error);
       case 'ERROR_HTTP_401':
-        return new UnauthorizedError(error.message, error);
+        return new UnauthorizedError(inferredTitle, error);
       case 'NOT_MODIFIED':
       case 'ERROR_HTTP_304':
-        return new NotModifiedError(error.message, error);
+        return new NotModifiedError(inferredTitle, error);
       case 'ERROR_HTTP_503':
         return new BadGatewayError('Salesforce API is temporarily unavailable', error);
+      // The following are unmapped to Supaglue errors, but we want to pass
+      // them back as 4xx so they aren't 500 and developers can view error messages
+      case 'ALL_OR_NONE_OPERATION_ROLLED_BACK':
+      case 'ALREADY_IN_PROCESS':
+      case 'ASSIGNEE_TYPE_REQUIRED':
+      case 'BAD_CUSTOM_ENTITY_PARENT_DOMAIN':
+      case 'BCC_NOT_ALLOWED_IF_BCC_COMPLIANCE_ENABLED':
+      case 'BCC_SELF_NOT_ALLOWED_IF_BCC_COMPLIANCE_ENABLED':
+      case 'CANNOT_CASCADE_PRODUCT_ACTIVE':
+      case 'CANNOT_CHANGE_FIELD_TYPE_OF_APEX_REFERENCED_FIELD':
+      case 'CANNOT_CREATE_ANOTHER_MANAGED_PACKAGE':
+      case 'CANNOT_DEACTIVATE_DIVISION':
+      case 'CANNOT_DELETE_LAST_DATED_CONVERSION_RATE':
+      case 'CANNOT_DELETE_MANAGED_OBJECT':
+      case 'CANNOT_DISABLE_LAST_ADMIN':
+      case 'CANNOT_ENABLE_IP_RESTRICT_REQUESTS':
+      case 'CANNOT_INSERT_UPDATE_ACTIVATE_ENTITY':
+      case 'CANNOT_MODIFY_MANAGED_OBJECT':
+      case 'CANNOT_RENAME_APEX_REFERENCED_FIELD':
+      case 'CANNOT_RENAME_APEX_REFERENCED_OBJECT':
+      case 'CANNOT_REPARENT_RECORD':
+      case 'CANNOT_RESOLVE_NAME':
+      case 'CANNOT_UPDATE_CONVERTED_LEAD':
+      case 'CANT_DISABLE_CORP_CURRENCY':
+      case 'CANT_UNSET_CORP_CURRENCY':
+      case 'CHILD_SHARE_FAILS_PARENT':
+      case 'CIRCULAR_DEPENDENCY':
+      case 'COMMUNITY_NOT_ACCESSIBLE':
+      case 'CUSTOM_CLOB_FIELD_LIMIT_EXCEEDED':
+      case 'CUSTOM_ENTITY_OR_FIELD_LIMIT':
+      case 'CUSTOM_FIELD_INDEX_LIMIT_EXCEEDED':
+      case 'CUSTOM_INDEX_EXISTS':
+      case 'CUSTOM_LINK_LIMIT_EXCEEDED':
+      case 'CUSTOM_METADATA_LIMIT_EXCEEDED':
+      case 'CUSTOM_SETTINGS_LIMIT_EXCEEDED':
+      case 'CUSTOM_TAB_LIMIT_EXCEEDED':
+      case 'DELETE_FAILED':
+      case 'DEPENDENCY_EXISTS':
+      case 'DUPLICATE_CASE_SOLUTION':
+      case 'DUPLICATE_CUSTOM_ENTITY_DEFINITION':
+      case 'DUPLICATE_CUSTOM_TAB_MOTIF':
+      case 'DUPLICATE_DEVELOPER_NAME':
+      case 'DUPLICATES_DETECTED':
+      case 'DUPLICATE_EXTERNAL_ID':
+      case 'DUPLICATE_MASTER_LABEL':
+      case 'DUPLICATE_SENDER_DISPLAY_NAME':
+      case 'DUPLICATE_USERNAME':
+      case 'EMAIL_ADDRESS_BOUNCED':
+      case 'EMAIL_NOT_PROCESSED_DUE_TO_PRIOR_ERROR':
+      case 'EMAIL_OPTED_OUT':
+      case 'EMAIL_TEMPLATE_FORMULA_ERROR':
+      case 'EMAIL_TEMPLATE_MERGEFIELD_ACCESS_ERROR':
+      case 'EMAIL_TEMPLATE_MERGEFIELD_ERROR':
+      case 'EMAIL_TEMPLATE_MERGEFIELD_VALUE_ERROR':
+      case 'EMAIL_TEMPLATE_PROCESSING_ERROR':
+      case 'EMPTY_SCONTROL_FILE_NAME':
+      case 'ENTITY_FAILED_IFLASTMODIFIED_ON_UPDATE':
+      case 'ENTITY_IS_ARCHIVED':
+      case 'ENTITY_IS_DELETED':
+      case 'ENTITY_IS_LOCKED':
+      case 'ENVIRONMENT_HUB_MEMBERSHIP_CONFLICT':
+      case 'ERROR_IN_MAILER':
+      case 'FAILED_ACTIVATION':
+      case 'FIELD_CUSTOM_VALIDATION_EXCEPTION':
+      case 'FIELD_FILTER_VALIDATION_EXCEPTION':
+      case 'FILTERED_LOOKUP_LIMIT_EXCEEDED':
+      case 'HTML_FILE_UPLOAD_NOT_ALLOWED':
+      case 'IMAGE_TOO_LARGE':
+      case 'INACTIVE_OWNER_OR_USER':
+      case 'INSERT_UPDATE_DELETE_NOT_ALLOWED_DURING_MAINTENANCE':
+      case 'INSUFFICIENT_ACCESS_ON_CROSS_REFERENCE_ENTITY':
+      case 'INSUFFICIENT_ACCESS_OR_READONLY':
+      case 'INVALID_ACCESS_LEVEL':
+      case 'INVALID_ARGUMENT_TYPE':
+      case 'INVALID_ASSIGNEE_TYPE':
+      case 'INVALID_ASSIGNMENT_RULE':
+      case 'INVALID_BATCH_OPERATION':
+      case 'INVALID_CONTENT_TYPE':
+      case 'INVALID_CREDIT_CARD_INFO':
+      case 'INVALID_CROSS_REFERENCE_TYPE_FOR_FIELD':
+      case 'INVALID_CURRENCY_CONV_RATE':
+      case 'INVALID_CURRENCY_CORP_RATE':
+      case 'INVALID_CURRENCY_ISO':
+      case 'INVALID_EMPTY_KEY_OWNER':
+      case 'INVALID_EVENT_SUBSCRIPTION':
+      case 'INVALID_FIELD_FOR_INSERT_UPDATE':
+      case 'INVALID_FIELD_WHEN_USING_TEMPLATE':
+      case 'INVALID_FILTER_ACTION':
+      case 'INVALID_INET_ADDRESS':
+      case 'INVALID_LINEITEM_CLONE_STATE':
+      case 'INVALID_MASTER_OR_TRANSLATED_SOLUTION':
+      case 'INVALID_MESSAGE_ID_REFERENCE':
+      case 'INVALID_OPERATOR':
+      case 'INVALID_PARTNER_NETWORK_STATUS':
+      case 'INVALID_PERSON_ACCOUNT_OPERATION':
+      case 'INVALID_READ_ONLY_USER_DML':
+      case 'INVALID_SAVE_AS_ACTIVITY_FLAG':
+      case 'INVALID_SESSION_ID':
+      case 'INVALID_STATUS':
+      case 'INVALID_TYPE_FOR_OPERATION':
+      case 'INVALID_TYPE_ON_FIELD_IN_RECORD':
+      case 'IP_RANGE_LIMIT_EXCEEDED':
+      case 'JIGSAW_IMPORT_LIMIT_EXCEEDED':
+      case 'LICENSE_LIMIT_EXCEEDED':
+      case 'LIGHT_PORTAL_USER_EXCEPTION':
+      case 'LIMIT_EXCEEDED':
+      case 'LOGIN_CHALLENGE_ISSUED':
+      case 'LOGIN_CHALLENGE_PENDING':
+      case 'LOGIN_MUST_USE_SECURITY_TOKEN':
+      case 'MANAGER_NOT_DEFINED':
+      case 'MASSMAIL_RETRY_LIMIT_EXCEEDED':
+      case 'MASS_MAIL_LIMIT_EXCEEDED':
+      case 'MAXIMUM_CCEMAILS_EXCEEDED':
+      case 'MAXIMUM_DASHBOARD_COMPONENTS_EXCEEDED':
+      case 'MAXIMUM_HIERARCHY_LEVELS_REACHED':
+      case 'MAXIMUM_SIZE_OF_ATTACHMENT':
+      case 'MAXIMUM_SIZE_OF_DOCUMENT':
+      case 'MAX_ACTIONS_PER_RULE_EXCEEDED':
+      case 'MAX_ACTIVE_RULES_EXCEEDED':
+      case 'MAX_APPROVAL_STEPS_EXCEEDED':
+      case 'MAX_FORMULAS_PER_RULE_EXCEEDED':
+      case 'MAX_RULES_EXCEEDED':
+      case 'MAX_RULE_ENTRIES_EXCEEDED':
+      case 'MAX_TASK_DESCRIPTION_EXCEEDED':
+      case 'MAX_TM_RULES_EXCEEDED':
+      case 'MAX_TM_RULE_ITEMS_EXCEEDED':
+      case 'MERGE_FAILED':
+      case 'NONUNIQUE_SHIPPING_ADDRESS':
+      case 'NO_APPLICABLE_PROCESS':
+      case 'NO_ATTACHMENT_PERMISSION':
+      case 'NO_INACTIVE_DIVISION_MEMBERS':
+      case 'NO_MASS_MAIL_PERMISSION':
+      case 'NUMBER_OUTSIDE_VALID_RANGE':
+      case 'NUM_HISTORY_FIELDS_BY_SOBJECT_EXCEEDED':
+      case 'OP_WITH_INVALID_USER_TYPE_EXCEPTION':
+      case 'OPTED_OUT_OF_MASS_MAIL':
+      case 'PACKAGE_LICENSE_REQUIRED':
+      case 'PORTAL_USER_ALREADY_EXISTS_FOR_CONTACT':
+      case 'PRIVATE_CONTACT_ON_ASSET':
+      case 'RECORD_IN_USE_BY_WORKFLOW':
+      case 'REQUEST_RUNNING_TOO_LONG':
+      case 'SELF_REFERENCE_FROM_TRIGGER':
+      case 'SHARE_NEEDED_FOR_CHILD_OWNER':
+      case 'SINGLE_EMAIL_LIMIT_EXCEEDED':
+      case 'STANDARD_PRICE_NOT_DEFINED':
+      case 'STORAGE_LIMIT_EXCEEDED':
+      case 'TABSET_LIMIT_EXCEEDED':
+      case 'TEMPLATE_NOT_ACTIVE':
+      case 'TERRITORY_REALIGN_IN_PROGRESS':
+      case 'TEXT_DATA_OUTSIDE_SUPPORTED_CHARSET':
+      case 'TOO_MANY_APEX_REQUESTS':
+      case 'TRANSFER_REQUIRES_READ':
+      case 'UNABLE_TO_LOCK_ROW':
+      case 'UNAVAILABLE_RECORDTYPE_EXCEPTION':
+      case 'UNDELETE_FAILED':
+      case 'UNKNOWN_EXCEPTION':
+      case 'UNSPECIFIED_EMAIL_ADDRESS':
+      case 'UNSUPPORTED_APEX_TRIGGER_OPERATION':
+      case 'UNVERIFIED_SENDER_ADDRESS':
+      case 'WEBLINK_SIZE_LIMIT_EXCEEDED':
+      case 'WEBLINK_URL_INVALID':
+      case 'WRONG_CONTROLLER_TYPE':
+        return new RemoteProviderError(inferredTitle, error);
       default:
         return error;
     }

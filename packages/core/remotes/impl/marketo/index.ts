@@ -16,6 +16,7 @@ import {
   ForbiddenError,
   GatewayTimeoutError,
   NotFoundError,
+  RemoteProviderError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -174,29 +175,54 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
       return err;
     }
 
-    const jsonError = err.response?.data?.errors?.[0];
+    const responseError = err.response?.data?.errors?.[0];
 
     // from https://developers.marketo.com/rest-api/error-codes/#response_level_error_codes
-    switch (jsonError?.code) {
+    switch (responseError?.code) {
       case '601':
       case '602':
-        return new UnauthorizedError(jsonError?.message ?? err.message, err);
+        return new UnauthorizedError(responseError?.message ?? err.message, err);
       case '603':
-        return new ForbiddenError(jsonError?.message ?? err.message, err);
+        return new ForbiddenError(responseError?.message ?? err.message, err);
       case '604':
-        return new GatewayTimeoutError(jsonError?.message ?? err.message, err);
+        return new GatewayTimeoutError(responseError?.message ?? err.message, err);
       case '606':
       case '607':
-        return new TooManyRequestsError(jsonError?.message ?? err.message, err);
+        return new TooManyRequestsError(responseError?.message ?? err.message, err);
       case '608':
       case '713':
-        return new BadGatewayError(jsonError?.message ?? err.message, err);
+        return new BadGatewayError(responseError?.message ?? err.message, err);
       case '609':
       case '701':
-        return new BadRequestError(jsonError?.message ?? err.message, err);
+        return new BadRequestError(responseError?.message ?? err.message, err);
       case '610':
-        return new NotFoundError(jsonError?.message ?? err.message, err);
+        return new NotFoundError(responseError?.message ?? err.message, err);
+      // The following are unmapped to Supaglue errors, but we want to pass
+      // them back as 4xx so they aren't 500 and developers can view error messages
+      case '502':
+      case '605':
+      case '611':
+      case '612':
+      case '613':
+      case '614':
+      case '615':
+      case '616':
+      case '702':
+      case '703':
+      case '704':
+      case '709':
+      case '710':
+      case '711':
+      case '712':
+      case '714':
+      case '718':
+      case '719':
+        return new RemoteProviderError(responseError?.message ?? err.message, err);
     }
+
+    // TODO: map Record-Level errors
+
+    // TODO: map HTTP-Level errors
 
     return err;
   }
