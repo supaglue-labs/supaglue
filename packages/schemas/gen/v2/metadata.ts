@@ -410,7 +410,7 @@ export interface operations {
   listProperties: {
     parameters: {
       query: {
-        type: "common" | "standard" | "custom";
+        type: "standard" | "custom";
         name: string;
       };
       header: {
