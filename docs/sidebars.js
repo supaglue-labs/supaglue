@@ -310,14 +310,7 @@ const sidebars = {
       label: 'CRM API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: [
-        ...require('./docs/api/v2/crm/sidebar.js'),
-        {
-          type: 'html',
-          value: sidebarHeader('Metadata API'),
-        },
-        ...require('./docs/api/v2/metadata/sidebar.js'),
-      ],
+      items: require('./docs/api/v2/crm/sidebar.js'),
     },
     {
       type: 'category',
@@ -379,6 +372,19 @@ const sidebars = {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/data/sidebar.js'),
+    },
+
+    // section
+    {
+      type: 'html',
+      value: sidebarHeader('Metadata API'),
+    },
+    {
+      type: 'category',
+      label: 'Metadata API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/metadata/sidebar.js'),
     },
 
     // section
