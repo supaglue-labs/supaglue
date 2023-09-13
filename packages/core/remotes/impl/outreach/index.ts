@@ -397,24 +397,23 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     // https://developers.outreach.io/api/making-requests/#error-responses
     // Outreach references jsonapi: https://jsonapi.org/format/#error-objects
     const jsonError = err.response?.data?.errors?.[0];
+    const cause = err.response?.data;
 
     switch (err.response?.status) {
       case 400:
-        return new BadRequestError(jsonError?.detail ?? err.message);
+        return new BadRequestError(jsonError?.title, cause);
       case 401:
-        return new UnauthorizedError(jsonError?.detail ?? err.message);
+        return new UnauthorizedError(jsonError?.title, cause);
       case 403:
-        return new ForbiddenError(jsonError?.detail ?? err.message);
+        return new ForbiddenError(jsonError?.title, cause);
       case 404:
-        return new NotFoundError(jsonError?.detail ?? err.message);
+        return new NotFoundError(jsonError?.title, cause);
       case 409:
-        return new ConflictError(jsonError?.detail ?? err.message);
+        return new ConflictError(jsonError?.title, cause);
       case 422:
-        return new UnprocessableEntityError(
-          jsonError?.detail ? `${jsonError.detail} source ${JSON.stringify(jsonError.source)}` : err.message
-        );
+        return new UnprocessableEntityError(jsonError?.title, cause);
       case 429:
-        return new TooManyRequestsError(jsonError?.detail ?? err.message);
+        return new TooManyRequestsError(jsonError?.title, cause);
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       case 402:
@@ -462,7 +461,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 449:
       case 450:
       case 451:
-        return new RemoteProviderError(jsonError?.detail ?? err.message);
+        return new RemoteProviderError(jsonError?.title, cause);
       default:
         return err;
     }
