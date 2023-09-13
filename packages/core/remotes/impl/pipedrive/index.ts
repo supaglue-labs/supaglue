@@ -1,5 +1,4 @@
 import type {
-  CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
   Property,
@@ -507,23 +506,6 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       return 'deal';
     }
     return objectName;
-  }
-
-  public override async listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
-    switch (object.name) {
-      case 'contact':
-        return await this.listPropertiesForRawObjectName('person');
-      case 'lead':
-        return await this.listPropertiesForRawObjectName('lead');
-      case 'opportunity':
-        return await this.listPropertiesForRawObjectName('deal');
-      case 'account':
-        return await this.listPropertiesForRawObjectName('organization');
-      case 'user':
-        return PIPEDRIVE_USER_FIELDS;
-      default:
-        throw new BadRequestError(`Common object ${object} not supported`);
-    }
   }
 
   public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {

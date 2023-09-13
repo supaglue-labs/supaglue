@@ -12,7 +12,6 @@ get:
       schema:
         type: string
         enum:
-          - common
           - standard
           - custom
     - name: name

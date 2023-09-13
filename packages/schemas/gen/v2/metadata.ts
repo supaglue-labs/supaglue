@@ -85,6 +85,11 @@ export interface components {
        * @example First Name
        */
       label: string;
+      /**
+       * @description The type of the property as provided by the third-party Provider. For Intercom, this is string, integer, boolean, or object. 
+       * @example string
+       */
+      type?: string;
     };
     standard_object: {
       /** @example ticket */
@@ -383,7 +388,7 @@ export interface operations {
   listProperties: {
     parameters: {
       query: {
-        type: "common" | "standard" | "custom";
+        type: "standard" | "custom";
         name: string;
       };
       header: {

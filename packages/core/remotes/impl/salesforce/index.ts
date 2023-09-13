@@ -3,7 +3,6 @@
 /// <reference lib="dom" />
 
 import type {
-  CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
   ListedObjectRecord,
@@ -1207,11 +1206,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         getNextCursorFromPage: getBulk2QueryJobNextLocatorFromResponse,
       },
     ]);
-  }
-
-  public override async listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
-    const sobject = capitalizeString(object.name);
-    return await this.getSObjectProperties(sobject);
   }
 
   public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
