@@ -37,7 +37,7 @@ import {
   toApolloContactCreateParams,
   toApolloContactUpdateParams,
   toApolloSequenceStateCreateParams,
-} from './mapper';
+} from './mappers';
 
 type ApolloPagination = {
   // Apollo sometimes returns a number, or the stringified number

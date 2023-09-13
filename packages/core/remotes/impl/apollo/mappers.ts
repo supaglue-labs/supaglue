@@ -209,7 +209,7 @@ export const toApolloContactUpdateParams = (params: ContactUpdateParams): Record
   };
 };
 
-const getRawAddressString = (params: Address): string => {
+export const getRawAddressString = (params: Address): string => {
   return [params.street1, params.city, params.state, params.postalCode, params.country].filter((v) => !!v).join(', ');
 };
 
