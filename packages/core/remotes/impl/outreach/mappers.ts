@@ -82,7 +82,7 @@ export const fromOutreachMailboxToMailbox = (record: OutreachRecord): Mailbox =>
 };
 
 export const fromOutreachAccountToAccount = (record: OutreachRecord): Account => {
-  const { id, attributes, relationships } = record;
+  const { attributes, relationships } = record;
   return {
     id: record.id.toString(),
     name: record.attributes.name as string,
@@ -150,26 +150,31 @@ export const fromOutreachProspectToContact = (record: OutreachRecord): Contact =
 };
 
 export const fromOutreachPhonesToContactPhone = ({ attributes }: OutreachRecord): PhoneNumber[] => {
-  const mobile = attributes.mobilePhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'mobile',
-  }));
-  const home = attributes.homePhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'home',
-  }));
-  const work = attributes.workPhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'work',
-  }));
-  const other = attributes.otherPhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'other',
-  }));
-  const voip = attributes.voipPhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'other',
-  }));
+  const mobile =
+    attributes.mobilePhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'mobile',
+    })) ?? [];
+  const home =
+    attributes.homePhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'home',
+    })) ?? [];
+  const work =
+    attributes.workPhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'work',
+    })) ?? [];
+  const other =
+    attributes.otherPhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'other',
+    })) ?? [];
+  const voip =
+    attributes.voipPhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'other',
+    })) ?? [];
   return [...mobile, ...home, ...work, ...other, ...voip];
 };
 
@@ -439,7 +444,7 @@ export const toOutreachTemplateCreateParams = ({
   };
 };
 
-const toOutreachProspectAddressParams = (address?: Address | null) => {
+export const toOutreachProspectAddressParams = (address?: Address | null) => {
   if (address === undefined) {
     return {};
   }
@@ -464,7 +469,7 @@ const toOutreachProspectAddressParams = (address?: Address | null) => {
 };
 
 // TODO: Support email type + email object where the type is stored
-const toOutreachProspectEmailParams = (emailAddresses?: EmailAddress[]) => {
+export const toOutreachProspectEmailParams = (emailAddresses?: EmailAddress[]) => {
   if (!emailAddresses) {
     return;
   }
@@ -473,7 +478,7 @@ const toOutreachProspectEmailParams = (emailAddresses?: EmailAddress[]) => {
   };
 };
 
-const toOutreachProspectPhoneNumbers = (phoneNumbers?: PhoneNumber[]) => {
+export const toOutreachProspectPhoneNumbers = (phoneNumbers?: PhoneNumber[]) => {
   if (!phoneNumbers) {
     return;
   }
