@@ -288,7 +288,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             size="small"
             label="Schema"
             variant="outlined"
-            helperText="This is where tables will be written into (it must already exist)."
+            helperText="This is where tables will be written into (it must already exist). Use the Management ConnectionSyncConfigs API to override this."
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setSchema(event.target.value);
               setIsDirty(true);
