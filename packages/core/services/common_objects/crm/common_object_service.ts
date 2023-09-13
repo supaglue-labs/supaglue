@@ -13,6 +13,7 @@ export class CrmCommonObjectService {
   readonly #destinationService: DestinationService;
   readonly #connectionService: ConnectionService;
   readonly #syncService: SyncService;
+  readonly cacheInvalidationWhitelist = ['mongodb', 'postgres', 'supaglue'];
 
   public constructor(
     remoteService: RemoteService,
@@ -93,7 +94,9 @@ export class CrmCommonObjectService {
       return;
     }
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer) {
+
+    // cache invalidate for OLTP destinations only
+    if (writer && this.cacheInvalidationWhitelist.includes(String(destinationType))) {
       const object = await this.get(objectName, connection, id);
 
       const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });

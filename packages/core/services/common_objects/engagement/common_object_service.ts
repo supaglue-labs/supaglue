@@ -7,6 +7,7 @@ import type { RemoteService } from '../../remote_service';
 export class EngagementCommonObjectService {
   readonly #remoteService: RemoteService;
   readonly #destinationService: DestinationService;
+  readonly cacheInvalidationWhitelist = ['mongodb', 'postgres', 'supaglue'];
 
   public constructor(remoteService: RemoteService, destinationService: DestinationService) {
     this.#remoteService = remoteService;
@@ -40,7 +41,9 @@ export class EngagementCommonObjectService {
 
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer) {
+
+    // cache invalidate for OLTP destinations
+    if (writer && this.cacheInvalidationWhitelist.includes(String(destinationType))) {
       // TODO: we should move this logic into each individual provider instead of checking apollo here
       const record =
         connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
@@ -67,7 +70,9 @@ export class EngagementCommonObjectService {
 
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer) {
+
+    // cache invalidate for OLTP destinations
+    if (writer && this.cacheInvalidationWhitelist.includes(String(destinationType))) {
       // TODO: we should move this logic into each individual provider instead of checking apollo here
       const record =
         connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
