@@ -3,14 +3,17 @@ import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '
 import { remoteDuration } from '../../../lib/metrics';
 import type { DestinationService } from '../../destination_service';
 import type { RemoteService } from '../../remote_service';
+import type { SyncService } from '../../sync_service';
 
 export class EngagementCommonObjectService {
   readonly #remoteService: RemoteService;
   readonly #destinationService: DestinationService;
+  readonly #syncService: SyncService;
 
-  public constructor(remoteService: RemoteService, destinationService: DestinationService) {
+  public constructor(remoteService: RemoteService, destinationService: DestinationService, syncService: SyncService) {
     this.#remoteService = remoteService;
     this.#destinationService = destinationService;
+    this.#syncService = syncService;
   }
 
   public async get<T extends EngagementCommonObjectType>(
@@ -37,6 +40,11 @@ export class EngagementCommonObjectService {
     const end = remoteDuration.startTimer({ operation: 'create', remote_name: providerName });
     const res = await remoteClient.createCommonObjectRecord(type, params);
     end();
+
+    const shouldCacheInvalidate = await this.#shouldPerformCacheInvalidation(connection, type);
+    if (!shouldCacheInvalidate) {
+      return res.id;
+    }
 
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
@@ -65,6 +73,11 @@ export class EngagementCommonObjectService {
     const res = await remoteClient.updateCommonObjectRecord(type, params);
     end();
 
+    const shouldCacheInvalidate = await this.#shouldPerformCacheInvalidation(connection, type);
+    if (!shouldCacheInvalidate) {
+      return;
+    }
+
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
@@ -77,5 +90,10 @@ export class EngagementCommonObjectService {
         end();
       }
     }
+  }
+
+  async #shouldPerformCacheInvalidation(connection: ConnectionSafeAny, objectName: EngagementCommonObjectType) {
+    const sync = await this.#syncService.findByConnectionIdAndObjectTypeAndObject(connection.id, 'common', objectName);
+    return sync && !sync.paused;
   }
 }
