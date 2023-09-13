@@ -225,7 +225,7 @@ export default function BigQDestinationDetailsPanel({ isLoading }: BigQueryDesti
             size="small"
             label="Dataset"
             variant="outlined"
-            helperText="This is the dataset where tables will be written into (it must already exist)."
+            helperText="This is the dataset where tables will be written into (it must already exist). You can override this dataset per connection via the API later."
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDataset(event.target.value);
               setIsDirty(true);
