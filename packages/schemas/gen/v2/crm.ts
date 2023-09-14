@@ -624,7 +624,7 @@ export interface operations {
           record: components["schemas"]["create_update_account"];
           upsert_on: {
             /** @enum {string} */
-            key: "domain";
+            key: "domain" | "website";
             values: (string)[];
           };
         };
