@@ -12,7 +12,7 @@ import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getDestinationName } from '@/utils/destination';
 import { getStandardObjectOptions } from '@/utils/provider';
-import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Breadcrumbs, Button, Chip, FormHelperText, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import type { CommonObjectType, ProviderCategory, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
@@ -263,6 +263,10 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                 },
               ]}
             />
+            <FormHelperText sx={{ marginY: 0, marginLeft: '14px' }}>
+              For Incremental: we will use this strategy when available for the provider and object otherwise we will
+              use full sync. Please refer to provider docs for more details.
+            </FormHelperText>
           </Stack>
           <Stack className="gap-2">
             <SwitchWithLabel

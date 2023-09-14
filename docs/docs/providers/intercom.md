@@ -11,23 +11,35 @@ description: ''
 
 **Category:** `ticketing`
 
-| Feature                              | Available                                                        |
-| ------------------------------------ | ---------------------------------------------------------------- |
-| Authentication (`oauth2`)            | Yes                                                              |
-| Managed syncs                        | Yes                                                              |
-| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental`, `full only` (soft delete not supported) |
-| Unified API                          | Yes                                                              |
-| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                                              |
-| Real-time events                     | No                                                               |
-| Passthrough API                      | Yes                                                              |
+| Feature                              | Available      |
+| ------------------------------------ | -------------- |
+| Authentication (`oauth2`)            | Yes            |
+| Managed syncs                        | Yes            |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | (listed below) |
+| Unified API                          | Yes            |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes            |
+| Real-time events                     | No             |
+| Passthrough API                      | Yes            |
 
-Supported standard objects:
+#### Supported common objects:
 
-- `admin` (Sync strategy: `full only`. Soft delete not supported.)
-- `article` (Sync strategy: `full only`. Soft delete not supported.)
-- `company` (Sync strategy: `full only`. Soft delete not supported.)
-- `contact` (Sync strategy: `full then incremental`. Soft delete not supported.)
-- `conversation` (Sync strategy: `full then incremental`. Soft delete not supported.)
+N/A
+
+#### Supported standard objects:
+
+| Object         | Soft delete supported | Sync strategy       |
+| -------------- | --------------------- | ------------------- |
+| `admin`        | Yes                   | Full                |
+| `article`      | Yes                   | Full                |
+| `company`      | Yes                   | Full                |
+| `contact`      | No\*                  | Full or Incremental |
+| `conversation` | No\*                  | Full or Incremental |
+
+[*] Soft deletes are supported if the sync strategy is "Full"
+
+#### Supported custom objects:
+
+N/A
 
 ## Provider setup
 

@@ -13,31 +13,36 @@ description: ''
 
 Supaglue uses the Salesforce Bulk 2.0 API and the REST API.
 
-| Feature                              | Available                                       |
-| ------------------------------------ | ----------------------------------------------- |
-| Authentication (`oauth2`)            | Yes                                             |
-| Managed syncs                        | Yes                                             |
-| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental` (soft delete supported) |
-| Unified API                          | Yes                                             |
-| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                             |
-| Real-time events (alpha)             | Yes                                             |
-| Passthrough API                      | Yes                                             |
+| Feature                              | Available      |
+| ------------------------------------ | -------------- |
+| Authentication (`oauth2`)            | Yes            |
+| Managed syncs                        | Yes            |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | (listed below) |
+| Unified API                          | Yes            |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes            |
+| Real-time events (alpha)             | Yes            |
+| Passthrough API                      | Yes            |
 
 #### Supported common objects:
 
-- Account
-- Contact
-- Lead
-- Opportunity
-- User
+| Object  | Soft delete supported | Sync strategy       |
+| ------- | --------------------- | ------------------- |
+| Company | Yes                   | Full or Incremental |
+| Contact | Yes                   | Full or Incremental |
+| Deal    | Yes                   | Full or Incremental |
+| User    | Yes                   | Full or Incremental |
 
 #### Supported standard objects:
 
 Use singular Pascal casing when specifying [Salesforce Standard Objects](https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm).
 
+Syncs are Full or Incremental, and soft deletes are supported.
+
 #### Supported custom objects:
 
 When listing custom objects you'd like to sync, omit the `__c` suffix.
+
+Syncs are Full or Incremental, and soft deletes are supported.
 
 ## Provider setup
 

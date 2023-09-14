@@ -13,23 +13,25 @@ description: ''
 
 Apollo is both a sales engagement connector and a data enrichment provider.
 
-| Feature                              | Available   |
-| ------------------------------------ | ----------- |
-| Authentication (`api_key`)           | Yes         |
-| Managed syncs                        | Yes         |
-| &nbsp;&nbsp;&nbsp; Sync strategies   | `full only` |
-| Unified API                          | Yes         |
-| &nbsp;&nbsp;&nbsp; Data invalidation | No          |
-| Real-time events                     | No          |
-| Passthrough API                      | Yes         |
+| Feature                              | Available      |
+| ------------------------------------ | -------------- |
+| Authentication (`api_key`)           | Yes            |
+| Managed syncs                        | Yes            |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | (listed below) |
+| Unified API                          | Yes            |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes            |
+| Real-time events                     | No             |
+| Passthrough API                      | Yes            |
 
 #### Supported Engagement common objects:
 
-- Users
-- Contacts
-- Sequences (soft delete supported)
-- Sequence States
-- Mailboxes (aka Email Accounts)
+| Object          | Soft delete supported | Sync strategy |
+| --------------- | --------------------- | ------------- |
+| Users           | Yes                   | Full          |
+| Contacts        | Yes                   | Full          |
+| Sequences       | Yes                   | Full          |
+| Sequence States | Yes                   | Full          |
+| Mailboxes       | Yes                   | Full          |
 
 #### Supported standard objects:
 
@@ -38,6 +40,16 @@ N/A
 #### Supported custom objects:
 
 N/A
+
+## Other limitations
+
+Date: 9/14/2023
+
+Apollo has a few hard limitations with its API:
+
+- You cannot sync more than 10,000 records per Object type.
+- You cannot sync more than 10,000 records per hour.
+- You cannot sync more than 50,000 records per day.
 
 ## Provider setup
 

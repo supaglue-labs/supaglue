@@ -11,15 +11,15 @@ description: ''
 
 **Category:** `ticketing`
 
-| Feature                              | Available |
-| ------------------------------------ | --------- |
-| Authentication (`oauth2`)            | Yes       |
-| Managed syncs                        | No        |
-| &nbsp;&nbsp;&nbsp; Sync strategies   |           |
-| Unified API                          | Yes       |
-| &nbsp;&nbsp;&nbsp; Data invalidation | No        |
-| Real-time events                     | No        |
-| Passthrough API                      | Yes       |
+| Feature                              | Available      |
+| ------------------------------------ | -------------- |
+| Authentication (`oauth2`)            | Yes            |
+| Managed syncs                        | No             |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | (listed below) |
+| Unified API                          | Yes            |
+| &nbsp;&nbsp;&nbsp; Data invalidation | No             |
+| Real-time events                     | No             |
+| Passthrough API                      | Yes            |
 
 #### Supported common objects:
 
@@ -27,7 +27,15 @@ N/A
 
 #### Supported standard objects:
 
-`issues`, `comments`, `teams`, `projects`, `users`
+| Object     | Soft delete supported | Sync strategy       |
+| ---------- | --------------------- | ------------------- |
+| `issues`   | No\*                  | Full or Incremental |
+| `comments` | No\*                  | Full or Incremental |
+| `teams`    | No\*                  | Full or Incremental |
+| `projects` | No\*                  | Full or Incremental |
+| `users`    | No\*                  | Full or Incremental |
+
+[*] Soft deletes are supported if the sync strategy is "Full"
 
 #### Supported custom objects:
 
