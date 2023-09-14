@@ -2,12 +2,12 @@ get:
   operationId: getListMembership
   summary: Get list membership
   tags:
-    - List
+    - Lists
   security:
     - x-api-key: []
   parameters:
-    - $ref: ../../../../common/components/parameters/query/page_size.yaml
-    - $ref: ../../../../common/components/parameters/query/cursor.yaml
+    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
   responses:
     200:
       description: List membership
@@ -17,18 +17,18 @@ get:
             type: object
             properties:
               pagination:
-                $ref: ../../../../common/components/schemas/pagination.yaml
+                $ref: ../../../common/components/schemas/pagination.yaml
               members:
                 type: array
                 items:
-                  $ref: ../../components/schemas/objects/list_membership.yaml
+                  $ref: ../components/schemas/objects/list_membership.yaml
               metadata:
-                $ref: ../../components/schemas/objects/list_metadata.yaml
+                $ref: ../components/schemas/objects/list_metadata.yaml
             required:
               - pagination
               - records
 parameters:
-  - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - name: object_type
     in: path
     required: true
