@@ -396,6 +396,8 @@ WHEN NOT MATCHED THEN INSERT (${columns.join(',')}) VALUES (${columns.map((col) 
 WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col}`).join(', ')}`);
     heartbeat();
 
+    // if full sync, propagate deletions
+
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [COMPLETED]');
 
     childLogger.info({ table, maxLastModifiedAt, tempTableRowCount }, 'Sync completed');
