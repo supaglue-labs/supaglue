@@ -1366,7 +1366,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // jsforce doesn't provide a stable jsonapi "title" so infer it from the message.
     // assumed format: "Some Title: Array of json details" or "Some Title"
-    const inferredTitle = error.message.substring(0, Math.min(error.message.indexOf(':'), error.message.length));
+    const inferredTitle = error.message.substring(
+      0,
+      error.message.includes(':') ? error.message.indexOf(':') : error.message.length
+    );
 
     // https://developer.salesforce.com/docs/atlas.en-us.210.0.object_reference.meta/object_reference/sforce_api_calls_concepts_core_data_objects.htm#i1421192
     switch (error.errorCode) {
