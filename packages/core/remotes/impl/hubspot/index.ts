@@ -1,16 +1,8 @@
 import { Client } from '@hubspot/api-client';
 import type {
-  CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedCompanies,
-  CollectionResponseWithTotalSimplePublicObjectForwardPaging as HubspotPaginatedCompaniesWithTotal,
-} from '@hubspot/api-client/lib/codegen/crm/companies';
-import type {
   CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts,
   CollectionResponseWithTotalSimplePublicObjectForwardPaging as HubspotPaginatedContactsWithTotal,
 } from '@hubspot/api-client/lib/codegen/crm/contacts';
-import type {
-  CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedDeals,
-  CollectionResponseWithTotalSimplePublicObjectForwardPaging as HubspotPaginatedDealsWithTotal,
-} from '@hubspot/api-client/lib/codegen/crm/deals';
 import type { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import type {
   ConnectionUnsafe,
@@ -20,7 +12,6 @@ import type {
   ObjectMetadata,
   ObjectRecordUpsertData,
   ObjectRecordWithMetadata,
-  PropertiesWithAdditionalFields,
   Property,
   Provider,
   RemoteUserIdAndDetails,
@@ -301,19 +292,9 @@ type HubSpotAPIV3ListResponse = {
   paging?: HubSpotPaging;
 };
 
-type RecordWithFlattenedAssociations = {
+export type RecordWithFlattenedAssociations = {
   id: string;
   properties: Record<string, string>;
-  createdAt: string;
-  updatedAt: string;
-  archived: boolean;
-  archivedAt?: string;
-  associations?: Record<string, string[]>;
-};
-
-type RecordWithPropertiesWithAdditionalFieldsAndFlattenedAssociations = {
-  id: string;
-  properties: PropertiesWithAdditionalFields;
   createdAt: string;
   updatedAt: string;
   archived: boolean;
@@ -1193,11 +1174,25 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async listAccounts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
-    const normalPageFetcher = await this.#getListNormalAccountsFetcher(properties, updatedAfter);
-    const archivedPageFetcher = async (after?: string) => {
-      const response = await this.#listAccountsFull(properties, /* archived */ true, after);
-      return filterForArchivedAfter(response, updatedAfter);
-    };
+    const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
+      await this.#getAssociatedObjectTypesForObjectType('company');
+    const normalPageFetcher = await this.#getListRecordsFetcher(
+      'company',
+      properties,
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
+      /* archived */ false,
+      updatedAfter
+    );
+
+    const archivedPageFetcher = await this.#getListRecordsFetcher(
+      'company',
+      properties,
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
+      /* archived */ true,
+      updatedAfter
+    );
 
     return await paginator([
       {
@@ -1207,8 +1202,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           return Readable.from(
             response.results.map((result) => ({
               record: {
-                ...fromHubSpotCompanyToAccount(result),
-                rawData: toMappedProperties(result.properties, fieldMappingConfig),
+                ...fromHubSpotCompanyToAccount(result.rawData),
+                rawData: {
+                  ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+                  _associations: result.rawData.associations,
+                },
               },
               emittedAt,
             }))
@@ -1223,8 +1221,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           return Readable.from(
             response.results.map((result) => ({
               record: {
-                ...fromHubSpotCompanyToAccount(result),
-                rawData: toMappedProperties(result.properties, fieldMappingConfig),
+                ...fromHubSpotCompanyToAccount(result.rawData),
+                rawData: {
+                  ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+                  _associations: result.rawData.associations,
+                },
               },
               emittedAt,
             }))
@@ -1235,82 +1236,23 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     ]);
   }
 
-  async #getListNormalAccountsFetcher(
-    properties: string[],
-    updatedAfter?: Date
-  ): Promise<(after?: string) => Promise<HubspotPaginatedCompanies>> {
-    if (updatedAfter) {
-      // Incremental uses the Search endpoint which doesn't allow for more than 10k results.
-      // If we get back more than 10k results, we need to fall back to the full fetch.
-      const response = await this.#listAccountsIncremental(properties, updatedAfter, 0);
-      if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
-        return async (after?: string) => {
-          const response = await this.#listAccountsFull(properties, /* archived */ false, after);
-          return filterForUpdatedAfter(response, updatedAfter);
-        };
-      }
-      return this.#listAccountsIncremental.bind(this, properties, updatedAfter, HUBSPOT_RECORD_LIMIT);
-    }
-
-    return this.#listAccountsFull.bind(this, properties, /* archived */ false);
-  }
-
-  async #listAccountsFull(properties: string[], archived: boolean, after?: string): Promise<HubspotPaginatedCompanies> {
-    return await retryWhenRateLimited(async () => {
-      await this.maybeRefreshAccessToken();
-      const companies = await this.#client.crm.companies.basicApi.getPage(
-        HUBSPOT_RECORD_LIMIT,
-        after,
-        properties,
-        undefined,
-        undefined,
-        archived
-      );
-      return companies;
-    });
-  }
-
-  async #listAccountsIncremental(
-    properties: string[],
-    updatedAfter: Date,
-    limit: number,
-    after?: string
-  ): Promise<HubspotPaginatedCompaniesWithTotal> {
-    return await retryWhenRateLimited(async () => {
-      await this.maybeRefreshAccessToken();
-      const companies = await this.#client.crm.companies.searchApi.doSearch({
-        filterGroups: [
-          {
-            filters: [
-              {
-                propertyName: 'hs_lastmodifieddate',
-                operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
-                value: updatedAfter.getTime().toString(),
-              },
-            ],
-          },
-        ],
-        sorts: [
-          {
-            propertyName: 'hs_lastmodifieddate',
-            direction: 'ASCENDING',
-          } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
-        ],
-        properties,
-        limit,
-        after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
-      });
-      return companies;
-    });
-  }
-
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('company');
-    await this.maybeRefreshAccessToken();
-    const company = await this.#client.crm.companies.basicApi.getById(id, properties);
+    const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
+      await this.#getAssociatedObjectTypesForObjectType('deal');
+    const associations = [
+      ...associatedStandardObjectTypes,
+      ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
+    ];
+    const company = await this.#client.crm.companies.basicApi.getById(
+      id,
+      properties,
+      /* propertiesWithHistory */ undefined,
+      associations
+    );
     return {
-      ...fromHubSpotCompanyToAccount(company),
-      rawData: toMappedProperties(company.properties, fieldMappingConfig),
+      ...fromHubSpotCompanyToAccount(company as unknown as RecordWithFlattenedAssociations),
+      rawData: { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: company.associations },
     };
   }
 
@@ -1383,11 +1325,25 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public async listOpportunities(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const normalPageFetcher = await this.#getListNormalOpportunitiesFetcher(properties, updatedAfter);
-    const archivedPageFetcher = async (after?: string) => {
-      const response = await this.#listOpportunitiesFull(properties, /* archived */ true, after);
-      return filterForArchivedAfter(response, updatedAfter);
-    };
+    const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
+      await this.#getAssociatedObjectTypesForObjectType('deal');
+    const normalPageFetcher = await this.#getListRecordsFetcher(
+      'deal',
+      properties,
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
+      /* archived */ false,
+      updatedAfter
+    );
+
+    const archivedPageFetcher = await this.#getListRecordsFetcher(
+      'deal',
+      properties,
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
+      /* archived */ true,
+      updatedAfter
+    );
 
     return await paginator([
       {
@@ -1395,10 +1351,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.results.map((deal) => ({
+            response.results.map((result) => ({
               record: {
-                ...fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
-                rawData: toMappedProperties(deal.properties, fieldMappingConfig),
+                ...fromHubSpotDealToOpportunity(result.rawData, pipelineStageMapping),
+                rawData: {
+                  ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+                  _associations: result.rawData.associations,
+                },
               },
               emittedAt,
             }))
@@ -1411,10 +1370,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
-            response.results.map((deal) => ({
+            response.results.map((result) => ({
               record: {
-                ...fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
-                rawData: toMappedProperties(deal.properties, fieldMappingConfig),
+                ...fromHubSpotDealToOpportunity(result.rawData, pipelineStageMapping),
+                rawData: {
+                  ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+                  _associations: result.rawData.associations,
+                },
               },
               emittedAt,
             }))
@@ -1425,110 +1387,24 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     ]);
   }
 
-  async #getListNormalOpportunitiesFetcher(
-    properties: string[],
-    updatedAfter?: Date
-  ): Promise<(after?: string) => Promise<HubspotPaginatedDeals>> {
-    if (updatedAfter) {
-      // Incremental uses the Search endpoint which doesn't allow for more than 10k results.
-      // If we get back more than 10k results, we need to fall back to the full fetch.
-      const response = await this.#listOpportunitiesIncremental(properties, updatedAfter, 0);
-      if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
-        return async (after?: string) => {
-          const response = await this.#listOpportunitiesFull(properties, /* archived */ false, after);
-          return filterForUpdatedAfter(response, updatedAfter);
-        };
-      }
-      return this.#listOpportunitiesIncremental.bind(this, properties, updatedAfter, HUBSPOT_RECORD_LIMIT);
-    }
-
-    return this.#listOpportunitiesFull.bind(this, properties, /* archived */ false);
-  }
-
-  async #listOpportunitiesFull(
-    properties: string[],
-    archived: boolean,
-    after?: string
-  ): Promise<HubspotPaginatedDeals> {
-    return await retryWhenRateLimited(async () => {
-      await this.maybeRefreshAccessToken();
-      const deals = await this.#client.crm.deals.basicApi.getPage(
-        HUBSPOT_RECORD_LIMIT,
-        after,
-        properties,
-        /* propertiesWithHistory */ undefined,
-        /* associations */ ['company'],
-        archived
-      );
-      return deals;
-    });
-  }
-
-  async #listOpportunitiesIncremental(
-    properties: string[],
-    updatedAfter: Date,
-    limit: number,
-    after?: string
-  ): Promise<HubspotPaginatedDealsWithTotal> {
-    return await retryWhenRateLimited(async () => {
-      await this.maybeRefreshAccessToken();
-      const response = await this.#client.crm.deals.searchApi.doSearch({
-        filterGroups: [
-          {
-            filters: [
-              {
-                propertyName: 'hs_lastmodifieddate',
-                operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
-                value: updatedAfter.getTime().toString(),
-              },
-            ],
-          },
-        ],
-        sorts: [
-          {
-            propertyName: 'hs_lastmodifieddate',
-            direction: 'ASCENDING',
-          } as unknown as string, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
-        ],
-        properties,
-        limit,
-        after: after as unknown as number, // hubspot sdk has wrong types https://github.com/HubSpot/hubspot-api-nodejs/issues/350
-      });
-
-      const dealIds = response.results.map((deal) => deal.id);
-
-      // Get associations
-      const dealToCompaniesMap = await this.#listAssociations('deal', 'company', dealIds);
-
-      // Add associations to deals
-      // TODO: We shouldn't hijack the response object like this; clean this code up
-      return {
-        ...response,
-        results: response.results.map((deal) => ({
-          ...deal,
-          associations: {
-            companies: {
-              results: (dealToCompaniesMap[deal.id] ?? []).map((id) => ({ id, type: 'deal_to_company' })),
-            },
-          },
-        })),
-      };
-    });
-  }
-
   public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const properties = await this.getCommonObjectPropertyIdsToFetch('deal');
-    await this.maybeRefreshAccessToken();
+    const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
+      await this.#getAssociatedObjectTypesForObjectType('deal');
+    const associations = [
+      ...associatedStandardObjectTypes,
+      ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
+    ];
     const deal = await this.#client.crm.deals.basicApi.getById(
       id,
       properties,
       /* propertiesWithHistory */ undefined,
-      /* associations */ ['company']
+      associations
     );
     return {
-      ...fromHubSpotDealToOpportunity(deal, pipelineStageMapping),
-      rawData: toMappedProperties(deal.properties, fieldMappingConfig),
+      ...fromHubSpotDealToOpportunity(deal as unknown as RecordWithFlattenedAssociations, pipelineStageMapping),
+      rawData: { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: deal.associations },
     };
   }
 
@@ -1576,12 +1452,25 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async listContacts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
-    const normalPageFetcher = await this.#getListNormalContactsFetcher(properties, updatedAfter);
-    const archivedPageFetcher = async (after?: string) => {
-      const response = await this.#listContactsFull(properties, /* archived */ true, after);
-      return filterForArchivedAfter(response, updatedAfter);
-    };
+    const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
+      await this.#getAssociatedObjectTypesForObjectType('contact');
+    const normalPageFetcher = await this.#getListRecordsFetcher(
+      'contact',
+      properties,
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
+      /* archived */ false,
+      updatedAfter
+    );
 
+    const archivedPageFetcher = await this.#getListRecordsFetcher(
+      'contact',
+      properties,
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
+      /* archived */ true,
+      updatedAfter
+    );
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -1590,8 +1479,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           return Readable.from(
             response.results.map((result) => ({
               record: {
-                ...fromHubSpotContactToContact(result),
-                rawData: toMappedProperties(result.properties, fieldMappingConfig),
+                ...fromHubSpotContactToContact(result.rawData),
+                rawData: {
+                  ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+                  _associations: result.rawData.associations,
+                },
               },
               emittedAt,
             }))
@@ -1606,8 +1498,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           return Readable.from(
             response.results.map((result) => ({
               record: {
-                ...fromHubSpotContactToContact(result),
-                rawData: toMappedProperties(result.properties, fieldMappingConfig),
+                ...fromHubSpotContactToContact(result.rawData),
+                rawData: {
+                  ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+                  _associations: result.rawData.associations,
+                },
               },
               emittedAt,
             }))
@@ -1713,16 +1608,21 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact');
-    await this.maybeRefreshAccessToken();
+    const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
+      await this.#getAssociatedObjectTypesForObjectType('deal');
+    const associations = [
+      ...associatedStandardObjectTypes,
+      ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
+    ];
     const contact = await this.#client.crm.contacts.basicApi.getById(
       id,
       properties,
       /* propertiesWithHistory */ undefined,
-      /* associations */ ['company']
+      associations
     );
     return {
-      ...fromHubSpotContactToContact(contact),
-      rawData: toMappedProperties(contact.properties, fieldMappingConfig),
+      ...fromHubSpotContactToContact(contact as unknown as RecordWithFlattenedAssociations),
+      rawData: { ...toMappedProperties(contact.properties, fieldMappingConfig), _associations: contact.associations },
     };
   }
 

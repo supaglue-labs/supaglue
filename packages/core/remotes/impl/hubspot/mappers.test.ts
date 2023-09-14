@@ -40,8 +40,8 @@ describe('Hubspot Mappers', () => {
           country: CRM_PRIMARY_ADDRESS.country as string,
           phone: CRM_PRIMARY_PHONE.phoneNumber as string,
         },
-        createdAt: DATE,
-        updatedAt: DATE,
+        createdAt: DATE_STRING,
+        updatedAt: DATE_STRING,
         archived: false,
       };
 
@@ -89,8 +89,8 @@ describe('Hubspot Mappers', () => {
           name: 'Test Company',
           numberofemployees: '7000000001',
         },
-        createdAt: DATE,
-        updatedAt: DATE,
+        createdAt: DATE_STRING,
+        updatedAt: DATE_STRING,
         archived: false,
       };
 
@@ -194,12 +194,10 @@ describe('Hubspot Mappers', () => {
           fax: CRM_FAX.phoneNumber as string,
         },
         associations: {
-          companies: {
-            results: [{ id: '16984059819', type: 'contact_to_company' }],
-          },
+          companies: ['16984059819'],
         },
-        createdAt: DATE,
-        updatedAt: DATE,
+        createdAt: DATE_STRING,
+        updatedAt: DATE_STRING,
         archived: false,
       };
 
@@ -233,6 +231,9 @@ describe('Hubspot Mappers', () => {
           phone: '5102932345',
           state: 'CA',
           zip: '94043',
+          _associations: {
+            companies: ['16984059819'],
+          },
         },
         updatedAt: DATE,
       });
@@ -298,21 +299,10 @@ describe('Hubspot Mappers', () => {
           pipeline: 'default',
         },
         associations: {
-          companies: {
-            results: [
-              {
-                id: '16984059819',
-                type: 'deal_to_company',
-              },
-              {
-                id: '16984059819',
-                type: 'deal_to_company_unlabeled',
-              },
-            ],
-          },
+          companies: ['16984059819'],
         },
-        createdAt: DATE,
-        updatedAt: DATE,
+        createdAt: DATE_STRING,
+        updatedAt: DATE_STRING,
         archived: false,
       };
       expect(fromHubSpotDealToOpportunity(hubspotDeal, HUBSPOT_PIPELINE_STAGE_MAPPING)).toEqual({
@@ -337,6 +327,9 @@ describe('Hubspot Mappers', () => {
           hs_lastmodifieddate: DATE_STRING,
           hs_object_id: '14659412538',
           pipeline: 'default',
+          _associations: {
+            companies: ['16984059819'],
+          },
         },
         stage: 'Contract Sent',
         status: 'OPEN',
@@ -358,21 +351,10 @@ describe('Hubspot Mappers', () => {
           pipeline: 'default',
         },
         associations: {
-          companies: {
-            results: [
-              {
-                id: '16984059819',
-                type: 'deal_to_company',
-              },
-              {
-                id: '16984059819',
-                type: 'deal_to_company_unlabeled',
-              },
-            ],
-          },
+          companies: ['16984059819'],
         },
-        createdAt: DATE,
-        updatedAt: DATE,
+        createdAt: DATE_STRING,
+        updatedAt: DATE_STRING,
         archived: false,
       };
       expect(fromHubSpotDealToOpportunity(hubspotDeal, HUBSPOT_PIPELINE_STAGE_MAPPING)).toEqual({
@@ -397,6 +379,9 @@ describe('Hubspot Mappers', () => {
           hs_lastmodifieddate: DATE_STRING,
           hs_object_id: '14659412538',
           pipeline: 'default',
+          _associations: {
+            companies: ['16984059819'],
+          },
         },
         stage: 'invalidstage',
         status: 'OPEN',
