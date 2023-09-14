@@ -21,7 +21,11 @@ export interface paths {
     };
   };
   "/accounts/_upsert": {
-    /** Upsert account */
+    /**
+     * Upsert account 
+     * @description Upsert an account. If the account does not exist, it will be created. If the account does exist, it will be updated.
+     * Only supported for Salesforce and Hubspot.
+     */
     post: operations["upsertAccount"];
     parameters: {
       header: {
@@ -56,7 +60,11 @@ export interface paths {
     };
   };
   "/contacts/_upsert": {
-    /** Upsert contact */
+    /**
+     * Upsert contact 
+     * @description Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.
+     * Only supported for Salesforce, Hubspot, and Pipedrive.
+     */
     post: operations["upsertContact"];
     parameters: {
       header: {
@@ -610,7 +618,11 @@ export interface operations {
       };
     };
   };
-  /** Upsert account */
+  /**
+   * Upsert account 
+   * @description Upsert an account. If the account does not exist, it will be created. If the account does exist, it will be updated.
+   * Only supported for Salesforce and Hubspot.
+   */
   upsertAccount: {
     parameters: {
       header: {
@@ -623,8 +635,12 @@ export interface operations {
         "application/json": {
           record: components["schemas"]["create_update_account"];
           upsert_on: {
-            /** @enum {string} */
+            /**
+             * @description The key to upsert on. Only `website` is supported for Salesforce, while both `domain` and `website` are supported for Hubspot. 
+             * @enum {string}
+             */
             key: "domain" | "website";
+            /** @description The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown. */
             values: (string)[];
           };
         };
@@ -734,7 +750,11 @@ export interface operations {
       };
     };
   };
-  /** Upsert contact */
+  /**
+   * Upsert contact 
+   * @description Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.
+   * Only supported for Salesforce, Hubspot, and Pipedrive.
+   */
   upsertContact: {
     parameters: {
       header: {
@@ -747,8 +767,12 @@ export interface operations {
         "application/json": {
           record: components["schemas"]["create_update_contact"];
           upsert_on: {
-            /** @enum {string} */
+            /**
+             * @description The key to upsert on. Only `email` is supported for all providers. 
+             * @enum {string}
+             */
             key: "email";
+            /** @description The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown. */
             values: (string)[];
           };
         };
