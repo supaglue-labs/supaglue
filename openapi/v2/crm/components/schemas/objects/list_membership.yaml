@@ -2,7 +2,7 @@ type: object
 properties:
   id:
     type: string
-    description: The unique identifier for a member of this list view.
+    description: The unique identifier for a member of this list.
   raw_data:
     type: object
     additionalProperties: true

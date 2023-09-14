@@ -3,7 +3,7 @@ properties:
   id:
     type: string
     example: 12345
-    description: The unique identifier for this list view.
+    description: The unique identifier for this list.
   object_type:
     type: string
     enum:
@@ -14,14 +14,14 @@ properties:
   name:
     type: string
     example: my-list
-    description: The developer name of this list view.
+    description: The developer name of this list.
   label:
     type: string
     example: My List
-    description: The label for this list view.
+    description: The label for this list.
   raw_data:
     type: object
-    description: The raw data for this list view.
+    description: The raw data for this list.
     additionalProperties: true
     example:
       describeUrl : "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe"
