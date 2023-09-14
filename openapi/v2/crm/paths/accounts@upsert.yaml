@@ -20,7 +20,7 @@ post:
               properties:
                 key:
                   type: string
-                  enum: [domain]
+                  enum: [domain, website]
                 values:
                   type: array
                   items:

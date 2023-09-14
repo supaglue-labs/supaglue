@@ -14,6 +14,7 @@ import type {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
+  ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
   Lead,
@@ -129,7 +130,7 @@ type PipedriveObjectFieldsResponse = {
 
 class PipedriveClient extends AbstractCrmRemoteClient {
   readonly #credentials: Credentials;
-  readonly #headers: Record<string, string>;
+  #headers: Record<string, string>;
   public constructor(credentials: Credentials) {
     super(credentials.instanceUrl);
     this.#credentials = credentials;
@@ -170,6 +171,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       this.#credentials.accessToken = newAccessToken;
       this.#credentials.refreshToken = newRefreshToken;
       this.#credentials.expiresAt = newExpiresAt;
+      this.#headers = { Authorization: `Bearer ${newAccessToken}` };
 
       this.emit('token_refreshed', {
         accessToken: newAccessToken,
@@ -501,6 +503,18 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
+  public override async upsertCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'contact':
+        return this.upsertContact(params as ContactUpsertParams);
+      default:
+        throw new Error(`Upsert is not supported for ${commonObjectType} in pipedrive`);
+    }
+  }
+
   getFieldsPrefix(objectName: string): string {
     if (objectName === 'lead') {
       return 'deal';
@@ -558,6 +572,38 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       }
     );
     return response.data.data.id.toString();
+  }
+
+  async upsertContact(params: ContactUpsertParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const ids = (
+      await Promise.all(
+        params.upsertOn.values.map(async (value) => {
+          const response = await axios.get<{ data: { items: { item: { id: number } }[] } }>(
+            `${this.#credentials.instanceUrl}/api/v1/persons/search`,
+            {
+              headers: this.#headers,
+              params: {
+                term: value,
+                fields: 'email',
+                exact_match: true,
+              },
+            }
+          );
+          if (response.data.data.items.length > 1) {
+            throw new BadRequestError(`Multiple contacts found for email ${value}`);
+          }
+          return response.data.data.items.map((item) => item.item.id.toString());
+        })
+      )
+    ).flat();
+    if (ids.length > 1) {
+      throw new BadRequestError(`Multiple contacts found for upsert query`);
+    }
+    if (ids.length === 0) {
+      return this.createContact(params.record);
+    }
+    return this.updateContact({ ...params.record, id: ids[0] });
   }
 
   async createLead(params: LeadCreateParams): Promise<string> {

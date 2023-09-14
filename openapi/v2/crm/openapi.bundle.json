@@ -110,7 +110,8 @@
                       "key": {
                         "type": "string",
                         "enum": [
-                          "domain"
+                          "domain",
+                          "website"
                         ]
                       },
                       "values": {
