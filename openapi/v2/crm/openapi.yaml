@@ -48,6 +48,8 @@ paths:
     $ref: paths/opportunities@{opportunity_id}.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
+  '/lists/{object_type}':
+    $ref: paths/lists@{object_type}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
 tags:
