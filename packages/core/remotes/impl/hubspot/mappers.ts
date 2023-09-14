@@ -110,8 +110,8 @@ export const fromHubSpotContactToContact = ({
       : null,
   ].filter(Boolean) as EmailAddress[];
   let accountId = null;
-  if (associations?.companies?.length) {
-    accountId = associations.companies[0] ?? null;
+  if (associations?.company?.length) {
+    accountId = associations.company[0] ?? null;
   }
 
   const phoneNumbers = [
@@ -180,8 +180,8 @@ export const fromHubSpotDealToOpportunity = (
     status = 'LOST';
   }
   let accountId = null;
-  if (associations?.companies?.length) {
-    accountId = associations.companies[0] ?? null;
+  if (associations?.company?.length) {
+    accountId = associations.company[0] ?? null;
   }
 
   let pipeline = properties.pipeline ?? null;

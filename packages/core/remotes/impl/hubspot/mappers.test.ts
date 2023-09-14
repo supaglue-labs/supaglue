@@ -194,7 +194,7 @@ describe('Hubspot Mappers', () => {
           fax: CRM_FAX.phoneNumber as string,
         },
         associations: {
-          companies: ['16984059819'],
+          company: ['16984059819'],
         },
         createdAt: DATE_STRING,
         updatedAt: DATE_STRING,
@@ -232,7 +232,7 @@ describe('Hubspot Mappers', () => {
           state: 'CA',
           zip: '94043',
           _associations: {
-            companies: ['16984059819'],
+            company: ['16984059819'],
           },
         },
         updatedAt: DATE,
@@ -299,7 +299,7 @@ describe('Hubspot Mappers', () => {
           pipeline: 'default',
         },
         associations: {
-          companies: ['16984059819'],
+          company: ['16984059819'],
         },
         createdAt: DATE_STRING,
         updatedAt: DATE_STRING,
@@ -328,7 +328,7 @@ describe('Hubspot Mappers', () => {
           hs_object_id: '14659412538',
           pipeline: 'default',
           _associations: {
-            companies: ['16984059819'],
+            company: ['16984059819'],
           },
         },
         stage: 'Contract Sent',
@@ -351,7 +351,7 @@ describe('Hubspot Mappers', () => {
           pipeline: 'default',
         },
         associations: {
-          companies: ['16984059819'],
+          company: ['16984059819'],
         },
         createdAt: DATE_STRING,
         updatedAt: DATE_STRING,
@@ -380,7 +380,7 @@ describe('Hubspot Mappers', () => {
           hs_object_id: '14659412538',
           pipeline: 'default',
           _associations: {
-            companies: ['16984059819'],
+            company: ['16984059819'],
           },
         },
         stage: 'invalidstage',
