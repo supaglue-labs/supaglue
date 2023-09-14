@@ -283,9 +283,11 @@ async function doFullThenIncrementalSync(sync: FullThenIncrementalSync): Promise
 
 const getErrorMessageStack = (err: Error): { message: string; stack: string } => {
   if (err instanceof ActivityFailure) {
+    // Return the inner most error cause that is two layers deep, otherwise return the first child's error cause
+    // so we don't return Temporal error messages to customers, but Provider error messages
     return {
-      message: err.failure?.cause?.message ?? 'Unknown error',
-      stack: err.failure?.cause?.stackTrace ?? 'No proto stack',
+      message: err.failure?.cause?.cause?.message ?? err.failure?.cause?.message ?? 'Unknown error',
+      stack: err.failure?.cause?.cause?.stackTrace ?? err.failure?.cause?.stackTrace ?? 'No proto stack',
     };
   }
   if (err instanceof ApplicationFailure) {
