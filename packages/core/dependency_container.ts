@@ -92,7 +92,11 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     connectionService,
     syncService
   );
-  const engagementCommonObjectService = new EngagementCommonObjectService(remoteService, destinationService);
+  const engagementCommonObjectService = new EngagementCommonObjectService(
+    remoteService,
+    destinationService,
+    syncService
+  );
   const enrichmentCommonObjectService = new EnrichmentCommonObjectService(remoteService);
   const marketingAutomationCommonObjectService = new MarketingAutomationCommonObjectService(remoteService);
 
