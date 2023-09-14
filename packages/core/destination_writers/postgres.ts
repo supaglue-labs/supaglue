@@ -38,7 +38,7 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
-import { logger } from '../lib';
+import { logger, SCHEMAS_OR_ENTITIES_APPLICATION_IDS } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import { getSnakecasedKeysMapper } from './util';
@@ -345,6 +345,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     const qualifiedTable = `"${schema}".${table}`;
     const client = await this.#getClient();
     const childLogger = logger.child({ providerName, customerId });
+    // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
+    const isSchemasOrEntitiesApplication = SCHEMAS_OR_ENTITIES_APPLICATION_IDS.includes(applicationId);
 
     try {
       // Create tables if necessary
@@ -360,7 +362,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         _supaglue_last_modified_at: record.metadata.lastModifiedAt,
         _supaglue_is_deleted: record.metadata.isDeleted,
         _supaglue_raw_data: record.rawData,
-        _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
+        _supaglue_mapped_data: isSchemasOrEntitiesApplication
+          ? toTransformedPropertiesWithAdditionalFields(record.mappedProperties)
+          : {},
       };
       const columns = Object.keys(mappedRecord);
       const columnsToUpdate = columns.filter(
@@ -417,6 +421,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
     const dedupedTempTable = `"deduped_temp_${table}"`;
+    // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
+    const isSchemasOrEntitiesApplication = SCHEMAS_OR_ENTITIES_APPLICATION_IDS.includes(applicationId);
 
     const client = await this.#getClient();
 
@@ -490,7 +496,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 _supaglue_last_modified_at: record.lastModifiedAt,
                 _supaglue_is_deleted: record.isDeleted,
                 _supaglue_raw_data: record.rawData,
-                _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
+                _supaglue_mapped_data: isSchemasOrEntitiesApplication
+                  ? toTransformedPropertiesWithAdditionalFields(record.mappedProperties)
+                  : {},
               };
 
               ++tempTableRowCount;
