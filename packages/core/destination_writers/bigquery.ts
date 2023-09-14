@@ -1194,11 +1194,6 @@ const schemaByCommonObjectType: {
           mode: 'NULLABLE',
         },
         {
-          name: 'contact_id',
-          type: 'STRING',
-          mode: 'NULLABLE',
-        },
-        {
           name: 'open_count',
           type: 'INTEGER',
           mode: 'REQUIRED',
