@@ -706,6 +706,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return { standardObjectTypes, customObjectSchemas };
   }
 
+  // TODO: implement fieldsToFetch for custom objects
   public override async listCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
@@ -1305,7 +1306,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('company');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.getById(id, properties);
     return {
@@ -1518,7 +1519,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const properties = await this.getCommonObjectPropertyIdsToFetch('deal');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.getById(
       id,
@@ -1712,7 +1713,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('contact');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
       id,
