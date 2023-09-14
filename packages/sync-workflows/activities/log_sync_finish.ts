@@ -42,9 +42,9 @@ export function createLogSyncFinish({
       error.stack = errorStack;
 
       if (application.environment === 'development') {
-        logger.warn(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
+        logger.warn({ err: error }, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
       } else {
-        logger.error(error, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
+        logger.error({ err: error }, `Sync failed for syncId ${syncId} and connectionId ${connectionId}`);
       }
     }
 
