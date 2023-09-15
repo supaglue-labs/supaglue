@@ -37,7 +37,8 @@ export interface DestinationWriter {
     connection: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     stream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteCommonObjectRecordsResult>;
 
   /**
@@ -51,7 +52,8 @@ export interface DestinationWriter {
     connection: ConnectionSafeAny,
     object: string,
     stream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteObjectRecordsResult>;
 
   /**
@@ -77,7 +79,8 @@ export interface DestinationWriter {
     connection: ConnectionSafeAny,
     entityName: string,
     stream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteEntityRecordsResult>;
 
   /**
@@ -121,21 +124,24 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     connection: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     stream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteCommonObjectRecordsResult>;
 
   abstract writeObjectRecords(
     connection: ConnectionSafeAny,
     object: string,
     stream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteObjectRecordsResult>;
 
   abstract writeEntityRecords(
     connection: ConnectionSafeAny,
     entityName: string,
     stream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteEntityRecordsResult>;
 }
 

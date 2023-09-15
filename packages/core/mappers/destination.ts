@@ -5,7 +5,6 @@ import type {
   DestinationUnsafeAny,
   MongoDBConfigUnsafe,
   PostgresConfigUnsafe,
-  S3ConfigUnsafe,
 } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils';
 import { decrypt } from '../lib/crypt';
@@ -31,7 +30,6 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
         },
       };
     case 'postgres':
-    case 's3':
     case 'mongodb':
       return {
         ...baseParams,
@@ -87,18 +85,6 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
           schema: config.schema,
           user: config.user,
           sslMode: config.sslMode,
-        },
-      };
-    }
-    case 's3': {
-      const config = decryptedConfig as S3ConfigUnsafe;
-      return {
-        ...baseParams,
-        type: model.type,
-        config: {
-          region: config.region,
-          bucket: config.bucket,
-          accessKeyId: config.accessKeyId,
         },
       };
     }

@@ -61,7 +61,8 @@ export function createSyncEntityRecords(
             connection,
             entity.name,
             toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
-            heartbeat
+            heartbeat,
+            /* isFullSync */ !updatedAfterMs
           );
         }
         case 'custom': {
@@ -70,7 +71,8 @@ export function createSyncEntityRecords(
             connection,
             entity.name,
             toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
-            heartbeat
+            heartbeat,
+            /* isFullSync */ !updatedAfterMs
           );
         }
       }

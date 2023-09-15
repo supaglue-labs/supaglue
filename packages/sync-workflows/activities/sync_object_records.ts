@@ -77,7 +77,8 @@ export function createSyncObjectRecords(
                   connection,
                   object as CRMCommonObjectType,
                   toHeartbeatingReadable(readable),
-                  heartbeat
+                  heartbeat,
+                  /* isFullSync */ !updatedAfterMs
                 );
               }
               case 'engagement': {
@@ -91,7 +92,8 @@ export function createSyncObjectRecords(
                   connection,
                   object as EngagementCommonObjectType,
                   toHeartbeatingReadable(readable),
-                  heartbeat
+                  heartbeat,
+                  /* isFullSync */ !updatedAfterMs
                 );
               }
               case 'enrichment':
@@ -114,7 +116,8 @@ export function createSyncObjectRecords(
               connection,
               object,
               toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
-              heartbeat
+              heartbeat,
+              /* isFullSync */ !updatedAfterMs
             );
           }
           break;
@@ -130,7 +133,8 @@ export function createSyncObjectRecords(
               connection,
               object,
               toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
-              heartbeat
+              heartbeat,
+              /* isFullSync */ !updatedAfterMs
             );
           }
           break;

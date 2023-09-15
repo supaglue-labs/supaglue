@@ -61,7 +61,8 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -69,7 +70,8 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
       getObjectTableName(connection.providerName, object),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, object })
+      logger.child({ connectionId, providerName, customerId, object }),
+      isFullSync
     );
   }
 
@@ -103,7 +105,8 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
-    childLogger: pino.Logger
+    childLogger: pino.Logger,
+    isFullSync: boolean
   ): Promise<WriteObjectRecordsResult> {
     const schema = getSchemaName(applicationId);
     const qualifiedTable = `${schema}.${table}`;
@@ -247,6 +250,24 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       }
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
+
+      if (isFullSync) {
+        childLogger.info('Marking rows as deleted [IN PROGRESS]');
+        await client.query(`
+          UPDATE ${qualifiedTable} AS table
+          SET _supaglue_is_deleted = TRUE
+          WHERE NOT EXISTS (
+              SELECT 1
+              FROM ${dedupedTempTable} AS temp
+              WHERE 
+                  temp._supaglue_provider_name = table._supaglue_provider_name AND
+                  temp._supaglue_customer_id = table._supaglue_customer_id AND
+                  temp._supaglue_application_id = table._supaglue_application_id AND
+                  temp._supaglue_id = table._supaglue_id
+          );
+        `);
+        childLogger.info('Marking rows as deleted [COMPLETED]');
+      }
 
       // We don't drop deduped temp table here because we're closing the connection here anyway.
 

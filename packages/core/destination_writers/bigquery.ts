@@ -75,7 +75,8 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
     { id: connectionId, providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
 
@@ -196,6 +197,26 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
     heartbeat();
 
+    // Propagate deletions if isFullSync is true
+    if (isFullSync) {
+      childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
+      await client.query(`
+        -- Delete from ${qualifiedTable}
+        UPDATE ${qualifiedTable} as table
+        SET _supaglue_is_deleted = TRUE
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM ${qualifiedTempTable} as temp
+            WHERE 
+                temp._supaglue_provider_name = table._supaglue_provider_name AND
+                temp._supaglue_customer_id = table._supaglue_customer_id AND
+                temp._supaglue_application_id = table._supaglue_application_id AND
+                temp.id = table.id
+        );
+      `);
+      childLogger.info({ table, tempTable }, 'Marking records as deleted [COMPLETED]');
+    }
+
     // Delete temp table
     childLogger.info({ tempTable }, 'Deleting temp table [IN PROGRESS]');
     await client.dataset(dataset).table(tempTable).delete();
@@ -216,7 +237,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -224,7 +246,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       getObjectTableName(connection.providerName, object),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, object })
+      logger.child({ connectionId, providerName, customerId, object }),
+      isFullSync
     );
   }
 
@@ -241,7 +264,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     connection: ConnectionSafeAny,
     entityName: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    isFullSync: boolean
   ): Promise<WriteEntityRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -249,7 +273,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       getEntityTableName(entityName),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, entityName })
+      logger.child({ connectionId, providerName, customerId, entityName }),
+      isFullSync
     );
   }
 
@@ -267,7 +292,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
-    childLogger: pino.Logger
+    childLogger: pino.Logger,
+    isFullSync: boolean
   ): Promise<WriteObjectRecordsResult> {
     const dataset = this.#getDataset(connectionSyncConfig);
     const qualifiedTable = `${dataset}.${table}`;
@@ -397,6 +423,26 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     heartbeat();
 
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [COMPLETED]');
+
+    // Propagate deletions if isFullSync is true
+    if (isFullSync) {
+      childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
+      await client.query(`
+        -- Delete from ${qualifiedTable}
+        UPDATE ${qualifiedTable} as table
+        SET _supaglue_is_deleted = TRUE
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM ${qualifiedTempTable} as temp
+            WHERE 
+                temp._supaglue_provider_name = table._supaglue_provider_name AND
+                temp._supaglue_customer_id = table._supaglue_customer_id AND
+                temp._supaglue_application_id = table._supaglue_application_id AND
+                temp._supaglue_id = table._supaglue_id
+        );
+      `);
+      childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
+    }
 
     // Delete temp table
     childLogger.info({ tempTable }, 'Deleting temp table [IN PROGRESS]');
