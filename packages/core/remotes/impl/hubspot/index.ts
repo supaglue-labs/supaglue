@@ -1114,7 +1114,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const response = await this.#client.crm.properties.coreApi.getAll(objectName);
-      return response.results.map(({ name, label, type }) => ({ id: name, label, type }));
+      return response.results.map((prop) => ({ id: prop.name, label: prop.label, type: prop.type, rawDetails: prop }));
     });
   }
 

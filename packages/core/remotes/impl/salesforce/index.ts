@@ -1236,6 +1236,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         id: field.name,
         label: field.label,
         type: field.type,
+        rawDetails: field,
       }));
   }
 
