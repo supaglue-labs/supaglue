@@ -41,7 +41,7 @@ import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/use
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
-import { getSnakecasedKeysMapper } from './util';
+import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
   readonly #destination: DestinationUnsafe<'postgres'>;
@@ -276,7 +276,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         heartbeat();
       }
 
-      if (isFullSync) {
+      if (shouldDeleteRecords(isFullSync, providerName)) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable} AS table
@@ -580,7 +580,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
-      if (isFullSync) {
+      if (shouldDeleteRecords(isFullSync, providerName)) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable} AS table

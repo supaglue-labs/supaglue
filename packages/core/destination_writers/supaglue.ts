@@ -19,6 +19,7 @@ import { NotImplementedError } from '../errors';
 import { getObjectTableName, getPgPool, getSchemaName, logger, sanitizeForPostgres } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
+import { shouldDeleteRecords } from './util';
 
 async function createPartitionIfNotExists(client: PoolClient, schema: string, table: string, customerId: string) {
   const partitionName = `${table}_${sanitizeForPostgres(customerId)}`;
@@ -251,7 +252,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
-      if (isFullSync) {
+      if (shouldDeleteRecords(isFullSync, providerName)) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable} AS table

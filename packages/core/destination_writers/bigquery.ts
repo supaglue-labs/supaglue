@@ -39,7 +39,7 @@ import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/use
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
-import { getSnakecasedKeysMapper } from './util';
+import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
 
 export class BigQueryDestinationWriter extends BaseDestinationWriter {
   readonly #destination: DestinationUnsafe<'bigquery'>;
@@ -198,7 +198,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     heartbeat();
 
     // Propagate deletions if isFullSync is true
-    if (isFullSync) {
+    if (shouldDeleteRecords(isFullSync, providerName)) {
       childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
       await client.query(`
         -- Delete from ${qualifiedTable}
@@ -427,7 +427,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [COMPLETED]');
 
     // Propagate deletions if isFullSync is true
-    if (isFullSync) {
+    if (shouldDeleteRecords(isFullSync, providerName)) {
       childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
       await client.query(`
         -- Delete from ${qualifiedTable}
