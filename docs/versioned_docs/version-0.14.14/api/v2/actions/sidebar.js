@@ -1,0 +1,1 @@
+module.exports = [{"type":"doc","id":"api/v2/actions/actions-api"},{"type":"category","label":"Passthrough","link":{"type":"doc","id":"api/v2/actions/passthrough"},"collapsed":true,"items":[{"type":"doc","id":"api/v2/actions/send-passthrough-request","label":"Send passthrough request","className":"api-method post"}]}];
