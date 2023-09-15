@@ -255,16 +255,16 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       if (shouldDeleteRecords(isFullSync, providerName)) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
-          UPDATE ${qualifiedTable} AS table
+          UPDATE ${qualifiedTable} AS destination
           SET _supaglue_is_deleted = TRUE
           WHERE NOT EXISTS (
               SELECT 1
               FROM ${dedupedTempTable} AS temp
               WHERE 
-                  temp._supaglue_application_id = table._supaglue_application_id AND
-                  temp._supaglue_provider_name = table._supaglue_provider_name AND
-                  temp._supaglue_customer_id = table._supaglue_customer_id AND
-                  temp._supaglue_id = table._supaglue_id
+                  temp._supaglue_application_id = destination._supaglue_application_id AND
+                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
+                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
+                  temp._supaglue_id = destination._supaglue_id
           );
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');

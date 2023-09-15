@@ -203,7 +203,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       await client.query(`
         -- Delete from ${qualifiedTable}
         UPDATE ${qualifiedTable} as table
-        SET _supaglue_is_deleted = TRUE
+        SET is_deleted = TRUE
         WHERE NOT EXISTS (
             SELECT 1
             FROM ${qualifiedTempTable} as temp

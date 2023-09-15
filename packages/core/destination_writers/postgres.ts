@@ -276,25 +276,25 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         heartbeat();
       }
 
+      childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
+
       if (shouldDeleteRecords(isFullSync, providerName)) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
-          UPDATE ${qualifiedTable} AS table
-          SET _supaglue_is_deleted = TRUE
+          UPDATE ${qualifiedTable} AS destination
+          SET is_deleted = TRUE
           WHERE NOT EXISTS (
               SELECT 1
               FROM ${dedupedTempTable} AS temp
               WHERE 
-                  temp._supaglue_application_id = table._supaglue_application_id AND
-                  temp._supaglue_provider_name = table._supaglue_provider_name AND
-                  temp._supaglue_customer_id = table._supaglue_customer_id AND
-                  temp.id = table.id
+                  temp._supaglue_application_id = destination._supaglue_application_id AND
+                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
+                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
+                  temp.id = destination.id
           );
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
       }
-
-      childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
       // We don't drop deduped temp table here because we're closing the connection here anyway.
 
@@ -583,16 +583,16 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       if (shouldDeleteRecords(isFullSync, providerName)) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
-          UPDATE ${qualifiedTable} AS table
+          UPDATE ${qualifiedTable} AS destination
           SET _supaglue_is_deleted = TRUE
           WHERE NOT EXISTS (
               SELECT 1
               FROM ${dedupedTempTable} AS temp
               WHERE 
-                  temp._supaglue_application_id = table._supaglue_application_id AND
-                  temp._supaglue_provider_name = table._supaglue_provider_name AND
-                  temp._supaglue_customer_id = table._supaglue_customer_id AND
-                  temp._supaglue_id = table._supaglue_id
+                  temp._supaglue_application_id = destination._supaglue_application_id AND
+                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
+                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
+                  temp._supaglue_id = destination._supaglue_id
           );
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
