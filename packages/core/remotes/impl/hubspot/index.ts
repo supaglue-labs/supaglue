@@ -98,44 +98,6 @@ import {
 
 const HUBSPOT_RECORD_LIMIT = 100;
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
-const hubspotUserProperties: Property[] = [
-  {
-    id: 'id',
-    label: 'Id',
-  },
-  {
-    id: 'email',
-    label: 'Email',
-  },
-  {
-    id: 'firstName',
-    label: 'First Name',
-  },
-  {
-    id: 'lastName',
-    label: 'Last Name',
-  },
-  {
-    id: 'userId',
-    label: 'User Id',
-  },
-  {
-    id: 'createdAt',
-    label: 'Created At',
-  },
-  {
-    id: 'updatedAt',
-    label: 'Updated At',
-  },
-  {
-    id: 'archived',
-    label: 'Archived',
-  },
-  {
-    id: 'teams',
-    label: 'Teams',
-  },
-];
 
 const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
   company: 'companies',
@@ -1152,7 +1114,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const response = await this.#client.crm.properties.coreApi.getAll(objectName);
-      return response.results.map(({ name, label }) => ({ id: name, label }));
+      return response.results.map((prop) => ({ id: prop.name, label: prop.label, type: prop.type, rawDetails: prop }));
     });
   }
 
