@@ -76,7 +76,7 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
     commonObjectType: CommonObjectType,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
 
@@ -197,8 +197,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
     heartbeat();
 
-    // Propagate deletions if isFullSync is true
-    if (shouldDeleteRecords(isFullSync, providerName)) {
+    // Propagate deletions if diffAndDeleteRecords is true
+    if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
       childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
       await client.query(`
         -- Delete from ${qualifiedTable}
@@ -238,7 +238,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     object: string,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -247,7 +247,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       inputStream,
       heartbeat,
       logger.child({ connectionId, providerName, customerId, object }),
-      isFullSync
+      diffAndDeleteRecords
     );
   }
 
@@ -265,7 +265,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     entityName: string,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteEntityRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -274,7 +274,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       inputStream,
       heartbeat,
       logger.child({ connectionId, providerName, customerId, entityName }),
-      isFullSync
+      diffAndDeleteRecords
     );
   }
 
@@ -293,7 +293,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const dataset = this.#getDataset(connectionSyncConfig);
     const qualifiedTable = `${dataset}.${table}`;
@@ -426,8 +426,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
 
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [COMPLETED]');
 
-    // Propagate deletions if isFullSync is true
-    if (shouldDeleteRecords(isFullSync, providerName)) {
+    // Propagate deletions if diffAndDeleteRecords is true
+    if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
       childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
       await client.query(`
         -- Delete from ${qualifiedTable}

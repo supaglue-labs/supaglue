@@ -38,7 +38,7 @@ export interface DestinationWriter {
     commonObjectType: CommonObjectType,
     stream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult>;
 
   /**
@@ -53,7 +53,7 @@ export interface DestinationWriter {
     object: string,
     stream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult>;
 
   /**
@@ -80,7 +80,7 @@ export interface DestinationWriter {
     entityName: string,
     stream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteEntityRecordsResult>;
 
   /**
@@ -125,7 +125,7 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     commonObjectType: CommonObjectType,
     stream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult>;
 
   abstract writeObjectRecords(
@@ -133,7 +133,7 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     object: string,
     stream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult>;
 
   abstract writeEntityRecords(
@@ -141,7 +141,7 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     entityName: string,
     stream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteEntityRecordsResult>;
 }
 

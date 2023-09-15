@@ -63,7 +63,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     object: string,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -72,7 +72,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
       inputStream,
       heartbeat,
       logger.child({ connectionId, providerName, customerId, object }),
-      isFullSync
+      diffAndDeleteRecords
     );
   }
 
@@ -107,7 +107,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const schema = getSchemaName(applicationId);
     const qualifiedTable = `${schema}.${table}`;
@@ -252,7 +252,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
-      if (shouldDeleteRecords(isFullSync, providerName)) {
+      if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable} AS destination

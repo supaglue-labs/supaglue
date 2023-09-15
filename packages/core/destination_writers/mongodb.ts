@@ -98,7 +98,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     commonObjectType: CommonObjectType,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
 
@@ -180,7 +180,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     object: string,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -205,7 +205,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     entityName: string,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteEntityRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(

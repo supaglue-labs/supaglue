@@ -147,7 +147,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
     const schema = this.#getSchema(connectionSyncConfig);
@@ -278,7 +278,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
-      if (shouldDeleteRecords(isFullSync, providerName)) {
+      if (diffAndDeleteRecords) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable} AS destination
@@ -312,7 +312,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     object: string,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -321,7 +321,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       inputStream,
       heartbeat,
       logger.child({ connectionId, providerName, customerId, object }),
-      isFullSync
+      diffAndDeleteRecords
     );
   }
 
@@ -338,7 +338,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     entityName: string,
     inputStream: Readable,
     heartbeat: () => void,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteEntityRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -347,7 +347,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       inputStream,
       heartbeat,
       logger.child({ connectionId, providerName, customerId, entityName }),
-      isFullSync
+      diffAndDeleteRecords
     );
   }
 
@@ -435,7 +435,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger,
-    isFullSync: boolean
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const schema = this.#getSchema(connectionSyncConfig);
     const qualifiedTable = `"${schema}".${table}`;
@@ -580,7 +580,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
-      if (shouldDeleteRecords(isFullSync, providerName)) {
+      if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable} AS destination

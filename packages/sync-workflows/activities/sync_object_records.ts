@@ -1,4 +1,5 @@
 import type { DestinationWriter } from '@supaglue/core/destination_writers/base';
+import { shouldDeleteRecords } from '@supaglue/core/destination_writers/util';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getCategoryForProvider } from '@supaglue/core/remotes';
 import type { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
@@ -78,7 +79,7 @@ export function createSyncObjectRecords(
                   object as CRMCommonObjectType,
                   toHeartbeatingReadable(readable),
                   heartbeat,
-                  /* isFullSync */ !updatedAfterMs
+                  /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
                 );
               }
               case 'engagement': {
@@ -93,7 +94,7 @@ export function createSyncObjectRecords(
                   object as EngagementCommonObjectType,
                   toHeartbeatingReadable(readable),
                   heartbeat,
-                  /* isFullSync */ !updatedAfterMs
+                  /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
                 );
               }
               case 'enrichment':
@@ -117,7 +118,7 @@ export function createSyncObjectRecords(
               object,
               toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
               heartbeat,
-              /* isFullSync */ !updatedAfterMs
+              /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
             );
           }
           break;
@@ -134,7 +135,7 @@ export function createSyncObjectRecords(
               object,
               toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
               heartbeat,
-              /* isFullSync */ !updatedAfterMs
+              /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
             );
           }
           break;
