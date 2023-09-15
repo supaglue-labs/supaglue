@@ -85,6 +85,7 @@
       "post": {
         "operationId": "upsertAccount",
         "summary": "Upsert account",
+        "description": "Upsert an account. If the account does not exist, it will be created. If the account does exist, it will be updated.\nOnly supported for Salesforce and Hubspot.\n",
         "tags": [
           "Accounts"
         ],
@@ -112,10 +113,12 @@
                         "enum": [
                           "domain",
                           "website"
-                        ]
+                        ],
+                        "description": "The key to upsert on. Only `website` is supported for Salesforce, while both `domain` and `website` are supported for Hubspot."
                       },
                       "values": {
                         "type": "array",
+                        "description": "The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown.",
                         "items": {
                           "type": "string",
                           "example": "mydomain.com"
@@ -386,6 +389,7 @@
       "post": {
         "operationId": "upsertContact",
         "summary": "Upsert contact",
+        "description": "Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.\nOnly supported for Salesforce, Hubspot, and Pipedrive.\n",
         "tags": [
           "Contacts"
         ],
@@ -412,10 +416,12 @@
                         "type": "string",
                         "enum": [
                           "email"
-                        ]
+                        ],
+                        "description": "The key to upsert on. Only `email` is supported for all providers."
                       },
                       "values": {
                         "type": "array",
+                        "description": "The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown.",
                         "items": {
                           "type": "string",
                           "example": "hello@example.com"
