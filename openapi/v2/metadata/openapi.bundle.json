@@ -490,8 +490,7 @@
         },
         "required": [
           "id",
-          "label",
-          "type"
+          "label"
         ]
       },
       "standard_object": {

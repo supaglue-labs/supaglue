@@ -15,4 +15,3 @@ properties:
 required:
   - id
   - label
-  - type
