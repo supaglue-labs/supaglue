@@ -261,9 +261,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
               SELECT 1
               FROM ${dedupedTempTable} AS temp
               WHERE 
+                  temp._supaglue_application_id = table._supaglue_application_id AND
                   temp._supaglue_provider_name = table._supaglue_provider_name AND
                   temp._supaglue_customer_id = table._supaglue_customer_id AND
-                  temp._supaglue_application_id = table._supaglue_application_id AND
                   temp._supaglue_id = table._supaglue_id
           );
         `);
