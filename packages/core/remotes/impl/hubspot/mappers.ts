@@ -1,3 +1,6 @@
+import type { SimplePublicObjectWithAssociations as HubSpotCompany } from '@hubspot/api-client/lib/codegen/crm/companies';
+import type { SimplePublicObjectWithAssociations as HubSpotContact } from '@hubspot/api-client/lib/codegen/crm/contacts';
+import type { SimplePublicObjectWithAssociations as HubSpotDeal } from '@hubspot/api-client/lib/codegen/crm/deals';
 import type { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
 import type {
   Account,
@@ -11,7 +14,7 @@ import type {
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
-import type { PipelineStageMapping, RecordWithFlattenedAssociations } from '.';
+import type { PipelineStageMapping } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate, removeUndefinedValues } from '../../../lib';
 import { getFullName } from '../../utils/name';
@@ -25,12 +28,11 @@ export const fromObjectToHubspotObjectType = (object: StandardOrCustomObject): s
 export const fromHubSpotCompanyToAccount = ({
   id,
   properties,
-  associations,
   createdAt,
   updatedAt,
   archived,
   archivedAt,
-}: RecordWithFlattenedAssociations): Account => {
+}: HubSpotCompany): Account => {
   const addresses: Address[] =
     properties.address ||
     properties.address2 ||
@@ -78,11 +80,11 @@ export const fromHubSpotCompanyToAccount = ({
     lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     // Figure out where this comes from
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
-    createdAt: new Date(createdAt),
-    updatedAt: new Date(updatedAt),
+    createdAt: createdAt,
+    updatedAt: updatedAt,
     isDeleted: !!archived,
-    lastModifiedAt: maxDate(new Date(updatedAt), archivedAt ? new Date(archivedAt) : null),
-    rawData: { ...properties, _associations: associations },
+    lastModifiedAt: maxDate(updatedAt, archivedAt),
+    rawData: properties,
   };
 };
 
@@ -94,7 +96,7 @@ export const fromHubSpotContactToContact = ({
   associations,
   archived,
   archivedAt,
-}: RecordWithFlattenedAssociations): Contact => {
+}: HubSpotContact): Contact => {
   const emailAddresses = [
     properties.email
       ? {
@@ -110,8 +112,8 @@ export const fromHubSpotContactToContact = ({
       : null,
   ].filter(Boolean) as EmailAddress[];
   let accountId = null;
-  if (associations?.company?.length) {
-    accountId = associations.company[0] ?? null;
+  if (associations?.companies?.results?.length) {
+    accountId = associations.companies.results[0].id ?? null;
   }
 
   const phoneNumbers = [
@@ -161,16 +163,16 @@ export const fromHubSpotContactToContact = ({
     emailAddresses,
     lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
     lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
-    createdAt: new Date(createdAt),
-    updatedAt: new Date(updatedAt),
+    createdAt: createdAt,
+    updatedAt: updatedAt,
     isDeleted: !!archived,
-    lastModifiedAt: maxDate(new Date(updatedAt), archivedAt ? new Date(archivedAt) : null),
-    rawData: { ...properties, _associations: associations },
+    lastModifiedAt: maxDate(updatedAt, archivedAt),
+    rawData: properties,
   };
 };
 
 export const fromHubSpotDealToOpportunity = (
-  { id, properties, createdAt, updatedAt, associations, archived, archivedAt }: RecordWithFlattenedAssociations,
+  { id, properties, createdAt, updatedAt, associations, archived, archivedAt }: HubSpotDeal,
   pipelineStageMapping: PipelineStageMapping
 ): Opportunity => {
   let status: OpportunityStatus = 'OPEN';
@@ -180,8 +182,8 @@ export const fromHubSpotDealToOpportunity = (
     status = 'LOST';
   }
   let accountId = null;
-  if (associations?.company?.length) {
-    accountId = associations.company[0] ?? null;
+  if (associations?.companies?.results?.length) {
+    accountId = associations.companies.results[0].id ?? null;
   }
 
   let pipeline = properties.pipeline ?? null;
@@ -207,11 +209,11 @@ export const fromHubSpotDealToOpportunity = (
     amount: properties.amount ? parseInt(properties.amount) : null,
     closeDate: properties.closedate ? new Date(properties.closedate) : null,
     stage,
-    createdAt: new Date(createdAt),
-    updatedAt: new Date(updatedAt),
+    createdAt: createdAt,
+    updatedAt: updatedAt,
     isDeleted: !!archived,
-    lastModifiedAt: maxDate(new Date(updatedAt), archivedAt ? new Date(archivedAt) : null),
-    rawData: { ...properties, _associations: associations },
+    lastModifiedAt: maxDate(updatedAt, archivedAt),
+    rawData: properties,
   };
 };
 
