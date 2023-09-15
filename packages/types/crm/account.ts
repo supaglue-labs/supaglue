@@ -32,7 +32,7 @@ export type AccountUpdateParams = AccountCreateParams & {
 export type AccountUpsertParams = {
   record: AccountCreateParams;
   upsertOn: {
-    key: 'domain';
+    key: 'domain' | 'website';
     values: string[];
   };
 };

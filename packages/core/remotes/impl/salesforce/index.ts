@@ -24,9 +24,11 @@ import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
+  AccountUpsertParams,
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
+  ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
   Lead,
@@ -452,6 +454,20 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         return this.createOpportunity(params);
       case 'user':
         throw new Error('Cannot create users in Salesforce');
+      default:
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
+    }
+  }
+
+  public override async upsertCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'account':
+        return this.upsertAccount(params as AccountUpsertParams);
+      case 'contact':
+        return this.upsertContact(params as ContactUpsertParams);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -1232,6 +1248,23 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
+  public async upsertAccount(params: AccountUpsertParams): Promise<string> {
+    if (params.upsertOn.key !== 'website') {
+      throw new BadRequestError(`Upsert key must be 'website' for Salesfoce accounts`);
+    }
+    const response = await this.#client.query(
+      `SELECT Id FROM Account WHERE Website IN (${params.upsertOn.values.map((value) => `'${value}'`).join(', ')})`
+    );
+    if (response.totalSize > 1) {
+      throw new BadRequestError('More than one account found for upsert query');
+    }
+    if (response.totalSize === 0) {
+      return this.createAccount(params.record);
+    }
+    const existingAccountId = response.records[0].Id as string;
+    return this.updateAccount({ ...params.record, id: existingAccountId });
+  }
+
   public async updateAccount(params: AccountUpdateParams): Promise<string> {
     const response = await this.#client.update('Account', toSalesforceAccountUpdateParams(params));
     if (!response.success) {
@@ -1251,6 +1284,23 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       throw new Error('Failed to create Salesforce contact');
     }
     return response.id;
+  }
+
+  public async upsertContact(params: ContactUpsertParams): Promise<string> {
+    if (params.upsertOn.key !== 'email') {
+      throw new BadRequestError(`Upsert key must be 'email' for Salesforce contacts`);
+    }
+    const response = await this.#client.query(
+      `SELECT Id FROM Contact WHERE Email IN (${params.upsertOn.values.map((value) => `'${value}'`).join(', ')})`
+    );
+    if (response.totalSize > 1) {
+      throw new BadRequestError('More than one contact found for upsert query');
+    }
+    if (response.totalSize === 0) {
+      return this.createContact(params.record);
+    }
+    const existingContactId = response.records[0].Id as string;
+    return this.updateContact({ ...params.record, id: existingContactId });
   }
 
   public async updateContact(params: ContactUpdateParams): Promise<string> {
@@ -1316,7 +1366,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // jsforce doesn't provide a stable jsonapi "title" so infer it from the message.
     // assumed format: "Some Title: Array of json details" or "Some Title"
-    const inferredTitle = error.message.substring(0, Math.min(error.message.indexOf(':'), error.message.length));
+    const inferredTitle = error.message.substring(
+      0,
+      error.message.includes(':') ? error.message.indexOf(':') : error.message.length
+    );
 
     // https://developer.salesforce.com/docs/atlas.en-us.210.0.object_reference.meta/object_reference/sforce_api_calls_concepts_core_data_objects.htm#i1421192
     switch (error.errorCode) {

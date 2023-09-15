@@ -94,10 +94,10 @@ export class CrmCommonObjectService {
     }
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
-      const object = await this.get(objectName, connection, id);
+      const record = await this.get(objectName, connection, id);
 
       const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });
-      await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, object);
+      await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, record);
       end();
     }
   }

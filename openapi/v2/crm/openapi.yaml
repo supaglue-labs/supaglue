@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.14.12
+  version: 0.14.13
   title: Unified CRM API
   contact:
     name: Supaglue
@@ -48,6 +48,10 @@ paths:
     $ref: paths/opportunities@{opportunity_id}.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
+  '/lists/{object_type}':
+    $ref: paths/lists@{object_type}.yaml
+  '/lists/{object_type}/{list_id}':
+    $ref: paths/lists@{object_type}@{list_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
 tags:
@@ -61,6 +65,8 @@ tags:
     description: The `Opportunity` Common Object represents a "deal opportunity" in CRMs.
   - name: Users
     description: The `User` Common Object represents a "user" that can log in to CRMs.
+  - name: Lists
+    description: The `List` Object represents a collection of CRM records.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
 components:
@@ -84,6 +90,10 @@ components:
       $ref: ./components/schemas/objects/opportunity.yaml
     user:
       $ref: ./components/schemas/objects/user.yaml
+    list_metadata:
+      $ref: ./components/schemas/objects/list_metadata.yaml
+    list_membership:
+      $ref: ./components/schemas/objects/list_membership.yaml
     create_update_opportunity:
       $ref: ./components/schemas/create_update_opportunity.yaml
     errors:

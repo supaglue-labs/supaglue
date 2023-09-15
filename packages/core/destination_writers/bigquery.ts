@@ -396,7 +396,14 @@ WHEN NOT MATCHED THEN INSERT (${columns.join(',')}) VALUES (${columns.map((col) 
 WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col}`).join(', ')}`);
     heartbeat();
 
+    // if full sync, propagate deletions
+
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [COMPLETED]');
+
+    // Delete temp table
+    childLogger.info({ tempTable }, 'Deleting temp table [IN PROGRESS]');
+    await client.dataset(dataset).table(tempTable).delete();
+    childLogger.info({ tempTable }, 'Deleting temp table [COMPLETED]');
 
     childLogger.info({ table, maxLastModifiedAt, tempTableRowCount }, 'Sync completed');
 
@@ -1190,11 +1197,6 @@ const schemaByCommonObjectType: {
         },
         {
           name: 'account_id',
-          type: 'STRING',
-          mode: 'NULLABLE',
-        },
-        {
-          name: 'contact_id',
           type: 'STRING',
           mode: 'NULLABLE',
         },

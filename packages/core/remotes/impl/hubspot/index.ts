@@ -687,6 +687,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return { standardObjectTypes, customObjectSchemas };
   }
 
+  // TODO: implement fieldsToFetch for custom objects
   public override async listCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
@@ -2182,27 +2183,6 @@ function filterForUpdatedAfterISOString<
       }
 
       return updatedAfter.toISOString() < record.updatedAt;
-    }),
-  };
-}
-
-function filterForArchivedAfter<
-  R extends {
-    results: { archivedAt?: Date }[];
-  }
->(response: R, archivedAfter?: Date): R {
-  return {
-    ...response,
-    results: response.results.filter((record) => {
-      if (!archivedAfter) {
-        return true;
-      }
-
-      if (!record.archivedAt) {
-        return true;
-      }
-
-      return archivedAfter < record.archivedAt;
     }),
   };
 }

@@ -10,31 +10,6 @@ type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> &
 type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
 
 export interface paths {
-  "/salesforce/list_views/{object_type}": {
-    /** List list views */
-    get: operations["listListViewss"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-      };
-      path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
-      };
-    };
-  };
-  "/salesforce/list_views/{object_type}/{list_id}": {
-    /** Get list view membership */
-    get: operations["getListViewMembership"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-      };
-      path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
-        list_view_id: string;
-      };
-    };
-  };
   "/passthrough": {
     /**
      * Send passthrough request 
@@ -54,82 +29,6 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    salesforce_list_view_metadata: {
-      /**
-       * @description The unique identifier for this list view. 
-       * @example 12345
-       */
-      id: string;
-      /** @enum {string} */
-      object_type?: "contact" | "account" | "lead" | "opportunity";
-      /**
-       * @description The developer name of this list view. 
-       * @example my-list
-       */
-      name: string;
-      /**
-       * @description The label for this list view. 
-       * @example My List
-       */
-      label: string;
-      /**
-       * @description The raw data for this list view. 
-       * @example {
-       *   "describeUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
-       *   "developerName": "NewThisWeek",
-       *   "id": "00BD0000005WcBeMAK",
-       *   "label": "New This Week",
-       *   "resultsUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results",
-       *   "soqlCompatible": true,
-       *   "url": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK"
-       * }
-       */
-      raw_data: {
-        [key: string]: unknown;
-      };
-    };
-    salesforce_list_view_membership: {
-      /** @description The unique identifier for a member of this list view. */
-      id: string;
-      /**
-       * @description The raw data for this list view membership. 
-       * @example {
-       *   "columns": [
-       *     {
-       *       "fieldNameOrPath": "Id",
-       *       "value": "0012800000bbzSAAAY"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "Email",
-       *       "value": "jdoe@example.com"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "FirstName",
-       *       "value": "John"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "LastName",
-       *       "value": "Doe"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "CreatedDate",
-       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "LastModifiedDate",
-       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "SystemModstamp",
-       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
-       *     }
-       *   ]
-       * }
-       */
-      raw_data: {
-        [key: string]: unknown;
-      };
-    };
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
       next: string | null;
@@ -177,58 +76,6 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  /** List list views */
-  listListViewss: {
-    parameters: {
-      query?: {
-        /** @description Number of results to return per page. (Max: 1000) */
-        page_size?: string;
-        /** @description The pagination cursor value */
-        cursor?: string;
-      };
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-      };
-      path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
-      };
-    };
-    responses: {
-      /** @description List Views */
-      200: {
-        content: {
-          "application/json": {
-            pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["salesforce_list_view_metadata"])[];
-          };
-        };
-      };
-    };
-  };
-  /** Get list view membership */
-  getListViewMembership: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-      };
-      path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
-        list_view_id: string;
-      };
-    };
-    responses: {
-      /** @description List Views */
-      200: {
-        content: {
-          "application/json": {
-            pagination: components["schemas"]["pagination"];
-            members?: (components["schemas"]["salesforce_list_view_membership"])[];
-            metadata?: components["schemas"]["salesforce_list_view_metadata"];
-          };
-        };
-      };
-    };
-  };
   /**
    * Send passthrough request 
    * @description Send request directly to a provider

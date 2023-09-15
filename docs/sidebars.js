@@ -79,11 +79,6 @@ const sidebars = {
       type: 'doc',
     },
     {
-      id: 'integration-patterns/actions-api',
-      label: 'Actions API',
-      type: 'doc',
-    },
-    {
       id: 'integration-patterns/real-time-events',
       label: 'Real-time Events',
       type: 'doc',
@@ -340,26 +335,6 @@ const sidebars = {
       // @ts-ignore
       items: require('./docs/api/v2/marketing-automation/sidebar.js'),
     },
-    // section
-    {
-      type: 'html',
-      value: sidebarHeader('Actions API'),
-    },
-    { type: 'doc', id: 'api/v2/actions/actions-api' }, // deep copied from actions/sidebar.js
-    {
-      type: 'category',
-      label: 'Salesforce',
-      collapsed: true,
-      items: [
-        { type: 'doc', id: 'api/v2/actions/list-list-viewss', label: 'List list views', className: 'api-method get' },
-        {
-          type: 'doc',
-          id: 'api/v2/actions/get-list-view-membership',
-          label: 'Get list view membership',
-          className: 'api-method get',
-        },
-      ],
-    }, // deep copied from actions/sidebar.js
 
     // section
     {
