@@ -1,6 +1,6 @@
-export type DestinationType = 's3' | 'postgres' | 'bigquery' | 'mongodb' | 'supaglue';
+export type DestinationType = 'postgres' | 'bigquery' | 'mongodb' | 'supaglue';
 
-export type NonSupaglueDestinationType = 's3' | 'postgres' | 'bigquery' | 'mongodb';
+export type NonSupaglueDestinationType = 'postgres' | 'bigquery' | 'mongodb';
 
 type BaseDestinationCreateParams = {
   applicationId: string;
@@ -13,27 +13,23 @@ type BaseDestination = BaseDestinationCreateParams & {
 type BaseDestinationUpdateParams = BaseDestination;
 
 export type DestinationConfigUnsafeAny =
-  | DestinationConfigUnsafe<'s3'>
   | DestinationConfigUnsafe<'postgres'>
   | DestinationConfigUnsafe<'bigquery'>
   | DestinationConfigUnsafe<'mongodb'>;
 
 export type DestinationConfigUnsafe<T extends NonSupaglueDestinationType> = {
-  s3: S3ConfigUnsafe;
   postgres: PostgresConfigUnsafe;
   bigquery: BigQueryConfigUnsafe;
   mongodb: MongoDBConfigUnsafe;
 }[T];
 
 export type DestinationConfigAtLeastSafe<T extends NonSupaglueDestinationType> = {
-  s3: S3ConfigAtLeastSafe;
   postgres: PostgresConfigAtLeastSafe;
   bigquery: BigQueryConfigAtLeastSafe;
   mongodb: MongoDBConfigAtLeastSafe;
 }[T];
 
 export type DestinationConfigSafe<T extends NonSupaglueDestinationType> = {
-  s3: S3ConfigSafeOnly;
   postgres: PostgresConfigSafeOnly;
   bigquery: BigQueryConfigSafeOnly;
   mongodb: MongoDBConfigSafeOnly;
@@ -72,20 +68,6 @@ type SupaglueDestinationCreateParams = {
 };
 
 type SupaglueDestinationUpdateParams = SupaglueDestination;
-
-export type S3ConfigUnsafe = S3ConfigSafeOnly & S3ConfigUnsafeOnly;
-export type S3ConfigAtLeastSafe = S3ConfigSafeOnly & Partial<S3ConfigUnsafeOnly>;
-
-export type S3ConfigSafeOnly = {
-  region: string; // us-west-2
-  bucket: string;
-  accessKeyId: string;
-};
-
-// TODO(670): encrypt
-export type S3ConfigUnsafeOnly = {
-  secretAccessKey: string;
-};
 
 export type PostgresConfigUnsafe = PostgresConfigSafeOnly & PostgresConfigUnsafeOnly;
 export type PostgresConfigAtLeastSafe = PostgresConfigSafeOnly & Partial<PostgresConfigUnsafeOnly>;
@@ -138,25 +120,21 @@ export type MongoDBConfigUnsafeOnly = {
 };
 
 export type DestinationUnsafeAny =
-  | DestinationUnsafe<'s3'>
   | DestinationUnsafe<'postgres'>
   | DestinationUnsafe<'bigquery'>
   | DestinationUnsafe<'mongodb'>
   | SupaglueDestination;
 export type DestinationSafeAny =
-  | DestinationSafe<'s3'>
   | DestinationSafe<'postgres'>
   | DestinationSafe<'bigquery'>
   | DestinationSafe<'mongodb'>
   | SupaglueDestination;
 export type DestinationCreateParamsAny =
-  | DestinationCreateParams<'s3'>
   | DestinationCreateParams<'postgres'>
   | DestinationCreateParams<'bigquery'>
   | DestinationCreateParams<'mongodb'>
   | SupaglueDestinationCreateParams;
 export type DestinationUpdateParamsAny =
-  | DestinationUpdateParams<'s3'>
   | DestinationUpdateParams<'postgres'>
   | DestinationUpdateParams<'bigquery'>
   | DestinationUpdateParams<'mongodb'>
@@ -169,7 +147,6 @@ export type DestinationTestParams<T extends NonSupaglueDestinationType> =
     } & DestinationUpdateParams<T>);
 
 export type DestinationTestParamsAny =
-  | DestinationTestParams<'s3'>
   | DestinationTestParams<'postgres'>
   | DestinationTestParams<'bigquery'>
   | DestinationTestParams<'mongodb'>

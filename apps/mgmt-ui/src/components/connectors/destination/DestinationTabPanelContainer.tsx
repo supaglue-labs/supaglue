@@ -1,7 +1,6 @@
 import BigQueryIcon from '@/assets/destination_icons/bigquery.png';
 import MongoDBIcon from '@/assets/destination_icons/mongodb.png';
 import PostgresIcon from '@/assets/destination_icons/postgres.png';
-import S3Icon from '@/assets/destination_icons/s3.png';
 import SupaglueIcon from '@/assets/supaglue.png';
 import { TabPanel } from '@/components/TabPanel';
 import { useDestinations } from '@/hooks/useDestinations';
@@ -16,15 +15,8 @@ const ICON_SIZE = 35;
 export type DestinationCardInfo = {
   icon?: React.ReactNode;
   name: string;
-  type: 's3' | 'postgres' | 'bigquery' | 'mongodb' | 'supaglue';
+  type: 'postgres' | 'bigquery' | 'mongodb' | 'supaglue';
   description: string;
-};
-
-export const s3DestinationCardInfo: DestinationCardInfo = {
-  icon: <Image alt="s3" src={S3Icon} width={ICON_SIZE} height={ICON_SIZE} />,
-  name: 'AWS S3',
-  type: 's3',
-  description: 'Configure your S3 destination.',
 };
 
 export const postgresDestinationCardInfo: DestinationCardInfo = {
@@ -56,7 +48,6 @@ export const supaglueDestinationCardInfo: DestinationCardInfo = {
 };
 
 export const destinationCardsInfo: DestinationCardInfo[] = [
-  // s3DestinationCardInfo,
   postgresDestinationCardInfo,
   bigQueryDestinationCardInfo,
   mongoDBDestinationCardInfo,
@@ -81,7 +72,7 @@ export default function DestinationTabPanelContainer() {
           existingDestinations={existingDestinations}
         />
       )}
-      {isDetailPage && <DestinationDetailsPanel isLoading={isLoading} type={type as 's3' | 'postgres'} />}
+      {isDetailPage && <DestinationDetailsPanel isLoading={isLoading} type={type as 'postgres'} />}
     </TabPanel>
   );
 }
