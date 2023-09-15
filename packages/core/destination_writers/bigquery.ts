@@ -400,6 +400,11 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
 
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [COMPLETED]');
 
+    // Delete temp table
+    childLogger.info({ tempTable }, 'Deleting temp table [IN PROGRESS]');
+    await client.dataset(dataset).table(tempTable).delete();
+    childLogger.info({ tempTable }, 'Deleting temp table [COMPLETED]');
+
     childLogger.info({ table, maxLastModifiedAt, tempTableRowCount }, 'Sync completed');
 
     return {
