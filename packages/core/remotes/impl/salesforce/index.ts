@@ -1232,7 +1232,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const response = await this.#client.describe(sobject);
     return response.fields
       .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
-      .map((field: { name: string; type: string; label: string }) => ({ id: field.name, label: field.label }));
+      .map((field: { name: string; type: string; label: string }) => ({
+        id: field.name,
+        label: field.label,
+        type: field.type,
+      }));
   }
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
