@@ -61,34 +61,6 @@ oneOf:
       - config
       - version
   - type: object
-    title: s3
-    properties:
-      id:
-        type: string
-        example: e888cedf-e9d0-42c5-9485-2d72984faef2
-      application_id:
-        type: string
-        example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
-      name:
-        type: string
-        example: My S3 Destination
-      type:
-        type: string
-        enum:
-          - s3
-        example: s3
-      config:
-        $ref: ./s3_config_safe.yaml
-      version:
-        type: number
-    required:
-      - id
-      - application_id
-      - name
-      - type
-      - config
-      - version
-  - type: object
     title: bigquery
     properties:
       id:

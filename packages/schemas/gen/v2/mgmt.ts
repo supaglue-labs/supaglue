@@ -502,20 +502,6 @@ export interface components {
       id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       application_id: string;
-      /** @example My S3 Destination */
-      name: string;
-      /**
-       * @example s3 
-       * @enum {string}
-       */
-      type: "s3";
-      config: components["schemas"]["s3_config_safe"];
-      version: number;
-    }, {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
-      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-      application_id: string;
       /** @example My BigQuery Destination */
       name: string;
       /**
@@ -540,14 +526,6 @@ export interface components {
       config: components["schemas"]["mongodb_config_safe"];
       version: number;
     }]>;
-    s3_config_safe: {
-      /** @example us-west-2 */
-      region: string;
-      /** @example my-test-bucket */
-      bucket: string;
-      /** @example AKIAIOSFODNN7EXAMPLE */
-      access_key_id: string;
-    };
     postgres_config_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
       host: string;
@@ -582,16 +560,6 @@ export interface components {
       database: string;
       /** @example myuser */
       user: string;
-    };
-    s3_config_at_least_safe: {
-      /** @example us-west-2 */
-      region: string;
-      /** @example my-test-bucket */
-      bucket: string;
-      /** @example AKIAIOSFODNN7EXAMPLE */
-      access_key_id: string;
-      /** @example A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS */
-      secret_access_key?: string;
     };
     postgres_config_at_least_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -628,16 +596,6 @@ export interface components {
       user: string;
       /** @example mysensitivepassword */
       password?: string;
-    };
-    s3_config_unsafe: {
-      /** @example us-west-2 */
-      region: string;
-      /** @example my-test-bucket */
-      bucket: string;
-      /** @example AKIAIOSFODNN7EXAMPLE */
-      access_key_id: string;
-      /** @example A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS */
-      secret_access_key: string;
     };
     postgres_config_unsafe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -1219,15 +1177,6 @@ export interface components {
       type: "postgres";
       config: components["schemas"]["postgres_config_unsafe"];
     }, {
-      /** @example My S3 Destination */
-      name: string;
-      /**
-       * @example s3 
-       * @enum {string}
-       */
-      type: "s3";
-      config: components["schemas"]["s3_config_unsafe"];
-    }, {
       /** @example My BigQuery Destination */
       name: string;
       /**
@@ -1269,17 +1218,6 @@ export interface components {
        */
       type: "postgres";
       config: components["schemas"]["postgres_config_at_least_safe"];
-      /** @example number */
-      version: number;
-    }, {
-      /** @example My S3 Destination */
-      name: string;
-      /**
-       * @example s3 
-       * @enum {string}
-       */
-      type: "s3";
-      config: components["schemas"]["s3_config_at_least_safe"];
       /** @example number */
       version: number;
     }, {

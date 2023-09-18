@@ -27,23 +27,6 @@ oneOf:
       - type
       - config
   - type: object
-    title: s3
-    properties:
-      name:
-        type: string
-        example: My S3 Destination
-      type:
-        type: string
-        enum:
-          - s3
-        example: s3
-      config:
-        $ref: ./objects/s3_config_unsafe.yaml
-    required:
-      - name
-      - type
-      - config
-  - type: object
     title: bigquery
     properties:
       name:

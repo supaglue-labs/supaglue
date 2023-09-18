@@ -246,6 +246,25 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
             />
           </Stack>
           <Stack className="gap-2">
+            <Typography variant="subtitle1">Sync Strategy</Typography>
+            <Select
+              name="Sync Strategy"
+              disabled={isLoadingDestinations}
+              onChange={(value) => setStrategy(value as SyncStrategyType)}
+              value={strategy}
+              options={[
+                {
+                  value: 'full then incremental',
+                  displayValue: 'Incremental',
+                },
+                {
+                  value: 'full only',
+                  displayValue: 'Full',
+                },
+              ]}
+            />
+          </Stack>
+          <Stack className="gap-2">
             <SwitchWithLabel
               label="Start Sync on Connection"
               isLoading={isLoading}

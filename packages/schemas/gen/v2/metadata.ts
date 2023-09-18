@@ -86,10 +86,15 @@ export interface components {
        */
       label: string;
       /**
-       * @description The type of the property as provided by the third-party Provider. For Intercom, this is string, integer, boolean, or object. 
+       * @description The type of the property as provided by the third-party Provider. These types are not unified by Supaglue. For Intercom, this is string, integer, boolean, or object. For Outreach, this is integer, boolean, number, array, or string. 
        * @example string
        */
       type?: string;
+      /**
+       * @description The raw details of the property as provided by the third-party Provider, if available. 
+       * @example {}
+       */
+      raw_details?: Record<string, never>;
     };
     standard_object: {
       /** @example ticket */

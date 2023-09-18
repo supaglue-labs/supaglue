@@ -65,28 +65,6 @@ const DEFAULT_LIST_PARAMS = {
   sort: 'id',
 };
 
-const PIPEDRIVE_USER_FIELDS: Property[] = [
-  { id: 'id', label: 'id' },
-  { id: 'name', label: 'name' },
-  { id: 'email', label: 'email' },
-  { id: 'active_flag', label: 'active_flag' },
-  { id: 'created', label: 'created' },
-  { id: 'modified', label: 'modified' },
-  { id: 'default_currency', label: 'default_currency' },
-  { id: 'locale', label: 'locale' },
-  { id: 'lang', label: 'lang' },
-  { id: 'phone', label: 'phone' },
-  { id: 'activated', label: 'activated' },
-  { id: 'last_login', label: 'last_login' },
-  { id: 'has_created_company', label: 'has_created_company' },
-  { id: 'access', label: 'access' },
-  { id: 'timezone_name', label: 'timezone_name' },
-  { id: 'timezone_offset', label: 'timezone_offset' },
-  { id: 'role_id', label: 'role_id' },
-  { id: 'icon_url', label: 'icon_url' },
-  { id: 'is_you', label: 'is_you' },
-];
-
 type PipedriveObjectSupportingCustomFields = 'person' | 'lead' | 'deal' | 'organization';
 
 export type PipedriveRecord = { [key: string]: any };

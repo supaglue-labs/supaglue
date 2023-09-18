@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.14.13",
+    "version": "0.14.14",
     "title": "Management API",
     "contact": {
       "name": "Supaglue",
@@ -187,17 +187,6 @@
                     "$ref": "#/components/schemas/destination"
                   },
                   "example": [
-                    {
-                      "id": "0a292508-d254-4929-98d3-dc23416efff8",
-                      "application_id": "e52286c9-3038-4fa2-a2b8-3ec9759d20cb",
-                      "name": "My S3 Destination",
-                      "type": "s3",
-                      "config": {
-                        "region": "us-west-2",
-                        "bucket": "my-bucket",
-                        "access_key_id": "MY_ACCESS_KEY_ID"
-                      }
-                    },
                     {
                       "id": "92bc3460-a301-4116-8d1f-6e5f8252c2e2",
                       "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
@@ -2493,45 +2482,6 @@
           },
           {
             "type": "object",
-            "title": "s3",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-              },
-              "application_id": {
-                "type": "string",
-                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
-              },
-              "name": {
-                "type": "string",
-                "example": "My S3 Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "s3"
-                ],
-                "example": "s3"
-              },
-              "config": {
-                "$ref": "#/components/schemas/s3_config_safe"
-              },
-              "version": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "id",
-              "application_id",
-              "name",
-              "type",
-              "config",
-              "version"
-            ]
-          },
-          {
-            "type": "object",
             "title": "bigquery",
             "properties": {
               "id": {
@@ -2608,28 +2558,6 @@
               "version"
             ]
           }
-        ]
-      },
-      "s3_config_safe": {
-        "type": "object",
-        "properties": {
-          "region": {
-            "type": "string",
-            "example": "us-west-2"
-          },
-          "bucket": {
-            "type": "string",
-            "example": "my-test-bucket"
-          },
-          "access_key_id": {
-            "type": "string",
-            "example": "AKIAIOSFODNN7EXAMPLE"
-          }
-        },
-        "required": [
-          "region",
-          "bucket",
-          "access_key_id"
         ]
       },
       "postgres_config_safe": {
@@ -2724,32 +2652,6 @@
           "host",
           "database",
           "user"
-        ]
-      },
-      "s3_config_at_least_safe": {
-        "type": "object",
-        "properties": {
-          "region": {
-            "type": "string",
-            "example": "us-west-2"
-          },
-          "bucket": {
-            "type": "string",
-            "example": "my-test-bucket"
-          },
-          "access_key_id": {
-            "type": "string",
-            "example": "AKIAIOSFODNN7EXAMPLE"
-          },
-          "secret_access_key": {
-            "type": "string",
-            "example": "A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS"
-          }
-        },
-        "required": [
-          "region",
-          "bucket",
-          "access_key_id"
         ]
       },
       "postgres_config_at_least_safe": {
@@ -2847,33 +2749,6 @@
           "host",
           "database",
           "user"
-        ]
-      },
-      "s3_config_unsafe": {
-        "type": "object",
-        "properties": {
-          "region": {
-            "type": "string",
-            "example": "us-west-2"
-          },
-          "bucket": {
-            "type": "string",
-            "example": "my-test-bucket"
-          },
-          "access_key_id": {
-            "type": "string",
-            "example": "AKIAIOSFODNN7EXAMPLE"
-          },
-          "secret_access_key": {
-            "type": "string",
-            "example": "A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS"
-          }
-        },
-        "required": [
-          "region",
-          "bucket",
-          "access_key_id",
-          "secret_access_key"
         ]
       },
       "postgres_config_unsafe": {
@@ -4452,31 +4327,6 @@
           },
           {
             "type": "object",
-            "title": "s3",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "My S3 Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "s3"
-                ],
-                "example": "s3"
-              },
-              "config": {
-                "$ref": "#/components/schemas/s3_config_unsafe"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "config"
-            ]
-          },
-          {
-            "type": "object",
             "title": "bigquery",
             "properties": {
               "name": {
@@ -4558,36 +4408,6 @@
               },
               "config": {
                 "$ref": "#/components/schemas/postgres_config_at_least_safe"
-              },
-              "version": {
-                "type": "number",
-                "example": "number"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "config",
-              "version"
-            ]
-          },
-          {
-            "type": "object",
-            "title": "s3",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "My S3 Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "s3"
-                ],
-                "example": "s3"
-              },
-              "config": {
-                "$ref": "#/components/schemas/s3_config_at_least_safe"
               },
               "version": {
                 "type": "number",

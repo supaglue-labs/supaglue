@@ -19,6 +19,7 @@ import { NotImplementedError } from '../errors';
 import { getObjectTableName, getPgPool, getSchemaName, logger, sanitizeForPostgres } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
+import { shouldDeleteRecords } from './util';
 
 async function createPartitionIfNotExists(client: PoolClient, schema: string, table: string, customerId: string) {
   const partitionName = `${table}_${sanitizeForPostgres(customerId)}`;
@@ -61,7 +62,8 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -69,7 +71,8 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
       getObjectTableName(connection.providerName, object),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, object })
+      logger.child({ connectionId, providerName, customerId, object }),
+      diffAndDeleteRecords
     );
   }
 
@@ -103,7 +106,8 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
-    childLogger: pino.Logger
+    childLogger: pino.Logger,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const schema = getSchemaName(applicationId);
     const qualifiedTable = `${schema}.${table}`;
@@ -247,6 +251,24 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       }
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
+
+      if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
+        childLogger.info('Marking rows as deleted [IN PROGRESS]');
+        await client.query(`
+          UPDATE ${qualifiedTable} AS destination
+          SET _supaglue_is_deleted = TRUE
+          WHERE NOT EXISTS (
+              SELECT 1
+              FROM ${dedupedTempTable} AS temp
+              WHERE 
+                  temp._supaglue_application_id = destination._supaglue_application_id AND
+                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
+                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
+                  temp._supaglue_id = destination._supaglue_id
+          );
+        `);
+        childLogger.info('Marking rows as deleted [COMPLETED]');
+      }
 
       // We don't drop deduped temp table here because we're closing the connection here anyway.
 

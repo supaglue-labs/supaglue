@@ -41,7 +41,7 @@ import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/use
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
-import { getSnakecasedKeysMapper } from './util';
+import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
   readonly #destination: DestinationUnsafe<'postgres'>;
@@ -146,7 +146,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     { id: connectionId, providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
     const schema = this.#getSchema(connectionSyncConfig);
@@ -277,6 +278,24 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
+      if (diffAndDeleteRecords) {
+        childLogger.info('Marking rows as deleted [IN PROGRESS]');
+        await client.query(`
+          UPDATE ${qualifiedTable} AS destination
+          SET is_deleted = TRUE
+          WHERE NOT EXISTS (
+              SELECT 1
+              FROM ${dedupedTempTable} AS temp
+              WHERE 
+                  temp._supaglue_application_id = destination._supaglue_application_id AND
+                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
+                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
+                  temp.id = destination.id
+          );
+        `);
+        childLogger.info('Marking rows as deleted [COMPLETED]');
+      }
+
       // We don't drop deduped temp table here because we're closing the connection here anyway.
 
       return {
@@ -292,7 +311,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -300,7 +320,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       getObjectTableName(connection.providerName, object),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, object })
+      logger.child({ connectionId, providerName, customerId, object }),
+      diffAndDeleteRecords
     );
   }
 
@@ -316,7 +337,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     connection: ConnectionSafeAny,
     entityName: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteEntityRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -324,7 +346,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       getEntityTableName(entityName),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, entityName })
+      logger.child({ connectionId, providerName, customerId, entityName }),
+      diffAndDeleteRecords
     );
   }
 
@@ -411,7 +434,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
-    childLogger: pino.Logger
+    childLogger: pino.Logger,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const schema = this.#getSchema(connectionSyncConfig);
     const qualifiedTable = `"${schema}".${table}`;
@@ -555,6 +579,24 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       }
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
+
+      if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
+        childLogger.info('Marking rows as deleted [IN PROGRESS]');
+        await client.query(`
+          UPDATE ${qualifiedTable} AS destination
+          SET _supaglue_is_deleted = TRUE
+          WHERE NOT EXISTS (
+              SELECT 1
+              FROM ${dedupedTempTable} AS temp
+              WHERE 
+                  temp._supaglue_application_id = destination._supaglue_application_id AND
+                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
+                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
+                  temp._supaglue_id = destination._supaglue_id
+          );
+        `);
+        childLogger.info('Marking rows as deleted [COMPLETED]');
+      }
 
       // We don't drop deduped temp table here because we're closing the connection here anyway.
 

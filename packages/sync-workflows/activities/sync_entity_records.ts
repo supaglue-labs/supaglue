@@ -1,4 +1,5 @@
 import type { DestinationWriter } from '@supaglue/core/destination_writers/base';
+import { shouldDeleteRecords } from '@supaglue/core/destination_writers/util';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import type { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
@@ -61,7 +62,8 @@ export function createSyncEntityRecords(
             connection,
             entity.name,
             toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
-            heartbeat
+            heartbeat,
+            /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
           );
         }
         case 'custom': {
@@ -70,7 +72,8 @@ export function createSyncEntityRecords(
             connection,
             entity.name,
             toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
-            heartbeat
+            heartbeat,
+            /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
           );
         }
       }

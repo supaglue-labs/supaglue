@@ -5,4 +5,5 @@ export type Property = {
   // this is passed back directly from the provider
   // we do not have our own enum mapping here
   type?: string;
+  rawDetails?: object;
 };
