@@ -13,23 +13,25 @@ description: ''
 
 Supaglue uses the Microsoft Dynamics 365 v9.2 API.
 
-| Feature                              | Available                                       |
-| ------------------------------------ | ----------------------------------------------- |
-| Authentication (`oauth2`)            | Yes                                             |
-| Managed syncs                        | Yes                                             |
-| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental` (soft delete supported) |
-| Unified API                          | Yes                                             |
-| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                             |
-| Real-time events                     | No                                              |
-| Passthrough API                      | Yes                                             |
+| Feature                              | Available      |
+| ------------------------------------ | -------------- |
+| Authentication (`oauth2`)            | Yes            |
+| Managed syncs                        | Yes            |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | (listed below) |
+| Unified API                          | Yes            |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes            |
+| Real-time events                     | No             |
+| Passthrough API                      | Yes            |
 
 #### Supported common objects:
 
-- Account
-- Contact
-- Lead
-- Opportunity
-- User
+| Object      | Soft delete supported | Sync strategy       |
+| ----------- | --------------------- | ------------------- |
+| Account     | Yes                   | Full or Incremental |
+| Contact     | Yes                   | Full or Incremental |
+| Lead        | Yes                   | Full or Incremental |
+| Opportunity | Yes                   | Full or Incremental |
+| User        | Yes                   | Full or Incremental |
 
 #### Supported standard objects:
 

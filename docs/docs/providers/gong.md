@@ -29,9 +29,11 @@ N/A
 
 #### Supported standard objects:
 
-- `call` (Sync strategy: `full then incremental`. Soft delete not supported.)
-- `detailedCall` (Sync strategy: `full then incremental`. Soft delete not supported.)
-- `callTranscript` (Sync strategy: `full only`. Soft delete not supported.)
+| Object           | Soft delete supported | Sync strategy       |
+| ---------------- | --------------------- | ------------------- |
+| `call`           | No (Yes if "Full")    | Full or Incremental |
+| `detailedCall`   | No (Yes if "Full")    | Full or Incremental |
+| `callTranscript` | Yes                   | Full                |
 
 #### Supported custom objects:
 

@@ -13,42 +13,57 @@ description: ''
 
 Supaglue uses the HubSpot V3 API.
 
-| Feature                              | Available                                         |
-| ------------------------------------ | ------------------------------------------------- |
-| Authentication (`oauth2`)            | Yes                                               |
-| Managed syncs                        | Yes                                               |
-| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental`\* (soft delete supported) |
-| Unified API                          | Yes                                               |
-| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                               |
-| Real-time events                     | No                                                |
-| Passthrough API                      | Yes                                               |
+| Feature                              | Available      |
+| ------------------------------------ | -------------- |
+| Authentication (`oauth2`)            | Yes            |
+| Managed syncs                        | Yes            |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | (listed below) |
+| Unified API                          | Yes            |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes            |
+| Real-time events                     | No             |
+| Passthrough API                      | Yes            |
 
 #### Supported CRM common objects:
 
-- Company
-- Contact
-- Deal
-- User ([*] Sync strategy: `full only`)
+| Object  | Soft delete supported | Sync strategy           |
+| ------- | --------------------- | ----------------------- |
+| Company | Yes                   | Incremental             |
+| Contact | Yes                   | Incremental             |
+| Deal    | Yes                   | Incremental             |
+| User    | Yes                   | Incremental (in-memory) |
 
 :::info
-Note: if only associations change in between syncs, Supaglue syncs will not reflect it until the relevant common object is modified.
+Note: Supaglue does not sync association changes until the relevant object gets modified in the remote provider.
 :::
 
 #### Supported CRM standard objects:
 
-`company`, `contact`, `deal`, `line_item`, `product`, `ticket`, `quote`, `call`, `communication`, `email`, `meeting`, `note`, `postal_mail`, `task`.
+| Object          | Soft delete supported | Sync strategy |
+| --------------- | --------------------- | ------------- |
+| `company`       | Yes                   | Incremental   |
+| `contact`       | Yes                   | Incremental   |
+| `deal`          | Yes                   | Incremental   |
+| `line_item`     | Yes                   | Incremental   |
+| `product`       | Yes                   | Incremental   |
+| `ticket`        | Yes                   | Incremental   |
+| `quote`         | Yes                   | Incremental   |
+| `call`          | Yes                   | Incremental   |
+| `communication` | Yes                   | Incremental   |
+| `email`         | Yes                   | Incremental   |
+| `meeting`       | Yes                   | Incremental   |
+| `note`          | Yes                   | Incremental   |
+| `postal_mail`   | Yes                   | Incremental   |
+| `task`          | Yes                   | Incremental   |
 
 #### Supported CRM custom objects:
 
 Use the internal names when configuring the `SyncConfig`. See [HubSpot's documentation](https://knowledge.hubspot.com/crm-setup/create-custom-objects) for more information. If you created the custom object through Supaglue's API, the internal name is equivalent to the `name` field.
 
+Syncs are Full or Incremental, and soft deletes are supported.
+
 #### Supported Marketing Automation common objects:
 
 - Forms
-
-:::note
-We only support Unified API for `marketing_automation`.
-:::
 
 ## Provider setup
 

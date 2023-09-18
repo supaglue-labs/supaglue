@@ -25,11 +25,13 @@ Supaglue uses the Pipedrive V1 API.
 
 #### Supported common objects:
 
-- Account
-- Contact
-- Lead
-- Opportunity
-- User
+| Object      | Soft delete supported | Sync strategy       |
+| ----------- | --------------------- | ------------------- |
+| Account     | Yes                   | Full or Incremental |
+| Contact     | Yes                   | Full or Incremental |
+| Lead        | Yes                   | Full or Incremental |
+| Opportunity | Yes                   | Full or Incremental |
+| User        | Yes                   | Full or Incremental |
 
 #### Supported standard objects:
 

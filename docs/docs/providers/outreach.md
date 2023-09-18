@@ -13,24 +13,27 @@ description: ''
 
 Supaglue uses the Outreach v2 API.
 
-| Feature                              | Available                                             |
-| ------------------------------------ | ----------------------------------------------------- |
-| Authentication (`oauth2`)            | Yes                                                   |
-| Managed syncs                        | Yes                                                   |
-| &nbsp;&nbsp;&nbsp; Sync strategies   | `full then incremental` (soft delete not supported\*) |
-| Unified API                          | Yes                                                   |
-| &nbsp;&nbsp;&nbsp; Data invalidation | Yes                                                   |
-| Real-time events                     | No                                                    |
-| Passthrough API                      | Yes                                                   |
+| Feature                              | Available      |
+| ------------------------------------ | -------------- |
+| Authentication (`oauth2`)            | Yes            |
+| Managed syncs                        | Yes            |
+| &nbsp;&nbsp;&nbsp; Sync strategies   | (listed below) |
+| Unified API                          | Yes            |
+| &nbsp;&nbsp;&nbsp; Data invalidation | Yes            |
+| Real-time events                     | No             |
+| Passthrough API                      | Yes            |
 
 #### Supported common objects:
 
-- Users
-- Contacts
-- Sequences
-- Sequence States
-- Sequence Steps (Unified API create only)
-- Mailboxes
+| Object           | Soft delete supported | Sync strategy       |
+| ---------------- | --------------------- | ------------------- |
+| Users            | No\*                  | Full or Incremental |
+| Contacts         | No\*                  | Full or Incremental |
+| Sequences        | No\*                  | Full or Incremental |
+| Sequences States | N/A                   | N/A                 |
+| Mailboxes        | No\*                  | Full or Incremental |
+
+[*] Soft deletes are supported if the sync strategy is "Full"
 
 #### Supported standard objects:
 
@@ -58,16 +61,16 @@ If you want to use your own Outreach App with Supaglue (recommended for producti
 
 1. Select the API Scopes you need. Here are some scopes that are recommended:
 
-  - `accounts.all`
-  - `emailAddresses.all`
-  - `mailboxes.all`
-  - `sequences.all`
-  - `sequenceSteps.all`
-  - `sequenceStates.all`
-  - `templates.all`
-  - `prospects.all`
-  - `phoneNumbers.all`
-  - `users.all`
+- `accounts.all`
+- `emailAddresses.all`
+- `mailboxes.all`
+- `sequences.all`
+- `sequenceSteps.all`
+- `sequenceStates.all`
+- `templates.all`
+- `prospects.all`
+- `phoneNumbers.all`
+- `users.all`
 
 1. Save the app.
 
