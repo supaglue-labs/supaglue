@@ -218,6 +218,9 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
       await client.query(
         `CREATE TEMP TABLE ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC`
       );
+      await client.query(
+        `CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (id ASC, _supaglue_last_modified_at DESC)`
+      );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
       heartbeat();
@@ -257,14 +260,13 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         await client.query(`
           UPDATE ${qualifiedTable} AS destination
           SET _supaglue_is_deleted = TRUE
-          WHERE NOT EXISTS (
+          WHERE table._supaglue_application_id = '${applicationId}'
+          AND table._supaglue_provider_name = '${providerName}'
+          AND table._supaglue_customer_id = '${customerId}'
+          AND NOT EXISTS (
               SELECT 1
               FROM ${dedupedTempTable} AS temp
-              WHERE 
-                  temp._supaglue_application_id = destination._supaglue_application_id AND
-                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
-                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
-                  temp._supaglue_id = destination._supaglue_id
+              WHERE temp._supaglue_id = destination._supaglue_id
           );
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');

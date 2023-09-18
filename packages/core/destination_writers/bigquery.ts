@@ -204,14 +204,13 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
         -- Delete from ${qualifiedTable}
         UPDATE ${qualifiedTable} as table
         SET is_deleted = TRUE
-        WHERE NOT EXISTS (
+        WHERE table._supaglue_application_id = '${applicationId}'
+          AND table._supaglue_provider_name = '${providerName}'
+          AND table._supaglue_customer_id = '${customerId}'
+          AND NOT EXISTS (
             SELECT 1
             FROM ${qualifiedTempTable} as temp
-            WHERE 
-                temp._supaglue_application_id = table._supaglue_application_id AND
-                temp._supaglue_provider_name = table._supaglue_provider_name AND
-                temp._supaglue_customer_id = table._supaglue_customer_id AND
-                temp.id = table.id
+            WHERE temp._supaglue_id = table._supaglue_id
         );
       `);
       childLogger.info({ table, tempTable }, 'Marking records as deleted [COMPLETED]');
@@ -433,14 +432,13 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
         -- Delete from ${qualifiedTable}
         UPDATE ${qualifiedTable} as table
         SET _supaglue_is_deleted = TRUE
-        WHERE NOT EXISTS (
+        WHERE table._supaglue_application_id = '${applicationId}'
+          AND table._supaglue_provider_name = '${providerName}'
+          AND table._supaglue_customer_id = '${customerId}'
+          AND NOT EXISTS (
             SELECT 1
             FROM ${qualifiedTempTable} as temp
-            WHERE 
-                temp._supaglue_application_id = table._supaglue_application_id AND
-                temp._supaglue_provider_name = table._supaglue_provider_name AND
-                temp._supaglue_customer_id = table._supaglue_customer_id AND
-                temp._supaglue_id = table._supaglue_id
+            WHERE temp._supaglue_id = table._supaglue_id
         );
       `);
       childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
