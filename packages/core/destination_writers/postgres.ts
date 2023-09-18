@@ -289,7 +289,10 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
               temp._supaglue_customer_id = destination._supaglue_customer_id AND
               temp.id = destination.id
           SET destination._supaglue_is_deleted = TRUE
-          WHERE temp.id IS NULL;
+          WHERE destination._supaglue_application_id = '${applicationId}'
+          AND destination._supaglue_provider_name = '${providerName}'
+          AND destination._supaglue_customer_id = '${customerId}'
+          AND temp.id IS NULL;
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
         heartbeat();
@@ -590,7 +593,10 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
               temp._supaglue_customer_id = destination._supaglue_customer_id AND
               temp._supaglue_id = destination._supaglue_id
           SET destination._supaglue_is_deleted = TRUE
-          WHERE temp._supaglue_id IS NULL;
+          WHERE destination._supaglue_application_id = '${applicationId}'
+          AND destination._supaglue_provider_name = '${providerName}'
+          AND destination._supaglue_customer_id = '${customerId}'
+          AND temp._supaglue_id IS NULL;
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
         heartbeat();
