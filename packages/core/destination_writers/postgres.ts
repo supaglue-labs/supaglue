@@ -244,9 +244,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       await client.query(
         `CREATE TEMP TABLE IF NOT EXISTS ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY id ASC, last_modified_at DESC`
       );
-      await client.query(
-        `CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (id ASC, _supaglue_last_modified_at DESC)`
-      );
+      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (id ASC, last_modified_at DESC)`);
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
       heartbeat();
