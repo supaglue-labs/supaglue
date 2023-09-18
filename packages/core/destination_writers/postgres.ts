@@ -244,6 +244,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       await client.query(
         `CREATE TEMP TABLE IF NOT EXISTS ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY id ASC, last_modified_at DESC`
       );
+      await client.query(
+        `CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (id ASC, _supaglue_last_modified_at DESC)`
+      );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
       heartbeat();
@@ -281,18 +284,17 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       if (diffAndDeleteRecords) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
-          UPDATE ${qualifiedTable}
-          LEFT JOIN ${dedupedTempTable}
-          ON 
-              ${dedupedTempTable}._supaglue_application_id = ${qualifiedTable}._supaglue_application_id AND
-              ${dedupedTempTable}._supaglue_provider_name = ${qualifiedTable}._supaglue_provider_name AND
-              ${dedupedTempTable}._supaglue_customer_id = ${qualifiedTable}._supaglue_customer_id AND
-              ${dedupedTempTable}.id = ${qualifiedTable}.id
-          SET ${qualifiedTable}._supaglue_is_deleted = TRUE
-          WHERE ${qualifiedTable}._supaglue_application_id = '${applicationId}'
-          AND ${qualifiedTable}._supaglue_provider_name = '${providerName}'
-          AND ${qualifiedTable}._supaglue_customer_id = '${customerId}'
-          AND ${dedupedTempTable}.id IS NULL;
+        UPDATE ${qualifiedTable} AS destination
+        SET is_deleted = TRUE
+        WHERE 
+          destination._supaglue_application_id = '${applicationId}' AND
+          destination._supaglue_provider_name = '${providerName}' AND
+          destination._supaglue_customer_id = '${customerId}'
+        AND NOT EXISTS (
+            SELECT 1
+            FROM ${dedupedTempTable} AS temp
+            WHERE temp.id = destination.id
+        );
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
         heartbeat();
@@ -548,6 +550,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       await client.query(
         `CREATE TEMP TABLE ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC`
       );
+      await client.query(
+        `CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (_supaglue_id ASC, _supaglue_last_modified_at DESC)`
+      );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
       heartbeat();
@@ -594,11 +599,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
           AND NOT EXISTS (
               SELECT 1
               FROM ${dedupedTempTable} AS temp
-              WHERE 
-                  temp._supaglue_application_id = destination._supaglue_application_id AND
-                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
-                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
-                  temp.id = destination.id
+              WHERE temp._supaglue_id = destination._supaglue_id
           );
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
