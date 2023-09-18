@@ -490,6 +490,7 @@
           "raw_details": {
             "type": "object",
             "description": "The raw details of the property as provided by the third-party Provider, if available.",
+            "additionalProperties": true,
             "example": {}
           }
         },

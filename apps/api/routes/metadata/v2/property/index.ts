@@ -6,6 +6,7 @@ import type {
   ListPropertiesRequest,
   ListPropertiesResponse,
 } from '@supaglue/schemas/v2/metadata';
+import { snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
@@ -26,7 +27,7 @@ export default function init(app: Router): void {
         type: req.query.type,
         name: req.query.name,
       });
-      return res.status(200).send({ properties });
+      return res.status(200).send({ properties: properties.map(snakecaseKeys) });
     }
   );
 
