@@ -282,18 +282,17 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable} AS destination
-          SET is_deleted = TRUE
-          WHERE NOT EXISTS (
-              SELECT 1
-              FROM ${dedupedTempTable} AS temp
-              WHERE 
-                  temp._supaglue_application_id = destination._supaglue_application_id AND
-                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
-                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
-                  temp.id = destination.id
-          );
+          LEFT JOIN ${dedupedTempTable} AS temp
+          ON 
+              temp._supaglue_application_id = destination._supaglue_application_id AND
+              temp._supaglue_provider_name = destination._supaglue_provider_name AND
+              temp._supaglue_customer_id = destination._supaglue_customer_id AND
+              temp.id = destination.id
+          SET destination._supaglue_is_deleted = TRUE
+          WHERE temp.id IS NULL;
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
+        heartbeat();
       }
 
       // We don't drop deduped temp table here because we're closing the connection here anyway.
@@ -584,18 +583,17 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable} AS destination
-          SET _supaglue_is_deleted = TRUE
-          WHERE NOT EXISTS (
-              SELECT 1
-              FROM ${dedupedTempTable} AS temp
-              WHERE 
-                  temp._supaglue_application_id = destination._supaglue_application_id AND
-                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
-                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
-                  temp._supaglue_id = destination._supaglue_id
-          );
+          LEFT JOIN ${dedupedTempTable} AS temp
+          ON 
+              temp._supaglue_application_id = destination._supaglue_application_id AND
+              temp._supaglue_provider_name = destination._supaglue_provider_name AND
+              temp._supaglue_customer_id = destination._supaglue_customer_id AND
+              temp._supaglue_id = destination._supaglue_id
+          SET destination._supaglue_is_deleted = TRUE
+          WHERE temp._supaglue_id IS NULL;
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
+        heartbeat();
       }
 
       // We don't drop deduped temp table here because we're closing the connection here anyway.
