@@ -1,22 +1,19 @@
 import type { ConnectionSafeAny } from '@supaglue/types';
 import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
-import { Histogram } from 'prom-client';
+import { remoteDuration } from '../../../lib/metrics';
 import type { DestinationService } from '../../destination_service';
 import type { RemoteService } from '../../remote_service';
-
-const histogram = new Histogram({
-  name: 'remote_operation_duration_seconds',
-  help: 'remote operation duration in seconds',
-  labelNames: ['operation', 'remote_name'],
-});
+import type { SyncService } from '../../sync_service';
 
 export class EngagementCommonObjectService {
   readonly #remoteService: RemoteService;
   readonly #destinationService: DestinationService;
+  readonly #syncService: SyncService;
 
-  public constructor(remoteService: RemoteService, destinationService: DestinationService) {
+  public constructor(remoteService: RemoteService, destinationService: DestinationService, syncService: SyncService) {
     this.#remoteService = remoteService;
     this.#destinationService = destinationService;
+    this.#syncService = syncService;
   }
 
   public async get<T extends EngagementCommonObjectType>(
@@ -26,7 +23,7 @@ export class EngagementCommonObjectService {
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
     const [remoteClient, providerName] = await this.#remoteService.getEngagementRemoteClient(connectionId);
 
-    const end = histogram.startTimer({ operation: 'get', remote_name: providerName });
+    const end = remoteDuration.startTimer({ operation: 'get', remote_name: providerName });
     const obj = await remoteClient.getCommonObjectRecord(type, id);
     end();
 
@@ -40,21 +37,29 @@ export class EngagementCommonObjectService {
   ): Promise<string> {
     const [remoteClient, providerName] = await this.#remoteService.getEngagementRemoteClient(connection.id);
 
-    const end = histogram.startTimer({ operation: 'create', remote_name: providerName });
-    const id = await remoteClient.createCommonObjectRecord(type, params);
+    const end = remoteDuration.startTimer({ operation: 'create', remote_name: providerName });
+    const res = await remoteClient.createCommonObjectRecord(type, params);
     end();
+
+    const shouldCacheInvalidate = await this.#shouldPerformCacheInvalidation(connection, type);
+    if (!shouldCacheInvalidate) {
+      return res.id;
+    }
 
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer && connection.providerName !== 'apollo') {
-      const object = await remoteClient.getCommonObjectRecord(type, id);
-
-      const end = histogram.startTimer({ operation: 'create', remote_name: destinationType! });
-      await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, object);
-      end();
+    if (writer) {
+      // TODO: we should move this logic into each individual provider instead of checking apollo here
+      const record =
+        connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
+      if (record) {
+        const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });
+        await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, record);
+        end();
+      }
     }
 
-    return id;
+    return res.id;
   }
 
   public async update<T extends EngagementCommonObjectType>(
@@ -64,18 +69,31 @@ export class EngagementCommonObjectService {
   ): Promise<void> {
     const [remoteClient, providerName] = await this.#remoteService.getEngagementRemoteClient(connection.id);
 
-    const end = histogram.startTimer({ operation: 'update', remote_name: providerName });
-    await remoteClient.updateCommonObjectRecord(type, params);
+    const end = remoteDuration.startTimer({ operation: 'update', remote_name: providerName });
+    const res = await remoteClient.updateCommonObjectRecord(type, params);
     end();
+
+    const shouldCacheInvalidate = await this.#shouldPerformCacheInvalidation(connection, type);
+    if (!shouldCacheInvalidate) {
+      return;
+    }
 
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
-    if (writer && connection.providerName !== 'apollo') {
-      const object = await remoteClient.getCommonObjectRecord(type, params.id);
-
-      const end = histogram.startTimer({ operation: 'update', remote_name: destinationType! });
-      await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, object);
-      end();
+    if (writer) {
+      // TODO: we should move this logic into each individual provider instead of checking apollo here
+      const record =
+        connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
+      if (record) {
+        const end = remoteDuration.startTimer({ operation: 'update', remote_name: destinationType! });
+        await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, record);
+        end();
+      }
     }
+  }
+
+  async #shouldPerformCacheInvalidation(connection: ConnectionSafeAny, objectName: EngagementCommonObjectType) {
+    const sync = await this.#syncService.findByConnectionIdAndObjectTypeAndObject(connection.id, 'common', objectName);
+    return sync && !sync.paused;
   }
 }

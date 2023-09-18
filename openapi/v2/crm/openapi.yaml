@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.13.16
+  version: 0.14.14
   title: Unified CRM API
   contact:
     name: Supaglue
@@ -11,10 +11,9 @@ info:
 
     Welcome to the Unified API documentation for CRM. You can use this API to write to multiple third-party providers within the CRM category.
 
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
+    [View common schema for CRM](https://docs.supaglue.com/platform/common-schemas/crm)
 
-    #### Reading data
-    To read data from third-party providers, refer to the [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
     #### Base API URL
     ```
@@ -29,10 +28,14 @@ servers:
 paths:
   '/accounts':
     $ref: paths/accounts.yaml
+  '/accounts/_upsert':
+    $ref: paths/accounts@upsert.yaml
   '/accounts/{account_id}':
     $ref: paths/accounts@{account_id}.yaml
   '/contacts':
     $ref: paths/contacts.yaml
+  '/contacts/_upsert':
+    $ref: paths/contacts@upsert.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
   '/leads':
@@ -45,6 +48,10 @@ paths:
     $ref: paths/opportunities@{opportunity_id}.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
+  '/lists/{object_type}':
+    $ref: paths/lists@{object_type}.yaml
+  '/lists/{object_type}/{list_id}':
+    $ref: paths/lists@{object_type}@{list_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
 tags:
@@ -58,6 +65,8 @@ tags:
     description: The `Opportunity` Common Object represents a "deal opportunity" in CRMs.
   - name: Users
     description: The `User` Common Object represents a "user" that can log in to CRMs.
+  - name: Lists
+    description: The `List` Object represents a collection of CRM records.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
 components:
@@ -81,6 +90,10 @@ components:
       $ref: ./components/schemas/objects/opportunity.yaml
     user:
       $ref: ./components/schemas/objects/user.yaml
+    list_metadata:
+      $ref: ./components/schemas/objects/list_metadata.yaml
+    list_membership:
+      $ref: ./components/schemas/objects/list_membership.yaml
     create_update_opportunity:
       $ref: ./components/schemas/create_update_opportunity.yaml
     errors:

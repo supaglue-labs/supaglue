@@ -50,19 +50,6 @@ export interface paths {
       };
     };
   };
-  "/field_mappings": {
-    /**
-     * List schema mappings 
-     * @deprecated
-     */
-    get: operations["listFieldMappings"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-  };
   "/magic_links": {
     /**
      * List magic links 
@@ -78,6 +65,19 @@ export interface paths {
     parameters: {
       path: {
         magic_link_id: string;
+      };
+    };
+  };
+  "/field_mappings": {
+    /**
+     * List schema mappings 
+     * @deprecated
+     */
+    get: operations["listFieldMappings"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -223,6 +223,20 @@ export interface paths {
       };
     };
   };
+  "/connection_sync_configs": {
+    /** Get connection sync config */
+    get: operations["getConnectionSyncConfig"];
+    /** Upsert connection sync config */
+    put: operations["upsertConnectionSyncConfig"];
+    /** Delete connection sync config */
+    delete: operations["deleteConnectionSyncConfig"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/customers/{customer_id}/connections": {
     /**
      * List connections 
@@ -242,8 +256,8 @@ export interface paths {
   };
   "/customers/{customer_id}/connections/_provider_user_id": {
     /**
-     * Get logged in user ID 
-     * @description This endpoint returns the ID of the logged in user. This is sometimes known as the owner ID.
+     * Get logged in user ID and details 
+     * @description This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.
      */
     get: operations["getProviderUserId"];
     parameters: {
@@ -468,6 +482,7 @@ export interface components {
        * @enum {string}
        */
       type: "supaglue";
+      version: number;
     }, {
       /** @example d455d20b-f6dc-4bc3-ab14-b4f21c4b4835 */
       id: string;
@@ -481,19 +496,7 @@ export interface components {
        */
       type: "postgres";
       config: components["schemas"]["postgres_config_safe"];
-    }, {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
-      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-      application_id: string;
-      /** @example My S3 Destination */
-      name: string;
-      /**
-       * @example s3 
-       * @enum {string}
-       */
-      type: "s3";
-      config: components["schemas"]["s3_config_safe"];
+      version: number;
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -507,6 +510,7 @@ export interface components {
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_safe"];
+      version: number;
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
@@ -520,15 +524,8 @@ export interface components {
        */
       type: "mongodb";
       config: components["schemas"]["mongodb_config_safe"];
+      version: number;
     }]>;
-    s3_config_safe: {
-      /** @example us-west-2 */
-      region: string;
-      /** @example my-test-bucket */
-      bucket: string;
-      /** @example AKIAIOSFODNN7EXAMPLE */
-      access_key_id: string;
-    };
     postgres_config_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
       host: string;
@@ -563,16 +560,6 @@ export interface components {
       database: string;
       /** @example myuser */
       user: string;
-    };
-    s3_config_at_least_safe: {
-      /** @example us-west-2 */
-      region: string;
-      /** @example my-test-bucket */
-      bucket: string;
-      /** @example AKIAIOSFODNN7EXAMPLE */
-      access_key_id: string;
-      /** @example A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS */
-      secret_access_key?: string;
     };
     postgres_config_at_least_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -609,16 +596,6 @@ export interface components {
       user: string;
       /** @example mysensitivepassword */
       password?: string;
-    };
-    s3_config_unsafe: {
-      /** @example us-west-2 */
-      region: string;
-      /** @example my-test-bucket */
-      bucket: string;
-      /** @example AKIAIOSFODNN7EXAMPLE */
-      access_key_id: string;
-      /** @example A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS */
-      secret_access_key: string;
     };
     postgres_config_unsafe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -839,7 +816,7 @@ export interface components {
      * @example crm 
      * @enum {string}
      */
-    category: "crm" | "engagement" | "no_category";
+    category: "crm" | "engagement" | "enrichment" | "marketing_automation" | "no_category";
     sync_config: {
       /** @example 465fdcb7-26b4-4090-894c-67cab41022bb */
       id: string;
@@ -883,14 +860,6 @@ export interface components {
           /**
            * @description The Provider object name (case sensitive) 
            * @example Contact
-           */
-          object: string;
-        })[];
-      /** @description A list of case-sensitive Provider objects to be synced. */
-      custom_objects?: ({
-          /**
-           * @description The Supaglue object name (case sensitive) 
-           * @example Contact__c
            */
           object: string;
         })[];
@@ -964,7 +933,7 @@ export interface components {
      * @example hubspot 
      * @enum {string}
      */
-    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear";
+    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear" | "clearbit" | "6sense" | "marketo" | "salesforce_marketing_cloud_account_engagement";
     /** @enum {string} */
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */
@@ -999,7 +968,7 @@ export interface components {
        * @example standard 
        * @enum {string}
        */
-      object_type: "common" | "standard";
+      object_type: "common" | "standard" | "custom";
       /**
        * @description The Provider's object name (case sensitive) 
        * @example contact
@@ -1068,7 +1037,7 @@ export interface components {
        * @example standard 
        * @enum {string}
        */
-      object_type: "common" | "standard";
+      object_type: "common" | "standard" | "custom";
       /** @example contact */
       object: string;
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
@@ -1084,7 +1053,7 @@ export interface components {
     }]>;
     sync_run: OneOf<[{
       /** @enum {string} */
-      object_type: "common" | "standard";
+      object_type: "common" | "standard" | "custom";
       object: string;
       error_message: string | null;
       /** @example 2023-02-22T19:55:17.559Z */
@@ -1095,10 +1064,8 @@ export interface components {
       application_id: string;
       /** @example my-customer-1 */
       customer_id: string;
-      /** @example hubspot */
-      provider_name: string;
-      /** @enum {string} */
-      category: "crm";
+      provider_name: components["schemas"]["provider_name"];
+      category: components["schemas"]["category"];
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
       connection_id: string;
       /** @enum {string} */
@@ -1116,10 +1083,8 @@ export interface components {
       application_id: string;
       /** @example my-customer-1 */
       customer_id: string;
-      /** @example hubspot */
-      provider_name: string;
-      /** @enum {string} */
-      category: "crm";
+      provider_name: components["schemas"]["provider_name"];
+      category: components["schemas"]["category"];
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
       connection_id: string;
       /** @enum {string} */
@@ -1212,15 +1177,6 @@ export interface components {
       type: "postgres";
       config: components["schemas"]["postgres_config_unsafe"];
     }, {
-      /** @example My S3 Destination */
-      name: string;
-      /**
-       * @example s3 
-       * @enum {string}
-       */
-      type: "s3";
-      config: components["schemas"]["s3_config_unsafe"];
-    }, {
       /** @example My BigQuery Destination */
       name: string;
       /**
@@ -1262,15 +1218,8 @@ export interface components {
        */
       type: "postgres";
       config: components["schemas"]["postgres_config_at_least_safe"];
-    }, {
-      /** @example My S3 Destination */
-      name: string;
-      /**
-       * @example s3 
-       * @enum {string}
-       */
-      type: "s3";
-      config: components["schemas"]["s3_config_at_least_safe"];
+      /** @example number */
+      version: number;
     }, {
       /** @example My BigQuery Destination */
       name: string;
@@ -1280,6 +1229,8 @@ export interface components {
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_at_least_safe"];
+      /** @example number */
+      version: number;
     }, {
       /** @example My MongoDB Destination */
       name: string;
@@ -1289,6 +1240,8 @@ export interface components {
        */
       type: "mongodb";
       config: components["schemas"]["mongodb_config_at_least_safe"];
+      /** @example number */
+      version: number;
     }]>;
     create_update_sync_config: {
       /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
@@ -1328,15 +1281,45 @@ export interface components {
         customer_id: string;
         /** @example 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024 */
         provider_id: string;
-        /** @enum {string} */
-        category: "crm";
-        /**
-         * @example hubspot 
-         * @enum {string}
-         */
-        provider_name: "hubspot" | "salesforce";
+        category: components["schemas"]["category"];
+        provider_name: components["schemas"]["provider_name"];
       };
     }]>;
+    upsert_connection_sync_config: {
+      destination_config?: OneOf<[{
+        /** @enum {string} */
+        type: "postgres";
+        /**
+         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used. 
+         * @example customer_1_schema
+         */
+        schema: string;
+      }, {
+        /** @enum {string} */
+        type: "bigquery";
+        /**
+         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used. 
+         * @example customer_1_dataset
+         */
+        dataset: string;
+      }]>;
+      /** @description A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig. */
+      standard_objects?: ({
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact
+           */
+          object: string;
+        })[];
+      /** @description A list of case-sensitive Provider objects to be synced. */
+      custom_objects?: ({
+          /**
+           * @description The Supaglue object name (case sensitive) 
+           * @example Contact__c
+           */
+          object: string;
+        })[];
+    };
     standard_object: {
       /**
        * @example standard 
@@ -1390,12 +1373,47 @@ export interface components {
        */
       mapped_field: string;
     };
+    connection_sync_config: {
+      destination_config?: OneOf<[{
+        /** @enum {string} */
+        type: "postgres";
+        /**
+         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used. 
+         * @example customer_1_schema
+         */
+        schema: string;
+      }, {
+        /** @enum {string} */
+        type: "bigquery";
+        /**
+         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used. 
+         * @example customer_1_dataset
+         */
+        dataset: string;
+      }]>;
+      /** @description A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig. */
+      standard_objects?: ({
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact
+           */
+          object: string;
+        })[];
+      /** @description A list of case-sensitive Provider objects to be synced. */
+      custom_objects?: ({
+          /**
+           * @description The Supaglue object name (case sensitive) 
+           * @example Contact__c
+           */
+          object: string;
+        })[];
+    };
   };
   responses: never;
   parameters: {
     /** @description The pagination cursor value */
     cursor?: string;
-    /** @description Number of results to return per page */
+    /** @description Number of results to return per page. (Max: 1000) */
     page_size?: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
     customer_id?: string;
@@ -1545,26 +1563,6 @@ export interface operations {
     };
   };
   /**
-   * List schema mappings 
-   * @deprecated
-   */
-  listFieldMappings: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    responses: {
-      /** @description List of objects and their field mappings (if set) */
-      200: {
-        content: {
-          "application/json": (components["schemas"]["object_field_mappings"])[];
-        };
-      };
-    };
-  };
-  /**
    * List magic links 
    * @description Get a list of magic links
    */
@@ -1604,6 +1602,26 @@ export interface operations {
     responses: {
       /** @description Magic Link deleted */
       204: never;
+    };
+  };
+  /**
+   * List schema mappings 
+   * @deprecated
+   */
+  listFieldMappings: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description List of objects and their field mappings (if set) */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["object_field_mappings"])[];
+        };
+      };
     };
   };
   /**
@@ -2033,6 +2051,58 @@ export interface operations {
       };
     };
   };
+  /** Get connection sync config */
+  getConnectionSyncConfig: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Connection Sync Config */
+      200: {
+        content: {
+          "application/json": components["schemas"]["connection_sync_config"];
+        };
+      };
+    };
+  };
+  /** Upsert connection sync config */
+  upsertConnectionSyncConfig: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["upsert_connection_sync_config"];
+      };
+    };
+    responses: {
+      /** @description Connection Sync Config */
+      200: {
+        content: {
+          "application/json": components["schemas"]["connection_sync_config"];
+        };
+      };
+    };
+  };
+  /** Delete connection sync config */
+  deleteConnectionSyncConfig: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Connection Sync Config */
+      204: never;
+    };
+  };
   /**
    * List connections 
    * @description Get a list of connections
@@ -2140,13 +2210,13 @@ export interface operations {
     };
   };
   /**
-   * Get logged in user ID 
-   * @description This endpoint returns the ID of the logged in user. This is sometimes known as the owner ID.
+   * Get logged in user ID and details 
+   * @description This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.
    */
   getProviderUserId: {
     parameters: {
       query: {
-        provider_name: components["schemas"]["provider_name"];
+        provider_name: "hubspot" | "ms_dynamics_365_sales" | "intercom";
       };
       path: {
         customer_id: string;
@@ -2157,8 +2227,12 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            /** @description The ID of the logged in user. The ID originates from your customer's third-party Provider (e.g. MS Dynamics 365 Sales). */
+            /** @description The ID of the logged in user. The ID originates from your customer's third-party Provider. */
             user_id?: string;
+            /** @description The raw data from the your customer's third-party Provider. */
+            raw_details?: {
+              [key: string]: unknown;
+            };
           };
         };
       };
@@ -2213,7 +2287,7 @@ export interface operations {
         /** @description The provider name */
         provider_name?: string;
         /** @description The object type to filter by */
-        object_type?: "common" | "standard";
+        object_type?: "common" | "standard" | "custom";
         /** @description The object to filter by */
         object?: string;
         /** @description The entity id to filter by */
@@ -2250,7 +2324,7 @@ export interface operations {
            * @example standard 
            * @enum {string}
            */
-          object_type: "common" | "standard";
+          object_type: "common" | "standard" | "custom";
           /**
            * @description The Provider object to filter by (case sensitive) 
            * @example Contact
@@ -2302,7 +2376,7 @@ export interface operations {
            * @example standard 
            * @enum {string}
            */
-          object_type: "common" | "standard";
+          object_type: "common" | "standard" | "custom";
           /**
            * @description The object to filter by 
            * @example contact
@@ -2341,7 +2415,7 @@ export interface operations {
            * @example standard 
            * @enum {string}
            */
-          object_type: "standard";
+          object_type: "standard" | "custom";
           /**
            * @description The Provider object to filter by (case sensitive) 
            * @example contact
@@ -2390,7 +2464,7 @@ export interface operations {
         customer_id?: string;
         /** @description The provider name */
         provider_name?: string;
-        object_type?: "common" | "standard";
+        object_type?: "common" | "standard" | "custom";
         /** @description The object to filter by */
         object?: string;
         /** @description The entity id to filter by */
@@ -2664,7 +2738,7 @@ export interface operations {
           /** @enum {string} */
           type: "object";
           /** @enum {string} */
-          object_type: "common" | "standard";
+          object_type: "common" | "standard" | "custom";
           /** @example contact */
           object: string;
         }, {

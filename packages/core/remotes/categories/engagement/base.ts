@@ -3,8 +3,20 @@ import type { Readable } from 'stream';
 import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
+export type CreateCommonObjectRecordResponse<T extends EngagementCommonObjectType> = {
+  id: string;
+  record?: EngagementCommonObjectTypeMap<T>['object'];
+};
+
+export type UpdateCommonObjectRecordResponse<T extends EngagementCommonObjectType> =
+  CreateCommonObjectRecordResponse<T>;
+
 export interface EngagementRemoteClient extends RemoteClient {
-  listCommonObjectRecords(commonObjectType: EngagementCommonObjectType, updatedAfter?: Date): Promise<Readable>;
+  listCommonObjectRecords(
+    commonObjectType: EngagementCommonObjectType,
+    updatedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable>;
   getCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     id: string
@@ -12,11 +24,11 @@ export interface EngagementRemoteClient extends RemoteClient {
   createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
-  ): Promise<string>;
+  ): Promise<CreateCommonObjectRecordResponse<T>>;
   updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
-  ): Promise<string>;
+  ): Promise<UpdateCommonObjectRecordResponse<T>>;
 }
 
 export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClient implements EngagementRemoteClient {
@@ -30,7 +42,8 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
 
   public async listCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
-    updatedAfter?: Date
+    updatedAfter?: Date,
+    heartbeat?: () => void
   ): Promise<Readable> {
     throw new Error('Not implemented');
   }
@@ -43,13 +56,13 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
   public async createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
-  ): Promise<string> {
+  ): Promise<CreateCommonObjectRecordResponse<T>> {
     throw new Error('Not implemented');
   }
   public async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
-  ): Promise<string> {
+  ): Promise<UpdateCommonObjectRecordResponse<T>> {
     throw new Error('Not implemented');
   }
 }

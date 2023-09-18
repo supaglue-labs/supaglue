@@ -20,7 +20,7 @@ export type SyncRun = {
 
 export type ObjectSyncRunWithObject = SyncRun & {
   type: 'object';
-  objectType: 'common' | 'standard';
+  objectType: 'common' | 'standard' | 'custom';
   object: string;
 };
 
@@ -49,7 +49,7 @@ export type SyncRunFilter = {
   paginationParams: PaginationInternalParams;
 } & (
   | {
-      objectType: 'common' | 'standard';
+      objectType: 'common' | 'standard' | 'custom';
       object: string;
     }
   | {

@@ -17,6 +17,14 @@ export type Sequence = BaseEngagementModel & CoreSequence;
 
 export type RemoteSequenceTypes = {
   object: Sequence;
-  createParams: never;
+  createParams: SequenceCreateParams;
   updateParams: never;
+};
+
+export type SequenceCreateParams = {
+  name: string;
+  ownerId?: string;
+  tags?: string[];
+  type: 'team' | 'private';
+  customFields?: Record<string, unknown>;
 };

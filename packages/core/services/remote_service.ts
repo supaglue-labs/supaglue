@@ -1,4 +1,11 @@
-import type { ConnectionUnsafe, CRMProvider, EngagementProvider, OauthProvider } from '@supaglue/types';
+import type {
+  ConnectionUnsafe,
+  CRMProvider,
+  EngagementProvider,
+  EnrichmentProvider,
+  MarketingAutomationProvider,
+  OauthProvider,
+} from '@supaglue/types';
 import type { ProviderService } from '.';
 import { InternalServerError } from '../errors';
 import { logger } from '../lib';
@@ -8,6 +15,10 @@ import { getCrmRemoteClient } from '../remotes/categories/crm';
 import type { CrmRemoteClient } from '../remotes/categories/crm/base';
 import { getEngagementRemoteClient } from '../remotes/categories/engagement';
 import type { EngagementRemoteClient } from '../remotes/categories/engagement/base';
+import { getEnrichmentRemoteClient } from '../remotes/categories/enrichment';
+import type { EnrichmentRemoteClient } from '../remotes/categories/enrichment/base';
+import type { MarketingAutomationRemoteClient } from '../remotes/categories/marketing_automation/base';
+import { getMarketingAutmationRemoteClient as getMarketingAutomationRemoteClient } from '../remotes/categories/marketing_automation/index';
 import type { ConnectionService } from './connection_service';
 
 export class RemoteService {
@@ -63,6 +74,53 @@ export class RemoteService {
     const client = getEngagementRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
     this.#persistRefreshedToken(connectionId, client);
     return [client, provider.name];
+  }
+
+  public async getEnrichmentRemoteClient(
+    connectionId: string
+  ): Promise<[EnrichmentRemoteClient, EnrichmentProvider['name']]> {
+    const connection = await this.#connectionService.getUnsafeById(connectionId);
+    const provider = await this.#providerService.getById(connection.providerId);
+
+    if (connection.category !== 'enrichment' || provider.category !== 'enrichment') {
+      throw new Error(`Connection or provider category was unexpectedly not 'enrichment'`);
+    }
+
+    if (connection.providerName !== provider.name) {
+      throw new InternalServerError(
+        `Connection providerName ${connection.providerName} unexpectedly does not match provider providerName ${provider.name}.`
+      );
+    }
+
+    const client = getEnrichmentRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
+    this.#persistRefreshedToken(connectionId, client);
+    return [client, provider.name];
+  }
+
+  public async getMarketingAutomationRemoteClient(
+    connectionId: string
+  ): Promise<[MarketingAutomationRemoteClient, MarketingAutomationProvider['name']]> {
+    const connection = await this.#connectionService.getUnsafeById(connectionId);
+    const provider = await this.#providerService.getById(connection.providerId);
+
+    // TODO: Restore this when we truly allow provider to be from multiple categories
+    // if (connection.category !== 'marketing_automation' || provider.category !== 'marketing_automation') {
+    //   throw new Error(`Connection or provider category was unexpectedly not 'marketing_automation'`);
+    // }
+
+    if (connection.providerName !== provider.name) {
+      throw new InternalServerError(
+        `Connection providerName ${connection.providerName} unexpectedly does not match provider providerName ${provider.name}.`
+      );
+    }
+
+    // const client = getMarketingAutomationRemoteClient(connection as ConnectionUnsafe<typeof provider.name>, provider);
+    // TODO: fix this when we truly allow provider to be from multiple categories
+    const client = getMarketingAutomationRemoteClient(connection as any, provider as any);
+    this.#persistRefreshedToken(connectionId, client);
+    // TODO: fix this when we truly allow provider to be from multiple categories
+    // return [client, provider.name];
+    return [client, provider.name as MarketingAutomationProvider['name']];
   }
 
   public async getRemoteClient(connectionId: string): Promise<RemoteClient> {

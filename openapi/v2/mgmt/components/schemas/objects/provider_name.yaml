@@ -13,4 +13,8 @@ enum:
   - salesloft
   - intercom
   - linear
+  - clearbit
+  - 6sense
+  - marketo
+  - salesforce_marketing_cloud_account_engagement
 example: hubspot

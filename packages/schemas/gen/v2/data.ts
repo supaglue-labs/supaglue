@@ -7,7 +7,7 @@
 export interface paths {
   "/salesforce/contacts": {
     /** List contacts */
-    get: operations["listContacts"];
+    get: operations["listSalesforceContacts"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -16,35 +16,28 @@ export interface paths {
   };
   "/salesforce/accounts": {
     /** List accounts */
-    get: operations["listAccounts"];
+    get: operations["listSalesforceAccounts"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
       };
     };
   };
-  "/salesforce/list_views/{object_type}": {
-    /** List list views */
-    get: operations["listListViewss"];
+  "/hubspot/contacts": {
+    /** List contacts */
+    get: operations["listHubspotContacts"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-      };
-      path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
       };
     };
   };
-  "/salesforce/list_views/{object_type}/{list_id}": {
-    /** Get list view membership */
-    get: operations["getListViewMembership"];
+  "/hubspot/companies": {
+    /** List companies */
+    get: operations["listHubspotCompanies"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-      };
-      path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
-        list_view_id: string;
       };
     };
   };
@@ -69,8 +62,12 @@ export interface components {
       HomePhone: string | null;
       /** @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). */
       IsDeleted: boolean;
-      /** @description The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record. */
-      LastActivityDate: string | null;
+      /**
+       * Format: date-time 
+       * @description The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record. 
+       * @example 2022-02-27T00:00:00Z
+       */
+      LastActivityDate: Date | null;
       /** @description The contact's last name. Maximum size is 80 characters. */
       LastName: string | null;
       /** @description The source of the lead. */
@@ -95,10 +92,18 @@ export interface components {
       Fax: string | null;
       /** @description The contact's title. */
       Title: string | null;
-      /** @description The date and time when this contact was created. */
-      CreatedDate: string;
-      /** @description The date and time when this contact was last modified. */
-      SystemModstamp: string;
+      /**
+       * Format: date-time 
+       * @description The date and time when this contact was created. 
+       * @example 2022-02-27T00:00:00Z
+       */
+      CreatedDate: Date;
+      /**
+       * Format: date-time 
+       * @description The date and time when this contact was last modified. 
+       * @example 2022-02-27T00:00:00Z
+       */
+      SystemModstamp: Date;
       /** @description The raw data returned by the provider. */
       raw_data: {
         [key: string]: unknown;
@@ -135,8 +140,12 @@ export interface components {
       Fax: string | null;
       /** @description The type of industry in which the account operates. */
       Industry: string | null;
-      /** @description The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record. */
-      LastActivityDate: string | null;
+      /**
+       * Format: date-time 
+       * @description The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record. 
+       * @example 2022-02-27T00:00:00Z
+       */
+      LastActivityDate: Date | null;
       /** @description The name of the account. Maximum size is 255 characters. */
       Name: string | null;
       /** @description The number of employees that work at the account. */
@@ -147,87 +156,204 @@ export interface components {
       Website: string | null;
       /** @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). */
       IsDeleted: boolean;
-      /** @description The date and time when this contact was created. */
-      CreatedDate: string;
-      /** @description The date and time when this contact was last modified. */
-      SystemModstamp: string;
+      /**
+       * Format: date-time 
+       * @description The date and time when this contact was created. 
+       * @example 2022-02-27T00:00:00Z
+       */
+      CreatedDate: Date;
+      /**
+       * Format: date-time 
+       * @description The date and time when this contact was last modified. 
+       * @example 2022-02-27T00:00:00Z
+       */
+      SystemModstamp: Date;
       /** @description The raw data returned by the provider. */
       raw_data: {
         [key: string]: unknown;
       };
     };
-    salesforce_list_view_metadata: {
+    hubspot_contact: {
       /**
-       * @description The unique identifier for this list view. 
-       * @example 12345
+       * @description the unique identifier for the contact. This field is set automatically and cannot be edited. This can be used when updating contacts through importing or through API. 
+       * @example 501
        */
       id: string;
-      /** @enum {string} */
-      object_type?: "contact" | "account" | "lead" | "opportunity";
       /**
-       * @description The developer name of this list view. 
-       * @example my-list
+       * @description the contact's primary email address. 
+       * @example team@supaglue.com
        */
-      name: string;
+      email: string | null;
+      /** @example 101 */
+      associatedcompanyid: string | null;
       /**
-       * @description The label for this list view. 
-       * @example My List
+       * @description the contact's first name. 
+       * @example Jane
        */
-      label: string;
+      firstname: string | null;
       /**
-       * @description The raw data for this list view. 
-       * @example {
-       *   "describeUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
-       *   "developerName": "NewThisWeek",
-       *   "id": "00BD0000005WcBeMAK",
-       *   "label": "New This Week",
-       *   "resultsUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results",
-       *   "soqlCompatible": true,
-       *   "url": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK"
-       * }
+       * @description the contact's primary phone number. The phone number is validated and formatted automatically by HubSpot based on the country code. You can select to turn off automatic formatting on a contact record, either when editing the Phone number property, or adding a phone number to call. 
+       * @example (650) 450-8812
        */
+      phone: string | null;
+      /**
+       * @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). 
+       * @example false
+       */
+      is_deleted: boolean;
+      /**
+       * @description the contact's last name. 
+       * @example Doe
+       */
+      lastname: string | null;
+      /**
+       * @description the contact's city of residence. 
+       * @example Palo Alto
+       */
+      city: string | null;
+      /**
+       * @description the contact's country of residence. This might be set via import, form, or integration. 
+       * @example United States
+       */
+      country: string | null;
+      /**
+       * @description the contact's zip code. 
+       * @example 94303
+       */
+      zip: string | null;
+      /**
+       * @description the contact's state of residence. 
+       * @example CA
+       */
+      state: string | null;
+      /**
+       * @description the contact's street address, including apartment or unit #. 
+       * @example 4 Giro's Passage
+       */
+      address: string | null;
+      /**
+       * @description the contact's mobile phone number. The phone number is validated and formatted automatically by HubSpot based on the country code. You can select to turn off automatic formatting on a contact record, either when editing the Mobile phone number property, or adding a phone number to call. 
+       * @example (650) 450-8811
+       */
+      mobilephone: string | null;
+      /**
+       * @description the owner of the contact. This can be any HubSpot user or Salesforce integration user and can be set manually or via Workflows. You can assign additional users to the contact record by creating a custom HubSpot user field type property. 
+       * @example 1450461
+       */
+      hubspot_owner_id: string | null;
+      /**
+       * @description the contact's primary fax number. 
+       * @example (650) 450-8810
+       */
+      fax: string | null;
+      /**
+       * @description the contact's job title. 
+       * @example CEO
+       */
+      jobtitle: string | null;
+      /**
+       * Format: date-time 
+       * @description the date that the contact was created in your HubSpot account. 
+       * @example 2023-08-01T20:58:17.725Z
+       */
+      createdate: Date;
+      /**
+       * Format: date-time 
+       * @description the last date and time a note, call, tracked and logged sales email, meeting, LinkedIn/SMS/WhatsApp message, task, or chat was logged on the contact record. This is set automatically by HubSpot based on the most recent date/time set for an activity. For example, if a user logs a call and indicates that it occurred the day before, the Last activity date property will show yesterday's date. 
+       * @example 2023-08-01T20:58:17.725Z
+       */
+      notes_last_updated: Date;
+      /** @description The raw data returned by the provider. */
       raw_data: {
         [key: string]: unknown;
       };
     };
-    salesforce_list_view_membership: {
-      /** @description The unique identifier for a member of this list view. */
+    hubspot_company: {
+      /**
+       * @description the unique identifier for the company. This field is set automatically and cannot be edited. This can be used when updating companies through importing or through API. 
+       * @example 101
+       */
       id: string;
       /**
-       * @description The raw data for this list view membership. 
-       * @example {
-       *   "columns": [
-       *     {
-       *       "fieldNameOrPath": "Id",
-       *       "value": "0012800000bbzSAAAY"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "Email",
-       *       "value": "jdoe@example.com"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "FirstName",
-       *       "value": "John"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "LastName",
-       *       "value": "Doe"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "CreatedDate",
-       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "LastModifiedDate",
-       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "SystemModstamp",
-       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
-       *     }
-       *   ]
-       * }
+       * @description a short statement about the company's mission and goals. 
+       * @example Open-source developer platform for customer-facing integrations
        */
+      description: string | null;
+      /**
+       * @description the city where the company is located. 
+       * @example San Francisco
+       */
+      city: string | null;
+      /**
+       * @description the country where the company is located. 
+       * @example United States
+       */
+      country: string | null;
+      /**
+       * @description postal or zip code for the company. 
+       * @example 94025
+       */
+      zip: string | null;
+      /**
+       * @description the state or region where the company is located. 
+       * @example CA
+       */
+      state: string | null;
+      /**
+       * @description the street address of the company. 
+       * @example 525 Brannan St
+       */
+      address: string | null;
+      /**
+       * @description the company's primary phone number. 
+       * @example (650) 450-8810
+       */
+      phone: string | null;
+      /**
+       * @description the type of business the company performs. By default, this property has approximately 150 pre-defined options to select from. These options cannot be deleted, as they are used by HubSpot Insights, but you can add new custom options to meet your needs. 
+       * @example COMPUTER SOFTWARE
+       */
+      industry: string | null;
+      /**
+       * @description the name of the company. 
+       * @example Supaglue
+       */
+      name: string | null;
+      /**
+       * @description total number of people who work for the company. 
+       * @example 3000
+       */
+      numberofemployees: string | null;
+      /**
+       * @description the HubSpot user that the company is assigned to. You can assign additional users to a company record by creating a custom HubSpot user property. 
+       * @example 101
+       */
+      hubspot_owner_id: string | null;
+      /**
+       * @description the company's website domain. HubSpot Insights uses this domain to provide you with basic information about the company. Every property marked with an asterisk (*) can be populated automatically by HubSpot Insights once the domain name is populated. 
+       * @example uos.com.sg
+       */
+      domain: string | null;
+      /**
+       * @description the company's web address. Filling in this property will also fill in Company domain name. 
+       * @example http://www.uos.com.sg
+       */
+      website: string | null;
+      /** @example false */
+      is_deleted: boolean;
+      /**
+       * Format: date-time 
+       * @description the date the company was added to your account. 
+       * @example 2023-08-01T20:58:17.725Z
+       */
+      createdate: Date;
+      /**
+       * Format: date-time 
+       * @description the last date and time a note, call, tracked and logged sales email, meeting, LinkedIn/SMS/WhatsApp message, task, or chat was logged on the company record. This is set automatically by HubSpot based on the most recent date/time set for an activity. For example, if a user logs a call and indicates that it occurred the day before, the Last activity date property will show yesterday's date. 
+       * @example 2023-08-01T20:58:17.725Z
+       */
+      notes_last_updated: Date;
+      /** @description The raw data returned by the provider. */
       raw_data: {
         [key: string]: unknown;
       };
@@ -241,47 +367,25 @@ export interface components {
       total_count: number;
     };
     errors: ({
-        /** @example name is a required field on model. */
+        /**
+         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
+         * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
+         */
         detail?: string;
-        /** @example MISSING_REQUIRED_FIELD */
+        /**
+         * @description The Supaglue error code associated with the error. 
+         * @example MISSING_REQUIRED_FIELD
+         */
         problem_type?: string;
-        source?: {
-          /** @example irure consectetur */
-          pointer?: string;
-        };
-        /** @example Missing Required Field */
+        /**
+         * @description A brief description of the error. The schema and type of message will vary by Provider. 
+         * @example Property values were not valid
+         */
         title?: string;
       })[];
-    /**
-     * @example [
-     *   {
-     *     "detail": "An unrecognized field, age, was passed in with request data.",
-     *     "problem_type": "UNRECOGNIZED_FIELD",
-     *     "source": {
-     *       "pointer": "Lorem ipsum"
-     *     },
-     *     "title": "Unrecognized Field"
-     *   },
-     *   {
-     *     "detail": "An unrecognized field, age, was passed in with request data.",
-     *     "problem_type": "UNRECOGNIZED_FIELD",
-     *     "source": {
-     *       "pointer": "in"
-     *     },
-     *     "title": "Unrecognized Field"
-     *   }
-     * ]
-     */
     warnings: ({
-        /** @example An unrecognized field, age, was passed in with request data. */
         detail?: string;
-        /** @example UNRECOGNIZED_FIELD */
         problem_type?: string;
-        source?: {
-          /** @example Lorem ipsum */
-          pointer?: string;
-        };
-        /** @example Unrecognized Field */
         title?: string;
       })[];
   };
@@ -291,6 +395,20 @@ export interface components {
     "x-customer-id": string;
     /** @description The provider name */
     "x-provider-name": string;
+    /** @description If provided, will only return objects modified after this datetime */
+    modified_after?: Date;
+    /** @description If provided, will only return objects modified before this datetime */
+    modified_before?: Date;
+    /** @description If provided, will only return objects created after this datetime */
+    created_after?: Date;
+    /** @description If provided, will only return objects created before this datetime */
+    created_before?: Date;
+    /** @description Whether to include data that was deleted in providers. */
+    include_deleted_data?: boolean;
+    /** @description Number of results to return per page. (Max: 1000) */
+    page_size?: string;
+    /** @description The pagination cursor value */
+    cursor?: string;
   };
   requestBodies: never;
   headers: never;
@@ -302,23 +420,12 @@ export type external = Record<string, never>;
 export interface operations {
 
   /** List contacts */
-  listContacts: {
+  listSalesforceContacts: {
     parameters: {
       query?: {
-        /** @description If provided, will only return objects modified after this datetime */
-        modified_after?: Date;
-        /** @description If provided, will only return objects modified before this datetime */
-        modified_before?: Date;
-        /** @description If provided, will only return objects created after this datetime */
-        created_after?: Date;
-        /** @description If provided, will only return objects created before this datetime */
-        created_before?: Date;
-        /** @description Whether to include data that was deleted in providers. */
-        include_deleted_data?: boolean;
-        /** @description Number of results to return per page */
-        page_size?: string;
-        /** @description The pagination cursor value */
-        cursor?: string;
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -337,8 +444,13 @@ export interface operations {
     };
   };
   /** List accounts */
-  listAccounts: {
+  listSalesforceAccounts: {
     parameters: {
+      query?: {
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
       };
@@ -355,47 +467,49 @@ export interface operations {
       };
     };
   };
-  /** List list views */
-  listListViewss: {
+  /** List contacts */
+  listHubspotContacts: {
     parameters: {
+      query?: {
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
       };
-      path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
-      };
     };
     responses: {
-      /** @description List Views */
+      /** @description Contacts */
       200: {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["salesforce_list_view_metadata"])[];
+            records: (components["schemas"]["hubspot_contact"])[];
           };
         };
       };
     };
   };
-  /** Get list view membership */
-  getListViewMembership: {
+  /** List companies */
+  listHubspotCompanies: {
     parameters: {
+      query?: {
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
       };
-      path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
-        list_view_id: string;
-      };
     };
     responses: {
-      /** @description List Views */
+      /** @description Companies */
       200: {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            members?: (components["schemas"]["salesforce_list_view_membership"])[];
-            metadata?: components["schemas"]["salesforce_list_view_metadata"];
+            records: (components["schemas"]["hubspot_company"])[];
           };
         };
       };

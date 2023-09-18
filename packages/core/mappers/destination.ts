@@ -5,7 +5,6 @@ import type {
   DestinationUnsafeAny,
   MongoDBConfigUnsafe,
   PostgresConfigUnsafe,
-  S3ConfigUnsafe,
 } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils';
 import { decrypt } from '../lib/crypt';
@@ -15,6 +14,7 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
     id: model.id,
     name: model.name,
     applicationId: model.applicationId,
+    version: model.version,
   };
 
   const decryptedConfig = JSON.parse(await decrypt(model.encryptedConfig));
@@ -30,7 +30,6 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
         },
       };
     case 'postgres':
-    case 's3':
     case 'mongodb':
       return {
         ...baseParams,
@@ -42,6 +41,7 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
         id: model.id,
         applicationId: model.applicationId,
         type: model.type,
+        version: 1,
       };
     default:
       throw new Error(`Unknown destination type: ${model.type}`);
@@ -53,6 +53,7 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
     id: model.id,
     name: model.name,
     applicationId: model.applicationId,
+    version: model.version,
   };
 
   const decryptedConfig = JSON.parse(await decrypt(model.encryptedConfig));
@@ -87,18 +88,6 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
         },
       };
     }
-    case 's3': {
-      const config = decryptedConfig as S3ConfigUnsafe;
-      return {
-        ...baseParams,
-        type: model.type,
-        config: {
-          region: config.region,
-          bucket: config.bucket,
-          accessKeyId: config.accessKeyId,
-        },
-      };
-    }
     case 'mongodb': {
       const config = decryptedConfig as MongoDBConfigUnsafe;
       return {
@@ -116,6 +105,7 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
         id: model.id,
         applicationId: model.applicationId,
         type: 'supaglue',
+        version: 1,
       };
     }
     default:

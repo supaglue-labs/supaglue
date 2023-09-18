@@ -86,6 +86,7 @@ export default function BigQDestinationDetailsPanel({ isLoading }: BigQueryDesti
             privateKey,
           },
         },
+        version: destination.version,
       });
       if (!response.ok) {
         addNotification({ message: response.errorMessage, severity: 'error' });
@@ -224,7 +225,7 @@ export default function BigQDestinationDetailsPanel({ isLoading }: BigQueryDesti
             size="small"
             label="Dataset"
             variant="outlined"
-            helperText="This is the dataset where tables will be written into (it must already exist)."
+            helperText="This is the dataset where tables will be written into (it must already exist). Use the Management ConnectionSyncConfigs API to override this."
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setDataset(event.target.value);
               setIsDirty(true);

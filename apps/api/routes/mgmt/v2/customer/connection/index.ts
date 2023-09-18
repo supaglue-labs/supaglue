@@ -53,15 +53,15 @@ export default function init(app: Router): void {
       res: Response<GetProviderUserIdResponse>
     ) => {
       const providerName = req.query.provider_name;
-      const connection = await connectionService.getSafeByProviderNameAndApplicationId(
+      const connection = await connectionService.getSafeByCustomerIdProviderNameAndApplicationId(
+        req.params.customer_id,
         providerName,
         req.supaglueApplication.id
       );
-
-      const [client] = await remoteService.getCrmRemoteClient(connection.id);
+      const client = await remoteService.getRemoteClient(connection.id);
       try {
-        const userId = await client.getUserId();
-        return res.status(200).send({ user_id: userId });
+        const { userId, rawDetails } = await client.getUserIdAndDetails();
+        return res.status(200).send({ user_id: userId, raw_details: rawDetails });
       } catch (err) {
         if (err instanceof NotImplementedError) {
           throw new BadRequestError(err.message);
@@ -100,7 +100,7 @@ export default function init(app: Router): void {
       // enrich with user_id, if we can.
       // TODO remove this after users migrate to /_provider_user_id above
       const [client] = await remoteService.getCrmRemoteClient(req.params.connection_id);
-      const userId = await client.getUserId();
+      const { userId } = await client.getUserIdAndDetails();
 
       return res.status(200).send(snakecaseKeys({ ...connection, userId }));
     }
@@ -114,7 +114,7 @@ export default function init(app: Router): void {
     ) => {
       // TODO: revoke token from provider?
       await connectionAndSyncService.delete(req.params.connection_id, req.supaglueApplication.id);
-      return res.status(204).send();
+      return res.status(204).end();
     }
   );
 

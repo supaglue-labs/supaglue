@@ -1,4 +1,5 @@
 import type { DestinationWriter } from '@supaglue/core/destination_writers/base';
+import { shouldDeleteRecords } from '@supaglue/core/destination_writers/util';
 import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import { getCategoryForProvider } from '@supaglue/core/remotes';
 import type { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
@@ -21,7 +22,7 @@ import type { ApplicationService, SyncService } from '../services';
 export type SyncObjectRecordsArgs = {
   syncId: string;
   connectionId: string;
-  objectType: 'common' | 'standard';
+  objectType: 'common' | 'standard' | 'custom';
   object: string;
   updatedAfterMs?: number;
 };
@@ -29,7 +30,7 @@ export type SyncObjectRecordsArgs = {
 export type SyncObjectRecordsResult = {
   syncId: string;
   connectionId: string;
-  objectType: 'common' | 'standard';
+  objectType: 'common' | 'standard' | 'custom';
   object: string;
   maxLastModifiedAtMs: number | null;
   numRecordsSynced: number;
@@ -61,13 +62,22 @@ export function createSyncObjectRecords(
             const category = getCategoryForProvider(connection.providerName);
             switch (category) {
               case 'crm': {
+                if (connection.providerName === 'hubspot' && object === 'lead') {
+                  return {
+                    syncId,
+                    connectionId,
+                    objectType,
+                    object,
+                    maxLastModifiedAt: null,
+                    numRecords: 0,
+                  };
+                }
                 const [client] = await remoteService.getCrmRemoteClient(connectionId);
                 const fieldMappingConfig = await connectionService.getFieldMappingConfig(
                   connectionId,
                   'common',
                   object
                 );
-
                 const readable = await client.listCommonObjectRecords(
                   object as CRMCommonObjectType,
                   fieldMappingConfig,
@@ -78,22 +88,27 @@ export function createSyncObjectRecords(
                   connection,
                   object as CRMCommonObjectType,
                   toHeartbeatingReadable(readable),
-                  heartbeat
+                  heartbeat,
+                  /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
                 );
               }
               case 'engagement': {
                 const [client] = await remoteService.getEngagementRemoteClient(connectionId);
                 const readable = await client.listCommonObjectRecords(
                   object as EngagementCommonObjectType,
-                  updatedAfter
+                  updatedAfter,
+                  heartbeat
                 );
                 return await writer.writeCommonObjectRecords(
                   connection,
                   object as EngagementCommonObjectType,
                   toHeartbeatingReadable(readable),
-                  heartbeat
+                  heartbeat,
+                  /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
                 );
               }
+              case 'enrichment':
+              case 'marketing_automation':
               case 'no_category': {
                 throw ApplicationFailure.nonRetryable(
                   `Common objects not supported for provider ${connection.providerName}`
@@ -112,7 +127,25 @@ export function createSyncObjectRecords(
               connection,
               object,
               toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
-              heartbeat
+              heartbeat,
+              /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
+            );
+          }
+          break;
+        case 'custom':
+          {
+            const client = await remoteService.getRemoteClient(connectionId);
+            const fieldMappingConfig = {
+              type: 'inherit_all_fields' as const,
+            };
+            const fieldsToFetch = getFieldsToFetch(fieldMappingConfig);
+            const stream = await client.listCustomObjectRecords(object, fieldsToFetch, updatedAfter, heartbeat);
+            return await writer.writeObjectRecords(
+              connection,
+              object,
+              toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
+              heartbeat,
+              /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
             );
           }
           break;

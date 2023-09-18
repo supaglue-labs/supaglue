@@ -1,15 +1,19 @@
 import type { ConnectionUnsafe, Provider, ProviderCategory, ProviderName } from '@supaglue/types';
 import type { AbstractRemoteClient, ConnectorAuthConfig, RemoteClient } from './base';
+import * as sixsense from './impl/6sense';
 import * as apollo from './impl/apollo';
 import * as capsule from './impl/capsule';
+import * as clearbit from './impl/clearbit';
 import * as gong from './impl/gong';
 import * as hubspot from './impl/hubspot';
 import * as intercom from './impl/intercom';
 import * as linear from './impl/linear';
+import * as marketo from './impl/marketo';
 import * as ms_dynamics_365_sales from './impl/ms_dynamics_365_sales';
 import * as outreach from './impl/outreach';
 import * as pipedrive from './impl/pipedrive';
 import * as salesforce from './impl/salesforce';
+import * as salesforce_marketing_cloud_account_engagement from './impl/salesforce_marketing_cloud_account_engagement';
 import * as salesloft from './impl/salesloft';
 import * as zendesk_sell from './impl/zendesk_sell';
 import * as zoho_crm from './impl/zoho_crm';
@@ -36,6 +40,10 @@ const connectorConfigMap: {
   salesloft,
   intercom,
   linear,
+  clearbit,
+  '6sense': sixsense,
+  salesforce_marketing_cloud_account_engagement,
+  marketo,
 };
 
 // `authConfig` to be used in simple-oauth2
@@ -99,5 +107,11 @@ export function getCategoryForProvider(providerName: ProviderName): ProviderCate
     case 'intercom':
     case 'linear':
       return 'no_category';
+    case 'clearbit':
+    case '6sense':
+      return 'enrichment';
+    case 'marketo':
+    case 'salesforce_marketing_cloud_account_engagement':
+      return 'marketing_automation';
   }
 }

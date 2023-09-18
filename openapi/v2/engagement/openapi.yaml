@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.13.16
+  version: 0.14.14
   title: Unified Engagement API
   contact:
     name: Supaglue
@@ -10,10 +10,9 @@ info:
     #### Introduction
     Welcome to the Unified API documentation for Engagement. You can use this API to write to multiple third-party providers within the Engagement category.
 
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
+    [View common schema for Engagement](https://docs.supaglue.com/platform/common-schemas/engagement)
 
-    #### Reading data
-    To read data from third-party providers, refer to the [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
     #### Base API URL
 
@@ -42,8 +41,12 @@ paths:
     $ref: paths/users@{user_id}.yaml
   '/mailboxes/{mailbox_id}':
     $ref: paths/mailboxes@{mailbox_id}.yaml
+  '/sequences':
+    $ref: paths/sequences.yaml
   '/sequences/{sequence_id}':
     $ref: paths/sequences@{sequence_id}.yaml
+  '/sequences/{sequence_id}/sequence_steps':
+    $ref: paths/sequences@{sequence_id}@sequence_steps.yaml
   '/sequence_states':
     $ref: paths/sequence_states.yaml
   '/sequence_states/{sequence_state_id}':
@@ -86,6 +89,10 @@ components:
       $ref: ./components/schemas/objects/user.yaml
     sequence:
       $ref: ./components/schemas/objects/sequence.yaml
+    create_sequence:
+      $ref: ./components/schemas/create_sequence.yaml
+    create_sequence_step:
+      $ref: ./components/schemas/create_sequence_step.yaml
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     address:

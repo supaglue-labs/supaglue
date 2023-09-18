@@ -1,5 +1,5 @@
 get:
-  operationId: listAccounts
+  operationId: listSalesforceAccounts
   summary: List accounts
   tags:
     - Salesforce
@@ -7,10 +7,6 @@ get:
     - x-api-key: []
   parameters:
     - $ref: ../../../../common/components/parameters/query/modified_after.yaml
-    - $ref: ../../../../common/components/parameters/query/modified_before.yaml
-    - $ref: ../../../../common/components/parameters/query/created_after.yaml
-    - $ref: ../../../../common/components/parameters/query/created_before.yaml
-    - $ref: ../../../../common/components/parameters/query/include_deleted_data.yaml
     - $ref: ../../../../common/components/parameters/query/page_size.yaml
     - $ref: ../../../../common/components/parameters/query/cursor.yaml
   responses:

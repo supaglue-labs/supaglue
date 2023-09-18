@@ -1,7 +1,7 @@
 get:
   operationId: getProviderUserId
-  summary: Get logged in user ID
-  description: This endpoint returns the ID of the logged in user. This is sometimes known as the owner ID.
+  summary: Get logged in user ID and details
+  description: This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.
   tags:
     - Connections
   security:
@@ -11,7 +11,12 @@ get:
       in: query
       required: true
       schema:
-        $ref: ../components/schemas/objects/provider_name.yaml
+        type: string
+        enum:
+          - hubspot
+          - ms_dynamics_365_sales
+          - intercom
+        example: hubspot
   responses:
     200:
       description: UserId
@@ -22,9 +27,20 @@ get:
             properties:
               user_id:
                 type: string
-                description: The ID of the logged in user. The ID originates from your customer's third-party Provider (e.g. MS Dynamics 365 Sales).
+                description: The ID of the logged in user. The ID originates from your customer's third-party Provider.
+              raw_details:
+                type: object
+                additionalProperties: true
+                description: The raw data from the your customer's third-party Provider.
             example:
               user_id: '70115e3c-2700-4112-b28f-2706e08570e6'
+              raw_details:
+                user_id: '70115e3c-2700-4112-b28f-2706e08570e6'
+                user: test@something.com
+                scopes:
+                  - contacts
+                  - automation
+                  - oauth
 parameters:
   - name: customer_id
     in: path

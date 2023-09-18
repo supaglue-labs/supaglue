@@ -1,0 +1,49 @@
+get:
+  operationId: getConnectionSyncConfig
+  summary: Get connection sync config
+  tags:
+    - ConnectionSyncConfigs
+  security:
+    - x-api-key: []
+  parameters: []
+  responses:
+    '200':
+      description: Connection Sync Config
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/connection_sync_config.yaml
+put:
+  operationId: upsertConnectionSyncConfig
+  summary: Upsert connection sync config
+  tags:
+    - ConnectionSyncConfigs
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/upsert_connection_sync_config.yaml
+  responses:
+    '200':
+      description: Connection Sync Config
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/connection_sync_config.yaml
+delete:
+  operationId: deleteConnectionSyncConfig
+  summary: Delete connection sync config
+  tags:
+    - ConnectionSyncConfigs
+  security:
+    - x-api-key: []
+  responses:
+    204:
+      description: Connection Sync Config
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

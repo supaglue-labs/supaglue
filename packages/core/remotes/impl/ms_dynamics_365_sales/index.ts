@@ -2,7 +2,13 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import type { ConnectionUnsafe, CRMProvider, ListedObjectRecord, Provider } from '@supaglue/types';
+import type {
+  ConnectionUnsafe,
+  CRMProvider,
+  ListedObjectRecord,
+  Provider,
+  RemoteUserIdAndDetails,
+} from '@supaglue/types';
 import type {
   Account,
   Contact,
@@ -27,6 +33,7 @@ import {
   InternalServerError,
   NotFoundError,
   NotModifiedError,
+  RemoteProviderError,
   UnauthorizedError,
 } from '../../../errors';
 import type { ConnectorAuthConfig } from '../../base';
@@ -273,13 +280,16 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async getUserId(): Promise<string | undefined> {
+  public override async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {
     await this.maybeRefreshAccessToken();
     const { accessToken } = this.#credentials;
     const jwtTokenParts = accessToken.split('.');
     const jwtTokenPayload = JSON.parse(Buffer.from(jwtTokenParts[1], 'base64').toString('utf-8'));
     const activeDirectoryUserId = jwtTokenPayload.oid;
-    return await this.getUserIdForActiveDirectoryUserId(activeDirectoryUserId);
+    const systemUserId = await this.getUserIdForActiveDirectoryUserId(activeDirectoryUserId);
+    return {
+      userId: systemUserId,
+    };
   }
 
   private async getUserIdForActiveDirectoryUserId(activeDirectoryUserId: string): Promise<string | undefined> {
@@ -476,6 +486,8 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   public override handleErr(err: unknown): unknown {
     if (err instanceof Response) {
+      // TODO: pass "cause" into the error constructor. to do this, `handleErr` needs to be async.
+
       switch (err.status) {
         case 400:
           return new BadRequestError(err.statusText);
@@ -487,6 +499,57 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           return new NotFoundError(err.statusText);
         case 304:
           return new NotModifiedError(err.statusText);
+        // The following are unmapped to Supaglue errors, but we want to pass
+        // them back as 4xx so they aren't 500 and developers can view error messages
+        // NOTE: `429` is omitted below since we process it differently for syncs
+        case 402:
+        case 405:
+        case 406:
+        case 407:
+        case 408:
+        case 409:
+        case 410:
+        case 411:
+        case 412:
+        case 413:
+        case 414:
+        case 415:
+        case 416:
+        case 417:
+        case 418:
+        case 419:
+        case 420:
+        case 421:
+        case 422:
+        case 423:
+        case 424:
+        case 425:
+        case 426:
+        case 427:
+        case 428:
+        case 430:
+        case 431:
+        case 432:
+        case 433:
+        case 434:
+        case 435:
+        case 436:
+        case 437:
+        case 438:
+        case 439:
+        case 440:
+        case 441:
+        case 442:
+        case 443:
+        case 444:
+        case 445:
+        case 446:
+        case 447:
+        case 448:
+        case 449:
+        case 450:
+        case 451:
+          return new RemoteProviderError(err.statusText);
         default:
           return new InternalServerError(err.statusText);
       }
@@ -496,7 +559,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
       switch (err.code) {
         case 'ENOTFOUND':
         case 'ECONNREFUSED':
-          return new BadGatewayError(`Could not connect to remote CRM: ${err.message}`);
+          return new BadGatewayError(`Could not connect to remote CRM`, err);
         default:
           return err;
       }

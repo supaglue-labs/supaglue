@@ -29,9 +29,25 @@ export class InternalServerError extends HTTPError {
   }
 }
 
+export class CacheInvalidationError extends InternalServerError {
+  problemType = 'CACHE_INVALIDATION_ERROR';
+  constructor(message?: string) {
+    super(message || 'Cache invalidation error');
+  }
+}
+
 export class BadGatewayError extends HTTPError {
   code = 502;
   problemType = 'BAD_GATEWAY_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
+export class GatewayTimeoutError extends HTTPError {
+  code = 504;
+  problemType = 'GATEWAY_TIMEOUT_ERROR';
+
   constructor(message: string, cause?: Error) {
     super(message, cause);
   }
@@ -88,6 +104,14 @@ export class ConflictError extends HTTPError {
 export class UnprocessableEntityError extends HTTPError {
   code = 422;
   problemType = 'UNPROCESSABLE_ENTITY_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
+export class RemoteProviderError extends HTTPError {
+  code = 499;
+  problemType = 'REMOTE_PROVIDER_ERROR';
   constructor(message: string, cause?: Error) {
     super(message, cause);
   }

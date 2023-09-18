@@ -1,0 +1,56 @@
+type: object
+properties:
+  destination_config:
+    oneOf:
+      - description: Config specific to postgres destination
+        type: object
+        title: postgres
+        properties:
+          type:
+            type: string
+            enum: [postgres]
+          schema:
+            type: string
+            description: The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used.
+            example: customer_1_schema
+        required:
+          - type
+          - schema
+      - description: Config specific to bigquery destination
+        type: object
+        title: bigquery
+        properties:
+          type:
+            type: string
+            enum: [bigquery]
+          dataset:
+            type: string
+            description: The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used.
+            example: customer_1_dataset
+        required:
+          - type
+          - dataset
+  standard_objects:
+    description: A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.
+    type: array
+    items:
+      type: object
+      properties:
+        object:
+          type: string
+          description: The Provider object name (case sensitive)
+          example: Contact
+      required:
+        - object
+  custom_objects:
+    description: A list of case-sensitive Provider objects to be synced.
+    type: array
+    items:
+      type: object
+      properties:
+        object:
+          type: string
+          description: The Supaglue object name (case sensitive)
+          example: Contact__c
+      required:
+        - object

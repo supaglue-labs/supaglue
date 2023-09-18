@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import ApplicationMenu from '@/components/ApplicationMenu';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { Biotech, FindInPage, MenuBook } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import HubIcon from '@mui/icons-material/Hub';
@@ -39,8 +40,8 @@ const item = {
   },
 };
 
-export default function Navigator(props: DrawerProps) {
-  const { ...other } = props;
+export default function Navigator(props: DrawerProps & SupaglueProps) {
+  const { lekko, ...other } = props;
 
   const applicationId = useActiveApplicationId();
 
@@ -114,6 +115,13 @@ export default function Navigator(props: DrawerProps) {
       ],
     },
   ];
+
+  if (
+    !lekko.schemasWhitelistConfig.applicationIds.includes(applicationId) &&
+    !lekko.entitiesWhitelistConfig.applicationIds.includes(applicationId)
+  ) {
+    categories[0].children = categories[0].children.filter((category) => category.id !== 'Data Model');
+  }
 
   return (
     <Drawer variant="permanent" {...other}>

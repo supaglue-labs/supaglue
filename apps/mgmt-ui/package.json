@@ -1,6 +1,6 @@
 {
   "name": "mgmt-ui",
-  "version": "0.13.16",
+  "version": "0.14.14",
   "private": true,
   "scripts": {
     "dev": "next dev",

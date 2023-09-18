@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "version": "0.13.13",
-    "title": "Data API",
+    "title": "Data Listing API",
     "contact": {
       "name": "Supaglue",
       "email": "docs@supaglue.com",
@@ -20,12 +20,16 @@
     {
       "name": "Salesforce",
       "description": "Salesforce is a CRM Provider."
+    },
+    {
+      "name": "Hubspot",
+      "description": "Hubspot is a CRM Provider."
     }
   ],
   "paths": {
     "/salesforce/contacts": {
       "get": {
-        "operationId": "listContacts",
+        "operationId": "listSalesforceContacts",
         "summary": "List contacts",
         "tags": [
           "Salesforce"
@@ -37,71 +41,13 @@
         ],
         "parameters": [
           {
-            "name": "modified_after",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects modified after this datetime"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "name": "modified_before",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects modified before this datetime"
+            "$ref": "#/components/parameters/page_size"
           },
           {
-            "name": "created_after",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects created after this datetime"
-          },
-          {
-            "name": "created_before",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time",
-              "example": "2023-02-23T00:00:00.000Z"
-            },
-            "description": "If provided, will only return objects created before this datetime"
-          },
-          {
-            "name": "include_deleted_data",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to include data that was deleted in providers."
-          },
-          {
-            "name": "page_size",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "3804695"
-            },
-            "description": "Number of results to return per page"
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
-            },
-            "description": "The pagination cursor value"
+            "$ref": "#/components/parameters/cursor"
           }
         ],
         "responses": {
@@ -140,7 +86,7 @@
     },
     "/salesforce/accounts": {
       "get": {
-        "operationId": "listAccounts",
+        "operationId": "listSalesforceAccounts",
         "summary": "List accounts",
         "tags": [
           "Salesforce"
@@ -152,25 +98,13 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/0"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/1"
+            "$ref": "#/components/parameters/page_size"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/2"
-          },
-          {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/3"
-          },
-          {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/4"
-          },
-          {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
-          },
-          {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
+            "$ref": "#/components/parameters/cursor"
           }
         ],
         "responses": {
@@ -207,12 +141,12 @@
         }
       ]
     },
-    "/salesforce/list_views/{object_type}": {
+    "/hubspot/contacts": {
       "get": {
-        "operationId": "listListViewss",
-        "summary": "List list views",
+        "operationId": "listHubspotContacts",
+        "summary": "List contacts",
         "tags": [
-          "Salesforce"
+          "Hubspot"
         ],
         "security": [
           {
@@ -221,15 +155,18 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
           }
         ],
         "responses": {
           "200": {
-            "description": "List Views",
+            "description": "Contacts",
             "content": {
               "application/json": {
                 "schema": {
@@ -241,7 +178,7 @@
                     "records": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/salesforce_list_view_metadata"
+                        "$ref": "#/components/schemas/hubspot_contact"
                       }
                     }
                   },
@@ -258,29 +195,15 @@
       "parameters": [
         {
           "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "name": "object_type",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "enum": [
-              "contact",
-              "account",
-              "lead",
-              "opportunity"
-            ]
-          }
         }
       ]
     },
-    "/salesforce/list_views/{object_type}/{list_id}": {
+    "/hubspot/companies": {
       "get": {
-        "operationId": "getListViewMembership",
-        "summary": "Get list view membership",
+        "operationId": "listHubspotCompanies",
+        "summary": "List companies",
         "tags": [
-          "Salesforce"
+          "Hubspot"
         ],
         "security": [
           {
@@ -289,15 +212,18 @@
         ],
         "parameters": [
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/5"
+            "$ref": "#/components/parameters/modified_after"
           },
           {
-            "$ref": "#/paths/~1salesforce~1contacts/get/parameters/6"
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
           }
         ],
         "responses": {
           "200": {
-            "description": "List Views",
+            "description": "Companies",
             "content": {
               "application/json": {
                 "schema": {
@@ -306,14 +232,11 @@
                     "pagination": {
                       "$ref": "#/components/schemas/pagination"
                     },
-                    "members": {
+                    "records": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/salesforce_list_view_membership"
+                        "$ref": "#/components/schemas/hubspot_company"
                       }
-                    },
-                    "metadata": {
-                      "$ref": "#/components/schemas/salesforce_list_view_metadata"
                     }
                   },
                   "required": [
@@ -329,29 +252,6 @@
       "parameters": [
         {
           "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "name": "object_type",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "enum": [
-              "contact",
-              "account",
-              "lead",
-              "opportunity"
-            ]
-          }
-        },
-        {
-          "name": "list_view_id",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "type": "string",
-            "example": "220e715a-0cbc-4d2d-8420-cd729f12f094"
-          }
         }
       ]
     }
@@ -404,6 +304,8 @@
           },
           "LastActivityDate": {
             "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z",
             "nullable": true,
             "description": "The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record."
           },
@@ -469,10 +371,14 @@
           },
           "CreatedDate": {
             "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z",
             "description": "The date and time when this contact was created."
           },
           "SystemModstamp": {
             "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z",
             "description": "The date and time when this contact was last modified."
           },
           "raw_data": {
@@ -587,6 +493,8 @@
           "LastActivityDate": {
             "type": "string",
             "nullable": true,
+            "example": "2022-02-27T00:00:00Z",
+            "format": "date-time",
             "description": "The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record."
           },
           "Name": {
@@ -615,10 +523,14 @@
           },
           "CreatedDate": {
             "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z",
             "description": "The date and time when this contact was created."
           },
           "SystemModstamp": {
             "type": "string",
+            "format": "date-time",
+            "example": "2022-02-27T00:00:00Z",
             "description": "The date and time when this contact was last modified."
           },
           "raw_data": {
@@ -654,102 +566,271 @@
           "raw_data"
         ]
       },
-      "salesforce_list_view_metadata": {
+      "hubspot_contact": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "example": 12345,
-            "description": "The unique identifier for this list view."
+            "example": "501",
+            "description": "the unique identifier for the contact. This field is set automatically and cannot be edited. This can be used when updating contacts through importing or through API."
           },
-          "object_type": {
+          "email": {
             "type": "string",
-            "enum": [
-              "contact",
-              "account",
-              "lead",
-              "opportunity"
-            ]
+            "nullable": true,
+            "example": "team@supaglue.com",
+            "description": "the contact's primary email address."
           },
-          "name": {
+          "associatedcompanyid": {
             "type": "string",
-            "example": "my-list",
-            "description": "The developer name of this list view."
+            "nullable": true,
+            "example": "101",
+            "description": ""
           },
-          "label": {
+          "firstname": {
             "type": "string",
-            "example": "My List",
-            "description": "The label for this list view."
+            "nullable": true,
+            "example": "Jane",
+            "description": "the contact's first name."
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "example": "(650) 450-8812",
+            "description": "the contact's primary phone number. The phone number is validated and formatted automatically by HubSpot based on the country code. You can select to turn off automatic formatting on a contact record, either when editing the Phone number property, or adding a phone number to call."
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "example": false,
+            "description": "Indicates whether the object has been moved to the Recycle Bin (true) or not (false)."
+          },
+          "lastname": {
+            "type": "string",
+            "nullable": true,
+            "example": "Doe",
+            "description": "the contact's last name."
+          },
+          "city": {
+            "type": "string",
+            "nullable": true,
+            "example": "Palo Alto",
+            "description": "the contact's city of residence."
+          },
+          "country": {
+            "type": "string",
+            "nullable": true,
+            "example": "United States",
+            "description": "the contact's country of residence. This might be set via import, form, or integration."
+          },
+          "zip": {
+            "type": "string",
+            "nullable": true,
+            "example": "94303",
+            "description": "the contact's zip code."
+          },
+          "state": {
+            "type": "string",
+            "nullable": true,
+            "example": "CA",
+            "description": "the contact's state of residence."
+          },
+          "address": {
+            "type": "string",
+            "nullable": true,
+            "example": "4 Giro's Passage",
+            "description": "the contact's street address, including apartment or unit #."
+          },
+          "mobilephone": {
+            "type": "string",
+            "nullable": true,
+            "example": "(650) 450-8811",
+            "description": "the contact's mobile phone number. The phone number is validated and formatted automatically by HubSpot based on the country code. You can select to turn off automatic formatting on a contact record, either when editing the Mobile phone number property, or adding a phone number to call."
+          },
+          "hubspot_owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "1450461",
+            "description": "the owner of the contact. This can be any HubSpot user or Salesforce integration user and can be set manually or via Workflows. You can assign additional users to the contact record by creating a custom HubSpot user field type property."
+          },
+          "fax": {
+            "type": "string",
+            "nullable": true,
+            "example": "(650) 450-8810",
+            "description": "the contact's primary fax number."
+          },
+          "jobtitle": {
+            "type": "string",
+            "nullable": true,
+            "example": "CEO",
+            "description": "the contact's job title."
+          },
+          "createdate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-08-01T20:58:17.725Z",
+            "description": "the date that the contact was created in your HubSpot account."
+          },
+          "notes_last_updated": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-08-01T20:58:17.725Z",
+            "description": "the last date and time a note, call, tracked and logged sales email, meeting, LinkedIn/SMS/WhatsApp message, task, or chat was logged on the contact record. This is set automatically by HubSpot based on the most recent date/time set for an activity. For example, if a user logs a call and indicates that it occurred the day before, the Last activity date property will show yesterday's date."
           },
           "raw_data": {
             "type": "object",
-            "description": "The raw data for this list view.",
-            "additionalProperties": true,
-            "example": {
-              "describeUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
-              "developerName": "NewThisWeek",
-              "id": "00BD0000005WcBeMAK",
-              "label": "New This Week",
-              "resultsUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results",
-              "soqlCompatible": true,
-              "url": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK"
-            }
+            "description": "The raw data returned by the provider.",
+            "additionalProperties": true
           }
         },
         "required": [
           "id",
-          "name",
-          "label",
+          "email",
+          "associatedcompanyid",
+          "firstname",
+          "phone",
+          "is_deleted",
+          "lastname",
+          "city",
+          "country",
+          "zip",
+          "state",
+          "address",
+          "mobilephone",
+          "hubspot_owner_id",
+          "fax",
+          "jobtitle",
+          "createdate",
+          "notes_last_updated",
           "raw_data"
         ]
       },
-      "salesforce_list_view_membership": {
+      "hubspot_company": {
         "type": "object",
         "properties": {
           "id": {
             "type": "string",
-            "description": "The unique identifier for a member of this list view."
+            "example": "101",
+            "description": "the unique identifier for the company. This field is set automatically and cannot be edited. This can be used when updating companies through importing or through API."
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Open-source developer platform for customer-facing integrations",
+            "description": "a short statement about the company's mission and goals."
+          },
+          "city": {
+            "type": "string",
+            "nullable": true,
+            "example": "San Francisco",
+            "description": "the city where the company is located."
+          },
+          "country": {
+            "type": "string",
+            "nullable": true,
+            "example": "United States",
+            "description": "the country where the company is located."
+          },
+          "zip": {
+            "type": "string",
+            "nullable": true,
+            "example": "94025",
+            "description": "postal or zip code for the company."
+          },
+          "state": {
+            "type": "string",
+            "nullable": true,
+            "example": "CA",
+            "description": "the state or region where the company is located."
+          },
+          "address": {
+            "type": "string",
+            "nullable": true,
+            "example": "525 Brannan St",
+            "description": "the street address of the company."
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true,
+            "example": "(650) 450-8810",
+            "description": "the company's primary phone number."
+          },
+          "industry": {
+            "type": "string",
+            "nullable": true,
+            "example": "COMPUTER SOFTWARE",
+            "description": "the type of business the company performs. By default, this property has approximately 150 pre-defined options to select from. These options cannot be deleted, as they are used by HubSpot Insights, but you can add new custom options to meet your needs."
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Supaglue",
+            "description": "the name of the company."
+          },
+          "numberofemployees": {
+            "type": "string",
+            "nullable": true,
+            "example": "3000",
+            "description": "total number of people who work for the company."
+          },
+          "hubspot_owner_id": {
+            "type": "string",
+            "nullable": true,
+            "example": "101",
+            "description": "the HubSpot user that the company is assigned to. You can assign additional users to a company record by creating a custom HubSpot user property."
+          },
+          "domain": {
+            "type": "string",
+            "nullable": true,
+            "example": "uos.com.sg",
+            "description": "the company's website domain. HubSpot Insights uses this domain to provide you with basic information about the company. Every property marked with an asterisk (*) can be populated automatically by HubSpot Insights once the domain name is populated."
+          },
+          "website": {
+            "type": "string",
+            "nullable": true,
+            "example": "http://www.uos.com.sg",
+            "description": "the company's web address. Filling in this property will also fill in Company domain name."
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "example": false,
+            "description": ""
+          },
+          "createdate": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-08-01T20:58:17.725Z",
+            "description": "the date the company was added to your account."
+          },
+          "notes_last_updated": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-08-01T20:58:17.725Z",
+            "description": "the last date and time a note, call, tracked and logged sales email, meeting, LinkedIn/SMS/WhatsApp message, task, or chat was logged on the company record. This is set automatically by HubSpot based on the most recent date/time set for an activity. For example, if a user logs a call and indicates that it occurred the day before, the Last activity date property will show yesterday's date."
           },
           "raw_data": {
             "type": "object",
-            "additionalProperties": true,
-            "description": "The raw data for this list view membership.",
-            "example": {
-              "columns": [
-                {
-                  "fieldNameOrPath": "Id",
-                  "value": "0012800000bbzSAAAY"
-                },
-                {
-                  "fieldNameOrPath": "Email",
-                  "value": "jdoe@example.com"
-                },
-                {
-                  "fieldNameOrPath": "FirstName",
-                  "value": "John"
-                },
-                {
-                  "fieldNameOrPath": "LastName",
-                  "value": "Doe"
-                },
-                {
-                  "fieldNameOrPath": "CreatedDate",
-                  "value": "Fri Aug 01 21:15:46 GMT 2014"
-                },
-                {
-                  "fieldNameOrPath": "LastModifiedDate",
-                  "value": "Fri Aug 01 21:15:46 GMT 2014"
-                },
-                {
-                  "fieldNameOrPath": "SystemModstamp",
-                  "value": "Fri Aug 01 21:15:46 GMT 2014"
-                }
-              ]
-            }
+            "description": "The raw data returned by the provider.",
+            "additionalProperties": true
           }
         },
         "required": [
           "id",
+          "description",
+          "hubspot_owner_id",
+          "city",
+          "country",
+          "zip",
+          "state",
+          "address",
+          "phone",
+          "fax",
+          "industry",
+          "name",
+          "numberofemployees",
+          "website",
+          "domain",
+          "is_deleted",
+          "createdate",
+          "notes_last_updated",
           "raw_data"
         ]
       },
@@ -784,42 +865,25 @@
           "properties": {
             "detail": {
               "type": "string",
-              "example": "name is a required field on model."
+              "description": "The full error message from the remote Provider. The schema and level of detail will vary by Provider.",
+              "example": "{\"code\":400,\"body\":{\"status\":\"error\",\"message\":\"Property values were not valid: [{\\\\\"isValid\\\\\":false,\\\\\"message\\\\\":\\\\\"Property \\\\\\\\\\\\\"__about_us\\\\\\\\\\\\\" does not exist\\\\\",\\\\\"error\\\\\":\\\\\"PROPERTY_DOESNT_EXIST\\\\\",\\\\\"name\\\\\":\\\\\"__about_us\\\\\",\\\\\"localizedErrorMessage\\\\\":\\\\\"Property \\\\\\\\\\\\\"__about_us\\\\\\\\\\\\\" does not exist\\\\\"}]\",\"correlationId\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"category\":\"VALIDATION_ERROR\"},\"headers\":{\"access-control-allow-credentials\":\"false\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"8053d17b9dae9664-SJC\",\"connection\":\"close\",\"content-length\":\"361\",\"content-type\":\"application/json;charset=utf-8\",\"date\":\"Mon, 11 Sep 2023 23:51:22 GMT\",\"nel\":\"{\\\\\"success_fraction\\\\\":0.01,\\\\\"report_to\\\\\":\\\\\"cf-nel\\\\\",\\\\\"max_age\\\\\":604800}\",\"report-to\":\"{\\\\\"endpoints\\\\\":[{\\\\\"url\\\\\":\\\\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\\\\"}],\\\\\"group\\\\\":\\\\\"cf-nel\\\\\",\\\\\"max_age\\\\\":604800}\",\"server\":\"cloudflare\",\"strict-transport-security\":\"max-age=31536000; includeSubDomains; preload\",\"vary\":\"origin, Accept-Encoding\",\"x-content-type-options\":\"nosniff\",\"x-envoy-upstream-service-time\":\"91\",\"x-evy-trace-listener\":\"listener_https\",\"x-evy-trace-route-configuration\":\"listener_https/all\",\"x-evy-trace-route-service-name\":\"envoyset-translator\",\"x-evy-trace-served-by-pod\":\"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2\",\"x-evy-trace-virtual-host\":\"all\",\"x-hubspot-correlation-id\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"x-hubspot-ratelimit-interval-milliseconds\":\"10000\",\"x-hubspot-ratelimit-max\":\"100\",\"x-hubspot-ratelimit-remaining\":\"99\",\"x-hubspot-ratelimit-secondly\":\"10\",\"x-hubspot-ratelimit-secondly-remaining\":\"9\",\"x-request-id\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"x-trace\":\"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000\"}}\n"
             },
             "problem_type": {
               "type": "string",
+              "description": "The Supaglue error code associated with the error.",
               "example": "MISSING_REQUIRED_FIELD"
-            },
-            "source": {
-              "type": "object",
-              "properties": {
-                "pointer": {
-                  "type": "string",
-                  "example": "irure consectetur"
-                }
-              }
             },
             "title": {
               "type": "string",
-              "example": "Missing Required Field"
+              "description": "A brief description of the error. The schema and type of message will vary by Provider.",
+              "example": "Property values were not valid\n"
             }
           },
           "example": [
             {
-              "detail": "name is a required field on model.",
-              "problem_type": "MISSING_REQUIRED_FIELD",
-              "source": {
-                "pointer": "irure consectetur"
-              },
-              "title": "Missing Required Field"
-            },
-            {
-              "detail": "name is a required field on model.",
-              "problem_type": "MISSING_REQUIRED_FIELD",
-              "source": {
-                "pointer": "et"
-              },
-              "title": "Missing Required Field"
+              "detail": "{\"code\":400,\"body\":{\"status\":\"error\",\"message\":\"Property values were not valid: [{\\\\\"isValid\\\\\":false,\\\\\"message\\\\\":\\\\\"Property \\\\\\\\\\\\\"__about_us\\\\\\\\\\\\\" does not exist\\\\\",\\\\\"error\\\\\":\\\\\"PROPERTY_DOESNT_EXIST\\\\\",\\\\\"name\\\\\":\\\\\"__about_us\\\\\",\\\\\"localizedErrorMessage\\\\\":\\\\\"Property \\\\\\\\\\\\\"__about_us\\\\\\\\\\\\\" does not exist\\\\\"}]\",\"correlationId\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"category\":\"VALIDATION_ERROR\"},\"headers\":{\"access-control-allow-credentials\":\"false\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"8053d17b9dae9664-SJC\",\"connection\":\"close\",\"content-length\":\"361\",\"content-type\":\"application/json;charset=utf-8\",\"date\":\"Mon, 11 Sep 2023 23:51:22 GMT\",\"nel\":\"{\\\\\"success_fraction\\\\\":0.01,\\\\\"report_to\\\\\":\\\\\"cf-nel\\\\\",\\\\\"max_age\\\\\":604800}\",\"report-to\":\"{\\\\\"endpoints\\\\\":[{\\\\\"url\\\\\":\\\\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\\\\"}],\\\\\"group\\\\\":\\\\\"cf-nel\\\\\",\\\\\"max_age\\\\\":604800}\",\"server\":\"cloudflare\",\"strict-transport-security\":\"max-age=31536000; includeSubDomains; preload\",\"vary\":\"origin, Accept-Encoding\",\"x-content-type-options\":\"nosniff\",\"x-envoy-upstream-service-time\":\"91\",\"x-evy-trace-listener\":\"listener_https\",\"x-evy-trace-route-configuration\":\"listener_https/all\",\"x-evy-trace-route-service-name\":\"envoyset-translator\",\"x-evy-trace-served-by-pod\":\"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2\",\"x-evy-trace-virtual-host\":\"all\",\"x-hubspot-correlation-id\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"x-hubspot-ratelimit-interval-milliseconds\":\"10000\",\"x-hubspot-ratelimit-max\":\"100\",\"x-hubspot-ratelimit-remaining\":\"99\",\"x-hubspot-ratelimit-secondly\":\"10\",\"x-hubspot-ratelimit-secondly-remaining\":\"9\",\"x-request-id\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"x-trace\":\"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000\"}}\n",
+              "problem_type": "BAD_REQUEST_ERROR",
+              "title": "Property values were not valid\n"
             }
           ]
         }
@@ -830,46 +894,16 @@
           "type": "object",
           "properties": {
             "detail": {
-              "type": "string",
-              "example": "An unrecognized field, age, was passed in with request data."
+              "type": "string"
             },
             "problem_type": {
-              "type": "string",
-              "example": "UNRECOGNIZED_FIELD"
-            },
-            "source": {
-              "type": "object",
-              "properties": {
-                "pointer": {
-                  "type": "string",
-                  "example": "Lorem ipsum"
-                }
-              }
+              "type": "string"
             },
             "title": {
-              "type": "string",
-              "example": "Unrecognized Field"
+              "type": "string"
             }
           }
-        },
-        "example": [
-          {
-            "detail": "An unrecognized field, age, was passed in with request data.",
-            "problem_type": "UNRECOGNIZED_FIELD",
-            "source": {
-              "pointer": "Lorem ipsum"
-            },
-            "title": "Unrecognized Field"
-          },
-          {
-            "detail": "An unrecognized field, age, was passed in with request data.",
-            "problem_type": "UNRECOGNIZED_FIELD",
-            "source": {
-              "pointer": "in"
-            },
-            "title": "Unrecognized Field"
-          }
-        ]
+        }
       }
     },
     "parameters": {
@@ -892,6 +926,73 @@
         },
         "description": "The provider name",
         "required": true
+      },
+      "modified_after": {
+        "name": "modified_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified after this datetime"
+      },
+      "modified_before": {
+        "name": "modified_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects modified before this datetime"
+      },
+      "created_after": {
+        "name": "created_after",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created after this datetime"
+      },
+      "created_before": {
+        "name": "created_before",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "format": "date-time",
+          "example": "2023-02-23T00:00:00.000Z"
+        },
+        "description": "If provided, will only return objects created before this datetime"
+      },
+      "include_deleted_data": {
+        "name": "include_deleted_data",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to include data that was deleted in providers."
+      },
+      "page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "123"
+        },
+        "description": "Number of results to return per page. (Max: 1000)"
+      },
+      "cursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+        },
+        "description": "The pagination cursor value"
       }
     }
   }

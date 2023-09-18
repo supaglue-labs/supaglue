@@ -1,0 +1,56 @@
+post:
+  operationId: upsertContact
+  summary: Upsert contact
+  description: |
+    Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.
+    Only supported for Salesforce, Hubspot, and Pipedrive.
+  tags:
+    - Contacts
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            record:
+              $ref: ../components/schemas/create_update_contact.yaml
+            upsert_on:
+              type: object
+              properties:
+                key:
+                  type: string
+                  enum: [email]
+                  description: The key to upsert on. Only `email` is supported for all providers.
+                values:
+                  type: array
+                  description: The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown.
+                  items:
+                    type: string
+                    example: hello@example.com
+              required:
+                - key
+                - values
+          required:
+            - record
+            - upsert_on
+  responses:
+    '201':
+      description: Contact created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              record:
+                $ref: ../../../common/components/schemas/created_model.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml

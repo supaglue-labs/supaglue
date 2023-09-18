@@ -1,0 +1,161 @@
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import ThemedImage from '@theme/ThemedImage';
+
+# Build a settings page
+
+![code](https://img.shields.io/badge/Code%20Tutorial-0000a5)
+
+This tutorial will show how to build an integration settings page for Salesforce in your frontend web app for customers to view sync stats and manage running syncs.
+
+<ThemedImage
+  alt="build integrations settings page"
+  width="75%"
+  sources={{
+    light: '/img/build-integration-settings-page.png',
+    dark: '/img/build-integration-settings-page.png',
+  }}
+/>
+
+## Prerequisites
+
+This tutorial assumes you have gone through Supaglue's [Quickstart](../quickstart) and will use the following technologies:
+
+- Typescript
+- Nextjs 13
+- SWR
+- Tailwind css
+
+## Sync and SyncRun
+
+A **Sync** is an instance of a sync configuration. Syncs are either paused or running.
+
+A **SyncRun** is an execution of a Sync. Triggering a Sync creates a SyncRun and can be in the following states: `SUCCESS`, `FAILURE`, `IN_PROGRESS`.
+
+### Show sync run stats
+
+You can use the [SyncRuns Management API](../api/v2/mgmt/get-sync-runs) to get the latest SyncRun for a Sync. The response will include the SyncRun's status, the number of records synced, and other metadata about the SyncRun.
+
+Below we use a Nextjs [Server Component](https://nextjs.org/docs/getting-started/react-essentials#server-components) to fetch the latest SyncRun for a Sync and display the status and number of records synced for an object, `contact`.
+
+:::info
+You will need a Supaglue API key to call the Management API. You can obtain one by following [these steps](../api/introduction#api-authentication).
+:::
+
+```jsx
+export async function fetchSyncRun() {
+  const syncRunResponse = await fetch(
+    `https://api.supaglue.io/mgmt/v2/sync-runs?object=contact&object_type=common&page_size=1`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.NEXT_PUBLIC_SUPAGLUE_API_KEY,
+      },
+    }
+  );
+
+  const syncRun = await syncRunResponse.json();
+  return syncRun.results[0];
+}
+```
+
+Use the SyncRun to render the number of records last synced:
+
+```jsx
+<div className="stat">
+  <div className="stat-title">Last synced ({syncRun.object})</div>
+  <div className="stat-value">{syncRun.num_records_synced}</div>
+  <div className="stat-desc">records on {syncRun.end_timestamp}</div>
+</div>
+```
+
+<ThemedImage
+  alt="sync run stats"
+  width="50%"
+  sources={{
+    light: '/img/sync-run-stats.png',
+    dark: '/img/sync-run-stats.png',
+  }}
+/>
+
+:::note
+In this example, we make use of Daisy UI for styling. You can use any styling library you prefer.
+:::
+
+### Pause/resume/trigger syncs
+
+Many applications want their customers to be able to pause/resume/trigger syncs. Use the [Syncs Management API](../api/v2/mgmt/syncs) for this.
+
+Since we need to allow the user to click the button, we will use a [Route Handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers) to call the API.
+
+```ts
+// app/api/trigger-sync/route.ts
+
+import { API_HOST } from '@/lib/constants';
+import { NextResponse } from 'next/server';
+
+export async function POST(request: Request) {
+  const data = await request.json();
+
+  const res = await fetch(`https://api.supaglue.io/mgmt/v2/syncs/_trigger`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': process.env.NEXT_PUBLIC_SUPAGLUE_API_KEY!,
+      'x-customer-id': request.headers.get('x-customer-id')!,
+      'x-provider-name': request.headers.get('x-provider-name')!,
+    },
+    body: JSON.stringify(data),
+  });
+
+  const responseData = await res.json();
+  return NextResponse.json(responseData);
+}
+```
+
+We will use [Client Component](https://nextjs.org/docs/getting-started/react-essentials#client-components) to handle the button's `onClick` and call the [Route Handler](https://nextjs.org/docs/app/building-your-application/routing/router-handlers). In this example, we are triggering a refresh on an object, `contact`.
+
+```jsx
+'use client';
+import useSWRMutation from 'swr/mutation';
+
+export default function SettingsPage({ providerName, customerId }) {
+  const { trigger } = useSWRMutation(`/api/trigger-sync`, async (url, { arg }) => {
+    return await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.NEXT_PUBLIC_SUPAGLUE_API_KEY,
+        'x-customer-id': customerId,
+        'x-provider-name': providerName,
+      },
+      body: JSON.stringify(arg),
+    });
+  });
+
+  return (
+    <div>
+      <Header>Settings</Header>
+      <button className="btn" onClick={() => {
+        trigger({
+            perform_full_refresh: true,
+            object_type: 'common',
+            object 'common',
+         });
+      }}>
+        Trigger refresh
+      </button>
+    </div>
+  );
+}
+```
+
+The button will look like:
+
+<ThemedImage
+  alt="trigger refresh button"
+  width="25%"
+  sources={{
+    light: '/img/trigger-refresh-button.png',
+    dark: '/img/trigger-refresh-button.png',
+  }}
+/>

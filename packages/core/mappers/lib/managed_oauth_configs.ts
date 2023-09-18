@@ -9,6 +9,13 @@ export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {
       oauthClientSecret: process.env.SALESFORCE_CLIENT_SECRET || '',
     },
   },
+  salesforce_marketing_cloud_account_engagement: {
+    oauthScopes: ['id', 'api', 'refresh_token', 'pardot_api'],
+    credentials: {
+      oauthClientId: process.env.SALESFORCE_CLIENT_ID || '',
+      oauthClientSecret: process.env.SALESFORCE_CLIENT_SECRET || '',
+    },
+  },
   hubspot: {
     oauthScopes: [
       'business-intelligence',
@@ -91,6 +98,9 @@ export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {
       'sequences.all',
       'sequenceStates.all',
       'mailboxes.all',
+      'sequenceSteps.all',
+      'sequenceTemplates.all',
+      'templates.all',
     ],
     credentials: {
       oauthClientId: process.env.OUTREACH_CLIENT_ID || '',

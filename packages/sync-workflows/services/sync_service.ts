@@ -4,9 +4,9 @@ import { fromSyncModel } from '@supaglue/core/mappers/sync';
 import type { ConnectionService, SyncConfigService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import type { PrismaClient } from '@supaglue/db';
-import { CONNECTIONS_TABLE, Prisma, SYNCS_TABLE, SYNC_CHANGES_TABLE } from '@supaglue/db';
+import { Prisma, SYNCS_TABLE, SYNC_CHANGES_TABLE } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
-import type { ConnectionSafeAny } from '@supaglue/types';
+import type { ConnectionSafeAny, SyncConfig } from '@supaglue/types';
 import type { Sync, SyncState } from '@supaglue/types/sync';
 import type { Client, IntervalSpec, ScheduleDescription, ScheduleOptionsAction } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
@@ -84,13 +84,234 @@ export class SyncService {
    * schedules. We should do that.
    */
   public async processSyncChanges(full?: boolean): Promise<void> {
-    // This is broken into two parts
-    // Part 1 - Process all the SyncConfigChange events and see if we need to
-    //          create/update/delete any Syncs (and SyncChanges)
-    // Part 2 - Process all the SyncChange events and see if we need to
+    // This is broken into three parts
+    // Part 1 - Process all the ConnectionSyncConfigChnage events and see if
+    //          we need to create/update/delete any Syncs (and SyncChanges)
+    //          IMPORTANT: IT IS VERY IMPORTANT TO DO PART 1 BEFORE PART 2 BECAUSE
+    //          WE DON'T WANT autoStartOnConnection from SyncConfig to have any effect
+    //          on ConnectionSyncConfigs.
+    // Part 2 - Process all the SyncConfigChange events
+    //          and see if we need to create/update/delete any Syncs (and SyncChanges)
+    // Part 3 - Process all the SyncChange events and see if we need to
     //          create/update/delete any Temporal schedules/workflows
+    await this.#processConnectionSyncConfigChanges(full);
     await this.#processSyncConfigChanges(full);
     await this.#processSyncChanges(full);
+  }
+
+  #computeSyncCreateManyInputList(syncConfig: SyncConfig, connection: ConnectionSafeAny): Prisma.SyncCreateManyInput[] {
+    const syncArgs: Prisma.SyncCreateManyInput[] = [];
+
+    const autoStart = syncConfig.config.defaultConfig.autoStartOnConnection ?? true;
+
+    // Common
+    if (syncConfig.config.commonObjects?.length) {
+      syncArgs.push(
+        ...syncConfig.config.commonObjects.map((commonObject) => ({
+          type: 'object',
+          objectType: 'common',
+          object: commonObject.object,
+          connectionId: connection.id,
+          syncConfigId: syncConfig.id,
+          paused: !autoStart,
+          strategy: {
+            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+          },
+          state: {
+            phase: 'created',
+          },
+        }))
+      );
+    }
+
+    // Standard
+    if (connection.connectionSyncConfig?.standardObjects?.length) {
+      syncArgs.push(
+        ...connection.connectionSyncConfig.standardObjects.map((standardObject) => ({
+          type: 'object',
+          objectType: 'standard',
+          object: standardObject.object,
+          connectionId: connection.id,
+          syncConfigId: syncConfig.id,
+          paused: false,
+          strategy: {
+            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+          },
+          state: {
+            phase: 'created',
+          },
+        }))
+      );
+    } else if (syncConfig.config.standardObjects?.length) {
+      syncArgs.push(
+        ...syncConfig.config.standardObjects.map((standardObject) => ({
+          type: 'object',
+          objectType: 'standard',
+          object: standardObject.object,
+          connectionId: connection.id,
+          syncConfigId: syncConfig.id,
+          paused: !autoStart,
+          strategy: {
+            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+          },
+          state: {
+            phase: 'created',
+          },
+        }))
+      );
+    }
+
+    // Custom
+    if (connection.connectionSyncConfig?.customObjects?.length) {
+      syncArgs.push(
+        ...connection.connectionSyncConfig.customObjects.map((customObject) => ({
+          type: 'object',
+          objectType: 'custom',
+          object: customObject.object,
+          connectionId: connection.id,
+          syncConfigId: syncConfig.id,
+          paused: false,
+          strategy: {
+            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+          },
+          state: {
+            phase: 'created',
+          },
+        }))
+      );
+    }
+
+    // Entity
+    if (syncConfig.config.entities?.length) {
+      syncArgs.push(
+        ...syncConfig.config.entities.map((entity) => ({
+          type: 'entity',
+          entityId: entity.entityId,
+          connectionId: connection.id,
+          syncConfigId: syncConfig.id,
+          paused: !autoStart,
+          strategy: {
+            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+          },
+          state: {
+            phase: 'created',
+          },
+        }))
+      );
+    }
+
+    return syncArgs;
+  }
+
+  async #processConnectionSyncConfigChanges(full?: boolean): Promise<void> {
+    // TODO: Page over the ConnectionSyncConfigChanges in case there are too many in one iteration.
+
+    // Get all the ConnectionSyncConfigChange objects
+    const connectionSyncConfigChanges = await this.#prisma.connectionSyncConfigChange.findMany({
+      select: {
+        id: true,
+        connectionId: true,
+      },
+    });
+    const connectionSyncConfigChangeIds = connectionSyncConfigChanges.map(({ id }) => id);
+    const uniqueConnectionIds = [...new Set(connectionSyncConfigChanges.map(({ connectionId }) => connectionId))];
+    const connections = full
+      ? await this.#connectionService.listAllSafe()
+      : await this.#connectionService.getSafeByIds(uniqueConnectionIds);
+
+    // Get all the relevant SyncConfigs
+    const providerIdsToLookup = [...new Set(connections.map((connection) => connection.providerId))];
+    const relevantSyncConfigs = await this.#syncConfigService.listByProviderIds(providerIdsToLookup);
+
+    // Create a map for lookup
+    const providerIdToSyncConfig: Record<string, SyncConfig> = {};
+    for (const syncConfig of relevantSyncConfigs) {
+      providerIdToSyncConfig[syncConfig.providerId] = syncConfig;
+    }
+
+    // Insert / delete Syncs
+    for (const connection of connections) {
+      const syncConfig = providerIdToSyncConfig[connection.providerId];
+      const syncArgs = this.#computeSyncCreateManyInputList(syncConfig, connection);
+
+      // Create Syncs and ignore duplicates
+      logger.info(
+        {
+          connectionId: connection.id,
+        },
+        'processConnectionSyncConfigChanges: Creating Syncs [IN PROGRESS]'
+      );
+      if (syncArgs.length) {
+        await this.#prisma.sync.createMany({
+          data: syncArgs,
+          skipDuplicates: true,
+        });
+      }
+      logger.info(
+        {
+          connectionId: connection.id,
+        },
+        'processConnectionSyncConfigChanges: Creating Syncs [DONE]'
+      );
+
+      // Create SyncChanges
+      // The field names here reference `object_sync_id` because we didn't migrate the actual column
+      // names in the DB when we merged Object and Entity Syncs.
+
+      // TODO: Later, we should only create SyncChanges for the Syncs that were created above,
+      // because some connections were skipped.
+      logger.info(
+        {
+          connectionId: connection.id,
+        },
+        'processConnectionSyncConfigChanges: Creating SyncChanges [IN PROGRESS]'
+      );
+      await this.#prisma.$executeRawUnsafe(`INSERT INTO ${SYNC_CHANGES_TABLE} (id, object_sync_id)
+SELECT gen_random_uuid(), s.id
+FROM ${SYNCS_TABLE} s
+WHERE s.connection_id = '${connection.id}'`);
+      logger.info(
+        {
+          connectionId: connection.id,
+        },
+        'processConnectionSyncConfigChanges: Creating SyncChanges [DONE]'
+      );
+
+      // Delete Syncs
+      logger.info(
+        {
+          connectionId: connection.id,
+        },
+        'processConnectionSyncConfigChanges: Deleting Syncs [IN PROGRESS]'
+      );
+      await this.#prisma.sync.deleteMany({
+        where: {
+          AND: [
+            {
+              connectionId: connection.id,
+            },
+            {
+              NOT: {
+                OR: syncArgs.map((syncArg) => ({
+                  type: syncArg.type,
+                  objectType: syncArg.objectType,
+                  object: syncArg.object,
+                })),
+              },
+            },
+          ],
+        },
+      });
+    }
+
+    // Delete the ConnectionSyncConfigChange objects
+    await this.#prisma.connectionSyncConfigChange.deleteMany({
+      where: {
+        id: {
+          in: connectionSyncConfigChangeIds,
+        },
+      },
+    });
   }
 
   async #processSyncConfigChanges(full?: boolean): Promise<void> {
@@ -118,124 +339,66 @@ export class SyncService {
     // Insert / delete Syncs
     for (const syncConfigModel of syncConfigModels) {
       const syncConfig = fromSyncConfigModel(syncConfigModel);
-      const autoStart = syncConfig.config.defaultConfig.autoStartOnConnection ?? true;
       const relevantConnections = await this.#connectionService.getSafeByProviderId(syncConfig.providerId);
 
-      const syncArgs: Prisma.SyncCreateManyInput[] = [];
-
       for (const connection of relevantConnections) {
-        if (syncConfig.config.commonObjects?.length) {
-          for (const commonObject of syncConfig.config.commonObjects) {
-            syncArgs.push({
-              type: 'object',
-              objectType: 'common',
-              object: commonObject.object,
-              connectionId: connection.id,
-              syncConfigId: syncConfig.id,
-              paused: !autoStart,
-              strategy: {
-                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-              },
-              state: {
-                phase: 'created',
-              },
-            });
-          }
+        const syncArgs = this.#computeSyncCreateManyInputList(syncConfig, connection);
+
+        // Create Syncs and ignore duplicates
+        logger.info(
+          {
+            connectionId: connection.id,
+          },
+          'processSyncChanges: Creating Syncs [IN PROGRESS]'
+        );
+        if (syncArgs.length) {
+          await this.#prisma.sync.createMany({
+            data: syncArgs,
+            skipDuplicates: true,
+          });
         }
+        logger.info({ connectionId: connection.id }, 'processSyncChanges: Creating Syncs [DONE]');
 
-        if (syncConfig.config.standardObjects?.length) {
-          for (const standardObject of syncConfig.config.standardObjects) {
-            syncArgs.push({
-              type: 'object',
-              objectType: 'standard',
-              object: standardObject.object,
-              connectionId: connection.id,
-              syncConfigId: syncConfig.id,
-              paused: !autoStart,
-              strategy: {
-                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-              },
-              state: {
-                phase: 'created',
-              },
-            });
-          }
-        }
+        // Create SyncChanges
+        // The field names here reference `object_sync_id` because we didn't migrate the actual column
+        // names in the DB when we merged Object and Entity Syncs.
 
-        if (syncConfig.config.entities?.length) {
-          for (const entity of syncConfig.config.entities) {
-            syncArgs.push({
-              type: 'entity',
-              entityId: entity.entityId,
-              connectionId: connection.id,
-              syncConfigId: syncConfig.id,
-              paused: !autoStart,
-              strategy: {
-                type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-              },
-              state: {
-                phase: 'created',
-              },
-            });
-          }
-        }
-      }
-
-      // Create Syncs and ignore duplicates
-      logger.info('processSyncChanges: Creating Syncs [IN PROGRESS]');
-      if (syncArgs.length) {
-        await this.#prisma.sync.createMany({
-          data: syncArgs,
-          skipDuplicates: true,
-        });
-      }
-      logger.info('processSyncChanges: Creating Syncs [DONE]');
-
-      // Create SyncChanges
-      // The field names here reference `object_sync_id` because we didn't migrate the actual column
-      // names in the DB when we merged Object and Entity Syncs.
-      logger.info('processSyncChanges: Creating SyncChanges [IN PROGRESS]');
-      await this.#prisma.$executeRawUnsafe(`INSERT INTO ${SYNC_CHANGES_TABLE} (id, object_sync_id)
+        // TODO: Later, we should only create SyncChanges for the Syncs that were created above,
+        // because some connections were skipped.
+        logger.info(
+          {
+            connectionId: connection.id,
+          },
+          'processSyncChanges: Creating SyncChanges [IN PROGRESS]'
+        );
+        await this.#prisma.$executeRawUnsafe(`INSERT INTO ${SYNC_CHANGES_TABLE} (id, object_sync_id)
 SELECT gen_random_uuid(), s.id
 FROM ${SYNCS_TABLE} s
-JOIN ${CONNECTIONS_TABLE} c on s.connection_id = c.id
-WHERE c.provider_id = '${syncConfig.providerId}'`);
-      logger.info('processSyncChanges: Creating SyncChanges [DONE]');
+WHERE s.connection_id = '${connection.id}'`);
+        logger.info({ connectionId: connection.id }, 'processSyncChanges: Creating SyncChanges [DONE]');
 
-      // Delete Syncs
-      logger.info('processSyncChanges: Deleting Syncs [IN PROGRESS]');
-      await this.#prisma.sync.deleteMany({
-        where: {
-          AND: [
-            {
-              connection: {
-                providerId: syncConfig.providerId,
+        // Delete Syncs
+        logger.info('processSyncChanges: Deleting Syncs [IN PROGRESS]');
+        await this.#prisma.sync.deleteMany({
+          where: {
+            AND: [
+              {
+                connectionId: connection.id,
               },
-            },
-            {
-              NOT: {
-                OR: [
-                  ...(syncConfig.config.commonObjects?.map((commonObject) => ({
-                    type: 'object',
-                    objectType: 'common',
-                    object: commonObject.object,
-                  })) ?? []),
-                  ...(syncConfig.config.standardObjects?.map((standardObject) => ({
-                    type: 'object',
-                    objectType: 'standard',
-                    object: standardObject.object,
-                  })) ?? []),
-                  ...(syncConfig.config.entities?.map((entity) => ({
-                    type: 'entity',
-                    entityId: entity.entityId,
-                  })) ?? []),
-                ],
+              {
+                NOT: {
+                  OR: syncArgs.map((syncArg) => ({
+                    type: syncArg.type,
+                    objectType: syncArg.objectType,
+                    object: syncArg.object,
+                  })),
+                },
               },
-            },
-          ],
-        },
-      });
-      logger.info('processSyncChanges: Deleting Syncs [DONE]');
+            ],
+          },
+        });
+        logger.info({ connectionId: connection.id }, 'processSyncChanges: Deleting Syncs [DONE]');
+      }
     }
 
     // Delete the SyncConfigChange objects
@@ -398,6 +561,19 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
       offset: stringToNumber(connection.id, syncPeriodMs),
     };
 
+    const searchAttributes = {
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [sync.id],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_TYPE]: [sync.type],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_TYPE]: 'objectType' in sync ? [sync.objectType] : [],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_NAME]: 'object' in sync ? [sync.object] : [],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.ENTITY_ID]: 'entityId' in sync ? [sync.entityId] : [],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ENV]: [application.environment],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
+      [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
+    };
+
     const action: Omit<ScheduleOptionsAction, 'workflowId'> & { workflowId: string } = {
       type: 'startWorkflow' as const,
       workflowType: runObjectSync,
@@ -422,18 +598,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
           },
         },
       ],
-      searchAttributes: {
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_ID]: [sync.id],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.SYNC_TYPE]: [sync.type],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_TYPE]: 'objectType' in sync ? [sync.objectType] : [],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.OBJECT_NAME]: 'object' in sync ? [sync.object] : [],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.ENTITY_ID]: 'entityId' in sync ? [sync.entityId] : [],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ID]: [connection.applicationId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.APPLICATION_ENV]: [application.environment],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CUSTOMER_ID]: [connection.customerId],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.CONNECTION_ID]: [connection.id],
-        [TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES.PROVIDER_NAME]: [connection.providerName],
-      },
+      searchAttributes,
     };
 
     try {
@@ -447,6 +612,7 @@ WHERE c.provider_id = '${syncConfig.providerId}'`);
           triggerImmediately: !sync.paused,
           paused: sync.paused,
         },
+        searchAttributes,
       });
     } catch (err: unknown) {
       if (err instanceof ScheduleAlreadyRunning) {

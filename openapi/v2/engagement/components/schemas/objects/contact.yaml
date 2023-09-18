@@ -7,6 +7,10 @@ properties:
     type: string
     nullable: true
     example: 23e640fe-6105-4a11-a636-3aa6b6c6e762
+  account_id:
+    type: string
+    nullable: true
+    example: 45edea5a-0b9a-44ff-bd45-4452014eb4fa
   first_name:
     type: string
     nullable: true

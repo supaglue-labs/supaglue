@@ -12,5 +12,9 @@ properties:
     type: string
     nullable: true
     example: 9f3e97fd-4d5d-4efc-959d-bbebfac079f5
+  account_id:
+    type: string
+    nullable: true
+    example: ae4be028-9078-4850-a0bf-d2112b7c4d11
   custom_fields:
     $ref: ./objects/custom_fields.yaml

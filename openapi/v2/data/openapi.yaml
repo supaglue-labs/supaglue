@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   version: 0.13.13
-  title: Data API
+  title: Data Listing API
   contact:
     name: Supaglue
     email: docs@supaglue.com
@@ -23,28 +23,48 @@ servers:
 tags:
   - name: Salesforce
     description: Salesforce is a CRM Provider.
+  - name: Hubspot
+    description: Hubspot is a CRM Provider.
 paths:
+  #
+  # Salesforce
+  #
   '/salesforce/contacts':
     $ref: paths/salesforce/contacts.yaml
   '/salesforce/accounts':
     $ref: paths/salesforce/accounts.yaml
-  '/salesforce/list_views/{object_type}':
-    $ref: paths/salesforce/list_views@{object_type}.yaml
-  '/salesforce/list_views/{object_type}/{list_id}':
-    $ref: paths/salesforce/list_views@{object_type}@{list_view_id}.yaml
+
+  #
+  # Hubspot
+  #
+  '/hubspot/contacts':
+    $ref: paths/hubspot/contacts.yaml
+  '/hubspot/companies':
+    $ref: paths/hubspot/companies.yaml
 components:
   securitySchemes:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
+    #
+    # Salesforce
+    #
     salesforce_contact:
       $ref: ./components/schemas/objects/salesforce/contact.yaml
     salesforce_account:
       $ref: ./components/schemas/objects/salesforce/account.yaml
-    salesforce_list_view_metadata:
-      $ref: ./components/schemas/objects/salesforce/list_view_metadata.yaml
-    salesforce_list_view_membership:
-      $ref: ./components/schemas/objects/salesforce/list_view_membership.yaml
+
+    #
+    # Hubspot
+    #
+    hubspot_contact:
+      $ref: ./components/schemas/objects/hubspot/contact.yaml
+    hubspot_company:
+      $ref: ./components/schemas/objects/hubspot/company.yaml
+
+    #
+    # Shared
+    #
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     errors:
@@ -56,3 +76,17 @@ components:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml
     x-provider-name:
       $ref: ../../common/components/parameters/header/x-provider-name.yaml
+    modified_after:
+      $ref: ../../common/components/parameters/query/modified_after.yaml
+    modified_before:
+      $ref: ../../common/components/parameters/query/modified_before.yaml
+    created_after:
+      $ref: ../../common/components/parameters/query/created_after.yaml
+    created_before:
+      $ref: ../../common/components/parameters/query/created_before.yaml
+    include_deleted_data:
+      $ref: ../../common/components/parameters/query/include_deleted_data.yaml
+    page_size:
+      $ref: ../../common/components/parameters/query/page_size.yaml
+    cursor:
+      $ref: ../../common/components/parameters/query/cursor.yaml

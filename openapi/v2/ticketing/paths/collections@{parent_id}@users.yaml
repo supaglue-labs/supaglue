@@ -1,0 +1,38 @@
+get:
+  operationId: listCollectionUsers
+  summary: List collection users
+  description: Returns a list of User objects.
+  tags:
+    - Collections
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/modified_after.yaml
+    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+  responses:
+    200:
+      description: CollectionUsersData
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/user.yaml
+            required:
+              - pagination
+              - records
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - name: parent_id
+    in: path
+    required: true
+    schema:
+      type: string
+      example: 0258cbc6-6020-430a-848e-aafacbadf4ae

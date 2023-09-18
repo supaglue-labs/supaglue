@@ -1,7 +1,8 @@
-import { type PrismaClient } from '@supaglue/db';
+import { Prisma, type PrismaClient } from '@supaglue/db';
 import type {
   ConnectionCredentialsDecryptedAny,
   ConnectionSafeAny,
+  ConnectionSyncConfig,
   ConnectionUnsafe,
   ConnectionUnsafeAny,
   FieldMappingInfo,
@@ -21,6 +22,7 @@ import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_
 import retry from 'async-retry';
 import type { ProviderService, SchemaService, WebhookService } from '.';
 import { BadRequestError, NotFoundError } from '../errors';
+import { getCustomerIdPk } from '../lib';
 import { decrypt, encrypt } from '../lib/crypt';
 import { createFieldMappingConfigForEntity, validateEntityOrSchemaFieldName } from '../lib/entity';
 import { createFieldMappingConfig } from '../lib/schema';
@@ -76,6 +78,22 @@ export class ConnectionService {
     return connections.map(fromConnectionModelToConnectionSafe);
   }
 
+  public async listAllSafe(): Promise<ConnectionSafeAny[]> {
+    const connections = await this.#prisma.connection.findMany();
+    return connections.map(fromConnectionModelToConnectionSafe);
+  }
+
+  public async getSafeByProviderIds(providerIds: string[]): Promise<ConnectionSafeAny[]> {
+    const connections = await this.#prisma.connection.findMany({
+      where: {
+        providerId: {
+          in: providerIds,
+        },
+      },
+    });
+    return connections.map(fromConnectionModelToConnectionSafe);
+  }
+
   public async getSafeByProviderId(providerId: string): Promise<ConnectionSafeAny[]> {
     const connections = await this.#prisma.connection.findMany({
       where: { providerId },
@@ -117,16 +135,15 @@ export class ConnectionService {
     return fromConnectionModelToConnectionSafe(connections[0]);
   }
 
-  public async getSafeByProviderNameAndApplicationId(
+  public async getSafeByCustomerIdProviderNameAndApplicationId(
+    externalCustomerId: string,
     providerName: string,
     applicationId: string
   ): Promise<ConnectionSafeAny> {
     const connections = await this.#prisma.connection.findMany({
       where: {
         providerName,
-        provider: {
-          applicationId,
-        },
+        customerId: getCustomerIdPk(applicationId, externalCustomerId),
       },
     });
 
@@ -388,13 +405,13 @@ export class ConnectionService {
     }
 
     const oldCredentialsUnsafe: ConnectionCredentialsDecryptedAny = JSON.parse(await decrypt(connection.credentials));
-    if (oldCredentialsUnsafe.type !== 'oauth2') {
+    if (oldCredentialsUnsafe.type !== 'oauth2' && oldCredentialsUnsafe.type !== 'marketo_oauth2') {
       throw new BadRequestError(`Connection ${connectionId} is not an oauth connection`);
     }
     const newCredentials: OauthConnectionCredentialsDecrypted = {
       ...(oldCredentialsUnsafe as OauthConnectionCredentialsDecrypted),
       accessToken,
-      refreshToken: refreshToken ?? oldCredentialsUnsafe.refreshToken,
+      refreshToken: refreshToken ?? (oldCredentialsUnsafe as any).refreshToken,
       expiresAt,
     };
 
@@ -421,6 +438,53 @@ export class ConnectionService {
     const connectionEntityMappings = connection.entityMappings ?? [];
 
     return mergeEntityMappingsList(entities, providerEntityMappings, connectionEntityMappings);
+  }
+
+  public async upsertConnectionSyncConfig(
+    connectionId: string,
+    config: ConnectionSyncConfig
+  ): Promise<ConnectionSyncConfig> {
+    const params = {
+      destinationConfig: config.destinationConfig,
+      standardObjects: config.standardObjects,
+      customObjects: config.customObjects,
+    };
+
+    await this.#prisma.$transaction([
+      this.#prisma.connection.update({
+        where: {
+          id: connectionId,
+        },
+        data: {
+          connectionSyncConfig: params,
+        },
+      }),
+      this.#prisma.connectionSyncConfigChange.create({
+        data: {
+          connectionId,
+        },
+      }),
+    ]);
+
+    return params;
+  }
+
+  public async deleteConnectionSyncConfig(connectionId: string): Promise<void> {
+    await this.#prisma.$transaction([
+      this.#prisma.connection.update({
+        where: {
+          id: connectionId,
+        },
+        data: {
+          connectionSyncConfig: Prisma.DbNull,
+        },
+      }),
+      this.#prisma.connectionSyncConfigChange.create({
+        data: {
+          connectionId,
+        },
+      }),
+    ]);
   }
 
   public async upsertEntityMapping(

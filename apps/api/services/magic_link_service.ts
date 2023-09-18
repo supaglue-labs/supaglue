@@ -85,9 +85,14 @@ export class MagicLinkService {
     if (magicLink.status !== 'new') {
       throw new BadRequestError(`Magic link with id: ${id} has already been consumed`);
     }
-    if (magicLink.providerName === 'apollo' && params?.type === 'api_key') {
+    if (
+      (magicLink.providerName === 'apollo' ||
+        magicLink.providerName === 'clearbit' ||
+        magicLink.providerName === '6sense') &&
+      params?.type === 'api_key'
+    ) {
       await this.#connectionAndSyncService.createManually(magicLink.applicationId, magicLink.customerId, {
-        providerName: 'apollo',
+        providerName: magicLink.providerName,
         type: 'api_key',
         apiKey: params.apiKey,
       });
@@ -98,7 +103,16 @@ export class MagicLinkService {
         accessKey: params.accessKey,
         accessKeySecret: params.accessKeySecret,
       });
+    } else if (magicLink.providerName === 'marketo' && params?.type === 'marketo_oauth2') {
+      await this.#connectionAndSyncService.createManually(magicLink.applicationId, magicLink.customerId, {
+        providerName: 'marketo',
+        type: 'marketo_oauth2',
+        clientId: params.clientId,
+        clientSecret: params.clientSecret,
+        instanceUrl: params.instanceUrl,
+      });
     }
+
     const updatedMagicLink = await this.#prisma.magicLink.update({
       where: { id },
       data: {

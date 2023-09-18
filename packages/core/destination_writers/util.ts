@@ -1,4 +1,4 @@
-import type { CommonObjectType, ProviderCategory } from '@supaglue/types';
+import type { CommonObjectType, ProviderCategory, ProviderName } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import {
@@ -15,6 +15,7 @@ import {
   toSnakecasedKeysMailbox,
   toSnakecasedKeysSequence,
   toSnakecasedKeysSequenceState,
+  toSnakecasedKeysSequenceStep,
 } from '../mappers/engagement';
 
 export const getSnakecasedKeysMapper = (category: ProviderCategory, commonObjectType: CommonObjectType) => {
@@ -41,6 +42,11 @@ const snakecasedKeysMapperByCommonObjectType: {
     mailbox: toSnakecasedKeysMailbox,
     sequence: toSnakecasedKeysSequence,
     sequence_state: toSnakecasedKeysSequenceState,
+    sequence_step: toSnakecasedKeysSequenceStep,
     user: toSnakecasedKeysEngagementUser,
   },
+};
+
+export const shouldDeleteRecords = (isFullSync: boolean, providerName: ProviderName): boolean => {
+  return isFullSync && providerName !== 'apollo';
 };

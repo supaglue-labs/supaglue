@@ -9,14 +9,16 @@ import { useDestinations } from '@/hooks/useDestinations';
 import { useEntities } from '@/hooks/useEntities';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getDestinationName } from '@/utils/destination';
 import { getStandardObjectOptions } from '@/utils/provider';
 import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import type { CommonObjectConfig, CommonObjectType, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
+import type { CommonObjectType, ProviderCategory, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
-import { ENGAGEMENT_COMMON_OBJECT_TYPES } from '@supaglue/types/engagement';
+import { ENGAGEMENT_SYNCABLE_COMMON_OBJECTS } from '@supaglue/types/engagement';
 import type { SyncStrategyType } from '@supaglue/types/sync';
+import type { CommonObjectConfig } from '@supaglue/types/sync_object_config';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -30,19 +32,19 @@ const isSyncPeriodSecsValid = (syncPeriodSecs: number | undefined) => {
   return syncPeriodSecs < 60 ? false : true;
 };
 
-export function SyncConfigDetailsPanel({ syncConfigId }: { syncConfigId: string }) {
-  return <SyncConfigDetailsPanelImpl syncConfigId={syncConfigId} />;
+export function SyncConfigDetailsPanel(props: { syncConfigId: string } & SupaglueProps) {
+  return <SyncConfigDetailsPanelImpl {...props} />;
 }
 
-export function NewSyncConfigPanel() {
-  return <SyncConfigDetailsPanelImpl />;
+export function NewSyncConfigPanel(props: SupaglueProps) {
+  return <SyncConfigDetailsPanelImpl {...props} />;
 }
 
 type SyncConfigDetailsPanelImplProps = {
   syncConfigId?: string;
 };
 
-function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImplProps) {
+function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPanelImplProps & SupaglueProps) {
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
   const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
@@ -157,8 +159,20 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
 
   const selectedProvider = providers.find((p) => p.id === providerId);
   const selectedDestination = destinations?.find((d) => d.id === destinationId);
-  const supportsStandardDestinations = ['postgres', 'bigquery', 'mongodb'];
+  const supportsStandardDestinations = ['postgres', 'bigquery', 'mongodb', 'supaglue'];
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
+
+  const commonObjectsSupported =
+    selectedProvider?.category !== 'no_category' && selectedDestination?.type !== 'supaglue';
+
+  const getCommonObjecOptions = (category: ProviderCategory) => {
+    if (category === 'crm') {
+      return CRM_COMMON_OBJECT_TYPES;
+    } else if (category === 'engagement') {
+      return ENGAGEMENT_SYNCABLE_COMMON_OBJECTS;
+    }
+    return [];
+  };
 
   const standardObjectsOptions = getStandardObjectOptions(selectedProvider?.name);
 
@@ -232,6 +246,25 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
             />
           </Stack>
           <Stack className="gap-2">
+            <Typography variant="subtitle1">Sync Strategy</Typography>
+            <Select
+              name="Sync Strategy"
+              disabled={isLoadingDestinations}
+              onChange={(value) => setStrategy(value as SyncStrategyType)}
+              value={strategy}
+              options={[
+                {
+                  value: 'full then incremental',
+                  displayValue: 'Incremental',
+                },
+                {
+                  value: 'full only',
+                  displayValue: 'Full',
+                },
+              ]}
+            />
+          </Stack>
+          <Stack className="gap-2">
             <SwitchWithLabel
               label="Start Sync on Connection"
               isLoading={isLoading}
@@ -245,11 +278,11 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 <Typography variant="subtitle1">Common objects</Typography>
                 <Autocomplete
                   size="small"
-                  disabled={selectedProvider?.category === 'no_category'}
+                  disabled={!commonObjectsSupported}
                   key={providerId}
                   multiple
                   id="common-objects"
-                  options={provider.category === 'crm' ? CRM_COMMON_OBJECT_TYPES : ENGAGEMENT_COMMON_OBJECT_TYPES}
+                  options={getCommonObjecOptions(provider.category)}
                   defaultValue={commonObjects}
                   renderTags={(value: readonly string[], getTagProps) =>
                     value.map((option: string, index: number) => (
@@ -312,34 +345,36 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   }}
                 />
               </Stack>
-              <Stack className="gap-2">
-                <Typography variant="subtitle1">Entities</Typography>
-                <Autocomplete
-                  size="small"
-                  key={providerId}
-                  multiple
-                  id="entities"
-                  options={entities.map((entity) => entity.id)}
-                  defaultValue={entityIds}
-                  autoSelect
-                  renderTags={(value: readonly string[], getTagProps) =>
-                    value.map((option: string, index: number) => {
+              {lekko.entitiesWhitelistConfig.applicationIds.includes(activeApplicationId) && (
+                <Stack className="gap-2">
+                  <Typography variant="subtitle1">Entities</Typography>
+                  <Autocomplete
+                    size="small"
+                    key={providerId}
+                    multiple
+                    id="entities"
+                    options={entities.map((entity) => entity.id)}
+                    defaultValue={entityIds}
+                    autoSelect
+                    renderTags={(value: readonly string[], getTagProps) =>
+                      value.map((option: string, index: number) => {
+                        const entity = entities.find((e) => e.id === option);
+                        return <Chip variant="outlined" label={entity?.name ?? option} {...getTagProps({ index })} />;
+                      })
+                    }
+                    getOptionLabel={(option) => {
                       const entity = entities.find((e) => e.id === option);
-                      return <Chip variant="outlined" label={entity?.name ?? option} {...getTagProps({ index })} />;
-                    })
-                  }
-                  getOptionLabel={(option) => {
-                    const entity = entities.find((e) => e.id === option);
-                    return entity?.name ?? option;
-                  }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Entities" helperText={'Use "enter" to add multiple entities.'} />
-                  )}
-                  onChange={(event: any, value: string[]) => {
-                    setEntityIds(value.map((object) => object.trim()));
-                  }}
-                />
-              </Stack>
+                      return entity?.name ?? option;
+                    }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Entities" helperText={'Use "enter" to add multiple entities.'} />
+                    )}
+                    onChange={(event: any, value: string[]) => {
+                      setEntityIds(value.map((object) => object.trim()));
+                    }}
+                  />
+                </Stack>
+              )}
             </>
           )}
           <Stack direction="row" className="gap-2 justify-between">

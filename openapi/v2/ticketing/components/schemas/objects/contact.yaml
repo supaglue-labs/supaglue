@@ -1,0 +1,24 @@
+type: object
+properties:
+  name:
+    type: string
+    nullable: true
+    example: Cousin Greg
+  email_address:
+    type: string
+    example: greg@waystar-royco.com
+  phone_number:
+    type: string
+    nullable: true
+    example: '5108890293'
+  details:
+    type: string
+    nullable: true
+    example: Executive Assistant to Tom Wambsgans
+  account:
+    type: string
+    nullable: true # TODO: revisit
+    example: 8998e1ed-1c76-4b64-9097-9d37ee88bf6f
+required:
+  - name
+  - email_address

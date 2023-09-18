@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.13.16",
+    "version": "0.14.14",
     "title": "Management API",
     "contact": {
       "name": "Supaglue",
@@ -188,17 +188,6 @@
                   },
                   "example": [
                     {
-                      "id": "0a292508-d254-4929-98d3-dc23416efff8",
-                      "application_id": "e52286c9-3038-4fa2-a2b8-3ec9759d20cb",
-                      "name": "My S3 Destination",
-                      "type": "s3",
-                      "config": {
-                        "region": "us-west-2",
-                        "bucket": "my-bucket",
-                        "access_key_id": "MY_ACCESS_KEY_ID"
-                      }
-                    },
-                    {
                       "id": "92bc3460-a301-4116-8d1f-6e5f8252c2e2",
                       "application_id": "9b9a31bb-9fe4-4fa5-ba84-4c035a27f258",
                       "name": "My Postgres Destination",
@@ -321,45 +310,6 @@
         }
       ]
     },
-    "/field_mappings": {
-      "get": {
-        "deprecated": true,
-        "operationId": "listFieldMappings",
-        "summary": "List schema mappings",
-        "tags": [
-          "SchemaMappings"
-        ],
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "List of objects and their field mappings (if set)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/object_field_mappings"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
     "/magic_links": {
       "get": {
         "operationId": "getMagicLinks",
@@ -452,6 +402,45 @@
             "type": "string",
             "example": "6bf954f9-dba3-4c34-9275-3830dccb0030"
           }
+        }
+      ]
+    },
+    "/field_mappings": {
+      "get": {
+        "deprecated": true,
+        "operationId": "listFieldMappings",
+        "summary": "List schema mappings",
+        "tags": [
+          "SchemaMappings"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "List of objects and their field mappings (if set)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/object_field_mappings"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -1226,6 +1215,93 @@
         }
       ]
     },
+    "/connection_sync_configs": {
+      "get": {
+        "operationId": "getConnectionSyncConfig",
+        "summary": "Get connection sync config",
+        "tags": [
+          "ConnectionSyncConfigs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Connection Sync Config",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection_sync_config"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "upsertConnectionSyncConfig",
+        "summary": "Upsert connection sync config",
+        "tags": [
+          "ConnectionSyncConfigs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/upsert_connection_sync_config"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Connection Sync Config",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/connection_sync_config"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteConnectionSyncConfig",
+        "summary": "Delete connection sync config",
+        "tags": [
+          "ConnectionSyncConfigs"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Connection Sync Config"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/customers/{customer_id}/connections": {
       "get": {
         "operationId": "getConnections",
@@ -1435,8 +1511,8 @@
     "/customers/{customer_id}/connections/_provider_user_id": {
       "get": {
         "operationId": "getProviderUserId",
-        "summary": "Get logged in user ID",
-        "description": "This endpoint returns the ID of the logged in user. This is sometimes known as the owner ID.",
+        "summary": "Get logged in user ID and details",
+        "description": "This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.",
         "tags": [
           "Connections"
         ],
@@ -1451,7 +1527,13 @@
             "in": "query",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/provider_name"
+              "type": "string",
+              "enum": [
+                "hubspot",
+                "ms_dynamics_365_sales",
+                "intercom"
+              ],
+              "example": "hubspot"
             }
           }
         ],
@@ -1465,11 +1547,25 @@
                   "properties": {
                     "user_id": {
                       "type": "string",
-                      "description": "The ID of the logged in user. The ID originates from your customer's third-party Provider (e.g. MS Dynamics 365 Sales)."
+                      "description": "The ID of the logged in user. The ID originates from your customer's third-party Provider."
+                    },
+                    "raw_details": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "The raw data from the your customer's third-party Provider."
                     }
                   },
                   "example": {
-                    "user_id": "70115e3c-2700-4112-b28f-2706e08570e6"
+                    "user_id": "70115e3c-2700-4112-b28f-2706e08570e6",
+                    "raw_details": {
+                      "user_id": "70115e3c-2700-4112-b28f-2706e08570e6",
+                      "user": "test@something.com",
+                      "scopes": [
+                        "contacts",
+                        "automation",
+                        "oauth"
+                      ]
+                    }
                   }
                 }
               }
@@ -1619,7 +1715,8 @@
               "type": "string",
               "enum": [
                 "common",
-                "standard"
+                "standard",
+                "custom"
               ],
               "example": "standard"
             },
@@ -1712,7 +1809,8 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard"
+                          "standard",
+                          "custom"
                         ],
                         "example": "standard",
                         "description": "The object type to filter by"
@@ -1818,7 +1916,8 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard"
+                          "standard",
+                          "custom"
                         ],
                         "example": "standard",
                         "description": "The object type to filter by"
@@ -1911,7 +2010,8 @@
                       "object_type": {
                         "type": "string",
                         "enum": [
-                          "standard"
+                          "standard",
+                          "custom"
                         ],
                         "description": "The object type to filter by",
                         "example": "standard"
@@ -2042,7 +2142,8 @@
               "type": "string",
               "enum": [
                 "common",
-                "standard"
+                "standard",
+                "custom"
               ],
               "example": "standard"
             }
@@ -2163,6 +2264,10 @@
     {
       "name": "Syncs",
       "description": "A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule."
+    },
+    {
+      "name": "ConnectionSyncConfigs",
+      "description": "A `ConnectionSyncConfig` is a configuration for how to sync a specific Customer's data from a Provider to a Destination on a schedule."
     },
     {
       "name": "SyncRuns",
@@ -2324,12 +2429,16 @@
                   "supaglue"
                 ],
                 "example": "supaglue"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
               "id",
               "application_id",
-              "type"
+              "type",
+              "version"
             ]
           },
           {
@@ -2357,6 +2466,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/postgres_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2364,42 +2476,8 @@
               "application_id",
               "name",
               "type",
-              "config"
-            ]
-          },
-          {
-            "type": "object",
-            "title": "s3",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-              },
-              "application_id": {
-                "type": "string",
-                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
-              },
-              "name": {
-                "type": "string",
-                "example": "My S3 Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "s3"
-                ],
-                "example": "s3"
-              },
-              "config": {
-                "$ref": "#/components/schemas/s3_config_safe"
-              }
-            },
-            "required": [
-              "id",
-              "application_id",
-              "name",
-              "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -2427,6 +2505,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2434,7 +2515,8 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -2462,6 +2544,9 @@
               },
               "config": {
                 "$ref": "#/components/schemas/mongodb_config_safe"
+              },
+              "version": {
+                "type": "number"
               }
             },
             "required": [
@@ -2469,31 +2554,10 @@
               "application_id",
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           }
-        ]
-      },
-      "s3_config_safe": {
-        "type": "object",
-        "properties": {
-          "region": {
-            "type": "string",
-            "example": "us-west-2"
-          },
-          "bucket": {
-            "type": "string",
-            "example": "my-test-bucket"
-          },
-          "access_key_id": {
-            "type": "string",
-            "example": "AKIAIOSFODNN7EXAMPLE"
-          }
-        },
-        "required": [
-          "region",
-          "bucket",
-          "access_key_id"
         ]
       },
       "postgres_config_safe": {
@@ -2588,32 +2652,6 @@
           "host",
           "database",
           "user"
-        ]
-      },
-      "s3_config_at_least_safe": {
-        "type": "object",
-        "properties": {
-          "region": {
-            "type": "string",
-            "example": "us-west-2"
-          },
-          "bucket": {
-            "type": "string",
-            "example": "my-test-bucket"
-          },
-          "access_key_id": {
-            "type": "string",
-            "example": "AKIAIOSFODNN7EXAMPLE"
-          },
-          "secret_access_key": {
-            "type": "string",
-            "example": "A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS"
-          }
-        },
-        "required": [
-          "region",
-          "bucket",
-          "access_key_id"
         ]
       },
       "postgres_config_at_least_safe": {
@@ -2711,33 +2749,6 @@
           "host",
           "database",
           "user"
-        ]
-      },
-      "s3_config_unsafe": {
-        "type": "object",
-        "properties": {
-          "region": {
-            "type": "string",
-            "example": "us-west-2"
-          },
-          "bucket": {
-            "type": "string",
-            "example": "my-test-bucket"
-          },
-          "access_key_id": {
-            "type": "string",
-            "example": "AKIAIOSFODNN7EXAMPLE"
-          },
-          "secret_access_key": {
-            "type": "string",
-            "example": "A1lciPB09K2iqNHTLAftxTHy0SKGxNcO4QecAsZS"
-          }
-        },
-        "required": [
-          "region",
-          "bucket",
-          "access_key_id",
-          "secret_access_key"
         ]
       },
       "postgres_config_unsafe": {
@@ -3300,6 +3311,8 @@
         "enum": [
           "crm",
           "engagement",
+          "enrichment",
+          "marketing_automation",
           "no_category"
         ],
         "example": "crm"
@@ -3393,23 +3406,6 @@
                   "type": "string",
                   "description": "The Provider object name (case sensitive)",
                   "example": "Contact"
-                }
-              },
-              "required": [
-                "object"
-              ]
-            }
-          },
-          "custom_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "object": {
-                  "type": "string",
-                  "description": "The Supaglue object name (case sensitive)",
-                  "example": "Contact__c"
                 }
               },
               "required": [
@@ -3573,7 +3569,11 @@
           "apollo",
           "salesloft",
           "intercom",
-          "linear"
+          "linear",
+          "clearbit",
+          "6sense",
+          "marketo",
+          "salesforce_marketing_cloud_account_engagement"
         ],
         "example": "hubspot"
       },
@@ -3667,7 +3667,8 @@
                 "type": "string",
                 "enum": [
                   "common",
-                  "standard"
+                  "standard",
+                  "custom"
                 ],
                 "example": "standard"
               },
@@ -3823,7 +3824,8 @@
                 "type": "string",
                 "enum": [
                   "common",
-                  "standard"
+                  "standard",
+                  "custom"
                 ],
                 "example": "standard"
               },
@@ -3876,7 +3878,8 @@
                 "type": "string",
                 "enum": [
                   "common",
-                  "standard"
+                  "standard",
+                  "custom"
                 ]
               },
               "object": {
@@ -3904,14 +3907,10 @@
                 "example": "my-customer-1"
               },
               "provider_name": {
-                "type": "string",
-                "example": "hubspot"
+                "$ref": "#/components/schemas/provider_name"
               },
               "category": {
-                "type": "string",
-                "enum": [
-                  "crm"
-                ]
+                "$ref": "#/components/schemas/category"
               },
               "connection_id": {
                 "type": "string",
@@ -3975,14 +3974,10 @@
                 "example": "my-customer-1"
               },
               "provider_name": {
-                "type": "string",
-                "example": "hubspot"
+                "$ref": "#/components/schemas/provider_name"
               },
               "category": {
-                "type": "string",
-                "enum": [
-                  "crm"
-                ]
+                "$ref": "#/components/schemas/category"
               },
               "connection_id": {
                 "type": "string",
@@ -4332,31 +4327,6 @@
           },
           {
             "type": "object",
-            "title": "s3",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "My S3 Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "s3"
-                ],
-                "example": "s3"
-              },
-              "config": {
-                "$ref": "#/components/schemas/s3_config_unsafe"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "config"
-            ]
-          },
-          {
-            "type": "object",
             "title": "bigquery",
             "properties": {
               "name": {
@@ -4438,37 +4408,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/postgres_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
-            ]
-          },
-          {
-            "type": "object",
-            "title": "s3",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "My S3 Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "s3"
-                ],
-                "example": "s3"
-              },
-              "config": {
-                "$ref": "#/components/schemas/s3_config_at_least_safe"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -4488,12 +4438,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           },
           {
@@ -4513,12 +4468,17 @@
               },
               "config": {
                 "$ref": "#/components/schemas/mongodb_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
               }
             },
             "required": [
               "name",
               "type",
-              "config"
+              "config",
+              "version"
             ]
           }
         ]
@@ -4635,18 +4595,10 @@
                     "example": "5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"
                   },
                   "category": {
-                    "type": "string",
-                    "enum": [
-                      "crm"
-                    ]
+                    "$ref": "#/components/schemas/category"
                   },
                   "provider_name": {
-                    "type": "string",
-                    "enum": [
-                      "hubspot",
-                      "salesforce"
-                    ],
-                    "example": "hubspot"
+                    "$ref": "#/components/schemas/provider_name"
                   }
                 },
                 "required": [
@@ -4663,6 +4615,93 @@
             ]
           }
         ]
+      },
+      "upsert_connection_sync_config": {
+        "type": "object",
+        "properties": {
+          "destination_config": {
+            "oneOf": [
+              {
+                "description": "Config specific to postgres destination",
+                "type": "object",
+                "title": "postgres",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "postgres"
+                    ]
+                  },
+                  "schema": {
+                    "type": "string",
+                    "description": "The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used.",
+                    "example": "customer_1_schema"
+                  }
+                },
+                "required": [
+                  "type",
+                  "schema"
+                ]
+              },
+              {
+                "description": "Config specific to bigquery destination",
+                "type": "object",
+                "title": "bigquery",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "bigquery"
+                    ]
+                  },
+                  "dataset": {
+                    "type": "string",
+                    "description": "The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used.",
+                    "example": "customer_1_dataset"
+                  }
+                },
+                "required": [
+                  "type",
+                  "dataset"
+                ]
+              }
+            ]
+          },
+          "standard_objects": {
+            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "description": "The Provider object name (case sensitive)",
+                  "example": "Contact"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          },
+          "custom_objects": {
+            "description": "A list of case-sensitive Provider objects to be synced.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "description": "The Supaglue object name (case sensitive)",
+                  "example": "Contact__c"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          }
+        }
       },
       "standard_object": {
         "type": "object",
@@ -4832,6 +4871,93 @@
           "entity_field",
           "mapped_field"
         ]
+      },
+      "connection_sync_config": {
+        "type": "object",
+        "properties": {
+          "destination_config": {
+            "oneOf": [
+              {
+                "description": "Config specific to postgres destination",
+                "type": "object",
+                "title": "postgres",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "postgres"
+                    ]
+                  },
+                  "schema": {
+                    "type": "string",
+                    "description": "The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used.",
+                    "example": "customer_1_schema"
+                  }
+                },
+                "required": [
+                  "type",
+                  "schema"
+                ]
+              },
+              {
+                "description": "Config specific to bigquery destination",
+                "type": "object",
+                "title": "bigquery",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "bigquery"
+                    ]
+                  },
+                  "dataset": {
+                    "type": "string",
+                    "description": "The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used.",
+                    "example": "customer_1_dataset"
+                  }
+                },
+                "required": [
+                  "type",
+                  "dataset"
+                ]
+              }
+            ]
+          },
+          "standard_objects": {
+            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "description": "The Provider object name (case sensitive)",
+                  "example": "Contact"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          },
+          "custom_objects": {
+            "description": "A list of case-sensitive Provider objects to be synced.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "description": "The Supaglue object name (case sensitive)",
+                  "example": "Contact__c"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -4849,9 +4975,9 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "3804695"
+          "example": "123"
         },
-        "description": "Number of results to return per page"
+        "description": "Number of results to return per page. (Max: 1000)"
       },
       "customer_id": {
         "name": "customer_id",
@@ -5243,7 +5369,8 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard"
+                          "standard",
+                          "custom"
                         ]
                       },
                       "object": {
@@ -6327,7 +6454,8 @@
                         "type": "string",
                         "enum": [
                           "common",
-                          "standard"
+                          "standard",
+                          "custom"
                         ]
                       },
                       "object": {

@@ -6,6 +6,7 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  ConnectionSyncConfig,
   DestinationUnsafe,
   FullEntityRecord,
   MappedListedObjectRecord,
@@ -33,11 +34,12 @@ import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/
 import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
 import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
+import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
-import { getSnakecasedKeysMapper } from './util';
+import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
 
 export class BigQueryDestinationWriter extends BaseDestinationWriter {
   readonly #destination: DestinationUnsafe<'bigquery'>;
@@ -54,6 +56,12 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
     });
   }
 
+  #getDataset(connectionSyncConfig?: ConnectionSyncConfig): string {
+    return connectionSyncConfig?.destinationConfig?.type === 'bigquery'
+      ? connectionSyncConfig.destinationConfig.dataset
+      : this.#destination.config.dataset;
+  }
+
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     connection: ConnectionSafeAny,
     commonObjectType: T,
@@ -64,14 +72,15 @@ export class BigQueryDestinationWriter extends BaseDestinationWriter {
   }
 
   public override async writeCommonObjectRecords(
-    { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
+    { id: connectionId, providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
 
-    const { dataset } = this.#destination.config;
+    const dataset = this.#getDataset(connectionSyncConfig);
     const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `${dataset}.${table}`;
     const tempTable = `_temp_${providerName}_${table}`;
@@ -188,6 +197,26 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
     heartbeat();
 
+    // Propagate deletions if diffAndDeleteRecords is true
+    if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
+      childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
+      await client.query(`
+        -- Delete from ${qualifiedTable}
+        UPDATE ${qualifiedTable} as table
+        SET is_deleted = TRUE
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM ${qualifiedTempTable} as temp
+            WHERE 
+                temp._supaglue_application_id = table._supaglue_application_id AND
+                temp._supaglue_provider_name = table._supaglue_provider_name AND
+                temp._supaglue_customer_id = table._supaglue_customer_id AND
+                temp.id = table.id
+        );
+      `);
+      childLogger.info({ table, tempTable }, 'Marking records as deleted [COMPLETED]');
+    }
+
     // Delete temp table
     childLogger.info({ tempTable }, 'Deleting temp table [IN PROGRESS]');
     await client.dataset(dataset).table(tempTable).delete();
@@ -208,7 +237,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -216,7 +246,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       getObjectTableName(connection.providerName, object),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, object })
+      logger.child({ connectionId, providerName, customerId, object }),
+      diffAndDeleteRecords
     );
   }
 
@@ -233,7 +264,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     connection: ConnectionSafeAny,
     entityName: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteEntityRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -241,7 +273,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
       getEntityTableName(entityName),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, entityName })
+      logger.child({ connectionId, providerName, customerId, entityName }),
+      diffAndDeleteRecords
     );
   }
 
@@ -255,13 +288,14 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
   }
 
   async #writeRecords(
-    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
-    childLogger: pino.Logger
+    childLogger: pino.Logger,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
-    const { dataset } = this.#destination.config;
+    const dataset = this.#getDataset(connectionSyncConfig);
     const qualifiedTable = `${dataset}.${table}`;
     const tempTable = `_temp_${providerName}_${table}`;
     const qualifiedTempTable = `${dataset}.${tempTable}`;
@@ -388,7 +422,34 @@ WHEN NOT MATCHED THEN INSERT (${columns.join(',')}) VALUES (${columns.map((col) 
 WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col}`).join(', ')}`);
     heartbeat();
 
+    // if full sync, propagate deletions
+
     childLogger.info({ table, tempTable }, 'Copying from deduped temp table to main table [COMPLETED]');
+
+    // Propagate deletions if diffAndDeleteRecords is true
+    if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
+      childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
+      await client.query(`
+        -- Delete from ${qualifiedTable}
+        UPDATE ${qualifiedTable} as table
+        SET _supaglue_is_deleted = TRUE
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM ${qualifiedTempTable} as temp
+            WHERE 
+                temp._supaglue_application_id = table._supaglue_application_id AND
+                temp._supaglue_provider_name = table._supaglue_provider_name AND
+                temp._supaglue_customer_id = table._supaglue_customer_id AND
+                temp._supaglue_id = table._supaglue_id
+        );
+      `);
+      childLogger.info({ table, tempTable }, 'Marking records as deleted [IN PROGRESS]');
+    }
+
+    // Delete temp table
+    childLogger.info({ tempTable }, 'Deleting temp table [IN PROGRESS]');
+    await client.dataset(dataset).table(tempTable).delete();
+    childLogger.info({ tempTable }, 'Deleting temp table [COMPLETED]');
 
     childLogger.info({ table, maxLastModifiedAt, tempTableRowCount }, 'Sync completed');
 
@@ -431,6 +492,7 @@ const tableNamesByCommonObjectType: {
     account: 'engagement_accounts',
     contact: 'engagement_contacts',
     sequence_state: 'engagement_sequence_states',
+    sequence_step: 'engagement_sequence_steps',
     user: 'engagement_users',
     sequence: 'engagement_sequences',
     mailbox: 'engagement_mailboxes',
@@ -459,6 +521,7 @@ const columnsByCommonObjectType: {
     account: keysOfSnakecasedEngagementAccountWithTenant,
     contact: keysOfSnakecasedEngagementContactWithTenant,
     sequence_state: keysOfSnakecasedSequenceStateWithTenant,
+    sequence_step: keysOfSnakecasedSequenceStepWithTenant,
     user: keysOfSnakecasedEngagementUserWithTenant,
     sequence: keysOfSnakecasedSequenceWithTenant,
     mailbox: keysOfSnakecasedMailboxWithTenant,
@@ -494,6 +557,11 @@ const getObjectSchema = (temp?: boolean): TableSchema => {
         mode: 'REQUIRED',
       },
       {
+        name: '_supaglue_last_modified_at',
+        type: 'TIMESTAMP',
+        mode: 'REQUIRED',
+      },
+      {
         name: '_supaglue_is_deleted',
         type: 'BOOLEAN',
         mode: 'REQUIRED',
@@ -510,14 +578,6 @@ const getObjectSchema = (temp?: boolean): TableSchema => {
       },
     ],
   };
-
-  if (temp) {
-    schema.fields!.push({
-      name: '_supaglue_last_modified_at',
-      type: 'TIMESTAMP',
-      mode: 'REQUIRED',
-    });
-  }
 
   return schema;
 };
@@ -1182,7 +1242,7 @@ const schemaByCommonObjectType: {
           mode: 'NULLABLE',
         },
         {
-          name: 'contact_id',
+          name: 'account_id',
           type: 'STRING',
           mode: 'NULLABLE',
         },
@@ -1352,6 +1412,70 @@ const schemaByCommonObjectType: {
         {
           name: 'is_enabled',
           type: 'BOOLEAN',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'raw_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+      ],
+    },
+    sequence_step: {
+      fields: [
+        {
+          name: '_supaglue_application_id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_provider_name',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_customer_id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_emitted_at',
+          type: 'TIMESTAMP',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'created_at',
+          type: 'TIMESTAMP',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'updated_at',
+          type: 'TIMESTAMP',
+          mode: 'NULLABLE',
+        },
+        {
+          name: 'is_deleted',
+          type: 'BOOLEAN',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'last_modified_at',
+          type: 'TIMESTAMP',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'sequence_id',
+          type: 'STRING',
+          mode: 'REQUIRED',
+        },
+        {
+          name: 'name',
+          type: 'STRING',
           mode: 'REQUIRED',
         },
         {

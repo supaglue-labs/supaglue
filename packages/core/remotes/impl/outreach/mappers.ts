@@ -10,8 +10,11 @@ import type {
   Mailbox,
   PhoneNumber,
   Sequence,
+  SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
+  SequenceStepCreateParams,
+  SequenceTemplateCreateParams,
   User,
 } from '@supaglue/types/engagement';
 import type { OutreachRecord } from '.';
@@ -79,7 +82,7 @@ export const fromOutreachMailboxToMailbox = (record: OutreachRecord): Mailbox =>
 };
 
 export const fromOutreachAccountToAccount = (record: OutreachRecord): Account => {
-  const { id, attributes, relationships } = record;
+  const { attributes, relationships } = record;
   return {
     id: record.id.toString(),
     name: record.attributes.name as string,
@@ -147,26 +150,31 @@ export const fromOutreachProspectToContact = (record: OutreachRecord): Contact =
 };
 
 export const fromOutreachPhonesToContactPhone = ({ attributes }: OutreachRecord): PhoneNumber[] => {
-  const mobile = attributes.mobilePhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'mobile',
-  }));
-  const home = attributes.homePhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'home',
-  }));
-  const work = attributes.workPhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'work',
-  }));
-  const other = attributes.otherPhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'other',
-  }));
-  const voip = attributes.voipPhones.map((phone: string) => ({
-    phoneNumber: phone,
-    phoneNumberType: 'other',
-  }));
+  const mobile =
+    attributes.mobilePhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'mobile',
+    })) ?? [];
+  const home =
+    attributes.homePhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'home',
+    })) ?? [];
+  const work =
+    attributes.workPhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'work',
+    })) ?? [];
+  const other =
+    attributes.otherPhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'other',
+    })) ?? [];
+  const voip =
+    attributes.voipPhones?.map((phone: string) => ({
+      phoneNumber: phone,
+      phoneNumberType: 'other',
+    })) ?? [];
   return [...mobile, ...home, ...work, ...other, ...voip];
 };
 
@@ -196,7 +204,7 @@ export const toOutreachAccountCreateParams = ({ name, domain, ownerId, customFie
             : {
                 data: {
                   type: 'user',
-                  id: ownerId,
+                  id: parseInt(ownerId, 10),
                 },
               },
       },
@@ -228,7 +236,7 @@ export const toOutreachProspectCreateParams = ({
   const attributes = {
     firstName,
     lastName,
-    jobTitle,
+    title: jobTitle,
     ...toOutreachProspectAddressParams(address),
     ...toOutreachProspectEmailParams(emailAddresses),
     ...toOutreachProspectPhoneNumbers(phoneNumbers),
@@ -314,7 +322,129 @@ export const toOutreachSequenceStateCreateParams = ({
   };
 };
 
-const toOutreachProspectAddressParams = (address?: Address | null) => {
+export const toOutreachSequenceCreateParams = ({
+  name,
+  tags,
+  ownerId,
+  customFields,
+}: SequenceCreateParams): Record<string, any> => {
+  if (ownerId === undefined) {
+    return {
+      data: {
+        attributes: {
+          name,
+          tags,
+          ...customFields,
+        },
+        type: 'sequence',
+      },
+    };
+  }
+  return {
+    data: {
+      attributes: {
+        name,
+        tags,
+        ...customFields,
+      },
+      relationships: {
+        owner: {
+          data: {
+            id: parseInt(ownerId, 10),
+            type: 'user',
+          },
+        },
+      },
+      type: 'sequence',
+    },
+  };
+};
+
+export const toOutreachSequenceStepCreateParams = ({
+  sequenceId,
+  intervalSeconds,
+  date,
+  order,
+  type,
+  customFields,
+}: SequenceStepCreateParams): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        interval: intervalSeconds,
+        date,
+        stepType: type === 'auto' ? 'auto_email' : 'manual_email',
+        order,
+        ...customFields,
+      },
+      relationships: {
+        sequence: {
+          data: {
+            id: parseInt(sequenceId),
+            type: 'sequence',
+          },
+        },
+      },
+      type: 'sequenceStep',
+    },
+  };
+};
+
+export const toOutreachSequenceTemplateCreateParams = (
+  { isReply }: SequenceStepCreateParams,
+  sequenceStepId: number,
+  templateId: number
+): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        isReply,
+      },
+      relationships: {
+        sequenceStep: {
+          data: {
+            id: sequenceStepId,
+            type: 'sequenceStep',
+          },
+        },
+        template: {
+          data: {
+            id: templateId,
+            type: 'template',
+          },
+        },
+      },
+      type: 'sequenceTemplate',
+    },
+  };
+};
+
+export const toOutreachTemplateCreateParams = ({
+  name,
+  body,
+  subject,
+  to,
+  cc,
+  bcc,
+  customFields,
+}: SequenceTemplateCreateParams): Record<string, any> => {
+  return {
+    data: {
+      attributes: {
+        name,
+        bodyHtml: body,
+        subject,
+        toRecipients: to,
+        ccRecipients: cc,
+        bccRecipients: bcc,
+        ...customFields,
+      },
+      type: 'template',
+    },
+  };
+};
+
+export const toOutreachProspectAddressParams = (address?: Address | null) => {
   if (address === undefined) {
     return {};
   }
@@ -339,7 +469,7 @@ const toOutreachProspectAddressParams = (address?: Address | null) => {
 };
 
 // TODO: Support email type + email object where the type is stored
-const toOutreachProspectEmailParams = (emailAddresses?: EmailAddress[]) => {
+export const toOutreachProspectEmailParams = (emailAddresses?: EmailAddress[]) => {
   if (!emailAddresses) {
     return;
   }
@@ -348,7 +478,7 @@ const toOutreachProspectEmailParams = (emailAddresses?: EmailAddress[]) => {
   };
 };
 
-const toOutreachProspectPhoneNumbers = (phoneNumbers?: PhoneNumber[]) => {
+export const toOutreachProspectPhoneNumbers = (phoneNumbers?: PhoneNumber[]) => {
   if (!phoneNumbers) {
     return;
   }

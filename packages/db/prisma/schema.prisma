@@ -48,6 +48,7 @@ model Destination {
   createdAt       DateTime     @default(now()) @map("created_at")
   updatedAt       DateTime     @default(now()) @updatedAt @map("updated_at")
   syncConfigs     SyncConfig[]
+  version         Int          @default(1)
 
   @@unique([applicationId, name])
   @@map("destinations")
@@ -132,6 +133,7 @@ model Connection {
   providerId           String     @map("provider_id")
   schemaMappingsConfig Json?      @map("schema_mappings_config")
   entityMappings       Json?      @map("entity_mappings")
+  connectionSyncConfig Json?      @map("connection_sync_config")
   syncs                Sync[]
 
   @@unique([customerId, providerId])
@@ -139,11 +141,19 @@ model Connection {
   @@map("connections")
 }
 
+model ConnectionSyncConfigChange {
+  id           String   @id @default(uuid())
+  connectionId String   @map("connection_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("connection_sync_config_changes")
+}
+
 model Sync {
   id             String     @id @default(uuid())
   type           String     @default("object") // object | entity
   // set `objectType` and `object` if type is `object`
-  objectType     String?    @map("object_type") // common, standard
+  objectType     String?    @map("object_type") // common, standard, custom
   object         String?
   // set `entityId` if type is `entity`
   entityId       String?    @map("entity_id")

@@ -1,7 +1,7 @@
 import type { PrismaClient } from '@supaglue/db';
 import prisma from '@supaglue/db';
-import fs from 'fs';
-import { Pool } from 'pg';
+import type { Pool } from 'pg';
+import { getPgPool } from './lib';
 import {
   ConnectionService,
   CustomerService,
@@ -14,6 +14,8 @@ import {
 import { ApplicationService } from './services/application_service';
 import { CrmCommonObjectService } from './services/common_objects/crm/common_object_service';
 import { EngagementCommonObjectService } from './services/common_objects/engagement/common_object_service';
+import { EnrichmentCommonObjectService } from './services/common_objects/enrichment';
+import { MarketingAutomationCommonObjectService } from './services/common_objects/marketing_automation';
 import { DestinationService } from './services/destination_service';
 import { EntityRecordService } from './services/entity_record_service';
 import { EntityService } from './services/entity_service';
@@ -47,6 +49,8 @@ export type CoreDependencyContainer = {
 
   crmCommonObjectService: CrmCommonObjectService;
   engagementCommonObjectService: EngagementCommonObjectService;
+  enrichmentCommonObjectService: EnrichmentCommonObjectService;
+  marketingAutomationCommonObjectService: MarketingAutomationCommonObjectService;
 
   metadataService: MetadataService;
   entityRecordService: EntityRecordService;
@@ -57,30 +61,7 @@ export type CoreDependencyContainer = {
 let coreDependencyContainer: CoreDependencyContainer | undefined = undefined;
 
 function createCoreDependencyContainer(): CoreDependencyContainer {
-  const connectionString = process.env.SUPAGLUE_DATABASE_URL!;
-  // parse the connectionString URL to get the ssl config from the query string
-  const parsedConnectionString = new URL(connectionString);
-  const caCertPath = parsedConnectionString.searchParams.get('sslcert');
-  const sslMode = parsedConnectionString.searchParams.get('sslmode');
-  const sslAccept = parsedConnectionString.searchParams.get('sslaccept');
-  // delete from the query string so that the connectionString can be passed to the pgPool
-  parsedConnectionString.searchParams.delete('sslcert');
-  parsedConnectionString.searchParams.delete('sslmode');
-  parsedConnectionString.searchParams.delete('sslaccept');
-  const ssl =
-    sslMode === 'require' || sslMode === 'prefer'
-      ? {
-          ca: caCertPath ? fs.readFileSync(caCertPath).toString() : undefined,
-          rejectUnauthorized: sslAccept === 'strict',
-        }
-      : undefined;
-
-  const pgPool = new Pool({
-    connectionString: parsedConnectionString.toString(),
-    max: 5,
-    ssl,
-  });
-
+  const pgPool = getPgPool(process.env.SUPAGLUE_DATABASE_URL!);
   const systemSettingsService = new SystemSettingsService(prisma);
 
   // mgmt
@@ -111,7 +92,13 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     connectionService,
     syncService
   );
-  const engagementCommonObjectService = new EngagementCommonObjectService(remoteService, destinationService);
+  const engagementCommonObjectService = new EngagementCommonObjectService(
+    remoteService,
+    destinationService,
+    syncService
+  );
+  const enrichmentCommonObjectService = new EnrichmentCommonObjectService(remoteService);
+  const marketingAutomationCommonObjectService = new MarketingAutomationCommonObjectService(remoteService);
 
   const metadataService = new MetadataService(remoteService, connectionService);
 
@@ -147,6 +134,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     entityService,
     crmCommonObjectService,
     engagementCommonObjectService,
+    enrichmentCommonObjectService,
+    marketingAutomationCommonObjectService,
     metadataService,
     syncService,
     syncRunService,

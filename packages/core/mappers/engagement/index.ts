@@ -6,4 +6,5 @@ export * from './mailbox';
 export * from './phone_number';
 export * from './sequence';
 export * from './sequence_state';
+export * from './sequence_step';
 export * from './user';

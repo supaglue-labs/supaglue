@@ -21,6 +21,7 @@ import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
+import { CacheInvalidationError } from '../errors';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
@@ -72,25 +73,32 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     const collectionName = getCommonObjectCollectionName(category, commonObjectType);
 
     const client = this.#getClient();
-    const collection = client.db(database).collection(collectionName);
+    const childLogger = logger.child({ providerName, customerId, commonObjectType });
+    try {
+      const collection = client.db(database).collection(collectionName);
 
-    await collection.replaceOne(
-      {
-        id: mappedRecord.id,
-        _supaglue_application_id: mappedRecord._supaglue_application_id,
-        _supaglue_provider_name: mappedRecord._supaglue_provider_name,
-        _supaglue_customer_id: mappedRecord._supaglue_customer_id,
-      },
-      mappedRecord,
-      { upsert: true }
-    );
+      await collection.replaceOne(
+        {
+          id: mappedRecord.id,
+          _supaglue_application_id: mappedRecord._supaglue_application_id,
+          _supaglue_provider_name: mappedRecord._supaglue_provider_name,
+          _supaglue_customer_id: mappedRecord._supaglue_customer_id,
+        },
+        mappedRecord,
+        { upsert: true }
+      );
+    } catch (err) {
+      childLogger.error({ err }, 'Error upserting common object record');
+      throw new CacheInvalidationError('Cache invalidation error for common object record on MongoDB');
+    }
   }
 
   public override async writeCommonObjectRecords(
     { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
 
@@ -171,7 +179,8 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -195,7 +204,8 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     connection: ConnectionSafeAny,
     entityName: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteEntityRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -238,18 +248,25 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     const { database } = this.#destination.config;
 
     const client = this.#getClient();
-    const collection = client.db(database).collection(collectionName);
+    const childLogger = logger.child({ providerName, customerId });
 
-    await collection.replaceOne(
-      {
-        _supaglue_application_id: mappedRecord._supaglue_application_id,
-        _supaglue_provider_name: mappedRecord._supaglue_provider_name,
-        _supaglue_customer_id: mappedRecord._supaglue_customer_id,
-        _supaglue_id: mappedRecord._supaglue_id,
-      },
-      mappedRecord,
-      { upsert: true }
-    );
+    try {
+      const collection = client.db(database).collection(collectionName);
+
+      await collection.replaceOne(
+        {
+          _supaglue_application_id: mappedRecord._supaglue_application_id,
+          _supaglue_provider_name: mappedRecord._supaglue_provider_name,
+          _supaglue_customer_id: mappedRecord._supaglue_customer_id,
+          _supaglue_id: mappedRecord._supaglue_id,
+        },
+        mappedRecord,
+        { upsert: true }
+      );
+    } catch (err) {
+      childLogger.error({ err }, 'Error upserting common object record');
+      throw new CacheInvalidationError('Cache invalidation error for object record on MongoDB');
+    }
   }
 
   async #writeRecords(
@@ -364,6 +381,7 @@ const collectionNamesByCommonObjectType: {
     account: 'engagement_accounts',
     contact: 'engagement_contacts',
     sequence_state: 'engagement_sequence_states',
+    sequence_step: 'engagement_sequence_steps',
     user: 'engagement_users',
     sequence: 'engagement_sequences',
     mailbox: 'engagement_mailboxes',

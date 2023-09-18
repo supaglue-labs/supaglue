@@ -1,5 +1,4 @@
 import type {
-  CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
   Property,
@@ -15,6 +14,7 @@ import type {
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
+  ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
   Lead,
@@ -32,6 +32,7 @@ import {
   BadRequestError,
   ForbiddenError,
   NotFoundError,
+  RemoteProviderError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -63,28 +64,6 @@ const DEFAULT_LIST_PARAMS = {
   limit: PIPEDRIVE_RECORD_LIMIT,
   sort: 'id',
 };
-
-const PIPEDRIVE_USER_FIELDS: Property[] = [
-  { id: 'id', label: 'id' },
-  { id: 'name', label: 'name' },
-  { id: 'email', label: 'email' },
-  { id: 'active_flag', label: 'active_flag' },
-  { id: 'created', label: 'created' },
-  { id: 'modified', label: 'modified' },
-  { id: 'default_currency', label: 'default_currency' },
-  { id: 'locale', label: 'locale' },
-  { id: 'lang', label: 'lang' },
-  { id: 'phone', label: 'phone' },
-  { id: 'activated', label: 'activated' },
-  { id: 'last_login', label: 'last_login' },
-  { id: 'has_created_company', label: 'has_created_company' },
-  { id: 'access', label: 'access' },
-  { id: 'timezone_name', label: 'timezone_name' },
-  { id: 'timezone_offset', label: 'timezone_offset' },
-  { id: 'role_id', label: 'role_id' },
-  { id: 'icon_url', label: 'icon_url' },
-  { id: 'is_you', label: 'is_you' },
-];
 
 type PipedriveObjectSupportingCustomFields = 'person' | 'lead' | 'deal' | 'organization';
 
@@ -129,7 +108,7 @@ type PipedriveObjectFieldsResponse = {
 
 class PipedriveClient extends AbstractCrmRemoteClient {
   readonly #credentials: Credentials;
-  readonly #headers: Record<string, string>;
+  #headers: Record<string, string>;
   public constructor(credentials: Credentials) {
     super(credentials.instanceUrl);
     this.#credentials = credentials;
@@ -170,6 +149,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       this.#credentials.accessToken = newAccessToken;
       this.#credentials.refreshToken = newRefreshToken;
       this.#credentials.expiresAt = newExpiresAt;
+      this.#headers = { Authorization: `Bearer ${newAccessToken}` };
 
       this.emit('token_refreshed', {
         accessToken: newAccessToken,
@@ -501,28 +481,23 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
+  public override async upsertCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'contact':
+        return this.upsertContact(params as ContactUpsertParams);
+      default:
+        throw new Error(`Upsert is not supported for ${commonObjectType} in pipedrive`);
+    }
+  }
+
   getFieldsPrefix(objectName: string): string {
     if (objectName === 'lead') {
       return 'deal';
     }
     return objectName;
-  }
-
-  public override async listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
-    switch (object.name) {
-      case 'contact':
-        return await this.listPropertiesForRawObjectName('person');
-      case 'lead':
-        return await this.listPropertiesForRawObjectName('lead');
-      case 'opportunity':
-        return await this.listPropertiesForRawObjectName('deal');
-      case 'account':
-        return await this.listPropertiesForRawObjectName('organization');
-      case 'user':
-        return PIPEDRIVE_USER_FIELDS;
-      default:
-        throw new BadRequestError(`Common object ${object} not supported`);
-    }
   }
 
   public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
@@ -575,6 +550,38 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       }
     );
     return response.data.data.id.toString();
+  }
+
+  async upsertContact(params: ContactUpsertParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const ids = (
+      await Promise.all(
+        params.upsertOn.values.map(async (value) => {
+          const response = await axios.get<{ data: { items: { item: { id: number } }[] } }>(
+            `${this.#credentials.instanceUrl}/api/v1/persons/search`,
+            {
+              headers: this.#headers,
+              params: {
+                term: value,
+                fields: 'email',
+                exact_match: true,
+              },
+            }
+          );
+          if (response.data.data.items.length > 1) {
+            throw new BadRequestError(`Multiple contacts found for email ${value}`);
+          }
+          return response.data.data.items.map((item) => item.item.id.toString());
+        })
+      )
+    ).flat();
+    if (ids.length > 1) {
+      throw new BadRequestError(`Multiple contacts found for upsert query`);
+    }
+    if (ids.length === 0) {
+      return this.createContact(params.record);
+    }
+    return this.updateContact({ ...params.record, id: ids[0] });
   }
 
   async createLead(params: LeadCreateParams): Promise<string> {
@@ -705,19 +712,70 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       return err;
     }
 
-    const jsonErrorMessage = err.response?.data?.data?.message;
+    // https://pipedrive.readme.io/docs/core-api-concepts-responses#error-response
+    const jsonErrorMessage = err.response?.data?.error;
 
     switch (err.response?.status) {
       case 400:
-        return new BadRequestError(jsonErrorMessage ?? err.message);
+        return new BadRequestError(jsonErrorMessage, err.response?.data);
       case 401:
-        return new UnauthorizedError(jsonErrorMessage ?? err.message);
+        return new UnauthorizedError(jsonErrorMessage, err.response?.data);
       case 403:
-        return new ForbiddenError(jsonErrorMessage ?? err.message);
+        return new ForbiddenError(jsonErrorMessage, err.response?.data);
       case 404:
-        return new NotFoundError(jsonErrorMessage ?? err.message);
+        return new NotFoundError(jsonErrorMessage, err.response?.data);
       case 429:
-        return new TooManyRequestsError(jsonErrorMessage ?? err.message);
+        return new TooManyRequestsError(jsonErrorMessage, err.response?.data);
+      // The following are unmapped to Supaglue errors, but we want to pass
+      // them back as 4xx so they aren't 500 and developers can view error messages
+      case 402:
+      case 405:
+      case 406:
+      case 407:
+      case 408:
+      case 409:
+      case 410:
+      case 411:
+      case 412:
+      case 413:
+      case 414:
+      case 415:
+      case 416:
+      case 417:
+      case 418:
+      case 419:
+      case 420:
+      case 421:
+      case 422:
+      case 423:
+      case 424:
+      case 425:
+      case 426:
+      case 427:
+      case 428:
+      case 430:
+      case 431:
+      case 432:
+      case 433:
+      case 434:
+      case 435:
+      case 436:
+      case 437:
+      case 438:
+      case 439:
+      case 440:
+      case 441:
+      case 442:
+      case 443:
+      case 444:
+      case 445:
+      case 446:
+      case 447:
+      case 448:
+      case 449:
+      case 450:
+      case 451:
+        return new RemoteProviderError(jsonErrorMessage, err.response?.data);
       default:
         return err;
     }

@@ -1,0 +1,24 @@
+type: object
+properties:
+  id:
+    type: string
+  name:
+    type: string
+  required:
+    type: boolean
+  form_id:
+    type: string
+  data_format:
+    type: string
+  validation_message:
+    type: string
+    nullable: true
+  raw_data:
+    type: object
+    additionalProperties: true
+required:
+  - id
+  - name
+  - required
+  - form_id
+  - data_format

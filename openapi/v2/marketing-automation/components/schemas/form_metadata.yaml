@@ -1,0 +1,22 @@
+type: object
+properties:
+  id:
+    type: string
+  name:
+    type: string
+  created_at:
+    type: string
+    example: '2022-02-27T00:00:00Z'
+    format: date-time
+  updated_at:
+    type: string
+    example: '2022-02-27T00:00:00Z'
+    format: date-time
+  raw_data:
+    type: object
+    additionalProperties: true
+required:
+  - id
+  - name
+  - created_at
+  - updated_at

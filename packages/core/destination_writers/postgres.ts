@@ -4,6 +4,7 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  ConnectionSyncConfig,
   DestinationUnsafe,
   FullEntityRecord,
   MappedListedObjectRecord,
@@ -22,6 +23,7 @@ import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
+import { CacheInvalidationError } from '../errors';
 import {
   keysOfSnakecasedCrmAccountWithTenant,
   keysOfSnakecasedCrmContactWithTenant,
@@ -34,11 +36,12 @@ import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/
 import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
 import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
+import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
 import { logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
-import { getSnakecasedKeysMapper } from './util';
+import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
   readonly #destination: DestinationUnsafe<'postgres'>;
@@ -52,22 +55,31 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const { sslMode, ...rest } = this.#destination.config;
     const pool = new Pool({
       ...rest,
+      max: 20,
+      statement_timeout: 60 * 60 * 1000, // 1 hour - assuming that COPY FROM STDIN is subject to this timeout
       ssl: getSsl(sslMode),
     });
     return await pool.connect();
   }
 
+  #getSchema(connectionSyncConfig?: ConnectionSyncConfig): string {
+    return connectionSyncConfig?.destinationConfig?.type === 'postgres'
+      ? connectionSyncConfig.destinationConfig.schema
+      : this.#destination.config.schema;
+  }
+
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
-    { providerName, customerId, category, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     commonObjectType: T,
     record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
     if (category === 'no_category' || !commonObjectType) {
       throw new Error(`Common objects not supported for provider: ${providerName}`);
     }
-    const { schema } = this.#destination.config;
+    const schema = this.#getSchema(connectionSyncConfig);
     const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `"${schema}".${table}`;
+    const childLogger = logger.child({ providerName, customerId, commonObjectType });
 
     const client = await this.#getClient();
 
@@ -122,20 +134,23 @@ ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_custom
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         values
       );
+    } catch (err) {
+      childLogger.error({ err }, 'Error upserting common object record');
+      throw new CacheInvalidationError('Cache invalidation error for common object record on Postgres');
     } finally {
       client.release();
     }
   }
 
   public override async writeCommonObjectRecords(
-    { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
+    { id: connectionId, providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
-
-    const { schema } = this.#destination.config;
+    const schema = this.#getSchema(connectionSyncConfig);
     const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `temp_${table}`;
@@ -263,6 +278,24 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
+      if (diffAndDeleteRecords) {
+        childLogger.info('Marking rows as deleted [IN PROGRESS]');
+        await client.query(`
+          UPDATE ${qualifiedTable} AS destination
+          SET is_deleted = TRUE
+          WHERE NOT EXISTS (
+              SELECT 1
+              FROM ${dedupedTempTable} AS temp
+              WHERE 
+                  temp._supaglue_application_id = destination._supaglue_application_id AND
+                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
+                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
+                  temp.id = destination.id
+          );
+        `);
+        childLogger.info('Marking rows as deleted [COMPLETED]');
+      }
+
       // We don't drop deduped temp table here because we're closing the connection here anyway.
 
       return {
@@ -278,7 +311,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     connection: ConnectionSafeAny,
     object: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -286,7 +320,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       getObjectTableName(connection.providerName, object),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, object })
+      logger.child({ connectionId, providerName, customerId, object }),
+      diffAndDeleteRecords
     );
   }
 
@@ -302,7 +337,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     connection: ConnectionSafeAny,
     entityName: string,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteEntityRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -310,7 +346,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       getEntityTableName(entityName),
       inputStream,
       heartbeat,
-      logger.child({ connectionId, providerName, customerId, entityName })
+      logger.child({ connectionId, providerName, customerId, entityName }),
+      diffAndDeleteRecords
     );
   }
 
@@ -323,13 +360,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 
   async #upsertRecord(
-    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     table: string,
     record: BaseFullRecord
   ): Promise<void> {
-    const { schema } = this.#destination.config;
+    const schema = this.#getSchema(connectionSyncConfig);
     const qualifiedTable = `"${schema}".${table}`;
     const client = await this.#getClient();
+    const childLogger = logger.child({ providerName, customerId });
 
     try {
       // Create tables if necessary
@@ -383,19 +421,23 @@ ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_custom
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         values
       );
+    } catch (err) {
+      childLogger.error({ err }, 'Error upserting common object record');
+      throw new CacheInvalidationError('Cache invalidation error for object record on Postgres');
     } finally {
       client.release();
     }
   }
 
   async #writeRecords(
-    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
-    childLogger: pino.Logger
+    childLogger: pino.Logger,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
-    const { schema } = this.#destination.config;
+    const schema = this.#getSchema(connectionSyncConfig);
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
     const dedupedTempTable = `"deduped_temp_${table}"`;
@@ -538,6 +580,24 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
+      if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
+        childLogger.info('Marking rows as deleted [IN PROGRESS]');
+        await client.query(`
+          UPDATE ${qualifiedTable} AS destination
+          SET _supaglue_is_deleted = TRUE
+          WHERE NOT EXISTS (
+              SELECT 1
+              FROM ${dedupedTempTable} AS temp
+              WHERE 
+                  temp._supaglue_application_id = destination._supaglue_application_id AND
+                  temp._supaglue_provider_name = destination._supaglue_provider_name AND
+                  temp._supaglue_customer_id = destination._supaglue_customer_id AND
+                  temp._supaglue_id = destination._supaglue_id
+          );
+        `);
+        childLogger.info('Marking rows as deleted [COMPLETED]');
+      }
+
       // We don't drop deduped temp table here because we're closing the connection here anyway.
 
       return {
@@ -582,6 +642,7 @@ const tableNamesByCommonObjectType: {
     account: 'engagement_accounts',
     contact: 'engagement_contacts',
     sequence_state: 'engagement_sequence_states',
+    sequence_step: 'engagement_sequence_steps',
     user: 'engagement_users',
     sequence: 'engagement_sequences',
     mailbox: 'engagement_mailboxes',
@@ -610,6 +671,7 @@ const columnsByCommonObjectType: {
     account: keysOfSnakecasedEngagementAccountWithTenant,
     contact: keysOfSnakecasedEngagementContactWithTenant,
     sequence_state: keysOfSnakecasedSequenceStateWithTenant,
+    sequence_step: keysOfSnakecasedSequenceStepWithTenant,
     user: keysOfSnakecasedEngagementUserWithTenant,
     sequence: keysOfSnakecasedSequenceWithTenant,
     mailbox: keysOfSnakecasedMailboxWithTenant,
@@ -888,6 +950,25 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "mailbox_id" TEXT,
   "user_id" TEXT,
   "state" TEXT,
+  "raw_data" JSONB
+
+  ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
+);`,
+    sequence_step: (schema: string, temp?: boolean) => `-- CreateTable
+CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
+      temp ? 'temp_engagement_sequence_steps' : `"${schema}".engagement_sequence_steps`
+    } (
+  "_supaglue_application_id" TEXT NOT NULL,
+  "_supaglue_provider_name" TEXT NOT NULL,
+  "_supaglue_customer_id" TEXT NOT NULL,
+  "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
+  "id" TEXT NOT NULL,
+  "created_at" TIMESTAMP(3),
+  "updated_at" TIMESTAMP(3),
+  "is_deleted" BOOLEAN NOT NULL DEFAULT false,
+  "last_modified_at" TIMESTAMP(3) NOT NULL,
+  "sequence_id" TEXT NOT NULL,
+  "name" TEXT NOT NULL,
   "raw_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}

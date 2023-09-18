@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.13.16
+  version: 0.14.14
   title: Unified Enrichment API
   contact:
     name: Supaglue
@@ -11,10 +11,9 @@ info:
 
     Welcome to the Unified Actions API (Enrichment) documentation. You can use this API to write to third-party providers.
 
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
+    [View common schema for Enrichment](https://docs.supaglue.com/platform/common-schemas/enrichment)
 
-    #### Reading data
-    To read data from third-party providers, refer to the [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
     #### Base API URL
     ```

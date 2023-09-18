@@ -7,6 +7,7 @@ import type {
   ConnectionUpsertParamsAny,
   CRMProvider,
   EngagementOauthProvider,
+  MarketingAutomationOauthProvider,
   NoCategoryProvider,
   OauthProvider,
   ProviderName,
@@ -15,6 +16,8 @@ import type { CRMProviderName } from '@supaglue/types/crm';
 import { SUPPORTED_CRM_PROVIDERS } from '@supaglue/types/crm';
 import type { EngagementProviderName } from '@supaglue/types/engagement';
 import { SUPPORTED_ENGAGEMENT_PROVIDERS } from '@supaglue/types/engagement';
+import type { MarketingAutomationProviderName } from '@supaglue/types/marketing_automation/index';
+import { SUPPORTED_MARKETING_AUTOMATION_PROVIDERS } from '@supaglue/types/marketing_automation/index';
 import type { NoCategoryProviderName } from '@supaglue/types/no_category';
 import { SUPPORTED_NO_CATEGORY_PROVIDERS } from '@supaglue/types/no_category';
 import type { Request, Response } from 'express';
@@ -36,7 +39,7 @@ export default function init(app: Router): void {
       req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
       res: Response
     ) => {
-      const { applicationId, customerId, providerName, returnUrl, loginUrl, scope } = req.query;
+      const { applicationId, customerId, providerName, returnUrl, loginUrl, scope, businessUnitId } = req.query;
 
       if (!applicationId) {
         throw new BadRequestError('Missing applicationId');
@@ -57,8 +60,13 @@ export default function init(app: Router): void {
         throw new BadRequestError('Missing returnUrl');
       }
 
-      if (providerName === 'apollo') {
-        throw new BadRequestError('Oauth is not supported for Apollo');
+      if (
+        providerName === 'apollo' ||
+        providerName === 'clearbit' ||
+        providerName === '6sense' ||
+        providerName === 'marketo'
+      ) {
+        throw new BadRequestError(`Oauth is not supported for ${providerName}`);
       }
 
       let provider: OauthProvider | null = null;
@@ -67,6 +75,7 @@ export default function init(app: Router): void {
         provider = (await providerService.getByNameAndApplicationId(providerName, applicationId)) as
           | CRMProvider
           | EngagementOauthProvider
+          | MarketingAutomationOauthProvider
           | NoCategoryProvider;
       } catch (err) {
         throw new BadRequestError(`Can't find provider with name: ${providerName}.`);
@@ -86,6 +95,10 @@ export default function init(app: Router): void {
         }
 
         oauthScopes.push(scope);
+      }
+
+      if (provider.name === 'salesforce_marketing_cloud_account_engagement' && !businessUnitId) {
+        throw new BadRequestError('Missing businessUnitId');
       }
 
       const { additionalScopes, ...auth } = getConnectorAuthConfig(provider.category, providerName);
@@ -123,6 +136,7 @@ export default function init(app: Router): void {
           providerName,
           scope: noScope ? [] : oauthScopes, // TODO: this should be in a session
           loginUrl,
+          businessUnitId,
         }),
         ...additionalAuthParams,
       });
@@ -151,6 +165,7 @@ export default function init(app: Router): void {
         customerId,
         applicationId,
         loginUrl,
+        businessUnitId,
       }: {
         returnUrl: string;
         scope?: string;
@@ -158,6 +173,7 @@ export default function init(app: Router): void {
         providerName?: ProviderName;
         customerId?: string;
         loginUrl?: string;
+        businessUnitId?: string;
       } = JSON.parse(decodeURIComponent(state));
 
       if (!applicationId) {
@@ -170,6 +186,7 @@ export default function init(app: Router): void {
         !providerName ||
         (!SUPPORTED_CRM_PROVIDERS.includes(providerName as CRMProviderName) &&
           !SUPPORTED_NO_CATEGORY_PROVIDERS.includes(providerName as NoCategoryProviderName) &&
+          !SUPPORTED_MARKETING_AUTOMATION_PROVIDERS.includes(providerName as MarketingAutomationProviderName) &&
           !SUPPORTED_ENGAGEMENT_PROVIDERS.includes(providerName as EngagementProviderName))
       ) {
         throw new BadRequestError('No providerName or supported providerName on state object');
@@ -281,6 +298,15 @@ export default function init(app: Router): void {
                 ...basePayload.credentials,
                 instanceUrl,
                 loginUrl,
+              },
+            }
+          : providerName === 'salesforce_marketing_cloud_account_engagement'
+          ? {
+              ...basePayload,
+              providerName,
+              credentials: {
+                ...basePayload.credentials,
+                businessUnitId,
               },
             }
           : { ...basePayload, providerName };

@@ -183,6 +183,23 @@ export type UpdateObjectFieldMappingsRequest =
 export type UpdateObjectFieldMappingsResponse =
   operations['updateObjectFieldMappings']['responses'][keyof operations['updateObjectFieldMappings']['responses']]['content']['application/json'];
 
+export type GetConnectionSyncConfigPathParams = never;
+export type GetConnectionSyncConfigQueryParams = never;
+export type GetConnectionSyncConfigRequest = never;
+export type GetConnectionSyncConfigResponse =
+  operations['getConnectionSyncConfig']['responses'][keyof operations['getConnectionSyncConfig']['responses']]['content']['application/json'];
+
+export type UpsertConnectionSyncConfigPathParams = never;
+export type UpsertConnectionSyncConfigQueryParams = never;
+export type UpsertConnectionSyncConfigRequest = never;
+export type UpsertConnectionSyncConfigResponse =
+  operations['upsertConnectionSyncConfig']['responses'][keyof operations['upsertConnectionSyncConfig']['responses']]['content']['application/json'];
+
+export type DeleteConnectionSyncConfigPathParams = never;
+export type DeleteConnectionSyncConfigQueryParams = never;
+export type DeleteConnectionSyncConfigRequest = never;
+export type DeleteConnectionSyncConfigResponse = never;
+
 export type GetSyncsPathParams = never;
 export type GetSyncsQueryParams = Required<operations['getSyncs']>['parameters']['query'];
 export type GetSyncsRequest = never;

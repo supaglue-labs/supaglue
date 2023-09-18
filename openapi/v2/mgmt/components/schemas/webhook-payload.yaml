@@ -64,15 +64,9 @@ oneOf:
             type: string
             example: 5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024
           category:
-            type: string
-            enum:
-              - crm
+            $ref: ./objects/category.yaml
           provider_name:
-            type: string
-            enum:
-              - hubspot
-              - salesforce
-            example: hubspot
+            $ref: ./objects/provider_name.yaml
         required:
           - customer_id
           - provider_id

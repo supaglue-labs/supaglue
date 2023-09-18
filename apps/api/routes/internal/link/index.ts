@@ -36,7 +36,7 @@ export default function init(app: Router): void {
 
   linkRouter.post('/:link_id/_consume', async (req: Request, res: Response) => {
     await magicLinkService.consumeMagicLink(req.params.link_id, camelcaseKeys(req.body));
-    return res.status(204).send();
+    return res.status(204).end();
   });
 
   app.use('/links', linkRouter);

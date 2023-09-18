@@ -47,18 +47,6 @@ properties:
           example: Contact
       required:
         - object
-  custom_objects:
-    description: A list of case-sensitive Provider objects to be synced.
-    type: array
-    items:
-      type: object
-      properties:
-        object:
-          type: string
-          description: The Supaglue object name (case sensitive)
-          example: Contact__c
-      required:
-        - object
   entities:
     type: array
     items:

@@ -23,27 +23,14 @@ oneOf:
         example: postgres
       config:
         $ref: ./objects/postgres_config_at_least_safe.yaml
+      version:
+        type: number
+        example: number
     required:
       - name
       - type
       - config
-  - type: object
-    title: s3
-    properties:
-      name:
-        type: string
-        example: My S3 Destination
-      type:
-        type: string
-        enum:
-          - s3
-        example: s3
-      config:
-        $ref: ./objects/s3_config_at_least_safe.yaml
-    required:
-      - name
-      - type
-      - config
+      - version
   - type: object
     title: bigquery
     properties:
@@ -57,10 +44,14 @@ oneOf:
         example: bigquery
       config:
         $ref: ./objects/bigquery_config_at_least_safe.yaml
+      version:
+        type: number
+        example: number
     required:
       - name
       - type
       - config
+      - version
   - type: object
     title: mongodb
     properties:
@@ -74,7 +65,11 @@ oneOf:
         example: mongodb
       config:
         $ref: ./objects/mongodb_config_at_least_safe.yaml
+      version:
+        type: number
+        example: number
     required:
       - name
       - type
       - config
+      - version

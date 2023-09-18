@@ -28,6 +28,8 @@ properties:
     description: Indicates whether the object has been moved to the Recycle Bin (true) or not (false). 
   LastActivityDate:
     type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
     nullable: true
     description: The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record.
   LastName:
@@ -80,9 +82,13 @@ properties:
     description: The contact's title.
   CreatedDate:
     type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
     description: The date and time when this contact was created.
   SystemModstamp:
     type: string
+    format: date-time
+    example: '2022-02-27T00:00:00Z'
     description: The date and time when this contact was last modified.
   raw_data:
     type: object

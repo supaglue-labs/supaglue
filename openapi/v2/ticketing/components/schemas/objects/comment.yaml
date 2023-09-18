@@ -1,0 +1,29 @@
+type: object
+properties:
+  user:
+    type: string
+    example: 17a54124-287f-494d-965e-3c5b330c9a68
+  contact:
+    type: string
+    example: dde3fb16-b8eb-483d-81c4-b78100816f15
+  body:
+    type: string
+    nullable: true
+    example: When will these integrations be done? You all should use Supaglue.
+  html_body:
+    type: string
+    nullable: true
+    example: When will these integrations be done? You all should use <b>Supaglue<b>.
+  ticket:
+    type: string
+    nullable: true
+    example: fb8c55b6-1cb8-4b4c-9fb6-17924231619d
+  is_private:
+    type: boolean
+    example: true
+
+required:
+  - user
+  - body
+  - ticket
+  - is_private

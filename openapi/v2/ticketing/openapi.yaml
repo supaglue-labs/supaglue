@@ -1,0 +1,145 @@
+openapi: 3.0.3
+info:
+  version: 0.14.14
+  title: Unified Ticketing API
+  contact:
+    name: Supaglue
+    email: docs@supaglue.com
+    url: 'https://supaglue.com'
+  description: |
+    #### Introduction
+
+    Welcome to the Unified Actions API (Ticketing) documentation. You can use this API to write to third-party providers.
+
+    [View common schema for Ticketing](https://docs.supaglue.com/platform/common-schemas/ticketing)
+
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
+
+    #### Base API URL
+    ```
+    https://api.supaglue.io/ticketing/v2
+    ```
+  # externalDocs:
+  #   description:
+  #   url: 'https://www.postman.com/supaglue/workspace/supaglue-public/overview'
+servers:
+  - url: 'https://api.supaglue.io/ticketing/v2'
+    description: Supaglue API
+paths:
+  '/accounts':
+    $ref: paths/accounts.yaml
+  '/accounts/{account_id}':
+    $ref: paths/accounts@{account_id}.yaml
+  '/collections':
+    $ref: paths/collections.yaml
+  '/collections/{collection_id}':
+    $ref: paths/collections@{collection_id}.yaml
+  '/collections/{parent_id}/users':
+    $ref: paths/collections@{parent_id}@users.yaml
+  '/users':
+    $ref: paths/users.yaml
+  '/users/{user_id}':
+    $ref: paths/users@{user_id}.yaml
+  '/contacts':
+    $ref: paths/contacts.yaml
+  '/contacts/{contact_id}':
+    $ref: paths/contacts@{contact_id}.yaml
+  '/teams':
+    $ref: paths/teams.yaml
+  '/teams/{team_id}':
+    $ref: paths/teams@{team_id}.yaml
+  '/tickets':
+    $ref: paths/tickets.yaml
+  '/tickets/{ticket_id}':
+    $ref: paths/tickets@{ticket_id}.yaml
+  # TODO: /tickets/{parent_id}/collaborators
+  # TODO: /tickets/meta/patch/{id}
+  # TODO: /tickets/meta/post
+  # TODO: /tickets/remote-field-classes
+  '/comments':
+    $ref: paths/comments.yaml
+  '/comments/{comment_id}':
+    $ref: paths/comments@{comment_id}.yaml
+  # TODO: /comments/meta/post
+  '/tags':
+    $ref: paths/tags.yaml
+  '/tags/{tag_id}':
+    $ref: paths/tags@{tag_id}.yaml
+  '/attachments':
+    $ref: paths/attachments.yaml
+  '/attachments/{attachment_id}':
+    $ref: paths/attachments@{attachment_id}.yaml
+tags:
+  - name: Accounts
+    description: |
+      The Account object is used to represent the account that a ticket is associated with.
+
+      The account is a company that may be a customer. This does not represent the company that is receiving the ticket.
+  - name: Collections
+    description: |
+      The Collection object is used to represent collections of tickets. Collections may include other collections as sub collections.
+  - name: Users
+    description: |
+      The User object is used to represent an employee within a company.
+  - name: Contacts
+    description: |
+      The Contact object is used to represent the customer, lead, or external user that a ticket is associated with.
+  - name: Teams
+    description: |
+      The Team object is used to represent a team within the company receiving the ticket.
+  - name: Tickets
+    description: |
+      The Ticket object is used to represent a ticket or a task within a system.
+  - name: Comments
+    description: |
+      The Comment object is used to represent a comment on a ticket.
+  - name: Tags
+    description: |
+      The Tag object is used to represent a tag or label for a ticket.
+  - name: Attachments
+    description: |
+      The Attachment object is used to represent an attachment for a ticket.
+components:
+  securitySchemes:
+    x-api-key:
+      $ref: ../../common/components/securitySchemes/x-api-key.yaml
+  schemas:
+    account:
+      $ref: ./components/schemas/objects/account.yaml
+    contact:
+      $ref: ./components/schemas/objects/contact.yaml
+    collection:
+      $ref: ./components/schemas/objects/collection.yaml
+    create_ticket:
+      $ref: ./components/schemas/create_ticket.yaml
+    update_ticket:
+      $ref: ./components/schemas/update_ticket.yaml
+    ticket:
+      $ref: ./components/schemas/objects/ticket.yaml
+    user:
+      $ref: ./components/schemas/objects/user.yaml
+    comment:
+      $ref: ./components/schemas/objects/comment.yaml
+    tag:
+      $ref: ./components/schemas/objects/tag.yaml
+  parameters:
+    x-customer-id:
+      $ref: ../../common/components/parameters/header/x-customer-id.yaml
+    x-provider-name:
+      $ref: ../../common/components/parameters/header/x-provider-name.yaml
+    modified_after:
+      $ref: ../../common/components/parameters/query/modified_after.yaml
+    modified_before:
+      $ref: ../../common/components/parameters/query/modified_before.yaml
+    created_after:
+      $ref: ../../common/components/parameters/query/created_after.yaml
+    created_before:
+      $ref: ../../common/components/parameters/query/created_before.yaml
+    include_deleted_data:
+      $ref: ../../common/components/parameters/query/include_deleted_data.yaml
+    include_raw_data:
+      $ref: ../../common/components/parameters/query/include_raw_data.yaml
+    page_size:
+      $ref: ../../common/components/parameters/query/page_size.yaml
+    cursor:
+      $ref: ../../common/components/parameters/query/cursor.yaml

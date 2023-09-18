@@ -6,6 +6,7 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useProviders } from '@/hooks/useProviders';
 import { useSchemas } from '@/hooks/useSchemas';
+import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getStandardObjectOptions, PROVIDER_CARDS_INFO } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
 import AddIcon from '@mui/icons-material/Add';
@@ -45,8 +46,25 @@ export type ProviderDetailsPanelProps = {
   isLoading: boolean;
 };
 
-export default function ProviderDetailsPanel({ providerName, category, isLoading }: ProviderDetailsPanelProps) {
-  const shouldAllowManagedOauth = ['salesforce', 'hubspot', 'gong', 'salesloft', 'outreach'].includes(providerName);
+function isOauthProvider(provider: Provider | undefined): provider is OauthProvider {
+  return provider?.authType === 'oauth2';
+}
+
+export default function ProviderDetailsPanel({
+  providerName,
+  category,
+  isLoading,
+  lekko,
+}: ProviderDetailsPanelProps & SupaglueProps) {
+  const shouldAllowManagedOauth = [
+    'salesforce',
+    'salesforce_marketing_cloud_account_engagement',
+    'hubspot',
+    'gong',
+    'salesloft',
+    'outreach',
+  ].includes(providerName);
+
   const notYetSupported = [
     'asana',
     'box',
@@ -55,11 +73,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     'google_calendar',
     'google_drive',
     'linkedin',
-    'marketo',
     'messenger',
     'onedrive',
     'outlook',
-    'pardot',
     'slack',
     'ms_teams',
     'whatsapp',
@@ -69,7 +85,8 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   ];
   // These providers either don't allow you to pass in scopes or make you pass scopes another way.
   const noScopes = ['salesloft', 'intercom', 'ms_dynamics_365_sales'].includes(providerName);
-  const isOauth = category === 'crm' || providerName !== 'apollo';
+  const isApiKey = category === 'enrichment' || providerName === 'apollo' || providerName === 'marketo';
+  const isOauth = !isApiKey;
   const activeApplicationId = useActiveApplicationId();
   const { schemas, isLoading: isLoadingSchemas } = useSchemas();
   const { addNotification } = useNotification();
@@ -78,7 +95,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [useManagedOauth, setUseManagedOauth] = useState<boolean>(true);
+  const [useManagedOauth, setUseManagedOauth] = useState<boolean>(shouldAllowManagedOauth);
   const [commonObjects, setCommonObjects] = useState<ProviderObject[]>([]);
   const [standardObjects, setStandardObjects] = useState<ProviderObject[]>([]);
   const router = useRouter();
@@ -95,7 +112,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
 
   useEffect(() => {
     setFriendlyProviderId(provider?.id ?? '--');
-    if (provider?.category === 'crm' || provider?.name !== 'apollo') {
+    if (isOauthProvider(provider)) {
       setClientId(provider?.config?.oauth?.credentials?.oauthClientId ?? '');
 
       setClientSecret(provider?.config?.oauth?.credentials?.oauthClientSecret ?? '');
@@ -106,7 +123,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
       );
     }
 
-    setCommonObjects(provider?.category === 'no_category' ? [] : provider?.objects?.common ?? []);
+    setCommonObjects(
+      provider?.category === 'no_category' || provider?.category === 'enrichment' ? [] : provider?.objects?.common ?? []
+    );
     setStandardObjects(provider?.objects?.standard ?? []);
   }, [provider?.id]);
 
@@ -114,12 +133,12 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     if (provider) {
       const newProvider = {
         ...provider,
-        config: isOauth
+        config: isOauthProvider(provider)
           ? {
-              ...(provider as OauthProvider).config,
+              ...provider.config,
               providerAppId: '', // TODO: add input field for this
               oauth: {
-                ...(provider as OauthProvider).config.oauth,
+                ...provider.config.oauth,
                 credentials: {
                   oauthClientId: clientId,
                   oauthClientSecret: clientSecret,
@@ -142,9 +161,9 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
     }
     const response = await createRemoteProvider(activeApplicationId, {
       applicationId: activeApplicationId,
-      authType: isOauth ? 'oauth2' : 'api_key',
+      authType: isOauth ? 'oauth2' : providerName === 'marketo' ? 'marketo_oauth2' : 'api_key',
       category,
-      name: providerName as ProviderName,
+      name: providerName,
       config: isOauth
         ? {
             providerAppId: '', // TODO: add input field for this
@@ -181,13 +200,24 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
   return (
     <Card>
       <Stack direction="column" className="gap-4" sx={{ padding: '2rem' }}>
-        <Stack direction="row" className="items-center gap-2">
-          {providerToIcon(providerCardInfo.providerName, 35)}
-          <Stack direction="column">
-            <Typography variant="subtitle1">{providerCardInfo.name}</Typography>
-            <Typography fontSize={12}>
-              {(providerCardInfo.displayCategory ?? providerCardInfo.category).toUpperCase()}
-            </Typography>
+        <Stack direction="row" className="justify-between items-center">
+          <Stack direction="row" className="items-center gap-2">
+            {providerToIcon(providerCardInfo.providerName, 35)}
+            <Stack direction="column">
+              <Typography variant="subtitle1">{providerCardInfo.name}</Typography>
+              <Typography fontSize={12}>
+                {(providerCardInfo.displayCategory ?? providerCardInfo.category).toUpperCase()}
+              </Typography>
+            </Stack>
+            (
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href={`https://docs.supaglue.com/providers/${providerCardInfo.name.toLowerCase()}`}
+            >
+              docs
+            </a>
+            )
           </Stack>
         </Stack>
         <Stack className="gap-2">
@@ -252,7 +282,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
             )}
           </Stack>
         )}
-        {supportsObjectToSchema && (
+        {supportsObjectToSchema && lekko.schemasWhitelistConfig.applicationIds.includes(activeApplicationId) && (
           <Stack className="gap-2">
             <Typography variant="subtitle1">Object to Schema Mapping</Typography>
             <SchemaToObjectMapping
@@ -336,7 +366,7 @@ export default function ProviderDetailsPanel({ providerName, category, isLoading
                 setIsSaving(false);
               }}
             >
-              {providerName === 'apollo' ? 'Enable' : 'Save'}
+              {isApiKey ? 'Enable' : 'Save'}
             </Button>
           </Stack>
         </Stack>

@@ -2,7 +2,7 @@
 # Other than the `webhooks` key, we should not use 3.1.0 features since the validation middleware doesn't support it yet
 openapi: 3.1.0
 info:
-  version: 0.13.16
+  version: 0.14.14
   title: Management API
   contact:
     name: Supaglue
@@ -35,12 +35,12 @@ paths:
     $ref: paths/destinations.yaml
   '/destinations/{destination_id}':
     $ref: paths/destinations@{destination_id}.yaml
-  '/field_mappings':
-    $ref: paths/field_mappings.yaml
   '/magic_links':
     $ref: paths/magic_links.yaml
   '/magic_links/{magic_link_id}':
     $ref: paths/magic_links@{magic_link_id}.yaml
+  '/field_mappings':
+    $ref: paths/field_mappings.yaml
   '/field_mappings/_update_object':
     $ref: paths/field_mappings@_update_object.yaml
   '/entity_mappings':
@@ -63,6 +63,8 @@ paths:
     $ref: paths/sync_configs.yaml
   '/sync_configs/{sync_config_id}':
     $ref: paths/sync_configs@{sync_config_id}.yaml
+  '/connection_sync_configs':
+    $ref: paths/connection_sync_configs.yaml
   '/customers/{customer_id}/connections':
     $ref: paths/connections.yaml
   '/customers/{customer_id}/connections/_provider_user_id':
@@ -100,6 +102,8 @@ tags:
     description: A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule.
   - name: Syncs
     description: A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule.
+  - name: ConnectionSyncConfigs
+    description: A `ConnectionSyncConfig` is a configuration for how to sync a specific Customer's data from a Provider to a Destination on a schedule.
   - name: SyncRuns
     description: A `SyncRun` is a single execution of a Sync at a point in time.
   - name: Webhooks
@@ -119,24 +123,18 @@ components:
       $ref: ./components/schemas/objects/provider.yaml
     destination:
       $ref: ./components/schemas/objects/destination.yaml
-    s3_config_safe:
-      $ref: ./components/schemas/objects/s3_config_safe.yaml
     postgres_config_safe:
       $ref: ./components/schemas/objects/postgres_config_safe.yaml
     bigquery_config_safe:
       $ref: ./components/schemas/objects/bigquery_config_safe.yaml
     mongodb_config_safe:
       $ref: ./components/schemas/objects/mongodb_config_safe.yaml
-    s3_config_at_least_safe:
-      $ref: ./components/schemas/objects/s3_config_at_least_safe.yaml
     postgres_config_at_least_safe:
       $ref: ./components/schemas/objects/postgres_config_at_least_safe.yaml
     bigquery_config_at_least_safe:
       $ref: ./components/schemas/objects/bigquery_config_at_least_safe.yaml
     mongodb_config_at_least_safe:
       $ref: ./components/schemas/objects/mongodb_config_at_least_safe.yaml
-    s3_config_unsafe:
-      $ref: ./components/schemas/objects/s3_config_unsafe.yaml
     postgres_config_unsafe:
       $ref: ./components/schemas/objects/postgres_config_unsafe.yaml
     bigquery_config_unsafe:
@@ -209,6 +207,8 @@ components:
       $ref: ./components/schemas/create_update_sync_config.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
+    upsert_connection_sync_config:
+      $ref: ./components/schemas/upsert_connection_sync_config.yaml
     standard_object:
       $ref: ./components/schemas/objects/standard_object.yaml
     standard_or_custom_object:
@@ -221,6 +221,8 @@ components:
       $ref: ./components/schemas/objects/merged_entity_mapping.yaml
     entity_field_mapping:
       $ref: ./components/schemas/objects/entity_field_mapping.yaml
+    connection_sync_config:
+      $ref: ./components/schemas/objects/connection_sync_config.yaml
   parameters:
     cursor:
       $ref: ../../common/components/parameters/query/cursor.yaml

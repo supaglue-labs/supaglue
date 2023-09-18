@@ -7,6 +7,7 @@ oneOf:
         enum:
           - common
           - standard
+          - custom
       object:
         type: string
       error_message:
@@ -26,11 +27,9 @@ oneOf:
         type: string
         example: my-customer-1
       provider_name:
-        type: string
-        example: hubspot
+        $ref: ./provider_name.yaml
       category:
-        type: string
-        enum: [crm]
+        $ref: ./category.yaml
       connection_id:
         type: string
         example: 3217ea51-11c8-43c9-9547-6f197e02e5e4
@@ -79,11 +78,9 @@ oneOf:
         type: string
         example: my-customer-1
       provider_name:
-        type: string
-        example: hubspot
+        $ref: ./provider_name.yaml
       category:
-        type: string
-        enum: [crm]
+        $ref: ./category.yaml
       connection_id:
         type: string
         example: 3217ea51-11c8-43c9-9547-6f197e02e5e4

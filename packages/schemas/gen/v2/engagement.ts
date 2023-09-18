@@ -100,6 +100,16 @@ export interface paths {
       };
     };
   };
+  "/sequences": {
+    /** Create sequence */
+    post: operations["createSequence"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/sequences/{sequence_id}": {
     /** Get sequence */
     get: operations["getSequence"];
@@ -109,6 +119,20 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        sequence_id: string;
+      };
+    };
+  };
+  "/sequences/{sequence_id}/sequence_steps": {
+    /** Create sequence step */
+    post: operations["createSequenceStep"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        /** @description The ID of the sequence. */
         sequence_id: string;
       };
     };
@@ -179,6 +203,8 @@ export interface components {
       domain?: string | null;
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
+      /** @example ae4be028-9078-4850-a0bf-d2112b7c4d11 */
+      account_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     contact: {
@@ -186,6 +212,8 @@ export interface components {
       id: string;
       /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
       owner_id: string | null;
+      /** @example 45edea5a-0b9a-44ff-bd45-4452014eb4fa */
+      account_id?: string | null;
       /** @example George */
       first_name: string | null;
       /** @example Xing */
@@ -244,6 +272,8 @@ export interface components {
       email_addresses?: components["schemas"]["email_addresses"];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
+      /** @example ae4be028-9078-4850-a0bf-d2112b7c4d11 */
+      account_id?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     sequence_state: {
@@ -371,6 +401,51 @@ export interface components {
        */
       last_modified_at: Date;
     };
+    create_sequence: {
+      name: string;
+      tags?: (string)[];
+      /**
+       * @description The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner. 
+       * @enum {string}
+       */
+      type: "team" | "private";
+      owner_id?: string;
+      custom_fields?: components["schemas"]["custom_fields"];
+    };
+    create_sequence_step: {
+      /** @description The interval (in seconds) until this step will activate; only applicable to interval-based sequences. */
+      interval_seconds?: number;
+      /**
+       * @description The date this step will activate; only applicable to date-based sequences. 
+       * @example 2023-01-01
+       */
+      date?: string;
+      template: OneOf<[{
+        /** @description The ID of the template to use for this step. */
+        id: string;
+      }, {
+        /** @description The body of the email (HTML). */
+        body: string;
+        /** @description The subject of the email. */
+        subject: string;
+        /** @description The name of the template. */
+        name: string;
+        /** @description A list of default person and email address pairs to receive this template in the "to" field */
+        to?: (string)[];
+        /** @description A list of default person and email address pairs to receive this template in the "cc" field */
+        cc?: (string)[];
+        /** @description A list of default person and email address pairs to receive this template in the "bcc" field */
+        bcc?: (string)[];
+        custom_fields?: components["schemas"]["custom_fields"];
+      }]>;
+      /** @description If true, this step will be sent as a reply to the previous step. */
+      is_reply: boolean;
+      /** @description The step's display order within its sequence. */
+      order: number;
+      /** @enum {string} */
+      type: "auto" | "manual";
+      custom_fields?: components["schemas"]["custom_fields"];
+    };
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
       next: string | null;
@@ -427,47 +502,25 @@ export interface components {
       id: string;
     };
     errors: ({
-        /** @example name is a required field on model. */
+        /**
+         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
+         * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
+         */
         detail?: string;
-        /** @example MISSING_REQUIRED_FIELD */
+        /**
+         * @description The Supaglue error code associated with the error. 
+         * @example MISSING_REQUIRED_FIELD
+         */
         problem_type?: string;
-        source?: {
-          /** @example irure consectetur */
-          pointer?: string;
-        };
-        /** @example Missing Required Field */
+        /**
+         * @description A brief description of the error. The schema and type of message will vary by Provider. 
+         * @example Property values were not valid
+         */
         title?: string;
       })[];
-    /**
-     * @example [
-     *   {
-     *     "detail": "An unrecognized field, age, was passed in with request data.",
-     *     "problem_type": "UNRECOGNIZED_FIELD",
-     *     "source": {
-     *       "pointer": "Lorem ipsum"
-     *     },
-     *     "title": "Unrecognized Field"
-     *   },
-     *   {
-     *     "detail": "An unrecognized field, age, was passed in with request data.",
-     *     "problem_type": "UNRECOGNIZED_FIELD",
-     *     "source": {
-     *       "pointer": "in"
-     *     },
-     *     "title": "Unrecognized Field"
-     *   }
-     * ]
-     */
     warnings: ({
-        /** @example An unrecognized field, age, was passed in with request data. */
         detail?: string;
-        /** @example UNRECOGNIZED_FIELD */
         problem_type?: string;
-        source?: {
-          /** @example Lorem ipsum */
-          pointer?: string;
-        };
-        /** @example Unrecognized Field */
         title?: string;
       })[];
   };
@@ -487,7 +540,7 @@ export interface components {
     modified_before?: Date;
     /** @description The pagination cursor value */
     cursor?: string;
-    /** @description Number of results to return per page */
+    /** @description Number of results to return per page. (Max: 1000) */
     page_size?: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
     "x-customer-id": string;
@@ -818,6 +871,34 @@ export interface operations {
       };
     };
   };
+  /** Create sequence */
+  createSequence: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_sequence"];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
   /** Get sequence */
   getSequence: {
     parameters: {
@@ -837,6 +918,38 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["sequence"];
+        };
+      };
+    };
+  };
+  /** Create sequence step */
+  createSequenceStep: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        /** @description The ID of the sequence. */
+        sequence_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_sequence_step"];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence step created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
         };
       };
     };

@@ -1,5 +1,3 @@
-import { ListBucketsCommand, S3Client } from '@aws-sdk/client-s3';
-import { NodeHttpHandler } from '@aws-sdk/node-http-handler';
 import { BigQuery } from '@google-cloud/bigquery';
 import type { PrismaClient } from '@supaglue/db';
 import type {
@@ -21,7 +19,7 @@ import type { DestinationWriter } from '../destination_writers/base';
 import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
 import { MongoDBDestinationWriter } from '../destination_writers/mongodb';
 import { getSsl, PostgresDestinationWriter } from '../destination_writers/postgres';
-import { S3DestinationWriter } from '../destination_writers/s3';
+import { SupaglueDestinationWriter } from '../destination_writers/supaglue';
 import { BadRequestError } from '../errors';
 import { encrypt } from '../lib/crypt';
 import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
@@ -30,9 +28,17 @@ const { version } = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'package
 
 export class DestinationService {
   #prisma: PrismaClient;
+  #writerCache: Record<
+    string,
+    {
+      version: number;
+      writer: DestinationWriter | null;
+    }
+  >;
 
   constructor(prisma: PrismaClient) {
     this.#prisma = prisma;
+    this.#writerCache = {};
   }
 
   public async getDestinationsSafeByApplicationId(applicationId: string): Promise<DestinationSafeAny[]> {
@@ -80,6 +86,7 @@ export class DestinationService {
           applicationId: params.applicationId,
           type: params.type,
           encryptedConfig: await encrypt(JSON.stringify({})),
+          version: 1,
         },
       });
       return fromDestinationModelToSafe(model);
@@ -93,6 +100,7 @@ export class DestinationService {
         applicationId: params.applicationId,
         type: params.type,
         encryptedConfig: await encrypt(JSON.stringify(params.config)),
+        version: 1,
       },
     });
     return fromDestinationModelToSafe(model);
@@ -130,31 +138,6 @@ export class DestinationService {
     const existingDestination = 'id' in params ? await this.getDestinationUnsafeById(params.id) : null;
 
     switch (params.type) {
-      case 's3':
-        try {
-          const s3Client = new S3Client({
-            credentials: {
-              accessKeyId: params.config.accessKeyId,
-              secretAccessKey:
-                params.config.secretAccessKey ??
-                (existingDestination as DestinationUnsafe<'s3'> | null)?.config.secretAccessKey ??
-                '', // TODO: shouldn't do empty string
-            },
-            region: params.config.region,
-            requestHandler: new NodeHttpHandler({
-              connectionTimeout: 1500,
-            }),
-          });
-          const command = new ListBucketsCommand({}); // Use listing as a proxy for appropriate credentials
-          const result = await s3Client.send(command);
-          s3Client.destroy();
-          if (result.$metadata.httpStatusCode === 200) {
-            success = true;
-          }
-        } catch (err: any) {
-          ({ message } = err);
-        }
-        break;
       case 'postgres':
         {
           try {
@@ -256,12 +239,13 @@ export class DestinationService {
     const existingDestination = await this.getDestinationUnsafeById(params.id);
     const mergedConfig = mergeDestinationConfig(existingDestination, params);
     const model = await this.#prisma.destination.update({
-      where: { id: params.id },
+      where: { id: params.id, version: params.version },
       data: {
         applicationId: params.applicationId,
         type: params.type,
         encryptedConfig: await encrypt(JSON.stringify(mergedConfig)),
         name: params.name,
+        version: params.version + 1,
       },
     });
     return fromDestinationModelToSafe(model);
@@ -288,15 +272,31 @@ export class DestinationService {
   }
 
   private getWriterByDestination(destination: DestinationUnsafeAny): DestinationWriter | null {
+    if (destination.id in this.#writerCache) {
+      const { version, writer } = this.#writerCache[destination.id];
+      if (destination.version === version) {
+        return writer;
+      }
+    }
+
+    const writer = this.getNewWriterByDestination(destination);
+    this.#writerCache[destination.id] = {
+      version: destination.version,
+      writer,
+    };
+    return writer;
+  }
+
+  private getNewWriterByDestination(destination: DestinationUnsafeAny): DestinationWriter | null {
     switch (destination.type) {
-      case 's3':
-        return new S3DestinationWriter(destination);
       case 'postgres':
         return new PostgresDestinationWriter(destination);
       case 'bigquery':
         return new BigQueryDestinationWriter(destination);
       case 'mongodb':
         return new MongoDBDestinationWriter(destination);
+      case 'supaglue':
+        return new SupaglueDestinationWriter();
       default:
         return null;
     }
@@ -308,14 +308,6 @@ function mergeDestinationConfig(
   params: DestinationUpdateParamsAny
 ): DestinationConfigUnsafeAny {
   switch (existingDestination.type) {
-    case 's3':
-      if (params.type !== 's3') {
-        throw new BadRequestError('cannot change destination type');
-      }
-      return {
-        ...params.config,
-        secretAccessKey: params.config.secretAccessKey ?? existingDestination.config.secretAccessKey,
-      };
     case 'postgres':
       if (params.type !== 'postgres') {
         throw new BadRequestError('cannot change destination type');

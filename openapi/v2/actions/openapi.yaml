@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.13.16
+  version: 0.14.14
   title: Actions API
   contact:
     name: Supaglue
@@ -34,6 +34,8 @@ components:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
+    pagination:
+      $ref: ../../common/components/schemas/pagination.yaml
     errors:
       $ref: ../../common/components/schemas/errors.yaml
     warnings:

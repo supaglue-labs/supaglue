@@ -47,6 +47,17 @@ export class SyncConfigService {
     return fromSyncConfigModel(syncConfig);
   }
 
+  public async listByProviderIds(providerIds: string[]): Promise<SyncConfig[]> {
+    const syncConfigs = await this.#prisma.syncConfig.findMany({
+      where: {
+        providerId: {
+          in: providerIds,
+        },
+      },
+    });
+    return syncConfigs.map(fromSyncConfigModel);
+  }
+
   public async getByIdAndApplicationId(id: string, applicationId: string): Promise<SyncConfig> {
     const syncConfig = await this.#prisma.syncConfig.findUnique({
       where: { id },

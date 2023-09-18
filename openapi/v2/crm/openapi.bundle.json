@@ -1,14 +1,14 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.13.16",
+    "version": "0.14.14",
     "title": "Unified CRM API",
     "contact": {
       "name": "Supaglue",
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "#### Introduction\n\nWelcome to the Unified API documentation for CRM. You can use this API to write to multiple third-party providers within the CRM category.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Reading data\nTo read data from third-party providers, refer to the [Managed Syncs](https://docs.supaglue.com/integration-patterns/managed-syncs) feature.\n\n#### Base API URL\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
+    "description": "#### Introduction\n\nWelcome to the Unified API documentation for CRM. You can use this API to write to multiple third-party providers within the CRM category.\n\n[View common schema for CRM](https://docs.supaglue.com/platform/common-schemas/crm)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
   },
   "servers": [
     {
@@ -51,6 +51,97 @@
         "responses": {
           "201": {
             "description": "Account created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/accounts/_upsert": {
+      "post": {
+        "operationId": "upsertAccount",
+        "summary": "Upsert account",
+        "description": "Upsert an account. If the account does not exist, it will be created. If the account does exist, it will be updated.\nOnly supported for Salesforce and Hubspot.\n",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_account"
+                  },
+                  "upsert_on": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "enum": [
+                          "domain",
+                          "website"
+                        ],
+                        "description": "The key to upsert on. Only `website` is supported for Salesforce, while both `domain` and `website` are supported for Hubspot."
+                      },
+                      "values": {
+                        "type": "array",
+                        "description": "The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown.",
+                        "items": {
+                          "type": "string",
+                          "example": "mydomain.com"
+                        }
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "values"
+                    ]
+                  }
+                },
+                "required": [
+                  "record",
+                  "upsert_on"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account upserted",
             "content": {
               "application/json": {
                 "schema": {
@@ -257,6 +348,96 @@
                   "last_name": "Xing",
                   "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
                 }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/contacts/_upsert": {
+      "post": {
+        "operationId": "upsertContact",
+        "summary": "Upsert contact",
+        "description": "Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.\nOnly supported for Salesforce, Hubspot, and Pipedrive.\n",
+        "tags": [
+          "Contacts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_contact"
+                  },
+                  "upsert_on": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "enum": [
+                          "email"
+                        ],
+                        "description": "The key to upsert on. Only `email` is supported for all providers."
+                      },
+                      "values": {
+                        "type": "array",
+                        "description": "The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown.",
+                        "items": {
+                          "type": "string",
+                          "example": "hello@example.com"
+                        }
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "values"
+                    ]
+                  }
+                },
+                "required": [
+                  "record",
+                  "upsert_on"
+                ]
               }
             }
           }
@@ -829,6 +1010,157 @@
         }
       ]
     },
+    "/lists/{object_type}": {
+      "get": {
+        "operationId": "listLists",
+        "summary": "List lists",
+        "tags": [
+          "Lists"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List Lists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/list_metadata"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "object_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "account",
+              "lead",
+              "opportunity"
+            ]
+          }
+        }
+      ]
+    },
+    "/lists/{object_type}/{list_id}": {
+      "get": {
+        "operationId": "getListMembership",
+        "summary": "Get list membership",
+        "tags": [
+          "Lists"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List membership",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "members": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/list_membership"
+                      }
+                    },
+                    "metadata": {
+                      "$ref": "#/components/schemas/list_metadata"
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "name": "object_type",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "account",
+              "lead",
+              "opportunity"
+            ]
+          }
+        },
+        {
+          "name": "list_view_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "220e715a-0cbc-4d2d-8420-cd729f12f094"
+          }
+        }
+      ]
+    },
     "/passthrough": {
       "post": {
         "deprecated": true,
@@ -1006,6 +1338,10 @@
     {
       "name": "Users",
       "description": "The `User` Common Object represents a \"user\" that can log in to CRMs."
+    },
+    {
+      "name": "Lists",
+      "description": "The `List` Object represents a collection of CRM records."
     },
     {
       "name": "Passthrough",
@@ -1620,6 +1956,105 @@
           "last_modified_at"
         ]
       },
+      "list_metadata": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": 12345,
+            "description": "The unique identifier for this list."
+          },
+          "object_type": {
+            "type": "string",
+            "enum": [
+              "contact",
+              "account",
+              "lead",
+              "opportunity"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "example": "my-list",
+            "description": "The developer name of this list."
+          },
+          "label": {
+            "type": "string",
+            "example": "My List",
+            "description": "The label for this list."
+          },
+          "raw_data": {
+            "type": "object",
+            "description": "The raw data for this list.",
+            "additionalProperties": true,
+            "example": {
+              "describeUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
+              "developerName": "NewThisWeek",
+              "id": "00BD0000005WcBeMAK",
+              "label": "New This Week",
+              "resultsUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results",
+              "soqlCompatible": true,
+              "url": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "label",
+          "raw_data"
+        ]
+      },
+      "list_membership": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for a member of this list."
+          },
+          "raw_data": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "The raw data for this list view membership.",
+            "example": {
+              "columns": [
+                {
+                  "fieldNameOrPath": "Id",
+                  "value": "0012800000bbzSAAAY"
+                },
+                {
+                  "fieldNameOrPath": "Email",
+                  "value": "jdoe@example.com"
+                },
+                {
+                  "fieldNameOrPath": "FirstName",
+                  "value": "John"
+                },
+                {
+                  "fieldNameOrPath": "LastName",
+                  "value": "Doe"
+                },
+                {
+                  "fieldNameOrPath": "CreatedDate",
+                  "value": "Fri Aug 01 21:15:46 GMT 2014"
+                },
+                {
+                  "fieldNameOrPath": "LastModifiedDate",
+                  "value": "Fri Aug 01 21:15:46 GMT 2014"
+                },
+                {
+                  "fieldNameOrPath": "SystemModstamp",
+                  "value": "Fri Aug 01 21:15:46 GMT 2014"
+                }
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "raw_data"
+        ]
+      },
       "create_update_opportunity": {
         "type": "object",
         "properties": {
@@ -1673,42 +2108,25 @@
           "properties": {
             "detail": {
               "type": "string",
-              "example": "name is a required field on model."
+              "description": "The full error message from the remote Provider. The schema and level of detail will vary by Provider.",
+              "example": "{\"code\":400,\"body\":{\"status\":\"error\",\"message\":\"Property values were not valid: [{\\\\\"isValid\\\\\":false,\\\\\"message\\\\\":\\\\\"Property \\\\\\\\\\\\\"__about_us\\\\\\\\\\\\\" does not exist\\\\\",\\\\\"error\\\\\":\\\\\"PROPERTY_DOESNT_EXIST\\\\\",\\\\\"name\\\\\":\\\\\"__about_us\\\\\",\\\\\"localizedErrorMessage\\\\\":\\\\\"Property \\\\\\\\\\\\\"__about_us\\\\\\\\\\\\\" does not exist\\\\\"}]\",\"correlationId\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"category\":\"VALIDATION_ERROR\"},\"headers\":{\"access-control-allow-credentials\":\"false\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"8053d17b9dae9664-SJC\",\"connection\":\"close\",\"content-length\":\"361\",\"content-type\":\"application/json;charset=utf-8\",\"date\":\"Mon, 11 Sep 2023 23:51:22 GMT\",\"nel\":\"{\\\\\"success_fraction\\\\\":0.01,\\\\\"report_to\\\\\":\\\\\"cf-nel\\\\\",\\\\\"max_age\\\\\":604800}\",\"report-to\":\"{\\\\\"endpoints\\\\\":[{\\\\\"url\\\\\":\\\\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\\\\"}],\\\\\"group\\\\\":\\\\\"cf-nel\\\\\",\\\\\"max_age\\\\\":604800}\",\"server\":\"cloudflare\",\"strict-transport-security\":\"max-age=31536000; includeSubDomains; preload\",\"vary\":\"origin, Accept-Encoding\",\"x-content-type-options\":\"nosniff\",\"x-envoy-upstream-service-time\":\"91\",\"x-evy-trace-listener\":\"listener_https\",\"x-evy-trace-route-configuration\":\"listener_https/all\",\"x-evy-trace-route-service-name\":\"envoyset-translator\",\"x-evy-trace-served-by-pod\":\"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2\",\"x-evy-trace-virtual-host\":\"all\",\"x-hubspot-correlation-id\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"x-hubspot-ratelimit-interval-milliseconds\":\"10000\",\"x-hubspot-ratelimit-max\":\"100\",\"x-hubspot-ratelimit-remaining\":\"99\",\"x-hubspot-ratelimit-secondly\":\"10\",\"x-hubspot-ratelimit-secondly-remaining\":\"9\",\"x-request-id\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"x-trace\":\"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000\"}}\n"
             },
             "problem_type": {
               "type": "string",
+              "description": "The Supaglue error code associated with the error.",
               "example": "MISSING_REQUIRED_FIELD"
-            },
-            "source": {
-              "type": "object",
-              "properties": {
-                "pointer": {
-                  "type": "string",
-                  "example": "irure consectetur"
-                }
-              }
             },
             "title": {
               "type": "string",
-              "example": "Missing Required Field"
+              "description": "A brief description of the error. The schema and type of message will vary by Provider.",
+              "example": "Property values were not valid\n"
             }
           },
           "example": [
             {
-              "detail": "name is a required field on model.",
-              "problem_type": "MISSING_REQUIRED_FIELD",
-              "source": {
-                "pointer": "irure consectetur"
-              },
-              "title": "Missing Required Field"
-            },
-            {
-              "detail": "name is a required field on model.",
-              "problem_type": "MISSING_REQUIRED_FIELD",
-              "source": {
-                "pointer": "et"
-              },
-              "title": "Missing Required Field"
+              "detail": "{\"code\":400,\"body\":{\"status\":\"error\",\"message\":\"Property values were not valid: [{\\\\\"isValid\\\\\":false,\\\\\"message\\\\\":\\\\\"Property \\\\\\\\\\\\\"__about_us\\\\\\\\\\\\\" does not exist\\\\\",\\\\\"error\\\\\":\\\\\"PROPERTY_DOESNT_EXIST\\\\\",\\\\\"name\\\\\":\\\\\"__about_us\\\\\",\\\\\"localizedErrorMessage\\\\\":\\\\\"Property \\\\\\\\\\\\\"__about_us\\\\\\\\\\\\\" does not exist\\\\\"}]\",\"correlationId\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"category\":\"VALIDATION_ERROR\"},\"headers\":{\"access-control-allow-credentials\":\"false\",\"cf-cache-status\":\"DYNAMIC\",\"cf-ray\":\"8053d17b9dae9664-SJC\",\"connection\":\"close\",\"content-length\":\"361\",\"content-type\":\"application/json;charset=utf-8\",\"date\":\"Mon, 11 Sep 2023 23:51:22 GMT\",\"nel\":\"{\\\\\"success_fraction\\\\\":0.01,\\\\\"report_to\\\\\":\\\\\"cf-nel\\\\\",\\\\\"max_age\\\\\":604800}\",\"report-to\":\"{\\\\\"endpoints\\\\\":[{\\\\\"url\\\\\":\\\\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\\\\"}],\\\\\"group\\\\\":\\\\\"cf-nel\\\\\",\\\\\"max_age\\\\\":604800}\",\"server\":\"cloudflare\",\"strict-transport-security\":\"max-age=31536000; includeSubDomains; preload\",\"vary\":\"origin, Accept-Encoding\",\"x-content-type-options\":\"nosniff\",\"x-envoy-upstream-service-time\":\"91\",\"x-evy-trace-listener\":\"listener_https\",\"x-evy-trace-route-configuration\":\"listener_https/all\",\"x-evy-trace-route-service-name\":\"envoyset-translator\",\"x-evy-trace-served-by-pod\":\"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2\",\"x-evy-trace-virtual-host\":\"all\",\"x-hubspot-correlation-id\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"x-hubspot-ratelimit-interval-milliseconds\":\"10000\",\"x-hubspot-ratelimit-max\":\"100\",\"x-hubspot-ratelimit-remaining\":\"99\",\"x-hubspot-ratelimit-secondly\":\"10\",\"x-hubspot-ratelimit-secondly-remaining\":\"9\",\"x-request-id\":\"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2\",\"x-trace\":\"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000\"}}\n",
+              "problem_type": "BAD_REQUEST_ERROR",
+              "title": "Property values were not valid\n"
             }
           ]
         }
@@ -1719,46 +2137,16 @@
           "type": "object",
           "properties": {
             "detail": {
-              "type": "string",
-              "example": "An unrecognized field, age, was passed in with request data."
+              "type": "string"
             },
             "problem_type": {
-              "type": "string",
-              "example": "UNRECOGNIZED_FIELD"
-            },
-            "source": {
-              "type": "object",
-              "properties": {
-                "pointer": {
-                  "type": "string",
-                  "example": "Lorem ipsum"
-                }
-              }
+              "type": "string"
             },
             "title": {
-              "type": "string",
-              "example": "Unrecognized Field"
+              "type": "string"
             }
           }
-        },
-        "example": [
-          {
-            "detail": "An unrecognized field, age, was passed in with request data.",
-            "problem_type": "UNRECOGNIZED_FIELD",
-            "source": {
-              "pointer": "Lorem ipsum"
-            },
-            "title": "Unrecognized Field"
-          },
-          {
-            "detail": "An unrecognized field, age, was passed in with request data.",
-            "problem_type": "UNRECOGNIZED_FIELD",
-            "source": {
-              "pointer": "in"
-            },
-            "title": "Unrecognized Field"
-          }
-        ]
+        }
       },
       "created_record": {
         "type": "object",
@@ -2066,9 +2454,9 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "3804695"
+          "example": "123"
         },
-        "description": "Number of results to return per page"
+        "description": "Number of results to return per page. (Max: 1000)"
       },
       "x-customer-id": {
         "name": "x-customer-id",

@@ -20,6 +20,20 @@ export interface paths {
       };
     };
   };
+  "/accounts/_upsert": {
+    /**
+     * Upsert account 
+     * @description Upsert an account. If the account does not exist, it will be created. If the account does exist, it will be updated.
+     * Only supported for Salesforce and Hubspot.
+     */
+    post: operations["upsertAccount"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/accounts/{account_id}": {
     /** Get account */
     get: operations["getAccount"];
@@ -38,6 +52,20 @@ export interface paths {
   "/contacts": {
     /** Create contact */
     post: operations["createContact"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/contacts/_upsert": {
+    /**
+     * Upsert contact 
+     * @description Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.
+     * Only supported for Salesforce, Hubspot, and Pipedrive.
+     */
+    post: operations["upsertContact"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -120,6 +148,32 @@ export interface paths {
       };
       path: {
         user_id: string;
+      };
+    };
+  };
+  "/lists/{object_type}": {
+    /** List lists */
+    get: operations["listLists"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_type: "contact" | "account" | "lead" | "opportunity";
+      };
+    };
+  };
+  "/lists/{object_type}/{list_id}": {
+    /** Get list membership */
+    get: operations["getListMembership"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_type: "contact" | "account" | "lead" | "opportunity";
+        list_view_id: string;
       };
     };
   };
@@ -404,6 +458,82 @@ export interface components {
        */
       last_modified_at: Date;
     };
+    list_metadata: {
+      /**
+       * @description The unique identifier for this list. 
+       * @example 12345
+       */
+      id: string;
+      /** @enum {string} */
+      object_type?: "contact" | "account" | "lead" | "opportunity";
+      /**
+       * @description The developer name of this list. 
+       * @example my-list
+       */
+      name: string;
+      /**
+       * @description The label for this list. 
+       * @example My List
+       */
+      label: string;
+      /**
+       * @description The raw data for this list. 
+       * @example {
+       *   "describeUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
+       *   "developerName": "NewThisWeek",
+       *   "id": "00BD0000005WcBeMAK",
+       *   "label": "New This Week",
+       *   "resultsUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results",
+       *   "soqlCompatible": true,
+       *   "url": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK"
+       * }
+       */
+      raw_data: {
+        [key: string]: unknown;
+      };
+    };
+    list_membership: {
+      /** @description The unique identifier for a member of this list. */
+      id: string;
+      /**
+       * @description The raw data for this list view membership. 
+       * @example {
+       *   "columns": [
+       *     {
+       *       "fieldNameOrPath": "Id",
+       *       "value": "0012800000bbzSAAAY"
+       *     },
+       *     {
+       *       "fieldNameOrPath": "Email",
+       *       "value": "jdoe@example.com"
+       *     },
+       *     {
+       *       "fieldNameOrPath": "FirstName",
+       *       "value": "John"
+       *     },
+       *     {
+       *       "fieldNameOrPath": "LastName",
+       *       "value": "Doe"
+       *     },
+       *     {
+       *       "fieldNameOrPath": "CreatedDate",
+       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
+       *     },
+       *     {
+       *       "fieldNameOrPath": "LastModifiedDate",
+       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
+       *     },
+       *     {
+       *       "fieldNameOrPath": "SystemModstamp",
+       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
+       *     }
+       *   ]
+       * }
+       */
+      raw_data: {
+        [key: string]: unknown;
+      };
+    };
     create_update_opportunity: {
       /** @example 100000 */
       amount?: number | null;
@@ -423,47 +553,25 @@ export interface components {
       custom_fields?: components["schemas"]["custom_fields"];
     };
     errors: ({
-        /** @example name is a required field on model. */
+        /**
+         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
+         * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
+         */
         detail?: string;
-        /** @example MISSING_REQUIRED_FIELD */
+        /**
+         * @description The Supaglue error code associated with the error. 
+         * @example MISSING_REQUIRED_FIELD
+         */
         problem_type?: string;
-        source?: {
-          /** @example irure consectetur */
-          pointer?: string;
-        };
-        /** @example Missing Required Field */
+        /**
+         * @description A brief description of the error. The schema and type of message will vary by Provider. 
+         * @example Property values were not valid
+         */
         title?: string;
       })[];
-    /**
-     * @example [
-     *   {
-     *     "detail": "An unrecognized field, age, was passed in with request data.",
-     *     "problem_type": "UNRECOGNIZED_FIELD",
-     *     "source": {
-     *       "pointer": "Lorem ipsum"
-     *     },
-     *     "title": "Unrecognized Field"
-     *   },
-     *   {
-     *     "detail": "An unrecognized field, age, was passed in with request data.",
-     *     "problem_type": "UNRECOGNIZED_FIELD",
-     *     "source": {
-     *       "pointer": "in"
-     *     },
-     *     "title": "Unrecognized Field"
-     *   }
-     * ]
-     */
     warnings: ({
-        /** @example An unrecognized field, age, was passed in with request data. */
         detail?: string;
-        /** @example UNRECOGNIZED_FIELD */
         problem_type?: string;
-        source?: {
-          /** @example Lorem ipsum */
-          pointer?: string;
-        };
-        /** @example Unrecognized Field */
         title?: string;
       })[];
     created_record: {
@@ -568,7 +676,7 @@ export interface components {
     modified_before?: Date;
     /** @description The pagination cursor value */
     cursor?: string;
-    /** @description Number of results to return per page */
+    /** @description Number of results to return per page. (Max: 1000) */
     page_size?: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
     "x-customer-id": string;
@@ -601,6 +709,47 @@ export interface operations {
     };
     responses: {
       /** @description Account created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Upsert account 
+   * @description Upsert an account. If the account does not exist, it will be created. If the account does exist, it will be updated.
+   * Only supported for Salesforce and Hubspot.
+   */
+  upsertAccount: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_update_account"];
+          upsert_on: {
+            /**
+             * @description The key to upsert on. Only `website` is supported for Salesforce, while both `domain` and `website` are supported for Hubspot. 
+             * @enum {string}
+             */
+            key: "domain" | "website";
+            /** @description The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown. */
+            values: (string)[];
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Account upserted */
       201: {
         content: {
           "application/json": {
@@ -687,6 +836,47 @@ export interface operations {
          */
         "application/json": {
           record: components["schemas"]["create_update_contact"];
+        };
+      };
+    };
+    responses: {
+      /** @description Contact created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Upsert contact 
+   * @description Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.
+   * Only supported for Salesforce, Hubspot, and Pipedrive.
+   */
+  upsertContact: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_update_contact"];
+          upsert_on: {
+            /**
+             * @description The key to upsert on. Only `email` is supported for all providers. 
+             * @enum {string}
+             */
+            key: "email";
+            /** @description The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown. */
+            values: (string)[];
+          };
         };
       };
     };
@@ -960,6 +1150,61 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["user"];
+        };
+      };
+    };
+  };
+  /** List lists */
+  listLists: {
+    parameters: {
+      query?: {
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_type: "contact" | "account" | "lead" | "opportunity";
+      };
+    };
+    responses: {
+      /** @description List Lists */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["list_metadata"])[];
+          };
+        };
+      };
+    };
+  };
+  /** Get list membership */
+  getListMembership: {
+    parameters: {
+      query?: {
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_type: "contact" | "account" | "lead" | "opportunity";
+        list_view_id: string;
+      };
+    };
+    responses: {
+      /** @description List membership */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            members?: (components["schemas"]["list_membership"])[];
+            metadata?: components["schemas"]["list_metadata"];
+          };
         };
       };
     };

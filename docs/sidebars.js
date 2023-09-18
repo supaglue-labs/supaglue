@@ -70,17 +70,17 @@ const sidebars = {
     },
     {
       id: 'integration-patterns/managed-syncs',
-      label: 'Syncing data',
+      label: 'Managed Syncs',
       type: 'doc',
     },
     {
-      id: 'integration-patterns/actions-api',
-      label: 'Writing data',
+      id: 'integration-patterns/unified-api',
+      label: 'Unified API',
       type: 'doc',
     },
     {
       id: 'integration-patterns/real-time-events',
-      label: 'Triggers/CDC',
+      label: 'Real-time Events',
       type: 'doc',
     },
 
@@ -123,6 +123,11 @@ const sidebars = {
     {
       id: 'use-cases/overview',
       label: 'Overview',
+      type: 'doc',
+    },
+    {
+      id: 'tutorials/search-across-data',
+      label: 'Search across data',
       type: 'doc',
     },
     {
@@ -178,7 +183,7 @@ const sidebars = {
     },
     {
       id: 'tutorials/listen-for-webhooks',
-      label: 'Listen for webhooks',
+      label: 'Consume notification webhooks',
       type: 'doc',
     },
 
@@ -279,7 +284,15 @@ const sidebars = {
       label: 'Management API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: require('./docs/api/v2/mgmt/sidebar.js'),
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      items: require('./docs/api/v2/mgmt/sidebar.js').map((item) => {
+        // hide deprecated items. we hide it because removing it from the sidebar causes docusaurus build issues.
+        if (['Entities', 'EntityMappings', 'Schemas', 'SchemaMappings'].includes(item.label)) {
+          item.className += ' hidden';
+        }
+
+        return item;
+      }),
     },
 
     // section
@@ -292,11 +305,7 @@ const sidebars = {
       label: 'CRM API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: [
-        ...require('./docs/api/v2/crm/sidebar.js'),
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
-        ...require('./docs/api/v2/metadata/sidebar.js'),
-      ],
+      items: require('./docs/api/v2/crm/sidebar.js'),
     },
     {
       type: 'category',
@@ -312,19 +321,45 @@ const sidebars = {
       // @ts-ignore
       items: require('./docs/api/v2/enrichment/sidebar.js'),
     },
+    {
+      type: 'category',
+      label: 'Ticketing API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/ticketing/sidebar.js'),
+    },
+    {
+      type: 'category',
+      label: 'Marketing Automation API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/marketing-automation/sidebar.js'),
+    },
 
     // section
     {
       type: 'html',
-      value: sidebarHeader('Actions API'),
+      value: sidebarHeader('Data Listing API'),
     },
-    { type: 'doc', id: 'api/v2/actions/actions-api' },
     {
       type: 'category',
-      label: 'Data listing',
+      label: 'Data Listing API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/data/sidebar.js'),
+    },
+
+    // section
+    {
+      type: 'html',
+      value: sidebarHeader('Metadata API'),
+    },
+    {
+      type: 'category',
+      label: 'Metadata API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/metadata/sidebar.js'),
     },
 
     // section

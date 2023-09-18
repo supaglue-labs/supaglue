@@ -13,7 +13,6 @@ import type {
 } from '@hubspot/api-client/lib/codegen/crm/deals';
 import type { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import type {
-  CommonObjectDef,
   ConnectionUnsafe,
   CRMProvider,
   ListedObjectRecord,
@@ -24,6 +23,7 @@ import type {
   PropertiesWithAdditionalFields,
   Property,
   Provider,
+  RemoteUserIdAndDetails,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
@@ -38,9 +38,11 @@ import type {
   Account,
   AccountCreateParams,
   AccountUpdateParams,
+  AccountUpsertParams,
   Contact,
   ContactCreateParams,
   ContactUpdateParams,
+  ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
   Lead,
@@ -60,6 +62,9 @@ import type {
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FormField } from '@supaglue/types/marketing_automation/form_field';
+import type { FormMetadata } from '@supaglue/types/marketing_automation/form_metadata';
+import type { SubmitFormData, SubmitFormResult } from '@supaglue/types/marketing_automation/submit_form';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
@@ -70,6 +75,7 @@ import {
   ConflictError,
   ForbiddenError,
   NotFoundError,
+  RemoteProviderError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -82,6 +88,7 @@ import {
 } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
+import type { MarketingAutomationRemoteClient } from '../../categories/marketing_automation/base';
 import { paginator } from '../../utils/paginator';
 import { toMappedProperties } from '../../utils/properties';
 import {
@@ -100,44 +107,6 @@ import {
 
 const HUBSPOT_RECORD_LIMIT = 100;
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
-const hubspotUserProperties: Property[] = [
-  {
-    id: 'id',
-    label: 'Id',
-  },
-  {
-    id: 'email',
-    label: 'Email',
-  },
-  {
-    id: 'firstName',
-    label: 'First Name',
-  },
-  {
-    id: 'lastName',
-    label: 'Last Name',
-  },
-  {
-    id: 'userId',
-    label: 'User Id',
-  },
-  {
-    id: 'createdAt',
-    label: 'Created At',
-  },
-  {
-    id: 'updatedAt',
-    label: 'Updated At',
-  },
-  {
-    id: 'archived',
-    label: 'Archived',
-  },
-  {
-    id: 'teams',
-    label: 'Teams',
-  },
-];
 
 const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
   company: 'companies',
@@ -154,6 +123,23 @@ const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, strin
   note: 'notes',
   postal_mail: 'postal mails',
   task: 'tasks',
+};
+
+const hubspotStandardObjectPluralizedToType: Record<string, HubSpotStandardObjectType> = {
+  companies: 'company',
+  contacts: 'contact',
+  deals: 'deal',
+  'line items': 'line_item',
+  products: 'product',
+  tickets: 'ticket',
+  quotes: 'quote',
+  calls: 'call',
+  communications: 'communication',
+  emails: 'email',
+  meetings: 'meeting',
+  notes: 'note',
+  'postal mails': 'postal_mail',
+  tasks: 'task',
 };
 
 const hubspotStandardObjectTypeToAssociatedStandardObjectTypes: Record<
@@ -204,6 +190,31 @@ type HubSpotCustomSchema = {
   archived: boolean;
   name: string;
 };
+
+type HubSpotAPIV2ListFormsFormField = {
+  name: string;
+  label: string;
+  required: boolean;
+  fieldType: string;
+  validation: {
+    message: string;
+  };
+};
+
+type HubSpotAPIV2ListFormsFormFieldGroup = {
+  fields: HubSpotAPIV2ListFormsFormField[];
+};
+
+type HubSpotAPIV2ListFormsSingleForm = {
+  guid: string;
+  name: string;
+  createdAt: number; // ms since epoch
+  updatedAt: number; // ms since epoch
+  formFieldGroups: HubSpotAPIV2ListFormsFormFieldGroup[];
+  [key: string]: unknown;
+};
+
+type HubSpotAPIV2ListFormsResponse = HubSpotAPIV2ListFormsSingleForm[];
 
 type HubSpotAPIV3ListSchemasResponse = {
   results: HubSpotCustomSchema[];
@@ -380,9 +391,10 @@ type HubspotClientConfig = {
   expiresAt: string | null; // ISO string
   clientId: string;
   clientSecret: string;
+  instanceUrl: string; // looks like this: `https://app.hubspot.com/contacts/${hubId.toString()}`;
 };
 
-class HubSpotClient extends AbstractCrmRemoteClient {
+class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomationRemoteClient {
   readonly #client: Client;
   readonly #config: HubspotClientConfig;
 
@@ -395,10 +407,94 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     this.#config = config;
   }
 
+  private getHubId(): number {
+    const { instanceUrl } = this.#config;
+    const hubId = instanceUrl.split('/').pop();
+    if (!hubId) {
+      throw new Error(`Could not determine hub id from instance url: ${instanceUrl}`);
+    }
+    return Number(hubId);
+  }
+
+  public async marketingAutomationSubmitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
+    await this.maybeRefreshAccessToken();
+
+    const portalId = this.getHubId();
+
+    // Submit the form
+    await axios.post(
+      `https://api.hsforms.com/submissions/v3/integration/secure/submit/${portalId}/${formId}`,
+      {
+        fields: Object.entries(formData).map(([name, value]) => ({
+          name,
+          value,
+        })),
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${this.#config.accessToken}`,
+        },
+      }
+    );
+
+    // TODO there's no way to get the created/updated prospect id from the form submit, it seems.
+    //      There's also no way to tell if it was created or updated.
+    return {
+      status: 'created',
+    };
+  }
+
+  public async marketingAutomationListForms(): Promise<FormMetadata[]> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get<HubSpotAPIV2ListFormsResponse>(`${this.baseUrl}/forms/v2/forms`, {
+      headers: {
+        Authorization: `Bearer ${this.#config.accessToken}`,
+      },
+    });
+
+    return response.data.map((form) => ({
+      id: form.guid,
+      name: form.name,
+      createdAt: new Date(form.createdAt),
+      updatedAt: new Date(form.updatedAt),
+      rawData: form,
+    }));
+  }
+
+  public async marketingAutomationGetFormFields(formId: string): Promise<FormField[]> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.get<HubSpotAPIV2ListFormsSingleForm>(`${this.baseUrl}/forms/v2/forms/${formId}`, {
+      headers: {
+        Authorization: `Bearer ${this.#config.accessToken}`,
+      },
+    });
+
+    return response.data.formFieldGroups.flatMap((group) =>
+      group.fields.map((field) => ({
+        id: field.name,
+        name: field.label,
+        required: field.required,
+        formId,
+        dataFormat: field.fieldType,
+        validationMessage: field.validation.message,
+        rawData: field,
+      }))
+    );
+  }
+
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
     return {
       Authorization: `Bearer ${this.#config.accessToken}`,
     };
+  }
+
+  public override async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {
+    await this.maybeRefreshAccessToken();
+    const { accessToken } = this.#config;
+    const response = await this.#client.oauth.accessTokensApi.get(accessToken);
+    const { userId } = response;
+    const { token: _, ...rawDetails } = response;
+    return { userId: String(userId), rawDetails };
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {
@@ -572,6 +668,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return { standardObjectTypes, customObjectSchemas };
   }
 
+  // TODO: implement fieldsToFetch for custom objects
   public override async listCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
@@ -743,20 +840,24 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         ...response.data,
         results: response.data.results.map(({ associations, ...rest }) => ({
           ...rest,
-          associations: Object.entries(associations ?? {}).reduce((acc, [associatedObjectType, { results }]) => {
-            // If associatedObjectType is for a standard object, it will be pluralized
-            if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectType)) {
-              acc[associatedObjectType] = results.map(({ id }) => id);
+          associations: Object.entries(associations ?? {}).reduce((acc, [associatedObjectTypeKey, { results }]) => {
+            // If associatedObjectType is for a standard object, it will be pluralized, and we should use the singular form
+            if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectTypeKey)) {
+              if (!(associatedObjectTypeKey in hubspotStandardObjectPluralizedToType)) {
+                throw new Error(`Couldn't find matching standard object type for ${associatedObjectTypeKey}`);
+              }
+              const standardObjectType = hubspotStandardObjectPluralizedToType[associatedObjectTypeKey];
+              acc[standardObjectType] = results.map(({ id }) => id);
               return acc;
             }
 
             // If associatedObjectType is for a custom object, it will be the fullyQualifiedName,
             // and we want to use the objectTypeId for consistency
             const matchingCustomObjectSchema = associatedCustomObjectSchemas.find(
-              (schema) => schema.fullyQualifiedName === associatedObjectType
+              (schema) => schema.fullyQualifiedName === associatedObjectTypeKey
             );
             if (!matchingCustomObjectSchema) {
-              throw new Error(`Couldn't find matching custom object schema for ${associatedObjectType}`);
+              throw new Error(`Couldn't find matching custom object schema for ${associatedObjectTypeKey}`);
             }
             acc[matchingCustomObjectSchema.objectTypeId] = results.map(({ id }) => id);
             return acc;
@@ -828,8 +929,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         }
         const validatedAssociatedStandardObjectType = toStandardObjectType(associatedStandardObjectType);
         // In the full fetcher, the associations use the plural object types, so we should do the same here
-        result.associations[hubspotStandardObjectTypeToPlural[validatedAssociatedStandardObjectType]] =
-          associationMap[result.id];
+        result.associations[validatedAssociatedStandardObjectType] = associationMap[result.id];
       });
     }
 
@@ -912,6 +1012,20 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         return this.createOpportunity(params);
       case 'user':
         throw new Error('Cannot create users in HubSpot');
+      default:
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
+    }
+  }
+
+  public override async upsertCommonObjectRecord<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    params: CRMCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<string> {
+    switch (commonObjectType) {
+      case 'account':
+        return this.upsertAccount(params as AccountUpsertParams);
+      case 'contact':
+        return this.upsertContact(params as ContactUpsertParams);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -1011,19 +1125,6 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     });
   }
 
-  public override async listCommonProperties(object: CommonObjectDef): Promise<Property[]> {
-    switch (object.name) {
-      case 'account':
-        return await this.listPropertiesForRawObjectName('company');
-      case 'lead':
-        throw new Error('common object "lead" is not supported for hubspot');
-      case 'user':
-        return hubspotUserProperties;
-      default:
-        return await this.listPropertiesForRawObjectName(object.name);
-    }
-  }
-
   public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
     return await this.listPropertiesForRawObjectName(object.name);
   }
@@ -1032,7 +1133,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
     return await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const response = await this.#client.crm.properties.coreApi.getAll(objectName);
-      return response.results.map(({ name, label }) => ({ id: name, label }));
+      return response.results.map((prop) => ({ id: prop.name, label: prop.label, type: prop.type, rawDetails: prop }));
     });
   }
 
@@ -1167,7 +1268,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('company');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
     await this.maybeRefreshAccessToken();
     const company = await this.#client.crm.companies.basicApi.getById(id, properties);
     return {
@@ -1191,6 +1292,36 @@ class HubSpotClient extends AbstractCrmRemoteClient {
       properties: toHubspotAccountUpdateParams(params),
     });
     return response.id;
+  }
+
+  public async upsertAccount(params: AccountUpsertParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const searchResponse = await this.#client.crm.companies.searchApi.doSearch({
+      filterGroups: [
+        {
+          filters: [
+            {
+              values: params.upsertOn.values,
+              propertyName: params.upsertOn.key,
+              operator: 'IN',
+            },
+          ],
+        },
+      ],
+      sorts: [params.upsertOn.key],
+      properties: ['id', params.upsertOn.key],
+      limit: 2,
+      after: 0,
+    });
+
+    if (searchResponse.results.length > 1) {
+      throw new BadRequestError('More than one account found for upsert query');
+    }
+    if (searchResponse.results.length === 0) {
+      return this.createAccount(params.record);
+    }
+    const existingAccountId = searchResponse.results[0].id;
+    return this.updateAccount({ ...params.record, id: existingAccountId });
   }
 
   async #getPipelineStageMapping(): Promise<
@@ -1350,7 +1481,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const properties = await this.getCommonObjectPropertyIdsToFetch('deal');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     await this.maybeRefreshAccessToken();
     const deal = await this.#client.crm.deals.basicApi.getById(
       id,
@@ -1544,7 +1675,7 @@ class HubSpotClient extends AbstractCrmRemoteClient {
   }
 
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('contact');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     await this.maybeRefreshAccessToken();
     const contact = await this.#client.crm.contacts.basicApi.getById(
       id,
@@ -1579,6 +1710,35 @@ class HubSpotClient extends AbstractCrmRemoteClient {
         : [],
     });
     return contact.id;
+  }
+
+  public async upsertContact(params: ContactUpsertParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const searchResponse = await this.#client.crm.contacts.searchApi.doSearch({
+      filterGroups: [
+        {
+          filters: [
+            {
+              values: params.upsertOn.values,
+              propertyName: params.upsertOn.key,
+              operator: 'IN',
+            },
+          ],
+        },
+      ],
+      sorts: [params.upsertOn.key],
+      properties: ['id', params.upsertOn.key],
+      limit: 2,
+      after: 0,
+    });
+    if (searchResponse.results.length > 1) {
+      throw new BadRequestError('More than one contact found for upsert query');
+    }
+    if (searchResponse.results.length === 0) {
+      return this.createContact(params.record);
+    }
+    const existingContactId = searchResponse.results[0].id;
+    return this.updateContact({ ...params.record, id: existingContactId });
   }
 
   public async updateContact(params: ContactUpdateParams): Promise<string> {
@@ -1936,20 +2096,68 @@ class HubSpotClient extends AbstractCrmRemoteClient {
 
   public override handleErr(err: unknown): unknown {
     const error = err as any;
-
     switch (error.code) {
       case 400:
-        return new BadRequestError(error.message);
+        return new BadRequestError(error.body?.message, error);
       case 401:
-        return new UnauthorizedError(error.message);
+        return new UnauthorizedError(error.body?.message, error);
       case 403:
-        return new ForbiddenError(error.message);
+        return new ForbiddenError(error.body?.message, error);
       case 404:
-        return new NotFoundError(error.message);
+        return new NotFoundError(error.body?.message, error);
       case 409:
-        return new ConflictError(error.message);
+        return new ConflictError(error.body?.message, error);
       case 429:
-        return new TooManyRequestsError(error.message);
+        return new TooManyRequestsError(error.body?.message, error);
+      // The following are unmapped to Supaglue errors, but we want to pass
+      // them back as 4xx so they aren't 500 and developers can view error messages
+      case 402:
+      case 405:
+      case 406:
+      case 407:
+      case 408:
+      case 410:
+      case 411:
+      case 412:
+      case 413:
+      case 414:
+      case 415:
+      case 416:
+      case 417:
+      case 418:
+      case 419:
+      case 420:
+      case 421:
+      case 422:
+      case 423:
+      case 424:
+      case 425:
+      case 426:
+      case 427:
+      case 428:
+      case 430:
+      case 431:
+      case 432:
+      case 433:
+      case 434:
+      case 435:
+      case 436:
+      case 437:
+      case 438:
+      case 439:
+      case 440:
+      case 441:
+      case 442:
+      case 443:
+      case 444:
+      case 445:
+      case 446:
+      case 447:
+      case 448:
+      case 449:
+      case 450:
+      case 451:
+        return new RemoteProviderError(error.body?.message, error);
       default:
         return error;
     }
@@ -1963,6 +2171,7 @@ export function newClient(connection: ConnectionUnsafe<'hubspot'>, provider: Pro
     expiresAt: connection.credentials.expiresAt,
     clientId: (provider as CRMProvider).config.oauth.credentials.oauthClientId,
     clientSecret: (provider as CRMProvider).config.oauth.credentials.oauthClientSecret,
+    instanceUrl: connection.instanceUrl,
   });
 }
 

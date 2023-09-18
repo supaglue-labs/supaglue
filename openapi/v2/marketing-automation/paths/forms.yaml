@@ -1,0 +1,25 @@
+get:
+  operationId: listForms
+  summary: List forms
+  tags:
+    - Forms
+  security:
+    - x-api-key: []
+  responses:
+    200:
+      description: List of forms and their metadata
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              forms:
+                type: array
+                items:
+                  $ref: ../components/schemas/form_metadata.yaml
+            required:
+              - forms
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
