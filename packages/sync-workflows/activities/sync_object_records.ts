@@ -62,6 +62,16 @@ export function createSyncObjectRecords(
             const category = getCategoryForProvider(connection.providerName);
             switch (category) {
               case 'crm': {
+                if (connection.providerName === 'hubspot' && object === 'lead') {
+                  return {
+                    syncId,
+                    connectionId,
+                    objectType,
+                    object,
+                    maxLastModifiedAt: null,
+                    numRecords: 0,
+                  };
+                }
                 const [client] = await remoteService.getCrmRemoteClient(connectionId);
                 const fieldMappingConfig = await connectionService.getFieldMappingConfig(
                   connectionId,
