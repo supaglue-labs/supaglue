@@ -210,7 +210,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
           AND NOT EXISTS (
             SELECT 1
             FROM ${qualifiedTempTable} as temp
-            WHERE temp._supaglue_id = table._supaglue_id
+            WHERE temp.id = table.id
         );
       `);
       childLogger.info({ table, tempTable }, 'Marking records as deleted [COMPLETED]');

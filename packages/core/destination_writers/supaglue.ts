@@ -219,7 +219,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
         `CREATE TEMP TABLE ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC`
       );
       await client.query(
-        `CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (id ASC, _supaglue_last_modified_at DESC)`
+        `CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (_supaglue_id ASC, _supaglue_last_modified_at DESC)`
       );
       childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
 
