@@ -94,7 +94,9 @@ export interface components {
        * @description The raw details of the property as provided by the third-party Provider, if available. 
        * @example {}
        */
-      raw_details?: Record<string, never>;
+      raw_details?: {
+        [key: string]: unknown;
+      };
     };
     standard_object: {
       /** @example ticket */
