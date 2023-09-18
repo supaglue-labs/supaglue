@@ -589,7 +589,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable} AS destination
-          SET is_deleted = TRUE
+          SET _supaglue_is_deleted = TRUE
           WHERE 
             destination._supaglue_application_id = '${applicationId}' AND
             destination._supaglue_provider_name = '${providerName}' AND
