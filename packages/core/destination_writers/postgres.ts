@@ -282,17 +282,17 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable}
-          LEFT JOIN ${dedupedTempTable} AS temp
+          LEFT JOIN ${dedupedTempTable}
           ON 
-              temp._supaglue_application_id = ${qualifiedTable}._supaglue_application_id AND
-              temp._supaglue_provider_name = ${qualifiedTable}._supaglue_provider_name AND
-              temp._supaglue_customer_id = ${qualifiedTable}._supaglue_customer_id AND
-              temp.id = ${qualifiedTable}.id
+              ${dedupedTempTable}._supaglue_application_id = ${qualifiedTable}._supaglue_application_id AND
+              ${dedupedTempTable}._supaglue_provider_name = ${qualifiedTable}._supaglue_provider_name AND
+              ${dedupedTempTable}._supaglue_customer_id = ${qualifiedTable}._supaglue_customer_id AND
+              ${dedupedTempTable}.id = ${qualifiedTable}.id
           SET ${qualifiedTable}._supaglue_is_deleted = TRUE
           WHERE ${qualifiedTable}._supaglue_application_id = '${applicationId}'
           AND ${qualifiedTable}._supaglue_provider_name = '${providerName}'
           AND ${qualifiedTable}._supaglue_customer_id = '${customerId}'
-          AND temp.id IS NULL;
+          AND ${dedupedTempTable}.id IS NULL;
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
         heartbeat();
@@ -586,17 +586,17 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
           UPDATE ${qualifiedTable}
-          LEFT JOIN ${dedupedTempTable} AS temp
+          LEFT JOIN ${dedupedTempTable} 
           ON 
-              temp._supaglue_application_id = ${qualifiedTable}._supaglue_application_id AND
-              temp._supaglue_provider_name = ${qualifiedTable}._supaglue_provider_name AND
-              temp._supaglue_customer_id = ${qualifiedTable}._supaglue_customer_id AND
-              temp._supaglue_id = ${qualifiedTable}._supaglue_id
+              ${dedupedTempTable}._supaglue_application_id = ${qualifiedTable}._supaglue_application_id AND
+              ${dedupedTempTable}._supaglue_provider_name = ${qualifiedTable}._supaglue_provider_name AND
+              ${dedupedTempTable}._supaglue_customer_id = ${qualifiedTable}._supaglue_customer_id AND
+              ${dedupedTempTable}._supaglue_id = ${qualifiedTable}._supaglue_id
           SET ${qualifiedTable}._supaglue_is_deleted = TRUE
           WHERE ${qualifiedTable}._supaglue_application_id = '${applicationId}'
           AND ${qualifiedTable}._supaglue_provider_name = '${providerName}'
           AND ${qualifiedTable}._supaglue_customer_id = '${customerId}'
-          AND temp._supaglue_id IS NULL;
+          AND ${dedupedTempTable}._supaglue_id IS NULL;
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
         heartbeat();
