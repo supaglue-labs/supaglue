@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.14.14",
+    "version": "0.14.15",
     "title": "Actions API",
     "contact": {
       "name": "Supaglue",
