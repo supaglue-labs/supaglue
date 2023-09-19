@@ -20,8 +20,8 @@ import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
 import { MongoDBDestinationWriter } from '../destination_writers/mongodb';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { SupaglueDestinationWriter } from '../destination_writers/supaglue';
-import { getSsl } from '../destination_writers/util';
 import { BadRequestError } from '../errors';
+import { getSsl } from '../lib';
 import { encrypt } from '../lib/crypt';
 import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
 

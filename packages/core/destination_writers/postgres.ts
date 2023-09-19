@@ -38,13 +38,11 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
-import { logger } from '../lib';
+import { getCommonObjectSchemaSetupSql, getSsl, logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import {
-  getCommonObjectSchemaSetupSql,
   getSnakecasedKeysMapper,
-  getSsl,
   jsonStringifyWithoutNullChars,
   shouldDeleteRecords,
   stripNullCharsFromString,

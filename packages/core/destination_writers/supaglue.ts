@@ -16,16 +16,19 @@ import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import { NotImplementedError } from '../errors';
-import { getObjectTableName, getPgPool, getSchemaName, logger, sanitizeForPostgres } from '../lib';
-import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
-import { BaseDestinationWriter } from './base';
 import {
   getColumnsForCommonObject,
   getCommonObjectSchemaSetupSql,
   getCommonObjectTableName,
-  getSnakecasedKeysMapper,
-  shouldDeleteRecords,
-} from './util';
+  getObjectTableName,
+  getPgPool,
+  getSchemaName,
+  logger,
+  sanitizeForPostgres,
+} from '../lib';
+import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
+import { BaseDestinationWriter } from './base';
+import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
 
 async function createPartitionIfNotExists(
   client: PoolClient,
