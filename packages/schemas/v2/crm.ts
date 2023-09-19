@@ -16,6 +16,14 @@ export type UpsertAccountRequest = operations['upsertAccount']['requestBody']['c
 export type UpsertAccountResponse =
   operations['upsertAccount']['responses'][keyof operations['upsertAccount']['responses']]['content']['application/json'];
 
+export type ListAccountsPathParams = never;
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type ListAccountsQueryParams = Required<operations['getAccount']>['parameters']['query'];
+export type ListAccountsQueryParams = any;
+export type ListAccountsRequest = never;
+export type ListAccountsResponse =
+  operations['listAccounts']['responses'][keyof operations['listAccounts']['responses']]['content']['application/json'];
+
 export type GetAccountPathParams = paths[`/accounts/{account_id}`]['parameters']['path'];
 // TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
 // export type GetAccountQueryParams = Required<operations['getAccount']>['parameters']['query'];
@@ -47,6 +55,14 @@ export type UpsertContactQueryParams = any;
 export type UpsertContactRequest = operations['upsertContact']['requestBody']['content']['application/json'];
 export type UpsertContactResponse =
   operations['upsertContact']['responses'][keyof operations['upsertContact']['responses']]['content']['application/json'];
+
+export type ListContactsPathParams = never;
+// TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
+// export type ListContactsQueryParams = Required<operations['getContact']>['parameters']['query'];
+export type ListContactsQueryParams = any;
+export type ListContactsRequest = never;
+export type ListContactsResponse =
+  operations['listContacts']['responses'][keyof operations['listContacts']['responses']]['content']['application/json'];
 
 export type GetContactPathParams = paths[`/contacts/{contact_id}`]['parameters']['path'];
 // TODO - this should be generated from the openapi spec, but it's not getting generated due to a bug in openapi-typescript
