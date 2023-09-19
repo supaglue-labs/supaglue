@@ -440,9 +440,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         await client.query(`
           UPDATE ${qualifiedTable} AS destination
           SET _supaglue_is_deleted = TRUE
-          WHERE table._supaglue_application_id = '${applicationId}'
-          AND table._supaglue_provider_name = '${providerName}'
-          AND table._supaglue_customer_id = '${customerId}'
+          WHERE destination._supaglue_application_id = '${applicationId}'
+          AND destination._supaglue_provider_name = '${providerName}'
+          AND destination._supaglue_customer_id = '${customerId}'
           AND NOT EXISTS (
               SELECT 1
               FROM ${dedupedTempTable} AS temp
