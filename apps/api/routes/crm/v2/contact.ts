@@ -25,7 +25,7 @@ import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { crmCommonObjectService } = getDependencyContainer();
+const { crmCommonObjectService, managedDataService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -39,13 +39,17 @@ export default function init(app: Router): void {
       if (req.query.read_from_cache !== 'true') {
         throw new NotImplementedError('Uncached reads not yet implemented for contacts.');
       }
+      const { pagination, records } = await managedDataService.getCrmContactRecords(
+        req.supaglueApplication.id,
+        req.customerConnection.providerName,
+        req.customerId,
+        req.query?.cursor,
+        req.query?.modified_after as unknown as string | undefined,
+        req.query?.page_size ? parseInt(req.query.page_size) : undefined
+      );
       return res.status(200).send({
-        pagination: {
-          next: null,
-          previous: null,
-          total_count: 0,
-        },
-        records: [],
+        pagination,
+        records,
       });
     }
   );

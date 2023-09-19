@@ -480,7 +480,7 @@
                     "records": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/account"
+                        "$ref": "#/components/schemas/contact"
                       }
                     }
                   },

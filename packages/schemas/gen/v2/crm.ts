@@ -866,7 +866,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["account"])[];
+            records: (components["schemas"]["contact"])[];
           };
         };
       };

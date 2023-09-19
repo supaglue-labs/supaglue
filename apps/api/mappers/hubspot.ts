@@ -1,7 +1,7 @@
 import type { HubspotCompany, HubspotContact } from '@/types/hubspot';
-import type { SupaglueRecord } from '@supaglue/core/lib';
+import type { SupaglueStandardRecord } from '@supaglue/core/lib';
 
-export const toHubspotCompany = (record: SupaglueRecord): HubspotCompany => {
+export const toHubspotCompany = (record: SupaglueStandardRecord): HubspotCompany => {
   const rawData = record._supaglue_raw_data;
   const properties = rawData.properties as Record<string, unknown>;
 
@@ -29,7 +29,7 @@ export const toHubspotCompany = (record: SupaglueRecord): HubspotCompany => {
   };
 };
 
-export const toHubspotContact = (record: SupaglueRecord): HubspotContact => {
+export const toHubspotContact = (record: SupaglueStandardRecord): HubspotContact => {
   const rawData = record._supaglue_raw_data;
   const properties = rawData.properties as Record<string, unknown>;
 

@@ -1,7 +1,7 @@
 import type { SalesforceAccount, SalesforceContact } from '@/types/salesforce';
-import type { SupaglueRecord } from '@supaglue/core/lib';
+import type { SupaglueStandardRecord } from '@supaglue/core/lib';
 
-export const toSalesforceAccount = (record: SupaglueRecord): SalesforceAccount => {
+export const toSalesforceAccount = (record: SupaglueStandardRecord): SalesforceAccount => {
   const rawData = record._supaglue_raw_data;
 
   return {
@@ -32,7 +32,7 @@ export const toSalesforceAccount = (record: SupaglueRecord): SalesforceAccount =
   };
 };
 
-export const toSalesforceContact = (record: SupaglueRecord): SalesforceContact => {
+export const toSalesforceContact = (record: SupaglueStandardRecord): SalesforceContact => {
   const rawData = record._supaglue_raw_data;
 
   return {

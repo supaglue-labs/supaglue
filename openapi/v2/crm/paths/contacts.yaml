@@ -63,7 +63,7 @@ get:
               records:
                 type: array
                 items:
-                  $ref: ../components/schemas/objects/account.yaml
+                  $ref: ../components/schemas/objects/contact.yaml
             required:
               - pagination
               - records

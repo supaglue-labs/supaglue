@@ -1,6 +1,7 @@
 import type { PaginationInternalParams, PaginationParams, ProviderName } from '@supaglue/types';
 import { BadRequestError } from '../errors';
 
+export const DEFAULT_PAGE_SIZE = 10;
 export const MAX_PAGE_SIZE = 1000;
 
 export function getPaginationParams<T extends string | number = string>(
@@ -71,16 +72,16 @@ export const toPaginationInternalParams = (paginationParams: PaginationParams): 
   };
 };
 
-export type PaginatedSupaglueRecords = {
+export type PaginatedSupaglueRecords<T> = {
   pagination: {
     previous: string | null;
     next: string | null;
     total_count: number;
   };
-  records: SupaglueRecord[];
+  records: T[];
 };
 
-export type SupaglueRecord = {
+export type SupaglueStandardRecord = {
   _supaglue_application_id: string;
   _supaglue_provider_name: ProviderName;
   _supaglue_customer_id: string;
@@ -92,18 +93,19 @@ export type SupaglueRecord = {
 };
 
 // The assumption is that `rows` has `pageSize + 1` or fewer records. If there are `pageSize + 1` records, then we know there are more records.
-export const getPaginatedSupaglueRecords = (
-  rows: SupaglueRecord[],
+export const getPaginatedSupaglueRecords = <T extends Record<string, unknown>>(
+  rows: T[],
   totalCount: number,
   pageSize: number,
+  idColumn: keyof T,
   cursor?: Cursor
-): PaginatedSupaglueRecords => {
+): PaginatedSupaglueRecords<T> => {
   if (rows.length === pageSize + 1) {
     if (isForward(cursor)) {
       return {
         pagination: {
-          next: encodeCursor({ reverse: false, id: rows[pageSize - 1]._supaglue_id }),
-          previous: cursor ? encodeCursor({ reverse: true, id: rows[0]._supaglue_id }) : null,
+          next: encodeCursor({ reverse: false, id: rows[pageSize - 1][idColumn] as string | number }),
+          previous: cursor ? encodeCursor({ reverse: true, id: rows[0][idColumn] as string | number }) : null,
           total_count: totalCount,
         },
         records: rows.slice(0, pageSize),
@@ -111,8 +113,8 @@ export const getPaginatedSupaglueRecords = (
     }
     return {
       pagination: {
-        next: encodeCursor({ reverse: false, id: rows[0]._supaglue_id }),
-        previous: encodeCursor({ reverse: true, id: rows[pageSize - 1]._supaglue_id }),
+        next: encodeCursor({ reverse: false, id: rows[0][idColumn] as string | number }),
+        previous: encodeCursor({ reverse: true, id: rows[pageSize - 1][idColumn] as string | number }),
         total_count: totalCount,
       },
       records: rows.slice(1).reverse(),
@@ -122,7 +124,7 @@ export const getPaginatedSupaglueRecords = (
     return {
       pagination: {
         next: null,
-        previous: cursor ? encodeCursor({ reverse: true, id: rows[0]._supaglue_id }) : null,
+        previous: cursor ? encodeCursor({ reverse: true, id: rows[0][idColumn] as string | number }) : null,
         total_count: totalCount,
       },
       records: rows,
@@ -130,7 +132,7 @@ export const getPaginatedSupaglueRecords = (
   }
   return {
     pagination: {
-      next: encodeCursor({ reverse: false, id: rows[0]._supaglue_id }),
+      next: encodeCursor({ reverse: false, id: rows[0][idColumn] as string | number }),
       previous: null,
       total_count: totalCount,
     },
