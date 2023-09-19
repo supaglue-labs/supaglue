@@ -75,7 +75,7 @@ export class ManagedDataService {
     try {
       // Check if table even exists
       const { rows } = await client.query<{ total: string }>(
-        getCountSql(qualifiedTable, customerId, objectType, modifiedAfter)
+        getCountSql(qualifiedTable, applicationId, customerId, providerName, objectType, modifiedAfter)
       );
       if (!rows.length) {
         throw new Error('No rows returned from count query');
@@ -83,7 +83,7 @@ export class ManagedDataService {
       const { total } = rows[0];
       // We fetch `pageSize + 1` records so we know if we need to return a `next` pagination.
       const result = await client.query<T>(
-        getSql(qualifiedTable, customerId, objectType, pageSize + 1, cursor, modifiedAfter)
+        getSql(qualifiedTable, applicationId, customerId, providerName, objectType, pageSize + 1, cursor, modifiedAfter)
       );
       return getPaginatedSupaglueRecords<T>(
         result.rows,
@@ -162,9 +162,19 @@ export class ManagedDataService {
   }
 }
 
-const getCountSql = (qualifiedTable: string, customerId: string, objectType: ObjectType, modifiedAfter?: string) => {
+const getCountSql = (
+  qualifiedTable: string,
+  applicationId: string,
+  customerId: string,
+  providerName: string,
+  objectType: ObjectType,
+  modifiedAfter?: string
+) => {
   const lastModifiedAtCol = objectType === 'common' ? 'last_modified_at' : '_supaglue_last_modified_at';
-  let sql = `SELECT COUNT(*) AS total FROM ${qualifiedTable} WHERE _supaglue_customer_id = '${customerId}'`;
+  let sql = `SELECT COUNT(*) AS total FROM ${qualifiedTable}
+    WHERE _supaglue_application_id = '${applicationId}'
+    AND _supaglue_customer_id = '${customerId}'
+    AND _supaglue_provider_name = '${providerName}'`;
   if (modifiedAfter) {
     sql += ` AND ${lastModifiedAtCol} > '${modifiedAfter}'`;
   }
@@ -174,7 +184,9 @@ const getCountSql = (qualifiedTable: string, customerId: string, objectType: Obj
 
 const getSql = (
   qualifiedTable: string,
+  applicationId: string,
   customerId: string,
+  providerName: string,
   objectType: ObjectType,
   limit: number,
   cursor?: Cursor,
@@ -182,7 +194,10 @@ const getSql = (
 ) => {
   const idCol = objectType === 'common' ? 'id' : '_supaglue_id';
   const lastModifiedAtCol = objectType === 'common' ? 'last_modified_at' : '_supaglue_last_modified_at';
-  let sql = `SELECT * FROM ${qualifiedTable} WHERE _supaglue_customer_id = '${customerId}'`;
+  let sql = `SELECT * FROM ${qualifiedTable}
+    WHERE _supaglue_application_id = '${applicationId}'
+    AND _supaglue_customer_id = '${customerId}'
+    AND _supaglue_provider_name = '${providerName}'`;
   if (cursor) {
     sql += ` AND ${idCol} ${isForward(cursor) ? '>' : '<'} '${cursor.id}'`;
   }
