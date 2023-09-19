@@ -36,7 +36,7 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
-import { logger } from '../lib';
+import { logger, SCHEMAS_OR_ENTITIES_APPLICATION_IDS } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
@@ -298,6 +298,8 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     const qualifiedTable = `${dataset}.${table}`;
     const tempTable = `_temp_${providerName}_${table}`;
     const qualifiedTempTable = `${dataset}.${tempTable}`;
+    // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
+    const isSchemasOrEntitiesApplication = SCHEMAS_OR_ENTITIES_APPLICATION_IDS.includes(applicationId);
 
     const client = await this.#getClient();
 
@@ -376,7 +378,9 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
               _supaglue_last_modified_at: record.lastModifiedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
-              _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
+              _supaglue_mapped_data: isSchemasOrEntitiesApplication
+                ? toTransformedPropertiesWithAdditionalFields(record.mappedProperties)
+                : {},
             };
 
             ++tempTableRowCount;

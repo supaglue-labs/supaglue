@@ -22,7 +22,7 @@ import type { Readable } from 'stream';
 import { Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
 import { CacheInvalidationError } from '../errors';
-import { logger } from '../lib';
+import { logger, SCHEMAS_OR_ENTITIES_APPLICATION_IDS } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import { getSnakecasedKeysMapper } from './util';
@@ -231,6 +231,8 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     record: BaseFullRecord
   ): Promise<void> {
     const { additionalFields, ...otherMappedProperties } = record.mappedProperties;
+    // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should null it out otherwise.
+    const isSchemasOrEntitiesApplication = SCHEMAS_OR_ENTITIES_APPLICATION_IDS.includes(applicationId);
 
     const mappedRecord = {
       _supaglue_application_id: applicationId,
@@ -241,7 +243,9 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       _supaglue_last_modified_at: record.metadata.lastModifiedAt,
       _supaglue_is_deleted: record.metadata.isDeleted,
       _supaglue_raw_data: record.rawData,
-      _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
+      _supaglue_mapped_data: isSchemasOrEntitiesApplication
+        ? toTransformedPropertiesWithAdditionalFields(record.mappedProperties)
+        : null,
       ...otherMappedProperties,
       _supaglue_additional_fields: additionalFields,
     };
@@ -277,6 +281,8 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     childLogger: pino.Logger
   ): Promise<WriteObjectRecordsResult> {
     const { database } = this.#destination.config;
+    // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should null it out otherwise.
+    const isSchemasOrEntitiesApplication = SCHEMAS_OR_ENTITIES_APPLICATION_IDS.includes(applicationId);
 
     const client = this.#getClient();
     const collection = client.db(database).collection(collectionName);
@@ -318,7 +324,9 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
               _supaglue_last_modified_at: record.lastModifiedAt,
               _supaglue_is_deleted: record.isDeleted,
               _supaglue_raw_data: record.rawData,
-              _supaglue_mapped_data: toTransformedPropertiesWithAdditionalFields(record.mappedProperties),
+              _supaglue_mapped_data: isSchemasOrEntitiesApplication
+                ? toTransformedPropertiesWithAdditionalFields(record.mappedProperties)
+                : null,
               ...otherMappedProperties,
               _supaglue_additional_fields: additionalFields,
             };
