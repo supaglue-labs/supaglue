@@ -54,6 +54,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
   await logSyncStart({
     syncId,
     runId,
+    connectionId,
   });
 
   let numRecordsSynced: number | undefined;
@@ -66,17 +67,20 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
   } catch (err: any) {
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
 
-    await logSyncFinish({
-      syncId: syncId,
-      connectionId,
-      runId,
-      status: 'FAILURE',
-      errorMessage,
-      errorStack,
-      numRecordsSynced: null,
-    });
-
     if (sync.type === 'object') {
+      await logSyncFinish({
+        syncId: syncId,
+        connectionId,
+        runId,
+        status: 'FAILURE',
+        errorMessage,
+        errorStack,
+        numRecordsSynced: null,
+        type: 'object',
+        objectType: sync.objectType,
+        object: sync.object,
+      });
+
       await maybeSendSyncFinishWebhook({
         runId,
         status: 'SYNC_ERROR',
@@ -92,6 +96,18 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
       const {
         entity: { name: entityName },
       } = await getEntity({ entityId: sync.entityId });
+      await logSyncFinish({
+        syncId: syncId,
+        connectionId,
+        runId,
+        status: 'FAILURE',
+        errorMessage,
+        errorStack,
+        numRecordsSynced: null,
+        type: 'entity',
+        entityId: sync.entityId,
+      });
+
       await maybeSendSyncFinishWebhook({
         runId,
         status: 'SYNC_ERROR',
@@ -112,14 +128,18 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
     throw ApplicationFailure.nonRetryable('Unexpectedly numRecordsSynced was not set');
   }
 
-  await logSyncFinish({
-    syncId: syncId,
-    connectionId,
-    runId,
-    status: 'SUCCESS',
-    numRecordsSynced,
-  });
   if (sync.type === 'object') {
+    await logSyncFinish({
+      syncId: syncId,
+      connectionId,
+      runId,
+      status: 'SUCCESS',
+      numRecordsSynced,
+      type: 'object',
+      objectType: sync.objectType,
+      object: sync.object,
+    });
+
     await maybeSendSyncFinishWebhook({
       runId,
       status: 'SYNC_SUCCESS',
@@ -133,6 +153,16 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
     const {
       entity: { name: entityName },
     } = await getEntity({ entityId: sync.entityId });
+
+    await logSyncFinish({
+      syncId: syncId,
+      connectionId,
+      runId,
+      status: 'SUCCESS',
+      numRecordsSynced,
+      type: 'entity',
+      entityId: sync.entityId,
+    });
 
     await maybeSendSyncFinishWebhook({
       runId,

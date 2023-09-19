@@ -25,10 +25,12 @@ export class SyncRunService {
   async #upsert({
     id,
     syncId,
+    connectionId,
     createParams,
   }: {
     id: string;
     syncId: string;
+    connectionId: string;
     createParams: SyncRunUpsertParams;
   }): Promise<SyncRun> {
     const created: SyncRunModelExpanded = await this.#prisma.syncRun.upsert({
@@ -37,8 +39,11 @@ export class SyncRunService {
         ...createParams,
         id,
         syncId,
+        connectionId,
       },
       update: {},
+
+      // TODO: drop after denormalization migration
       include: {
         sync: {
           select: {
@@ -56,6 +61,8 @@ export class SyncRunService {
     const model = await this.#prisma.syncRun.update({
       where: { id },
       data: updateParams,
+
+      // TODO: drop after denormalization migration
       include: {
         sync: {
           select: {
@@ -69,10 +76,11 @@ export class SyncRunService {
     return fromSyncRunModelAndSync(model);
   }
 
-  public async logStart(args: { syncId: string; runId: string }): Promise<string> {
+  public async logStart(args: { syncId: string; runId: string; connectionId: string }): Promise<string> {
     await this.#upsert({
       id: args.runId,
       syncId: args.syncId,
+      connectionId: args.connectionId,
       createParams: {
         status: 'IN_PROGRESS' as const,
         errorMessage: null,
@@ -89,11 +97,21 @@ export class SyncRunService {
     status,
     errorMessage,
     numRecordsSynced,
+    type,
+    objectType,
+    object,
+    entityId,
   }: {
     runId: string;
     status: SyncRunStatus;
     errorMessage?: string;
     numRecordsSynced: number | null;
+
+    // Note: loose types for object vs entity
+    type?: string;
+    objectType?: string;
+    object?: string;
+    entityId?: string;
   }): Promise<void> {
     await this.#update({
       id: runId,
@@ -102,6 +120,10 @@ export class SyncRunService {
         errorMessage: errorMessage ?? null,
         endTimestamp: new Date(),
         numRecordsSynced,
+        syncType: type,
+        objectType,
+        object,
+        entityId,
       },
     });
   }
@@ -127,6 +149,8 @@ export class SyncRunService {
     const modelsPromise = this.#prisma.syncRun.findMany({
       ...getPaginationParams<string>(page_size, cursor),
       where: whereClause,
+
+      // TODO: drop after denormalization migration
       include: {
         sync: {
           select: {
@@ -143,18 +167,19 @@ export class SyncRunService {
         startTimestamp: 'desc',
       },
     });
-    const countPromise = this.#prisma.syncRun.count({
-      where: whereClause,
-    });
+    // NOTE: this query is slow (10s+). revisit optimizing the query or pushing the counting work to be done at "write" time to avoid querying for it.
+    // const countPromise = this.#prisma.syncRun.count({
+    //   where: whereClause,
+    // });
 
-    const [models, count] = await Promise.all([modelsPromise, countPromise]);
+    const [models] = await Promise.all([modelsPromise]);
 
     const results = models.map(fromObjectSyncRunModelAndSyncWithObject);
 
     return {
       ...getPaginationResult<string>(page_size, cursor, results),
       results,
-      totalCount: count,
+      totalCount: Number.MAX_SAFE_INTEGER,
     };
   }
 }

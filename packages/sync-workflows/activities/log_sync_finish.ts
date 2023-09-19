@@ -23,6 +23,12 @@ export function createLogSyncFinish({
     errorMessage,
     errorStack,
     numRecordsSynced,
+
+    // Note: loose types for object vs entity
+    type,
+    objectType,
+    object,
+    entityId,
   }: {
     syncId: string;
     connectionId: string;
@@ -31,8 +37,23 @@ export function createLogSyncFinish({
     errorMessage?: string;
     errorStack?: string;
     numRecordsSynced: number | null;
+
+    // Note: loose types for object vs entity
+    type?: string;
+    objectType?: string;
+    object?: string;
+    entityId?: string;
   }) {
-    await syncRunService.logFinish({ runId, status, errorMessage, numRecordsSynced });
+    await syncRunService.logFinish({
+      runId,
+      status,
+      errorMessage,
+      numRecordsSynced,
+      type,
+      objectType,
+      object,
+      entityId,
+    });
 
     const connection = await connectionService.getSafeById(connectionId);
     const application = await applicationService.getById(connection.applicationId);
