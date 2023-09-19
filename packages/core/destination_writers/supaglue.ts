@@ -16,17 +16,32 @@ import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 import { NotImplementedError } from '../errors';
-import { getObjectTableName, getPgPool, getSchemaName, logger, sanitizeForPostgres } from '../lib';
+import {
+  getColumnsForCommonObject,
+  getCommonObjectSchemaSetupSql,
+  getCommonObjectTableName,
+  getObjectTableName,
+  getPgPool,
+  getSchemaName,
+  logger,
+  sanitizeForPostgres,
+} from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
-import { shouldDeleteRecords } from './util';
+import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
 
-async function createPartitionIfNotExists(client: PoolClient, schema: string, table: string, customerId: string) {
+async function createPartitionIfNotExists(
+  client: PoolClient,
+  schema: string,
+  table: string,
+  customerId: string,
+  columnName: string
+) {
   const partitionName = `${table}_${sanitizeForPostgres(customerId)}`;
 
   // If partition doesn't exist, create it
   const createPartitionQuery = `CREATE TABLE IF NOT EXISTS ${schema}.${partitionName} PARTITION OF ${schema}.${table} FOR VALUES IN ('${customerId}')`;
-  const createIndexQuery = `CREATE INDEX IF NOT EXISTS ${partitionName}_id_index ON ${schema}.${partitionName} (_supaglue_last_modified_at);`;
+  const createIndexQuery = `CREATE INDEX IF NOT EXISTS ${partitionName}_id_index ON ${schema}.${partitionName} (${columnName});`;
   await client.query(createPartitionQuery);
   await client.query(createIndexQuery);
 }
@@ -46,16 +61,181 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     commonObjectType: T,
     record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
-    throw new NotImplementedError('Managed supaglue destination is not supported for common objects');
+    return;
   }
 
   public override async writeCommonObjectRecords(
     { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
-    heartbeat: () => void
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
   ): Promise<WriteCommonObjectRecordsResult> {
-    throw new NotImplementedError('Managed supaglue destination is not supported for common objects');
+    const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
+    const schema = getSchemaName(applicationId);
+    const table = getCommonObjectTableName(category, commonObjectType);
+    const qualifiedTable = `"${schema}".${table}`;
+    const tempTable = `temp_${table}`;
+    const dedupedTempTable = `deduped_temp_${table}`;
+
+    const client = await this.#getClient();
+
+    try {
+      // Create tables if necessary
+      // TODO: We should only need to do this once at the beginning
+      await client.query(getSchemaSetupSql(schema));
+      await client.query(
+        getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ false, /* partition */ true)
+      );
+      await createPartitionIfNotExists(client, schema, table, customerId, 'last_modified_at');
+
+      // Create a temporary table
+      // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
+      await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
+      await client.query(
+        getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ true, /* partition */ false)
+      );
+      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, last_modified_at DESC)`);
+
+      const columns = getColumnsForCommonObject(category, commonObjectType);
+      const columnsToUpdate = columns.filter(
+        (c) =>
+          c !== '_supaglue_application_id' &&
+          c !== '_supaglue_provider_name' &&
+          c !== '_supaglue_customer_id' &&
+          c !== 'id'
+      );
+
+      // Output
+      const stream = client.query(
+        copyFrom(`COPY ${tempTable} (${columns.join(',')}) FROM STDIN WITH (DELIMITER ',', FORMAT CSV)`)
+      );
+
+      // Input
+      const stringifier = stringify({
+        columns,
+        cast: {
+          boolean: (value: boolean) => value.toString(),
+          object: (value: object) => jsonStringifyWithoutNullChars(value),
+          date: (value: Date) => value.toISOString(),
+          string: (value: string) => stripNullCharsFromString(value),
+        },
+        quoted: true,
+      });
+
+      const mapper = getSnakecasedKeysMapper(category, commonObjectType);
+
+      // Keep track of stuff
+      let tempTableRowCount = 0;
+      let maxLastModifiedAt: Date | null = null;
+
+      childLogger.info('Importing common object records into temp table [IN PROGRESS]');
+      await pipeline(
+        inputStream,
+        new Transform({
+          objectMode: true,
+          transform: (chunk, encoding, callback) => {
+            try {
+              const { record, emittedAt } = chunk;
+              const mappedRecord = {
+                _supaglue_application_id: applicationId,
+                _supaglue_provider_name: providerName,
+                _supaglue_customer_id: customerId,
+                _supaglue_emitted_at: emittedAt,
+                ...mapper(record),
+              };
+
+              ++tempTableRowCount;
+
+              // Update the max lastModifiedAt
+              const { lastModifiedAt } = record;
+              if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
+                maxLastModifiedAt = lastModifiedAt;
+              }
+
+              callback(null, mappedRecord);
+            } catch (e: any) {
+              return callback(e);
+            }
+          },
+        }),
+        stringifier,
+        stream
+      );
+      childLogger.info('Importing common object records into temp table [COMPLETED]');
+
+      // Dedupe the temp table
+      // Since all common objects have `lastModifiedAt`, we can sort by that to avoid dupes.
+      // We need to do the sorting before applying OFFSET / LIMIT because otherwise, if a record
+      // appears as the last record of a page and also the first record of the next page, we will
+      // overwrite the newer record with the older record in the main table.
+      childLogger.info('Writing deduped temp table records into deduped temp table [IN PROGRESS]');
+      await client.query(
+        `CREATE TEMP TABLE IF NOT EXISTS ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY id ASC, last_modified_at DESC`
+      );
+      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (id ASC, last_modified_at DESC)`);
+      childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
+
+      heartbeat();
+
+      // Drop temp table just in case session disconnects so that we don't have to wait for the VACUUM reaper.
+      childLogger.info('Dropping temp table [IN PROGRESS]');
+      await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
+      childLogger.info('Dropping temp table [COMPLETED]');
+
+      heartbeat();
+
+      // Copy from deduped temp table
+      const columnsToUpdateStr = columnsToUpdate.join(',');
+      const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
+
+      // Paginate
+      const batchSize = 10000;
+      for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
+        childLogger.info({ offset }, 'Copying from deduped temp table to main table [IN PROGRESS]');
+        // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
+        // For example, hubspot will return the same record twice when querying for `archived: true` if
+        // the record was archived, restored, and archived again.
+        // TODO: This may have performance implications. We should look into this later.
+        // https://github.com/supaglue-labs/supaglue/issues/497
+        await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
+SELECT DISTINCT ON (id) ${columns.join(',')} FROM ${dedupedTempTable} OFFSET ${offset} LIMIT ${batchSize}
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
+        childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
+        heartbeat();
+      }
+
+      childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
+
+      if (diffAndDeleteRecords) {
+        childLogger.info('Marking rows as deleted [IN PROGRESS]');
+        await client.query(`
+        UPDATE ${qualifiedTable} AS destination
+        SET is_deleted = TRUE
+        WHERE 
+          destination._supaglue_application_id = '${applicationId}' AND
+          destination._supaglue_provider_name = '${providerName}' AND
+          destination._supaglue_customer_id = '${customerId}'
+        AND NOT EXISTS (
+            SELECT 1
+            FROM ${dedupedTempTable} AS temp
+            WHERE temp.id = destination.id
+        );
+        `);
+        childLogger.info('Marking rows as deleted [COMPLETED]');
+        heartbeat();
+      }
+
+      // We don't drop deduped temp table here because we're closing the connection here anyway.
+
+      return {
+        maxLastModifiedAt,
+        numRecords: tempTableRowCount, // TODO: not quite accurate (because there can be duplicates) but good enough
+      };
+    } finally {
+      client.release();
+    }
   }
 
   public override async writeObjectRecords(
@@ -81,7 +261,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     objectName: string,
     record: StandardFullObjectRecord
   ): Promise<void> {
-    throw new NotImplementedError('This operation is not supported for managed destinations');
+    return;
   }
 
   public override async writeEntityRecords(
@@ -121,7 +301,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
       // TODO: We should only need to do this once at the beginning
       await client.query(getSchemaSetupSql(schema));
       await client.query(getTableSetupSql(table, schema));
-      await createPartitionIfNotExists(client, schema, table, customerId);
+      await createPartitionIfNotExists(client, schema, table, customerId, '_supaglue_last_modified_at');
 
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.

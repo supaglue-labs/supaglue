@@ -50,3 +50,16 @@ const snakecasedKeysMapperByCommonObjectType: {
 export const shouldDeleteRecords = (isFullSync: boolean, providerName: ProviderName): boolean => {
   return isFullSync && providerName !== 'apollo';
 };
+
+export function stripNullCharsFromString(str: string) {
+  return str.replace(/\0/g, '');
+}
+
+export function jsonStringifyWithoutNullChars(obj: object) {
+  return JSON.stringify(obj, (key, value) => {
+    if (typeof value === 'string') {
+      return stripNullCharsFromString(value);
+    }
+    return value;
+  });
+}

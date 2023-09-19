@@ -18,9 +18,10 @@ import { Client } from 'pg';
 import type { DestinationWriter } from '../destination_writers/base';
 import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
 import { MongoDBDestinationWriter } from '../destination_writers/mongodb';
-import { getSsl, PostgresDestinationWriter } from '../destination_writers/postgres';
+import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { SupaglueDestinationWriter } from '../destination_writers/supaglue';
 import { BadRequestError } from '../errors';
+import { getSsl } from '../lib';
 import { encrypt } from '../lib/crypt';
 import { fromDestinationModelToSafe, fromDestinationModelToUnsafe } from '../mappers/destination';
 

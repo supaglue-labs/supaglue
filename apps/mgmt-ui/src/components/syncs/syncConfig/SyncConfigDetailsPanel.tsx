@@ -162,10 +162,9 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
   const supportsStandardDestinations = ['postgres', 'bigquery', 'mongodb', 'supaglue'];
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
 
-  const commonObjectsSupported =
-    selectedProvider?.category !== 'no_category' && selectedDestination?.type !== 'supaglue';
+  const commonObjectsSupported = selectedProvider?.category !== 'no_category';
 
-  const getCommonObjecOptions = (category: ProviderCategory) => {
+  const getCommonObjectOptions = (category: ProviderCategory) => {
     if (category === 'crm') {
       return CRM_COMMON_OBJECT_TYPES;
     } else if (category === 'engagement') {
@@ -286,7 +285,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                   key={providerId}
                   multiple
                   id="common-objects"
-                  options={getCommonObjecOptions(provider.category)}
+                  options={getCommonObjectOptions(provider.category)}
                   defaultValue={commonObjects}
                   renderTags={(value: readonly string[], getTagProps) =>
                     value.map((option: string, index: number) => (
