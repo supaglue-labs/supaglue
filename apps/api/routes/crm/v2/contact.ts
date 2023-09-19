@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmContact } from '@supaglue/core/mappers/crm';
 import type {
   CreateContactPathParams,
@@ -8,6 +9,10 @@ import type {
   GetContactQueryParams,
   GetContactRequest,
   GetContactResponse,
+  ListContactsPathParams,
+  ListContactsQueryParams,
+  ListContactsRequest,
+  ListContactsResponse,
   UpdateContactPathParams,
   UpdateContactQueryParams,
   UpdateContactRequest,
@@ -24,6 +29,26 @@ const { crmCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
+
+  router.get(
+    '/',
+    async (
+      req: Request<ListContactsPathParams, ListContactsResponse, ListContactsRequest, ListContactsQueryParams>,
+      res: Response<ListContactsResponse>
+    ) => {
+      if (req.query.read_from_cache !== 'true') {
+        throw new NotImplementedError('Uncached reads not yet implemented for contacts.');
+      }
+      return res.status(200).send({
+        pagination: {
+          next: null,
+          previous: null,
+          total_count: 0,
+        },
+        records: [],
+      });
+    }
+  );
 
   router.get(
     '/:contact_id',

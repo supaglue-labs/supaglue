@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmAccount } from '@supaglue/core/mappers/crm';
 import type {
   CreateAccountPathParams,
@@ -8,6 +9,10 @@ import type {
   GetAccountQueryParams,
   GetAccountRequest,
   GetAccountResponse,
+  ListAccountsPathParams,
+  ListAccountsQueryParams,
+  ListAccountsRequest,
+  ListAccountsResponse,
   UpdateAccountPathParams,
   UpdateAccountRequest,
   UpdateAccountResponse,
@@ -23,6 +28,26 @@ const { crmCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
+
+  router.get(
+    '/',
+    async (
+      req: Request<ListAccountsPathParams, ListAccountsResponse, ListAccountsRequest, ListAccountsQueryParams>,
+      res: Response<ListAccountsResponse>
+    ) => {
+      if (req.query.read_from_cache !== 'true') {
+        throw new NotImplementedError('Uncached reads not yet implemented for accounts.');
+      }
+      return res.status(200).send({
+        pagination: {
+          next: null,
+          previous: null,
+          total_count: 0,
+        },
+        records: [],
+      });
+    }
+  );
 
   router.get(
     '/:account_id',

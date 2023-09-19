@@ -11,6 +11,8 @@ type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A
 
 export interface paths {
   "/accounts": {
+    /** List accounts */
+    get: operations["listAccounts"];
     /** Create account */
     post: operations["createAccount"];
     parameters: {
@@ -50,6 +52,8 @@ export interface paths {
     };
   };
   "/contacts": {
+    /** List accounts */
+    get: operations["listContacts"];
     /** Create contact */
     post: operations["createContact"];
     parameters: {
@@ -692,6 +696,34 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  /** List accounts */
+  listAccounts: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        /** @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set) */
+        read_from_cache?: boolean;
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Accounts */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["account"])[];
+          };
+        };
+      };
+    };
+  };
   /** Create account */
   createAccount: {
     parameters: {
@@ -809,6 +841,32 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** List accounts */
+  listContacts: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Contacts */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["account"])[];
           };
         };
       };
