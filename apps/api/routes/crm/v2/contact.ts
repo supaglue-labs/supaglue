@@ -47,9 +47,18 @@ export default function init(app: Router): void {
         req.query?.modified_after as unknown as string | undefined,
         req.query?.page_size ? parseInt(req.query.page_size) : undefined
       );
+      if (req.query.include_raw_data === 'true') {
+        return res.status(200).send({
+          pagination,
+          records,
+        });
+      }
       return res.status(200).send({
         pagination,
-        records,
+        records: records.map((record) => ({
+          ...record,
+          raw_data: undefined,
+        })),
       });
     }
   );

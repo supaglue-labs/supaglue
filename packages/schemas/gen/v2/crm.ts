@@ -670,6 +670,8 @@ export interface components {
     include_deleted_data?: boolean;
     /** @description Whether to include raw data fetched from the 3rd party provider. */
     include_raw_data?: boolean;
+    /** @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set) */
+    read_from_cache?: boolean;
     /** @description If provided, will only return objects created after this datetime */
     created_after?: Date;
     /** @description If provided, will only return objects created before this datetime */
@@ -701,8 +703,7 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
-        /** @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set) */
-        read_from_cache?: boolean;
+        read_from_cache?: components["parameters"]["read_from_cache"];
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
@@ -851,6 +852,7 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];

@@ -88,13 +88,7 @@
             "$ref": "#/components/parameters/include_raw_data"
           },
           {
-            "name": "read_from_cache",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set)"
+            "$ref": "#/components/parameters/read_from_cache"
           },
           {
             "$ref": "#/components/parameters/modified_after"
@@ -454,7 +448,7 @@
             "$ref": "#/components/parameters/include_raw_data"
           },
           {
-            "$ref": "#/paths/~1accounts/get/parameters/1"
+            "$ref": "#/components/parameters/read_from_cache"
           },
           {
             "$ref": "#/components/parameters/modified_after"
@@ -2517,6 +2511,15 @@
           "example": true
         },
         "description": "Whether to include raw data fetched from the 3rd party provider."
+      },
+      "read_from_cache": {
+        "name": "read_from_cache",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set)"
       },
       "created_after": {
         "name": "created_after",

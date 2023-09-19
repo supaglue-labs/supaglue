@@ -125,6 +125,8 @@ components:
       $ref: ../../common/components/parameters/query/include_deleted_data.yaml
     include_raw_data:
       $ref: ../../common/components/parameters/query/include_raw_data.yaml
+    read_from_cache:
+      $ref: ../../common/components/parameters/query/read_from_cache.yaml
     created_after:
       $ref: ../../common/components/parameters/query/created_after.yaml
     created_before:
