@@ -21,17 +21,24 @@ import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObj
 import { BaseDestinationWriter } from './base';
 import {
   getColumnsForCommonObject,
+  getCommonObjectSchemaSetupSql,
   getCommonObjectTableName,
   getSnakecasedKeysMapper,
   shouldDeleteRecords,
 } from './util';
 
-async function createPartitionIfNotExists(client: PoolClient, schema: string, table: string, customerId: string) {
+async function createPartitionIfNotExists(
+  client: PoolClient,
+  schema: string,
+  table: string,
+  customerId: string,
+  columnName: string
+) {
   const partitionName = `${table}_${sanitizeForPostgres(customerId)}`;
 
   // If partition doesn't exist, create it
   const createPartitionQuery = `CREATE TABLE IF NOT EXISTS ${schema}.${partitionName} PARTITION OF ${schema}.${table} FOR VALUES IN ('${customerId}')`;
-  const createIndexQuery = `CREATE INDEX IF NOT EXISTS ${partitionName}_id_index ON ${schema}.${partitionName} (_supaglue_last_modified_at);`;
+  const createIndexQuery = `CREATE INDEX IF NOT EXISTS ${partitionName}_id_index ON ${schema}.${partitionName} (${columnName});`;
   await client.query(createPartitionQuery);
   await client.query(createIndexQuery);
 }
@@ -74,16 +81,18 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
       await client.query(getSchemaSetupSql(schema));
-      await client.query(getTableSetupSql(table, schema));
-      await createPartitionIfNotExists(client, schema, table, customerId);
+      await client.query(
+        getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ false, /* partition */ true)
+      );
+      await createPartitionIfNotExists(client, schema, table, customerId, 'last_modified_at');
 
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
-      await client.query(getTableSetupSql(table, schema, /* temp */ true));
       await client.query(
-        `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_id ASC, _supaglue_last_modified_at DESC)`
+        getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ true, /* partition */ false)
       );
+      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, last_modified_at DESC)`);
 
       const columns = getColumnsForCommonObject(category, commonObjectType);
       const columnsToUpdate = columns.filter(
@@ -289,7 +298,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
       // TODO: We should only need to do this once at the beginning
       await client.query(getSchemaSetupSql(schema));
       await client.query(getTableSetupSql(table, schema));
-      await createPartitionIfNotExists(client, schema, table, customerId);
+      await createPartitionIfNotExists(client, schema, table, customerId, '_supaglue_last_modified_at');
 
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.

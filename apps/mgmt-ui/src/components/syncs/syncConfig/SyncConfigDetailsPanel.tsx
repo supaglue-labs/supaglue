@@ -163,7 +163,6 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
 
   const commonObjectsSupported = selectedProvider?.category !== 'no_category';
-  console.log(`commonObjectsSupported: `, commonObjectsSupported);
 
   const getCommonObjectOptions = (category: ProviderCategory) => {
     if (category === 'crm') {
