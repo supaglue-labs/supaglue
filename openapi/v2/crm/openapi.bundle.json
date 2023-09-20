@@ -434,7 +434,7 @@
       },
       "get": {
         "operationId": "listContacts",
-        "summary": "List accounts",
+        "summary": "List contacts",
         "tags": [
           "Contacts"
         ],

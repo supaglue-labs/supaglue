@@ -46,17 +46,15 @@ export default function init(app: Router): void {
         req.query?.modified_after as unknown as string | undefined,
         req.query?.page_size ? parseInt(req.query.page_size) : undefined
       );
-      if (req.query.include_raw_data === 'true') {
-        return res.status(200).send({
-          pagination,
-          records,
-        });
-      }
       return res.status(200).send({
         pagination,
         records: records.map((record) => ({
           ...record,
-          raw_data: undefined,
+          raw_data: req.query.include_raw_data === 'true' ? record.raw_data : undefined,
+          _supaglue_application_id: undefined,
+          _supaglue_customer_id: undefined,
+          _supaglue_provider_name: undefined,
+          _supaglue_emitted_at: undefined,
         })),
       });
     }

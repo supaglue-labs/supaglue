@@ -52,7 +52,7 @@ export interface paths {
     };
   };
   "/contacts": {
-    /** List accounts */
+    /** List contacts */
     get: operations["listContacts"];
     /** Create contact */
     post: operations["createContact"];
@@ -847,7 +847,7 @@ export interface operations {
       };
     };
   };
-  /** List accounts */
+  /** List contacts */
   listContacts: {
     parameters: {
       query?: {
