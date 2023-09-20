@@ -185,7 +185,7 @@ model SyncChange {
 }
 
 model SyncRun {
-  cuid             String    @id
+  id               String    @id
   syncId           String    @map("object_sync_id")
   sync             Sync      @relation(fields: [syncId], references: [id], onDelete: Cascade)
   // SUCCESS | ERROR | IN_PROGRESS
@@ -196,7 +196,7 @@ model SyncRun {
   numRecordsSynced Int?      @map("num_records_synced")
 
   @@index([startTimestamp(sort: Desc)])
-  @@index([cuid(sort: Desc)])
+  @@index([id(sort: Desc)])
   @@index([status])
   @@map("object_sync_runs")
 }

@@ -195,7 +195,7 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
         }}
         initialState={{
           sorting: {
-            sortModel: [{ field: 'cuid', sort: 'desc' }],
+            sortModel: [{ field: 'id', sort: 'desc' }],
           },
         }}
         sx={{
