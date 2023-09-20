@@ -106,6 +106,12 @@ async function run() {
       activityInbound: [(ctx) => new ActivityLogInterceptor(ctx)],
       workflowModules: [`${__dirname}/interceptors/workflow_log_interceptor`],
     }),
+    bundlerOptions: {
+      webpackConfigHook(config) {
+        config.target = 'node';
+        return config;
+      },
+    },
   });
 
   const handle = () => {

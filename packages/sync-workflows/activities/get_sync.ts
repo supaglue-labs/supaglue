@@ -1,4 +1,5 @@
 import type { Sync } from '@supaglue/types/sync';
+import cuid from 'cuid';
 import type { SyncService } from '../services/sync_service';
 
 export type GetSyncArgs = {
@@ -7,6 +8,7 @@ export type GetSyncArgs = {
 
 export type GetSyncResult = {
   sync: Sync;
+  runId: string;
 };
 
 export function createGetSync(syncService: SyncService) {
@@ -14,6 +16,7 @@ export function createGetSync(syncService: SyncService) {
     const sync = await syncService.getSyncById(syncId);
     return {
       sync,
+      runId: cuid(),
     };
   };
 }

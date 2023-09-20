@@ -19,6 +19,7 @@ import sync from './sync';
 import syncConfig from './sync_config';
 import syncRun from './sync_run';
 import system from './system';
+import _multitenantBackfill from './_multitenant_backfill';
 
 export default function init(app: Router): void {
   // internal routes should require only internal middleware
@@ -27,6 +28,7 @@ export default function init(app: Router): void {
 
   system(internalRouter);
   link(internalRouter);
+  _multitenantBackfill(internalRouter);
 
   app.use('/internal', internalRouter);
 
