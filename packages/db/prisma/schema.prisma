@@ -185,8 +185,7 @@ model SyncChange {
 }
 
 model SyncRun {
-  uuid             String    @id @default(uuid())
-  cuid             String    @default(cuid())
+  cuid             String    @id @default(cuid())
   syncId           String    @map("object_sync_id")
   sync             Sync      @relation(fields: [syncId], references: [id], onDelete: Cascade)
   // SUCCESS | ERROR | IN_PROGRESS
