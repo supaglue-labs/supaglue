@@ -1595,7 +1595,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact');
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact');
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
