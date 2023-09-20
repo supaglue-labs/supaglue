@@ -660,7 +660,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     if (FETCH_ASSOCIATIONS_APPLICATION_IDS.includes(this.#config.applicationId)) {
       return await this.#getAssociatedObjectTypesForObjectType(fromObjectTypeId);
     } else {
-      return { standardObjectTypes: [], customObjectSchemas: [] };
+      return {
+        standardObjectTypes: fromObjectTypeId === 'deal' || fromObjectTypeId === 'contact' ? ['company'] : [],
+        customObjectSchemas: [],
+      };
     }
   }
 
@@ -1222,7 +1225,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('company');
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company');
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
