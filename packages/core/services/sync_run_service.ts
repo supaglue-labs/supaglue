@@ -140,7 +140,7 @@ export class SyncRunService {
         },
       },
       orderBy: {
-        startTimestamp: 'desc',
+        cuid: 'desc',
       },
     });
     const countPromise = this.#prisma.syncRun.count({
