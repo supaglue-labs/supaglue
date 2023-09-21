@@ -290,6 +290,13 @@
           "data_format": {
             "type": "string"
           },
+          "data_options": {
+            "type": "array",
+            "description": "Selectable options for this field. Only applicable if the data_format is `select`.",
+            "items": {
+              "$ref": "#/components/schemas/form_data_option"
+            }
+          },
           "validation_message": {
             "type": "string",
             "nullable": true
@@ -305,6 +312,25 @@
           "required",
           "form_id",
           "data_format"
+        ]
+      },
+      "form_data_option": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          },
+          "raw_data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "label",
+          "value"
         ]
       }
     },

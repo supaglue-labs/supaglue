@@ -1,0 +1,12 @@
+type: object
+properties:
+  label:
+    type: string
+  value:
+    type: string
+  raw_data:
+    type: object
+    additionalProperties: true
+required:
+  - label
+  - value

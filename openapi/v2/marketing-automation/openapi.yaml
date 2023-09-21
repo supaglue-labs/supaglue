@@ -46,6 +46,8 @@ components:
       $ref: ./components/schemas/form_metadata.yaml
     form_field:
       $ref: ./components/schemas/form_field.yaml
+    form_data_option:
+      $ref: ./components/schemas/form_data_option.yaml
   parameters:
     x-customer-id:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml

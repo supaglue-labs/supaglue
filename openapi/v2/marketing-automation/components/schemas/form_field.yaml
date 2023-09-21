@@ -10,6 +10,11 @@ properties:
     type: string
   data_format:
     type: string
+  data_options:
+    type: array
+    description: Selectable options for this field. Only applicable if the data_format is `select`.
+    items:
+      $ref: ./form_data_option.yaml
   validation_message:
     type: string
     nullable: true

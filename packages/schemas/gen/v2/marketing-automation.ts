@@ -85,7 +85,16 @@ export interface components {
       required: boolean;
       form_id: string;
       data_format: string;
+      /** @description Selectable options for this field. Only applicable if the data_format is `select`. */
+      data_options?: (components["schemas"]["form_data_option"])[];
       validation_message?: string | null;
+      raw_data?: {
+        [key: string]: unknown;
+      };
+    };
+    form_data_option: {
+      label: string;
+      value: string;
       raw_data?: {
         [key: string]: unknown;
       };
