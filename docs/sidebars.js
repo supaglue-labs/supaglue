@@ -100,9 +100,25 @@ const sidebars = {
       type: 'doc',
     },
     {
-      id: 'platform/objects/overview',
-      label: 'Objects',
-      type: 'doc',
+      label: 'Data models',
+      type: 'category',
+      link: {
+        title: 'Data models',
+        description: 'Data models',
+        type: 'generated-index',
+      },
+      items: [
+        {
+          id: 'platform/common-schemas/overview',
+          label: 'Common Schema',
+          type: 'doc',
+        },
+        {
+          id: 'platform/objects/overview',
+          label: 'Objects',
+          type: 'doc',
+        },
+      ],
     },
     {
       id: 'platform/passthrough',
