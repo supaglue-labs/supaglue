@@ -8,7 +8,11 @@ export interface paths {
   "/accounts": {
     /**
      * List accounts 
-     * @description Returns a list of Account objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of Account objects.
      */
     get: operations["listAccounts"];
     parameters: {
@@ -20,7 +24,11 @@ export interface paths {
   "/accounts/{account_id}": {
     /**
      * Get account 
-     * @description Returns an Account object with the given id.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns an Account object with the given id.
      */
     get: operations["getAccount"];
     parameters: {
@@ -35,7 +43,11 @@ export interface paths {
   "/collections": {
     /**
      * List collections 
-     * @description Returns a list of Collection objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of Collection objects.
      */
     get: operations["listCollections"];
     parameters: {
@@ -47,7 +59,11 @@ export interface paths {
   "/collections/{collection_id}": {
     /**
      * Get collection 
-     * @description Returns a Collection object with the given id.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a Collection object with the given id.
      */
     get: operations["getCollection"];
     parameters: {
@@ -62,7 +78,11 @@ export interface paths {
   "/collections/{parent_id}/users": {
     /**
      * List collection users 
-     * @description Returns a list of User objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of User objects.
      */
     get: operations["listCollectionUsers"];
     parameters: {
@@ -77,7 +97,11 @@ export interface paths {
   "/users": {
     /**
      * List users 
-     * @description Returns a list of User objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of User objects.
      */
     get: operations["listUsers"];
     parameters: {
@@ -89,7 +113,11 @@ export interface paths {
   "/users/{user_id}": {
     /**
      * Get user 
-     * @description Returns a User object with the given id.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a User object with the given id.
      */
     get: operations["getUser"];
     parameters: {
@@ -104,7 +132,11 @@ export interface paths {
   "/contacts": {
     /**
      * List contacts 
-     * @description Returns a list of Contact objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of Contact objects.
      */
     get: operations["listContacts"];
     parameters: {
@@ -116,7 +148,11 @@ export interface paths {
   "/contacts/{contact_id}": {
     /**
      * Get contact 
-     * @description Returns a Contact object with the given id.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a Contact object with the given id.
      */
     get: operations["getContact"];
     parameters: {
@@ -131,7 +167,11 @@ export interface paths {
   "/teams": {
     /**
      * List teams 
-     * @description Returns a list of Team objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of Team objects.
      */
     get: operations["listTeams"];
     parameters: {
@@ -143,7 +183,11 @@ export interface paths {
   "/teams/{team_id}": {
     /**
      * Get team 
-     * @description Returns an Team object with the given id.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns an Team object with the given id.
      */
     get: operations["getTeam"];
     parameters: {
@@ -158,7 +202,11 @@ export interface paths {
   "/tickets": {
     /**
      * List tickets 
-     * @description Returns a list of Ticket objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of Ticket objects.
      */
     get: operations["listTickets"];
     /**
@@ -175,7 +223,11 @@ export interface paths {
   "/tickets/{ticket_id}": {
     /**
      * Get ticket 
-     * @description Returns an Ticket object with the given id.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns an Ticket object with the given id.
      */
     get: operations["getTicket"];
     /**
@@ -195,7 +247,11 @@ export interface paths {
   "/comments": {
     /**
      * List comments 
-     * @description Returns a list of Comment objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of Comment objects.
      */
     get: operations["listComments"];
     /**
@@ -212,7 +268,11 @@ export interface paths {
   "/comments/{comment_id}": {
     /**
      * Get ticket 
-     * @description Returns an Ticket object with the given id.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns an Ticket object with the given id.
      */
     get: operations["getTicket"];
     parameters: {
@@ -227,7 +287,11 @@ export interface paths {
   "/tags": {
     /**
      * List tags 
-     * @description Returns a list of Tag objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of Tag objects.
      */
     get: operations["listTags"];
     parameters: {
@@ -241,7 +305,11 @@ export interface paths {
   "/tags/{tag_id}": {
     /**
      * Get tag 
-     * @description Returns a Tag object with the given id.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a Tag object with the given id.
      */
     get: operations["getTag"];
     parameters: {
@@ -256,7 +324,11 @@ export interface paths {
   "/attachments": {
     /**
      * List attachments 
-     * @description Returns a list of Attachment objects.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns a list of Attachment objects.
      */
     get: operations["listAttachments"];
     /**
@@ -273,7 +345,11 @@ export interface paths {
   "/attachments/{attachment_id}": {
     /**
      * Get attachment 
-     * @description Returns an Attachment object with the given id.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * 
+     * Returns an Attachment object with the given id.
      */
     get: operations["getAttachment"];
     parameters: {
@@ -471,7 +547,11 @@ export interface operations {
 
   /**
    * List accounts 
-   * @description Returns a list of Account objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of Account objects.
    */
   listAccounts: {
     parameters: {
@@ -498,7 +578,11 @@ export interface operations {
   };
   /**
    * Get account 
-   * @description Returns an Account object with the given id.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns an Account object with the given id.
    */
   getAccount: {
     parameters: {
@@ -523,7 +607,11 @@ export interface operations {
   };
   /**
    * List collections 
-   * @description Returns a list of Collection objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of Collection objects.
    */
   listCollections: {
     parameters: {
@@ -550,7 +638,11 @@ export interface operations {
   };
   /**
    * Get collection 
-   * @description Returns a Collection object with the given id.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a Collection object with the given id.
    */
   getCollection: {
     parameters: {
@@ -575,7 +667,11 @@ export interface operations {
   };
   /**
    * List collection users 
-   * @description Returns a list of User objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of User objects.
    */
   listCollectionUsers: {
     parameters: {
@@ -605,7 +701,11 @@ export interface operations {
   };
   /**
    * List users 
-   * @description Returns a list of User objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of User objects.
    */
   listUsers: {
     parameters: {
@@ -632,7 +732,11 @@ export interface operations {
   };
   /**
    * Get user 
-   * @description Returns a User object with the given id.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a User object with the given id.
    */
   getUser: {
     parameters: {
@@ -657,7 +761,11 @@ export interface operations {
   };
   /**
    * List contacts 
-   * @description Returns a list of Contact objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of Contact objects.
    */
   listContacts: {
     parameters: {
@@ -684,7 +792,11 @@ export interface operations {
   };
   /**
    * Get contact 
-   * @description Returns a Contact object with the given id.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a Contact object with the given id.
    */
   getContact: {
     parameters: {
@@ -709,7 +821,11 @@ export interface operations {
   };
   /**
    * List teams 
-   * @description Returns a list of Team objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of Team objects.
    */
   listTeams: {
     parameters: {
@@ -736,7 +852,11 @@ export interface operations {
   };
   /**
    * Get team 
-   * @description Returns an Team object with the given id.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns an Team object with the given id.
    */
   getTeam: {
     parameters: {
@@ -766,7 +886,11 @@ export interface operations {
   };
   /**
    * List tickets 
-   * @description Returns a list of Ticket objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of Ticket objects.
    */
   listTickets: {
     parameters: {
@@ -845,7 +969,11 @@ export interface operations {
   };
   /**
    * Get ticket 
-   * @description Returns an Ticket object with the given id.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns an Ticket object with the given id.
    */
   getTicket: {
     parameters: {
@@ -902,7 +1030,11 @@ export interface operations {
   };
   /**
    * List comments 
-   * @description Returns a list of Comment objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of Comment objects.
    */
   listComments: {
     parameters: {
@@ -972,7 +1104,11 @@ export interface operations {
   };
   /**
    * List tags 
-   * @description Returns a list of Tag objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of Tag objects.
    */
   listTags: {
     parameters: {
@@ -1008,7 +1144,11 @@ export interface operations {
   };
   /**
    * Get tag 
-   * @description Returns a Tag object with the given id.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a Tag object with the given id.
    */
   getTag: {
     parameters: {
@@ -1033,7 +1173,11 @@ export interface operations {
   };
   /**
    * List attachments 
-   * @description Returns a list of Attachment objects.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a list of Attachment objects.
    */
   listAttachments: {
     parameters: {
@@ -1101,7 +1245,11 @@ export interface operations {
   };
   /**
    * Get attachment 
-   * @description Returns an Attachment object with the given id.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns an Attachment object with the given id.
    */
   getAttachment: {
     parameters: {

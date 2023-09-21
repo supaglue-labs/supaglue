@@ -8,7 +8,7 @@
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "#### Introduction\n\nWelcome to the Unified Actions API (Enrichment) documentation. You can use this API to write to third-party providers.\n\n[View common schema for Enrichment](https://docs.supaglue.com/platform/common-schemas/enrichment)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/enrichment/v2\n```\n"
+    "description": "#### Introduction\n\nWelcome to the Unified API (Enrichment) documentation. You can use this API to write to third-party providers.\n\n[View common schema for Enrichment](https://docs.supaglue.com/platform/common-schemas/enrichment)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/enrichment/v2\n```\n"
   },
   "servers": [
     {

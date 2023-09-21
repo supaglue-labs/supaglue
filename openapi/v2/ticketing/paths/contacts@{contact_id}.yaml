@@ -1,7 +1,12 @@
 get:
   operationId: getContact
   summary: Get contact
-  description: Returns a Contact object with the given id.
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
+
+    Returns a Contact object with the given id.
   tags:
     - Contacts
   security:

@@ -1,4 +1,5 @@
 post:
+  deprecated: true
   summary: Entity mapping deleted
   description: Notification of the deletion of an entity mapping
   operationId: entityEntityMappingDeleted

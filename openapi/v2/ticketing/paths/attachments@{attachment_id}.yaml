@@ -1,7 +1,12 @@
 get:
   operationId: getAttachment
   summary: Get attachment
-  description: Returns an Attachment object with the given id.
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
+
+    Returns an Attachment object with the given id.
   tags:
     - Attachments
   security:

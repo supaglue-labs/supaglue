@@ -1,7 +1,12 @@
 get:
   operationId: listAccounts
   summary: List accounts
-  description: Returns a list of Account objects.
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
+
+    Returns a list of Account objects.
   tags:
     - Accounts
   security:

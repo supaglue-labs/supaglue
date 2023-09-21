@@ -99,6 +99,9 @@ import {
 const HUBSPOT_RECORD_LIMIT = 100;
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
+// TODO move this to lekko
+const FETCH_ASSOCIATIONS_APPLICATION_IDS = ['9773053e-a13f-4249-b641-301a51952708'];
+
 const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
   company: 'companies',
   contact: 'contacts',
@@ -373,6 +376,7 @@ type HubspotClientConfig = {
   clientId: string;
   clientSecret: string;
   instanceUrl: string; // looks like this: `https://app.hubspot.com/contacts/${hubId.toString()}`;
+  applicationId: string;
 };
 
 class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomationRemoteClient {
@@ -647,6 +651,20 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     }
 
     return { standardObjectTypes, customObjectSchemas };
+  }
+
+  async #getAssociatedObjectTypesForObjectTypeFeatureFlagged(fromObjectTypeId: string): Promise<{
+    standardObjectTypes: string[];
+    customObjectSchemas: HubSpotCustomSchema[];
+  }> {
+    if (FETCH_ASSOCIATIONS_APPLICATION_IDS.includes(this.#config.applicationId)) {
+      return await this.#getAssociatedObjectTypesForObjectType(fromObjectTypeId);
+    } else {
+      return {
+        standardObjectTypes: fromObjectTypeId === 'deal' || fromObjectTypeId === 'contact' ? ['company'] : [],
+        customObjectSchemas: [],
+      };
+    }
   }
 
   // TODO: implement fieldsToFetch for custom objects
@@ -1143,7 +1161,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public async listAccounts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectType('company');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company');
     const normalPageFetcher = await this.#getListRecordsFetcher(
       'company',
       properties,
@@ -1207,7 +1225,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('company');
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectType('deal');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company');
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
@@ -1294,7 +1312,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectType('deal');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal');
     const normalPageFetcher = await this.#getListRecordsFetcher(
       'deal',
       properties,
@@ -1359,7 +1377,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const properties = await this.getCommonObjectPropertyIdsToFetch('deal');
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectType('deal');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal');
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
@@ -1421,7 +1439,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public async listContacts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectType('contact');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact');
     const normalPageFetcher = await this.#getListRecordsFetcher(
       'contact',
       properties,
@@ -1577,7 +1595,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact');
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectType('deal');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact');
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
@@ -2077,6 +2095,7 @@ export function newClient(connection: ConnectionUnsafe<'hubspot'>, provider: Pro
     clientId: (provider as CRMProvider).config.oauth.credentials.oauthClientId,
     clientSecret: (provider as CRMProvider).config.oauth.credentials.oauthClientSecret,
     instanceUrl: connection.instanceUrl,
+    applicationId: connection.applicationId,
   });
 }
 
