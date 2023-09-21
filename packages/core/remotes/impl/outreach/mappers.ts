@@ -366,6 +366,7 @@ export const toOutreachSequenceStepCreateParams = ({
   date,
   order,
   type,
+  taskNote,
   customFields,
 }: SequenceStepCreateParams): Record<string, any> => {
   return {
@@ -373,7 +374,8 @@ export const toOutreachSequenceStepCreateParams = ({
       attributes: {
         interval: intervalSeconds,
         date,
-        stepType: type === 'auto' ? 'auto_email' : 'manual_email',
+        stepType: type,
+        taskNote,
         order,
         ...customFields,
       },
