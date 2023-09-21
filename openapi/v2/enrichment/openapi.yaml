@@ -9,7 +9,7 @@ info:
   description: |
     #### Introduction
 
-    Welcome to the Unified Actions API (Enrichment) documentation. You can use this API to write to third-party providers.
+    Welcome to the Unified API (Enrichment) documentation. You can use this API to write to third-party providers.
 
     [View common schema for Enrichment](https://docs.supaglue.com/platform/common-schemas/enrichment)
 

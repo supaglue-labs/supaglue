@@ -226,7 +226,10 @@ export interface paths {
   "/connection_sync_configs": {
     /** Get connection sync config */
     get: operations["getConnectionSyncConfig"];
-    /** Upsert connection sync config */
+    /**
+     * Upsert connection sync config 
+     * @description Use this to override SyncConfig and Destination configurations on a per customer-connection basis. E.g. you can override the objects that are synced per customer-connection as well as override the table/collection that these objects are written into.
+     */
     put: operations["upsertConnectionSyncConfig"];
     /** Delete connection sync config */
     delete: operations["deleteConnectionSyncConfig"];
@@ -385,6 +388,7 @@ export interface webhooks {
   "entity.entity_mapping.created": {
     /**
      * Entity mapping created 
+     * @deprecated 
      * @description Notification of the creation of an entity mapping
      */
     post: operations["entityEntityMappingCreated"];
@@ -392,6 +396,7 @@ export interface webhooks {
   "entity.entity_mapping.updated": {
     /**
      * Entity mapping updated 
+     * @deprecated 
      * @description Notification of an update to an entity mapping
      */
     post: operations["entityEntityMappingUpdated"];
@@ -399,6 +404,7 @@ export interface webhooks {
   "entity.entity_mapping.deleted": {
     /**
      * Entity mapping deleted 
+     * @deprecated 
      * @description Notification of the deletion of an entity mapping
      */
     post: operations["entityEntityMappingDeleted"];
@@ -406,6 +412,7 @@ export interface webhooks {
   "object.field_mapping.created": {
     /**
      * Object field mapping created 
+     * @deprecated 
      * @description Notification of the creation of am object field mapping
      */
     post: operations["objectFieldMappingCreated"];
@@ -413,6 +420,7 @@ export interface webhooks {
   "object.field_mapping.updated": {
     /**
      * Object field mapping updated 
+     * @deprecated 
      * @description Notification of an update to an object field mapping
      */
     post: operations["objectFieldMappingUpdated"];
@@ -1286,11 +1294,12 @@ export interface components {
       };
     }]>;
     upsert_connection_sync_config: {
+      /** @description An object to override the default Destination configuration per connection. */
       destination_config?: OneOf<[{
         /** @enum {string} */
         type: "postgres";
         /**
-         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used. 
+         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the Postgres Destination will be used. 
          * @example customer_1_schema
          */
         schema: string;
@@ -1298,27 +1307,79 @@ export interface components {
         /** @enum {string} */
         type: "bigquery";
         /**
-         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used. 
+         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used. 
          * @example customer_1_dataset
          */
         dataset: string;
+      }, {
+        /** @enum {string} */
+        type: "mongodb";
+        /**
+         * @description The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used. 
+         * @example customer_1_schema
+         */
+        collection: string;
       }]>;
-      /** @description A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig. */
-      standard_objects?: ({
+      /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
+      standard_objects?: (OneOf<[{
           /**
            * @description The Provider object name (case sensitive) 
            * @example Contact
            */
           object: string;
-        })[];
-      /** @description A list of case-sensitive Provider objects to be synced. */
-      custom_objects?: ({
+        }, {
           /**
-           * @description The Supaglue object name (case sensitive) 
+           * @description The Provider object name (case sensitive) 
+           * @example Contact
+           */
+          object: string;
+          /**
+           * @description The table to write the object to. If specified, this will override the default table used by Supaglue. 
+           * @example my_contacts
+           */
+          table: string;
+        }, {
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact
+           */
+          object: string;
+          /**
+           * @description The collection to write the object to. If specified, this will override the default collection used by Supaglue. 
+           * @example MyContacts
+           */
+          collection: string;
+        }]>)[];
+      /** @description (Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig. */
+      custom_objects?: (OneOf<[{
+          /**
+           * @description The Provider object name (case sensitive) 
            * @example Contact__c
            */
           object: string;
-        })[];
+        }, {
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact__c
+           */
+          object: string;
+          /**
+           * @description The table to write the object to. If specified, this will override the default table used by Supaglue. 
+           * @example my_contacts
+           */
+          table: string;
+        }, {
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact__c
+           */
+          object: string;
+          /**
+           * @description The collection to write the object to. If specified, this will override the default table used by Supaglue. 
+           * @example MyContacts
+           */
+          collection: string;
+        }]>)[];
     };
     standard_object: {
       /**
@@ -1374,11 +1435,12 @@ export interface components {
       mapped_field: string;
     };
     connection_sync_config: {
+      /** @description An object to override the default Destination configuration per connection. */
       destination_config?: OneOf<[{
         /** @enum {string} */
         type: "postgres";
         /**
-         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used. 
+         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the Postgres Destination will be used. 
          * @example customer_1_schema
          */
         schema: string;
@@ -1386,27 +1448,79 @@ export interface components {
         /** @enum {string} */
         type: "bigquery";
         /**
-         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used. 
+         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used. 
          * @example customer_1_dataset
          */
         dataset: string;
+      }, {
+        /** @enum {string} */
+        type: "mongodb";
+        /**
+         * @description The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used. 
+         * @example customer_1_schema
+         */
+        collection: string;
       }]>;
-      /** @description A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig. */
-      standard_objects?: ({
+      /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
+      standard_objects?: (OneOf<[{
           /**
            * @description The Provider object name (case sensitive) 
            * @example Contact
            */
           object: string;
-        })[];
-      /** @description A list of case-sensitive Provider objects to be synced. */
-      custom_objects?: ({
+        }, {
           /**
-           * @description The Supaglue object name (case sensitive) 
+           * @description The Provider object name (case sensitive) 
+           * @example Contact
+           */
+          object: string;
+          /**
+           * @description The table to write the object to. If specified, this will override the default table used by Supaglue. 
+           * @example my_contacts
+           */
+          table: string;
+        }, {
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact
+           */
+          object: string;
+          /**
+           * @description The collection to write the object to. If specified, this will override the default collection used by Supaglue. 
+           * @example MyContacts
+           */
+          collection: string;
+        }]>)[];
+      /** @description (Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig. */
+      custom_objects?: (OneOf<[{
+          /**
+           * @description The Provider object name (case sensitive) 
            * @example Contact__c
            */
           object: string;
-        })[];
+        }, {
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact__c
+           */
+          object: string;
+          /**
+           * @description The table to write the object to. If specified, this will override the default table used by Supaglue. 
+           * @example my_contacts
+           */
+          table: string;
+        }, {
+          /**
+           * @description The Provider object name (case sensitive) 
+           * @example Contact__c
+           */
+          object: string;
+          /**
+           * @description The collection to write the object to. If specified, this will override the default table used by Supaglue. 
+           * @example MyContacts
+           */
+          collection: string;
+        }]>)[];
     };
   };
   responses: never;
@@ -2068,7 +2182,10 @@ export interface operations {
       };
     };
   };
-  /** Upsert connection sync config */
+  /**
+   * Upsert connection sync config 
+   * @description Use this to override SyncConfig and Destination configurations on a per customer-connection basis. E.g. you can override the objects that are synced per customer-connection as well as override the table/collection that these objects are written into.
+   */
   upsertConnectionSyncConfig: {
     parameters: {
       header: {
@@ -2855,6 +2972,7 @@ export interface operations {
   };
   /**
    * Entity mapping created 
+   * @deprecated 
    * @description Notification of the creation of an entity mapping
    */
   entityEntityMappingCreated: {
@@ -2910,6 +3028,7 @@ export interface operations {
   };
   /**
    * Entity mapping updated 
+   * @deprecated 
    * @description Notification of an update to an entity mapping
    */
   entityEntityMappingUpdated: {
@@ -2965,6 +3084,7 @@ export interface operations {
   };
   /**
    * Entity mapping deleted 
+   * @deprecated 
    * @description Notification of the deletion of an entity mapping
    */
   entityEntityMappingDeleted: {
@@ -3020,6 +3140,7 @@ export interface operations {
   };
   /**
    * Object field mapping created 
+   * @deprecated 
    * @description Notification of the creation of am object field mapping
    */
   objectFieldMappingCreated: {
@@ -3072,6 +3193,7 @@ export interface operations {
   };
   /**
    * Object field mapping updated 
+   * @deprecated 
    * @description Notification of an update to an object field mapping
    */
   objectFieldMappingUpdated: {

@@ -1,15 +1,18 @@
 openapi: 3.0.3
 info:
   version: 0.14.16
-  title: Unified Ticketing API
+  title: Unified Ticketing API (Preview)
   contact:
     name: Supaglue
     email: docs@supaglue.com
     url: 'https://supaglue.com'
   description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
     #### Introduction
 
-    Welcome to the Unified Actions API (Ticketing) documentation. You can use this API to write to third-party providers.
+    Welcome to the Unified API (Ticketing) documentation. You can use this API to write to third-party providers.
 
     [View common schema for Ticketing](https://docs.supaglue.com/platform/common-schemas/ticketing)
 

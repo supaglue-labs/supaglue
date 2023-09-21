@@ -1,7 +1,12 @@
 get:
   operationId: getTag
   summary: Get tag
-  description: Returns a Tag object with the given id.
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
+
+    Returns a Tag object with the given id.
   tags:
     - Tags
   security:

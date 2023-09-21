@@ -32,8 +32,12 @@ post:
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
 get:
-  operationId: listAccounts 
-  summary: List accounts
+  operationId: listAccounts
+  summary: List accounts (Preview)
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
   tags:
     - Accounts
   security:

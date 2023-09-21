@@ -1,7 +1,12 @@
 get:
   operationId: getCollection
   summary: Get collection
-  description: Returns a Collection object with the given id.
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
+
+    Returns a Collection object with the given id.
   tags:
     - Collections
   security:

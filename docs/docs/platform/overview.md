@@ -21,7 +21,7 @@ Underlying everything on the Supaglue platform is **[Managed Authentication](./m
 
 Once authenticated we provide Managed Syncs for reading data from Providers and syncing it to Destinations. Managed Syncs operate on [Objects](./objects/overview).
 
-For reading and writing data, we have the [Actions API](../integration-patterns/actions-api) which are helpful APIs scoped to a single provider and [Unified APIs](../integration-patterns/unified-api) which provide a single API interface across multiple providers.
+For reading and writing data, we have [Unified APIs](../integration-patterns/unified-api) which provide a single API interface across multiple providers.
 
 ## Passthrough APIs
 

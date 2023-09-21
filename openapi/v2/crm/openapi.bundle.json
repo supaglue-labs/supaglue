@@ -8,7 +8,7 @@
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "#### Introduction\n\nWelcome to the Unified API documentation for CRM. You can use this API to write to multiple third-party providers within the CRM category.\n\n[View common schema for CRM](https://docs.supaglue.com/platform/common-schemas/crm)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
+    "description": "#### Introduction\n\nWelcome to the Unified API (CRM) documentation. You can use this API to write to multiple third-party providers within the CRM category.\n\n[View common schema for CRM](https://docs.supaglue.com/platform/common-schemas/crm)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/crm/v2\n```\n"
   },
   "servers": [
     {
@@ -74,7 +74,8 @@
       },
       "get": {
         "operationId": "listAccounts",
-        "summary": "List accounts",
+        "summary": "List accounts (Preview)",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n",
         "tags": [
           "Accounts"
         ],
@@ -440,7 +441,8 @@
       },
       "get": {
         "operationId": "listContacts",
-        "summary": "List accounts",
+        "summary": "List contacts (Preview)",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n",
         "tags": [
           "Contacts"
         ],

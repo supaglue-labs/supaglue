@@ -45,10 +45,14 @@ export interface paths {
   "/association-types": {
     /**
      * List associationTypes 
+     * @deprecated 
      * @description Get a list of associationTypes
      */
     get: operations["getAssociationTypes"];
-    /** Create associationType */
+    /**
+     * Create associationType 
+     * @deprecated
+     */
     post: operations["createAssociationType"];
     parameters: {
       header: {
@@ -339,6 +343,7 @@ export interface operations {
   };
   /**
    * List associationTypes 
+   * @deprecated 
    * @description Get a list of associationTypes
    */
   getAssociationTypes: {
@@ -363,7 +368,10 @@ export interface operations {
       };
     };
   };
-  /** Create associationType */
+  /**
+   * Create associationType 
+   * @deprecated
+   */
   createAssociationType: {
     parameters: {
       header: {

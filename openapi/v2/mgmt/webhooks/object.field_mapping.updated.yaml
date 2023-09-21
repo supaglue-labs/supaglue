@@ -1,4 +1,5 @@
 post:
+  deprecated: true
   summary: Object field mapping updated
   description: Notification of an update to an object field mapping
   operationId: objectFieldMappingUpdated

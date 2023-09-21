@@ -1,7 +1,12 @@
 get:
   operationId: listComments
   summary: List comments
-  description: Returns a list of Comment objects.
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
+
+    Returns a list of Comment objects.
   tags:
     - Comments
   security:
