@@ -59,7 +59,7 @@ properties:
     type: string
     enum: [auto_email, manual_email, call, task, linkedin_send_message]
     description: |
-      The type of the sequence state. Note: `linkedin_send_message`` is undocumented in Outreach and subject to change.
+      The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.
   task_note:
     type: string
     description: An optional note to be attached to this step.
