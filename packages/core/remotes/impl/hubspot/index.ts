@@ -190,6 +190,10 @@ type HubSpotAPIV2ListFormsFormField = {
   label: string;
   required: boolean;
   fieldType: string;
+  options?: {
+    label: string;
+    value: string;
+  }[];
   validation: {
     message: string;
   };
@@ -462,6 +466,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         formId,
         dataFormat: field.fieldType,
         validationMessage: field.validation.message,
+        dataOptions:
+          field.fieldType === 'select'
+            ? field.options?.map((option) => ({
+                label: option.label,
+                value: option.value,
+              }))
+            : undefined,
         rawData: field,
       }))
     );

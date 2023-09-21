@@ -1,0 +1,12 @@
+type: object
+properties:
+  label:
+    type: string
+  value:
+    type: string
+  is_default:
+    type: boolean
+    description: If true, will be selected by default. Defaults to false.
+required:
+  - label
+  - value

@@ -85,10 +85,18 @@ export interface components {
       required: boolean;
       form_id: string;
       data_format: string;
+      /** @description Selectable options for this field. Only applicable if the data_format is `select`. Only supported for Hubspot and Marketo. */
+      data_options?: (components["schemas"]["form_data_option"])[];
       validation_message?: string | null;
       raw_data?: {
         [key: string]: unknown;
       };
+    };
+    form_data_option: {
+      label: string;
+      value: string;
+      /** @description If true, will be selected by default. Defaults to false. */
+      is_default?: boolean;
     };
   };
   responses: never;

@@ -73,6 +73,7 @@ export default function init(app: Router): void {
           required: field.required,
           form_id: field.formId,
           data_format: field.dataFormat,
+          data_options: field.dataOptions,
           validation_message: field.validationMessage,
           raw_data: req.query.include_raw_data === 'true' ? field.rawData : undefined,
         })),
