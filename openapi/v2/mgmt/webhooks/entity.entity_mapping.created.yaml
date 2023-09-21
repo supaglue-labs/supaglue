@@ -1,4 +1,5 @@
 post:
+  deprecated: true
   summary: Entity mapping created
   description: Notification of the creation of an entity mapping
   operationId: entityEntityMappingCreated

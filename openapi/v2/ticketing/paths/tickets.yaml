@@ -1,7 +1,12 @@
 get:
   operationId: listTickets
   summary: List tickets
-  description: Returns a list of Ticket objects.
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
+
+    Returns a list of Ticket objects.
   tags:
     - Tickets
   security:

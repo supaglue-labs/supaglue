@@ -2,13 +2,13 @@
   "openapi": "3.0.3",
   "info": {
     "version": "0.14.16",
-    "title": "Unified Ticketing API",
+    "title": "Unified Ticketing API (Preview)",
     "contact": {
       "name": "Supaglue",
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "#### Introduction\n\nWelcome to the Unified Actions API (Ticketing) documentation. You can use this API to write to third-party providers.\n\n[View common schema for Ticketing](https://docs.supaglue.com/platform/common-schemas/ticketing)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/ticketing/v2\n```\n"
+    "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n#### Introduction\n\nWelcome to the Unified API (Ticketing) documentation. You can use this API to write to third-party providers.\n\n[View common schema for Ticketing](https://docs.supaglue.com/platform/common-schemas/ticketing)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/ticketing/v2\n```\n"
   },
   "servers": [
     {
@@ -21,7 +21,7 @@
       "get": {
         "operationId": "listAccounts",
         "summary": "List accounts",
-        "description": "Returns a list of Account objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of Account objects.\n",
         "tags": [
           "Accounts"
         ],
@@ -82,7 +82,7 @@
       "get": {
         "operationId": "getAccount",
         "summary": "Get account",
-        "description": "Returns an Account object with the given id.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns an Account object with the given id.\n",
         "tags": [
           "Accounts"
         ],
@@ -131,7 +131,7 @@
       "get": {
         "operationId": "listCollections",
         "summary": "List collections",
-        "description": "Returns a list of Collection objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of Collection objects.\n",
         "tags": [
           "Collections"
         ],
@@ -192,7 +192,7 @@
       "get": {
         "operationId": "getCollection",
         "summary": "Get collection",
-        "description": "Returns a Collection object with the given id.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a Collection object with the given id.\n",
         "tags": [
           "Collections"
         ],
@@ -241,7 +241,7 @@
       "get": {
         "operationId": "listCollectionUsers",
         "summary": "List collection users",
-        "description": "Returns a list of User objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of User objects.\n",
         "tags": [
           "Collections"
         ],
@@ -311,7 +311,7 @@
       "get": {
         "operationId": "listUsers",
         "summary": "List users",
-        "description": "Returns a list of User objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of User objects.\n",
         "tags": [
           "Users"
         ],
@@ -372,7 +372,7 @@
       "get": {
         "operationId": "getUser",
         "summary": "Get user",
-        "description": "Returns a User object with the given id.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a User object with the given id.\n",
         "tags": [
           "Users"
         ],
@@ -421,7 +421,7 @@
       "get": {
         "operationId": "listContacts",
         "summary": "List contacts",
-        "description": "Returns a list of Contact objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of Contact objects.\n",
         "tags": [
           "Contacts"
         ],
@@ -482,7 +482,7 @@
       "get": {
         "operationId": "getContact",
         "summary": "Get contact",
-        "description": "Returns a Contact object with the given id.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a Contact object with the given id.\n",
         "tags": [
           "Contacts"
         ],
@@ -531,7 +531,7 @@
       "get": {
         "operationId": "listTeams",
         "summary": "List teams",
-        "description": "Returns a list of Team objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of Team objects.\n",
         "tags": [
           "Teams"
         ],
@@ -592,7 +592,7 @@
       "get": {
         "operationId": "getTeam",
         "summary": "Get team",
-        "description": "Returns an Team object with the given id.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns an Team object with the given id.\n",
         "tags": [
           "Teams"
         ],
@@ -656,7 +656,7 @@
       "get": {
         "operationId": "listTickets",
         "summary": "List tickets",
-        "description": "Returns a list of Ticket objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of Ticket objects.\n",
         "tags": [
           "Tickets"
         ],
@@ -821,7 +821,7 @@
       "get": {
         "operationId": "getTicket",
         "summary": "Get ticket",
-        "description": "Returns an Ticket object with the given id.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns an Ticket object with the given id.\n",
         "tags": [
           "Tickets"
         ],
@@ -922,7 +922,7 @@
       "get": {
         "operationId": "listComments",
         "summary": "List comments",
-        "description": "Returns a list of Comment objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of Comment objects.\n",
         "tags": [
           "Comments"
         ],
@@ -1073,7 +1073,7 @@
       "get": {
         "operationId": "getTicket",
         "summary": "Get ticket",
-        "description": "Returns an Ticket object with the given id.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns an Ticket object with the given id.\n",
         "tags": [
           "Tickets"
         ],
@@ -1122,7 +1122,7 @@
       "get": {
         "operationId": "listTags",
         "summary": "List tags",
-        "description": "Returns a list of Tag objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of Tag objects.\n",
         "tags": [
           "Tags"
         ],
@@ -1211,7 +1211,7 @@
       "get": {
         "operationId": "getTag",
         "summary": "Get tag",
-        "description": "Returns a Tag object with the given id.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a Tag object with the given id.\n",
         "tags": [
           "Tags"
         ],
@@ -1260,7 +1260,7 @@
       "get": {
         "operationId": "listAttachments",
         "summary": "List attachments",
-        "description": "Returns a list of Attachment objects.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a list of Attachment objects.\n",
         "tags": [
           "Attachments"
         ],
@@ -1405,7 +1405,7 @@
       "get": {
         "operationId": "getAttachment",
         "summary": "Get attachment",
-        "description": "Returns an Attachment object with the given id.",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns an Attachment object with the given id.\n",
         "tags": [
           "Attachments"
         ],

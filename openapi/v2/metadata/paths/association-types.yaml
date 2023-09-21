@@ -1,5 +1,6 @@
 get:
   operationId: getAssociationTypes
+  deprecated: true
   tags:
     - AssociationTypes
   security:
@@ -32,6 +33,7 @@ get:
                   $ref: ../components/schemas/objects/association_type.yaml
 post:
   operationId: createAssociationType
+  deprecated: true
   summary: Create associationType
   tags:
     - AssociationTypes

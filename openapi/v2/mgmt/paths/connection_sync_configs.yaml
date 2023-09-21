@@ -16,6 +16,7 @@ get:
 put:
   operationId: upsertConnectionSyncConfig
   summary: Upsert connection sync config
+  description: Use this to override SyncConfig and Destination configurations on a per customer-connection basis. E.g. you can override the objects that are synced per customer-connection as well as override the table/collection that these objects are written into.
   tags:
     - ConnectionSyncConfigs
   security:

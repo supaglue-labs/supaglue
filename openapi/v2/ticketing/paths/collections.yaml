@@ -1,7 +1,12 @@
 get:
   operationId: listCollections
   summary: List collections
-  description: Returns a list of Collection objects.
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
+
+    Returns a list of Collection objects.
   tags:
     - Collections
   security:

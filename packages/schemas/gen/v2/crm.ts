@@ -11,7 +11,12 @@ type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A
 
 export interface paths {
   "/accounts": {
-    /** List accounts */
+    /**
+     * List accounts (Preview) 
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     */
     get: operations["listAccounts"];
     /** Create account */
     post: operations["createAccount"];
@@ -52,7 +57,12 @@ export interface paths {
     };
   };
   "/contacts": {
-    /** List accounts */
+    /**
+     * List contacts (Preview) 
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     */
     get: operations["listContacts"];
     /** Create contact */
     post: operations["createContact"];
@@ -696,7 +706,12 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  /** List accounts */
+  /**
+   * List accounts (Preview) 
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   */
   listAccounts: {
     parameters: {
       query?: {
@@ -846,7 +861,12 @@ export interface operations {
       };
     };
   };
-  /** List accounts */
+  /**
+   * List contacts (Preview) 
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   */
   listContacts: {
     parameters: {
       query?: {
