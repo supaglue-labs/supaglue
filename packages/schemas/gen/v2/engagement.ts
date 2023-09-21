@@ -444,7 +444,7 @@ export interface components {
       /** @description The step's display order within its sequence. */
       order: number;
       /**
-       * @description The type of the sequence state. Note: `linkedin_send_message`` is undocumented in Outreach and subject to change.
+       * @description The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.
        *  
        * @enum {string}
        */

@@ -1664,7 +1664,7 @@
               "task",
               "linkedin_send_message"
             ],
-            "description": "The type of the sequence state. Note: `linkedin_send_message`` is undocumented in Outreach and subject to change.\n"
+            "description": "The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.\n"
           },
           "task_note": {
             "type": "string",
