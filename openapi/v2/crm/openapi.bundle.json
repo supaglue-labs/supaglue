@@ -74,8 +74,7 @@
       },
       "get": {
         "operationId": "listAccounts",
-        "summary": "List accounts (Preview)",
-        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n",
+        "summary": "List accounts",
         "tags": [
           "Accounts"
         ],
@@ -89,13 +88,7 @@
             "$ref": "#/components/parameters/include_raw_data"
           },
           {
-            "name": "read_from_cache",
-            "in": "query",
-            "schema": {
-              "type": "boolean",
-              "example": true
-            },
-            "description": "Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set)"
+            "$ref": "#/components/parameters/read_from_cache"
           },
           {
             "$ref": "#/components/parameters/modified_after"
@@ -441,8 +434,7 @@
       },
       "get": {
         "operationId": "listContacts",
-        "summary": "List contacts (Preview)",
-        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n",
+        "summary": "List contacts",
         "tags": [
           "Contacts"
         ],
@@ -456,7 +448,7 @@
             "$ref": "#/components/parameters/include_raw_data"
           },
           {
-            "$ref": "#/paths/~1accounts/get/parameters/1"
+            "$ref": "#/components/parameters/read_from_cache"
           },
           {
             "$ref": "#/components/parameters/modified_after"
@@ -482,7 +474,7 @@
                     "records": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/account"
+                        "$ref": "#/components/schemas/contact"
                       }
                     }
                   },
@@ -2519,6 +2511,15 @@
           "example": true
         },
         "description": "Whether to include raw data fetched from the 3rd party provider."
+      },
+      "read_from_cache": {
+        "name": "read_from_cache",
+        "in": "query",
+        "schema": {
+          "type": "boolean",
+          "example": true
+        },
+        "description": "Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set)"
       },
       "created_after": {
         "name": "created_after",

@@ -1,6 +1,6 @@
 import type { PrismaClient } from '@supaglue/db';
 import type { PaginatedResult } from '@supaglue/types/common';
-import type { Sync, SyncDTO, SyncFilter } from '@supaglue/types/sync';
+import type { ObjectType, Sync, SyncDTO, SyncFilter } from '@supaglue/types/sync';
 import type { ConnectionService } from '.';
 import { NotFoundError } from '../errors';
 import { getCustomerIdPk } from '../lib';
@@ -85,6 +85,29 @@ export class SyncService {
       return;
     }
     return fromSyncModel(model);
+  }
+
+  public async findByAppCustomerProviderNameObjectTypeAndObject(
+    applicationId: string,
+    customerId: string,
+    providerName: string,
+    objectType: ObjectType,
+    object: string
+  ): Promise<Sync | undefined> {
+    const results = await this.#prisma.sync.findMany({
+      where: {
+        connection: {
+          providerName,
+          customerId: getCustomerIdPk(applicationId, customerId),
+        },
+        object,
+        objectType,
+      },
+    });
+    if (!results.length) {
+      return;
+    }
+    return fromSyncModel(results[0]);
   }
 
   public async getByConnectionIdAndObjectTypeAndObject(

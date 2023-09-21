@@ -60,7 +60,7 @@ export default function init(app: Router): void {
       >,
       res: Response<ListSalesforceAccountsResponse>
     ) => {
-      const { pagination, records } = await managedDataService.getRecords(
+      const { pagination, records } = await managedDataService.getStandardRecords(
         req.supaglueApplication.id,
         'salesforce',
         req.customerId,
@@ -84,7 +84,7 @@ export default function init(app: Router): void {
       >,
       res: Response<ListSalesforceContactsResponse>
     ) => {
-      const { pagination, records } = await managedDataService.getRecords(
+      const { pagination, records } = await managedDataService.getStandardRecords(
         req.supaglueApplication.id,
         'salesforce',
         req.customerId,

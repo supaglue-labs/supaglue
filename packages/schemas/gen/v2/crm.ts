@@ -11,12 +11,7 @@ type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A
 
 export interface paths {
   "/accounts": {
-    /**
-     * List accounts (Preview) 
-     * @description :::note
-     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-     * :::
-     */
+    /** List accounts */
     get: operations["listAccounts"];
     /** Create account */
     post: operations["createAccount"];
@@ -57,12 +52,7 @@ export interface paths {
     };
   };
   "/contacts": {
-    /**
-     * List contacts (Preview) 
-     * @description :::note
-     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-     * :::
-     */
+    /** List contacts */
     get: operations["listContacts"];
     /** Create contact */
     post: operations["createContact"];
@@ -680,6 +670,8 @@ export interface components {
     include_deleted_data?: boolean;
     /** @description Whether to include raw data fetched from the 3rd party provider. */
     include_raw_data?: boolean;
+    /** @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set) */
+    read_from_cache?: boolean;
     /** @description If provided, will only return objects created after this datetime */
     created_after?: Date;
     /** @description If provided, will only return objects created before this datetime */
@@ -706,18 +698,12 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  /**
-   * List accounts (Preview) 
-   * @description :::note
-   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-   * :::
-   */
+  /** List accounts */
   listAccounts: {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
-        /** @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set) */
-        read_from_cache?: boolean;
+        read_from_cache?: components["parameters"]["read_from_cache"];
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
@@ -861,16 +847,12 @@ export interface operations {
       };
     };
   };
-  /**
-   * List contacts (Preview) 
-   * @description :::note
-   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-   * :::
-   */
+  /** List contacts */
   listContacts: {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
@@ -886,7 +868,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["account"])[];
+            records: (components["schemas"]["contact"])[];
           };
         };
       };

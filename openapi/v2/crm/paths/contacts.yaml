@@ -38,12 +38,8 @@ post:
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
 get:
-  operationId: listContacts
-  summary: List contacts (Preview)
-  description: |
-    :::note
-    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-    :::
+  operationId: listContacts 
+  summary: List contacts
   tags:
     - Contacts
   security:
@@ -67,7 +63,7 @@ get:
               records:
                 type: array
                 items:
-                  $ref: ../components/schemas/objects/account.yaml
+                  $ref: ../components/schemas/objects/contact.yaml
             required:
               - pagination
               - records

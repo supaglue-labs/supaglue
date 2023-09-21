@@ -60,7 +60,7 @@ export default function init(app: Router): void {
       >,
       res: Response<ListHubspotCompaniesResponse>
     ) => {
-      const { pagination, records } = await managedDataService.getRecords(
+      const { pagination, records } = await managedDataService.getStandardRecords(
         req.supaglueApplication.id,
         'hubspot',
         req.customerId,
@@ -84,7 +84,7 @@ export default function init(app: Router): void {
       >,
       res: Response<ListHubspotContactsResponse>
     ) => {
-      const { pagination, records } = await managedDataService.getRecords(
+      const { pagination, records } = await managedDataService.getStandardRecords(
         req.supaglueApplication.id,
         'hubspot',
         req.customerId,

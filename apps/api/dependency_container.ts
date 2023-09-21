@@ -33,6 +33,8 @@ function createDependencyContainer(): DependencyContainer {
     connectionService,
     applicationService,
     webhookService,
+    syncService,
+    destinationService,
   } = coreDependencyContainer;
 
   const temporalClient = new Client({
@@ -64,7 +66,7 @@ function createDependencyContainer(): DependencyContainer {
 
   const magicLinkService = new MagicLinkService(prisma, customerService, providerService, connectionAndSyncService);
 
-  const managedDataService = new ManagedDataService();
+  const managedDataService = new ManagedDataService(syncService, destinationService);
 
   return {
     ...coreDependencyContainer,

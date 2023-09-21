@@ -65,6 +65,22 @@ export class DestinationService {
     return fromDestinationModelToUnsafe(model);
   }
 
+  public async getDestinationSafeBySyncConfigId(syncConfigId: string): Promise<DestinationSafeAny | null> {
+    const model = await this.#prisma.destination.findFirst({
+      where: {
+        syncConfigs: {
+          some: {
+            id: syncConfigId,
+          },
+        },
+      },
+    });
+    if (!model) {
+      return null;
+    }
+    return fromDestinationModelToSafe(model);
+  }
+
   public async getDestinationSafeById(id: string): Promise<DestinationSafeAny> {
     const model = await this.#prisma.destination.findUniqueOrThrow({
       where: { id },
