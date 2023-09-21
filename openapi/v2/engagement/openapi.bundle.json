@@ -1585,6 +1585,7 @@
             "description": "The date this step will activate; only applicable to date-based sequences."
           },
           "template": {
+            "description": "The email/message template to be used for this step. Only applicable for email or message steps.",
             "oneOf": [
               {
                 "type": "object",
@@ -1657,9 +1658,17 @@
           "type": {
             "type": "string",
             "enum": [
-              "auto",
-              "manual"
-            ]
+              "auto_email",
+              "manual_email",
+              "call",
+              "task",
+              "linkedin_send_message"
+            ],
+            "description": "The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.\n"
+          },
+          "task_note": {
+            "type": "string",
+            "description": "An optional note to be attached to this step."
           },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
