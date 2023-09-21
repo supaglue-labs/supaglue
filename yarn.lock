@@ -7512,6 +7512,7 @@ __metadata:
     "@supaglue/db": "workspace:^"
     "@supaglue/types": "workspace:^"
     "@tsconfig/node18": ^1.0.1
+    cuid: ^3.0.0
     tsx: ^3.12.3
     typescript: ^4.9.5
   peerDependencies:
@@ -9455,6 +9456,7 @@ __metadata:
     "@types/simple-oauth2": ^5
     "@types/uuid": ^9.0.0
     cors: ^2.8.5
+    cuid: ^3.0.0
     dotenv: ^16.0.3
     express: ">=5.0.0-beta.1"
     express-openapi-validator: ^5.0.2
@@ -11818,6 +11820,13 @@ __metadata:
   version: 6.3.0
   resolution: "csv-stringify@npm:6.3.0"
   checksum: d2503ad298b6f432bae5932af365fb1a5f8f51b31a170d8e1c0735cb89193cb665976754612800c3302570bf7086749d60a30d97d820cc3a7c9b7cd4a49fd311
+  languageName: node
+  linkType: hard
+
+"cuid@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "cuid@npm:3.0.0"
+  checksum: f9a344bd90e26b62f75a86b616ad717bad88b20b02df25c6e4008dd2c0948b081bd72ad8075b25ae644dce7fc367a43c622954e88aed972b72b1f132416faa4e
   languageName: node
   linkType: hard
 

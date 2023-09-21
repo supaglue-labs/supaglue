@@ -3,6 +3,7 @@ import type { SyncRunService } from '@supaglue/core/services/sync_run_service';
 export type LogSyncStartArgs = {
   syncId: string;
   runId: string;
+  cuid: string;
 };
 
 export function createLogSyncStart({ syncRunService }: { syncRunService: SyncRunService }) {

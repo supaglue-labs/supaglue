@@ -38,6 +38,10 @@ The screenshot above shows a Sync Config that specifies `OpportunityLineItem`, `
 
 Since Standard Objects vary by Provider, you need to select the Standard Objects separately for each Provider. The casing of the Standard Objects is also provider-specific, e.g. Standard Objects for Salesforce are "PascalCase".
 
+### Table names
+
+Tables are case-sensitive and named `${Provider}_${Object name}`, e.g. `salesforce_Account`.
+
 ### Table schema
 
 Supaglue will land the data in your Destination with the following schema:
@@ -58,9 +62,9 @@ Indexes:
     "salesforce_Contract_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 ```
 
-### Table names
-
-Tables are case-sensitive and named `${Provider}_${Object name}`, e.g. `salesforce_Account`.
+:::info
+Please note that Supaglue metadata fields differ slightly between [Common Objects](../common-schemas/overview) and Objects.
+:::
 
 ## Custom object
 
@@ -84,6 +88,14 @@ The screenshot above shows a Sync Config that specifies `ContactBiannualMetric` 
 
 The casing of Custom Objects is provider-specific.
 
+### Table names
+
+Tables are case-sensitive and named `${Provider}_${slugify(Object name)}`, e.g. `salesforce_BattleCard__c` becomes `salesforce_BattleCardC`.
+
+:::info
+We use [slugify](https://github.com/simov/slugify) to normalize names for Supaglue Destinations such as Postgres.
+:::
+
 ### Table schema
 
 Supaglue will land the data in your Destination with the following schema:
@@ -104,10 +116,6 @@ Indexes:
     "salesforce_BattleCard_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 ```
 
-### Table names
-
-Tables are case-sensitive and named `${Provider}_${slugify(Object name)}`, e.g. `salesforce_BattleCard__c` becomes `salesforce_BattleCardC`.
-
 :::info
-We use [slugify](https://github.com/simov/slugify) to normalize names for Supaglue Destinations such as Postgres.
+Please note that Supaglue metadata fields differ slightly between [Common Objects](../common-schemas/overview) and Objects.
 :::

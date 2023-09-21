@@ -5,7 +5,8 @@
   "dependencies": {
     "@supaglue/core": "workspace:*",
     "@supaglue/db": "workspace:^",
-    "@supaglue/types": "workspace:^"
+    "@supaglue/types": "workspace:^",
+    "cuid": "^3.0.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
