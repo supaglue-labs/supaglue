@@ -45,7 +45,7 @@ export type RunObjectSyncArgs = {
 };
 
 export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
-  const { sync } = await getSync({ syncId });
+  const { sync, runId: cuid } = await getSync({ syncId });
 
   // Generate history id
   const runId = uuid4();
@@ -54,6 +54,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
   await logSyncStart({
     syncId,
     runId,
+    cuid,
   });
 
   let numRecordsSynced: number | undefined;
