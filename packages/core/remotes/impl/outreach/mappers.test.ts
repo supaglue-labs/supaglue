@@ -846,9 +846,10 @@ describe('Outreach mappers', () => {
       const input: SequenceStepCreateParams = {
         sequenceId: '12345',
         order: 1,
-        type: 'auto',
+        type: 'auto_email',
         isReply: false,
         template: { id: '5678' } as SequenceTemplateId,
+        taskNote: 'Test Note',
         customFields: { custom1: 'value1' },
       };
 
@@ -859,6 +860,7 @@ describe('Outreach mappers', () => {
             order: 1,
             date: undefined,
             interval: undefined,
+            taskNote: 'Test Note',
             custom1: 'value1',
           },
           relationships: {
@@ -880,7 +882,7 @@ describe('Outreach mappers', () => {
       const input: SequenceStepCreateParams = {
         sequenceId: '54321',
         order: 2,
-        type: 'manual',
+        type: 'manual_email',
         isReply: true,
         template: {
           body: 'Test body',

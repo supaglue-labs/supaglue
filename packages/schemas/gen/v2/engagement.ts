@@ -420,6 +420,7 @@ export interface components {
        * @example 2023-01-01
        */
       date?: string;
+      /** @description The email/message template to be used for this step. Only applicable for email or message steps. */
       template: OneOf<[{
         /** @description The ID of the template to use for this step. */
         id: string;
@@ -442,8 +443,14 @@ export interface components {
       is_reply: boolean;
       /** @description The step's display order within its sequence. */
       order: number;
-      /** @enum {string} */
-      type: "auto" | "manual";
+      /**
+       * @description The type of the sequence state. Note: `linkedin_send_message`` is undocumented in Outreach and subject to change.
+       *  
+       * @enum {string}
+       */
+      type: "auto_email" | "manual_email" | "call" | "task" | "linkedin_send_message";
+      /** @description An optional note to be attached to this step. */
+      task_note?: string;
       custom_fields?: components["schemas"]["custom_fields"];
     };
     pagination: {
