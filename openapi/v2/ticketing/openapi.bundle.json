@@ -1170,8 +1170,7 @@
                       },
                       "required": [
                         "next",
-                        "previous",
-                        "total_count"
+                        "previous"
                       ]
                     },
                     "records": {

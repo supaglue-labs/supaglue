@@ -1409,7 +1409,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         id: response.length ? response[response.length - 1].Id : null,
         reverse: false,
       }),
-      previous: cursor ? encodeCursor(cursor) : null,
+      previous: null,
     };
   }
 
@@ -1463,7 +1463,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         id: (response.records.length ? response.records[response.records.length - 1].Id : null) as string,
         reverse: false,
       }),
-      previous: cursor ? encodeCursor(cursor) : null,
+      previous: null,
     };
   }
 

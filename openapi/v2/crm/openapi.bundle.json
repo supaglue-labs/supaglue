@@ -2431,8 +2431,7 @@
         },
         "required": [
           "next",
-          "previous",
-          "total_count"
+          "previous"
         ]
       },
       "custom_fields": {

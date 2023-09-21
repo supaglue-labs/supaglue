@@ -435,7 +435,7 @@ export interface components {
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
       previous: string | null;
       /** @example 100 */
-      total_count: number;
+      total_count?: number;
     };
     customer: {
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */

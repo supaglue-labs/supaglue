@@ -2054,7 +2054,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         objectType: objectType,
         rawData: record,
       })),
-      totalCount: 0, // no way to get the total count from hubspot
       next: response.data['has-more']
         ? encodeCursor({
             id: response.data.offset,

@@ -44,7 +44,7 @@ export type PaginatedResult<T> = {
   next: string | null;
   previous: string | null;
   results: T[];
-  totalCount: number;
+  totalCount?: number;
 };
 
 export type ProviderCategory = 'crm' | 'engagement' | 'enrichment' | 'marketing_automation' | 'no_category';
