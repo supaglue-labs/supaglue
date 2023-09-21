@@ -41,7 +41,8 @@ jobs:
   build:
     name: Build and Push to Docker Hub
     timeout-minutes: 15
-    runs-on: ubuntu-latest
+    runs-on:
+      labels: ubuntu-8cores-32gb
 
     steps:
       - name: Checkout repository
@@ -104,7 +105,8 @@ jobs:
   deploy:
     name: Deploy to staging
     needs: build
-    runs-on: ubuntu-latest
+    runs-on:
+      labels: ubuntu-8cores-32gb
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
 
     steps:
