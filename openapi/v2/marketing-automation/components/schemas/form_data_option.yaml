@@ -4,9 +4,9 @@ properties:
     type: string
   value:
     type: string
-  raw_data:
-    type: object
-    additionalProperties: true
+  is_default:
+    type: boolean
+    description: If true, will be selected by default. Defaults to false.
 required:
   - label
   - value

@@ -37,6 +37,13 @@ export type MarketoFormField = {
   label: string;
   dataType: string;
   validationMessage: string;
+  fieldMetaData?: {
+    values: {
+      label: string;
+      value: string;
+      isDefault?: boolean;
+    }[];
+  };
   required: boolean;
 };
 

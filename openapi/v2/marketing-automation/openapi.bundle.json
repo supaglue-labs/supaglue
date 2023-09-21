@@ -292,7 +292,7 @@
           },
           "data_options": {
             "type": "array",
-            "description": "Selectable options for this field. Only applicable if the data_format is `select`.",
+            "description": "Selectable options for this field. Only applicable if the data_format is `select`. Only supported for Hubspot and Marketo.",
             "items": {
               "$ref": "#/components/schemas/form_data_option"
             }
@@ -323,9 +323,9 @@
           "value": {
             "type": "string"
           },
-          "raw_data": {
-            "type": "object",
-            "additionalProperties": true
+          "is_default": {
+            "type": "boolean",
+            "description": "If true, will be selected by default. Defaults to false."
           }
         },
         "required": [

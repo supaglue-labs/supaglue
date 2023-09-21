@@ -13,5 +13,5 @@ export type FormField = {
 export type FormFieldDataOption = {
   label: string;
   value: string;
-  rawData?: Record<string, unknown>;
+  isDefault?: boolean;
 };

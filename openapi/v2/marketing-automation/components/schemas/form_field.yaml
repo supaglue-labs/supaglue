@@ -12,7 +12,7 @@ properties:
     type: string
   data_options:
     type: array
-    description: Selectable options for this field. Only applicable if the data_format is `select`.
+    description: Selectable options for this field. Only applicable if the data_format is `select`. Only supported for Hubspot and Marketo.
     items:
       $ref: ./form_data_option.yaml
   validation_message:
