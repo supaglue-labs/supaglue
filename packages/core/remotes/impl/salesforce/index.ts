@@ -8,6 +8,8 @@ import type {
   ListedObjectRecord,
   ObjectRecordUpsertData,
   ObjectRecordWithMetadata,
+  PaginatedResult,
+  PaginationParams,
   Property,
   Provider,
   SendPassthroughRequestRequest,
@@ -34,6 +36,8 @@ import type {
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
+  ListMember,
+  ListMetadata,
   Opportunity,
   OpportunityCreateParams,
   OpportunityUpdateParams,
@@ -63,7 +67,8 @@ import {
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
-import { ASYNC_RETRY_OPTIONS, intersection, logger, union } from '../../../lib';
+import type { Cursor } from '../../../lib';
+import { ASYNC_RETRY_OPTIONS, decodeCursor, encodeCursor, intersection, logger, union } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
@@ -1364,6 +1369,102 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public async getUser(id: string, fieldMappingConfig: FieldMappingConfig): Promise<User> {
     const user = await this.#client.retrieve('User', id);
     return { ...fromSalesforceUserToUser(user), rawData: toMappedProperties(user, fieldMappingConfig) };
+  }
+
+  public override async listLists(
+    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMetadata>> {
+    const mappedObjectType = capitalizeString(objectType);
+    let cursor: Cursor | undefined;
+    if (paginationParams.cursor) {
+      cursor = decodeCursor(paginationParams.cursor);
+    }
+
+    let query = this.#client
+      .sobject('ListView')
+      .find({ SobjectType: mappedObjectType, Id: cursor?.id ? { $gt: cursor.id as string } : undefined })
+      .orderby('Id');
+
+    if (paginationParams.page_size) {
+      query = query.limit(parseInt(paginationParams.page_size));
+    }
+
+    const [response, { totalSize: totalCount }] = await Promise.all([
+      await query.execute(),
+      this.#client.query(`SELECT COUNT() FROM ListView WHERE SobjectType = '${mappedObjectType}'`),
+    ]);
+
+    // Map response to ListMetadata interface
+    return {
+      results: response.map((record: any) => ({
+        name: record.DeveloperName,
+        label: record.Name,
+        id: record.Id,
+        objectType: objectType,
+        rawData: record,
+      })),
+      totalCount,
+      next: encodeCursor({
+        id: response.length ? response[response.length - 1].Id : null,
+        reverse: false,
+      }),
+      previous: null,
+    };
+  }
+
+  public override async listListMembership(
+    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    listId: string,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }> {
+    const mappedObjectType = capitalizeString(objectType);
+
+    const listDescription = await this.#client.sobject(mappedObjectType).listview(listId).describe();
+    const queryRemainder = (listDescription as any).query.split(' FROM ')[1];
+    const [fromClause, orderByClause] = queryRemainder.split(' ORDER BY ');
+
+    let cursor: Cursor | undefined;
+    if (paginationParams.cursor) {
+      cursor = decodeCursor(paginationParams.cursor);
+    }
+
+    const [
+      response,
+      { totalSize: totalCount },
+      {
+        records: [listMetadata],
+      },
+    ] = await Promise.all([
+      this.#client.query(
+        `SELECT FIELDS(STANDARD) FROM ${fromClause} ${
+          cursor?.id ? `WHERE Id > '${cursor.id}'` : ''
+        } ORDER BY ${orderByClause} ${paginationParams.page_size ? `LIMIT ${paginationParams.page_size}` : ''}`
+      ),
+      this.#client.query(`SELECT COUNT() FROM ${fromClause}`),
+      this.#client.query(`SELECT FIELDS(STANDARD) FROM ListView WHERE Id = '${listId}'`),
+    ]);
+
+    return {
+      results: response.records.map((record: any) => ({
+        id: record.Id,
+        objectType: objectType,
+        rawData: record,
+      })),
+      metadata: {
+        name: listMetadata.DeveloperName,
+        label: listMetadata.Name,
+        id: listMetadata.Id,
+        objectType,
+        rawData: listMetadata,
+      },
+      totalCount,
+      next: encodeCursor({
+        id: (response.records.length ? response.records[response.records.length - 1].Id : null) as string,
+        reverse: false,
+      }),
+      previous: null,
+    };
   }
 
   public override handleErr(err: unknown): unknown {

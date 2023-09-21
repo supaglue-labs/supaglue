@@ -3,6 +3,7 @@ import { Router } from 'express';
 import accounts from './account';
 import contacts from './contact';
 import leads from './lead';
+import lists from './list';
 import opportunities from './opportunity';
 import passthrough from './passthrough';
 import users from './user';
@@ -17,6 +18,7 @@ export default function init(app: Router): void {
   leads(v2Router);
   opportunities(v2Router);
   users(v2Router);
+  lists(v2Router);
 
   passthrough(v2Router);
 

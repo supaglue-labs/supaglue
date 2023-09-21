@@ -31,7 +31,7 @@ export default function init(app: Router): void {
       const snakecasedKeysLead = toSnakecasedKeysCrmLead(lead);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysLead;
-      return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysLead : rest);
+      return res.status(200).send(req.query?.include_raw_data?.toString() === 'true' ? snakecasedKeysLead : rest);
     }
   );
 

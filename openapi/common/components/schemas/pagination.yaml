@@ -14,4 +14,3 @@ properties:
 required:
   - next
   - previous
-  - total_count

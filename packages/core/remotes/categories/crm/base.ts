@@ -1,4 +1,5 @@
-import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
+import type { PaginatedResult, PaginationParams } from '@supaglue/types';
+import type { CRMCommonObjectType, CRMCommonObjectTypeMap, ListMember, ListMetadata } from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { Readable } from 'stream';
 import type { RemoteClient } from '../../base';
@@ -28,6 +29,17 @@ export interface CrmRemoteClient extends RemoteClient {
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['upsertParams']
   ): Promise<string>;
+
+  listLists(
+    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMetadata>>;
+
+  listListMembership(
+    objectType: string,
+    listId: string,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }>;
 }
 
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
@@ -66,6 +78,21 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['upsertParams']
   ): Promise<string> {
+    throw new Error('Not implemented');
+  }
+
+  public async listLists(
+    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMetadata>> {
+    throw new Error('Not implemented');
+  }
+
+  public async listListMembership(
+    objectType: string,
+    listId: string,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }> {
     throw new Error('Not implemented');
   }
 }

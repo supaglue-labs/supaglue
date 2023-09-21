@@ -20,7 +20,7 @@ export default function init(app: Router): void {
       const snakecasedKeysUser = toSnakecasedKeysCrmUser(user);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysUser;
-      return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysUser : rest);
+      return res.status(200).send(req.query?.include_raw_data?.toString() === 'true' ? snakecasedKeysUser : rest);
     }
   );
 

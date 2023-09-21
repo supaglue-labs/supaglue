@@ -459,7 +459,7 @@ export interface components {
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
       previous: string | null;
       /** @example 100 */
-      total_count: number;
+      total_count?: number;
     };
     /**
      * @example [

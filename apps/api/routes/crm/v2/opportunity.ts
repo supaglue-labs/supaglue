@@ -36,7 +36,9 @@ export default function init(app: Router): void {
       const snakecasedKeysOpportunity = toSnakecasedKeysCrmOpportunity(opportunity);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysOpportunity;
-      return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysOpportunity : rest);
+      return res
+        .status(200)
+        .send(req.query?.include_raw_data?.toString() === 'true' ? snakecasedKeysOpportunity : rest);
     }
   );
 

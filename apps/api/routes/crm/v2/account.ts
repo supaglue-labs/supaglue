@@ -35,7 +35,7 @@ export default function init(app: Router): void {
       req: Request<ListAccountsPathParams, ListAccountsResponse, ListAccountsRequest, ListAccountsQueryParams>,
       res: Response<ListAccountsResponse>
     ) => {
-      if (req.query.read_from_cache !== 'true') {
+      if (req.query?.read_from_cache?.toString() !== 'true') {
         throw new NotImplementedError('Uncached reads not yet implemented for accounts.');
       }
       const { pagination, records } = await managedDataService.getCrmAccountRecords(
@@ -50,7 +50,7 @@ export default function init(app: Router): void {
         pagination,
         records: records.map((record) => ({
           ...record,
-          raw_data: req.query.include_raw_data === 'true' ? record.raw_data : undefined,
+          raw_data: req.query?.include_raw_data?.toString() === 'true' ? record.raw_data : undefined,
           _supaglue_application_id: undefined,
           _supaglue_customer_id: undefined,
           _supaglue_provider_name: undefined,
@@ -70,7 +70,7 @@ export default function init(app: Router): void {
       const snakecasedKeysAccount = toSnakecasedKeysCrmAccount(account);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysAccount;
-      return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysAccount : rest);
+      return res.status(200).send(req.query?.include_raw_data?.toString() === 'true' ? snakecasedKeysAccount : rest);
     }
   );
 

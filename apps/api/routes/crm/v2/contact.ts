@@ -14,7 +14,6 @@ import type {
   ListContactsRequest,
   ListContactsResponse,
   UpdateContactPathParams,
-  UpdateContactQueryParams,
   UpdateContactRequest,
   UpdateContactResponse,
   UpsertContactPathParams,
@@ -36,7 +35,7 @@ export default function init(app: Router): void {
       req: Request<ListContactsPathParams, ListContactsResponse, ListContactsRequest, ListContactsQueryParams>,
       res: Response<ListContactsResponse>
     ) => {
-      if (req.query.read_from_cache !== 'true') {
+      if (req.query?.read_from_cache?.toString() !== 'true') {
         throw new NotImplementedError('Uncached reads not yet implemented for contacts.');
       }
       const { pagination, records } = await managedDataService.getCrmContactRecords(
@@ -51,7 +50,7 @@ export default function init(app: Router): void {
         pagination,
         records: records.map((record) => ({
           ...record,
-          raw_data: req.query.include_raw_data === 'true' ? record.raw_data : undefined,
+          raw_data: req.query?.include_raw_data?.toString() === 'true' ? record.raw_data : undefined,
           _supaglue_application_id: undefined,
           _supaglue_customer_id: undefined,
           _supaglue_provider_name: undefined,
@@ -71,7 +70,7 @@ export default function init(app: Router): void {
       const snakecasedKeysContact = toSnakecasedKeysCrmContact(contact);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysContact;
-      return res.status(200).send(req.query.include_raw_data === 'true' ? snakecasedKeysContact : rest);
+      return res.status(200).send(req.query?.include_raw_data?.toString() === 'true' ? snakecasedKeysContact : rest);
     }
   );
 
@@ -105,7 +104,7 @@ export default function init(app: Router): void {
     }
   );
 
-  router.patch<string, UpdateContactPathParams, UpdateContactResponse, UpdateContactRequest, UpdateContactQueryParams>(
+  router.patch(
     '/:contact_id',
     async (
       req: Request<UpdateContactPathParams, UpdateContactResponse, UpdateContactRequest>,
