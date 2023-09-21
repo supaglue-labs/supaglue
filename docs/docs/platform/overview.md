@@ -17,11 +17,11 @@ sources={{
 
 Underlying everything on the Supaglue platform is **[Managed Authentication](./managed-auth)**. We let your customers authenticate with dozens of Providers using different authentication strategies (OAuth2, API key, access token), securely store the secrets, and maintain the authenticated sessions (refresh and access tokens for OAuth2).
 
-## Reading & writing data
+## Reads & writes
 
-Once authenticated we provide Managed Syncs for reading data from Providers and syncing it to Destinations. Managed Syncs operate on [Objects](./objects/overview).
+Once authenticated we provide Managed Syncs for **reading** data from Providers and syncing it to Destinations. Managed Syncs operate on [Objects](./objects/overview) and [Common Objects](./common-schemas/overview).
 
-For reading and writing data, we have [Unified APIs](../integration-patterns/unified-api) which provide a single API interface across multiple providers.
+For **reading** and **writing** data, we have [Unified APIs](../integration-patterns/unified-api) which provide a single API interface across multiple providers.
 
 ## Passthrough APIs
 
