@@ -14,6 +14,7 @@ export default function init(app: Router): void {
 
     const date = new Date();
     date.setDate(date.getDate() - 7);
+    let counter = 0;
 
     while (cursor !== null) {
       await prisma.$transaction(
@@ -21,7 +22,7 @@ export default function init(app: Router): void {
           const records = await tx.syncRun.findMany({
             cursor: cursor && cursor.id ? cursor : undefined,
             skip: cursor ? 1 : undefined,
-            take: 5000,
+            take: 2000,
             where: {
               startTimestamp: {
                 gte: date,
@@ -32,7 +33,8 @@ export default function init(app: Router): void {
             },
           });
 
-          logger.info({ count: records.length }, 'Backfilling sync runs cuid');
+          counter += records.length;
+          logger.info({ count: records.length, counter }, 'Backfilling sync runs cuid');
 
           const updatePromises = [];
           for (const record of records) {
@@ -55,7 +57,7 @@ export default function init(app: Router): void {
           return updatePromises;
         },
         {
-          timeout: 10000,
+          timeout: 15000,
         }
       );
     }
