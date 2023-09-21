@@ -17,6 +17,7 @@
     "@temporalio/client": "^1.8.0",
     "@temporalio/workflow": "^1.8.0",
     "cors": "^2.8.5",
+    "cuid": "^3.0.0",
     "express": ">=5.0.0-beta.1",
     "express-openapi-validator": "^5.0.2",
     "express-prom-bundle": "^6.6.0",

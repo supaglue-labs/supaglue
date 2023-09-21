@@ -25,10 +25,12 @@ export class SyncRunService {
   async #upsert({
     id,
     syncId,
+    cuid,
     createParams,
   }: {
     id: string;
     syncId: string;
+    cuid: string;
     createParams: SyncRunUpsertParams;
   }): Promise<SyncRun> {
     const created: SyncRunModelExpanded = await this.#prisma.syncRun.upsert({
@@ -36,6 +38,7 @@ export class SyncRunService {
       create: {
         ...createParams,
         id,
+        cuid,
         syncId,
       },
       update: {},
@@ -69,9 +72,10 @@ export class SyncRunService {
     return fromSyncRunModelAndSync(model);
   }
 
-  public async logStart(args: { syncId: string; runId: string }): Promise<string> {
+  public async logStart(args: { syncId: string; runId: string; cuid: string }): Promise<string> {
     await this.#upsert({
       id: args.runId,
+      cuid: args.cuid,
       syncId: args.syncId,
       createParams: {
         status: 'IN_PROGRESS' as const,
@@ -140,7 +144,7 @@ export class SyncRunService {
         },
       },
       orderBy: {
-        startTimestamp: 'desc',
+        cuid: 'desc',
       },
     });
     const countPromise = this.#prisma.syncRun.count({
