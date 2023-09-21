@@ -50,7 +50,7 @@ export default function init(app: Router): void {
         pagination,
         records: records.map((record) => ({
           ...record,
-          raw_data: req.query.include_raw_data === 'true' ? record.raw_data : undefined,
+          raw_data: req.query?.include_raw_data?.toString() === 'true' ? record.raw_data : undefined,
           _supaglue_application_id: undefined,
           _supaglue_customer_id: undefined,
           _supaglue_provider_name: undefined,
