@@ -32,7 +32,7 @@ post:
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
 get:
-  operationId: listAccounts 
+  operationId: listAccounts
   summary: List accounts
   tags:
     - Accounts

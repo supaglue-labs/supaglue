@@ -253,6 +253,7 @@
     "/association-types": {
       "get": {
         "operationId": "getAssociationTypes",
+        "deprecated": true,
         "tags": [
           "AssociationTypes"
         ],
@@ -304,6 +305,7 @@
       },
       "post": {
         "operationId": "createAssociationType",
+        "deprecated": true,
         "summary": "Create associationType",
         "tags": [
           "AssociationTypes"

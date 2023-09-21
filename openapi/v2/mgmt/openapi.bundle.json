@@ -1244,6 +1244,7 @@
       "put": {
         "operationId": "upsertConnectionSyncConfig",
         "summary": "Upsert connection sync config",
+        "description": "Use this to override SyncConfig and Destination configurations on a per customer-connection basis. E.g. you can override the objects that are synced per customer-connection as well as override the table/collection that these objects are written into.",
         "tags": [
           "ConnectionSyncConfigs"
         ],
@@ -4620,11 +4621,12 @@
         "type": "object",
         "properties": {
           "destination_config": {
+            "description": "An object to override the default Destination configuration per connection.",
             "oneOf": [
               {
-                "description": "Config specific to postgres destination",
+                "description": "Config specific to Postgres destination",
                 "type": "object",
-                "title": "postgres",
+                "title": "Postgres",
                 "properties": {
                   "type": {
                     "type": "string",
@@ -4634,7 +4636,7 @@
                   },
                   "schema": {
                     "type": "string",
-                    "description": "The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used.",
+                    "description": "The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the Postgres Destination will be used.",
                     "example": "customer_1_schema"
                   }
                 },
@@ -4644,9 +4646,9 @@
                 ]
               },
               {
-                "description": "Config specific to bigquery destination",
+                "description": "Config specific to BigQuery destination",
                 "type": "object",
-                "title": "bigquery",
+                "title": "BigQuery",
                 "properties": {
                   "type": {
                     "type": "string",
@@ -4656,7 +4658,7 @@
                   },
                   "dataset": {
                     "type": "string",
-                    "description": "The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used.",
+                    "description": "The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.",
                     "example": "customer_1_dataset"
                   }
                 },
@@ -4664,40 +4666,152 @@
                   "type",
                   "dataset"
                 ]
+              },
+              {
+                "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nConfig specific to MongoDB destination\n",
+                "type": "object",
+                "title": "MongoDB (Preview)",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "mongodb"
+                    ]
+                  },
+                  "collection": {
+                    "type": "string",
+                    "description": "The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used.",
+                    "example": "customer_1_schema"
+                  }
+                },
+                "required": [
+                  "type",
+                  "collection"
+                ]
               }
             ]
           },
           "standard_objects": {
-            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
+            "description": "A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig.",
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "object": {
-                  "type": "string",
-                  "description": "The Provider object name (case sensitive)",
-                  "example": "Contact"
+              "oneOf": [
+                {
+                  "type": "object",
+                  "title": "All",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact"
+                    }
+                  },
+                  "required": [
+                    "object"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "title": "Postgres/BigQuery (Preview)",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact"
+                    },
+                    "table": {
+                      "type": "string",
+                      "description": "The table to write the object to. If specified, this will override the default table used by Supaglue.",
+                      "example": "my_contacts"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "table"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "title": "MongoDB (Preview)",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact"
+                    },
+                    "collection": {
+                      "type": "string",
+                      "description": "The collection to write the object to. If specified, this will override the default collection used by Supaglue.",
+                      "example": "MyContacts"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "collection"
+                  ]
                 }
-              },
-              "required": [
-                "object"
               ]
             }
           },
           "custom_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
+            "description": "(Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig.\n",
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "object": {
-                  "type": "string",
-                  "description": "The Supaglue object name (case sensitive)",
-                  "example": "Contact__c"
+              "oneOf": [
+                {
+                  "type": "object",
+                  "title": "All",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact__c"
+                    }
+                  },
+                  "required": [
+                    "object"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "title": "Postgres/BigQuery (Preview)",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact__c"
+                    },
+                    "table": {
+                      "type": "string",
+                      "description": "The table to write the object to. If specified, this will override the default table used by Supaglue.",
+                      "example": "my_contacts"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "table"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "title": "MongoDB (Preview)",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact__c"
+                    },
+                    "collection": {
+                      "type": "string",
+                      "description": "The collection to write the object to. If specified, this will override the default table used by Supaglue.",
+                      "example": "MyContacts"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "collection"
+                  ]
                 }
-              },
-              "required": [
-                "object"
               ]
             }
           }
@@ -4876,11 +4990,12 @@
         "type": "object",
         "properties": {
           "destination_config": {
+            "description": "An object to override the default Destination configuration per connection.",
             "oneOf": [
               {
-                "description": "Config specific to postgres destination",
+                "description": "Config specific to Postgres destination",
                 "type": "object",
-                "title": "postgres",
+                "title": "Postgres",
                 "properties": {
                   "type": {
                     "type": "string",
@@ -4890,7 +5005,7 @@
                   },
                   "schema": {
                     "type": "string",
-                    "description": "The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the postgres Destination will be used.",
+                    "description": "The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the Postgres Destination will be used.",
                     "example": "customer_1_schema"
                   }
                 },
@@ -4900,9 +5015,9 @@
                 ]
               },
               {
-                "description": "Config specific to bigquery destination",
+                "description": "Config specific to BigQuery destination",
                 "type": "object",
-                "title": "bigquery",
+                "title": "BigQuery",
                 "properties": {
                   "type": {
                     "type": "string",
@@ -4912,7 +5027,7 @@
                   },
                   "dataset": {
                     "type": "string",
-                    "description": "The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the bigquery Destination will be used.",
+                    "description": "The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.",
                     "example": "customer_1_dataset"
                   }
                 },
@@ -4920,40 +5035,152 @@
                   "type",
                   "dataset"
                 ]
+              },
+              {
+                "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nConfig specific to MongoDB destination\n",
+                "type": "object",
+                "title": "MongoDB (Preview)",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "mongodb"
+                    ]
+                  },
+                  "collection": {
+                    "type": "string",
+                    "description": "The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used.",
+                    "example": "customer_1_schema"
+                  }
+                },
+                "required": [
+                  "type",
+                  "collection"
+                ]
               }
             ]
           },
           "standard_objects": {
-            "description": "A list of case-sensitive Provider standard objects to be synced. If specified, this list will take override the standard_objects list in SyncConfig.",
+            "description": "A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig.",
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "object": {
-                  "type": "string",
-                  "description": "The Provider object name (case sensitive)",
-                  "example": "Contact"
+              "oneOf": [
+                {
+                  "type": "object",
+                  "title": "All",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact"
+                    }
+                  },
+                  "required": [
+                    "object"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "title": "Postgres/BigQuery (Preview)",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact"
+                    },
+                    "table": {
+                      "type": "string",
+                      "description": "The table to write the object to. If specified, this will override the default table used by Supaglue.",
+                      "example": "my_contacts"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "table"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "title": "MongoDB (Preview)",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact"
+                    },
+                    "collection": {
+                      "type": "string",
+                      "description": "The collection to write the object to. If specified, this will override the default collection used by Supaglue.",
+                      "example": "MyContacts"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "collection"
+                  ]
                 }
-              },
-              "required": [
-                "object"
               ]
             }
           },
           "custom_objects": {
-            "description": "A list of case-sensitive Provider objects to be synced.",
+            "description": "(Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig.\n",
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "object": {
-                  "type": "string",
-                  "description": "The Supaglue object name (case sensitive)",
-                  "example": "Contact__c"
+              "oneOf": [
+                {
+                  "type": "object",
+                  "title": "All",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact__c"
+                    }
+                  },
+                  "required": [
+                    "object"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "title": "Postgres/BigQuery (Preview)",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact__c"
+                    },
+                    "table": {
+                      "type": "string",
+                      "description": "The table to write the object to. If specified, this will override the default table used by Supaglue.",
+                      "example": "my_contacts"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "table"
+                  ]
+                },
+                {
+                  "type": "object",
+                  "title": "MongoDB (Preview)",
+                  "properties": {
+                    "object": {
+                      "type": "string",
+                      "description": "The Provider object name (case sensitive)",
+                      "example": "Contact__c"
+                    },
+                    "collection": {
+                      "type": "string",
+                      "description": "The collection to write the object to. If specified, this will override the default table used by Supaglue.",
+                      "example": "MyContacts"
+                    }
+                  },
+                  "required": [
+                    "object",
+                    "collection"
+                  ]
                 }
-              },
-              "required": [
-                "object"
               ]
             }
           }
@@ -5618,6 +5845,7 @@
     },
     "entity.entity_mapping.created": {
       "post": {
+        "deprecated": true,
         "summary": "Entity mapping created",
         "description": "Notification of the creation of an entity mapping",
         "operationId": "entityEntityMappingCreated",
@@ -5715,6 +5943,7 @@
     },
     "entity.entity_mapping.updated": {
       "post": {
+        "deprecated": true,
         "summary": "Entity mapping updated",
         "description": "Notification of an update to an entity mapping",
         "operationId": "entityEntityMappingUpdated",
@@ -5812,6 +6041,7 @@
     },
     "entity.entity_mapping.deleted": {
       "post": {
+        "deprecated": true,
         "summary": "Entity mapping deleted",
         "description": "Notification of the deletion of an entity mapping",
         "operationId": "entityEntityMappingDeleted",
@@ -5909,6 +6139,7 @@
     },
     "object.field_mapping.created": {
       "post": {
+        "deprecated": true,
         "summary": "Object field mapping created",
         "description": "Notification of the creation of am object field mapping",
         "operationId": "objectFieldMappingCreated",
@@ -6007,6 +6238,7 @@
     },
     "object.field_mapping.updated": {
       "post": {
+        "deprecated": true,
         "summary": "Object field mapping updated",
         "description": "Notification of an update to an object field mapping",
         "operationId": "objectFieldMappingUpdated",
@@ -6703,6 +6935,7 @@
     },
     "entity.entity_mapping.created": {
       "post": {
+        "deprecated": true,
         "summary": "Entity mapping created",
         "description": "Notification of the creation of an entity mapping",
         "operationId": "entityEntityMappingCreated",
@@ -6800,6 +7033,7 @@
     },
     "entity.entity_mapping.updated": {
       "post": {
+        "deprecated": true,
         "summary": "Entity mapping updated",
         "description": "Notification of an update to an entity mapping",
         "operationId": "entityEntityMappingUpdated",
@@ -6897,6 +7131,7 @@
     },
     "entity.entity_mapping.deleted": {
       "post": {
+        "deprecated": true,
         "summary": "Entity mapping deleted",
         "description": "Notification of the deletion of an entity mapping",
         "operationId": "entityEntityMappingDeleted",
@@ -6994,6 +7229,7 @@
     },
     "object.field_mapping.created": {
       "post": {
+        "deprecated": true,
         "summary": "Object field mapping created",
         "description": "Notification of the creation of am object field mapping",
         "operationId": "objectFieldMappingCreated",
@@ -7092,6 +7328,7 @@
     },
     "object.field_mapping.updated": {
       "post": {
+        "deprecated": true,
         "summary": "Object field mapping updated",
         "description": "Notification of an update to an object field mapping",
         "operationId": "objectFieldMappingUpdated",

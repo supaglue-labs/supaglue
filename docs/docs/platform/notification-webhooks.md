@@ -36,11 +36,6 @@ Configure webhook notifications via the Management Portal by navigating to **Set
 - `sync.complete` (its `result` field indicates `SUCCESS` or `ERROR`)
 - `connection.created`
 - `connection.deleted`
-- `object.field_mapping.created`
-- `object.field_mapping.updated`
-- `entity.entity_mapping.created`
-- `entity.entity_mapping.updated`
-- `entity.entity_mapping.deleted`
 
 You can retrieve the event type in the request payload from the key `webhook_event_type`.
 

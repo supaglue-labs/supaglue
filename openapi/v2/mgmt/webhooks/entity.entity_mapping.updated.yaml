@@ -1,4 +1,5 @@
 post:
+  deprecated: true
   summary: Entity mapping updated
   description: Notification of an update to an entity mapping
   operationId: entityEntityMappingUpdated

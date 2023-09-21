@@ -1,4 +1,5 @@
 post:
+  deprecated: true
   summary: Object field mapping created
   description: Notification of the creation of am object field mapping
   operationId: objectFieldMappingCreated

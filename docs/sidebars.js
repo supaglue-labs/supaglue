@@ -323,7 +323,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Ticketing API',
+      label: 'Ticketing API (Preview)',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/ticketing/sidebar.js'),
@@ -339,7 +339,7 @@ const sidebars = {
     // section
     {
       type: 'html',
-      value: sidebarHeader('Data Listing API'),
+      value: sidebarHeader('Provider API'),
     },
     {
       type: 'category',
