@@ -1148,21 +1148,24 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "pagination": {
+                  "allOf": [
+                    {
                       "$ref": "#/components/schemas/pagination"
                     },
-                    "records": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/list_metadata"
-                      }
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/list_metadata"
+                          }
+                        }
+                      },
+                      "required": [
+                        "results"
+                      ]
                     }
-                  },
-                  "required": [
-                    "pagination",
-                    "records"
                   ]
                 }
               }
@@ -1188,7 +1191,8 @@
               "account",
               "lead",
               "opportunity"
-            ]
+            ],
+            "description": "The object type of the list. Only `contact` is supported by HubSpot."
           }
         }
       ]
@@ -1219,24 +1223,28 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "pagination": {
+                  "allOf": [
+                    {
                       "$ref": "#/components/schemas/pagination"
                     },
-                    "members": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/list_membership"
-                      }
-                    },
-                    "metadata": {
-                      "$ref": "#/components/schemas/list_metadata"
+                    {
+                      "type": "object",
+                      "properties": {
+                        "results": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/list_membership"
+                          }
+                        },
+                        "metadata": {
+                          "$ref": "#/components/schemas/list_metadata"
+                        }
+                      },
+                      "required": [
+                        "results",
+                        "metadata"
+                      ]
                     }
-                  },
-                  "required": [
-                    "pagination",
-                    "records"
                   ]
                 }
               }
@@ -1260,10 +1268,11 @@
               "lead",
               "opportunity"
             ]
-          }
+          },
+          "description": "The object type of the list. Only `contact` is supported by HubSpot."
         },
         {
-          "name": "list_view_id",
+          "name": "list_id",
           "in": "path",
           "required": true,
           "schema": {
@@ -2112,6 +2121,7 @@
         },
         "required": [
           "id",
+          "object_type",
           "name",
           "label",
           "raw_data"

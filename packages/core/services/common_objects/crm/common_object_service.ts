@@ -1,5 +1,6 @@
+import type { PaginatedResult, PaginationParams } from '@supaglue/types';
 import type { ConnectionSafeAny } from '@supaglue/types/connection';
-import type { CRMCommonObjectType, CRMCommonObjectTypeMap } from '@supaglue/types/crm';
+import type { CRMCommonObjectType, CRMCommonObjectTypeMap, ListMember, ListMetadata } from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { ConnectionService } from '../..';
 import { BadRequestError } from '../../../errors';
@@ -116,6 +117,35 @@ export class CrmCommonObjectService {
     end();
 
     await this.#cacheInvalidateObjectRecord(connection, objectName, params.id);
+  }
+
+  public async listLists(
+    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    connection: ConnectionSafeAny,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMetadata>> {
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
+
+    const end = remoteDuration.startTimer({ operation: 'listLists', remote_name: providerName });
+    const response = await remoteClient.listLists(objectType, paginationParams);
+    end();
+
+    return response;
+  }
+
+  public async listListMembership(
+    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    listId: string,
+    connection: ConnectionSafeAny,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }> {
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
+
+    const end = remoteDuration.startTimer({ operation: 'listListMembership', remote_name: providerName });
+    const response = await remoteClient.listListMembership(objectType, listId, paginationParams);
+    end();
+
+    return response;
   }
 }
 

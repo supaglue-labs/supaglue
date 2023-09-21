@@ -24,16 +24,17 @@ properties:
     description: The raw data for this list.
     additionalProperties: true
     example:
-      describeUrl : "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe"
-      developerName : "NewThisWeek"
-      id : "00BD0000005WcBeMAK"
-      label : "New This Week"
-      resultsUrl : "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results"
-      soqlCompatible : true
-      url : "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK"
+      describeUrl: '/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe'
+      developerName: 'NewThisWeek'
+      id: '00BD0000005WcBeMAK'
+      label: 'New This Week'
+      resultsUrl: '/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results'
+      soqlCompatible: true
+      url: '/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK'
 
 required:
   - id
+  - object_type
   - name
   - label
   - raw_data
