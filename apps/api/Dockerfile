@@ -1,10 +1,13 @@
-FROM node:18-bullseye-slim AS builder
+FROM node:18-bullseye-slim AS base
+
+FROM base AS builder
 WORKDIR /app
+RUN yarn global add turbo
 COPY . .
-RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx -p turbo@1.10.12 turbo prune --scope=api --docker
+RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache turbo prune --scope=api --docker
 
 # Add lockfile and package.json's of isolated subworkspace
-FROM node:18-bullseye-slim AS installer
+FROM base AS installer
 WORKDIR /app
 
 # First install dependencies (as they change less often)
@@ -19,15 +22,14 @@ RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn install
 COPY --from=builder /app/out/full/ .
 COPY openapi ./openapi
 COPY scripts ./scripts
-COPY turbo.json turbo.json
-COPY tsconfig.json tsconfig.json
 
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace @supaglue/db prisma generate
-RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace api dlx -p ts-patch@2.1.0 ts-patch install -s
-RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn dlx -p turbo@1.10.12 turbo run build --filter=api...
+RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspace api ts-patch install -s
+RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache --mount=type=secret,id=TURBO_TOKEN --mount=type=secret,id=TURBO_TEAM \
+    TURBO_TOKEN=$(cat /run/secrets/TURBO_TOKEN) TURBO_TEAM=$(cat /run/secrets/TURBO_TEAM) yarn turbo run build --filter=api...
 RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache yarn workspaces focus --production api
 
-FROM node:18-bullseye-slim AS runner
+FROM base AS runner
 RUN apt-get update && apt-get install -y openssl libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/* && apt-get clean
 WORKDIR /app
 

@@ -1,11 +1,14 @@
-FROM node:18-bullseye-slim AS builder
+FROM node:18-bullseye-slim AS base
+
+FROM base AS builder
 # Set working directory
 WORKDIR /app
+RUN yarn global add turbo
 COPY . .
-RUN --mount=type=cache,target=/app/.yarn/cache yarn dlx -p turbo@1.10.12 turbo prune --scope=mgmt-ui --docker
+RUN --mount=type=cache,target=/app/.yarn/cache turbo prune --scope=mgmt-ui --docker
 
 # Add lockfile and package.json's of isolated subworkspace
-FROM node:18-bullseye-slim AS installer
+FROM base AS installer
 WORKDIR /app
 RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/* && apt-get clean
 
@@ -19,15 +22,14 @@ RUN --mount=type=cache,target=/app/.yarn/cache yarn install
 
 # Build the project
 COPY --from=builder /app/out/full/ .
-COPY turbo.json turbo.json
 COPY scripts/validate_and_bundle_openapi.ts scripts/validate_and_bundle_openapi.ts
 COPY scripts/bundle_openapi_specs.sh scripts/bundle_openapi_specs.sh
 COPY openapi openapi
 
-WORKDIR /app
-RUN --mount=type=cache,target=/app/.yarn/cache yarn dlx -p turbo@1.10.12 turbo run build --filter=mgmt-ui...
+RUN --mount=type=cache,mode=0777,target=/app/.yarn/cache --mount=type=secret,id=TURBO_TOKEN --mount=type=secret,id=TURBO_TEAM \
+    TURBO_TOKEN=$(cat /run/secrets/TURBO_TOKEN) TURBO_TEAM=$(cat /run/secrets/TURBO_TEAM) yarn turbo run build --filter=mgmt-ui...
 
-FROM node:18-bullseye-slim AS runner
+FROM base AS runner
 RUN apt-get update && apt-get install -y openssl libssl-dev && rm -rf /var/lib/apt/lists/* && apt-get clean
 WORKDIR /app
 

@@ -29,6 +29,10 @@ on:
       STAGING_KUBECONFIG:
         description: Kubeconfig for staging cluster
         required: true
+      TURBO_TEAM:
+        required: true
+      TURBO_TOKEN:
+        required: true
       build-args:
         description: arguments to pass to docker build
         required: false
@@ -89,6 +93,9 @@ jobs:
 
       - name: Build and push
         uses: depot/build-push-action@v1
+        env:
+          TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+          TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
         with:
           project: ${{ inputs.depot-project }}
           context: .
@@ -100,6 +107,9 @@ jobs:
           build-args: |
             ${{ inputs.build-args }}
             ${{ secrets.build-args }}
+          secrets: |
+            id=TURBO_TOKEN
+            id=TURBO_TEAM
 
   deploy:
     name: Deploy to staging
