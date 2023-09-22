@@ -3580,7 +3580,8 @@
           "clearbit",
           "6sense",
           "marketo",
-          "salesforce_marketing_cloud_account_engagement"
+          "salesforce_marketing_cloud_account_engagement",
+          "slack"
         ],
         "example": "hubspot"
       },
