@@ -18,7 +18,8 @@
     "build": "yarn run clean && tsc -p .",
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
-    "lint": "run -T eslint"
+    "lint": "run -T eslint",
+    "tsc:watch": "tsc --noEmit --watch"
   },
   "files": [
     "dist"

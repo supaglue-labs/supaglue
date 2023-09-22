@@ -46,7 +46,8 @@
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
     "prepare": "ts-patch install -s",
-    "init-temporal": "tsx ./init_scripts/init_temporal.ts"
+    "init-temporal": "tsx ./init_scripts/init_temporal.ts",
+    "tsc:watch": "tsc --noEmit --watch"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit types/express.d.ts",
