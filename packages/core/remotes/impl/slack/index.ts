@@ -31,6 +31,7 @@ class SlackClient extends AbstractNoCategoryRemoteClient {
     return this.getAuthHeaders();
   }
 
+  /** Not used yet... but will soon */
   private async maybeRefreshAccessToken(): Promise<void> {
     if (this.#config.type !== 'oauth2') {
       return;
@@ -79,7 +80,7 @@ export function newClient(connection: ConnectionUnsafe<'slack'>, provider: Provi
 }
 
 export const authConfig: ConnectorAuthConfig = {
-  tokenHost: 'https://slack.com', // TODO: Check on this one, what does TokenHost mean here?
+  tokenHost: 'https://slack.com',
   tokenPath: '/api/oauth.v2.access',
   authorizeHost: 'https://slack.com',
   authorizePath: '/oauth/v2/authorize',
