@@ -32,6 +32,19 @@ export type CRMCommonObjectTypeMap<T extends CRMCommonObjectType> = {
 
 export type CustomFields = Record<string, any>;
 
+export type ListMetadata = {
+  id: string;
+  objectType: Exclude<CRMCommonObjectType, 'user'>;
+  name: string;
+  label: string;
+  rawData: Record<string, unknown>;
+};
+
+export type ListMember = {
+  id: string;
+  rawData: Record<string, unknown>;
+};
+
 export * from './account';
 export * from './base';
 export * from './contact';

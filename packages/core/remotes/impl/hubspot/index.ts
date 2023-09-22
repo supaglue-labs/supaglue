@@ -12,6 +12,8 @@ import type {
   ObjectMetadata,
   ObjectRecordUpsertData,
   ObjectRecordWithMetadata,
+  PaginatedResult,
+  PaginationParams,
   Property,
   Provider,
   RemoteUserIdAndDetails,
@@ -39,6 +41,8 @@ import type {
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
+  ListMember,
+  ListMetadata,
   Opportunity,
   OpportunityCreateParams,
   OpportunityUpdateParams,
@@ -72,6 +76,8 @@ import {
 } from '../../../errors';
 import {
   ASYNC_RETRY_OPTIONS,
+  decodeCursor,
+  encodeCursor,
   intersection,
   logger,
   REFRESH_TOKEN_THRESHOLD_MS,
@@ -2026,6 +2032,101 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     );
 
     return params;
+  }
+
+  public override async listLists(
+    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMetadata>> {
+    if (objectType !== 'contact') {
+      throw new BadRequestError(`Listing ${objectType} lists is not supported in HubSpot`);
+    }
+
+    await this.maybeRefreshAccessToken();
+
+    const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
+
+    const response = await axios.get(`https://api.hubapi.com/contacts/v1/lists`, {
+      headers: {
+        Authorization: `Bearer ${this.#config.accessToken}`,
+      },
+      params: {
+        count: paginationParams.page_size,
+        offset: cursor?.id,
+      },
+    });
+
+    // Map response to ListMetadata interface
+    return {
+      results: response.data.lists.map((record: any) => ({
+        name: record.name,
+        label: record.name,
+        id: record.listId.toString(),
+        objectType: objectType,
+        rawData: record,
+      })),
+      next: response.data['has-more']
+        ? encodeCursor({
+            id: response.data.offset,
+            reverse: false,
+          })
+        : null,
+      previous: null,
+    };
+  }
+
+  public override async listListMembership(
+    objectType: string,
+    listId: string,
+    paginationParams: PaginationParams
+  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }> {
+    if (objectType !== 'contact') {
+      throw new BadRequestError(`Listing ${objectType} lists is not supported in HubSpot`);
+    }
+
+    await this.maybeRefreshAccessToken();
+
+    const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
+
+    const [membershipResponse, metadataResponse] = await Promise.all([
+      axios.get(`https://api.hubapi.com/contacts/v1/lists/${listId}/contacts/all`, {
+        headers: {
+          Authorization: `Bearer ${this.#config.accessToken}`,
+        },
+        params: {
+          count: paginationParams.page_size,
+          vidOffset: cursor?.id,
+        },
+      }),
+      axios.get(`https://api.hubapi.com/contacts/v1/lists/${listId}`, {
+        headers: {
+          Authorization: `Bearer ${this.#config.accessToken}`,
+        },
+      }),
+    ]);
+
+    // Map response to ListMetadata interface
+    return {
+      metadata: {
+        name: metadataResponse.data.name,
+        label: metadataResponse.data.name,
+        id: metadataResponse.data.listId.toString(),
+        objectType: objectType,
+        rawData: metadataResponse.data,
+      },
+      results: membershipResponse.data.contacts.map((record: any) => ({
+        id: record.vid.toString(),
+        rawData: record,
+      })),
+      totalCount: metadataResponse.data.metaData.size,
+      next: membershipResponse.data['has-more']
+        ? encodeCursor({
+            id: membershipResponse.data['vid-offset'],
+            reverse: false,
+          })
+        : null,
+      previous: null,
+    };
   }
 
   public override handleErr(err: unknown): unknown {

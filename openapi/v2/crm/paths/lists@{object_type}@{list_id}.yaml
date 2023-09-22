@@ -14,19 +14,19 @@ get:
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              pagination:
-                $ref: ../../../common/components/schemas/pagination.yaml
-              members:
-                type: array
-                items:
-                  $ref: ../components/schemas/objects/list_membership.yaml
-              metadata:
-                $ref: ../components/schemas/objects/list_metadata.yaml
-            required:
-              - pagination
-              - records
+            allOf:
+              - $ref: ../../../common/components/schemas/pagination.yaml
+              - type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: ../components/schemas/objects/list_membership.yaml
+                  metadata:
+                    $ref: ../components/schemas/objects/list_metadata.yaml
+                required:
+                  - results
+                  - metadata
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - name: object_type
@@ -35,7 +35,8 @@ parameters:
     schema:
       type: string
       enum: [contact, account, lead, opportunity]
-  - name: list_view_id
+    description: The object type of the list. Only `contact` is supported by HubSpot.
+  - name: list_id
     in: path
     required: true
     schema:

@@ -25,12 +25,10 @@ export class SyncRunService {
   async #upsert({
     id,
     syncId,
-    cuid,
     createParams,
   }: {
     id: string;
     syncId: string;
-    cuid: string;
     createParams: SyncRunUpsertParams;
   }): Promise<SyncRun> {
     const created: SyncRunModelExpanded = await this.#prisma.syncRun.upsert({
@@ -38,7 +36,6 @@ export class SyncRunService {
       create: {
         ...createParams,
         id,
-        cuid,
         syncId,
       },
       update: {},
@@ -72,10 +69,9 @@ export class SyncRunService {
     return fromSyncRunModelAndSync(model);
   }
 
-  public async logStart(args: { syncId: string; runId: string; cuid: string }): Promise<string> {
+  public async logStart(args: { syncId: string; runId: string }): Promise<string> {
     await this.#upsert({
       id: args.runId,
-      cuid: args.cuid,
       syncId: args.syncId,
       createParams: {
         status: 'IN_PROGRESS' as const,
@@ -144,21 +140,22 @@ export class SyncRunService {
         },
       },
       orderBy: {
-        cuid: 'desc',
+        id: 'desc',
       },
     });
-    const countPromise = this.#prisma.syncRun.count({
-      where: whereClause,
-    });
+    // NOTE: counting requires a table scan (10+ seconds), so we don't do it for now.
+    // const countPromise = this.#prisma.syncRun.count({
+    //   where: whereClause,
+    // });
 
-    const [models, count] = await Promise.all([modelsPromise, countPromise]);
+    const [models] = await Promise.all([modelsPromise]);
 
     const results = models.map(fromObjectSyncRunModelAndSyncWithObject);
 
     return {
       ...getPaginationResult<string>(page_size, cursor, results),
       results,
-      totalCount: count,
+      totalCount: 200000, // NOTE: don't let users used cursor pagination past 200k records
     };
   }
 }

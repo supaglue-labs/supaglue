@@ -176,8 +176,9 @@ export interface paths {
         "x-customer-id": components["parameters"]["x-customer-id"];
       };
       path: {
+        /** @description The object type of the list. Only `contact` is supported by HubSpot. */
         object_type: "contact" | "account" | "lead" | "opportunity";
-        list_view_id: string;
+        list_id: string;
       };
     };
   };
@@ -469,7 +470,7 @@ export interface components {
        */
       id: string;
       /** @enum {string} */
-      object_type?: "contact" | "account" | "lead" | "opportunity";
+      object_type: "contact" | "account" | "lead" | "opportunity";
       /**
        * @description The developer name of this list. 
        * @example my-list
@@ -644,7 +645,7 @@ export interface components {
       /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
       previous: string | null;
       /** @example 100 */
-      total_count: number;
+      total_count?: number;
     };
     /** @description Custom properties to be inserted that are not covered by the common object. Object keys must match exactly to the corresponding provider API. */
     custom_fields: {
@@ -1233,9 +1234,8 @@ export interface operations {
       /** @description List Lists */
       200: {
         content: {
-          "application/json": {
-            pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["list_metadata"])[];
+          "application/json": components["schemas"]["pagination"] & {
+            results: (components["schemas"]["list_metadata"])[];
           };
         };
       };
@@ -1252,18 +1252,18 @@ export interface operations {
         "x-customer-id": components["parameters"]["x-customer-id"];
       };
       path: {
+        /** @description The object type of the list. Only `contact` is supported by HubSpot. */
         object_type: "contact" | "account" | "lead" | "opportunity";
-        list_view_id: string;
+        list_id: string;
       };
     };
     responses: {
       /** @description List membership */
       200: {
         content: {
-          "application/json": {
-            pagination: components["schemas"]["pagination"];
-            members?: (components["schemas"]["list_membership"])[];
-            metadata?: components["schemas"]["list_metadata"];
+          "application/json": components["schemas"]["pagination"] & {
+            results: (components["schemas"]["list_membership"])[];
+            metadata: components["schemas"]["list_metadata"];
           };
         };
       };

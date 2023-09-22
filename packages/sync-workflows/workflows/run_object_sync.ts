@@ -1,5 +1,5 @@
 import type { ProviderCategory } from '@supaglue/types/common';
-import { ActivityFailure, ApplicationFailure, proxyActivities, uuid4 } from '@temporalio/workflow';
+import { ActivityFailure, ApplicationFailure, proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
 import type { FullOnlySync, FullThenIncrementalSync } from '@supaglue/types/sync';
 import type { createActivities } from '../activities/index';
@@ -45,16 +45,12 @@ export type RunObjectSyncArgs = {
 };
 
 export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
-  const { sync, runId: cuid } = await getSync({ syncId });
-
-  // Generate history id
-  const runId = uuid4();
+  const { sync, runId } = await getSync({ syncId });
 
   // Record that sync has started
   await logSyncStart({
     syncId,
     runId,
-    cuid,
   });
 
   let numRecordsSynced: number | undefined;
