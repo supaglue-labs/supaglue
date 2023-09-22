@@ -4,6 +4,7 @@ import type { ConnectorAuthConfig, RemoteClient } from '../../base';
 import * as gong from '../../impl/gong';
 import * as intercom from '../../impl/intercom';
 import * as linear from '../../impl/linear';
+import * as slack from '../../impl/slack';
 import type { AbstractNoCategoryRemoteClient } from './base';
 
 export type NoCategoryConnectorConfig<T extends NoCategoryProviderName> = {
@@ -17,6 +18,7 @@ export const NoCategoryConnectorConfigMap: {
   intercom,
   gong,
   linear,
+  slack,
 };
 
 export function getNoCategoryRemoteClient<T extends NoCategoryProviderName>(
