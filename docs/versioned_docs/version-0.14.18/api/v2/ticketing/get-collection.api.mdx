@@ -1,0 +1,47 @@
+---
+id: get-collection
+title: "Get collection"
+description: ":::note"
+sidebar_label: "Get collection"
+hide_title: true
+hide_table_of_contents: true
+api: {"operationId":"getCollection","description":":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a Collection object with the given id.\n","tags":["Collections"],"security":[{"x-api-key":[]}],"parameters":[{"name":"include_raw_data","in":"query","schema":{"type":"boolean","example":true},"description":"Whether to include raw data fetched from the 3rd party provider."},{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true},{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true},{"name":"collection_id","in":"path","required":true,"schema":{"type":"string","example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}],"responses":{"200":{"description":"CollectionData","content":{"application/json":{"schema":{"type":"object","properties":{"name":{"type":"string","nullable":true,"example":"Q1 Platform"},"description":{"type":"string","nullable":true,"example":"For tracking all tasks related to Platform for Q1"},"collection_type":{"type":"string","nullable":true,"example":"LIST"},"parent_collection":{"type":"string","nullable":true,"example":"681b0fd7-40e6-4b91-8e23-2814872090be"},"access_level":{"type":"string","nullable":true,"example":"PUBLIC"}},"required":["name"],"title":"collection"}}}}},"method":"get","path":"/collections/{collection_id}","servers":[{"url":"https://api.supaglue.io/ticketing/v2","description":"Supaglue API"}],"securitySchemes":{"x-api-key":{"type":"apiKey","name":"x-api-key","in":"header","description":"API key to allow developers to access the API"}},"info":{"version":"0.14.18","title":"Unified Ticketing API (Preview)","contact":{"name":"Supaglue","email":"docs@supaglue.com","url":"https://supaglue.com"},"description":":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n#### Introduction\n\nWelcome to the Unified API (Ticketing) documentation. You can use this API to write to third-party providers.\n\n[View common schema for Ticketing](https://docs.supaglue.com/platform/common-schemas/ticketing)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/ticketing/v2\n```\n"},"postman":{"name":"Get collection","description":{"content":":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a Collection object with the given id.\n","type":"text/plain"},"url":{"path":["collections",":collection_id"],"host":["{{baseUrl}}"],"query":[{"disabled":false,"description":{"content":"Whether to include raw data fetched from the 3rd party provider.","type":"text/plain"},"key":"include_raw_data","value":""}],"variable":[{"disabled":false,"description":{"content":"(Required) ","type":"text/plain"},"type":"any","value":"","key":"collection_id"}]},"header":[{"disabled":false,"description":{"content":"(Required) The customer ID that uniquely identifies the customer in your application","type":"text/plain"},"key":"x-customer-id","value":""},{"disabled":false,"description":{"content":"(Required) The provider name","type":"text/plain"},"key":"x-provider-name","value":""},{"key":"Accept","value":"application/json"}],"method":"GET","auth":{"type":"apikey","apikey":[{"type":"any","value":"x-api-key","key":"key"},{"type":"any","value":"<API Key>","key":"value"},{"type":"any","value":"header","key":"in"}]}}}
+sidebar_class_name: "get api-method"
+info_path: api/v2/ticketing/unified-ticketing-api-preview
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiDemoPanel/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiDemoPanel/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get collection</h1>
+
+<MethodEndpoint method={"get"} path={"/collections/{collection_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/ticketing/unified-ticketing-api-preview"}></SecuritySchemes>
+
+
+
+:::note
+This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+:::
+
+Returns a Collection object with the given id.
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"collection_id","in":"path","required":true,"schema":{"type":"string","example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean","example":true},"description":"Whether to include raw data fetched from the 3rd party provider."}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+CollectionData
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"Q1 Platform"}}></SchemaItem><SchemaItem collapsible={false} name={"description"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"For tracking all tasks related to Platform for Q1"}}></SchemaItem><SchemaItem collapsible={false} name={"collection_type"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"LIST"}}></SchemaItem><SchemaItem collapsible={false} name={"parent_collection"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"681b0fd7-40e6-4b91-8e23-2814872090be"}}></SchemaItem><SchemaItem collapsible={false} name={"access_level"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"PUBLIC"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"name\": \"Q1 Platform\",\n  \"description\": \"For tracking all tasks related to Platform for Q1\",\n  \"collection_type\": \"LIST\",\n  \"parent_collection\": \"681b0fd7-40e6-4b91-8e23-2814872090be\",\n  \"access_level\": \"PUBLIC\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
