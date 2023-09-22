@@ -51,12 +51,19 @@ if [ "${WORKSPACE_NAME}" == "mgmt-ui" ]; then
   trap clean_up SIGINT
 fi
 
+TURBO_TEAM=$(op read op://engineering/msxgqbj4nhk7deecjvyfoqfagq/username)
+export TURBO_TEAM
+TURBO_TOKEN=$(op read op://engineering/msxgqbj4nhk7deecjvyfoqfagq/credential)
+export TURBO_TOKEN
+
 depot build --project "${DEPOT_PROJECT}" \
   --platform linux/amd64,linux/arm64 \
   -f "./${WORKSPACE_PATH}/Dockerfile" \
   --tag "supaglue/${WORKSPACE_NAME}:${VERSION}" \
   --tag "supaglue/${WORKSPACE_NAME}:latest" \
   --label "org.opencontainers.image.source=https://github.com/supaglue-labs/supaglue" \
+  --secret id=TURBO_TOKEN \
+  --secret id=TURBO_TEAM \
   --push \
   ${ADDITIONAL_ARGS-} \
   .
