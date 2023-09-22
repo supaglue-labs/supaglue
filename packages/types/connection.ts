@@ -113,6 +113,7 @@ export type ConnectionCredentialsDecrypted<T extends ProviderName> = {
   '6sense': ApiKeyConnectionCredentialsDecrypted;
   marketo: MarketoOauthConnectionCredentialsDecrypted;
   salesforce_marketing_cloud_account_engagement: SalesforceMarketingCloudAccountEngagementCredentialsDecrypted;
+  slack: OauthConnectionCredentialsDecrypted;
 }[T];
 
 export type ConnectionCredentialsDecryptedAny = ConnectionCredentialsDecrypted<ProviderName>;

@@ -15,6 +15,7 @@ import * as pipedrive from './impl/pipedrive';
 import * as salesforce from './impl/salesforce';
 import * as salesforce_marketing_cloud_account_engagement from './impl/salesforce_marketing_cloud_account_engagement';
 import * as salesloft from './impl/salesloft';
+import * as slack from './impl/slack';
 import * as zendesk_sell from './impl/zendesk_sell';
 import * as zoho_crm from './impl/zoho_crm';
 
@@ -44,6 +45,7 @@ const connectorConfigMap: {
   '6sense': sixsense,
   salesforce_marketing_cloud_account_engagement,
   marketo,
+  slack,
 };
 
 // `authConfig` to be used in simple-oauth2
@@ -106,6 +108,7 @@ export function getCategoryForProvider(providerName: ProviderName): ProviderCate
     case 'gong':
     case 'intercom':
     case 'linear':
+    case 'slack':
       return 'no_category';
     case 'clearbit':
     case '6sense':

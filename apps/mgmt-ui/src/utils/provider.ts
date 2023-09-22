@@ -255,7 +255,8 @@ export const PROVIDER_CARDS_INFO: ProviderCardInfo[] = [
   {
     name: 'Slack',
     providerName: 'slack',
-    category: 'communications',
+    displayCategory: 'communications',
+    category: 'no_category',
     description: 'Configure your Slack provider.',
     status: 'alpha',
   },
