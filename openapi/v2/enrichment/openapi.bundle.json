@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.14.16",
+    "version": "0.14.18",
     "title": "Unified Enrichment API",
     "contact": {
       "name": "Supaglue",
