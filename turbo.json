@@ -48,6 +48,10 @@
       "cache": false,
       "persistent": true
     },
+    "tsc:watch": {
+      "cache": false,
+      "persistent": true
+    },
     "generate": {
       "outputMode": "errors-only"
     },

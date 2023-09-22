@@ -58,7 +58,8 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
-    "test": "SUPAGLUE_LOG_LEVEL=debug jest"
+    "test": "SUPAGLUE_LOG_LEVEL=debug jest",
+    "tsc:watch": "tsc --noEmit --watch"
   },
   "files": [
     "dist"

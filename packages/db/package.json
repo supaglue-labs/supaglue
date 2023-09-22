@@ -20,7 +20,8 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
-    "generate": "prisma generate"
+    "generate": "prisma generate",
+    "tsc:watch": "tsc --noEmit --watch"
   },
   "files": [
     "dist"

@@ -12,6 +12,7 @@
     "postinstall": "husky install",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
+    "tsc:watch": "turbo run --concurrency 12 tsc:watch",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "generate": "turbo run generate",

@@ -28,6 +28,7 @@
     "start": "tsx watch --clear-screen=false ./index.ts",
     "build": "tsc -p tsconfig.build.json",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
-    "lint": "run -T eslint"
+    "lint": "run -T eslint",
+    "tsc:watch": "tsc --noEmit --watch"
   }
 }

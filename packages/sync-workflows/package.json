@@ -23,7 +23,8 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "publish": "run -T turbo run build --filter=@supaglue/sync-workflows ... && yarn npm publish",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
-    "lint": "run -T eslint"
+    "lint": "run -T eslint",
+    "tsc:watch": "tsc --noEmit --watch"
   },
   "publishConfig": {
     "main": "./dist/index.js",
