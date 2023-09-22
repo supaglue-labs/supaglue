@@ -2,13 +2,16 @@
 
 set -euo pipefail
 
-if [ -z "${1-}" ]; then
-  echo "usage: $0 <version>"
+if [ -z "${2-}" ]; then
+  echo "usage: $0 <release version> <git reference>"
+  echo "<release version>: the Supaglue git tagged version to release (e.g. 0.14.0)"
+  echo "<git reference>: the git SHA1 ID to release on origin/main (e.g. 0e5787bc1d233aefba787cdc217d5d4779d10490 or HEAD)"
   exit 1
 fi
 
 OLD_VERSION=$(jq -r .version ./package.json)
 VERSION=$1
+GIT_REFERENCE=$2
 
 # fail if not clean working directory
 if [ -n "$(git status --porcelain)" ]; then
@@ -18,9 +21,10 @@ fi
 
 echo "Release version: ${VERSION}"
 
-echo "Checking out latest main branch..."
+echo "Resetting to out latest main branch..."
 git checkout main
 git pull origin main
+git reset --hard ${GIT_REFERENCE}
 git checkout -b "release/${VERSION}"
 
 echo "Installing dependencies..."
