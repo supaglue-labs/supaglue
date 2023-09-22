@@ -5,7 +5,9 @@ import TabItem from '@theme/TabItem';
 
 # Managed Syncs
 
-Managed Syncs lets you offload dealing with third-party provider authentication, APIs, rate limits, retries, and more to Supaglue. We will sync data from third-party providers into a database that you can host or Supaglue can host.
+Managed Syncs allows you to configure Supaglue to sync data from your customers' third-party providers into a destination database hosted in either your cloud, or Supaglue's cloud.
+
+It's the fastest way to read data into your application, and allows you to offload third-party provider authentication, APIs, rate limits, retries, and more to Supaglue.
 
 <ThemedImage
   alt="integration patterns syncs"
@@ -20,9 +22,9 @@ Managed Syncs lets you offload dealing with third-party provider authentication,
 
 1. Use the [Management Portal](https://app.supaglue.io) to create a sync configuration ([SyncConfig](#syncconfig)) that defines "what" and "how" to sync from a third-party [Provider](#provider) to a [Destination](#destination).
 2. Your customer connects via our [Managed Authentication](../platform/managed-auth) feature.
-3. Supaglue starts fetching data from your customers’ third-party Providers and landing them in a Destination (e.g. Postgres).
+3. Supaglue starts fetching data from your customers’ third-party Providers and landing them in a Destination database (e.g. Postgres), that you can then query from your application.
 
-## Concepts
+## Core concepts
 
 <ThemedImage
   alt="managed syncs concepts"
@@ -37,11 +39,11 @@ Managed Syncs lets you offload dealing with third-party provider authentication,
 
 A Provider is a third-party SaaS tool that Supaglue can connect to, to sync data.
 
-Use the **Connectors --> Providers** page in the Management Portal to configure Oauth app credentials:
+Use the **Connectors -> Providers** page in the Management Portal to configure your provider. For providers who support OAuth-based authentication, you'll be asked to provide your OAuth app credentials.
 
 <Tabs>
 
-<TabItem value="provider-mgmt-ui" label="Mgmt UI" default>
+<TabItem value="provider-mgmt-ui" label="Management Portal" default>
 
 <BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/connectors/providers/crm/salesforce">
 
@@ -85,13 +87,13 @@ Use the **Connectors --> Providers** page in the Management Portal to configure 
 
 ### Destination
 
-A Destination is a database that Supaglue syncs third-party provider data to. You can choose one in your [infrastructure](#option-1-your-database) a [Supaglue's infrastructure](#option-2-supaglue-hosted-database--data-listing-api).
+A Destination is a database that Supaglue syncs third-party provider data to. You can choose one in your [infrastructure](#option-1-your-database) or [Supaglue's infrastructure](#option-2-supaglue-hosted-database--data-listing-api).
 
-Use the **Connectors --> Destinations** page in the Management Portal to configure Oauth app credentials:
+Use the **Connectors --> Destinations** page in the Management Portal to set your destination credentials:
 
 <Tabs>
 
-<TabItem value="destination-mgmt-ui" label="Mgmt UI" default>
+<TabItem value="destination-mgmt-ui" label="Management Portal" default>
 
 <BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/connectors/destinations/postgres">
 
@@ -132,6 +134,8 @@ Use the **Connectors --> Destinations** page in the Management Portal to configu
 
 :::info
 Before syncing data, Supaglue generates the destination tables and columns in your database if they do not already exist.
+
+See [data models](../platform/common-schemas/overview) for more detail on destination schemas.
 :::
 
 ### SyncConfig
@@ -140,7 +144,7 @@ A SyncConfig ties a Provider (source) to a Destination. It defines what objects 
 
 <Tabs>
 
-<TabItem value="sync-config-mgmt-ui" label="Mgmt UI" default>
+<TabItem value="sync-config-mgmt-ui" label="Management Portal" default>
 
 <BrowserWindow url="https://app.supaglue.io/application/62605dc1-148e-4c53-a850-82e10f71ed23/syncs/sync_configs/4427eb3f-3c64-4d1e-bf3a-0646475fc71c">
 
@@ -178,7 +182,7 @@ A SyncConfig ties a Provider (source) to a Destination. It defines what objects 
     ],
     "custom_objects": [
       {
-        "object": "BattleCard__c"
+        "object": "Car__c"
       }
     ]
   }
@@ -188,27 +192,36 @@ A SyncConfig ties a Provider (source) to a Destination. It defines what objects 
 The SyncConfig above defines references a Salesforce Provider config and a Postgres Destination config that does the following:
 
 - Sync `Account` [standard object](../platform/objects/overview) from Salesforce.
-- Sync the `BattleCard__c` [custom object](../platform/objects/overview) from Salesforce.
+- Sync the `Car__c` [custom object](../platform/objects/overview) from Salesforce.
 
 </TabItem>
 
 </Tabs>
 
-### Query patterns
+### Sync strategies
 
-#### Pattern 1: Direct query
+Supaglue offers two sync strategies which you can configure in your sync configuration:
+
+- `full only`: Every sync fetches all records from the Provider.
+- `full then incremental`: The initial sync performs a full sync, then incremental after using a persistent high watermark.
+
+`full then incremental` is used where we can, but for specific objects and Providers, we may only be able to offer `full only` sync strategies. We list these in the [Providers](/category/providers) documentation.
+
+## Query patterns
+
+### Direct query
 
 The quickest way to query data is to query the raw JSONB data that Supaglue lands: this is well-suited if you can easily do transforms upon reading the raw data in your application using code. You may optionally add indexes to help query performance.
 
-#### Pattern 2: Logical SQL view
+### Logical SQL view
 
 You can create Postgres views if you need to rename fields or run transformations easily expressed using SQL.
 
-#### Pattern 3: Postgres Generated Columns
+### Postgres Generated Columns
 
 Building on Pattern 2, if your SQL transformations are expensive to run at query time, you can use Postgres [Generated Columns](https://www.postgresql.org/docs/current/ddl-generated-columns.html) to speed up queries by pushing the transformation work to be maintained at write time.
 
-#### Pattern 4: Transformation pipeline
+### Transformation pipeline
 
 If you have well-structured tables that you wish to write Supaglue-synced data into, you can paginate over the Supaglue-synced tables, run your transformations, and write the transformed data into your tables.
 
@@ -222,49 +235,6 @@ If you have well-structured tables that you wish to write Supaglue-synced data i
 />
 
 Read more about transformation pipelines and patterns in our [transformation tutorial section](../tutorials/transformations/overview).
-
-### Table schema in Destination
-
-The types of data that Supaglue writes in your Destination falls into three categories:
-
-1. **Supaglue metadata fields**: These specify the application, customer, provider, and timestamps associated with the managed sync.
-1. **Raw data**: The raw third-party Provider data. We pass these through as-is.
-1. (**Normalized data**: The raw data is normalized: we hoist top-level raw data fields into table columns.)\*
-
-[*]: This is an optional feature.
-
-Example:
-
-```sql
-postgres=> \d gong_call
-                                 Table "staging.gong_call"
-          Column          |              Type              | Collation | Nullable | Default
---------------------------+--------------------------------+-----------+----------+---------
- _supaglue_application_id | text                           |           | not null |
- _supaglue_provider_name  | text                           |           | not null |
- _supaglue_customer_id    | text                           |           | not null |
- _supaglue_emitted_at     | timestamp(3) without time zone |           | not null |
- _supaglue_is_deleted     | boolean                        |           | not null |
- _supaglue_raw_data       | jsonb                          |           | not null |
- _supaglue_id             | text                           |           | not null |
-Indexes:
-    "gong_call_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id)
-```
-
-Read more about [Objects](../platform/objects/overview) which will cover object names, table names, and table schemas.
-
-### Sync strategies
-
-Supaglue implements two sync strategies:
-
-- `full only`: Every sync fetches all records from the Provider.
-- `full then incremental`: The initial sync performs a full sync, then incremental after using a persistent high watermark.
-
-`full then incremental` is used where we can, but for specific objects and Providers, we may only be able to offer `full only` sync strategies. We list these in the [Providers](/category/providers) documentation.
-
-### Sync behavior
-
-Supaglue executes syncs on a per-[Object](../platform/objects/overview) basis. For example, Supaglue will create ten syncs if you sync ten Standard Objects. Supaglue schedules them to run simultaneously at the frequency you set. Each sync run is independent, i.e., a failure in one sync will not affect the others.
 
 ## Destination options
 
@@ -299,7 +269,7 @@ Supaglue writes raw data into a Supaglue-hosted database and provides a [conveni
   }}
 />
 
-### Your database vs Supaglue-hosted database + [Data Listing API](../api/v2/data/data-listing-api)
+### Choosing between the destination options
 
 There are several differences between the two methods of hosting Destinations:
 

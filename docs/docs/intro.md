@@ -6,7 +6,7 @@ sidebar_label: Introduction
 
 # Supaglue: open source product integrations platform
 
-Supaglue is an open-source platform that helps you build native product integrations with your customers' SaaS tools. It provides a suite of developer tools and APIs that lets you sync data into your application database or data warehouse, write directly to your customers' SaaS tools, and subscribe to change events in real-time.
+Supaglue is an open-source platform that helps you build native product integrations with your customers' SaaS tools. It provides a suite of developer tools and APIs to help you sync data into your application database or data warehouse and write directly to your customers' SaaS tools.
 
 Supaglue works out-of-the-box with managed authentication, monitoring and logging tools, and a growing library of extensible SaaS connectors.
 
@@ -18,18 +18,16 @@ Supaglue works out-of-the-box with managed authentication, monitoring and loggin
 
 ## Integration patterns
 
-Supaglue provides 3 high-level patterns for building your product integration. These can be used independently or in combination:
+Supaglue provides 2 ways for building your product integration. These can be used independently or together:
 
-- **[Managed syncs](./integration-patterns/managed-syncs)** – sync data from your customers' SaaS tools into your application on a schedule.
+- **[Managed syncs](./integration-patterns/managed-syncs)** – sync data from your customers' SaaS tools into your application on a schedule, or on-demand.
 - **[Unified API](./integration-patterns/unified-api)** – read and write to multiple third-party providers with a single API.
-- **[Actions API](./integration-patterns/actions-api)** – read and write to provider-scoped APIs that range from basic CRUD operations to complex actions.
-- **[Real-time events](./integration-patterns/real-time-events)** – subscribe to real-time changes in your customers' SaaS tools as a webhook.
 
 ## Use cases
 
-- **Lead scoring** - sync CRM records into your application to power your proprietary rules and AI/ML models.
-- **CRM enrichment** - log emails, tasks, and product usage metrics to your customers' CRM and sales engagement tools.
-- **Workflow automation** triggers real-time customer-facing notifications and workflows based on changes in their SaaS tools.
+- **Lead scoring** - sync CRM records into your application to power your AI/ML models.
+- **CRM enrichment** - create or update contacts, accounts, tasks, and metrics in your customers' CRM and sales engagement tools.
+- **Workflow automation** add prospects to email sequences in sales engagement tools.
 
 ## How it works
 
@@ -39,15 +37,15 @@ You can integrate Supaglue with your application in about 5 minutes via our
 1. Create a Supaglue Cloud account [here](https://app.supaglue.io/sign-up).
 2. Configure your integration scopes and OAuth credentials, or use one of our managed OAuth apps.
 3. Create a Supaglue customer.
-4. Connect a customer's SaaS platform to your app through a Supaglue-provided embedded link.
-5. Access customer data using one of three integration patterns: managed syncs, actions API, or real-time events.
+4. Connect a customer's SaaS platform to your app through a [managed authentication](/platform/managed-auth) option.
+5. Configure a [Managed Sync](/integration-patterns/managed-syncs) or start using the [Unified API](/integration-patterns/unified-api).
 
 ## FAQ
 
 <details>
   <summary>Who should use Supaglue?</summary>
   <div>
-    Supaglue targets developers at B2B SaaS companies to provide native product integrations with their customers' SaaS tools in their products.
+    Supaglue is useful for developers at B2B SaaS companies who are building native product integrations with their customers' SaaS tools.
   </div>
 </details>
 

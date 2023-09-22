@@ -64,11 +64,6 @@ const sidebars = {
       value: sidebarHeader('Integration Patterns'),
     },
     {
-      id: 'integration-patterns/overview',
-      label: 'Overview',
-      type: 'doc',
-    },
-    {
       id: 'integration-patterns/managed-syncs',
       label: 'Managed Syncs',
       type: 'doc',
@@ -76,11 +71,6 @@ const sidebars = {
     {
       id: 'integration-patterns/unified-api',
       label: 'Unified API',
-      type: 'doc',
-    },
-    {
-      id: 'integration-patterns/real-time-events',
-      label: 'Real-time Events',
       type: 'doc',
     },
 
@@ -359,7 +349,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Data Listing API',
+      label: 'Provider API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/data/sidebar.js'),

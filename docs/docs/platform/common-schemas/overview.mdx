@@ -1,6 +1,8 @@
 import ThemedImage from '@theme/ThemedImage';
 
-# Common Schema & Objects
+# Common Schema
+
+Common Schemas are data models developed and maintained by Supaglue to make it easier to integrate with multiple providers within the same category. Supaglue maintains a common schema for each category, and maps each third-party provider API to its respective common schema(s). Common schemas can be used for both reads and writes, through managed syncs and via the unified API.
 
 <ThemedImage
   alt="common schema"
@@ -11,13 +13,9 @@ import ThemedImage from '@theme/ThemedImage';
   }}
 />
 
-## Introduction
-
-Supaglue applies a **Common Schema** to normalize [Standard Objects](../objects/overview#standard-object) and fields across providers within a single category.
-
 ## Common Object
 
-Objects with their fields normalized using Supaglue's Common Schemas are known as **Common Objects**. Common Objects have a 1-N relationship between your application and Provider objects.
+Each Common Schema consists of a set of Common Objects that map to provider objects and fields across all providers within a category. For example, the Accounts common object in CRM maps to Salesforce Accounts and HubSpot Companies. Common Objects have a 1-N relationship between your application and provider objects.
 
 ### Configuration
 
@@ -25,7 +23,7 @@ In the Management Portal, go to **Syncs --> Sync Config**. Under `Common Objects
 
 <ThemedImage
   alt="common object sync config"
-  width="50%"
+  width="100%"
   sources={{
     light: '/img/common-object-sync-config.png',
     dark: '/img/common-object-sync-config.png',
