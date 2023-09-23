@@ -1,6 +1,9 @@
 import type { Entity as EntityModel, Prisma } from '@supaglue/db';
 import type { Entity, EntityConfig, EntityCreateParams } from '@supaglue/types/entity';
 
+/**
+ * @deprecated
+ */
 export const fromEntityModel = async ({ id, applicationId, name, config }: EntityModel): Promise<Entity> => {
   return {
     id,
@@ -17,6 +20,9 @@ const fromEntityConfigModel = (config: Prisma.JsonValue): EntityConfig => {
   return config as EntityConfig;
 };
 
+/**
+ * @deprecated
+ */
 export const toEntityModel = ({ applicationId, name, config }: EntityCreateParams) => {
   return {
     applicationId,

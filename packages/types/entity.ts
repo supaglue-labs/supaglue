@@ -1,3 +1,6 @@
+/**
+ * @deprecated
+ */
 export type Entity = {
   id: string;
   applicationId: string;
@@ -7,14 +10,27 @@ export type Entity = {
   config: EntityConfig;
 };
 
+/**
+ * @deprecated
+ */
 export type EntityConfig = {
   fields: EntityField[];
   allowAdditionalFieldMappings: boolean;
 };
 
+/**
+ * @deprecated
+ */
 export type EntityField = {
   name: string; // my_first_column
 };
 
+/**
+ * @deprecated
+ */
 export type EntityCreateParams = Omit<Entity, 'id'>;
+
+/**
+ * @deprecated
+ */
 export type EntityUpdateParams = Omit<EntityCreateParams, 'applicationId'>;

@@ -18,6 +18,7 @@ get:
             items:
               $ref: ../components/schemas/objects/schema.yaml
 post:
+  deprecated: true
   operationId: createSchema
   summary: Create schema
   tags:

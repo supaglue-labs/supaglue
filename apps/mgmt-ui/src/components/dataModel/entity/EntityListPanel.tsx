@@ -13,6 +13,9 @@ import type { Provider } from '@supaglue/types';
 import Link from 'next/link';
 import { DeleteEntity } from './DeleteEntity';
 
+/**
+ * @deprecated
+ */
 export default function EntityListPanel() {
   const { entities = [], isLoading, mutate } = useEntities();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();

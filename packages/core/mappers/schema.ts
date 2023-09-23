@@ -1,6 +1,9 @@
 import type { Prisma, Schema as SchemaModel } from '@supaglue/db';
 import type { Schema, SchemaConfig, SchemaCreateParams } from '@supaglue/types';
 
+/**
+ * @deprecated
+ */
 export const fromSchemaModel = async ({ id, applicationId, name, config }: SchemaModel): Promise<Schema> => {
   return {
     id,
@@ -17,6 +20,9 @@ const fromSchemaConfigModel = (config: Prisma.JsonValue): SchemaConfig => {
   return config as SchemaConfig;
 };
 
+/**
+ * @deprecated
+ */
 export const toSchemaModel = ({ applicationId, name, config }: SchemaCreateParams) => {
   return {
     applicationId,

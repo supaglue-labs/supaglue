@@ -13,6 +13,9 @@ import type { Provider } from '@supaglue/types';
 import Link from 'next/link';
 import { DeleteSchema } from './DeleteSchema';
 
+/**
+ * @deprecated
+ */
 export default function SchemaListPanel() {
   const { schemas = [], isLoading, mutate } = useSchemas();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();

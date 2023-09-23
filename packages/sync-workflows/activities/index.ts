@@ -59,6 +59,9 @@ export const createActivities = ({
       syncConfigService,
       applicationService
     ),
+    /**
+     * @deprecated
+     */
     syncEntityRecords: createSyncEntityRecords(
       connectionService,
       remoteService,

@@ -20,6 +20,7 @@ put:
       #     schema:
       #       $ref: ../components/schemas/objects/merged_entity_mapping.yaml
 delete:
+  deprecated: true
   operationId: deleteEntityMapping
   summary: Delete entity mapping
   tags:

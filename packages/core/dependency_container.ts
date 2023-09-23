@@ -42,9 +42,15 @@ export type CoreDependencyContainer = {
   remoteService: RemoteService;
   webhookService: WebhookService;
   destinationService: DestinationService;
+  /**
+   * @deprecated
+   */
   schemaService: SchemaService;
   syncService: SyncService;
   syncRunService: SyncRunService;
+  /**
+   * @deprecated
+   */
   entityService: EntityService;
 
   crmCommonObjectService: CrmCommonObjectService;
@@ -53,6 +59,9 @@ export type CoreDependencyContainer = {
   marketingAutomationCommonObjectService: MarketingAutomationCommonObjectService;
 
   metadataService: MetadataService;
+  /**
+   * @deprecated
+   */
   entityRecordService: EntityRecordService;
   objectRecordService: ObjectRecordService;
 };

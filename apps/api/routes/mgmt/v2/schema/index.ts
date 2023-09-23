@@ -23,6 +23,9 @@ import { Router } from 'express';
 
 const { schemaService } = getDependencyContainer();
 
+/**
+ * @deprecated
+ */
 export default function init(app: Router): void {
   const schemaRouter = Router({ mergeParams: true });
 

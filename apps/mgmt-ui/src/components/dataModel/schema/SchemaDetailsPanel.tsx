@@ -13,10 +13,16 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
+/**
+ * @deprecated
+ */
 export function SchemaDetailsPanel({ schemaId }: { schemaId: string }) {
   return <SchemaDetailsPanelImpl schemaId={schemaId} />;
 }
 
+/**
+ * @deprecated
+ */
 export function NewSchemaPanel() {
   return <SchemaDetailsPanelImpl />;
 }
