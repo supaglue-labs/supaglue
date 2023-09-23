@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supaglue}
 
   api:
-    image: supaglue/api:0.14.18
+    image: supaglue/api:0.14.19
     ports:
       - '8080:8080'
     depends_on:
@@ -61,7 +61,7 @@ services:
     restart: on-failure
 
   sync-worker:
-    image: supaglue/sync-worker:0.14.18
+    image: supaglue/sync-worker:0.14.19
     depends_on:
       postgres:
         condition: service_started
@@ -74,7 +74,7 @@ services:
     restart: on-failure
 
   mgmt-ui:
-    image: supaglue/mgmt-ui:0.14.18
+    image: supaglue/mgmt-ui:0.14.19
     ports:
       - '3000:3000'
     depends_on:
@@ -108,7 +108,7 @@ services:
       - temporalitedata:/data
 
   salesforce-pub-sub:
-    image: supaglue/salesforce-pub-sub:0.14.18
+    image: supaglue/salesforce-pub-sub:0.14.19
     environment:
       <<: *common-env
     restart: on-failure
@@ -119,7 +119,7 @@ services:
         condition: service_completed_successfully
 
   init:
-    image: supaglue/api:0.14.18
+    image: supaglue/api:0.14.19
     environment:
       <<: *common-env
       SUPAGLUE_QUICKSTART_API_KEY: ${SUPAGLUE_QUICKSTART_API_KEY:-some-api-key}
