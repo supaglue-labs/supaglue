@@ -3,6 +3,9 @@ import { useRouter } from 'next/router';
 import { EntityDetailsPanel, NewEntityPanel } from './EntityDetailsPanel';
 import EntitiesListPanel from './EntityListPanel';
 
+/**
+ * @deprecated
+ */
 export default function EntityTabPanelContainer() {
   const router = useRouter();
   const { tab = [] } = router.query;

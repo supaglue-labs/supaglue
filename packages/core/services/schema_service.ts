@@ -3,6 +3,9 @@ import type { Schema, SchemaCreateParams, SchemaUpdateParams } from '@supaglue/t
 import { NotFoundError } from '../errors';
 import { fromSchemaModel, toSchemaModel } from '../mappers';
 
+/**
+ * @deprecated
+ */
 export class SchemaService {
   #prisma: PrismaClient;
 

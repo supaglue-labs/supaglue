@@ -1,11 +1,17 @@
 import type { StandardObject, StandardOrCustomObject } from './standard_or_custom_object';
 
+/**
+ * @deprecated
+ */
 export type MergedEntityMappingWithoutAttribution = {
   entityId: string;
   object?: StandardOrCustomObject;
   fieldMappings: EntityFieldMapping[];
 };
 
+/**
+ * @deprecated
+ */
 export type MergedEntityMapping = {
   entityId: string;
   entityName: string;
@@ -16,6 +22,9 @@ export type MergedEntityMapping = {
   fieldMappings: MergedEntityFieldMapping[];
 };
 
+/**
+ * @deprecated
+ */
 export type MergedEntityFieldMapping = {
   entityField: string;
   mappedField?: string;
@@ -23,6 +32,9 @@ export type MergedEntityFieldMapping = {
   isAdditional: boolean;
 };
 
+/**
+ * @deprecated
+ */
 export type ProviderEntityMapping = {
   entityId: string;
   // don't support custom objects because for hubspot, custom object id is different per customer
@@ -30,12 +42,18 @@ export type ProviderEntityMapping = {
   fieldMappings?: EntityFieldMapping[];
 };
 
+/**
+ * @deprecated
+ */
 export type ConnectionEntityMapping = {
   entityId: string;
   object?: StandardOrCustomObject;
   fieldMappings?: EntityFieldMapping[];
 };
 
+/**
+ * @deprecated
+ */
 export type EntityFieldMapping = {
   entityField: string;
   mappedField: string;

@@ -3,6 +3,9 @@ import type { UpdateSchemaResponse } from '@supaglue/schemas/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
+/**
+ * @deprecated
+ */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<UpdateSchemaResponse | null>) {
   const result = await fetch(`${API_HOST}/internal/schemas/${req.body.id}`, {
     method: 'PUT',

@@ -18,6 +18,9 @@ import { Router } from 'express';
 
 const { connectionService } = getDependencyContainer();
 
+/**
+ * @deprecated
+ */
 export default function init(app: Router): void {
   const entityMappingRouter = Router({ mergeParams: true });
   entityMappingRouter.use(connectionHeaderMiddleware);

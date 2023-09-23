@@ -2,11 +2,17 @@ import { DeleteResourceConfirmationModal } from '@/components/modals';
 import { Button } from '@mui/material';
 import { useState } from 'react';
 
+/**
+ * @deprecated
+ */
 export type DeleteSchemaButtonProps = {
   schemaName: string;
   onDelete: () => void;
 };
 
+/**
+ * @deprecated
+ */
 export function DeleteSchemaButton({ schemaName, onDelete }: DeleteSchemaButtonProps) {
   const [open, setOpen] = useState(false);
 

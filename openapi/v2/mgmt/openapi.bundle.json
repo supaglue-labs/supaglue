@@ -555,6 +555,7 @@
         }
       },
       "delete": {
+        "deprecated": true,
         "operationId": "deleteEntityMapping",
         "summary": "Delete entity mapping",
         "tags": [
@@ -620,6 +621,7 @@
         }
       },
       "post": {
+        "deprecated": true,
         "operationId": "createSchema",
         "summary": "Create schema",
         "tags": [
@@ -751,6 +753,7 @@
     },
     "/entities": {
       "get": {
+        "deprecated": true,
         "operationId": "getEntities",
         "tags": [
           "Entities"
@@ -779,6 +782,7 @@
         }
       },
       "post": {
+        "deprecated": true,
         "operationId": "createEntity",
         "summary": "Create entity",
         "tags": [
@@ -816,6 +820,7 @@
     },
     "/entities/{entity_id}": {
       "get": {
+        "deprecated": true,
         "operationId": "getEntity",
         "summary": "Get entity",
         "tags": [
@@ -840,6 +845,7 @@
         }
       },
       "put": {
+        "deprecated": true,
         "operationId": "updateEntity",
         "summary": "Update entity",
         "tags": [
@@ -870,6 +876,7 @@
         }
       },
       "delete": {
+        "deprecated": true,
         "operationId": "deleteEntity",
         "summary": "Delete entity",
         "tags": [

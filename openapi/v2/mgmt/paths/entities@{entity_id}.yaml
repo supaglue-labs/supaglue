@@ -1,4 +1,5 @@
 get:
+  deprecated: true
   operationId: getEntity
   summary: Get entity
   tags:
@@ -13,6 +14,7 @@ get:
           schema:
             $ref: ../components/schemas/objects/entity.yaml
 put:
+  deprecated: true
   operationId: updateEntity
   summary: Update entity
   tags:
@@ -32,6 +34,7 @@ put:
           schema:
             $ref: ../components/schemas/objects/entity.yaml
 delete:
+  deprecated: true
   operationId: deleteEntity
   summary: Delete entity
   tags:

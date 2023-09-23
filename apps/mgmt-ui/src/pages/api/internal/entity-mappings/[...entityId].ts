@@ -2,6 +2,9 @@ import { getApplicationIdScopedHeaders } from '@/utils/headers';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
+/**
+ * @deprecated
+ */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'PUT': {

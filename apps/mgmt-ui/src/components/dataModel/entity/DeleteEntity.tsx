@@ -3,11 +3,17 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton } from '@mui/material';
 import { useState } from 'react';
 
+/**
+ * @deprecated
+ */
 export type DeleteEntityProps = {
   name: string;
   onDelete: () => void;
 };
 
+/**
+ * @deprecated
+ */
 export function DeleteEntity({ name, onDelete }: DeleteEntityProps) {
   const [open, setOpen] = useState(false);
 

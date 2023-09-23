@@ -17,6 +17,9 @@ import { Router } from 'express';
 
 const { connectionService, providerService, schemaService } = getDependencyContainer();
 
+/**
+ * @deprecated
+ */
 export default function init(app: Router): void {
   const fieldMappingsRouter = Router({ mergeParams: true });
   fieldMappingsRouter.use(connectionHeaderMiddleware);

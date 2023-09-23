@@ -4,6 +4,9 @@ import { NotFoundError } from '../errors';
 import { validateEntityOrSchemaFieldName } from '../lib/entity';
 import { fromEntityModel, toEntityModel } from '../mappers/entity';
 
+/**
+ * @deprecated
+ */
 export class EntityService {
   #prisma: PrismaClient;
 

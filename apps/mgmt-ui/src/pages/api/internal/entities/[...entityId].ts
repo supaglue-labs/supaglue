@@ -3,6 +3,9 @@ import type { GetEntitiesResponse } from '@supaglue/schemas/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
+/**
+ * @deprecated
+ */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<GetEntitiesResponse | null>) {
   switch (req.method) {
     case 'GET': {

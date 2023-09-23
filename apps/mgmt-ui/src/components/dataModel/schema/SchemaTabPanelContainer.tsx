@@ -3,6 +3,9 @@ import { useRouter } from 'next/router';
 import { NewSchemaPanel, SchemaDetailsPanel } from './SchemaDetailsPanel';
 import SchemasListPanel from './SchemaListPanel';
 
+/**
+ * @deprecated
+ */
 export default function SchemaTabPanelContainer() {
   const router = useRouter();
   const { tab = [] } = router.query;

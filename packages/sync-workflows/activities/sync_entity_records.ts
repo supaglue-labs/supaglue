@@ -13,6 +13,9 @@ import { pipeline, Transform } from 'stream';
 import { logEvent } from '../lib/analytics';
 import type { ApplicationService, SyncService } from '../services';
 
+/**
+ * @deprecated
+ */
 export type SyncEntityRecordsArgs = {
   syncId: string;
   connectionId: string;
@@ -20,6 +23,9 @@ export type SyncEntityRecordsArgs = {
   updatedAfterMs?: number;
 };
 
+/**
+ * @deprecated
+ */
 export type SyncEntityRecordsResult = {
   syncId: string;
   connectionId: string;
@@ -28,6 +34,9 @@ export type SyncEntityRecordsResult = {
   numRecordsSynced: number;
 };
 
+/**
+ * @deprecated
+ */
 export function createSyncEntityRecords(
   connectionService: ConnectionService,
   remoteService: RemoteService,
@@ -37,6 +46,9 @@ export function createSyncEntityRecords(
   applicationService: ApplicationService,
   entityService: EntityService
 ) {
+  /**
+   * @deprecated
+   */
   return async function syncEntityRecords({
     syncId,
     connectionId,

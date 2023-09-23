@@ -113,7 +113,10 @@ export interface paths {
      * @deprecated
      */
     put: operations["upsertEntityMapping"];
-    /** Delete entity mapping */
+    /**
+     * Delete entity mapping 
+     * @deprecated
+     */
     delete: operations["deleteEntityMapping"];
     parameters: {
       header: {
@@ -132,7 +135,10 @@ export interface paths {
      * @description Get a list of schemas
      */
     get: operations["getSchemas"];
-    /** Create schema */
+    /**
+     * Create schema 
+     * @deprecated
+     */
     post: operations["createSchema"];
   };
   "/schemas/{schema_id}": {
@@ -160,18 +166,31 @@ export interface paths {
   "/entities": {
     /**
      * List entities 
+     * @deprecated 
      * @description Get a list of entities
      */
     get: operations["getEntities"];
-    /** Create entity */
+    /**
+     * Create entity 
+     * @deprecated
+     */
     post: operations["createEntity"];
   };
   "/entities/{entity_id}": {
-    /** Get entity */
+    /**
+     * Get entity 
+     * @deprecated
+     */
     get: operations["getEntity"];
-    /** Update entity */
+    /**
+     * Update entity 
+     * @deprecated
+     */
     put: operations["updateEntity"];
-    /** Delete entity */
+    /**
+     * Delete entity 
+     * @deprecated
+     */
     delete: operations["deleteEntity"];
     parameters: {
       path: {
@@ -1807,7 +1826,10 @@ export interface operations {
       200: never;
     };
   };
-  /** Delete entity mapping */
+  /**
+   * Delete entity mapping 
+   * @deprecated
+   */
   deleteEntityMapping: {
     parameters: {
       header: {
@@ -1838,7 +1860,10 @@ export interface operations {
       };
     };
   };
-  /** Create schema */
+  /**
+   * Create schema 
+   * @deprecated
+   */
   createSchema: {
     requestBody: {
       content: {
@@ -1918,6 +1943,7 @@ export interface operations {
   };
   /**
    * List entities 
+   * @deprecated 
    * @description Get a list of entities
    */
   getEntities: {
@@ -1930,7 +1956,10 @@ export interface operations {
       };
     };
   };
-  /** Create entity */
+  /**
+   * Create entity 
+   * @deprecated
+   */
   createEntity: {
     requestBody: {
       content: {
@@ -1946,7 +1975,10 @@ export interface operations {
       };
     };
   };
-  /** Get entity */
+  /**
+   * Get entity 
+   * @deprecated
+   */
   getEntity: {
     parameters: {
       path: {
@@ -1962,7 +1994,10 @@ export interface operations {
       };
     };
   };
-  /** Update entity */
+  /**
+   * Update entity 
+   * @deprecated
+   */
   updateEntity: {
     parameters: {
       path: {
@@ -1983,7 +2018,10 @@ export interface operations {
       };
     };
   };
-  /** Delete entity */
+  /**
+   * Delete entity 
+   * @deprecated
+   */
   deleteEntity: {
     parameters: {
       path: {
