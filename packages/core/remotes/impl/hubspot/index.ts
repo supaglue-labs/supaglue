@@ -1251,7 +1251,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       id,
       properties,
       /* propertiesWithHistory */ undefined,
-      associations
+      associations.length ? associations : undefined
     );
     return {
       ...fromHubSpotCompanyToAccount(company as unknown as RecordWithFlattenedAssociations),
@@ -1403,7 +1403,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       id,
       properties,
       /* propertiesWithHistory */ undefined,
-      associations
+      associations.length ? associations : undefined
     );
     return {
       ...fromHubSpotDealToOpportunity(deal as unknown as RecordWithFlattenedAssociations, pipelineStageMapping),
@@ -1621,7 +1621,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       id,
       properties,
       /* propertiesWithHistory */ undefined,
-      associations
+      associations.length ? associations : undefined
     );
     return {
       ...fromHubSpotContactToContact(contact as unknown as RecordWithFlattenedAssociations),
