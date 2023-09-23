@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-APPS=(api sync-worker salesforce-pub-sub)
+APPS=(api sync-worker)
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [ -z "${1-}" ]; then

@@ -2,23 +2,41 @@
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**"
+      ]
     },
     "@supaglue/db#build": {
-      "dependsOn": ["@supaglue/db#generate"]
+      "dependsOn": [
+        "@supaglue/db#generate"
+      ]
     },
     "@supaglue/schemas#build": {
-      "dependsOn": ["@supaglue/schemas#generate"]
+      "dependsOn": [
+        "@supaglue/schemas#generate"
+      ]
     },
     "docs#generate": {
-      "dependsOn": ["//#bundle-openapi"],
-      "inputs": ["../openapi/**/openapi.bundle.json", "package.json", "*.config.js"],
-      "outputs": ["docs/docs/api/**"],
+      "dependsOn": [
+        "//#bundle-openapi"
+      ],
+      "inputs": [
+        "../openapi/**/openapi.bundle.json",
+        "package.json",
+        "*.config.js"
+      ],
+      "outputs": [
+        "docs/docs/api/**"
+      ],
       "outputMode": "errors-only"
     },
     "docs#build": {
-      "dependsOn": ["docs#generate"],
+      "dependsOn": [
+        "docs#generate"
+      ],
       "inputs": [
         "docs/**/*",
         "src/**/*",
@@ -28,19 +46,36 @@
         "package.json",
         "../openapi/**/openapi.bundle.json"
       ],
-      "outputs": ["build/**"]
+      "outputs": [
+        "build/**"
+      ]
     },
     "mgmt-ui#build": {
-      "inputs": ["package.json", "tsconfig.json", "*.config.js", "src/**/*", "public/**/*"],
-      "outputs": [".next/**", "!.next/cache/**"],
-      "env": ["NEXT_PUBLIC_*"],
-      "dotEnv": [".env"]
+      "inputs": [
+        "package.json",
+        "tsconfig.json",
+        "*.config.js",
+        "src/**/*",
+        "public/**/*"
+      ],
+      "outputs": [
+        ".next/**",
+        "!.next/cache/**"
+      ],
+      "env": [
+        "NEXT_PUBLIC_*"
+      ],
+      "dotEnv": [
+        ".env"
+      ]
     },
     "lint-staged": {
       "outputMode": "errors-only"
     },
     "lint": {
-      "inputs": ["**/*.{js,ts,tsx}"],
+      "inputs": [
+        "**/*.{js,ts,tsx}"
+      ],
       "outputMode": "errors-only"
     },
     "test": {},
@@ -56,24 +91,31 @@
       "outputMode": "errors-only"
     },
     "//#bundle-openapi": {
-      "inputs": ["openapi/**/*.yaml"],
-      "outputs": ["openapi/**/openapi.bundle.json"],
+      "inputs": [
+        "openapi/**/*.yaml"
+      ],
+      "outputs": [
+        "openapi/**/openapi.bundle.json"
+      ],
       "outputMode": "errors-only"
     },
     "@supaglue/schemas#generate": {
-      "dependsOn": ["//#bundle-openapi"],
-      "inputs": ["../../openapi/**/*.yaml"],
-      "outputs": ["gen/**"],
+      "dependsOn": [
+        "//#bundle-openapi"
+      ],
+      "inputs": [
+        "../../openapi/**/*.yaml"
+      ],
+      "outputs": [
+        "gen/**"
+      ],
       "outputMode": "errors-only"
     },
     "@supaglue/db#generate": {
-      "inputs": ["prisma/schema.prisma"],
+      "inputs": [
+        "prisma/schema.prisma"
+      ],
       "outputMode": "errors-only"
-    },
-    "salesforce-pub-sub#generate": {
-      "outputs": ["gen"],
-      "outputMode": "errors-only",
-      "cache": false // cache is disabled because turbo can't detect changes in the source repo
     }
   },
   "globalDependencies": [

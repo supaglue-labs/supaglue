@@ -1,5 +1,4 @@
-x-common-env:
-  &common-env
+x-common-env: &common-env
   NODE_ENV: development
   SUPAGLUE_ENVIRONMENT: development
   SUPAGLUE_PRETTY_LOGS: 1
@@ -27,15 +26,6 @@ services:
     working_dir: /app
     command: /bin/sh -c "./apps/sync-worker/scripts/start_dev.sh"
 
-  salesforce-pub-sub:
-    image: node:18-bullseye
-    environment:
-      <<: *common-env
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: /bin/sh -c "./apps/salesforce-pub-sub/scripts/start_dev.sh"
-
   mgmt-ui:
     profiles:
       - donotstart
@@ -44,7 +34,7 @@ services:
     image: node:18-bullseye
     environment:
       <<: *common-env
-      DO_SEED: "0"
+      DO_SEED: '0'
     volumes:
       - .:/app
     working_dir: /app

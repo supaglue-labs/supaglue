@@ -107,17 +107,6 @@ services:
     volumes:
       - temporalitedata:/data
 
-  salesforce-pub-sub:
-    image: supaglue/salesforce-pub-sub:0.14.19
-    environment:
-      <<: *common-env
-    restart: on-failure
-    depends_on:
-      postgres:
-        condition: service_started
-      init:
-        condition: service_completed_successfully
-
   init:
     image: supaglue/api:0.14.19
     environment:
