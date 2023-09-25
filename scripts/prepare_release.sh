@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
 if [ -z "${1-}" ]; then
   echo "usage: $0 <version>"
   exit 1
@@ -15,6 +17,9 @@ if [ -n "$(git status --porcelain)" ]; then
   echo "Working directory not clean. Please stash all changes before running this script."
   exit 1
 fi
+
+source $DIR/checkly.sh
+check_checkly_checks
 
 echo "Release version: ${VERSION}"
 
