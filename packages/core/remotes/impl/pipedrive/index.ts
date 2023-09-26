@@ -31,6 +31,7 @@ import { Readable } from 'stream';
 import {
   BadRequestError,
   ForbiddenError,
+  InternalServerError,
   NotFoundError,
   RemoteProviderError,
   TooManyRequestsError,
@@ -717,7 +718,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
     switch (err.response?.status) {
       case 400:
-        return new BadRequestError(jsonErrorMessage, err.response?.data);
+        return new InternalServerError(jsonErrorMessage, err.response?.data);
       case 401:
         return new UnauthorizedError(jsonErrorMessage, err.response?.data);
       case 403:

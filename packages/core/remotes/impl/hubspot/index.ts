@@ -69,6 +69,7 @@ import {
   BadRequestError,
   ConflictError,
   ForbiddenError,
+  InternalServerError,
   NotFoundError,
   RemoteProviderError,
   TooManyRequestsError,
@@ -2133,7 +2134,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const error = err as any;
     switch (error.code) {
       case 400:
-        return new BadRequestError(error.body?.message, error);
+        return new InternalServerError(error.body?.message, error);
       case 401:
         return new UnauthorizedError(error.body?.message, error);
       case 403:

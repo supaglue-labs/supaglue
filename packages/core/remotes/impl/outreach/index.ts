@@ -26,6 +26,7 @@ import {
   BadRequestError,
   ConflictError,
   ForbiddenError,
+  InternalServerError,
   NotFoundError,
   RemoteProviderError,
   TooManyRequestsError,
@@ -1571,7 +1572,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
 
     switch (err.response?.status) {
       case 400:
-        return new BadRequestError(jsonError?.title, cause);
+        return new InternalServerError(jsonError?.title, cause);
       case 401:
         return new UnauthorizedError(jsonError?.title, cause);
       case 403:

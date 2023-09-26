@@ -19,7 +19,7 @@ import type {
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
-import { BadRequestError, RemoteProviderError } from '../../../errors';
+import { BadRequestError, InternalServerError, RemoteProviderError } from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
@@ -361,10 +361,11 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     const errorCause = err.response?.data;
 
     switch (err.response?.status) {
+      case 400:
+        return new InternalServerError(errorTitle, errorCause);
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       // NOTE: `429` is omitted below since we process it differently for syncs
-      case 400:
       case 401:
       case 402:
       case 403:
