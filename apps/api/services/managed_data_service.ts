@@ -38,6 +38,9 @@ export class ManagedDataService {
     category: ProviderCategory,
     providerName: ProviderName,
     customerId: string,
+    /**
+     * @param `objectName` is the provider-specific name and is case-sensitive.
+     */
     objectName: string,
     objectType: ObjectType,
     cursorStr?: string,
@@ -58,7 +61,9 @@ export class ManagedDataService {
       objectName
     );
     if (!sync) {
-      throw new BadRequestError(`No sync found for ${objectName} for customer ${customerId}`);
+      throw new BadRequestError(
+        `No sync found for ${objectName} for customer ${customerId}. Please ensure you're syncing the right object type (standard or common) from your provider.`
+      );
     }
     const destination = await this.#destinationService.getDestinationSafeBySyncConfigId(sync.syncConfigId);
     if (destination?.type !== 'supaglue') {
@@ -101,6 +106,9 @@ export class ManagedDataService {
     applicationId: string,
     providerName: ProviderName,
     customerId: string,
+    /**
+     * @param `objectName` is the provider-specific name and is case-sensitive.
+     */
     objectName: string,
     cursorStr?: string,
     modifiedAfter?: string,

@@ -42,6 +42,7 @@ export type ListMetadata = {
 
 export type ListMember = {
   id: string;
+  objectType: Exclude<CRMCommonObjectType, 'user'>;
   rawData: Record<string, unknown>;
 };
 

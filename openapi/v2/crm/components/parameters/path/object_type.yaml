@@ -1,0 +1,17 @@
+name: object_type
+in: path
+required: true
+schema:
+  type: string
+  enum: [contact, account, lead, opportunity]
+description: |
+  The object type of the list. 
+
+
+  Object support by provider:
+
+
+  Salesforce: `contact`, `account`, `lead`, `opportunity`.
+
+
+  Hubspot: `contact`.

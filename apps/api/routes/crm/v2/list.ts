@@ -34,6 +34,7 @@ export default function init(app: Router): void {
         }
       );
 
+      // TODO: add mappers
       return res.status(200).send({
         ...rest,
         total_count: totalCount,
@@ -69,6 +70,7 @@ export default function init(app: Router): void {
         }
       );
 
+      // TODO: add mappers
       return res.status(200).send({
         ...rest,
         total_count: totalCount,
@@ -79,8 +81,9 @@ export default function init(app: Router): void {
           name: metadata.name,
           label: metadata.label,
         },
-        results: results.map(({ rawData, ...rest }) => ({
+        results: results.map(({ rawData, objectType, ...rest }) => ({
           ...rest,
+          object_type: objectType,
           raw_data: rawData,
         })),
       });
