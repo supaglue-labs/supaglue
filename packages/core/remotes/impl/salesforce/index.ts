@@ -313,14 +313,14 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   public override async listCustomObjects(): Promise<SimpleCustomObject[]> {
-    const metadata = await this.#client.metadata.list({ type: 'CustomObject' });
-    // for some reason, this returns standard objects and external objects too,
+    const metadata = await this.#client.describeGlobal();
+    // this returns standard objects and external objects too,
     // so we need to filter them out
-    return metadata
-      .filter(({ fullName }) => fullName.endsWith('__c'))
-      .map(({ fullName }) => ({
-        id: fullName,
-        name: fullName,
+    return metadata.sobjects
+      .filter(({ custom }) => custom)
+      .map(({ name }) => ({
+        id: name,
+        name: name,
       }));
   }
 
@@ -561,10 +561,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       // Salesforce doesn't actually enforce this, and will just append __c.
       // However, we want to enforce this to avoid confusion when using
       // the custom object name in other places.
-      throw new Error('Custom object id must end with __c');
+      throw new BadRequestError('Custom object id must end with __c');
     }
 
-    const metadata = await this.#client.metadata.read('CustomObject', id);
+    const metadata = await this.#client.describe(id);
     return toCustomObject(metadata);
   }
 

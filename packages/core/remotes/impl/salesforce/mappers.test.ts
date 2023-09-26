@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import type { Address } from '@supaglue/types/crm/common';
-import type { CustomObject as SalesforceCustomObject } from 'jsforce/lib/api/metadata';
+import type { DescribeSObjectResult } from 'jsforce';
 import {
   CRM_BILLING_ADDRESS,
   CRM_FAX,
@@ -780,30 +780,30 @@ describe('Salesforce Mappers', () => {
   describe('toCustomObject', () => {
     test('should correctly convert a SalesforceCustomObject to CustomObject', () => {
       const salesforceCustomObject = {
-        fullName: 'TestFullName',
-        nameField: {
-          label: 'TestLabel',
-          type: 'Text',
-          summaryFilterItems: [],
-        },
+        name: 'TestFullName',
         label: 'TestLabel',
-        pluralLabel: 'TestPluralLabel',
-        description: 'TestDescription',
+        labelPlural: 'TestPluralLabel',
         fields: [
           {
-            fullName: 'TestField1',
+            name: 'TestField',
+            label: 'TestLabel',
+            type: 'string',
+            nameField: true,
+            nillable: false,
+          },
+          {
+            name: 'TestField1',
             label: 'FieldLabel1',
-            type: 'Text',
-            required: true,
-            summaryFilterItems: [],
+            type: 'string',
+            nillable: false,
           },
         ],
-      } as unknown as SalesforceCustomObject;
+      } as DescribeSObjectResult;
 
       const expectedOutput = {
         id: 'TestFullName',
         name: 'TestFullName',
-        description: 'TestDescription',
+        description: null,
         labels: {
           singular: 'TestLabel',
           plural: 'TestPluralLabel',
@@ -827,32 +827,6 @@ describe('Salesforce Mappers', () => {
 
       const result = toCustomObject(salesforceCustomObject);
       expect(result).toEqual(expectedOutput);
-    });
-
-    test('should throw an error if fullName is missing', () => {
-      expect(() => {
-        toCustomObject({} as any);
-      }).toThrowError(`unexpectedly, custom object missing fullName; custom object may not exist`);
-    });
-
-    test('should throw an error if nameField or its label is missing', () => {
-      const obj = { fullName: 'Test' };
-      expect(() => {
-        toCustomObject(obj as any);
-      }).toThrowError(`unexpectedly, custom object missing nameField`);
-    });
-
-    test('should throw an error if type is not Text', () => {
-      const obj = {
-        fullName: 'Test',
-        nameField: {
-          label: 'Label',
-          type: 'UnknownType',
-        },
-      };
-      expect(() => {
-        toCustomObject(obj as any);
-      }).toThrowError(`unexpectedly, custom object not of type Text`);
     });
   });
 });
