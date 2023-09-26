@@ -349,7 +349,7 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Provider API',
+      label: 'Data Listing API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/data/sidebar.js'),
