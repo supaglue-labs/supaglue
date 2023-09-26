@@ -12,9 +12,9 @@ import axios, { AxiosError } from 'axios';
 import simpleOauth2 from 'simple-oauth2';
 import {
   BadGatewayError,
-  BadRequestError,
   ForbiddenError,
   GatewayTimeoutError,
+  InternalServerError,
   NotFoundError,
   RemoteProviderError,
   TooManyRequestsError,
@@ -201,7 +201,7 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
         return new BadGatewayError(responseError?.message ?? err.message, err);
       case '609':
       case '701':
-        return new BadRequestError(responseError?.message ?? err.message, err);
+        return new InternalServerError(responseError?.message ?? err.message, err);
       case '610':
         return new NotFoundError(responseError?.message ?? err.message, err);
       // The following are unmapped to Supaglue errors, but we want to pass

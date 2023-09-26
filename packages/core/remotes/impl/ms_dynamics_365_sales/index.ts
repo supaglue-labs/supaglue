@@ -28,7 +28,6 @@ import simpleOauth2 from 'simple-oauth2';
 import { Readable } from 'stream';
 import {
   BadGatewayError,
-  BadRequestError,
   ForbiddenError,
   InternalServerError,
   NotFoundError,
@@ -490,7 +489,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
       switch (err.status) {
         case 400:
-          return new BadRequestError(err.statusText);
+          return new InternalServerError(err.statusText);
         case 401:
           return new UnauthorizedError(err.statusText);
         case 403:
