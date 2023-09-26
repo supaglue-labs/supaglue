@@ -122,21 +122,32 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
     {
       field: '_',
       headerName: 'Admin',
-      width: 75,
+      width: 100,
       renderCell: (params) => {
         return (
-          <DeleteSyncConfig
-            syncConfigId={params.row.id}
-            onDelete={async () => {
-              const response = await deleteSyncConfig(applicationId, params.row.id);
-              if (!response.ok) {
-                addNotification({ message: response.errorMessage, severity: 'error' });
-                return;
-              }
-              addNotification({ message: 'Successfully removed Sync Config', severity: 'success' });
-              await mutate(toGetSyncConfigsResponse(syncConfigs.filter((s) => s.id !== params.row.id)), false);
-            }}
-          />
+          <Stack direction="row" className="items-center justify-between w-full">
+            <Link
+              href={`/applications/${applicationId}/syncs/sync_configs/${params.id}`}
+              className="flex flex-row gap-2 items-center w-full h-full"
+              style={{
+                textDecoration: 'none',
+              }}
+            >
+              Edit
+            </Link>
+            <DeleteSyncConfig
+              syncConfigId={params.row.id}
+              onDelete={async () => {
+                const response = await deleteSyncConfig(applicationId, params.row.id);
+                if (!response.ok) {
+                  addNotification({ message: response.errorMessage, severity: 'error' });
+                  return;
+                }
+                addNotification({ message: 'Successfully removed Sync Config', severity: 'success' });
+                await mutate(toGetSyncConfigsResponse(syncConfigs.filter((s) => s.id !== params.row.id)), false);
+              }}
+            />
+          </Stack>
         );
       },
     },
