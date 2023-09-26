@@ -4,7 +4,15 @@ import { ASYNC_RETRY_OPTIONS, logger } from '.';
 import { TooManyRequestsError } from '../errors';
 
 export const isAxiosRateLimited = (e: any): boolean => {
-  return isAxiosError(e) && e.response?.status === 429;
+  return (
+    isAxiosError(e) &&
+    e.response?.status === 429 &&
+    // Apollo-specific things we shouldn't retry on
+    !e.response.data.contains('This endpoint is only available to paying teams') &&
+    !/^The maximum number of api calls allowed for [a-z0-9/]+ is [0-9]+ times per (hour|day). Please upgrade your plan/.test(
+      e.message
+    )
+  );
 };
 
 export const retryWhenAxiosRateLimited = async <Args extends any[], Return>(
