@@ -2,8 +2,8 @@ type: object
 properties:
   id:
     type: string
-    example: 12345
-    description: The unique identifier for this list.
+    example: '00BDn00000RHS32MAH'
+    description: The provider-specific unique identifier for this list.
   object_type:
     type: string
     enum:
@@ -13,24 +13,33 @@ properties:
       - opportunity
   name:
     type: string
-    example: my-list
+    example: RecentlyViewedContacts
     description: The developer name of this list.
   label:
     type: string
-    example: My List
+    example: Recently Viewed Contacts
     description: The label for this list.
   raw_data:
     type: object
-    description: The raw data for this list.
+    description: The raw data from the provider for this list.
     additionalProperties: true
     example:
-      describeUrl: '/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe'
-      developerName: 'NewThisWeek'
-      id: '00BD0000005WcBeMAK'
-      label: 'New This Week'
-      resultsUrl: '/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results'
-      soqlCompatible: true
-      url: '/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK'
+      attributes:
+        type: 'ListView'
+        url: '/services/data/v57.0/sobjects/ListView/00BDn00000RHS32MAH'
+      Id: '00BDn00000RHS32MAH'
+      Name: 'Recently Viewed Contacts'
+      DeveloperName: 'RecentlyViewedContacts'
+      NamespacePrefix: null
+      SobjectType: 'Contact'
+      IsSoqlCompatible: true
+      CreatedDate: '2023-05-26T22:25:47.000+0000'
+      CreatedById: '005Dn0000079fN6IAI'
+      LastModifiedDate: '2023-05-26T22:25:47.000+0000'
+      LastModifiedById: '005Dn0000079fN6IAI'
+      SystemModstamp: '2023-05-26T22:25:47.000+0000'
+      LastViewedDate: null
+      LastReferencedDate: null
 
 required:
   - id

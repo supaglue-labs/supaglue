@@ -64,7 +64,7 @@ export default function init(app: Router): void {
         req.supaglueApplication.id,
         'salesforce',
         req.customerId,
-        'account',
+        'Account',
         req.query?.cursor,
         req.query?.modified_after as unknown as string | undefined,
         req.query?.page_size ? parseInt(req.query.page_size) : undefined
@@ -88,7 +88,7 @@ export default function init(app: Router): void {
         req.supaglueApplication.id,
         'salesforce',
         req.customerId,
-        'contact',
+        'Contact',
         req.query?.cursor,
         req.query?.modified_after as unknown as string | undefined,
         req.query?.page_size ? parseInt(req.query.page_size) : undefined

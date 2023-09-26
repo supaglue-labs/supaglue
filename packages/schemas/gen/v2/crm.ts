@@ -164,7 +164,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
+        object_type: components["parameters"]["object_type"];
       };
     };
   };
@@ -174,10 +174,10 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        /** @description The object type of the list. Only `contact` is supported by HubSpot. */
-        object_type: "contact" | "account" | "lead" | "opportunity";
+        object_type: components["parameters"]["object_type"];
         list_id: string;
       };
     };
@@ -465,32 +465,42 @@ export interface components {
     };
     list_metadata: {
       /**
-       * @description The unique identifier for this list. 
-       * @example 12345
+       * @description The provider-specific unique identifier for this list. 
+       * @example 00BDn00000RHS32MAH
        */
       id: string;
       /** @enum {string} */
       object_type: "contact" | "account" | "lead" | "opportunity";
       /**
        * @description The developer name of this list. 
-       * @example my-list
+       * @example RecentlyViewedContacts
        */
       name: string;
       /**
        * @description The label for this list. 
-       * @example My List
+       * @example Recently Viewed Contacts
        */
       label: string;
       /**
-       * @description The raw data for this list. 
+       * @description The raw data from the provider for this list. 
        * @example {
-       *   "describeUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/describe",
-       *   "developerName": "NewThisWeek",
-       *   "id": "00BD0000005WcBeMAK",
-       *   "label": "New This Week",
-       *   "resultsUrl": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK/results",
-       *   "soqlCompatible": true,
-       *   "url": "/services/data/v58.0/sobjects/Account/listviews/00BD0000005WcBeMAK"
+       *   "attributes": {
+       *     "type": "ListView",
+       *     "url": "/services/data/v57.0/sobjects/ListView/00BDn00000RHS32MAH"
+       *   },
+       *   "Id": "00BDn00000RHS32MAH",
+       *   "Name": "Recently Viewed Contacts",
+       *   "DeveloperName": "RecentlyViewedContacts",
+       *   "NamespacePrefix": null,
+       *   "SobjectType": "Contact",
+       *   "IsSoqlCompatible": true,
+       *   "CreatedDate": "2023-05-26T22:25:47.000+0000",
+       *   "CreatedById": "005Dn0000079fN6IAI",
+       *   "LastModifiedDate": "2023-05-26T22:25:47.000+0000",
+       *   "LastModifiedById": "005Dn0000079fN6IAI",
+       *   "SystemModstamp": "2023-05-26T22:25:47.000+0000",
+       *   "LastViewedDate": null,
+       *   "LastReferencedDate": null
        * }
        */
       raw_data: {
@@ -498,41 +508,77 @@ export interface components {
       };
     };
     list_membership: {
-      /** @description The unique identifier for a member of this list. */
+      /**
+       * @description The unique identifier for a member of this list. 
+       * @example 003Dn00000TKj6wIAD
+       */
       id: string;
       /**
        * @description The raw data for this list view membership. 
        * @example {
-       *   "columns": [
-       *     {
-       *       "fieldNameOrPath": "Id",
-       *       "value": "0012800000bbzSAAAY"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "Email",
-       *       "value": "jdoe@example.com"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "FirstName",
-       *       "value": "John"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "LastName",
-       *       "value": "Doe"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "CreatedDate",
-       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "LastModifiedDate",
-       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
-       *     },
-       *     {
-       *       "fieldNameOrPath": "SystemModstamp",
-       *       "value": "Fri Aug 01 21:15:46 GMT 2014"
-       *     }
-       *   ]
+       *   "attributes": {
+       *     "type": "Contact",
+       *     "url": "/services/data/v57.0/sobjects/Contact/003Dn00000TKj6wIAD"
+       *   },
+       *   "Id": "003Dn00000TKj6wIAD",
+       *   "IsDeleted": false,
+       *   "MasterRecordId": null,
+       *   "AccountId": null,
+       *   "LastName": "Tear",
+       *   "FirstName": "Yancy",
+       *   "Salutation": null,
+       *   "Name": "Yancy Tear",
+       *   "OtherStreet": null,
+       *   "OtherCity": null,
+       *   "OtherState": null,
+       *   "OtherPostalCode": null,
+       *   "OtherCountry": null,
+       *   "OtherLatitude": null,
+       *   "OtherLongitude": null,
+       *   "OtherGeocodeAccuracy": null,
+       *   "OtherAddress": null,
+       *   "MailingStreet": null,
+       *   "MailingCity": null,
+       *   "MailingState": null,
+       *   "MailingPostalCode": null,
+       *   "MailingCountry": null,
+       *   "MailingLatitude": null,
+       *   "MailingLongitude": null,
+       *   "MailingGeocodeAccuracy": null,
+       *   "MailingAddress": null,
+       *   "Phone": null,
+       *   "Fax": null,
+       *   "MobilePhone": null,
+       *   "HomePhone": null,
+       *   "OtherPhone": null,
+       *   "AssistantPhone": null,
+       *   "ReportsToId": null,
+       *   "Email": "jroge@1aburlington.com",
+       *   "Title": null,
+       *   "Department": null,
+       *   "AssistantName": null,
+       *   "LeadSource": null,
+       *   "Birthdate": null,
+       *   "Description": null,
+       *   "OwnerId": "005Dn0000079fN6IAI",
+       *   "CreatedDate": "2023-07-18T07:14:19.000+0000",
+       *   "CreatedById": "005Dn0000079fN6IAI",
+       *   "LastModifiedDate": "2023-07-18T07:14:19.000+0000",
+       *   "LastModifiedById": "005Dn0000079fN6IAI",
+       *   "SystemModstamp": "2023-07-18T07:14:19.000+0000",
+       *   "LastActivityDate": null,
+       *   "LastCURequestDate": null,
+       *   "LastCUUpdateDate": null,
+       *   "LastViewedDate": "2023-07-18T07:14:20.000+0000",
+       *   "LastReferencedDate": "2023-07-18T07:14:20.000+0000",
+       *   "EmailBouncedReason": null,
+       *   "EmailBouncedDate": null,
+       *   "IsEmailBounced": false,
+       *   "PhotoUrl": "/services/images/photo/003Dn00000TKj6wIAD",
+       *   "Jigsaw": null,
+       *   "JigsawContactId": null,
+       *   "CleanStatus": "Pending",
+       *   "IndividualId": null
        * }
        */
       raw_data: {
@@ -694,6 +740,19 @@ export interface components {
     "x-customer-id": string;
     /** @description The provider name */
     "x-provider-name": string;
+    /**
+     * @description The object type of the list. 
+     * 
+     * 
+     * Object support by provider:
+     * 
+     * 
+     * Salesforce: `contact`, `account`, `lead`, `opportunity`.
+     * 
+     * 
+     * Hubspot: `contact`.
+     */
+    object_type: "contact" | "account" | "lead" | "opportunity";
   };
   requestBodies: never;
   headers: never;
@@ -1232,7 +1291,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        object_type: "contact" | "account" | "lead" | "opportunity";
+        object_type: components["parameters"]["object_type"];
       };
     };
     responses: {
@@ -1255,10 +1314,10 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        /** @description The object type of the list. Only `contact` is supported by HubSpot. */
-        object_type: "contact" | "account" | "lead" | "opportunity";
+        object_type: components["parameters"]["object_type"];
         list_id: string;
       };
     };
@@ -1268,6 +1327,7 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["pagination"] & {
             results: (components["schemas"]["list_membership"])[];
+            /** @description Metadata about the remote provider list view. */
             metadata: components["schemas"]["list_metadata"];
           };
         };

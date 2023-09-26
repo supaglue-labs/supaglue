@@ -143,3 +143,5 @@ components:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml
     x-provider-name:
       $ref: ./components/parameters/header/x-provider-name.yaml
+    object_type:
+      $ref: ./components/parameters/path/object_type.yaml
