@@ -30,8 +30,10 @@ EOF
   exit 1
 fi
 
-echo "Logging into 1password..."
 eval $(op signin --account supaglue.1password.com)
+
+source $DIR/checkly.sh
+check_checkly_checks
 
 git checkout main
 git pull
