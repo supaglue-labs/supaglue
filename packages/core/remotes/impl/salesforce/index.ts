@@ -314,10 +314,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public override async listCustomObjects(): Promise<SimpleCustomObject[]> {
     const metadata = await this.#client.describeGlobal();
-    // for some reason, this returns standard objects and external objects too,
+    // this returns standard objects and external objects too,
     // so we need to filter them out
     return metadata.sobjects
-      .filter(({ name }) => name.endsWith('__c'))
+      .filter(({ custom }) => custom)
       .map(({ name }) => ({
         id: name,
         name: name,
