@@ -36,5 +36,4 @@ check_checkly_checks() {
         echo "Aborting release due to failing staging Checkly checks."
         exit 1
     fi
-    exit 0
 }
