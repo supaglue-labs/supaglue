@@ -31,8 +31,8 @@ export class InternalServerError extends HTTPError {
 
 export class CacheInvalidationError extends InternalServerError {
   problemType = 'CACHE_INVALIDATION_ERROR';
-  constructor(message?: string) {
-    super(message || 'Cache invalidation error');
+  constructor(message?: string, cause?: Error) {
+    super(message ?? 'Cache invalidation error', cause);
   }
 }
 
