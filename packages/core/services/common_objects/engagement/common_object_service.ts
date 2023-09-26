@@ -1,5 +1,6 @@
 import type { ConnectionSafeAny } from '@supaglue/types';
 import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
+import { CacheInvalidationError } from '../../../errors';
 import { remoteDuration } from '../../../lib/metrics';
 import type { DestinationService } from '../../destination_service';
 import type { RemoteService } from '../../remote_service';
@@ -81,13 +82,17 @@ export class EngagementCommonObjectService {
     // If the associated provider has a destination, do cache invalidation
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
-      // TODO: we should move this logic into each individual provider instead of checking apollo here
-      const record =
-        connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
-      if (record) {
-        const end = remoteDuration.startTimer({ operation: 'update', remote_name: destinationType! });
-        await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, record);
-        end();
+      try {
+        // TODO: we should move this logic into each individual provider instead of checking apollo here
+        const record =
+          connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
+        if (record) {
+          const end = remoteDuration.startTimer({ operation: 'update', remote_name: destinationType! });
+          await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, record);
+          end();
+        }
+      } catch (err: any) {
+        throw new CacheInvalidationError(err.message, err);
       }
     }
   }
