@@ -55,9 +55,6 @@ for OLD_DOCS_VERSION in $OLD_DOCS_VERSIONS; do
 done
 jq '.[0:2]' docs/versions.json > docs/versions.json.tmp && mv docs/versions.json.tmp docs/versions.json
 
-echo "Building docs..."
-yarn build --filter "...docs" > /dev/null
-
 echo "Committing changes..."
 git add -A
 git commit -m "chore: release $VERSION"
