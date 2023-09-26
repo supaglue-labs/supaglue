@@ -71,6 +71,7 @@ import {
   ForbiddenError,
   NotFoundError,
   RemoteProviderError,
+  SGError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -2130,6 +2131,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public override handleErr(err: unknown): unknown {
+    // for errors we throw ourselves, they aren't native hubspot client errors, so don't continue
+    // to unroll the error body message
+    if (err instanceof SGError) {
+      throw err;
+    }
+
     const error = err as any;
     switch (error.code) {
       case 400:

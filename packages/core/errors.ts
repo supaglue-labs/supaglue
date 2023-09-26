@@ -1,4 +1,4 @@
-class SGError extends Error {
+export class SGError extends Error {
   constructor(message: string) {
     super(message);
     this.name = this.constructor.name;
