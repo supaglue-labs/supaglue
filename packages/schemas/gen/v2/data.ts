@@ -6,7 +6,10 @@
 
 export interface paths {
   "/salesforce/contacts": {
-    /** List contacts */
+    /**
+     * List contacts 
+     * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
+     */
     get: operations["listSalesforceContacts"];
     parameters: {
       header: {
@@ -15,7 +18,10 @@ export interface paths {
     };
   };
   "/salesforce/accounts": {
-    /** List accounts */
+    /**
+     * List accounts 
+     * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
+     */
     get: operations["listSalesforceAccounts"];
     parameters: {
       header: {
@@ -24,7 +30,10 @@ export interface paths {
     };
   };
   "/hubspot/contacts": {
-    /** List contacts */
+    /**
+     * List contacts 
+     * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
+     */
     get: operations["listHubspotContacts"];
     parameters: {
       header: {
@@ -33,7 +42,10 @@ export interface paths {
     };
   };
   "/hubspot/companies": {
-    /** List companies */
+    /**
+     * List companies 
+     * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
+     */
     get: operations["listHubspotCompanies"];
     parameters: {
       header: {
@@ -419,7 +431,10 @@ export type external = Record<string, never>;
 
 export interface operations {
 
-  /** List contacts */
+  /**
+   * List contacts 
+   * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
+   */
   listSalesforceContacts: {
     parameters: {
       query?: {
@@ -443,7 +458,10 @@ export interface operations {
       };
     };
   };
-  /** List accounts */
+  /**
+   * List accounts 
+   * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
+   */
   listSalesforceAccounts: {
     parameters: {
       query?: {
@@ -467,7 +485,10 @@ export interface operations {
       };
     };
   };
-  /** List contacts */
+  /**
+   * List contacts 
+   * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
+   */
   listHubspotContacts: {
     parameters: {
       query?: {
@@ -491,7 +512,10 @@ export interface operations {
       };
     };
   };
-  /** List companies */
+  /**
+   * List companies 
+   * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
+   */
   listHubspotCompanies: {
     parameters: {
       query?: {

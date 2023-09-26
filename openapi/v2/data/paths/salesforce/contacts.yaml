@@ -1,6 +1,8 @@
 get:
   operationId: listSalesforceContacts
   summary: List contacts
+  description: |
+    **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
   tags:
     - Salesforce
   security:

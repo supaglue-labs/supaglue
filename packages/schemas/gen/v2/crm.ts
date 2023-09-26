@@ -671,7 +671,12 @@ export interface components {
     include_deleted_data?: boolean;
     /** @description Whether to include raw data fetched from the 3rd party provider. */
     include_raw_data?: boolean;
-    /** @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. (Only applicable if Supaglue Managed Destination is set) */
+    /**
+     * @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. 
+     * 
+     * 
+     * **NOTE**: `read_from_cache=true` requires you to use the Supaglue Managed Destination and select [Common Objects](https://docs.supaglue.com/platform/common-schemas/overview#configuration) to be synced.
+     */
     read_from_cache?: boolean;
     /** @description If provided, will only return objects created after this datetime */
     created_after?: Date;
