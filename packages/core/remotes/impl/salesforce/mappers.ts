@@ -17,8 +17,8 @@ import type {
   User,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
-import type { CustomObject } from '@supaglue/types/custom_object';
-import type { CustomObject as SalesforceCustomObject } from 'jsforce/lib/api/metadata';
+import type { CustomObject, CustomObjectFieldType } from '@supaglue/types/custom_object';
+import type { DescribeSObjectResult } from 'jsforce';
 
 export function getMapperForCommonObjectType<T extends CRMCommonObjectType>(
   commonObjectType: T
@@ -446,77 +446,38 @@ const toSalesforceEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<
   };
 };
 
-export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): CustomObject => {
-  if (!salesforceCustomObject.fullName) {
-    throw new Error(`unexpectedly, custom object missing fullName; custom object may not exist`);
-  }
-
-  if (!salesforceCustomObject.nameField || !salesforceCustomObject.nameField.label) {
+export const toCustomObject = (salesforceCustomObject: DescribeSObjectResult): CustomObject => {
+  const nameField = salesforceCustomObject.fields.find((field) => field.nameField);
+  if (!nameField) {
     throw new Error(`unexpectedly, custom object missing nameField`);
   }
-
-  // TODO: We should map things to "unknown" if we don't know, or pass the original
-  // value through
-  if (salesforceCustomObject.nameField.type !== 'Text') {
-    throw new Error(`unexpectedly, custom object not of type Text`);
-  }
-
-  if (!salesforceCustomObject.label) {
-    throw new Error(`unexpectedly, custom object missing label`);
-  }
-
-  if (!salesforceCustomObject.pluralLabel) {
-    throw new Error(`unexpectedly, custom object missing pluralLabel`);
-  }
-
   return {
-    id: salesforceCustomObject.fullName,
-    name: salesforceCustomObject.fullName,
-    description: typeof salesforceCustomObject.description === 'string' ? salesforceCustomObject.description : null,
+    id: salesforceCustomObject.name,
+    name: salesforceCustomObject.name,
+    description: null,
     labels: {
       singular: salesforceCustomObject.label,
-      plural: salesforceCustomObject.pluralLabel,
+      plural: salesforceCustomObject.labelPlural,
     },
     primaryFieldKeyName: 'Name',
     fields: [
       {
         keyName: 'Name',
-        displayName: salesforceCustomObject.nameField.label,
+        displayName: nameField.label,
         fieldType: 'string',
         isRequired: true,
       },
-      ...salesforceCustomObject.fields.flatMap((field) => {
-        if (!field.fullName) {
-          throw new Error(`unexpectedly, custom object field missing fullName`);
-        }
-
-        if (!field.label) {
-          throw new Error(`unexpectedly, custom object field ${field.fullName} missing label`);
-        }
-
-        // TODO: maybe introduce an 'unknown' value for enum
-
-        // If the field is lookup, we deal with that in the Association Types / Associations API instead
-        // TODO: Should we support it here too?
-        if (field.type === 'Lookup') {
-          return [];
-        }
-
-        if (field.type !== 'Text' && field.type !== 'Number') {
-          throw new Error(`unexpectedly, custom object field ${field.fullName} has unsupported type ${field.type}`);
-        }
-
-        if (field.required === null || field.required === undefined) {
-          throw new Error(`unexpectedly, custom object field ${field.fullName} is missing required property`);
-        }
-
-        return {
-          keyName: field.fullName,
-          displayName: field.label,
-          fieldType: field.type === 'Text' ? ('string' as const) : ('number' as const),
-          isRequired: field.required,
-        };
-      }),
+      ...salesforceCustomObject.fields
+        .filter((field) => field.name !== nameField.name)
+        .filter((field) => field.type === 'string' || field.type === 'number')
+        .map((field) => {
+          return {
+            keyName: field.name,
+            displayName: field.label,
+            fieldType: field.type as CustomObjectFieldType,
+            isRequired: !field.nillable,
+          };
+        }),
     ],
   };
 };
