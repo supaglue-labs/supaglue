@@ -9,7 +9,7 @@ import type {
 } from '@supaglue/types/entity_record';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { ConnectionService, RemoteService } from '.';
-import { BadRequestError } from '../errors';
+import { BadRequestError, CacheInvalidationError } from '../errors';
 import type { DestinationService } from './destination_service';
 import type { EntityService } from './entity_service';
 import type { SyncService } from './sync_service';
@@ -70,8 +70,12 @@ export class EntityRecordService {
     }
     const [writer] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
-      const record = await this.#getFullEntityRecord(connection, entityName, id);
-      await writer.upsertEntityRecord(connection, entityName, record);
+      try {
+        const record = await this.#getFullEntityRecord(connection, entityName, id);
+        await writer.upsertEntityRecord(connection, entityName, record);
+      } catch (err: any) {
+        throw new CacheInvalidationError(err.message, err);
+      }
     }
   }
 

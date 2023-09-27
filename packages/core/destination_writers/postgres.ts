@@ -23,7 +23,6 @@ import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { CacheInvalidationError } from '../errors';
 import {
   keysOfSnakecasedCrmAccountWithTenant,
   keysOfSnakecasedCrmContactWithTenant,
@@ -141,7 +140,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       );
     } catch (err) {
       childLogger.error({ err }, 'Error upserting common object record');
-      throw new CacheInvalidationError('Cache invalidation error for common object record on Postgres');
+      throw err;
     } finally {
       client.release();
     }
@@ -289,7 +288,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         await client.query(`
         UPDATE ${qualifiedTable} AS destination
         SET is_deleted = TRUE
-        WHERE 
+        WHERE
           destination._supaglue_application_id = '${applicationId}' AND
           destination._supaglue_provider_name = '${providerName}' AND
           destination._supaglue_customer_id = '${customerId}'
@@ -434,7 +433,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       );
     } catch (err) {
       childLogger.error({ err }, 'Error upserting common object record');
-      throw new CacheInvalidationError('Cache invalidation error for object record on Postgres');
+      throw err;
     } finally {
       client.release();
     }
@@ -603,7 +602,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         await client.query(`
           UPDATE ${qualifiedTable} AS destination
           SET _supaglue_is_deleted = TRUE
-          WHERE 
+          WHERE
             destination._supaglue_application_id = '${applicationId}' AND
             destination._supaglue_provider_name = '${providerName}' AND
             destination._supaglue_customer_id = '${customerId}'

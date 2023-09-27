@@ -3,7 +3,7 @@ import type { ConnectionSafeAny } from '@supaglue/types/connection';
 import type { CRMCommonObjectType, CRMCommonObjectTypeMap, ListMember, ListMetadata } from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { ConnectionService } from '../..';
-import { BadRequestError } from '../../../errors';
+import { BadRequestError, CacheInvalidationError } from '../../../errors';
 import { remoteDuration } from '../../../lib/metrics';
 import type { DestinationService } from '../../destination_service';
 import type { RemoteService } from '../../remote_service';
@@ -95,11 +95,15 @@ export class CrmCommonObjectService {
     }
     const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
-      const record = await this.get(objectName, connection, id);
+      try {
+        const record = await this.get(objectName, connection, id);
 
-      const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });
-      await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, record);
-      end();
+        const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });
+        await writer.upsertCommonObjectRecord<'crm', T>(connection, objectName, record);
+        end();
+      } catch (err: any) {
+        throw new CacheInvalidationError(err.message, err);
+      }
     }
   }
 
