@@ -17,4 +17,5 @@ enum:
   - 6sense
   - marketo
   - salesforce_marketing_cloud_account_engagement
+  - slack
 example: hubspot

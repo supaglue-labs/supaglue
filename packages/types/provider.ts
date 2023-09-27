@@ -60,7 +60,7 @@ export type MarketingAutomationProvider = MarketingAutomationOauthProvider | Mar
 
 export type NoCategoryProvider = BaseOauthProvider & {
   category: 'no_category';
-  name: 'intercom' | 'gong' | 'linear';
+  name: 'intercom' | 'gong' | 'linear' | 'slack';
   objects?: ProviderObjects<'no_category'>;
 };
 

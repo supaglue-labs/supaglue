@@ -960,7 +960,7 @@ export interface components {
      * @example hubspot 
      * @enum {string}
      */
-    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear" | "clearbit" | "6sense" | "marketo" | "salesforce_marketing_cloud_account_engagement";
+    provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear" | "clearbit" | "6sense" | "marketo" | "salesforce_marketing_cloud_account_engagement" | "slack";
     /** @enum {string} */
     provider_name_crm: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule";
     /** @enum {string} */

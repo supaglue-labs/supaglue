@@ -76,7 +76,6 @@ export default function ProviderDetailsPanel({
     'messenger',
     'onedrive',
     'outlook',
-    'slack',
     'ms_teams',
     'whatsapp',
     'zendesk',
