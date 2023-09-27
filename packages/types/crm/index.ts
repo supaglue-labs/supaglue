@@ -1,4 +1,8 @@
 import type {
+  Account,
+  Contact,
+  Lead,
+  Opportunity,
   RemoteAccountTypes,
   RemoteContactTypes,
   RemoteLeadTypes,
@@ -22,6 +26,16 @@ export type CRMProviderCategory = 'crm';
 export const CRM_COMMON_OBJECT_TYPES = ['account', 'contact', 'lead', 'opportunity', 'user'] as const;
 export type CRMCommonObjectType = (typeof CRM_COMMON_OBJECT_TYPES)[number];
 
+export type ListCRMCommonObject = Exclude<CRMCommonObjectType, 'user'>;
+export type ListCRMCommonObjectType = Contact | Account | Lead | Opportunity;
+
+export type ListCRMCommonObjectTypeMap<T extends ListCRMCommonObject> = {
+  contact: Contact;
+  account: Account;
+  lead: Lead;
+  opportunity: Opportunity;
+}[T];
+
 export type CRMCommonObjectTypeMap<T extends CRMCommonObjectType> = {
   account: RemoteAccountTypes;
   contact: RemoteContactTypes;
@@ -34,15 +48,9 @@ export type CustomFields = Record<string, any>;
 
 export type ListMetadata = {
   id: string;
-  objectType: Exclude<CRMCommonObjectType, 'user'>;
+  objectType: ListCRMCommonObject;
   name: string;
   label: string;
-  rawData: Record<string, unknown>;
-};
-
-export type ListMember = {
-  id: string;
-  objectType: Exclude<CRMCommonObjectType, 'user'>;
   rawData: Record<string, unknown>;
 };
 

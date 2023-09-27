@@ -86,6 +86,23 @@ export const fromHubSpotCompanyToAccount = ({
   };
 };
 
+/**
+ * Takes { "a": { "value": 1 }, "b": { "value" : 2 } } and converts it to { "a": 1, "b": 2 }
+ * @param v1Properties Hubspot V1 list object properties
+ * @returns Hubspot V3 standard object properties shape
+ */
+export const fromHubspotV1ListObjectPropertiesToHubspotV3Properties = (
+  v1Properties: Record<string, { value: string }>
+): Record<string, string> => {
+  const v3Properties: Record<string, string> = Object.keys(v1Properties)
+    .map((key) => ({
+      [key]: v1Properties[key].value as string,
+    }))
+    .reduce((a, v) => ({ ...a, [Object.keys(v)[0]]: v[Object.keys(v)[0]] }), {});
+
+  return v3Properties;
+};
+
 export const fromHubSpotContactToContact = ({
   id,
   properties,

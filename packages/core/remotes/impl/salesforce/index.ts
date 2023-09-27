@@ -8,7 +8,6 @@ import type {
   ListedObjectRecord,
   ObjectRecordUpsertData,
   ObjectRecordWithMetadata,
-  PaginatedResult,
   PaginationParams,
   Property,
   Provider,
@@ -37,7 +36,8 @@ import type {
   LeadCreateParams,
   LeadUpdateParams,
   LeadUpsertParams,
-  ListMember,
+  ListCRMCommonObject,
+  ListCRMCommonObjectTypeMap,
   ListMetadata,
   Opportunity,
   OpportunityCreateParams,
@@ -69,7 +69,7 @@ import {
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
-import type { Cursor } from '../../../lib';
+import type { Cursor, PaginatedSupaglueRecords } from '../../../lib';
 import { ASYNC_RETRY_OPTIONS, decodeCursor, encodeCursor, intersection, logger, union } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
@@ -374,7 +374,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   async getCommonPropertiesToFetch(
-    commonObjectType: CRMCommonObjectType,
+    commonObjectType: CRMCommonObjectType | ListCRMCommonObject,
     fieldMappingConfig?: FieldMappingConfig
   ): Promise<string[]> {
     const sobject = capitalizeString(commonObjectType);
@@ -1393,7 +1393,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public override async listLists(
     objectType: Exclude<CRMCommonObjectType, 'user'>,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMetadata>> {
+  ): Promise<PaginatedSupaglueRecords<ListMetadata>> {
     const mappedObjectType = capitalizeString(objectType);
     let cursor: Cursor | undefined;
     if (paginationParams.cursor) {
@@ -1416,30 +1416,33 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // Map response to ListMetadata interface
     return {
-      results: response.map((record: any) => ({
+      records: response.map((record: any) => ({
         name: record.DeveloperName,
         label: record.Name,
         id: record.Id,
         objectType: objectType,
         rawData: record,
       })),
-      totalCount,
-      next: encodeCursor({
-        id: response.length ? response[response.length - 1].Id : null,
-        reverse: false,
-      }),
-      previous: null,
+      pagination: {
+        total_count: totalCount,
+        next: encodeCursor({
+          id: response.length ? response[response.length - 1].Id : null,
+          reverse: false,
+        }),
+        previous: null,
+      },
     };
   }
 
-  public override async listListMembership(
-    objectType: Exclude<CRMCommonObjectType, 'user'>,
+  public override async listListMembership<T extends ListCRMCommonObject>(
+    objectType: T,
     listId: string,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }> {
-    const mappedObjectType = capitalizeString(objectType);
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
+    const commonObjectType = capitalizeString(objectType);
+    const propertiesToFetch = await this.getCommonPropertiesToFetch(objectType);
 
-    const listDescription = await this.#client.sobject(mappedObjectType).listview(listId).describe();
+    const listDescription = await this.#client.sobject(commonObjectType).listview(listId).describe();
     const queryRemainder = (listDescription as any).query.split(' FROM ')[1];
     const [fromClause, orderByClause] = queryRemainder.split(' ORDER BY ');
 
@@ -1456,7 +1459,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       },
     ] = await Promise.all([
       this.#client.query(
-        `SELECT FIELDS(STANDARD) FROM ${fromClause} ${
+        `SELECT ${propertiesToFetch.join(', ')} FROM ${fromClause} ${
           cursor?.id ? `WHERE Id > '${cursor.id}'` : ''
         } ORDER BY ${orderByClause} ${paginationParams.page_size ? `LIMIT ${paginationParams.page_size}` : ''}`
       ),
@@ -1464,12 +1467,33 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       this.#client.query(`SELECT FIELDS(STANDARD) FROM ListView WHERE Id = '${listId}'`),
     ]);
 
+    let commonObjectRecords: ListCRMCommonObjectTypeMap<T>[] = [];
+
+    switch (objectType) {
+      case 'contact':
+        commonObjectRecords = response.records.map((record) => ({
+          ...fromSalesforceContactToContact(record),
+        })) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
+        break;
+      case 'account':
+        commonObjectRecords = response.records.map((record) => ({
+          ...fromSalesforceAccountToAccount(record),
+        })) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
+        break;
+      case 'lead':
+        commonObjectRecords = response.records.map((record) => ({
+          ...fromSalesforceLeadToLead(record),
+        })) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
+        break;
+      case 'opportunity':
+        commonObjectRecords = response.records.map((record) => ({
+          ...fromSalesforceOpportunityToOpportunity(record),
+        })) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
+        break;
+    }
+
     return {
-      results: response.records.map((record: any) => ({
-        id: record.Id,
-        objectType: objectType,
-        rawData: record,
-      })),
+      records: commonObjectRecords,
       metadata: {
         name: listMetadata.DeveloperName,
         label: listMetadata.Name,
@@ -1477,12 +1501,14 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         objectType,
         rawData: listMetadata,
       },
-      totalCount,
-      next: encodeCursor({
-        id: (response.records.length ? response.records[response.records.length - 1].Id : null) as string,
-        reverse: false,
-      }),
-      previous: null,
+      pagination: {
+        total_count: totalCount,
+        next: encodeCursor({
+          id: (response.records.length ? response.records[response.records.length - 1].Id : null) as string,
+          reverse: false,
+        }),
+        previous: null,
+      },
     };
   }
 
