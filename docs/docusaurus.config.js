@@ -293,10 +293,6 @@ const config = {
                 to: '/destinations/bigquery',
               },
               {
-                label: 'MongoDB',
-                to: '/destinations/mongodb',
-              },
-              {
                 label: 'MySQL',
                 to: '/destinations/MySQL',
               },

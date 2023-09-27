@@ -39,7 +39,6 @@ import ZoomIcon from '@/assets/connector_icons/zoom.png';
 import ZoomInfoIcon from '@/assets/connector_icons/zoominfo.png';
 import ZuoraIcon from '@/assets/connector_icons/zuora.png';
 import BigQueryIcon from '@/assets/destination_icons/bigquery.png';
-import MongoDBIcon from '@/assets/destination_icons/mongodb.png';
 import PostgresIcon from '@/assets/destination_icons/postgres.png';
 import S3Icon from '@/assets/destination_icons/s3.png';
 import SupaglueIcon from '@/assets/supaglue.png';
@@ -73,9 +72,6 @@ export default function getIcon(name: string, size = 25): ReactNode {
         height={size}
         style={{ objectFit: 'contain' }}
       />
-    ),
-    mongodb: (
-      <Image key={name} alt={name} src={MongoDBIcon} width={size} height={size} style={{ objectFit: 'contain' }} />
     ),
     ms_dynamics_365_sales: (
       <Image

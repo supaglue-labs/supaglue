@@ -2525,45 +2525,6 @@
               "config",
               "version"
             ]
-          },
-          {
-            "type": "object",
-            "title": "mongodb",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-              },
-              "application_id": {
-                "type": "string",
-                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
-              },
-              "name": {
-                "type": "string",
-                "example": "My Mongo Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "mongodb"
-                ],
-                "example": "mongodb"
-              },
-              "config": {
-                "$ref": "#/components/schemas/mongodb_config_safe"
-              },
-              "version": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "id",
-              "application_id",
-              "name",
-              "type",
-              "config",
-              "version"
-            ]
           }
         ]
       },
@@ -2639,28 +2600,6 @@
           "credentials"
         ]
       },
-      "mongodb_config_safe": {
-        "type": "object",
-        "properties": {
-          "host": {
-            "type": "string",
-            "example": "my-cluster.z31wcmj.mongodb.net"
-          },
-          "database": {
-            "type": "string",
-            "example": "my-cluster"
-          },
-          "user": {
-            "type": "string",
-            "example": "myuser"
-          }
-        },
-        "required": [
-          "host",
-          "database",
-          "user"
-        ]
-      },
       "postgres_config_at_least_safe": {
         "type": "object",
         "properties": {
@@ -2730,32 +2669,6 @@
           "project_id",
           "dataset",
           "credentials"
-        ]
-      },
-      "mongodb_config_at_least_safe": {
-        "type": "object",
-        "properties": {
-          "host": {
-            "type": "string",
-            "example": "my-cluster.z31wcmj.mongodb.net"
-          },
-          "database": {
-            "type": "string",
-            "example": "my-cluster"
-          },
-          "user": {
-            "type": "string",
-            "example": "myuser"
-          },
-          "password": {
-            "type": "string",
-            "example": "mysensitivepassword"
-          }
-        },
-        "required": [
-          "host",
-          "database",
-          "user"
         ]
       },
       "postgres_config_unsafe": {
@@ -2838,33 +2751,6 @@
           "project_id",
           "dataset",
           "credentials"
-        ]
-      },
-      "mongodb_config_unsafe": {
-        "type": "object",
-        "properties": {
-          "host": {
-            "type": "string",
-            "example": "my-cluster.z31wcmj.mongodb.net"
-          },
-          "database": {
-            "type": "string",
-            "example": "my-cluster"
-          },
-          "user": {
-            "type": "string",
-            "example": "myuser"
-          },
-          "password": {
-            "type": "string",
-            "example": "mysensitivepassword"
-          }
-        },
-        "required": [
-          "host",
-          "database",
-          "user",
-          "password"
         ]
       },
       "schema": {
@@ -4357,31 +4243,6 @@
               "type",
               "config"
             ]
-          },
-          {
-            "type": "object",
-            "title": "mongodb",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "My MongoDB Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "mongodb"
-                ],
-                "example": "mongodb"
-              },
-              "config": {
-                "$ref": "#/components/schemas/mongodb_config_unsafe"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "config"
-            ]
           }
         ]
       },
@@ -4446,36 +4307,6 @@
               },
               "config": {
                 "$ref": "#/components/schemas/bigquery_config_at_least_safe"
-              },
-              "version": {
-                "type": "number",
-                "example": "number"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "config",
-              "version"
-            ]
-          },
-          {
-            "type": "object",
-            "title": "mongodb",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "My MongoDB Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "mongodb"
-                ],
-                "example": "mongodb"
-              },
-              "config": {
-                "$ref": "#/components/schemas/mongodb_config_at_least_safe"
               },
               "version": {
                 "type": "number",
@@ -4673,28 +4504,6 @@
                   "type",
                   "dataset"
                 ]
-              },
-              {
-                "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nConfig specific to MongoDB destination\n",
-                "type": "object",
-                "title": "MongoDB (Preview)",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "mongodb"
-                    ]
-                  },
-                  "collection": {
-                    "type": "string",
-                    "description": "The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used.",
-                    "example": "customer_1_schema"
-                  }
-                },
-                "required": [
-                  "type",
-                  "collection"
-                ]
               }
             ]
           },
@@ -4735,26 +4544,6 @@
                   "required": [
                     "object",
                     "table"
-                  ]
-                },
-                {
-                  "type": "object",
-                  "title": "MongoDB (Preview)",
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "description": "The Provider object name (case sensitive)",
-                      "example": "Contact"
-                    },
-                    "collection": {
-                      "type": "string",
-                      "description": "The collection to write the object to. If specified, this will override the default collection used by Supaglue.",
-                      "example": "MyContacts"
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "collection"
                   ]
                 }
               ]
@@ -4797,26 +4586,6 @@
                   "required": [
                     "object",
                     "table"
-                  ]
-                },
-                {
-                  "type": "object",
-                  "title": "MongoDB (Preview)",
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "description": "The Provider object name (case sensitive)",
-                      "example": "Contact__c"
-                    },
-                    "collection": {
-                      "type": "string",
-                      "description": "The collection to write the object to. If specified, this will override the default table used by Supaglue.",
-                      "example": "MyContacts"
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "collection"
                   ]
                 }
               ]
@@ -5042,28 +4811,6 @@
                   "type",
                   "dataset"
                 ]
-              },
-              {
-                "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nConfig specific to MongoDB destination\n",
-                "type": "object",
-                "title": "MongoDB (Preview)",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "mongodb"
-                    ]
-                  },
-                  "collection": {
-                    "type": "string",
-                    "description": "The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used.",
-                    "example": "customer_1_schema"
-                  }
-                },
-                "required": [
-                  "type",
-                  "collection"
-                ]
               }
             ]
           },
@@ -5104,26 +4851,6 @@
                   "required": [
                     "object",
                     "table"
-                  ]
-                },
-                {
-                  "type": "object",
-                  "title": "MongoDB (Preview)",
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "description": "The Provider object name (case sensitive)",
-                      "example": "Contact"
-                    },
-                    "collection": {
-                      "type": "string",
-                      "description": "The collection to write the object to. If specified, this will override the default collection used by Supaglue.",
-                      "example": "MyContacts"
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "collection"
                   ]
                 }
               ]
@@ -5166,26 +4893,6 @@
                   "required": [
                     "object",
                     "table"
-                  ]
-                },
-                {
-                  "type": "object",
-                  "title": "MongoDB (Preview)",
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "description": "The Provider object name (case sensitive)",
-                      "example": "Contact__c"
-                    },
-                    "collection": {
-                      "type": "string",
-                      "description": "The collection to write the object to. If specified, this will override the default table used by Supaglue.",
-                      "example": "MyContacts"
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "collection"
                   ]
                 }
               ]

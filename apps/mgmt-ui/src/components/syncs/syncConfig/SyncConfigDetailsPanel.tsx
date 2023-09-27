@@ -159,7 +159,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
 
   const selectedProvider = providers.find((p) => p.id === providerId);
   const selectedDestination = destinations?.find((d) => d.id === destinationId);
-  const supportsStandardDestinations = ['postgres', 'bigquery', 'mongodb', 'supaglue'];
+  const supportsStandardDestinations = ['postgres', 'bigquery', 'supaglue'];
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
 
   const commonObjectsSupported = selectedProvider?.category !== 'no_category';
