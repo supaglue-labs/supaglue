@@ -6,8 +6,6 @@
   "types": "index.ts",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.338.0",
-    "@aws-sdk/node-http-handler": "^3.350.0",
     "@google-cloud/bigquery": "^6.2.0",
     "@hubspot/api-client": "9.1.0",
     "@linear/sdk": "^7.0.1",
