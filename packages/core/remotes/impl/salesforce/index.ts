@@ -1526,17 +1526,17 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // https://developer.salesforce.com/docs/atlas.en-us.210.0.object_reference.meta/object_reference/sforce_api_calls_concepts_core_data_objects.htm#i1421192
     switch (error.errorCode) {
+      case 'DUPLICATE_VALUE':
+      case 'ERROR_HTTP_400':
+      case 'INVALID_CROSS_REFERENCE_KEY':
       case 'INVALID_FIELD':
       case 'INVALID_OPERATION':
       case 'INVALID_TYPE':
+      case 'MALFORMED_ID':
       case 'MISSING_ARGUMENT':
-      case 'ERROR_HTTP_400':
         return new InternalServerError(inferredTitle, error);
-      case 'DUPLICATE_VALUE':
-      case 'INVALID_CROSS_REFERENCE_KEY':
       case 'INVALID_EMAIL_ADDRESS':
       case 'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST':
-      case 'MALFORMED_ID':
       case 'REQUIRED_FIELD_MISSING':
       case 'STRING_TOO_LONG':
       case 'TOO_MANY_ENUM_VALUE':
