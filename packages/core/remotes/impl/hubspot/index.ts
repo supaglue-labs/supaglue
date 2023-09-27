@@ -97,6 +97,7 @@ import {
   fromHubSpotContactToContact,
   fromHubSpotDealToOpportunity,
   fromHubspotOwnerToUser,
+  fromHubspotV1ListObjectPropertiesToHubspotV3Properties,
   fromObjectToHubspotObjectType,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
@@ -2120,9 +2121,15 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     ]);
 
     const commonObjectContactRecords: ListCRMCommonObjectTypeMap<T>[] = membershipResponse.data.contacts.map(
-      (record: any) => ({
-        ...fromHubSpotContactToContact({ id: record.vid.toString(), ...record }),
-      })
+      (record: any) => {
+        return fromHubSpotContactToContact({
+          id: record.vid.toString(),
+          createdAt: record.properties.createdate.value,
+          updatedAt: record.properties.lastmodifieddate.value,
+          archived: false,
+          properties: fromHubspotV1ListObjectPropertiesToHubspotV3Properties(record.properties),
+        });
+      }
     ) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
 
     // Map response to ListMetadata interface
