@@ -21,7 +21,6 @@ import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform, Writable } from 'stream';
 import { pipeline } from 'stream/promises';
-import { CacheInvalidationError } from '../errors';
 import { logger, SCHEMAS_OR_ENTITIES_APPLICATION_IDS } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
@@ -89,7 +88,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       );
     } catch (err) {
       childLogger.error({ err }, 'Error upserting common object record');
-      throw new CacheInvalidationError('Cache invalidation error for common object record on MongoDB');
+      throw err;
     }
   }
 
@@ -269,7 +268,7 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
       );
     } catch (err) {
       childLogger.error({ err }, 'Error upserting common object record');
-      throw new CacheInvalidationError('Cache invalidation error for object record on MongoDB');
+      throw err;
     }
   }
 

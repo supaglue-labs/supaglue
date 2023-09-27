@@ -8,7 +8,7 @@ import type {
 } from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { ConnectionService, RemoteService } from '.';
-import { BadRequestError } from '../errors';
+import { BadRequestError, CacheInvalidationError } from '../errors';
 import type { DestinationService } from './destination_service';
 import type { SyncService } from './sync_service';
 
@@ -73,8 +73,12 @@ export class ObjectRecordService {
     }
     const [writer] = await this.#destinationService.getWriterByProviderId(connection.providerId);
     if (writer) {
-      const record = await this.#getStandardFullObjectRecord(connection, objectName, id);
-      await writer.upsertStandardObjectRecord(connection, objectName, record);
+      try {
+        const record = await this.#getStandardFullObjectRecord(connection, objectName, id);
+        await writer.upsertStandardObjectRecord(connection, objectName, record);
+      } catch (err: any) {
+        throw new CacheInvalidationError(err.message, err);
+      }
     }
   }
 
