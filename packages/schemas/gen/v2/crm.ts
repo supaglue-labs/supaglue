@@ -521,84 +521,7 @@ export interface components {
         [key: string]: unknown;
       };
     };
-    list_membership: {
-      /**
-       * @description The unique identifier for a member of this list. 
-       * @example 003Dn00000TKj6wIAD
-       */
-      id: string;
-      /**
-       * @description The raw data for this list view membership. 
-       * @example {
-       *   "attributes": {
-       *     "type": "Contact",
-       *     "url": "/services/data/v57.0/sobjects/Contact/003Dn00000TKj6wIAD"
-       *   },
-       *   "Id": "003Dn00000TKj6wIAD",
-       *   "IsDeleted": false,
-       *   "MasterRecordId": null,
-       *   "AccountId": null,
-       *   "LastName": "Tear",
-       *   "FirstName": "Yancy",
-       *   "Salutation": null,
-       *   "Name": "Yancy Tear",
-       *   "OtherStreet": null,
-       *   "OtherCity": null,
-       *   "OtherState": null,
-       *   "OtherPostalCode": null,
-       *   "OtherCountry": null,
-       *   "OtherLatitude": null,
-       *   "OtherLongitude": null,
-       *   "OtherGeocodeAccuracy": null,
-       *   "OtherAddress": null,
-       *   "MailingStreet": null,
-       *   "MailingCity": null,
-       *   "MailingState": null,
-       *   "MailingPostalCode": null,
-       *   "MailingCountry": null,
-       *   "MailingLatitude": null,
-       *   "MailingLongitude": null,
-       *   "MailingGeocodeAccuracy": null,
-       *   "MailingAddress": null,
-       *   "Phone": null,
-       *   "Fax": null,
-       *   "MobilePhone": null,
-       *   "HomePhone": null,
-       *   "OtherPhone": null,
-       *   "AssistantPhone": null,
-       *   "ReportsToId": null,
-       *   "Email": "jroge@1aburlington.com",
-       *   "Title": null,
-       *   "Department": null,
-       *   "AssistantName": null,
-       *   "LeadSource": null,
-       *   "Birthdate": null,
-       *   "Description": null,
-       *   "OwnerId": "005Dn0000079fN6IAI",
-       *   "CreatedDate": "2023-07-18T07:14:19.000+0000",
-       *   "CreatedById": "005Dn0000079fN6IAI",
-       *   "LastModifiedDate": "2023-07-18T07:14:19.000+0000",
-       *   "LastModifiedById": "005Dn0000079fN6IAI",
-       *   "SystemModstamp": "2023-07-18T07:14:19.000+0000",
-       *   "LastActivityDate": null,
-       *   "LastCURequestDate": null,
-       *   "LastCUUpdateDate": null,
-       *   "LastViewedDate": "2023-07-18T07:14:20.000+0000",
-       *   "LastReferencedDate": "2023-07-18T07:14:20.000+0000",
-       *   "EmailBouncedReason": null,
-       *   "EmailBouncedDate": null,
-       *   "IsEmailBounced": false,
-       *   "PhotoUrl": "/services/images/photo/003Dn00000TKj6wIAD",
-       *   "Jigsaw": null,
-       *   "JigsawContactId": null,
-       *   "CleanStatus": "Pending",
-       *   "IndividualId": null
-       * }
-       */
-      raw_data: {
-        [key: string]: unknown;
-      };
-    };
+    list_membership: components["schemas"]["contact"] | components["schemas"]["account"] | components["schemas"]["lead"] | components["schemas"]["opportunity"];
     create_update_opportunity: {
       /** @example 100000 */
       amount?: number | null;
@@ -1353,8 +1276,9 @@ export interface operations {
       /** @description List Lists */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results: (components["schemas"]["list_metadata"])[];
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["list_metadata"])[];
           };
         };
       };
@@ -1380,8 +1304,9 @@ export interface operations {
       /** @description List membership */
       200: {
         content: {
-          "application/json": components["schemas"]["pagination"] & {
-            results: (components["schemas"]["list_membership"])[];
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["list_membership"])[];
             /** @description Metadata about the remote provider list view. */
             metadata: components["schemas"]["list_metadata"];
           };

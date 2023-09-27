@@ -1,9 +1,16 @@
-import type { PaginatedResult, PaginationParams } from '@supaglue/types';
+import type { PaginationParams } from '@supaglue/types';
 import type { ConnectionSafeAny } from '@supaglue/types/connection';
-import type { CRMCommonObjectType, CRMCommonObjectTypeMap, ListMember, ListMetadata } from '@supaglue/types/crm';
+import type {
+  CRMCommonObjectType,
+  CRMCommonObjectTypeMap,
+  ListCRMCommonObject,
+  ListCRMCommonObjectTypeMap,
+  ListMetadata,
+} from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { ConnectionService } from '../..';
 import { BadRequestError, CacheInvalidationError } from '../../../errors';
+import type { PaginatedSupaglueRecords } from '../../../lib';
 import { remoteDuration } from '../../../lib/metrics';
 import type { DestinationService } from '../../destination_service';
 import type { RemoteService } from '../../remote_service';
@@ -124,10 +131,10 @@ export class CrmCommonObjectService {
   }
 
   public async listLists(
-    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    objectType: ListCRMCommonObject,
     connection: ConnectionSafeAny,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMetadata>> {
+  ): Promise<PaginatedSupaglueRecords<ListMetadata>> {
     const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
 
     const end = remoteDuration.startTimer({ operation: 'listLists', remote_name: providerName });
@@ -137,12 +144,12 @@ export class CrmCommonObjectService {
     return response;
   }
 
-  public async listListMembership(
-    objectType: Exclude<CRMCommonObjectType, 'user'>,
+  public async listListMembership<T extends ListCRMCommonObject>(
+    objectType: T,
     listId: string,
     connection: ConnectionSafeAny,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }> {
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
     const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
 
     const end = remoteDuration.startTimer({ operation: 'listListMembership', remote_name: providerName });

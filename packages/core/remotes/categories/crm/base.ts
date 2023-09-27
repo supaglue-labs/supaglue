@@ -1,7 +1,14 @@
-import type { PaginatedResult, PaginationParams } from '@supaglue/types';
-import type { CRMCommonObjectType, CRMCommonObjectTypeMap, ListMember, ListMetadata } from '@supaglue/types/crm';
+import type { PaginationParams } from '@supaglue/types';
+import type {
+  CRMCommonObjectType,
+  CRMCommonObjectTypeMap,
+  ListCRMCommonObject,
+  ListCRMCommonObjectTypeMap,
+  ListMetadata,
+} from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { Readable } from 'stream';
+import type { PaginatedSupaglueRecords } from '../../../lib';
 import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
@@ -31,15 +38,15 @@ export interface CrmRemoteClient extends RemoteClient {
   ): Promise<string>;
 
   listLists(
-    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    objectType: ListCRMCommonObject,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMetadata>>;
+  ): Promise<PaginatedSupaglueRecords<ListMetadata>>;
 
-  listListMembership(
-    objectType: string,
+  listListMembership<T extends ListCRMCommonObject>(
+    objectType: T,
     listId: string,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }>;
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }>;
 }
 
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
@@ -82,17 +89,17 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
   }
 
   public async listLists(
-    objectType: Exclude<CRMCommonObjectType, 'user'>,
+    objectType: ListCRMCommonObject,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMetadata>> {
+  ): Promise<PaginatedSupaglueRecords<ListMetadata>> {
     throw new Error('Not implemented');
   }
 
-  public async listListMembership(
-    objectType: string,
+  public async listListMembership<T extends ListCRMCommonObject>(
+    objectType: T,
     listId: string,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }> {
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
     throw new Error('Not implemented');
   }
 }

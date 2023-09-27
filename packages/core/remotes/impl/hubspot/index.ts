@@ -12,7 +12,6 @@ import type {
   ObjectMetadata,
   ObjectRecordUpsertData,
   ObjectRecordWithMetadata,
-  PaginatedResult,
   PaginationParams,
   Property,
   Provider,
@@ -41,7 +40,8 @@ import type {
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
-  ListMember,
+  ListCRMCommonObject,
+  ListCRMCommonObjectTypeMap,
   ListMetadata,
   Opportunity,
   OpportunityCreateParams,
@@ -64,6 +64,7 @@ import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
 import axios from 'axios';
+import qs from 'qs';
 import { Readable } from 'stream';
 import {
   BadRequestError,
@@ -76,6 +77,7 @@ import {
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
+import type { PaginatedSupaglueRecords } from '../../../lib';
 import {
   ASYNC_RETRY_OPTIONS,
   decodeCursor,
@@ -2039,7 +2041,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public override async listLists(
     objectType: Exclude<CRMCommonObjectType, 'user'>,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMetadata>> {
+  ): Promise<PaginatedSupaglueRecords<ListMetadata>> {
     if (objectType !== 'contact') {
       throw new BadRequestError(`Listing ${objectType} lists is not supported in HubSpot`);
     }
@@ -2060,28 +2062,31 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
     // Map response to ListMetadata interface
     return {
-      results: response.data.lists.map((record: any) => ({
+      records: response.data.lists.map((record: any) => ({
         name: record.name,
         label: record.name,
         id: record.listId.toString(),
         objectType: objectType,
         rawData: record,
       })),
-      next: response.data['has-more']
-        ? encodeCursor({
-            id: response.data.offset,
-            reverse: false,
-          })
-        : null,
-      previous: null,
+      pagination: {
+        next: response.data['has-more']
+          ? encodeCursor({
+              id: response.data.offset,
+              reverse: false,
+            })
+          : null,
+        previous: null,
+        total_count: -1,
+      },
     };
   }
 
-  public override async listListMembership(
-    objectType: string,
+  public override async listListMembership<T extends ListCRMCommonObject>(
+    objectType: T,
     listId: string,
     paginationParams: PaginationParams
-  ): Promise<PaginatedResult<ListMember> & { metadata: ListMetadata }> {
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
     if (objectType !== 'contact') {
       throw new BadRequestError(`Listing ${objectType} lists is not supported in HubSpot`);
     }
@@ -2089,6 +2094,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     await this.maybeRefreshAccessToken();
 
     const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
+    const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch('contact');
 
     const [membershipResponse, metadataResponse] = await Promise.all([
       axios.get(`https://api.hubapi.com/contacts/v1/lists/${listId}/contacts/all`, {
@@ -2096,8 +2102,14 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           Authorization: `Bearer ${this.#config.accessToken}`,
         },
         params: {
+          property: propertiesToFetch,
           count: paginationParams.page_size,
           vidOffset: cursor?.id,
+        },
+        paramsSerializer: {
+          serialize(params: Record<string, unknown>): string {
+            return qs.stringify(params, { arrayFormat: 'repeat' });
+          },
         },
       }),
       axios.get(`https://api.hubapi.com/contacts/v1/lists/${listId}`, {
@@ -2106,6 +2118,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         },
       }),
     ]);
+
+    const commonObjectContactRecords: ListCRMCommonObjectTypeMap<T>[] = membershipResponse.data.contacts.map(
+      (record: any) => ({
+        ...fromHubSpotContactToContact({ id: record.vid.toString(), ...record }),
+      })
+    ) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
 
     // Map response to ListMetadata interface
     return {
@@ -2116,18 +2134,17 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         objectType: objectType,
         rawData: metadataResponse.data,
       },
-      results: membershipResponse.data.contacts.map((record: any) => ({
-        id: record.vid.toString(),
-        rawData: record,
-      })),
-      totalCount: metadataResponse.data.metaData.size,
-      next: membershipResponse.data['has-more']
-        ? encodeCursor({
-            id: membershipResponse.data['vid-offset'],
-            reverse: false,
-          })
-        : null,
-      previous: null,
+      records: commonObjectContactRecords,
+      pagination: {
+        total_count: metadataResponse.data.metaData.size,
+        next: membershipResponse.data['has-more']
+          ? encodeCursor({
+              id: membershipResponse.data['vid-offset'],
+              reverse: false,
+            })
+          : null,
+        previous: null,
+      },
     };
   }
 

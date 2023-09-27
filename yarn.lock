@@ -6251,6 +6251,7 @@ __metadata:
     "@types/pg": ^8.10.2
     "@types/pg-copy-streams": ^1.2.2
     "@types/pluralize": ^0.0.29
+    "@types/qs": ^6
     "@types/uuid": ^9.0.1
     async-retry: ^1.3.3
     axios: ^1.3.4
@@ -6270,6 +6271,7 @@ __metadata:
     pluralize: ^8.0.0
     posthog-node: ^3.1.1
     prom-client: ^14.2.0
+    qs: ^6.11.2
     svix: ^0.84.1
     ts-jest: ^29.1.1
     typescript: ^4.9.5
@@ -7301,6 +7303,13 @@ __metadata:
   version: 6.9.7
   resolution: "@types/qs@npm:6.9.7"
   checksum: 7fd6f9c25053e9b5bb6bc9f9f76c1d89e6c04f7707a7ba0e44cc01f17ef5284adb82f230f542c2d5557d69407c9a40f0f3515e8319afd14e1e16b5543ac6cdba
+  languageName: node
+  linkType: hard
+
+"@types/qs@npm:^6":
+  version: 6.9.8
+  resolution: "@types/qs@npm:6.9.8"
+  checksum: c28e07d00d07970e5134c6eed184a0189b8a4649e28fdf36d9117fe671c067a44820890de6bdecef18217647a95e9c6aebdaaae69f5fe4b0bec9345db885f77e
   languageName: node
   linkType: hard
 

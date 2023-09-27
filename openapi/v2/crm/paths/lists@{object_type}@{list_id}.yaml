@@ -14,20 +14,21 @@ get:
       content:
         application/json:
           schema:
-            allOf:
-              - $ref: ../../../common/components/schemas/pagination.yaml
-              - type: object
-                properties:
-                  results:
-                    type: array
-                    items:
-                      $ref: ../components/schemas/objects/list_membership.yaml
-                  metadata:
-                    description: Metadata about the remote provider list view.
-                    $ref: ../components/schemas/objects/list_metadata.yaml
-                required:
-                  - results
-                  - metadata
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/list_membership.yaml
+              metadata:
+                description: Metadata about the remote provider list view.
+                $ref: ../components/schemas/objects/list_metadata.yaml
+            required:
+              - pagination
+              - records
+              - metadata
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml
