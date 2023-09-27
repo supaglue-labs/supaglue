@@ -11,6 +11,9 @@ import type {
   UpdateLeadPathParams,
   UpdateLeadRequest,
   UpdateLeadResponse,
+  UpsertLeadPathParams,
+  UpsertLeadRequest,
+  UpsertLeadResponse,
 } from '@supaglue/schemas/v2/crm';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
@@ -61,6 +64,21 @@ export default function init(app: Router): void {
         ...camelcaseKeysSansCustomFields(req.body.record),
       });
       return res.status(200).send({});
+    }
+  );
+
+  router.post(
+    '/_upsert',
+    async (
+      req: Request<UpsertLeadPathParams, UpsertLeadResponse, UpsertLeadRequest>,
+      res: Response<UpsertLeadResponse>
+    ) => {
+      const id = await crmCommonObjectService.upsert(
+        'lead',
+        req.customerConnection,
+        camelcaseKeysSansCustomFields(req.body)
+      );
+      return res.status(200).send({ record: { id } });
     }
   );
 

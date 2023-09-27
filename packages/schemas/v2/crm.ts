@@ -78,6 +78,12 @@ export type UpdateLeadRequest = operations['updateLead']['requestBody']['content
 export type UpdateLeadResponse =
   operations['updateLead']['responses'][keyof operations['updateLead']['responses']]['content']['application/json'];
 
+export type UpsertLeadPathParams = never;
+export type UpsertLeadQueryParams = never;
+export type UpsertLeadRequest = operations['upsertLead']['requestBody']['content']['application/json'];
+export type UpsertLeadResponse =
+  operations['upsertLead']['responses'][keyof operations['upsertLead']['responses']]['content']['application/json'];
+
 export type CreateOpportunityPathParams = never;
 export type CreateOpportunityQueryParams = any;
 export type CreateOpportunityRequest = operations['createOpportunity']['requestBody']['content']['application/json'];

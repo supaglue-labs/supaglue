@@ -40,6 +40,8 @@ paths:
     $ref: paths/contacts@{contact_id}.yaml
   '/leads':
     $ref: paths/leads.yaml
+  '/leads/_upsert':
+    $ref: paths/leads@upsert.yaml
   '/leads/{lead_id}':
     $ref: paths/leads@{lead_id}.yaml
   '/opportunities':

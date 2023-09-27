@@ -102,6 +102,20 @@ export interface paths {
       };
     };
   };
+  "/leads/_upsert": {
+    /**
+     * Upsert lead 
+     * @description Upsert a lead. If the lead does not exist, it will be created. If the lead does exist, it will be updated.
+     * Only supported for Salesforce.
+     */
+    post: operations["upsertLead"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/leads/{lead_id}": {
     /** Get lead */
     get: operations["getLead"];
@@ -1094,6 +1108,47 @@ export interface operations {
          */
         "application/json": {
           record: components["schemas"]["create_update_lead"];
+        };
+      };
+    };
+    responses: {
+      /** @description Lead created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Upsert lead 
+   * @description Upsert a lead. If the lead does not exist, it will be created. If the lead does exist, it will be updated.
+   * Only supported for Salesforce.
+   */
+  upsertLead: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_update_lead"];
+          upsert_on: {
+            /**
+             * @description The key to upsert on. Only `email` is supported. 
+             * @enum {string}
+             */
+            key: "email";
+            /** @description The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown. */
+            values: (string)[];
+          };
         };
       };
     };

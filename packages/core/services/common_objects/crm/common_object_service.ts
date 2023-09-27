@@ -65,7 +65,7 @@ export class CrmCommonObjectService {
     connection: ConnectionSafeAny,
     params: CRMCommonObjectTypeMap<T>['upsertParams']
   ): Promise<string> {
-    if (objectName !== 'account' && objectName !== 'contact') {
+    if (!['contact', 'lead', 'account'].includes(objectName)) {
       throw new BadRequestError(`Upsert is not supported for ${objectName}`);
     }
     const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);

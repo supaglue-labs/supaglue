@@ -31,6 +31,14 @@ export type LeadUpdateParams = LeadCreateParams & {
   id: string;
 };
 
+export type LeadUpsertParams = {
+  record: LeadCreateParams;
+  upsertOn: {
+    key: 'email';
+    values: string[];
+  };
+};
+
 export type LeadFilters = {
   emailAddress?: EqualsFilter;
   remoteId?: EqualsFilter;
@@ -40,5 +48,5 @@ export type RemoteLeadTypes = {
   object: Lead;
   createParams: LeadCreateParams;
   updateParams: LeadUpdateParams;
-  upsertParams: never;
+  upsertParams: LeadUpsertParams;
 };

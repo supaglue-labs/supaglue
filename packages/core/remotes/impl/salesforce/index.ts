@@ -36,6 +36,7 @@ import type {
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
+  LeadUpsertParams,
   ListMember,
   ListMetadata,
   Opportunity,
@@ -1357,6 +1358,23 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       throw new Error('Failed to create Salesforce lead');
     }
     return response.id;
+  }
+
+  public async upsertLead(params: LeadUpsertParams): Promise<string> {
+    if (params.upsertOn.key !== 'email') {
+      throw new BadRequestError(`Upsert key must be 'email' for Salesforce leads`);
+    }
+    const response = await this.#client.query(
+      `SELECT Id FROM Lead WHERE Email IN (${params.upsertOn.values.map((value) => `'${value}'`).join(', ')})`
+    );
+    if (response.totalSize > 1) {
+      throw new BadRequestError('More than one contact found for upsert query');
+    }
+    if (response.totalSize === 0) {
+      return this.createLead(params.record);
+    }
+    const existingContactId = response.records[0].Id as string;
+    return this.updateLead({ ...params.record, id: existingContactId });
   }
 
   public async updateLead(params: LeadUpdateParams): Promise<string> {
