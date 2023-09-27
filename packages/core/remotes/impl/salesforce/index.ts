@@ -475,6 +475,8 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         return this.upsertAccount(params as AccountUpsertParams);
       case 'contact':
         return this.upsertContact(params as ContactUpsertParams);
+      case 'lead':
+        return this.upsertLead(params as LeadUpsertParams);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
