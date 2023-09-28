@@ -86,8 +86,12 @@ tags:
     description: A `Customer` represents one of your customers.
   - name: Connections
     description: A `Connection` represents a Customer's connection to a Provider.
+  - name: ConnectionSyncConfigs
+    description: A `ConnectionSyncConfig` is a configuration for how to sync a specific Customer's data from a Provider to a Destination on a schedule.
   - name: Destinations
     description: A `Destination` is a data store where we write data in your infrastructure.
+  - name: Magic Links
+    description: A `Magic Link` is a secure URL that allows your customers to connect their accounts to Supaglue.
   - name: Providers
     description: A `Provider` is a third-party SaaS tool we can connect to (e.g. Salesforce).
   - name: Schemas
@@ -100,16 +104,12 @@ tags:
     description: A `Schema Mapping` is a mapping between a [Schema](https://docs.supaglue.com/platform/objects/overview#schemas) field and fields in your customer's Provider object.
   - name: SyncConfigs
     description: A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule.
-  - name: Syncs
-    description: A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule.
-  - name: ConnectionSyncConfigs
-    description: A `ConnectionSyncConfig` is a configuration for how to sync a specific Customer's data from a Provider to a Destination on a schedule.
   - name: SyncRuns
     description: A `SyncRun` is a single execution of a Sync at a point in time.
+  - name: Syncs
+    description: A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule.
   - name: Webhooks
     description: A `Webhook` is a way for Supaglue to notify you when events have happened.
-  - name: Magic Links
-    description: A `Magic Link` is a secure URL that allows your customers to connect their accounts to Supaglue.
 components:
   securitySchemes:
     x-api-key:

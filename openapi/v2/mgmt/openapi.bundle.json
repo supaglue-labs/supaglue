@@ -2242,8 +2242,16 @@
       "description": "A `Connection` represents a Customer's connection to a Provider."
     },
     {
+      "name": "ConnectionSyncConfigs",
+      "description": "A `ConnectionSyncConfig` is a configuration for how to sync a specific Customer's data from a Provider to a Destination on a schedule."
+    },
+    {
       "name": "Destinations",
       "description": "A `Destination` is a data store where we write data in your infrastructure."
+    },
+    {
+      "name": "Magic Links",
+      "description": "A `Magic Link` is a secure URL that allows your customers to connect their accounts to Supaglue."
     },
     {
       "name": "Providers",
@@ -2270,24 +2278,16 @@
       "description": "A `SyncConfig` is a configuration for how to sync your Customers' data from a Provider to a Destination on a schedule."
     },
     {
-      "name": "Syncs",
-      "description": "A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule."
-    },
-    {
-      "name": "ConnectionSyncConfigs",
-      "description": "A `ConnectionSyncConfig` is a configuration for how to sync a specific Customer's data from a Provider to a Destination on a schedule."
-    },
-    {
       "name": "SyncRuns",
       "description": "A `SyncRun` is a single execution of a Sync at a point in time."
     },
     {
-      "name": "Webhooks",
-      "description": "A `Webhook` is a way for Supaglue to notify you when events have happened."
+      "name": "Syncs",
+      "description": "A `Sync` is a way for a Customer to sync data from a Provider to a Destination on a schedule."
     },
     {
-      "name": "Magic Links",
-      "description": "A `Magic Link` is a secure URL that allows your customers to connect their accounts to Supaglue."
+      "name": "Webhooks",
+      "description": "A `Webhook` is a way for Supaglue to notify you when events have happened."
     }
   ],
   "components": {
