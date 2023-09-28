@@ -72,6 +72,7 @@ jobs:
           tags: |
             type=ref,event=branch,prefix=branch-,enable=${{ github.ref != 'refs/heads/main' }}
             type=edge,branch=main
+            type=sha,branch=main
           labels: |
             org.opencontainers.image.source=${{ github.event.repository.html_url }}
             org.opencontainers.image.revision=${{ github.sha }}
