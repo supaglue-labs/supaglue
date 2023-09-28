@@ -39,18 +39,11 @@ git pull
 
 VERSION=$(jq -r '.version' package.json)
 
-# echo "Building and pushing mgmt-ui"
-# "${DIR}/build_and_push.sh" mgmt-ui
-
 RELEASE_SHA=$(git rev-parse HEAD | cut -c1-7 | xargs -I{} echo "sha-{}")
 
-docker pull supaglue/api:"$RELEASE_SHA"
-docker tag supaglue/api:"$RELEASE_SHA" supaglue/api:"$VERSION"
-docker push supaglue/api:"$VERSION"
+docker buildx imagetools create supaglue/api:"$RELEASE_SHA" --tag supaglue/api:"$VERSION"
 
-docker pull supaglue/sync-worker:"$RELEASE_SHA"
-docker tag supaglue/sync-worker:"$RELEASE_SHA" supaglue/sync-worker:"$VERSION"
-docker push supaglue/sync-worker:"$VERSION"
+docker buildx imagetools create supaglue/sync-worker:"$RELEASE_SHA" --tag supaglue/sync-worker:"$VERSION"
 
 git tag v"$VERSION"
 git push origin --tags
