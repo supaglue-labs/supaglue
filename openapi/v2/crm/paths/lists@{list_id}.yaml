@@ -1,6 +1,14 @@
 get:
-  operationId: getListMembership
-  summary: Get list membership
+  operationId: listListMemberships
+  summary: List list memberships
+  description: |
+    Support:
+
+    | Provider   | Object                                      | Common Schema support | Notes                                 |
+    | ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |
+    | Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |
+    | Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |
+
   tags:
     - Lists
   security:
@@ -8,6 +16,7 @@ get:
   parameters:
     - $ref: ../../../common/components/parameters/query/page_size.yaml
     - $ref: ../../../common/components/parameters/query/cursor.yaml
+    - $ref: ../components/parameters/query/object_type.yaml
   responses:
     200:
       description: List membership
@@ -32,7 +41,6 @@ get:
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml
-  - $ref: ../components/parameters/path/object_type.yaml
   - name: list_id
     in: path
     required: true

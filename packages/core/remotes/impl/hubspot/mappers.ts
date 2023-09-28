@@ -87,22 +87,89 @@ export const fromHubSpotCompanyToAccount = ({
 };
 
 /**
- * Takes { "a": { "value": 1 }, "b": { "value" : 2 } } and converts it to { "a": 1, "b": 2 }
- * @param v1Properties Hubspot V1 list object properties
- * @returns Hubspot V3 standard object properties shape
+ * @returns Same as `fromHubSpotContactToContact()`, but with `rawData` that is Hubspot's original `SimplePublicObject`.
  */
-export const fromHubspotV1ListObjectPropertiesToHubspotV3Properties = (
-  v1Properties: Record<string, { value: string }>
-): Record<string, string> => {
-  const v3Properties: Record<string, string> = Object.keys(v1Properties)
-    .map((key) => ({
-      [key]: v1Properties[key].value as string,
-    }))
-    .reduce((a, v) => ({ ...a, [Object.keys(v)[0]]: v[Object.keys(v)[0]] }), {});
+export const fromHubSpotContactToContact_v2 = (hubspotSimplePublicObject: RecordWithFlattenedAssociations): Contact => {
+  const { id, properties, createdAt, updatedAt, associations, archived, archivedAt } = hubspotSimplePublicObject;
+  const emailAddresses = [
+    properties.email
+      ? {
+          emailAddress: properties.email,
+          emailAddressType: 'primary',
+        }
+      : null,
+    properties.work_email
+      ? {
+          emailAddress: properties.work_email,
+          emailAddressType: 'work',
+        }
+      : null,
+  ].filter(Boolean) as EmailAddress[];
+  let accountId = null;
+  if (associations?.company?.length) {
+    accountId = associations.company[0] ?? null;
+  }
 
-  return v3Properties;
+  const phoneNumbers = [
+    properties.phone
+      ? {
+          phoneNumber: properties.phone,
+          phoneNumberType: 'primary',
+        }
+      : null,
+    properties.mobilePhone
+      ? {
+          phoneNumber: properties.mobilePhone,
+          phoneNumberType: 'mobile',
+        }
+      : null,
+    properties.fax
+      ? {
+          phoneNumber: properties.fax,
+          phoneNumberType: 'fax',
+        }
+      : null,
+  ].filter(Boolean) as PhoneNumber[];
+
+  const addresses: Address[] =
+    properties.address || properties.city || properties.state || properties.zip || properties.country
+      ? [
+          {
+            street1: properties.address ?? null,
+            street2: null,
+            city: properties.city ?? null,
+            state: properties.state ?? null,
+            postalCode: properties.zip ?? null,
+            country: properties.country ?? null,
+            addressType: 'primary',
+          },
+        ]
+      : [];
+
+  return {
+    id,
+    accountId,
+    ownerId: properties.hubspot_owner_id ?? null,
+    firstName: properties.firstname ?? null,
+    lastName: properties.lastname ?? null,
+    addresses,
+    phoneNumbers,
+    emailAddresses,
+    lifecycleStage: (properties.lifecyclestage as LifecycleStage) ?? null,
+    lastActivityAt: properties.notes_last_updated ? new Date(properties.notes_last_updated) : null,
+    createdAt: new Date(createdAt),
+    updatedAt: new Date(updatedAt),
+    isDeleted: !!archived,
+    lastModifiedAt: maxDate(new Date(updatedAt), archivedAt ? new Date(archivedAt) : null),
+    rawData: hubspotSimplePublicObject,
+  };
 };
 
+/**
+ * Map a V3 Hubspot SimplePublicObject Contact to a Supaglue CRM Contact.
+ * Note: `rawData` is not the original Hubspot SimplePublicObject, but SimplePublicObject.properties and _associations.
+ * @todo: We want to convert `rawData` to by the original Hubspot SimplePublicObject Contact.
+ */
 export const fromHubSpotContactToContact = ({
   id,
   properties,

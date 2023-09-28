@@ -1212,7 +1212,7 @@
         }
       ]
     },
-    "/lists/{object_type}": {
+    "/lists": {
       "get": {
         "operationId": "listLists",
         "summary": "List lists",
@@ -1230,6 +1230,9 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/object_type"
           }
         ],
         "responses": {
@@ -1266,16 +1269,14 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
-        },
-        {
-          "$ref": "#/components/parameters/object_type"
         }
       ]
     },
-    "/lists/{object_type}/{list_id}": {
+    "/lists/{list_id}": {
       "get": {
-        "operationId": "getListMembership",
-        "summary": "Get list membership",
+        "operationId": "listListMemberships",
+        "summary": "List list memberships",
+        "description": "Support:\n\n| Provider   | Object                                      | Common Schema support | Notes                                 |\n| ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |\n| Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |\n| Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |\n",
         "tags": [
           "Lists"
         ],
@@ -1290,6 +1291,9 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/object_type"
           }
         ],
         "responses": {
@@ -1331,9 +1335,6 @@
         },
         {
           "$ref": "#/components/parameters/x-provider-name"
-        },
-        {
-          "$ref": "#/components/parameters/object_type"
         },
         {
           "name": "list_id",
@@ -2654,18 +2655,19 @@
       },
       "object_type": {
         "name": "object_type",
-        "in": "path",
-        "required": true,
+        "in": "query",
         "schema": {
           "type": "string",
           "enum": [
             "contact",
             "account",
-            "lead",
-            "opportunity"
-          ]
+            "opportunity",
+            "lead"
+          ],
+          "example": "contact"
         },
-        "description": "The object type of the list. \n\n\nObject support by provider:\n\n\nSalesforce: `contact`, `account`, `lead`, `opportunity`.\n\n\nHubspot: `contact`.\n"
+        "description": "The Supaglue common object type to fetch a list for.",
+        "required": true
       }
     }
   }

@@ -169,7 +169,7 @@ export interface paths {
       };
     };
   };
-  "/lists/{object_type}": {
+  "/lists": {
     /** List lists */
     get: operations["listLists"];
     parameters: {
@@ -177,21 +177,25 @@ export interface paths {
         "x-customer-id": components["parameters"]["x-customer-id"];
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
-      path: {
-        object_type: components["parameters"]["object_type"];
-      };
     };
   };
-  "/lists/{object_type}/{list_id}": {
-    /** Get list membership */
-    get: operations["getListMembership"];
+  "/lists/{list_id}": {
+    /**
+     * List list memberships 
+     * @description Support:
+     * 
+     * | Provider   | Object                                      | Common Schema support | Notes                                 |
+     * | ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |
+     * | Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |
+     * | Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |
+     */
+    get: operations["listListMemberships"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        object_type: components["parameters"]["object_type"];
         list_id: string;
       };
     };
@@ -677,19 +681,8 @@ export interface components {
     "x-customer-id": string;
     /** @description The provider name */
     "x-provider-name": string;
-    /**
-     * @description The object type of the list. 
-     * 
-     * 
-     * Object support by provider:
-     * 
-     * 
-     * Salesforce: `contact`, `account`, `lead`, `opportunity`.
-     * 
-     * 
-     * Hubspot: `contact`.
-     */
-    object_type: "contact" | "account" | "lead" | "opportunity";
+    /** @description The Supaglue common object type to fetch a list for. */
+    object_type: "contact" | "account" | "opportunity" | "lead";
   };
   requestBodies: never;
   headers: never;
@@ -1260,16 +1253,14 @@ export interface operations {
   /** List lists */
   listLists: {
     parameters: {
-      query?: {
+      query: {
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
+        object_type: components["parameters"]["object_type"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
         "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-      path: {
-        object_type: components["parameters"]["object_type"];
       };
     };
     responses: {
@@ -1284,19 +1275,27 @@ export interface operations {
       };
     };
   };
-  /** Get list membership */
-  getListMembership: {
+  /**
+   * List list memberships 
+   * @description Support:
+   * 
+   * | Provider   | Object                                      | Common Schema support | Notes                                 |
+   * | ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |
+   * | Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |
+   * | Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |
+   */
+  listListMemberships: {
     parameters: {
-      query?: {
+      query: {
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
+        object_type: components["parameters"]["object_type"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        object_type: components["parameters"]["object_type"];
         list_id: string;
       };
     };

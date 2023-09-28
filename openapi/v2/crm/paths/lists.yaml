@@ -8,6 +8,7 @@ get:
   parameters:
     - $ref: ../../../common/components/parameters/query/page_size.yaml
     - $ref: ../../../common/components/parameters/query/cursor.yaml
+    - $ref: ../components/parameters/query/object_type.yaml
   responses:
     200:
       description: List Lists
@@ -28,4 +29,3 @@ get:
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml
-  - $ref: ../components/parameters/path/object_type.yaml

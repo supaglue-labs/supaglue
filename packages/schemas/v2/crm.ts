@@ -115,14 +115,14 @@ export type SendPassthroughRequestRequest =
 export type SendPassthroughRequestResponse =
   operations['sendPassthroughRequest']['responses'][keyof operations['sendPassthroughRequest']['responses']]['content']['application/json'];
 
-export type ListListsPathParams = paths['/lists/{object_type}']['parameters']['path'];
+export type ListListsPathParams = never;
 export type ListListsQueryParams = Required<operations['listLists']>['parameters']['query'];
 export type ListListsRequest = never;
 export type ListListsResponse =
   operations['listLists']['responses'][keyof operations['listLists']['responses']]['content']['application/json'];
 
-export type GetListMembershipPathParams = paths['/lists/{object_type}/{list_id}']['parameters']['path'];
-export type GetListMembershipQueryParams = Required<operations['getListMembership']>['parameters']['query'];
+export type GetListMembershipPathParams = paths['/lists/{list_id}']['parameters']['path'];
+export type GetListMembershipQueryParams = Required<operations['listListMemberships']>['parameters']['query'];
 export type GetListMembershipRequest = never;
 export type GetListMembershipResponse =
-  operations['getListMembership']['responses'][keyof operations['getListMembership']['responses']]['content']['application/json'];
+  operations['listListMemberships']['responses'][keyof operations['listListMemberships']['responses']]['content']['application/json'];
