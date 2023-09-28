@@ -2,7 +2,6 @@
 
 set -euo pipefail
 
-APPS=(api sync-worker salesforce-pub-sub)
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [ -z "${1-}" ]; then
@@ -40,21 +39,18 @@ git pull
 
 VERSION=$(jq -r '.version' package.json)
 
-# build each app in APPS
-for APP_NAME in "${APPS[@]}"; do
-  WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${APP_NAME}\") | .location")
+# echo "Building and pushing mgmt-ui"
+# "${DIR}/build_and_push.sh" mgmt-ui
 
-  echo "Building and pushing $APP_NAME"
-  yarn dlx --package @sentry/cli sentry-cli releases new --project "$APP_NAME" --org supaglue "$VERSION"
-  yarn turbo run build --filter="${APP_NAME}..."
-  yarn dlx --package @sentry/cli sentry-cli releases files --project "$APP_NAME" --org supaglue "$VERSION" upload-sourcemaps "${WORKSPACE_PATH}/dist"
-  "${DIR}/build_and_push.sh" "$APP_NAME"
-  yarn dlx --package @sentry/cli sentry-cli releases finalize --project "$APP_NAME" --org supaglue "$VERSION"
-done
+RELEASE_SHA=$(git rev-parse HEAD | cut -c1-7 | xargs -I{} echo "sha-{}")
 
+docker pull supaglue/api:"$RELEASE_SHA"
+docker tag supaglue/api:"$RELEASE_SHA" supaglue/api:"$VERSION"
+docker push supaglue/api:"$VERSION"
 
-echo "Building and pushing mgmt-ui"
-"${DIR}/build_and_push.sh" mgmt-ui
+docker pull supaglue/sync-worker:"$RELEASE_SHA"
+docker tag supaglue/sync-worker:"$RELEASE_SHA" supaglue/sync-worker:"$VERSION"
+docker push supaglue/sync-worker:"$VERSION"
 
 git tag v"$VERSION"
 git push origin --tags
