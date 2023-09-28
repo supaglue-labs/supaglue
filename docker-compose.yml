@@ -22,7 +22,8 @@ x-common-env: &common-env
   SALESLOFT_CLIENT_ID:
   SALESLOFT_CLIENT_SECRET:
   # Edit this when using ngrok
-  SUPAGLUE_SERVER_URL: http://localhost:8080
+  SUPAGLUE_SERVER_URL: ${SUPAGLUE_SERVER_URL:-http://localhost:8080}
+  SUPAGLUE_MAGIC_LINK_URL:
 
 x-fe-api-common-env: &fe-api-common-env
   SUPAGLUE_INTERNAL_TOKEN: some-internal-token
@@ -62,7 +63,7 @@ services:
       SUPAGLUE_SYNC_PERIOD_MS:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
     restart: on-failure
-    command: /bin/sh -c "./apps/sync-worker/scripts/start_dev.sh"
+    command: /bin/sh -c "./apps/api/scripts/start_dev.sh"
 
   sync-worker:
     image: node:18-bullseye
