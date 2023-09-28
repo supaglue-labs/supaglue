@@ -1526,20 +1526,21 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // https://developer.salesforce.com/docs/atlas.en-us.210.0.object_reference.meta/object_reference/sforce_api_calls_concepts_core_data_objects.htm#i1421192
     switch (error.errorCode) {
-      case 'REQUIRED_FIELD_MISSING':
-      case 'STRING_TOO_LONG':
-      case 'INVALID_CROSS_REFERENCE_KEY':
       case 'DUPLICATE_VALUE':
+      case 'ERROR_HTTP_400':
+      case 'INVALID_CROSS_REFERENCE_KEY':
       case 'INVALID_FIELD':
       case 'INVALID_OPERATION':
       case 'INVALID_TYPE':
-      case 'MISSING_ARGUMENT':
       case 'MALFORMED_ID':
+      case 'MISSING_ARGUMENT':
+        return new InternalServerError(inferredTitle, error);
       case 'INVALID_EMAIL_ADDRESS':
       case 'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST':
+      case 'REQUIRED_FIELD_MISSING':
+      case 'STRING_TOO_LONG':
       case 'TOO_MANY_ENUM_VALUE':
-      case 'ERROR_HTTP_400':
-        return new InternalServerError(inferredTitle, error);
+        return new BadRequestError(inferredTitle, error);
       case 'INVALID_ID_FIELD':
       case 'INVALID_LOCATOR':
       case 'ERROR_HTTP_404':
