@@ -217,36 +217,50 @@ export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): 
  * Issues:
  * - `linkedin_send_message` is not natively supported
  * - No ability to use existing template ID
+ * - Step group vs. steps
+ * - date / interval based sequences vs. day based sequences
+ * - Differentiate between auto-email vs. manual email
+ * - Only works if a cadence has exactly 0 steps... https://share.cleanshot.com/dVx6sqTD
  */
-export const toSalesloftCadenceStepImportParams = (seqStep: SequenceStepCreateParams): CadenceImport => {
-  const step: Step | null =
-    seqStep.type === 'manual_email' && 'body' in seqStep.template
+export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParams): CadenceImport => {
+  const cadenceStep: Step | null =
+    (step.type === 'manual_email' || step.type === 'auto_email') && 'body' in step.template
       ? {
           enabled: true,
           type: 'Email',
-          name: `Step ${seqStep.order}`,
+          name: `Step ${step.order}`,
           type_settings: {
-            email_template: {
-              title: seqStep.template.name,
-              subject: seqStep.template.subject,
-              body: seqStep.template.body,
-            },
+            email_template: { title: step.template.name, subject: step.template.subject, body: step.template.body },
           },
         }
-      : null;
+      : step.type === 'call'
+      ? {
+          enabled: false,
+          type: 'Phone',
+          name: `Step ${step.order}`,
+          type_settings: { instructions: step.taskNote ?? '' },
+        }
+      : {
+          // Fallback step
+          enabled: false,
+          type: 'Other',
+          name: `Step ${step.order}`,
+          type_settings: { instructions: `${step.type}: ${step.taskNote ?? ''}` },
+        };
   return {
     cadence_content: {
-      cadence_id: parseInt(seqStep.sequenceId, 10),
+      cadence_id: parseInt(step.sequenceId, 10),
       step_groups: [
         {
-          day: 1, // What should this be?
+          // TODO: What should this actually be?
+          day: step.intervalSeconds ? Math.ceil(step.intervalSeconds / 86400) : 1,
           automated: false,
           due_immediately: false,
-          steps: step ? [step] : [],
+          steps: cadenceStep ? [cadenceStep] : [],
           reference_id: 0,
         },
       ],
-      ...seqStep.customFields,
+      ...step.customFields,
     },
   };
 };
