@@ -79,7 +79,7 @@ type SalesloftPaginatedRecordsWithCount = {
 
 class SalesloftClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
-  readonly #headers: Record<string, string>;
+  #headers: Record<string, string>;
   readonly #baseURL: string;
 
   public constructor(credentials: Credentials) {
@@ -115,6 +115,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       this.#credentials.accessToken = newAccessToken;
       this.#credentials.refreshToken = newRefreshToken;
       this.#credentials.expiresAt = newExpiresAt;
+      this.#headers = { Authorization: `Bearer ${newAccessToken}` };
 
       this.emit('token_refreshed', {
         accessToken: newAccessToken,
