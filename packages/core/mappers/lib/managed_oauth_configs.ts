@@ -97,6 +97,7 @@ export const managedOAuthConfigs: Record<string, OAuthConfigDecrypted> = {
       'users.all',
       'sequences.all',
       'sequenceStates.all',
+      'sequenceSteps.write',
       'mailboxes.all',
       'sequenceSteps.all',
       'sequenceTemplates.all',
