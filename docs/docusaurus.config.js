@@ -293,20 +293,8 @@ const config = {
                 to: '/destinations/bigquery',
               },
               {
-                label: 'MongoDB',
-                to: '/destinations/mongodb',
-              },
-              {
-                label: 'MySQL',
-                to: '/destinations/MySQL',
-              },
-              {
                 label: 'Postgres',
                 to: '/destinations/postgres',
-              },
-              {
-                label: 'Snowflake',
-                to: '/destinations/snowflake',
               },
             ],
           },
