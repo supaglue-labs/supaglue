@@ -1244,7 +1244,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('company');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company');
     const associations = [
@@ -1396,7 +1396,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const properties = await this.getCommonObjectPropertyIdsToFetch('deal');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal');
     const associations = [
@@ -1614,7 +1614,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('contact');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact');
     const associations = [
@@ -2094,6 +2094,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     await this.maybeRefreshAccessToken();
 
     const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
+    // TODO should use fieldMappingConfig here
     const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch('contact');
 
     const [membershipResponse, metadataResponse] = await Promise.all([
