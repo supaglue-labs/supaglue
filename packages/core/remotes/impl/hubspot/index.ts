@@ -1164,11 +1164,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   private async getCommonObjectPropertyIdsToFetch(
     objectType: HubSpotCommonObjectObjectType,
-    fieldMappingConfig?: FieldMappingConfig
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<string[]> {
     const availableProperties = await this.listPropertiesForRawObjectName(objectType);
     const availablePropertyIds = availableProperties.map(({ id }) => id);
-    if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
+    if (fieldMappingConfig.type === 'inherit_all_fields') {
       return availablePropertyIds;
     }
     const properties = [...propertiesToFetch[objectType]];
@@ -1244,7 +1244,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('company');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company');
     const associations = [
@@ -1396,7 +1396,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const properties = await this.getCommonObjectPropertyIdsToFetch('deal');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal');
     const associations = [
@@ -1614,7 +1614,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('contact');
+    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact');
     const associations = [
@@ -2085,7 +2085,8 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public override async listListMembership<T extends ListCRMCommonObject>(
     objectType: T,
     listId: string,
-    paginationParams: PaginationParams
+    paginationParams: PaginationParams,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
     if (objectType !== 'contact') {
       throw new BadRequestError(`Listing ${objectType} lists is not supported in HubSpot`);
@@ -2094,7 +2095,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     await this.maybeRefreshAccessToken();
 
     const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
-    const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch('contact');
+    const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
 
     const [membershipResponse, metadataResponse] = await Promise.all([
       axios.get(`https://api.hubapi.com/contacts/v1/lists/${listId}/contacts/all`, {

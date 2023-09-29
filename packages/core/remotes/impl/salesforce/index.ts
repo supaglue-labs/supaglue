@@ -375,12 +375,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   async getCommonPropertiesToFetch(
     commonObjectType: CRMCommonObjectType | ListCRMCommonObject,
-    fieldMappingConfig?: FieldMappingConfig
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<string[]> {
     const sobject = capitalizeString(commonObjectType);
     const allProperties = await this.getSObjectProperties(sobject);
     const allPropertyIds = allProperties.map(({ id }) => id);
-    if (!fieldMappingConfig || fieldMappingConfig.type === 'inherit_all_fields') {
+    if (fieldMappingConfig.type === 'inherit_all_fields') {
       return allPropertyIds;
     }
     return intersection(allPropertyIds, [
@@ -1439,10 +1439,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public override async listListMembership<T extends ListCRMCommonObject>(
     objectType: T,
     listId: string,
-    paginationParams: PaginationParams
+    paginationParams: PaginationParams,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
     const commonObjectType = capitalizeString(objectType);
-    const propertiesToFetch = await this.getCommonPropertiesToFetch(objectType);
+    const propertiesToFetch = await this.getCommonPropertiesToFetch(objectType, fieldMappingConfig);
 
     const listDescription = await this.#client.sobject(commonObjectType).listview(listId).describe();
     const queryRemainder = (listDescription as any).query.split(' FROM ')[1];
