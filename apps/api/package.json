@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "private": true,
   "packageManager": "yarn@3.4.1",
   "type": "commonjs",
