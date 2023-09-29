@@ -45,7 +45,8 @@ export interface CrmRemoteClient extends RemoteClient {
   listListMembership<T extends ListCRMCommonObject>(
     objectType: T,
     listId: string,
-    paginationParams: PaginationParams
+    paginationParams: PaginationParams,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }>;
 }
 
@@ -98,7 +99,8 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
   public async listListMembership<T extends ListCRMCommonObject>(
     objectType: T,
     listId: string,
-    paginationParams: PaginationParams
+    paginationParams: PaginationParams,
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
     throw new Error('Not implemented');
   }

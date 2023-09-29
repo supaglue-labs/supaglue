@@ -151,9 +151,9 @@ export class CrmCommonObjectService {
     paginationParams: PaginationParams
   ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
     const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
-
+    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectType);
     const end = remoteDuration.startTimer({ operation: 'listListMembership', remote_name: providerName });
-    const response = await remoteClient.listListMembership(objectType, listId, paginationParams);
+    const response = await remoteClient.listListMembership(objectType, listId, paginationParams, fieldMappingConfig);
     end();
 
     return response;
