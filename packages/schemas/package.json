@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/schemas",
-  "version": "0.15.2",
+  "version": "0.16.0",
   "scripts": {
     "generate": "tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/crm/openapi.bundle.json gen/v2/crm.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/mgmt/openapi.bundle.json gen/v2/mgmt.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/engagement/openapi.bundle.json gen/v2/engagement.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/actions/openapi.bundle.json gen/v2/actions.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/metadata/openapi.bundle.json gen/v2/metadata.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/data/openapi.bundle.json gen/v2/data.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/enrichment/openapi.bundle.json gen/v2/enrichment.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/marketing-automation/openapi.bundle.json gen/v2/marketing-automation.ts && tsx scripts/generate_typescript_from_openapi.ts ../../openapi/v2/ticketing/openapi.bundle.json gen/v2/ticketing.ts"
   },
