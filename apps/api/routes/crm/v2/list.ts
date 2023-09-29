@@ -30,13 +30,13 @@ export default function init(app: Router): void {
   const router = Router();
 
   router.get(
-    '/:object_type',
+    '/',
     async (
       req: Request<ListListsPathParams, ListListsResponse, ListListsRequest, ListListsQueryParams>,
       res: Response<ListListsResponse>
     ) => {
       const { cursor, page_size } = req.query ?? {};
-      const { object_type: objectType } = req.params;
+      const { object_type: objectType } = req.query;
       const { records, pagination } = await crmCommonObjectService.listLists(objectType, req.customerConnection, {
         cursor,
         page_size,
@@ -55,7 +55,7 @@ export default function init(app: Router): void {
   );
 
   router.get(
-    '/contact/:list_id',
+    '/:list_id',
     async (
       req: Request<
         GetListMembershipPathParams,
@@ -65,154 +65,121 @@ export default function init(app: Router): void {
       >,
       res: Response<GetListMembershipResponse>
     ) => {
-      const { cursor, page_size } = req.query ?? {};
+      const { cursor, page_size, object_type: objectType } = req.query ?? {};
       const { list_id: listId } = req.params;
-      const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
-        'contact',
-        listId,
-        req.customerConnection,
-        {
-          cursor,
-          page_size,
+
+      switch (objectType) {
+        case 'contact': {
+          const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
+            objectType,
+            listId,
+            req.customerConnection,
+            {
+              cursor,
+              page_size,
+            }
+          );
+
+          const snakecasedRecords: SnakecasedKeysCrmContact[] = records.map((record) =>
+            toSnakecasedKeysCrmContact(record)
+          );
+
+          // TODO: add mappers
+          return res.status(200).send({
+            pagination,
+            metadata: {
+              object_type: metadata.objectType,
+              raw_data: metadata.rawData,
+              id: metadata.id,
+              name: metadata.name,
+              label: metadata.label,
+            },
+            records: snakecasedRecords,
+          });
         }
-      );
+        case 'account': {
+          const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
+            objectType,
+            listId,
+            req.customerConnection,
+            {
+              cursor,
+              page_size,
+            }
+          );
 
-      const snakecasedRecords: SnakecasedKeysCrmContact[] = records.map((record) => toSnakecasedKeysCrmContact(record));
+          const snakecasedRecords: SnakecasedKeysCrmAccount[] = records.map((record) =>
+            toSnakecasedKeysCrmAccount(record)
+          );
 
-      // TODO: add mappers
-      return res.status(200).send({
-        pagination,
-        metadata: {
-          object_type: metadata.objectType,
-          raw_data: metadata.rawData,
-          id: metadata.id,
-          name: metadata.name,
-          label: metadata.label,
-        },
-        records: snakecasedRecords,
-      });
-    }
-  );
-
-  router.get(
-    '/account/:list_id',
-    async (
-      req: Request<
-        GetListMembershipPathParams,
-        GetListMembershipResponse,
-        GetListMembershipRequest,
-        GetListMembershipQueryParams
-      >,
-      res: Response<GetListMembershipResponse>
-    ) => {
-      const { cursor, page_size } = req.query ?? {};
-      const { list_id: listId } = req.params;
-      const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
-        'account',
-        listId,
-        req.customerConnection,
-        {
-          cursor,
-          page_size,
+          // TODO: add mappers
+          return res.status(200).send({
+            pagination,
+            metadata: {
+              object_type: metadata.objectType,
+              raw_data: metadata.rawData,
+              id: metadata.id,
+              name: metadata.name,
+              label: metadata.label,
+            },
+            records: snakecasedRecords,
+          });
         }
-      );
+        case 'lead': {
+          const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
+            objectType,
+            listId,
+            req.customerConnection,
+            {
+              cursor,
+              page_size,
+            }
+          );
 
-      const snakecasedResults: SnakecasedKeysCrmAccount[] = records.map((record) => toSnakecasedKeysCrmAccount(record));
+          const snakecasedRecords: SnakecasedKeysCrmLead[] = records.map((record) => toSnakecasedKeysCrmLead(record));
 
-      // TODO: add mappers
-      return res.status(200).send({
-        pagination,
-        metadata: {
-          object_type: metadata.objectType,
-          raw_data: metadata.rawData,
-          id: metadata.id,
-          name: metadata.name,
-          label: metadata.label,
-        },
-        records: snakecasedResults,
-      });
-    }
-  );
-
-  router.get(
-    '/lead/:list_id',
-    async (
-      req: Request<
-        GetListMembershipPathParams,
-        GetListMembershipResponse,
-        GetListMembershipRequest,
-        GetListMembershipQueryParams
-      >,
-      res: Response<GetListMembershipResponse>
-    ) => {
-      const { cursor, page_size } = req.query ?? {};
-      const { list_id: listId } = req.params;
-      const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
-        'lead',
-        listId,
-        req.customerConnection,
-        {
-          cursor,
-          page_size,
+          // TODO: add mappers
+          return res.status(200).send({
+            pagination,
+            metadata: {
+              object_type: metadata.objectType,
+              raw_data: metadata.rawData,
+              id: metadata.id,
+              name: metadata.name,
+              label: metadata.label,
+            },
+            records: snakecasedRecords,
+          });
         }
-      );
+        case 'opportunity': {
+          const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
+            objectType,
+            listId,
+            req.customerConnection,
+            {
+              cursor,
+              page_size,
+            }
+          );
 
-      const snakecasedResults: SnakecasedKeysCrmLead[] = records.map((record) => toSnakecasedKeysCrmLead(record));
+          const snakecasedRecords: SnakecasedKeysOpportunity[] = records.map((record) =>
+            toSnakecasedKeysCrmOpportunity(record)
+          );
 
-      // TODO: add mappers
-      return res.status(200).send({
-        pagination,
-        metadata: {
-          object_type: metadata.objectType,
-          raw_data: metadata.rawData,
-          id: metadata.id,
-          name: metadata.name,
-          label: metadata.label,
-        },
-        records: snakecasedResults,
-      });
-    }
-  );
-
-  router.get(
-    '/opportunity/:list_id',
-    async (
-      req: Request<
-        GetListMembershipPathParams,
-        GetListMembershipResponse,
-        GetListMembershipRequest,
-        GetListMembershipQueryParams
-      >,
-      res: Response<GetListMembershipResponse>
-    ) => {
-      const { cursor, page_size } = req.query ?? {};
-      const { list_id: listId } = req.params;
-      const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
-        'opportunity',
-        listId,
-        req.customerConnection,
-        {
-          cursor,
-          page_size,
+          // TODO: add mappers
+          return res.status(200).send({
+            pagination,
+            metadata: {
+              object_type: metadata.objectType,
+              raw_data: metadata.rawData,
+              id: metadata.id,
+              name: metadata.name,
+              label: metadata.label,
+            },
+            records: snakecasedRecords,
+          });
         }
-      );
-
-      const snakecasedResults: SnakecasedKeysOpportunity[] = records.map((record) =>
-        toSnakecasedKeysCrmOpportunity(record)
-      );
-
-      // TODO: add mappers
-      return res.status(200).send({
-        pagination,
-        metadata: {
-          object_type: metadata.objectType,
-          raw_data: metadata.rawData,
-          id: metadata.id,
-          name: metadata.name,
-          label: metadata.label,
-        },
-        records: snakecasedResults,
-      });
+      }
     }
   );
 

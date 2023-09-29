@@ -1,0 +1,12 @@
+name: object_type
+in: query
+schema:
+  type: string
+  enum:
+    - contact
+    - account
+    - opportunity
+    - lead
+  example: contact
+description: The Supaglue common object type to fetch a list for.
+required: true

@@ -64,7 +64,6 @@ import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
 import axios from 'axios';
-import qs from 'qs';
 import { Readable } from 'stream';
 import {
   BadRequestError,
@@ -95,9 +94,9 @@ import { toMappedProperties } from '../../utils/properties';
 import {
   fromHubSpotCompanyToAccount,
   fromHubSpotContactToContact,
+  fromHubSpotContactToContact_v2,
   fromHubSpotDealToOpportunity,
   fromHubspotOwnerToUser,
-  fromHubspotV1ListObjectPropertiesToHubspotV3Properties,
   fromObjectToHubspotObjectType,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
@@ -2103,14 +2102,9 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           Authorization: `Bearer ${this.#config.accessToken}`,
         },
         params: {
-          property: propertiesToFetch,
+          property: 'hs_object_id',
           count: paginationParams.page_size,
           vidOffset: cursor?.id,
-        },
-        paramsSerializer: {
-          serialize(params: Record<string, unknown>): string {
-            return qs.stringify(params, { arrayFormat: 'repeat' });
-          },
         },
       }),
       axios.get(`https://api.hubapi.com/contacts/v1/lists/${listId}`, {
@@ -2120,14 +2114,25 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       }),
     ]);
 
-    const commonObjectContactRecords: ListCRMCommonObjectTypeMap<T>[] = membershipResponse.data.contacts.map(
-      (record: any) => {
-        return fromHubSpotContactToContact({
-          id: record.vid.toString(),
-          createdAt: record.properties.createdate.value,
-          updatedAt: record.properties.lastmodifieddate.value,
+    // Make a Hubspot V3 Contact batch call using the record id (hs_object_id) from the V1 call so we can use our existing CRM Contact common schema
+    // https://developers.hubspot.com/docs/api/crm/contacts#retrieve-contacts
+    const batchResponseSimplePublicObject = await this.#client.crm.contacts.batchApi.read({
+      properties: propertiesToFetch,
+      propertiesWithHistory: [],
+      inputs: membershipResponse.data.contacts.map((contact: any) => ({
+        id: contact.properties.hs_object_id.value,
+      })),
+    });
+
+    const commonObjectContactRecords: ListCRMCommonObjectTypeMap<T>[] = batchResponseSimplePublicObject.results.map(
+      (result) => {
+        return fromHubSpotContactToContact_v2({
+          id: result.id,
+          properties: result.properties,
+          createdAt: result.createdAt.toISOString(),
+          updatedAt: result.updatedAt.toISOString(),
           archived: false,
-          properties: fromHubspotV1ListObjectPropertiesToHubspotV3Properties(record.properties),
+          // NOTE: we don't support full associations here, unlike in CRM List Contacts
         });
       }
     ) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types

@@ -50,10 +50,10 @@ paths:
     $ref: paths/opportunities@{opportunity_id}.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
-  '/lists/{object_type}':
-    $ref: paths/lists@{object_type}.yaml
-  '/lists/{object_type}/{list_id}':
-    $ref: paths/lists@{object_type}@{list_id}.yaml
+  '/lists':
+    $ref: paths/lists.yaml
+  '/lists/{list_id}':
+    $ref: paths/lists@{list_id}.yaml
   '/passthrough':
     $ref: paths/passthrough.yaml
 tags:
@@ -146,4 +146,4 @@ components:
     x-provider-name:
       $ref: ./components/parameters/header/x-provider-name.yaml
     object_type:
-      $ref: ./components/parameters/path/object_type.yaml
+      $ref: ./components/parameters/query/object_type.yaml
