@@ -97,8 +97,7 @@ app.use(posthogMiddleware);
 
 app.use(
   pinoHttp({
-    // TODO: Fix once version drift between pino and pino-http is resolved
-    logger: httpLogger as any,
+    logger: httpLogger,
     customLogLevel: function (req, res, err) {
       if (res.statusCode >= 400 && res.statusCode < 500) {
         return 'warn';
@@ -121,7 +120,6 @@ app.use(
       'req.headers.cookie',
       'req.headers["x-api-key"]',
       'err.config.headers.Authorization', // axios errors
-      'context.passthroughRequest.body',
     ],
     genReqId: () => uuidv4(),
     quietReqLogger: true, // only log the reqId from req.log.*, not the whole request
