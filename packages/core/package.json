@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/core",
-  "version": "0.15.2",
+  "version": "0.15.1",
   "private": true,
   "index": "dist/index.js",
   "types": "index.ts",

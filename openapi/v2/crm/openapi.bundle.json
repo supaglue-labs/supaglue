@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.15.2",
+    "version": "0.15.1",
     "title": "Unified CRM API",
     "contact": {
       "name": "Supaglue",
