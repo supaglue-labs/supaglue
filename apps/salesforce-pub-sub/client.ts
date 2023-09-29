@@ -2,7 +2,11 @@ import type { PromiseClient } from '@bufbuild/connect';
 import { createPromiseClient } from '@bufbuild/connect';
 // @ts-expect-error this is an ESM module, but we are only using the types
 import type { PartialMessage } from '@bufbuild/protobuf';
+import { logger } from '@supaglue/core/lib/logger';
+import type { types } from 'avsc';
+import { parse } from 'avsc';
 import { LRUCache } from 'lru-cache';
+import { Readable } from 'stream';
 import { PubSub } from './gen/pubsub_api_connect';
 import type { FetchRequest, ReplayPreset } from './gen/pubsub_api_pb';
 import { parseEvent } from './parser';
@@ -11,7 +15,7 @@ import { parseEvent } from './parser';
 // so if we haven't recieved anything by 5 minutes something is wrong.
 // We should be good with timing out at that point
 // Ref: https://developer.salesforce.com/docs/platform/pub-sub-api/references/methods/subscribe-rpc.html#subscribe-keepalive-behavior
-const SUBSCRIBE_TIMEOUT_MS = 300000;
+const SUBSCRIBE_TIMEOUT_MS = 300_000;
 
 type FetchRequestWithRequiredFields = PartialMessage<FetchRequest> & {
   topicName: string;
@@ -21,29 +25,32 @@ type FetchRequestWithRequiredFields = PartialMessage<FetchRequest> & {
 
 export class PubSubClient {
   private grpcClient: PromiseClient<typeof PubSub>;
-  private schemas: LRUCache<string, string> = new LRUCache({
+  private schemas: LRUCache<string, types.RecordType> = new LRUCache({
     max: 10000,
-    ttl: 1000 * 60 * 60 * 24, // 1 day
   });
 
   constructor({ grpcClient }: { grpcClient: PromiseClient<typeof PubSub> }) {
     this.grpcClient = grpcClient;
   }
 
-  async *subscribe(fetchRequest: FetchRequestWithRequiredFields) {
-    const requestQueue = [fetchRequest];
-
-    async function* requestStream() {
-      for (;;) {
-        const request = requestQueue.shift();
-        if (request) {
-          yield request;
-        }
-        await new Promise((resolve) => setTimeout(resolve, 500));
-      }
+  private async getSchema(schemaId: string) {
+    let schema = this.schemas.get(schemaId);
+    if (!schema) {
+      const schemaRequest = {
+        schemaId,
+      };
+      const schemaResponse = await this.grpcClient.getSchema(schemaRequest);
+      const { schemaJson } = schemaResponse;
+      schema = parse(schemaJson);
+      this.schemas.set(schemaId, schema);
     }
+    return schema;
+  }
 
-    const stream = this.grpcClient.subscribe(requestStream(), {
+  async *subscribe(fetchRequest: FetchRequestWithRequiredFields) {
+    const requestStream = new Readable({ objectMode: true });
+
+    const stream = this.grpcClient.subscribe(requestStream, {
       timeoutMs: SUBSCRIBE_TIMEOUT_MS,
     });
 
@@ -54,15 +61,10 @@ export class PubSubClient {
           continue;
         }
         const { schemaId, payload } = event;
-        let schema = this.schemas.get(schemaId);
+        const schema = await this.getSchema(schemaId);
         if (!schema) {
-          const schemaRequest = {
-            schemaId,
-          };
-          const schemaResponse = await this.grpcClient.getSchema(schemaRequest);
-          const { schemaJson } = schemaResponse;
-          this.schemas.set(schemaId, schemaJson);
-          schema = schemaJson;
+          logger.warn(`Failed to get schema for ${schemaId}`);
+          continue;
         }
 
         yield {
@@ -72,7 +74,7 @@ export class PubSubClient {
       }
 
       if (response.pendingNumRequested === 0) {
-        requestQueue.push(fetchRequest);
+        requestStream.push(fetchRequest);
       }
     }
   }
@@ -104,7 +106,7 @@ export async function createClient({
       },
     ],
   });
-  const internalClient = createPromiseClient(PubSub, transport);
+  const grpcClient = createPromiseClient(PubSub, transport);
 
-  return new PubSubClient({ grpcClient: internalClient });
+  return new PubSubClient({ grpcClient });
 }

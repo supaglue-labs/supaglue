@@ -3,7 +3,6 @@ import { logger } from '@supaglue/core/lib/logger';
 import type { WebhookType } from '@supaglue/schemas/v2/mgmt';
 import type { CRMProvider } from '@supaglue/types';
 import * as jsforce from 'jsforce';
-import { default as snakecaseKeys } from 'snakecase-keys';
 import { createClient } from './client';
 import { ReplayPreset } from './gen/pubsub_api_pb';
 
@@ -16,12 +15,17 @@ const EVENT_TYPES_TO_SUBSCRIBE_TO = [
   'UserChangeEvent',
 ];
 
-const { connectionService, providerService, webhookService, applicationService } = getCoreDependencyContainer();
+const ENABLED_CUSTOMER_IDS = [
+  'dea204bc-824e-4baa-aef0-19f586a492f8:d9268009-6ab5-4c5e-9606-bc9b656e7cad',
+  'dea204bc-824e-4baa-aef0-19f586a492f8:928df64a-9b41-4975-be80-6c554a7685e1',
+];
+
+const { connectionService, providerService, webhookService } = getCoreDependencyContainer();
 (async () => {
   logger.info('Starting Salesforce CDC worker');
-  const connections = await connectionService.listAllUnsafe({ providerName: 'salesforce' });
 
-  for (const connection of connections) {
+  for (const customerId of ENABLED_CUSTOMER_IDS) {
+    const connection = await connectionService.getUnsafeByCustomerIdAndProviderName(customerId, 'salesforce');
     const {
       credentials: { instanceUrl, refreshToken, loginUrl = 'https://login.salesforce.com' },
       id: connectionId,
@@ -42,6 +46,7 @@ const { connectionService, providerService, webhookService, applicationService }
         maxRequest: 10,
       });
 
+      // make sure they are using an edition that supports CDC
       const salesforceEdition = (await conn.query('select OrganizationType from Organization')).records[0]
         ?.OrganizationType;
       if (
@@ -75,9 +80,18 @@ const { connectionService, providerService, webhookService, applicationService }
       // make sure we have the latest accessToken
       // we also get the instanceurl here since the one on the connection is sometimes incorrect.
       // TODO we should fix this in the connection service
-      const { access_token: accessToken, instance_url: instanceUrl } = await conn.oauth2.refreshToken(refreshToken);
-      // expiresAt is not returned from the refresh token response
-      await connectionService.updateConnectionWithNewTokens(connectionId, accessToken, undefined, /* expiresAt */ null);
+      const {
+        access_token: accessToken,
+        instance_url: instanceUrl,
+        refresh_token: newRefreshToken,
+      } = await conn.oauth2.refreshToken(refreshToken);
+      await connectionService.updateConnectionWithNewTokens(
+        connectionId,
+        accessToken,
+        newRefreshToken,
+        // expiresAt is not returned from the refresh token response
+        /* expiresAt */ null
+      );
 
       // get the latest recorded replayId, if any
       const encodedReplayId = await webhookService.getReplayId(connectionId, eventType);
@@ -153,17 +167,14 @@ const { connectionService, providerService, webhookService, applicationService }
               throw new Error(`Unknown changeType ${changeType}`);
           }
 
-          const webhookPayload = snakecaseKeys(
-            {
-              id: recordId,
-              entityName: entityName as string, // Oddly for the correct typing to work in snakecaseKeys, this has to be cast
-              nulledFields,
-              changedFields,
-              diffFields,
-              fields,
-            },
-            { deep: false }
-          );
+          const webhookPayload = {
+            id: recordId,
+            entity_name: entityName,
+            nulled_fields: nulledFields,
+            changed_fields: changedFields,
+            diff_fields: diffFields,
+            fields,
+          };
 
           await webhookService.sendMessage(
             eventName,

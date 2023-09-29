@@ -3,11 +3,9 @@
 
 import * as avro from 'avsc';
 
-export function parseEvent(schema: string, eventPayload: Buffer) {
-  const eventType = avro.parse(schema) as avro.types.RecordType;
-
-  const payload = eventType.fromBuffer(eventPayload);
-  const allFields = eventType.fields;
+export function parseEvent(schema: avro.types.RecordType, eventPayload: Buffer) {
+  const payload = schema.fromBuffer(eventPayload);
+  const allFields = schema.fields;
 
   try {
     payload.ChangeEventHeader.nulledFields = parseFieldBitmaps(allFields, payload.ChangeEventHeader.nulledFields);
