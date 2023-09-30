@@ -39,6 +39,11 @@ export type LeadUpsertParams = {
   };
 };
 
+export type LeadSearchParams = {
+  key: 'email';
+  value: string;
+};
+
 export type LeadFilters = {
   emailAddress?: EqualsFilter;
   remoteId?: EqualsFilter;
@@ -49,4 +54,5 @@ export type RemoteLeadTypes = {
   createParams: LeadCreateParams;
   updateParams: LeadUpdateParams;
   upsertParams: LeadUpsertParams;
+  searchParams: LeadSearchParams;
 };

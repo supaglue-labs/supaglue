@@ -497,6 +497,103 @@
         }
       ]
     },
+    "/contacts/_search": {
+      "post": {
+        "operationId": "searchContacts",
+        "summary": "Search contacts",
+        "description": "Search contacts by a filter. Only supported for Salesforce and Hubspot.\n",
+        "tags": [
+          "Contacts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "enum": [
+                          "email"
+                        ],
+                        "description": "The key to search on. Only `email` is supported for all providers."
+                      },
+                      "value": {
+                        "type": "string",
+                        "description": "The value to search on.",
+                        "example": "hello@example.com"
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "value"
+                    ]
+                  }
+                },
+                "required": [
+                  "filter"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paginated Contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/contact"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/contacts/_upsert": {
       "post": {
         "operationId": "upsertContact",
@@ -556,7 +653,7 @@
         },
         "responses": {
           "201": {
-            "description": "Contact created",
+            "description": "Contact upserted",
             "content": {
               "application/json": {
                 "schema": {
@@ -829,7 +926,7 @@
         },
         "responses": {
           "201": {
-            "description": "Lead created",
+            "description": "Lead upserted",
             "content": {
               "application/json": {
                 "schema": {
@@ -845,6 +942,103 @@
                       "$ref": "#/components/schemas/warnings"
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/leads/_search": {
+      "post": {
+        "operationId": "searchLeads",
+        "summary": "Search leads",
+        "description": "Search leads by a filter. Only supported for Salesforce.\n",
+        "tags": [
+          "Leads"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "object",
+                    "properties": {
+                      "key": {
+                        "type": "string",
+                        "enum": [
+                          "email"
+                        ],
+                        "description": "The key to search on. Only `email` is supported for all providers."
+                      },
+                      "value": {
+                        "type": "string",
+                        "description": "The value to search on.",
+                        "example": "hello@example.com"
+                      }
+                    },
+                    "required": [
+                      "key",
+                      "value"
+                    ]
+                  }
+                },
+                "required": [
+                  "filter"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paginated Leads",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/lead"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
                 }
               }
             }

@@ -63,6 +63,19 @@ export interface paths {
       };
     };
   };
+  "/contacts/_search": {
+    /**
+     * Search contacts 
+     * @description Search contacts by a filter. Only supported for Salesforce and Hubspot.
+     */
+    post: operations["searchContacts"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/contacts/_upsert": {
     /**
      * Upsert contact 
@@ -109,6 +122,19 @@ export interface paths {
      * Only supported for Salesforce.
      */
     post: operations["upsertLead"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/leads/_search": {
+    /**
+     * Search leads 
+     * @description Search leads by a filter. Only supported for Salesforce.
+     */
+    post: operations["searchLeads"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -908,6 +934,52 @@ export interface operations {
     };
   };
   /**
+   * Search contacts 
+   * @description Search contacts by a filter. Only supported for Salesforce and Hubspot.
+   */
+  searchContacts: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          filter: {
+            /**
+             * @description The key to search on. Only `email` is supported for all providers. 
+             * @enum {string}
+             */
+            key: "email";
+            /**
+             * @description The value to search on. 
+             * @example hello@example.com
+             */
+            value: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Paginated Contacts */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["contact"])[];
+          };
+        };
+      };
+    };
+  };
+  /**
    * Upsert contact 
    * @description Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.
    * Only supported for Salesforce, Hubspot, and Pipedrive.
@@ -936,7 +1008,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Contact created */
+      /** @description Contact upserted */
       201: {
         content: {
           "application/json": {
@@ -1069,13 +1141,59 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Lead created */
+      /** @description Lead upserted */
       201: {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Search leads 
+   * @description Search leads by a filter. Only supported for Salesforce.
+   */
+  searchLeads: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          filter: {
+            /**
+             * @description The key to search on. Only `email` is supported for all providers. 
+             * @enum {string}
+             */
+            key: "email";
+            /**
+             * @description The value to search on. 
+             * @example hello@example.com
+             */
+            value: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Paginated Leads */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["lead"])[];
           };
         };
       };

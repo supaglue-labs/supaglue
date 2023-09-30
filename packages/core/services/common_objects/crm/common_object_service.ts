@@ -67,6 +67,19 @@ export class CrmCommonObjectService {
     return id;
   }
 
+  public async search<T extends CRMCommonObjectType>(
+    objectName: T,
+    connection: ConnectionSafeAny,
+    params: CRMCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
+    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
+    const end = remoteDuration.startTimer({ operation: 'search', remote_name: providerName });
+    const records = await remoteClient.searchCommonObjectRecords(objectName, fieldMappingConfig, params);
+    end();
+    return records;
+  }
+
   public async upsert<T extends CRMCommonObjectType>(
     objectName: T,
     connection: ConnectionSafeAny,

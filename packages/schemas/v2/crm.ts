@@ -42,6 +42,12 @@ export type UpsertContactRequest = operations['upsertContact']['requestBody']['c
 export type UpsertContactResponse =
   operations['upsertContact']['responses'][keyof operations['upsertContact']['responses']]['content']['application/json'];
 
+export type SearchContactsPathParams = never;
+export type SearchContactsQueryParams = Required<operations['listContacts']>['parameters']['query'];
+export type SearchContactsRequest = operations['searchContacts']['requestBody']['content']['application/json'];
+export type SearchContactsResponse =
+  operations['searchContacts']['responses'][keyof operations['searchContacts']['responses']]['content']['application/json'];
+
 export type ListContactsPathParams = never;
 export type ListContactsQueryParams = Required<operations['listContacts']>['parameters']['query'];
 export type ListContactsRequest = never;

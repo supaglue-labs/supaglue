@@ -39,7 +39,7 @@ post:
             - upsert_on
   responses:
     '201':
-      description: Contact created
+      description: Contact upserted
       content:
         application/json:
           schema:

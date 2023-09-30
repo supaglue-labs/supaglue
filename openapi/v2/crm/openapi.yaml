@@ -34,6 +34,8 @@ paths:
     $ref: paths/accounts@{account_id}.yaml
   '/contacts':
     $ref: paths/contacts.yaml
+  '/contacts/_search':
+    $ref: paths/contacts@search.yaml
   '/contacts/_upsert':
     $ref: paths/contacts@upsert.yaml
   '/contacts/{contact_id}':
@@ -42,6 +44,8 @@ paths:
     $ref: paths/leads.yaml
   '/leads/_upsert':
     $ref: paths/leads@upsert.yaml
+  '/leads/_search':
+    $ref: paths/leads@search.yaml
   '/leads/{lead_id}':
     $ref: paths/leads@{lead_id}.yaml
   '/opportunities':

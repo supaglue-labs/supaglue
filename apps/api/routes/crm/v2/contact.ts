@@ -13,6 +13,10 @@ import type {
   ListContactsQueryParams,
   ListContactsRequest,
   ListContactsResponse,
+  SearchContactsPathParams,
+  SearchContactsQueryParams,
+  SearchContactsRequest,
+  SearchContactsResponse,
   UpdateContactPathParams,
   UpdateContactRequest,
   UpdateContactResponse,
@@ -100,6 +104,21 @@ export default function init(app: Router): void {
         upsertOn: camelcaseKeys(req.body.upsert_on),
       });
       return res.status(200).send({ record: { id } });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchContactsPathParams, SearchContactsResponse, SearchContactsRequest, SearchContactsQueryParams>,
+      res: Response<SearchContactsResponse>
+    ) => {
+      const { pagination, records } = await crmCommonObjectService.search('contact', req.customerConnection, {
+        filter: req.body.filter,
+        cursor: req.query?.cursor,
+        pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+      });
+      return res.status(200).send({ pagination, records: records.map(toSnakecasedKeysCrmContact) });
     }
   );
 
