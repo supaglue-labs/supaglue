@@ -1,6 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { BadRequestError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmContact } from '@supaglue/core/mappers/crm';
+import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
   CreateContactPathParams,
   CreateContactRequest,
@@ -20,11 +21,12 @@ import type {
   UpsertContactRequest,
   UpsertContactResponse,
 } from '@supaglue/schemas/v2/crm';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { crmCommonObjectService, managedDataService } = getDependencyContainer();
+const { crmCommonObjectService, managedDataService, connectionService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -38,6 +40,7 @@ export default function init(app: Router): void {
       if (req.query?.read_from_cache?.toString() !== 'true') {
         throw new BadRequestError('Uncached reads not yet implemented for contacts.');
       }
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const { pagination, records } = await managedDataService.getCrmContactRecords(
         req.supaglueApplication.id,
         req.customerConnection.providerName,
@@ -46,11 +49,20 @@ export default function init(app: Router): void {
         req.query?.modified_after as unknown as string | undefined,
         req.query?.page_size ? parseInt(req.query.page_size) : undefined
       );
+      let fieldMappingConfig: FieldMappingConfig | undefined = undefined;
+      if (includeRawData) {
+        fieldMappingConfig = await connectionService.getFieldMappingConfig(
+          req.customerConnection.id,
+          'common',
+          'contact'
+        );
+      }
       return res.status(200).send({
         pagination,
         records: records.map((record) => ({
           ...record,
-          raw_data: req.query?.include_raw_data?.toString() === 'true' ? record.raw_data : undefined,
+          raw_data:
+            includeRawData && fieldMappingConfig ? toMappedProperties(record.raw_data, fieldMappingConfig) : undefined,
           _supaglue_application_id: undefined,
           _supaglue_customer_id: undefined,
           _supaglue_provider_name: undefined,
