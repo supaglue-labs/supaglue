@@ -2127,14 +2127,17 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
     const commonObjectContactRecords: ListCRMCommonObjectTypeMap<T>[] = batchResponseSimplePublicObject.results.map(
       (result) => {
-        return fromHubSpotContactToContact_v2({
-          id: result.id,
-          properties: result.properties,
-          createdAt: result.createdAt.toISOString(),
-          updatedAt: result.updatedAt.toISOString(),
-          archived: false,
-          // NOTE: we don't support full associations here, unlike in CRM List Contacts
-        });
+        return {
+          ...fromHubSpotContactToContact_v2({
+            id: result.id,
+            properties: result.properties,
+            createdAt: result.createdAt.toISOString(),
+            updatedAt: result.updatedAt.toISOString(),
+            archived: false,
+            // NOTE: we don't support full associations here, unlike in CRM List Contacts
+          }),
+          rawData: toMappedProperties(result, fieldMappingConfig),
+        };
       }
     ) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
 
