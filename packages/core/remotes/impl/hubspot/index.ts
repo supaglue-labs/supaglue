@@ -146,26 +146,6 @@ const hubspotStandardObjectPluralizedToType: Record<string, HubSpotStandardObjec
   tasks: 'task',
 };
 
-const hubspotStandardObjectTypeToAssociatedStandardObjectTypes: Record<
-  HubSpotStandardObjectType,
-  HubSpotStandardObjectType[]
-> = {
-  company: ['contact'],
-  contact: ['contact', 'company'],
-  deal: ['contact', 'company', 'line_item'],
-  line_item: ['deal'],
-  product: [],
-  ticket: ['contact', 'deal', 'company'],
-  quote: [],
-  call: ['contact', 'deal', 'company', 'ticket'],
-  communication: ['contact', 'deal', 'company', 'ticket'],
-  email: ['contact', 'deal', 'company', 'ticket'],
-  meeting: ['contact', 'deal', 'company', 'ticket'],
-  note: ['contact', 'deal', 'company', 'ticket'],
-  postal_mail: ['contact', 'deal', 'company', 'ticket'],
-  task: ['contact', 'deal', 'company', 'ticket'],
-};
-
 const archivedUnsupportedStandardObjectTypes: HubSpotStandardObjectType[] = [
   'postal_mail',
   'meeting',
