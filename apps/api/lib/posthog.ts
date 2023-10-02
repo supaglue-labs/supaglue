@@ -26,6 +26,14 @@ function onResFinished(req: Request, res: Response, err?: any) {
       route: `${req.baseUrl}${req.route?.path ?? ''}`,
       params: req.params,
       providerName: getProviderNameFromRequest(req),
+      applicationId: req.supaglueApplication?.id,
+      passthroughRequest:
+        req.body?.path && req.body?.method
+          ? {
+              path: req.body.path,
+              method: req.body.method,
+            }
+          : undefined,
       query: req.query,
       result: error ? 'error' : 'success',
       error: error?.message,

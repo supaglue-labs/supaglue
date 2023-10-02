@@ -14,7 +14,12 @@ export class PassthroughService {
     request: SendPassthroughRequestRequest
   ): Promise<SendPassthroughRequestResponse> {
     const client = await this.#remoteService.getRemoteClient(connectionId);
-    addLogContext('passthroughRequest', request);
+    // TODO I don't think this is actually working right now. Not seeing any context on successful request logs
+    //      and error logs are missing this key. Figure out why
+    addLogContext('passthroughRequest', {
+      path: request.path,
+      method: request.method,
+    });
     return await client.sendPassthroughRequest(request);
   }
 }
