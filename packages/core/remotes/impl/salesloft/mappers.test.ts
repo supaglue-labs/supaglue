@@ -78,14 +78,14 @@ describe('Salesloft mapper tests', () => {
         },
         emailAddresses: [
           {
-            email_address: 'test@supaglue.com',
-            email_address_type: 'primary',
+            emailAddress: 'test@supaglue.com',
+            emailAddressType: 'primary',
           },
         ],
         phoneNumbers: [
           {
-            phone_number: '123456789',
-            phone_number_type: 'primary',
+            phoneNumber: '123456789',
+            phoneNumberType: 'primary',
           },
         ],
         ownerId: '1',
