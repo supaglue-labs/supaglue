@@ -2,7 +2,15 @@ post:
   operationId: searchContacts
   summary: Search contacts
   description: |
-    Search contacts by a filter. Only supported for Salesforce and Hubspot.
+    Search contacts by a filter.
+    Support:
+
+    | Provider    | Search By       |
+    | ----------- | --------------- |
+    | Hubspot     | Email           |
+    | Salesforce  | Email           |
+    | Pipedrive   | (Not Supported) |
+    | MS Dynamics | (Not Supported) |
   tags:
     - Contacts
   security:

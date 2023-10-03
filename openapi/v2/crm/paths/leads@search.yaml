@@ -2,7 +2,15 @@ post:
   operationId: searchLeads
   summary: Search leads
   description: |
-    Search leads by a filter. Only supported for Salesforce.
+    Search leads by a filter.
+    Support:
+
+    | Provider    | Search By       |
+    | ----------- | --------------- |
+    | Hubspot     | Email           |
+    | Salesforce  | Email           |
+    | Pipedrive   | (Not Supported) |
+    | MS Dynamics | (Not Supported) |
   tags:
     - Leads
   security:

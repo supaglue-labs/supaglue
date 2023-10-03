@@ -118,7 +118,15 @@ export default function init(app: Router): void {
         cursor: req.query?.cursor,
         pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
       });
-      return res.status(200).send({ pagination, records: records.map(toSnakecasedKeysCrmContact) });
+      return res.status(200).send({
+        pagination,
+        records: records.map((record) => {
+          const snakecased = toSnakecasedKeysCrmContact(record);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { raw_data, ...rest } = snakecased;
+          return req.query?.include_raw_data?.toString() === 'true' ? snakecased : rest;
+        }),
+      });
     }
   );
 

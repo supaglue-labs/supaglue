@@ -1348,6 +1348,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }));
     return {
       pagination: {
+        // TODO: We assume there's only 1 record anyway. But eventually we should implement this.
         next: null,
         previous: null,
         total_count: records.length,
@@ -1432,6 +1433,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }));
     return {
       pagination: {
+        // TODO: We assume there's only 1 record anyway. But eventually we should implement this.
         next: null,
         previous: null,
         total_count: records.length,

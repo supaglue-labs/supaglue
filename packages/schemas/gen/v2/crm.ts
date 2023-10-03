@@ -66,7 +66,15 @@ export interface paths {
   "/contacts/_search": {
     /**
      * Search contacts 
-     * @description Search contacts by a filter. Only supported for Salesforce and Hubspot.
+     * @description Search contacts by a filter.
+     * Support:
+     * 
+     * | Provider    | Search By       |
+     * | ----------- | --------------- |
+     * | Hubspot     | Email           |
+     * | Salesforce  | Email           |
+     * | Pipedrive   | (Not Supported) |
+     * | MS Dynamics | (Not Supported) |
      */
     post: operations["searchContacts"];
     parameters: {
@@ -132,7 +140,15 @@ export interface paths {
   "/leads/_search": {
     /**
      * Search leads 
-     * @description Search leads by a filter. Only supported for Salesforce.
+     * @description Search leads by a filter.
+     * Support:
+     * 
+     * | Provider    | Search By       |
+     * | ----------- | --------------- |
+     * | Hubspot     | Email           |
+     * | Salesforce  | Email           |
+     * | Pipedrive   | (Not Supported) |
+     * | MS Dynamics | (Not Supported) |
      */
     post: operations["searchLeads"];
     parameters: {
@@ -935,7 +951,15 @@ export interface operations {
   };
   /**
    * Search contacts 
-   * @description Search contacts by a filter. Only supported for Salesforce and Hubspot.
+   * @description Search contacts by a filter.
+   * Support:
+   * 
+   * | Provider    | Search By       |
+   * | ----------- | --------------- |
+   * | Hubspot     | Email           |
+   * | Salesforce  | Email           |
+   * | Pipedrive   | (Not Supported) |
+   * | MS Dynamics | (Not Supported) |
    */
   searchContacts: {
     parameters: {
@@ -1155,7 +1179,15 @@ export interface operations {
   };
   /**
    * Search leads 
-   * @description Search leads by a filter. Only supported for Salesforce.
+   * @description Search leads by a filter.
+   * Support:
+   * 
+   * | Provider    | Search By       |
+   * | ----------- | --------------- |
+   * | Hubspot     | Email           |
+   * | Salesforce  | Email           |
+   * | Pipedrive   | (Not Supported) |
+   * | MS Dynamics | (Not Supported) |
    */
   searchLeads: {
     parameters: {

@@ -501,7 +501,7 @@
       "post": {
         "operationId": "searchContacts",
         "summary": "Search contacts",
-        "description": "Search contacts by a filter. Only supported for Salesforce and Hubspot.\n",
+        "description": "Search contacts by a filter.\nSupport:\n\n| Provider    | Search By       |\n| ----------- | --------------- |\n| Hubspot     | Email           |\n| Salesforce  | Email           |\n| Pipedrive   | (Not Supported) |\n| MS Dynamics | (Not Supported) |\n",
         "tags": [
           "Contacts"
         ],
@@ -961,7 +961,7 @@
       "post": {
         "operationId": "searchLeads",
         "summary": "Search leads",
-        "description": "Search leads by a filter. Only supported for Salesforce.\n",
+        "description": "Search leads by a filter.\nSupport:\n\n| Provider    | Search By       |\n| ----------- | --------------- |\n| Hubspot     | Email           |\n| Salesforce  | Email           |\n| Pipedrive   | (Not Supported) |\n| MS Dynamics | (Not Supported) |\n",
         "tags": [
           "Leads"
         ],
