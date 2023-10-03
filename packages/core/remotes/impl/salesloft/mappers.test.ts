@@ -55,6 +55,8 @@ describe('Salesloft mapper tests', () => {
           emails_bounced: 1,
           emails_replied_to: 2,
         },
+        email_address: 'test@supaglue.com',
+        phone: '123456789',
         owner: { id: 1 },
         account: { id: 123 },
         created_at: '2023-09-12T10:00:00Z',
@@ -74,8 +76,18 @@ describe('Salesloft mapper tests', () => {
           country: 'USA',
           postalCode: null,
         },
-        emailAddresses: [],
-        phoneNumbers: [],
+        emailAddresses: [
+          {
+            email_address: 'test@supaglue.com',
+            email_address_type: 'primary',
+          },
+        ],
+        phoneNumbers: [
+          {
+            phone_number: '123456789',
+            phone_number_type: 'primary',
+          },
+        ],
         ownerId: '1',
         accountId: '123',
         openCount: 10,

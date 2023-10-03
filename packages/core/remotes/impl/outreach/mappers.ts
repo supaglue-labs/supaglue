@@ -503,6 +503,10 @@ export const toOutreachProspectPhoneNumbers = (phoneNumbers?: PhoneNumber[]) => 
         case 'work':
           workPhones.push(phoneNumber);
           break;
+        case 'primary':
+          // Defaulting to work phone for primary
+          workPhones.push(phoneNumber);
+          break;
       }
     }
   });
