@@ -1151,38 +1151,7 @@
             "$ref": "#/components/schemas/email_addresses"
           },
           "phone_numbers": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "phone_number": {
-                  "type": "string",
-                  "nullable": true,
-                  "example": "+14151234567"
-                },
-                "phone_number_type": {
-                  "type": "string",
-                  "nullable": true,
-                  "enum": [
-                    "primary",
-                    "work",
-                    "home",
-                    "mobile",
-                    "other"
-                  ]
-                }
-              },
-              "required": [
-                "phone_number",
-                "phone_number_type"
-              ]
-            },
-            "example": [
-              {
-                "phone_number": "+14151234567",
-                "phone_number_type": "work"
-              }
-            ]
+            "$ref": "#/components/schemas/phone_numbers"
           },
           "open_count": {
             "type": "number"
@@ -1266,7 +1235,7 @@
             "$ref": "#/components/schemas/email_addresses"
           },
           "phone_numbers": {
-            "$ref": "#/components/schemas/contact/properties/phone_numbers"
+            "$ref": "#/components/schemas/phone_numbers"
           },
           "owner_id": {
             "type": "string",
@@ -1789,6 +1758,40 @@
           {
             "email_address": "hello@supaglue.com",
             "email_address_type": "work"
+          }
+        ]
+      },
+      "phone_numbers": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "phone_number": {
+              "type": "string",
+              "nullable": true,
+              "example": "+14151234567"
+            },
+            "phone_number_type": {
+              "type": "string",
+              "nullable": true,
+              "enum": [
+                "primary",
+                "work",
+                "home",
+                "mobile",
+                "other"
+              ]
+            }
+          },
+          "required": [
+            "phone_number",
+            "phone_number_type"
+          ]
+        },
+        "example": [
+          {
+            "phone_number": "+14151234567",
+            "phone_number_type": "work"
           }
         ]
       },

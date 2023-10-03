@@ -222,20 +222,7 @@ export interface components {
       job_title: string | null;
       address: components["schemas"]["address"];
       email_addresses: components["schemas"]["email_addresses"];
-      /**
-       * @example [
-       *   {
-       *     "phone_number": "+14151234567",
-       *     "phone_number_type": "work"
-       *   }
-       * ]
-       */
-      phone_numbers: ({
-          /** @example +14151234567 */
-          phone_number: string | null;
-          /** @enum {string|null} */
-          phone_number_type: "primary" | "work" | "home" | "mobile" | "other" | null;
-        })[];
+      phone_numbers: components["schemas"]["phone_numbers"];
       open_count: number;
       click_count: number;
       reply_count: number;
@@ -270,7 +257,7 @@ export interface components {
       job_title?: string | null;
       address?: components["schemas"]["address"];
       email_addresses?: components["schemas"]["email_addresses"];
-      phone_numbers?: components["schemas"]["contact"]["phone_numbers"];
+      phone_numbers?: components["schemas"]["phone_numbers"];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
       /** @example ae4be028-9078-4850-a0bf-d2112b7c4d11 */
@@ -501,6 +488,20 @@ export interface components {
         email_address: string;
         /** @enum {string|null} */
         email_address_type: "primary" | "personal" | "work" | null;
+      })[];
+    /**
+     * @example [
+     *   {
+     *     "phone_number": "+14151234567",
+     *     "phone_number_type": "work"
+     *   }
+     * ]
+     */
+    phone_numbers: ({
+        /** @example +14151234567 */
+        phone_number: string | null;
+        /** @enum {string|null} */
+        phone_number_type: "primary" | "work" | "home" | "mobile" | "other" | null;
       })[];
     /** @description Custom properties to be inserted that are not covered by the common object. Object keys must match exactly to the corresponding provider API. */
     custom_fields: {
