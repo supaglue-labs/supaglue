@@ -28,12 +28,14 @@ import type {
   AccountUpsertParams,
   Contact,
   ContactCreateParams,
+  ContactSearchParams,
   ContactUpdateParams,
   ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
   Lead,
   LeadCreateParams,
+  LeadSearchParams,
   LeadUpdateParams,
   LeadUpsertParams,
   ListCRMCommonObject,
@@ -477,6 +479,21 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         return this.upsertContact(params as ContactUpsertParams);
       case 'lead':
         return this.upsertLead(params as LeadUpsertParams);
+      default:
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
+    }
+  }
+
+  public override async searchCommonObjectRecords<T extends 'account' | 'contact' | 'lead' | 'opportunity' | 'user'>(
+    commonObjectType: T,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return this.searchContact(params as ContactSearchParams, fieldMappingConfig);
+      case 'lead':
+        return this.searchLead(params as LeadSearchParams, fieldMappingConfig);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -1317,6 +1334,29 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return this.updateContact({ ...params.record, id: existingContactId });
   }
 
+  public async searchContact(
+    params: ContactSearchParams,
+    fieldMappingConfig: FieldMappingConfig
+  ): Promise<PaginatedSupaglueRecords<Contact>> {
+    const propertiesToFetch = await this.getCommonPropertiesToFetch('contact', fieldMappingConfig);
+    const soql = `SELECT ${propertiesToFetch.join(',')}
+    FROM Contact WHERE Email = '${params.filter.value}'`;
+    const response = await this.#client.query(soql);
+    const records = response.records.map((record) => ({
+      ...fromSalesforceContactToContact(record),
+      rawData: toMappedProperties(record, fieldMappingConfig),
+    }));
+    return {
+      pagination: {
+        // TODO: We assume there's only 1 record anyway. But eventually we should implement this.
+        next: null,
+        previous: null,
+        total_count: records.length,
+      },
+      records,
+    };
+  }
+
   public async updateContact(params: ContactUpdateParams): Promise<string> {
     const response = await this.#client.update('Contact', toSalesforceContactUpdateParams(params));
     if (!response.success) {
@@ -1377,6 +1417,29 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
     const existingContactId = response.records[0].Id as string;
     return this.updateLead({ ...params.record, id: existingContactId });
+  }
+
+  public async searchLead(
+    params: LeadSearchParams,
+    fieldMappingConfig: FieldMappingConfig
+  ): Promise<PaginatedSupaglueRecords<Lead>> {
+    const propertiesToFetch = await this.getCommonPropertiesToFetch('lead', fieldMappingConfig);
+    const soql = `SELECT ${propertiesToFetch.join(',')}
+    FROM Lead WHERE Email = '${params.filter.value}'`;
+    const response = await this.#client.query(soql);
+    const records = response.records.map((record) => ({
+      ...fromSalesforceLeadToLead(record),
+      rawData: toMappedProperties(record, fieldMappingConfig),
+    }));
+    return {
+      pagination: {
+        // TODO: We assume there's only 1 record anyway. But eventually we should implement this.
+        next: null,
+        previous: null,
+        total_count: records.length,
+      },
+      records,
+    };
   }
 
   public async updateLead(params: LeadUpdateParams): Promise<string> {

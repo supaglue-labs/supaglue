@@ -42,6 +42,12 @@ export type UpsertContactRequest = operations['upsertContact']['requestBody']['c
 export type UpsertContactResponse =
   operations['upsertContact']['responses'][keyof operations['upsertContact']['responses']]['content']['application/json'];
 
+export type SearchContactsPathParams = never;
+export type SearchContactsQueryParams = Required<operations['searchContacts']>['parameters']['query'];
+export type SearchContactsRequest = operations['searchContacts']['requestBody']['content']['application/json'];
+export type SearchContactsResponse =
+  operations['searchContacts']['responses'][keyof operations['searchContacts']['responses']]['content']['application/json'];
+
 export type ListContactsPathParams = never;
 export type ListContactsQueryParams = Required<operations['listContacts']>['parameters']['query'];
 export type ListContactsRequest = never;
@@ -83,6 +89,12 @@ export type UpsertLeadQueryParams = never;
 export type UpsertLeadRequest = operations['upsertLead']['requestBody']['content']['application/json'];
 export type UpsertLeadResponse =
   operations['upsertLead']['responses'][keyof operations['upsertLead']['responses']]['content']['application/json'];
+
+export type SearchLeadsPathParams = never;
+export type SearchLeadsQueryParams = Required<operations['searchLeads']>['parameters']['query'];
+export type SearchLeadsRequest = operations['searchLeads']['requestBody']['content']['application/json'];
+export type SearchLeadsResponse =
+  operations['searchLeads']['responses'][keyof operations['searchLeads']['responses']]['content']['application/json'];
 
 export type CreateOpportunityPathParams = never;
 export type CreateOpportunityQueryParams = any;

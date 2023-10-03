@@ -1,0 +1,64 @@
+post:
+  operationId: searchLeads
+  summary: Search leads
+  description: |
+    Search leads by a filter.
+    Support:
+
+    | Provider    | Search By       |
+    | ----------- | --------------- |
+    | Hubspot     | Email           |
+    | Salesforce  | Email           |
+    | Pipedrive   | (Not Supported) |
+    | MS Dynamics | (Not Supported) |
+  tags:
+    - Leads
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            filter:
+              type: object
+              properties:
+                key:
+                  type: string
+                  enum: [email]
+                  description: The key to search on. Only `email` is supported for all providers.
+                value:
+                  type: string
+                  description: The value to search on.
+                  example: hello@example.com
+              required:
+                - key
+                - value
+          required:
+            - filter
+  responses:
+    200:
+      description: Paginated Leads
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/lead.yaml
+            required:
+              - pagination
+              - records
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml

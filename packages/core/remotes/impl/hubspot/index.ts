@@ -1,8 +1,5 @@
 import { Client } from '@hubspot/api-client';
-import type {
-  CollectionResponseSimplePublicObjectWithAssociationsForwardPaging as HubspotPaginatedContacts,
-  CollectionResponseWithTotalSimplePublicObjectForwardPaging as HubspotPaginatedContactsWithTotal,
-} from '@hubspot/api-client/lib/codegen/crm/contacts';
+import type { FilterGroup } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import type { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
 import type {
   ConnectionUnsafe,
@@ -33,12 +30,14 @@ import type {
   AccountUpsertParams,
   Contact,
   ContactCreateParams,
+  ContactSearchParams,
   ContactUpdateParams,
   ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
   Lead,
   LeadCreateParams,
+  LeadSearchParams,
   LeadUpdateParams,
   ListCRMCommonObject,
   ListCRMCommonObjectTypeMap,
@@ -80,6 +79,7 @@ import type { PaginatedSupaglueRecords } from '../../../lib';
 import {
   ASYNC_RETRY_OPTIONS,
   decodeCursor,
+  DEFAULT_PAGE_SIZE,
   encodeCursor,
   intersection,
   logger,
@@ -144,26 +144,6 @@ const hubspotStandardObjectPluralizedToType: Record<string, HubSpotStandardObjec
   notes: 'note',
   'postal mails': 'postal_mail',
   tasks: 'task',
-};
-
-const hubspotStandardObjectTypeToAssociatedStandardObjectTypes: Record<
-  HubSpotStandardObjectType,
-  HubSpotStandardObjectType[]
-> = {
-  company: ['contact'],
-  contact: ['contact', 'company'],
-  deal: ['contact', 'company', 'line_item'],
-  line_item: ['deal'],
-  product: [],
-  ticket: ['contact', 'deal', 'company'],
-  quote: [],
-  call: ['contact', 'deal', 'company', 'ticket'],
-  communication: ['contact', 'deal', 'company', 'ticket'],
-  email: ['contact', 'deal', 'company', 'ticket'],
-  meeting: ['contact', 'deal', 'company', 'ticket'],
-  note: ['contact', 'deal', 'company', 'ticket'],
-  postal_mail: ['contact', 'deal', 'company', 'ticket'],
-  task: ['contact', 'deal', 'company', 'ticket'],
 };
 
 const archivedUnsupportedStandardObjectTypes: HubSpotStandardObjectType[] = [
@@ -887,40 +867,26 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     });
   }
 
-  async #fetchPageOfIncrementalRecords(
+  async #fetchPageOfSearchedRecords(
     objectType: string,
     propertiesToFetch: string[],
     associatedStandardObjectTypes: string[],
     associatedCustomObjectSchemas: HubSpotCustomSchema[],
-    modifiedAfter: Date,
+    filterGroups: Array<FilterGroup>,
+    sorts: {
+      propertyName: string;
+      direction: string;
+    }[],
     limit: number,
     after?: string
   ): Promise<RecordsResponseWithFlattenedAssociationsAndTotal> {
-    // Get records
-    // hubspot doesn't set hs_lastmodifieddate for some reason for contact
-    const lastModifiedAtPropertyName = objectType === 'contact' ? 'lastmodifieddate' : 'hs_lastmodifieddate';
     const response = await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       return await axios.post<HubSpotAPIV3SearchResponse>(
         `${this.baseUrl}/crm/v3/objects/${objectType}/search`,
         {
-          filterGroups: [
-            {
-              filters: [
-                {
-                  propertyName: lastModifiedAtPropertyName,
-                  operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
-                  value: modifiedAfter.getTime().toString(),
-                },
-              ],
-            },
-          ],
-          sorts: [
-            {
-              propertyName: lastModifiedAtPropertyName,
-              direction: 'ASCENDING',
-            },
-          ],
+          filterGroups,
+          sorts,
           properties: propertiesToFetch,
           limit,
           after,
@@ -972,6 +938,43 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     }
 
     return ret;
+  }
+
+  async #fetchPageOfIncrementalRecords(
+    objectType: string,
+    propertiesToFetch: string[],
+    associatedStandardObjectTypes: string[],
+    associatedCustomObjectSchemas: HubSpotCustomSchema[],
+    modifiedAfter: Date,
+    limit: number,
+    after?: string
+  ): Promise<RecordsResponseWithFlattenedAssociationsAndTotal> {
+    const lastModifiedAtPropertyName = objectType === 'contact' ? 'lastmodifieddate' : 'hs_lastmodifieddate';
+    return await this.#fetchPageOfSearchedRecords(
+      objectType,
+      propertiesToFetch,
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
+      [
+        {
+          filters: [
+            {
+              propertyName: lastModifiedAtPropertyName,
+              operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
+              value: modifiedAfter.getTime().toString(),
+            },
+          ],
+        },
+      ],
+      [
+        {
+          propertyName: lastModifiedAtPropertyName,
+          direction: 'ASCENDING',
+        },
+      ],
+      limit,
+      after
+    );
   }
 
   public override async listCommonObjectRecords(
@@ -1046,6 +1049,21 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         return this.upsertAccount(params as AccountUpsertParams);
       case 'contact':
         return this.upsertContact(params as ContactUpsertParams);
+      default:
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
+    }
+  }
+
+  public override async searchCommonObjectRecords<T extends 'account' | 'contact' | 'lead' | 'opportunity' | 'user'>(
+    commonObjectType: T,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return this.searchContact(params as ContactSearchParams, fieldMappingConfig);
+      case 'lead':
+        return this.searchLead(params as LeadSearchParams, fieldMappingConfig);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -1520,99 +1538,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     ]);
   }
 
-  async #getListNormalContactsFetcher(
-    properties: string[],
-    updatedAfter?: Date
-  ): Promise<(after?: string) => Promise<HubspotPaginatedContacts>> {
-    if (updatedAfter) {
-      // Incremental uses the Search endpoint which doesn't allow for more than 10k results.
-      // If we get back more than 10k results, we need to fall back to the full fetch.
-      const response = await this.#listContactsIncremental(properties, updatedAfter, 0);
-      if (response.total > HUBSPOT_SEARCH_RESULTS_LIMIT) {
-        return async (after?: string) => {
-          const response = await this.#listContactsFull(properties, /* archived */ false, after);
-          return filterForUpdatedAfter(response, updatedAfter);
-        };
-      }
-      return this.#listContactsIncremental.bind(this, properties, updatedAfter, HUBSPOT_RECORD_LIMIT);
-    }
-
-    return this.#listContactsFull.bind(this, properties, /* archived */ false);
-  }
-
-  async #listContactsFull(properties: string[], archived: boolean, after?: string): Promise<HubspotPaginatedContacts> {
-    return await retryWhenRateLimited(async () => {
-      await this.maybeRefreshAccessToken();
-      const contacts = await this.#client.crm.contacts.basicApi.getPage(
-        HUBSPOT_RECORD_LIMIT,
-        after,
-        properties,
-        /* propertiesWithHistory */ undefined,
-        /* associations */ ['company'],
-        archived
-      );
-      return contacts;
-    });
-  }
-
-  async #listContactsIncremental(
-    properties: string[],
-    updatedAfter: Date,
-    limit: number,
-    after?: string
-  ): Promise<HubspotPaginatedContactsWithTotal> {
-    return await retryWhenRateLimited(async () => {
-      await this.maybeRefreshAccessToken();
-
-      // Get contacts
-      const response = await this.#client.crm.contacts.searchApi.doSearch({
-        filterGroups: [
-          {
-            filters: [
-              {
-                propertyName: 'lastmodifieddate', // hubspot doesn't set hs_lastmodifieddate for some reason
-                operator: 'GT', // TODO: should we do GTE in case there are multiple records updated at the same timestamp?
-                value: updatedAfter.getTime().toString(),
-              },
-            ],
-          },
-        ],
-        sorts: [
-          {
-            propertyName: 'lastmodifieddate',
-            direction: 'ASCENDING',
-          } as unknown as string, // hubspot sdk has wrong types
-        ],
-        properties,
-        limit,
-        after: after as unknown as number, // hubspot sdk has wrong types
-      });
-
-      const contactIds = response.results.map((contact) => contact.id);
-
-      // Get associations
-      const contactToCompaniesMap = await this.#listAssociations(
-        'contact',
-        'company',
-        contactIds.map((id) => id)
-      );
-
-      // Add associations to contacts
-      // TODO: We shouldn't hijack the response object like this; clean this code up
-      return {
-        ...response,
-        results: response.results.map((contact) => ({
-          ...contact,
-          associations: {
-            companies: {
-              results: (contactToCompaniesMap[contact.id] ?? []).map((id) => ({ id, type: 'contact_to_company' })),
-            },
-          },
-        })),
-      };
-    });
-  }
-
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
@@ -1654,6 +1579,56 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         : [],
     });
     return contact.id;
+  }
+
+  public async searchContact(
+    params: ContactSearchParams,
+    fieldMappingConfig: FieldMappingConfig
+  ): Promise<PaginatedSupaglueRecords<Contact>> {
+    await this.maybeRefreshAccessToken();
+    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
+    const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
+      await this.#getAssociatedObjectTypesForObjectType('contact');
+    const response = await this.#fetchPageOfSearchedRecords(
+      'contact',
+      properties,
+      associatedStandardObjectTypes,
+      associatedCustomObjectSchemas,
+      [
+        {
+          filters: [
+            {
+              value: params.filter.value,
+              propertyName: params.filter.key,
+              operator: 'EQ',
+            },
+          ],
+        },
+      ],
+      [{ propertyName: params.filter.key, direction: 'ASCENDING' }],
+      params.pageSize ?? DEFAULT_PAGE_SIZE
+      // We ignore cursor for now
+      // TODO: Implement search cursor
+    );
+    const normalized = normalizeResponse(response);
+    const records = normalized.results.map((result) => {
+      return {
+        ...fromHubSpotContactToContact(result.rawData),
+        rawData: {
+          ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+          _associations: result.rawData.associations,
+        },
+      };
+    });
+    return {
+      pagination: {
+        // TODO: We assume there's only 1 record anyway. But eventually we should implement this.
+        previous: null,
+        next: null,
+        total_count: response.total,
+      },
+      records,
+    };
   }
 
   public async upsertContact(params: ContactUpsertParams): Promise<string> {
@@ -1707,6 +1682,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public async createLead(params: LeadCreateParams): Promise<Lead> {
+    throw new BadRequestError('Not supported');
+  }
+
+  public async searchLead(
+    params: LeadSearchParams,
+    fieldMappingConfig: FieldMappingConfig
+  ): Promise<PaginatedSupaglueRecords<Lead>> {
     throw new BadRequestError('Not supported');
   }
 

@@ -39,7 +39,7 @@ post:
             - upsert_on
   responses:
     '201':
-      description: Lead created
+      description: Lead upserted 
       content:
         application/json:
           schema:

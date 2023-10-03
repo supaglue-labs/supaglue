@@ -1,4 +1,4 @@
-import type { BaseCrmModel, CustomFields, SnakecasedCrmTenantFields } from '.';
+import type { BaseCrmModel, BaseSearchParams, CustomFields, SnakecasedCrmTenantFields } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { Address, EmailAddress, PhoneNumber } from './common/base';
@@ -39,6 +39,13 @@ export type LeadUpsertParams = {
   };
 };
 
+export type LeadSearchParams = BaseSearchParams & {
+  filter: {
+    key: 'email';
+    value: string;
+  };
+};
+
 export type LeadFilters = {
   emailAddress?: EqualsFilter;
   remoteId?: EqualsFilter;
@@ -49,4 +56,5 @@ export type RemoteLeadTypes = {
   createParams: LeadCreateParams;
   updateParams: LeadUpdateParams;
   upsertParams: LeadUpsertParams;
+  searchParams: LeadSearchParams;
 };

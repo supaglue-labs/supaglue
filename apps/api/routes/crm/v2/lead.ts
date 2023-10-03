@@ -8,6 +8,10 @@ import type {
   GetLeadQueryParams,
   GetLeadRequest,
   GetLeadResponse,
+  SearchLeadsPathParams,
+  SearchLeadsQueryParams,
+  SearchLeadsRequest,
+  SearchLeadsResponse,
   UpdateLeadPathParams,
   UpdateLeadRequest,
   UpdateLeadResponse,
@@ -78,6 +82,29 @@ export default function init(app: Router): void {
         upsertOn: camelcaseKeys(req.body.upsert_on),
       });
       return res.status(200).send({ record: { id } });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchLeadsPathParams, SearchLeadsResponse, SearchLeadsRequest, SearchLeadsQueryParams>,
+      res: Response<SearchLeadsResponse>
+    ) => {
+      const { pagination, records } = await crmCommonObjectService.search('lead', req.customerConnection, {
+        filter: req.body.filter,
+        cursor: req.query?.cursor,
+        pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+      });
+      return res.status(200).send({
+        pagination,
+        records: records.map((record) => {
+          const snakecased = toSnakecasedKeysCrmLead(record);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { raw_data, ...rest } = snakecased;
+          return req.query?.include_raw_data?.toString() === 'true' ? snakecased : rest;
+        }),
+      });
     }
   );
 

@@ -8,6 +8,7 @@ import type {
 } from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { Readable } from 'stream';
+import { NotImplementedError } from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
 import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
@@ -36,6 +37,11 @@ export interface CrmRemoteClient extends RemoteClient {
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['upsertParams']
   ): Promise<string>;
+  searchCommonObjectRecords<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>>;
 
   listLists(
     objectType: ListCRMCommonObject,
@@ -61,39 +67,47 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async createCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async updateCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['updateParams']
   ): Promise<string> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async upsertCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     params: CRMCommonObjectTypeMap<T>['upsertParams']
   ): Promise<string> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
+  }
+
+  searchCommonObjectRecords<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    throw new NotImplementedError();
   }
 
   public async listLists(
     objectType: ListCRMCommonObject,
     paginationParams: PaginationParams
   ): Promise<PaginatedSupaglueRecords<ListMetadata>> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public async listListMembership<T extends ListCRMCommonObject>(
@@ -102,6 +116,6 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     paginationParams: PaginationParams,
     fieldMappingConfig: FieldMappingConfig
   ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 }
