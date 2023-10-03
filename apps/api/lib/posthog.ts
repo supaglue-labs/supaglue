@@ -3,7 +3,8 @@ import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import type { NextFunction, Request, Response } from 'express';
 
 function getProviderNameFromRequest(req: Request) {
-  let { providerName } = req.query;
+  let providerName = req.headers['x-provider-name'] as string;
+
   if (!providerName && 'state' in req.query && typeof req.query.state === 'string') {
     ({ providerName } = JSON.parse(req.query.state));
   }
