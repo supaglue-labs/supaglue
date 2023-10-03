@@ -182,6 +182,9 @@ export const toApolloAccountCreateParams = (params: AccountCreateParams): Record
 
 export const toApolloAccountUpdateParams = toApolloAccountCreateParams;
 
+/**
+ * @see https://apolloio.github.io/apollo-api-docs/?shell#create-a-contact
+ */
 export const toApolloContactCreateParams = (params: ContactCreateParams): Record<string, any> => {
   return {
     first_name: params.firstName,
@@ -190,6 +193,14 @@ export const toApolloContactCreateParams = (params: ContactCreateParams): Record
     email: params.emailAddresses?.[0]?.emailAddress,
     present_raw_address: params.address ? getRawAddressString(params.address) : undefined,
     account_id: params.accountId,
+    // Apollo docs appears to not support phone during creation
+    // However empirically it actually works, so we keep the phone mapping logic here.
+    mobile_phone:
+      params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber ??
+      params.phoneNumbers?.find((p) => p.phoneNumberType === 'primary')?.phoneNumber,
+    corporate_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'work')?.phoneNumber,
+    home_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'home')?.phoneNumber,
+    other_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'other')?.phoneNumber,
     ...params.customFields,
   };
 };
@@ -200,9 +211,11 @@ export const toApolloContactUpdateParams = (params: ContactUpdateParams): Record
     title: params.jobTitle,
     email: params.emailAddresses?.[0]?.emailAddress,
     present_raw_address: params.address ? getRawAddressString(params.address) : undefined,
+    mobile_phone:
+      params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber ??
+      params.phoneNumbers?.find((p) => p.phoneNumberType === 'primary')?.phoneNumber,
     corporate_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'work')?.phoneNumber,
     home_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'home')?.phoneNumber,
-    mobile_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber,
     other_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'other')?.phoneNumber,
     account_id: params.accountId,
     ...params.customFields,
