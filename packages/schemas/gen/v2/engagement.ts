@@ -50,7 +50,10 @@ export interface paths {
     };
   };
   "/contacts": {
-    /** Create contact */
+    /**
+     * Create contact.
+     * Some providers do not support `primary` phone number type, in which case we will default to `mobile`. If both `primary` and `mobile` phone numbers are specified, then `mobile` will be used and `primary` will be dropped.
+     */
     post: operations["createContact"];
     parameters: {
       header: {
@@ -723,7 +726,10 @@ export interface operations {
       };
     };
   };
-  /** Create contact */
+  /**
+   * Create contact.
+   * Some providers do not support `primary` phone number type, in which case we will default to `mobile`. If both `primary` and `mobile` phone numbers are specified, then `mobile` will be used and `primary` will be dropped.
+   */
   createContact: {
     parameters: {
       header: {
