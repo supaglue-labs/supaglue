@@ -270,6 +270,7 @@ export interface components {
       job_title?: string | null;
       address?: components["schemas"]["address"];
       email_addresses?: components["schemas"]["email_addresses"];
+      phone_numbers?: components["schemas"]["contact"]["phone_numbers"];
       /** @example 9f3e97fd-4d5d-4efc-959d-bbebfac079f5 */
       owner_id?: string | null;
       /** @example ae4be028-9078-4850-a0bf-d2112b7c4d11 */

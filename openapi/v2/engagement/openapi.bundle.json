@@ -1265,6 +1265,9 @@
           "email_addresses": {
             "$ref": "#/components/schemas/email_addresses"
           },
+          "phone_numbers": {
+            "$ref": "#/components/schemas/contact/properties/phone_numbers"
+          },
           "owner_id": {
             "type": "string",
             "nullable": true,

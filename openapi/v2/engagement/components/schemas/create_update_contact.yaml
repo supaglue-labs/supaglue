@@ -16,6 +16,8 @@ properties:
     $ref: ./objects/address.yaml
   email_addresses:
     $ref: ./objects/email_addresses.yaml
+  phone_numbers:
+    $ref: ./objects/phone_numbers.yaml
   owner_id:
     type: string
     nullable: true
