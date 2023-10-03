@@ -193,8 +193,8 @@ export const toApolloContactCreateParams = (params: ContactCreateParams): Record
     email: params.emailAddresses?.[0]?.emailAddress,
     present_raw_address: params.address ? getRawAddressString(params.address) : undefined,
     account_id: params.accountId,
-    // Apollo does not appear to support phone during creation
-    // However we will keep the logic here for now for when they do support it
+    // Apollo docs appears to not support phone during creation
+    // However empirically it actually works, so we keep the phone mapping logic here.
     mobile_phone:
       params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber ??
       params.phoneNumbers?.find((p) => p.phoneNumberType === 'primary')?.phoneNumber,
