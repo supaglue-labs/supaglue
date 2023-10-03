@@ -466,6 +466,7 @@ describe('Outreach mappers', () => {
 
     it('should correctly categorize phone numbers based on their type', () => {
       const phoneNumbers: PhoneNumber[] = [
+        { phoneNumber: '00000', phoneNumberType: 'primary' },
         { phoneNumber: '12345', phoneNumberType: 'home' },
         { phoneNumber: '67890', phoneNumberType: 'work' },
         { phoneNumber: '11111', phoneNumberType: 'mobile' },
@@ -476,7 +477,7 @@ describe('Outreach mappers', () => {
         homePhones: ['12345'],
         workPhones: ['67890'],
         otherPhones: ['22222'],
-        mobilePhones: ['11111'],
+        mobilePhones: ['00000', '11111'],
       });
     });
 

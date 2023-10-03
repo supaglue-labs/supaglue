@@ -312,6 +312,7 @@ describe('Conversion functions', () => {
       phoneNumbers: [
         { phoneNumber: '123456789', phoneNumberType: 'work' },
         { phoneNumber: '987654321', phoneNumberType: 'home' },
+        { phoneNumber: '1112223333', phoneNumberType: 'primary' },
       ],
       accountId: '123',
       customFields: {
@@ -327,10 +328,16 @@ describe('Conversion functions', () => {
       present_raw_address: '123 Main St, Sample City, Sample State, 12345, Sample Country',
       corporate_phone: '123456789',
       home_phone: '987654321',
+      mobile_phone: '1112223333',
       account_id: '123',
       field1: 'value1',
     };
 
+    expect(toApolloContactUpdateParams(params)).toEqual(expected);
+
+    // Should defalt to mobile if both mobile and primary are specified
+    params.phoneNumbers?.push({ phoneNumber: '0000000000', phoneNumberType: 'mobile' });
+    expected.mobile_phone = '0000000000';
     expect(toApolloContactUpdateParams(params)).toEqual(expected);
   });
 
