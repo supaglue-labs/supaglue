@@ -41,7 +41,7 @@ export const fromSalesloftPersonToContact = (record: Record<string, any>): Conta
       postalCode: null,
     },
     emailAddresses: fromSalesloftPersonToEmailAddresses(record),
-    phoneNumbers: fromSalesloftPersonToPhoneNumbers(record.phone_numbers ?? []),
+    phoneNumbers: fromSalesloftPersonToPhoneNumbers(record),
     ownerId: record.owner?.id?.toString() ?? null,
     accountId: record.account?.id?.toString() ?? null,
     openCount: record.counts?.emails_viewed ?? 0,
