@@ -195,11 +195,11 @@ export const toApolloContactCreateParams = (params: ContactCreateParams): Record
     account_id: params.accountId,
     // Apollo does not appear to support phone during creation
     // However we will keep the logic here for now for when they do support it
-    corporate_phone:
-      params.phoneNumbers?.find((p) => p.phoneNumberType === 'work')?.phoneNumber ??
+    mobile_phone:
+      params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber ??
       params.phoneNumbers?.find((p) => p.phoneNumberType === 'primary')?.phoneNumber,
+    corporate_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'work')?.phoneNumber,
     home_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'home')?.phoneNumber,
-    mobile_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber,
     other_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'other')?.phoneNumber,
     ...params.customFields,
   };
@@ -211,11 +211,11 @@ export const toApolloContactUpdateParams = (params: ContactUpdateParams): Record
     title: params.jobTitle,
     email: params.emailAddresses?.[0]?.emailAddress,
     present_raw_address: params.address ? getRawAddressString(params.address) : undefined,
-    corporate_phone:
-      params.phoneNumbers?.find((p) => p.phoneNumberType === 'work')?.phoneNumber ??
+    mobile_phone:
+      params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber ??
       params.phoneNumbers?.find((p) => p.phoneNumberType === 'primary')?.phoneNumber,
+    corporate_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'work')?.phoneNumber,
     home_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'home')?.phoneNumber,
-    mobile_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'mobile')?.phoneNumber,
     other_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'other')?.phoneNumber,
     account_id: params.accountId,
     ...params.customFields,

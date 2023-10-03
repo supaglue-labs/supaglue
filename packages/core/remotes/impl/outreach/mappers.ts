@@ -505,7 +505,7 @@ export const toOutreachProspectPhoneNumbers = (phoneNumbers?: PhoneNumber[]) => 
           break;
         case 'primary':
           // Defaulting to work phone for primary
-          workPhones.push(phoneNumber);
+          mobilePhones.push(phoneNumber);
           break;
       }
     }

@@ -30,7 +30,9 @@ import TabItem from "@theme/TabItem";
 
 
 
-Create contact
+Create contact. 
+
+Some providers do not support `primary` phone number type, in which case we will default to `mobile`. If both `primary` and `mobile` phone numbers are specified, then `mobile` will be used and `primary` will be dropped.
 
 ## Request
 
