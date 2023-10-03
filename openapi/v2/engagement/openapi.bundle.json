@@ -359,7 +359,7 @@
     "/contacts": {
       "post": {
         "operationId": "createContact",
-        "summary": "Create contact.\nSome providers do not support `primary` phone number type, in which case we will default to `mobile`. If both `primary` and `mobile` phone numbers are specified, then `mobile` will be used and `primary` will be dropped.",
+        "summary": "Create contact.\nSome providers do not support `primary` phone number type, in which case we will default to `mobile`. If both `primary` and `mobile` phone numbers are specified and only a single mobile number is possible, then `mobile` will be used and `primary` will be dropped.",
         "tags": [
           "Contacts"
         ],
