@@ -28,6 +28,8 @@ function onResFinished(req: Request, res: Response, err?: any) {
       params: req.params,
       providerName: getProviderNameFromRequest(req),
       applicationId: req.supaglueApplication?.id,
+      customerId: req.customerId,
+      applicationEnv: req.supaglueApplication?.environment,
       passthroughRequest:
         req.body?.path && req.body?.method
           ? {
