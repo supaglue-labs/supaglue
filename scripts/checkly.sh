@@ -22,12 +22,14 @@ check_checkly_checks() {
 
     FAILING_CHECK_OUTPUT=""
 
-    while read -r FAILING_CHECK; do
-        CHECK_ID=($(echo $FAILING_CHECK | jq -r '.checkId'))
-        if [[ " ${CHECKLY_CHECKS[@]} " =~ " ${CHECK_ID} " ]]; then
-            FAILING_CHECK_OUTPUT+="* $(echo "$FAILING_CHECK" | jq -r .name)"$'\n'
-        fi
-    done <<< "$FAILING_CHECKS"
+    if [ -n "$FAILING_CHECKS" ]; then
+        while read -r FAILING_CHECK; do
+            CHECK_ID=($(echo $FAILING_CHECK | jq -r '.checkId'))
+            if [[ " ${CHECKLY_CHECKS[@]} " =~ " ${CHECK_ID} " ]]; then
+                FAILING_CHECK_OUTPUT+="* $(echo "$FAILING_CHECK" | jq -r .name)"$'\n'
+            fi
+        done <<< "$FAILING_CHECKS"
+    fi
 
     if [ -n "$FAILING_CHECK_OUTPUT" ]; then
         echo
