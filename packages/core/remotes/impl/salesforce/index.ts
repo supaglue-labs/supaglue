@@ -1539,21 +1539,25 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'contact':
         commonObjectRecords = response.records.map((record) => ({
           ...fromSalesforceContactToContact(record),
+          rawData: toMappedProperties(record, fieldMappingConfig),
         })) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
         break;
       case 'account':
         commonObjectRecords = response.records.map((record) => ({
           ...fromSalesforceAccountToAccount(record),
+          rawData: toMappedProperties(record, fieldMappingConfig),
         })) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
         break;
       case 'lead':
         commonObjectRecords = response.records.map((record) => ({
           ...fromSalesforceLeadToLead(record),
+          rawData: toMappedProperties(record, fieldMappingConfig),
         })) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
         break;
       case 'opportunity':
         commonObjectRecords = response.records.map((record) => ({
           ...fromSalesforceOpportunityToOpportunity(record),
+          rawData: toMappedProperties(record, fieldMappingConfig),
         })) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
         break;
     }
