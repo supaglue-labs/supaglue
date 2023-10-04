@@ -14,7 +14,8 @@ export const fromPardotFormHandlerToFormMetadata = (record: PardotFormHandler): 
 
 export const fromPardotFormHandlerFieldToFormField = (record: PardotFormHandlerField): FormField => {
   return {
-    id: record.id.toString(),
+    // Pardot form submission expects the keys to be the field name instead of the field ID, which is a number.
+    id: record.name,
     name: record.name,
     formId: record.formHandlerId.toString(),
     required: record.isRequired,
