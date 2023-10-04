@@ -47,17 +47,12 @@ export type SyncRunFilter = {
   startTimestamp?: SyncRunTimestampFilter;
   endTimestamp?: SyncRunTimestampFilter;
   paginationParams: PaginationInternalParams;
-} & (
-  | {
-      objectType: 'common' | 'standard' | 'custom';
-      object: string;
-    }
-  | {
-      entityId: string;
-    }
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  | {}
-);
+
+  // we let the user filter on any attribute without enforcing related pairs to exist, so these are all optional
+  objectType?: 'common' | 'standard' | 'custom';
+  object?: string;
+  entityId?: string;
+};
 
 export type SyncRunTimestampFilter =
   | {
