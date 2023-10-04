@@ -99,6 +99,7 @@ export function createSyncEntityRecords(
       syncId: syncId,
       providerName: connection.providerName,
       entityId,
+      applicationId: application.id,
     });
 
     const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
@@ -116,6 +117,7 @@ export function createSyncEntityRecords(
       syncId: syncId,
       providerName: connection.providerName,
       entityId,
+      applicationId: application.id,
     });
 
     return {

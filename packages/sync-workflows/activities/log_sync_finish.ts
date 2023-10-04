@@ -59,6 +59,7 @@ export function createLogSyncFinish({
           runId,
           errorMessage,
           providerName: connection.providerName,
+          applicationId: application.id,
         },
         source: 'sync-workflows',
         system: getSystemProperties(),

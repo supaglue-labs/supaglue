@@ -3,13 +3,25 @@ import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import type { NextFunction, Request, Response } from 'express';
 
 function getProviderNameFromRequest(req: Request) {
-  let providerName = req.headers['x-provider-name'] as string;
-
-  if (!providerName && 'state' in req.query && typeof req.query.state === 'string') {
-    ({ providerName } = JSON.parse(req.query.state));
+  if (req.headers['x-provider-name']) {
+    return req.headers['x-provider-name'];
   }
 
-  return providerName;
+  if ('state' in req.query && typeof req.query.state === 'string') {
+    const { providerName } = JSON.parse(req.query.state);
+    return providerName;
+  }
+}
+
+function getApplicationIdFromRequest(req: Request) {
+  if (req.supaglueApplication?.id) {
+    return req.supaglueApplication.id;
+  }
+
+  if ('state' in req.query && typeof req.query.state === 'string') {
+    const { applicationId } = JSON.parse(req.query.state);
+    return applicationId;
+  }
 }
 
 function onResFinished(req: Request, res: Response, err?: any) {
@@ -27,7 +39,7 @@ function onResFinished(req: Request, res: Response, err?: any) {
       route: `${req.baseUrl}${req.route?.path ?? ''}`,
       params: req.params,
       providerName: getProviderNameFromRequest(req),
-      applicationId: req.supaglueApplication?.id,
+      applicationId: getApplicationIdFromRequest(req),
       customerId: req.customerId,
       applicationEnv: req.supaglueApplication?.environment,
       passthroughRequest:
