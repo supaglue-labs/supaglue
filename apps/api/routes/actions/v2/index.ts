@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { openapiMiddleware } from '@/middleware/openapi';
+import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
 import type {
   SendPassthroughRequestPathParams,
   SendPassthroughRequestRequest,
@@ -13,6 +14,7 @@ const { passthroughService } = getDependencyContainer();
 export default function init(app: Router): void {
   const v2Router = Router();
   v2Router.use(openapiMiddleware('actions', 'v2'));
+  v2Router.use(pinoAndSentryContextMiddleware);
 
   v2Router.post(
     '/passthrough',
