@@ -106,7 +106,7 @@ import {
   toHubspotOpportunityUpdateParams,
 } from './mappers';
 
-const HUBSPOT_RECORD_LIMIT = 100;
+const HUBSPOT_RECORD_LIMIT = 100; // remote API limit
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
 // TODO move this to lekko
@@ -2031,13 +2031,14 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     await this.maybeRefreshAccessToken();
 
     const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
+    const pageSize = paginationParams.page_size ?? HUBSPOT_RECORD_LIMIT;
 
     const response = await axios.get(`https://api.hubapi.com/contacts/v1/lists`, {
       headers: {
         Authorization: `Bearer ${this.#config.accessToken}`,
       },
       params: {
-        count: paginationParams.page_size,
+        count: pageSize,
         offset: cursor?.id,
       },
     });
@@ -2077,6 +2078,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     await this.maybeRefreshAccessToken();
 
     const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
+    const pageSize = paginationParams.page_size ?? HUBSPOT_RECORD_LIMIT;
     const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
 
     const [membershipResponse, metadataResponse] = await Promise.all([
@@ -2086,7 +2088,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         },
         params: {
           property: 'hs_object_id',
-          count: paginationParams.page_size,
+          count: pageSize,
           vidOffset: cursor?.id,
         },
       }),

@@ -143,6 +143,8 @@ components:
       $ref: ../../common/components/parameters/query/modified_before.yaml
     cursor:
       $ref: ../../common/components/parameters/query/cursor.yaml
+    remote_provider_page_size:
+      $ref: ../../common/components/parameters/query/remote_provider_page_size.yaml
     page_size:
       $ref: ../../common/components/parameters/query/page_size.yaml
     x-customer-id:

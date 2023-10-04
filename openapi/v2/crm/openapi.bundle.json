@@ -1420,7 +1420,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/page_size"
+            "$ref": "#/components/parameters/remote_provider_page_size"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -1481,7 +1481,7 @@
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/page_size"
+            "$ref": "#/components/parameters/remote_provider_page_size"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -2817,6 +2817,15 @@
           "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
         },
         "description": "The pagination cursor value"
+      },
+      "remote_provider_page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "100"
+        },
+        "description": "Number of results to return per page. (Max: 100)"
       },
       "page_size": {
         "name": "page_size",
