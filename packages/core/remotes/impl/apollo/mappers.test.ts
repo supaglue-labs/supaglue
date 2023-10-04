@@ -1,3 +1,9 @@
+/**
+ * Tests Apollo mappers
+ *
+ * @group unit/mappers/apollo
+ */
+
 import { describe, expect, it } from '@jest/globals';
 import type { ContactCreateParams, ContactUpdateParams } from '@supaglue/types/engagement';
 import {

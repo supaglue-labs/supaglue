@@ -1,4 +1,9 @@
-// Unit tests for the Outreach mappers
+/**
+ * Tests Outreach mappers
+ *
+ * @group unit/mappers/outreach
+ */
+
 import { describe, expect, it } from '@jest/globals';
 import type { User } from '@sentry/node';
 import type {

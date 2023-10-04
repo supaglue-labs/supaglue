@@ -1,3 +1,9 @@
+/**
+ * Tests properties utils
+ *
+ * @group unit/utils/properties
+ */
+
 import { describe, expect, test } from '@jest/globals';
 import type { DefinedFieldMappingConfig, InheritedFieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { toMappedProperties } from './properties';

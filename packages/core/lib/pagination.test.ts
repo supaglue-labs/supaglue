@@ -1,3 +1,9 @@
+/**
+ * Tests pagination library
+ *
+ * @group unit/lib/pagination
+ */
+
 import { describe, expect, test } from '@jest/globals';
 import type { Cursor, SupaglueStandardRecord } from '.';
 import { decodeCursor, getPaginatedSupaglueRecords } from '.';
