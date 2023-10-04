@@ -1,3 +1,9 @@
+/**
+ * Tests name utils
+ *
+ * @group unit/utils/name
+ */
+
 import { describe, expect, test } from '@jest/globals';
 import { getFullName } from './name';
 

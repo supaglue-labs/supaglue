@@ -1,3 +1,9 @@
+/**
+ * Tests Salesforce mappers
+ *
+ * @group unit/mappers/salesforce
+ */
+
 import { describe, expect, test } from '@jest/globals';
 import type { Address } from '@supaglue/types/crm/common';
 import type { DescribeSObjectResult } from 'jsforce';

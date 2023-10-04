@@ -1,3 +1,9 @@
+/**
+ * Tests Hubspot mappers
+ *
+ * @group unit/mappers/hubspot
+ */
+
 import { describe, expect, test } from '@jest/globals';
 import type { AccountCreateParams, ContactCreateParams, OpportunityCreateParams } from '@supaglue/types/crm';
 import {

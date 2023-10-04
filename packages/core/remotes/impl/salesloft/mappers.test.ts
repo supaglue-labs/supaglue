@@ -1,3 +1,9 @@
+/**
+ * Tests Salesloft mappers
+ *
+ * @group unit/mappers/salesloft
+ */
+
 import { describe, expect, it } from '@jest/globals';
 import type { ContactCreateParams, SequenceStateCreateParams } from '@supaglue/types/engagement';
 import {

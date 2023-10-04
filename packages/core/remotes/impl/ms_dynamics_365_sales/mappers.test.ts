@@ -1,3 +1,9 @@
+/**
+ * Tests MS Dynamics 365 Sales mappers
+ *
+ * @group unit/mappers/ms_dynamics_365_sales
+ */
+
 import { describe, expect, test } from '@jest/globals';
 import type {
   AccountCreateParams,
