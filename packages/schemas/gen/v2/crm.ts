@@ -717,6 +717,8 @@ export interface components {
     modified_before?: Date;
     /** @description The pagination cursor value */
     cursor?: string;
+    /** @description Number of results to return per page. (Max: 100) */
+    remote_provider_page_size?: string;
     /** @description Number of results to return per page. (Max: 1000) */
     page_size?: string;
     /** @description The customer ID that uniquely identifies the customer in your application */
@@ -1404,7 +1406,7 @@ export interface operations {
   listLists: {
     parameters: {
       query: {
-        page_size?: components["parameters"]["page_size"];
+        page_size?: components["parameters"]["remote_provider_page_size"];
         cursor?: components["parameters"]["cursor"];
         object_type: components["parameters"]["object_type"];
       };
@@ -1437,7 +1439,7 @@ export interface operations {
   listListMemberships: {
     parameters: {
       query: {
-        page_size?: components["parameters"]["page_size"];
+        page_size?: components["parameters"]["remote_provider_page_size"];
         cursor?: components["parameters"]["cursor"];
         object_type: components["parameters"]["object_type"];
       };

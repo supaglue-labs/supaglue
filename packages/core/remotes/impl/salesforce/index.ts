@@ -95,6 +95,8 @@ import {
   toSalesforceOpportunityUpdateParams,
 } from './mappers';
 
+const MAX_SALESFORCE_REST_API_PAGE_SIZE = 100;
+
 const SALESFORCE_API_VERSION = '57.0';
 
 const FETCH_TIMEOUT = 60 * 1000;
@@ -1459,26 +1461,30 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     objectType: Exclude<CRMCommonObjectType, 'user'>,
     paginationParams: PaginationParams
   ): Promise<PaginatedSupaglueRecords<ListMetadata>> {
-    const mappedObjectType = capitalizeString(objectType);
+    const salesforceObjectType = capitalizeString(objectType);
     let cursor: Cursor | undefined;
+    let pageSize = MAX_SALESFORCE_REST_API_PAGE_SIZE;
+
     if (paginationParams.cursor) {
       cursor = decodeCursor(paginationParams.cursor);
     }
 
-    let query = this.#client
-      .sobject('ListView')
-      .find({ SobjectType: mappedObjectType, Id: cursor?.id ? { $gt: cursor.id as string } : undefined })
-      .orderby('Id');
-
     if (paginationParams.page_size) {
-      query = query.limit(parseInt(paginationParams.page_size));
+      pageSize = parseInt(paginationParams.page_size, 10);
     }
+
+    const query = this.#client
+      .sobject('ListView')
+      .find({ SobjectType: salesforceObjectType, Id: cursor?.id ? { $gt: cursor.id as string } : undefined })
+      .limit(pageSize)
+      .orderby('Id');
 
     const [response, { totalSize: totalCount }] = await Promise.all([
       await query.execute(),
-      this.#client.query(`SELECT COUNT() FROM ListView WHERE SobjectType = '${mappedObjectType}'`),
+      this.#client.query(`SELECT COUNT() FROM ListView WHERE SobjectType = '${salesforceObjectType}'`),
     ]);
 
+    const hasMore = response.length === pageSize;
     // Map response to ListMetadata interface
     return {
       records: response.map((record: any) => ({
@@ -1490,10 +1496,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       })),
       pagination: {
         total_count: totalCount,
-        next: encodeCursor({
-          id: response.length ? response[response.length - 1].Id : null,
-          reverse: false,
-        }),
+        next: hasMore
+          ? encodeCursor({
+              id: response.length ? response[response.length - 1].Id : null,
+              reverse: false,
+            })
+          : null,
         previous: null,
       },
     };
@@ -1505,16 +1513,18 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     paginationParams: PaginationParams,
     fieldMappingConfig: FieldMappingConfig
   ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
-    const commonObjectType = capitalizeString(objectType);
+    const salesforceObjectType = capitalizeString(objectType);
     const propertiesToFetch = await this.getCommonPropertiesToFetch(objectType, fieldMappingConfig);
 
-    const listDescription = await this.#client.sobject(commonObjectType).listview(listId).describe();
-    const queryRemainder = (listDescription as any).query.split(' FROM ')[1];
-    const [fromClause, orderByClause] = queryRemainder.split(' ORDER BY ');
-
     let cursor: Cursor | undefined;
+    let pageSize = MAX_SALESFORCE_REST_API_PAGE_SIZE;
+
     if (paginationParams.cursor) {
       cursor = decodeCursor(paginationParams.cursor);
+    }
+
+    if (paginationParams.page_size) {
+      pageSize = parseInt(paginationParams.page_size, 10);
     }
 
     const [
@@ -1525,11 +1535,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       },
     ] = await Promise.all([
       this.#client.query(
-        `SELECT ${propertiesToFetch.join(', ')} FROM ${fromClause} ${
+        `SELECT ${propertiesToFetch.join(', ')} FROM ${salesforceObjectType} ${
           cursor?.id ? `WHERE Id > '${cursor.id}'` : ''
-        } ORDER BY ${orderByClause} ${paginationParams.page_size ? `LIMIT ${paginationParams.page_size}` : ''}`
+        } ORDER BY Id ${pageSize ? `LIMIT ${pageSize}` : ''}`
       ),
-      this.#client.query(`SELECT COUNT() FROM ${fromClause}`),
+      this.#client.query(`SELECT COUNT() FROM ${salesforceObjectType}`),
       this.#client.query(`SELECT FIELDS(STANDARD) FROM ListView WHERE Id = '${listId}'`),
     ]);
 
@@ -1562,6 +1572,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         break;
     }
 
+    const hasMore = response.records.length === pageSize;
     return {
       records: commonObjectRecords,
       metadata: {
@@ -1573,10 +1584,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       },
       pagination: {
         total_count: totalCount,
-        next: encodeCursor({
-          id: (response.records.length ? response.records[response.records.length - 1].Id : null) as string,
-          reverse: false,
-        }),
+        next: hasMore
+          ? encodeCursor({
+              id: (response.records.length ? response.records[response.records.length - 1].Id : null) as string,
+              reverse: false,
+            })
+          : null,
         previous: null,
       },
     };
