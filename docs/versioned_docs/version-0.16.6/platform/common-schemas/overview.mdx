@@ -1,0 +1,96 @@
+import ThemedImage from '@theme/ThemedImage';
+
+# Common Schema
+
+Common Schemas are data models developed and maintained by Supaglue to make it easier to integrate with multiple providers within the same category. Supaglue maintains a common schema for each category, and maps each third-party provider API to its respective common schema(s). Common schemas can be used for both reads and writes, through managed syncs and via the unified API.
+
+<ThemedImage
+  alt="common schema"
+  width="50%"
+  sources={{
+    light: '/img/common-schema-diagram.png',
+    dark: '/img/common-schema-diagram.png',
+  }}
+/>
+
+## Common Object
+
+Each Common Schema consists of a set of Common Objects that map to provider objects and fields across all providers within a category. For example, the Accounts common object in CRM maps to Salesforce Accounts and HubSpot Companies. Common Objects have a 1-N relationship between your application and provider objects.
+
+### Configuration
+
+In the Management Portal, go to **Syncs --> Sync Config**. Under `Common Objects` select the objects you want to sync.
+
+<ThemedImage
+  alt="common object sync config"
+  width="100%"
+  sources={{
+    light: '/img/salesforce-postgres-sync-config.png',
+    dark: '/img/salesforce-postgres-config.png',
+  }}
+/>
+
+Upon a customer going through their Oauth flow using an [Embedded Link](../managed-auth#embedded-links), Supaglue will create a Connection and start syncing the configured Common Objects to your Destination.
+
+### Object names
+
+Supaglue defines Common Object names using lowercase letters with snake casing. E.g. `account` and `sequence_state` for the Engagement category.
+
+:::info
+Object names are singular.
+:::
+
+### Table names
+
+Tables are named using lowercase letters with snake casing in the following format: `${Category}_${Common Object name}s`, e.g. `engagement_accounts`.
+
+:::info
+Table names are plural.
+:::
+
+### Table schemas
+
+Supaglue lands three categories of data in your Destination:
+
+1. **Supaglue metadata fields**: These specify the application, customer, provider, and timestamps associated with the managed sync.
+1. **Raw data**: The raw third-party Provider data. We pass these through as-is.
+1. **Normalized data (common schema fields)**: The raw data is normalized and hoisted to top-level table columns.
+
+Below is an example schema for the `crm_accounts` table:
+
+```sql
+postgres=> \d crm_accounts
+                              Table "production.crm_accounts"
+          Column          |              Type              | Collation | Nullable | Default
+--------------------------+--------------------------------+-----------+----------+---------
+ _supaglue_application_id | text                           |           | not null |
+ _supaglue_provider_name  | text                           |           | not null |
+ _supaglue_customer_id    | text                           |           | not null |
+ _supaglue_emitted_at     | timestamp(3) without time zone |           | not null |
+ id                       | text                           |           | not null |
+ created_at               | timestamp(3) without time zone |           |          |
+ updated_at               | timestamp(3) without time zone |           |          |
+ is_deleted               | boolean                        |           | not null |
+ last_modified_at         | timestamp(3) without time zone |           | not null |
+ name                     | text                           |           |          |
+ description              | text                           |           |          |
+ industry                 | text                           |           |          |
+ website                  | text                           |           |          |
+ number_of_employees      | integer                        |           |          |
+ addresses                | jsonb                          |           |          |
+ phone_numbers            | jsonb                          |           |          |
+ last_activity_at         | timestamp(3) without time zone |           |          |
+ lifecycle_stage          | text                           |           |          |
+ owner_id                 | text                           |           |          |
+ raw_data                 | jsonb                          |           |          |
+Indexes:
+    "crm_accounts_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+```
+
+:::info
+Please note that Supaglue metadata fields differ slightly between Common Objects and [Objects](../objects/overview).
+:::
+
+## Writing
+
+Use Supaglue's [Unified APIs](../../integration-patterns/unified-api) to write to Common Objects.
