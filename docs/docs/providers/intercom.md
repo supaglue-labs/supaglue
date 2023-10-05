@@ -11,6 +11,8 @@ description: ''
 
 **Category:** `ticketing`
 
+Supaglue uses the Intercom V2.9 API.
+
 | Feature                              | Available      |
 | ------------------------------------ | -------------- |
 | Authentication (`oauth2`)            | Yes            |

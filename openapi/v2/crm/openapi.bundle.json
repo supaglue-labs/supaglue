@@ -1362,6 +1362,7 @@
       "get": {
         "operationId": "getUser",
         "summary": "Get user",
+        "description": "The common schema User maps to the following 3rd-party provider objects:\n\n| Provider  | Remote object ID  | \n| --------- | ----------------- | \n| Hubspot   | V3 Owner          | \n| Dynamics  | Azure System User | \n| Intercom  | Admin             |\n",
         "tags": [
           "Users"
         ],

@@ -60,8 +60,18 @@ export default function init(app: Router): void {
       );
       const client = await remoteService.getRemoteClient(connection.id);
       try {
-        const { userId, rawDetails } = await client.getUserIdAndDetails();
-        return res.status(200).send({ user_id: userId, raw_details: rawDetails });
+        // Using "x-sg-minor-version: 1" to migrate customer, then will make it the default (no header) by removing __v2_1() as an interface
+        if (req.headers['x-sg-minor-version'] === '1') {
+          const { userId, rawDetails, additionalRawDetails } = await client.getUserIdAndDetails__v2_1();
+          return res
+            .status(200)
+            .send({ user_id: userId, raw_details: rawDetails, additional_raw_details: additionalRawDetails });
+        } else {
+          const { userId, rawDetails, additionalRawDetails } = await client.getUserIdAndDetails();
+          return res
+            .status(200)
+            .send({ user_id: userId, raw_details: rawDetails, additional_raw_details: additionalRawDetails });
+        }
       } catch (err) {
         if (err instanceof NotImplementedError) {
           throw new BadRequestError(err.message);

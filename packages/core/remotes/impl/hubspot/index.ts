@@ -1,6 +1,9 @@
 import { Client } from '@hubspot/api-client';
 import type { FilterGroup } from '@hubspot/api-client/lib/codegen/crm/contacts';
-import type { CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners } from '@hubspot/api-client/lib/codegen/crm/owners';
+import type {
+  CollectionResponsePublicOwnerForwardPaging,
+  CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners,
+} from '@hubspot/api-client/lib/codegen/crm/owners';
 import type {
   ConnectionUnsafe,
   CRMProvider,
@@ -474,6 +477,9 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     };
   }
 
+  /**
+   * @deprecated This doesn't return the V3 owner id and user id that Hubspot customers need.
+   */
   public override async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {
     await this.maybeRefreshAccessToken();
     const { accessToken } = this.#config;
@@ -481,6 +487,48 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const { userId } = response;
     const { token: _, ...rawDetails } = response;
     return { userId: String(userId), rawDetails };
+  }
+
+  /**
+   * This will replace getUserIdAndDetails() once we migrate all customers.
+   * @todo: We'll then remove the need for the "x-sg-minor-version: 1" header.
+   */
+  public override async getUserIdAndDetails__v2_1(): Promise<RemoteUserIdAndDetails> {
+    await this.maybeRefreshAccessToken();
+    const { accessToken } = this.#config;
+    const accessTokenResponse = await this.#client.oauth.accessTokensApi.get(accessToken);
+    const { userId: authedUserId } = accessTokenResponse;
+    const { token: _, ...authTokenRawDetails } = accessTokenResponse;
+
+    let after = undefined;
+
+    // paginate and find the owner by email: that is the only key to do the lookup
+    // between v1's access token api and v3's owners api. v1 access token api is the
+    // only way to lookup the active owner.
+    do {
+      const ownersResponse: CollectionResponsePublicOwnerForwardPaging =
+        await this.#client.crm.owners.ownersApi.getPage(undefined, after);
+
+      const foundOwner = ownersResponse.results.find((owner) => owner.userId === authedUserId);
+      if (foundOwner) {
+        return {
+          userId: foundOwner.id,
+          rawDetails: {
+            ...authTokenRawDetails,
+          },
+          additionalRawDetails: {
+            ...foundOwner,
+          },
+        };
+      }
+
+      if (ownersResponse.paging?.next?.after) {
+        after = ownersResponse.paging?.next?.after;
+      }
+    } while (after !== undefined);
+
+    // owner not found
+    return { userId: undefined, rawDetails: undefined };
   }
 
   private async maybeRefreshAccessToken(): Promise<void> {

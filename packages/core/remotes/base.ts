@@ -76,6 +76,7 @@ export interface RemoteClient {
   sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse>;
 
   getUserIdAndDetails(): Promise<RemoteUserIdAndDetails>;
+  getUserIdAndDetails__v2_1(): Promise<RemoteUserIdAndDetails>;
 }
 
 export abstract class AbstractRemoteClient extends EventEmitter implements RemoteClient {
@@ -181,6 +182,9 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   }
 
   public async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {
+    throw new NotImplementedError();
+  }
+  public async getUserIdAndDetails__v2_1(): Promise<RemoteUserIdAndDetails> {
     throw new NotImplementedError();
   }
 

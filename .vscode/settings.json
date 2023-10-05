@@ -88,5 +88,6 @@
       "pattern": "openapi/v2/engagement/openapi.yaml"
     }
   ],
-  "editor.inlayHints.enabled": "on"
+  "editor.inlayHints.enabled": "on",
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

@@ -199,7 +199,16 @@ export interface paths {
     };
   };
   "/users/{user_id}": {
-    /** Get user */
+    /**
+     * Get user 
+     * @description The common schema User maps to the following 3rd-party provider objects:
+     * 
+     * | Provider  | Remote object ID  | 
+     * | --------- | ----------------- | 
+     * | Hubspot   | V3 Owner          | 
+     * | Dynamics  | Azure System User | 
+     * | Intercom  | Admin             |
+     */
     get: operations["getUser"];
     parameters: {
       header: {
@@ -1379,7 +1388,16 @@ export interface operations {
       };
     };
   };
-  /** Get user */
+  /**
+   * Get user 
+   * @description The common schema User maps to the following 3rd-party provider objects:
+   * 
+   * | Provider  | Remote object ID  | 
+   * | --------- | ----------------- | 
+   * | Hubspot   | V3 Owner          | 
+   * | Dynamics  | Azure System User | 
+   * | Intercom  | Admin             |
+   */
   getUser: {
     parameters: {
       query?: {
