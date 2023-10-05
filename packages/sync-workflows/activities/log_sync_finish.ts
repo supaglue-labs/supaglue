@@ -50,7 +50,7 @@ export function createLogSyncFinish({
 
     posthogClient.capture({
       distinctId: distinctId ?? application.orgId,
-      event: `Completed Sync`,
+      event: 'Completed Sync',
       properties: {
         result: status === 'FAILURE' ? 'error' : 'success',
         params: {
@@ -60,6 +60,7 @@ export function createLogSyncFinish({
           errorMessage,
           providerName: connection.providerName,
           applicationId: application.id,
+          applicationEnv: application.environment,
         },
         source: 'sync-workflows',
         system: getSystemProperties(),
