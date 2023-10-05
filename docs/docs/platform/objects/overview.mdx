@@ -3,7 +3,7 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 
 # Standard Objects
 
-Not every object in a remote provider is supported by Supaglue's common schema or is unifiable across providers. In addition to common objects, there are object provider-specific concepts that don't exist elsewhere. In these situations, you can access Standard Objects from 3rd party providers in their native, unnormalized format.
+Not every object in a 3rd party provider is supported by Supaglue's common schema or is unifiable across providers. In addition to common objects, there are object provider-specific concepts that don't exist elsewhere. In these situations, you can access Standard Object data from 3rd party providers in their original format.
 
 <ThemedImage
   alt="standard and custom objects"
@@ -19,7 +19,7 @@ Standard Objects have a 1-1 relationship between your application and Provider o
 
 You can use Standard Objects as part of [Managed Syncs](../../integration-patterns/managed-syncs).
 
-## Configuration
+### Configuration
 
 Use the **Syncs --> Sync Configs** page in the Management Portal to specify the Standard Objects you wish to sync to your Destination.
 
@@ -31,15 +31,15 @@ Use the **Syncs --> Sync Configs** page in the Management Portal to specify the 
 
 The screenshot above shows a HubSpot Sync Config that specifies `product`, `contact`, `contact`, `deal`, and `email` Standard Objects. Supaglue will sync these Standard Objects.
 
-## Object names
+### Object names
 
 Since Standard Objects vary by Provider, you need to select the Standard Objects separately for each Provider. The casing of the Standard Objects is also provider-specific, e.g. Standard Objects for Salesforce are "PascalCase".
 
-## Table names
+### Table names
 
 Tables are case-sensitive and named `${Provider}_${Object name}`, e.g. `salesforce_Account`.
 
-## Table schema
+### Table schema
 
 Supaglue will land the data in your Destination with the following schema:
 
