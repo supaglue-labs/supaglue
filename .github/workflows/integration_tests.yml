@@ -1,0 +1,101 @@
+name: Integration Tests
+
+on:
+  workflow_call:
+    inputs:
+      api-url:
+        description: The URL of the API to test against
+        required: true
+        type: string
+      customer-id:
+        description: The customer ID to use for testing
+        required: true
+        type: string
+      environment:
+        description: The environment to use for testing
+        required: true
+        type: string
+      page-on-failure:
+        description: Whether to page on failure
+        required: false
+        type: boolean
+    secrets:
+      TESTING_API_KEY:
+        description: The API key to use for testing
+        required: true
+      SLACK_WEBHOOK_URL:
+        description: The Slack webhook URL to use for notifications
+        required: true
+      PAGERDUTY_INTEGRATION_KEY:
+        description: The PagerDuty integration key to use for paging
+        required: true
+
+jobs:
+  test:
+    name: Run integration tests
+    timeout-minutes: 15
+    runs-on: ubuntu-8cores-32gb
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          corepack enable
+          yarn install
+
+      - name: Run integration tests
+        run: yarn test:integration
+        env:
+          API_KEY: ${{ secrets.TESTING_API_KEY }}
+          API_URL: ${{ github.event.inputs.api_url }}
+          CUSTOMER_ID: ${{ github.event.inputs.customer_id }}
+
+      - name: Slack on failure
+        id: slack
+        uses: slackapi/slack-github-action@v1
+        if: failure()
+        with:
+          payload: |
+            {
+              "text": "🚨 ${{ github.event.inputs.environment }} Integration tests failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "🚨 Integration tests failed"
+                  }
+                },
+                {
+                  "type": "context",
+                  "elements": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "Environment: ${{ github.event.inputs.environment }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+
+      - name: Send PagerDuty alert on failure
+        if: failure() && github.event.inputs.page-on-failure
+        uses: Entle/action-pagerduty-alert@0.2.0
+        with:
+          pagerduty-integration-key: '${{ secrets.PAGERDUTY_INTEGRATION_KEY }}'
+          pagerduty-dedup-key: github_workflow_failed
