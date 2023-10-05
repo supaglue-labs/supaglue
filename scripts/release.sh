@@ -24,8 +24,6 @@ EOF
   exit 1
 fi
 
-eval $(op signin --account supaglue.1password.com)
-
 source $DIR/checkly.sh
 check_checkly_checks
 
@@ -52,8 +50,6 @@ for APP_NAME in "${APPS[@]}"; do
   docker buildx imagetools create supaglue/"$APP_NAME":"$RELEASE_SHA" --tag supaglue/"$APP_NAME":"$VERSION"
   yarn dlx --package @sentry/cli sentry-cli releases finalize --project "$APP_NAME" --org supaglue "$VERSION"
 done
-
-
 
 docker buildx imagetools create supaglue/sync-worker:"$RELEASE_SHA" --tag supaglue/sync-worker:"$VERSION"
 
