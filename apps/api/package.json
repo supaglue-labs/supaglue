@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.16.3",
+  "version": "0.16.5",
   "private": true,
   "packageManager": "yarn@3.4.1",
   "type": "commonjs",
@@ -47,7 +47,8 @@
     "lint": "run -T eslint",
     "prepare": "ts-patch install -s",
     "init-temporal": "tsx ./init_scripts/init_temporal.ts",
-    "tsc:watch": "tsc --noEmit --watch"
+    "tsc:watch": "tsc --noEmit --watch",
+    "test:integration": "SUPAGLUE_LOG_LEVEL=debug jest --selectProjects api --group=integration"
   },
   "lint-staged": {
     "**/*.{ts,tsx}": "tsc-files --noEmit types/express.d.ts",

@@ -801,7 +801,7 @@ export const authConfig: ConnectorAuthConfig = {
 
 function filterForUpdatedAfter<
   R extends {
-    data: { updated_time?: string }[] | null;
+    data: { update_time?: string }[] | null;
   }
 >(response: R, updatedAfter?: Date): R {
   if (!response.data?.length) {
@@ -814,11 +814,11 @@ function filterForUpdatedAfter<
         return true;
       }
 
-      if (!record.updated_time) {
+      if (!record.update_time) {
         return true;
       }
 
-      return updatedAfter < new Date(record.updated_time);
+      return updatedAfter < new Date(record.update_time);
     }),
   };
 }

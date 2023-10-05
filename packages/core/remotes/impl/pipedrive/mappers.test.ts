@@ -1,3 +1,9 @@
+/**
+ * Tests Pipedrive mappers
+ *
+ * @group unit/mappers/pipedrive
+ */
+
 import { describe, expect, test } from '@jest/globals';
 import type { PipedriveRecord } from '.';
 import { CRM_MOBILE_PHONE, CRM_PRIMARY_EMAIL, PIPEDRIVE_PIPELINE_STAGE_MAPPING } from '../../utils/test_data';

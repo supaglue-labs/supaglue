@@ -23,24 +23,19 @@ export default function init(app: Router) {
       res: Response<GetSyncRunsResponse>
     ) => {
       function getObjectOrEntityFilter() {
-        if (req.query?.object_type && req.query.object) {
-          return {
-            objectType: req.query.object_type,
-            object: req.query.object,
-          };
-        }
+        const objectTypeSpreadTernary = req.query?.object_type
+          ? {
+              objectType: req.query?.object_type,
+            }
+          : {};
+        const objectSpreadTernary = req.query?.object ? { object: req.query.object } : {};
+        const entityIdSpreadTernary = req.query?.entity_id ? { entityId: req.query.entity_id } : {};
 
-        if (req.query?.entity_id) {
-          return {
-            entityId: req.query.entity_id,
-          };
-        }
-
-        if (!req.query?.object_type && !req.query?.object && !req.query?.entity_id) {
-          return {};
-        }
-
-        throw new BadRequestError('must filter on (object_type, object) or entity_id or neither');
+        return {
+          ...objectSpreadTernary,
+          ...objectTypeSpreadTernary,
+          ...entityIdSpreadTernary,
+        };
       }
 
       const { next, previous, results, totalCount } = await syncRunService.list({

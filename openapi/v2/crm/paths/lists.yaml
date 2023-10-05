@@ -6,7 +6,7 @@ get:
   security:
     - x-api-key: []
   parameters:
-    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/remote_provider_page_size.yaml
     - $ref: ../../../common/components/parameters/query/cursor.yaml
     - $ref: ../components/parameters/query/object_type.yaml
   responses:
