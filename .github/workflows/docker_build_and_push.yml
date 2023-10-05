@@ -147,6 +147,7 @@ jobs:
 
   test:
     name: Run staging integration tests
+    needs: deploy
     if: inputs.workspace == 'api' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
     uses: ./.github/workflows/integration_tests.yml
     with:
