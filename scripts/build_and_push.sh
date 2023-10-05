@@ -3,11 +3,12 @@
 set -euo pipefail
 
 if [ -z "${1-}" ]; then
-  echo "usage: $0 <workspace_name>"
+  echo "usage: $0 <workspace_name> [hotfix version suffix]"
   exit 1
 fi
 
 WORKSPACE_NAME=$1
+HOTFIX_VERSION_SUFFIX=${2:-""}
 
 WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${WORKSPACE_NAME}\") | .location")
 
@@ -29,7 +30,8 @@ POSTHOG_API_KEY=$(op read op://engineering/dl4y3dryfib2huqpultgp7wlcq/credential
 ADDITIONAL_ARGS="--build-arg POSTHOG_API_KEY=${POSTHOG_API_KEY}"
 
 # read version from package.json
-VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
+PACKAGE_VERSION=$(jq -r .version "${WORKSPACE_PATH}/package.json")
+VERSION="$PACKAGE_VERSION-$HOTFIX_VERSION_SUFFIX"
 
 if [ "${WORKSPACE_NAME}" == "mgmt-ui" ]; then
   if [ -f "${WORKSPACE_PATH}/.env" ]; then

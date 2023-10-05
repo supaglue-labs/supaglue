@@ -189,6 +189,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return async (next_start?: string) => {
       return await retryWhenAxiosRateLimited(async () => {
         await this.maybeRefreshAccessToken();
+        // subsequent pages
         if (next_start) {
           const response = await axios.get<PipedrivePaginatedRecords>(endpoint, {
             params: {
@@ -197,8 +198,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
             },
             headers: this.#headers,
           });
-          return response.data;
+
+          return filterForUpdatedAfter(response.data, updatedAfter);
         }
+
+        // first page
         const response = await axios.get<PipedrivePaginatedRecords>(endpoint, {
           params: DEFAULT_LIST_PARAMS,
           headers: this.#headers,
