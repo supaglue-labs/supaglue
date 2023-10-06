@@ -376,7 +376,7 @@ export const toOutreachSequenceStepCreateParams = ({
         date,
         stepType: type,
         taskNote,
-        order,
+        order: order ?? 0,
         ...customFields,
       },
       relationships: {

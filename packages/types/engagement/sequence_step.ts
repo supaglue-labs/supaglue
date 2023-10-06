@@ -13,8 +13,9 @@ type CoreSequenceStep = {
 export type SequenceStep = BaseEngagementModel & CoreSequenceStep;
 
 export type SequenceStepCreateParams = {
-  sequenceId: string;
-  order: number;
+  /** Optional when creating step together with Sequence */
+  sequenceId?: string;
+  order?: number;
   date?: string;
   intervalSeconds?: number;
   isReply: boolean;

@@ -13,6 +13,7 @@ import type {
   User,
 } from '@supaglue/types/engagement';
 import { camelcaseKeys } from '@supaglue/utils';
+import { BadRequestError } from '../../../errors';
 
 export const fromSalesloftAccountToAccount = (record: Record<string, any>): Account => {
   return {
@@ -207,7 +208,10 @@ export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): 
       shared: true, // the default when creating in the UI
     },
     cadence_content: {
-      step_groups: [],
+      step_groups: (sequence.steps ?? []).map(
+        (step, index) =>
+          toSalesloftCadenceStepImportParams({ ...step, order: index + 1 }).cadence_content.step_groups[0]
+      ),
       ...sequence.customFields,
     },
   };
@@ -223,41 +227,56 @@ export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): 
  * - Only works if a cadence has exactly 0 steps... https://share.cleanshot.com/dVx6sqTD
  */
 export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParams): CadenceImport => {
+  if (step.date) {
+    throw new BadRequestError('Only relative delays are supported for Salesloft sequences');
+  }
+  const day = Math.floor((step.intervalSeconds ?? 0) / 86400) + 1;
+  const delayInMins = Math.floor(((step.intervalSeconds ?? 0) % 86400) / 60);
+
+  if (delayInMins > 720) {
+    throw new BadRequestError('Salesloft only supports delays up to 720 minutes within a day');
+  }
+
   const cadenceStep: Step | null =
     (step.type === 'manual_email' || step.type === 'auto_email') && 'body' in step.template
       ? {
           enabled: true,
           type: 'Email',
-          name: `Step ${step.order}`,
+          name: step.taskNote ?? `Step ${step.order}`,
           type_settings: {
             email_template: { title: step.template.name, subject: step.template.subject, body: step.template.body },
           },
         }
       : step.type === 'call'
       ? {
-          enabled: false,
+          enabled: true,
           type: 'Phone',
           name: `Step ${step.order}`,
           type_settings: { instructions: step.taskNote ?? '' },
         }
       : {
           // Fallback step
-          enabled: false,
+          enabled: true,
           type: 'Other',
           name: `Step ${step.order}`,
           type_settings: { instructions: `${step.type}: ${step.taskNote ?? ''}` },
         };
+  // TODO: Implement LinkedIn step
+
   return {
     cadence_content: {
-      cadence_id: parseInt(step.sequenceId, 10),
+      cadence_id: step.sequenceId ? parseInt(step.sequenceId, 10) : undefined,
       step_groups: [
         {
-          // TODO: What should this actually be?
-          day: step.intervalSeconds ? Math.ceil(step.intervalSeconds / 86400) : 1,
-          automated: false,
+          day,
+          automated: step.type === 'auto_email',
+          automated_settings:
+            step.type === 'auto_email' && delayInMins !== 0
+              ? { send_type: 'after_time_delay', delay_time: delayInMins }
+              : undefined,
           due_immediately: false,
           steps: cadenceStep ? [cadenceStep] : [],
-          reference_id: 0,
+          reference_id: step.order ?? null,
         },
       ],
       ...step.customFields,
@@ -303,8 +322,8 @@ interface StepGroup {
   day: number;
   /** Describes if the step is due immediately or not. */
   due_immediately: boolean;
-  /** Used to correlate threaded email steps */
-  reference_id?: number;
+  /** Used to correlate threaded email steps. Required for email step, can pass 0 for example. */
+  reference_id?: number | null;
   /** All of the steps that belong to a particular day */
   steps: Step[];
 }
@@ -314,7 +333,7 @@ interface StepGroup {
  */
 type AutomatedSettings = {
   /** Determines whether or not the step is able to be sent on weekends */
-  allow_send_on_weekends: boolean;
+  allow_send_on_weekends?: boolean;
 } & (
   | {
       /**

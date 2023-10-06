@@ -1536,6 +1536,12 @@
           "owner_id": {
             "type": "string"
           },
+          "steps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/create_sequence_step"
+            }
+          },
           "custom_fields": {
             "$ref": "#/components/schemas/custom_fields"
           }
@@ -1548,6 +1554,10 @@
       "create_sequence_step": {
         "type": "object",
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name given by the user for the step. Used by Salesloft only."
+          },
           "interval_seconds": {
             "type": "number",
             "description": "The interval (in seconds) until this step will activate; only applicable to interval-based sequences."
@@ -1626,7 +1636,7 @@
           },
           "order": {
             "type": "number",
-            "description": "The step's display order within its sequence."
+            "description": "The step's display order within its sequence. Only applicable for Outreach when adding steps one at a time after the initial sequence creation."
           },
           "type": {
             "type": "string",
@@ -1648,9 +1658,6 @@
           }
         },
         "required": [
-          "template",
-          "is_reply",
-          "order",
           "type"
         ]
       },
