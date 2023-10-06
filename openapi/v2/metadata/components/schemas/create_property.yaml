@@ -1,0 +1,39 @@
+type: object
+properties:
+  name:
+    type: string
+    description: |
+      The unique identifier to be used to refer to this property across all customers. Supaglue will use this to appropriately map to the provider field ID.
+    example: ticketId
+  label:
+    type: string
+    description: The human-readable name of the property as provided by the third-party Provider.
+    example: First Name
+  description:
+    type: string
+    description: A description of the field.
+  is_required:
+    type: boolean
+    description: Defaults to false.
+    example: false
+  group_name:
+    type: string
+    example: supaglue
+    description: Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't.
+  type:
+    $ref: ./objects/property_type.yaml
+  precision:
+    type: number
+    description: Only applicable in Salesforce. If not given, will default to 18.
+  scale:
+    type: number
+    description: Only applicable in Salesforce. If not given, will default to 0.
+  options:
+    type: array
+    description: The list of options for a picklist/multipicklist field.
+    items:
+      $ref: ./objects/picklist_option.yaml
+required:
+  - name
+  - label
+  - type

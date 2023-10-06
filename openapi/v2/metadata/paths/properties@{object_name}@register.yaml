@@ -1,0 +1,34 @@
+post:
+  operationId: registerProperty
+  summary: Register Property
+  description: |
+    Registers a custom property in Supaglue.
+    This may be useful for custom properties that were already created in the Customer's provider.
+    E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.
+  tags:
+    - Properties
+  security:
+    - x-api-key: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/register_property.yaml
+  responses:
+    '200':
+      description: Register a property
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/property_unified.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml
+  - name: object_name
+    in: path
+    required: true
+    schema:
+      type: string
+      description: The name of the object.
+      example: contact

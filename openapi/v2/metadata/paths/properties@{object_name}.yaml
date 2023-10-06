@@ -1,0 +1,53 @@
+get:
+  operationId: listProperties
+  summary: List properties
+  tags:
+    - Properties
+  security:
+    - x-api-key: []
+  responses:
+    '200':
+      description: List properties
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              properties:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/property_unified.yaml
+            required:
+              - properties
+post:
+  operationId: createProperty 
+  summary: Create property
+  description: |
+    Creates a custom property in the provider and registers it in Supaglue.
+  tags:
+    - Properties
+  security:
+    - x-api-key: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/create_property.yaml
+  responses:
+    '200':
+      description: Create a property
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/property_unified.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml
+  - name: object_name
+    in: path
+    required: true
+    schema:
+      type: string
+      description: The name of the object.
+      example: contact

@@ -24,7 +24,7 @@ export default function init(app: Router): void {
     ) => {
       const client = await remoteService.getRemoteClient(req.customerConnection.id);
       const properties = await client.listProperties({
-        type: req.query.type,
+        type: req.query.type ?? 'standard',
         name: req.query.name,
       });
       return res.status(200).send({ properties: properties.map(snakecaseKeys) });

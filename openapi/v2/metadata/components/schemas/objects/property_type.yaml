@@ -1,0 +1,18 @@
+type: string
+enum:
+  - text
+  - textarea
+  - number
+  - picklist
+  - multipicklist
+  - date
+  - datetime
+  - boolean
+description: |
+  Type of the field.
+  Support:
+  | Provider                 | text         | textarea        | number        | picklist           | multipicklist        | date      | datetime      | boolean                 |
+  | ------------------------ | ------------ | --------------- | ------------- | ------------------ | -------------------- | --------- | ------------- | ----------------------- |
+  | Hubspot (type/fieldType) | string/text  | string/textarea | number/number | enumeration/select | enumeration/checkbox | date/date | datetime/date | boolean/booleancheckbox |
+  | Salesforce               | Text         | Longtextarea    | Number        | Picklist           | Multipicklist        | Date      | Datetime      | Checkbox                |
+  | Pipedrive                | varchar_auto | text            | double        | enum               | set                  | date      | date          | enum                    |
