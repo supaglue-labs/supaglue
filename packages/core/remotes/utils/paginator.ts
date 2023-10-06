@@ -55,7 +55,19 @@ export async function paginator<T>(
       let cursor: string | undefined = undefined;
 
       do {
-        const response = await pageFetcher(cursor);
+        let response: Awaited<T>;
+
+        // abort the stream early if we encounter a terminal error during pagination
+        try {
+          response = await pageFetcher(cursor);
+        } catch (e: any) {
+          if (e.problemType === 'TERMINAL_TOO_MANY_REQUESTS_ERROR') {
+            passThrough.emit('error', e);
+            return;
+          }
+          throw e;
+        }
+
         const readable = createStreamFromPage(response);
         cursor = getNextCursorFromPage(response);
 

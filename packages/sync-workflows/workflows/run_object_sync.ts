@@ -11,7 +11,9 @@ const { syncObjectRecords, syncEntityRecords } = proxyActivities<ReturnType<type
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '5 minute',
   retry: {
-    maximumAttempts: 3,
+    // if we can't complete syncing all records within 2 hours, wait until the next sync
+    // instead of trying again and consuming api quota
+    maximumAttempts: 1,
   },
 });
 

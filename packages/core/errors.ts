@@ -125,6 +125,15 @@ export class TooManyRequestsError extends HTTPError {
   }
 }
 
+// Throw this when you want run_object_sync to throw a non retryable temporal error
+export class TerminalTooManyRequestsError extends HTTPError {
+  code = 429;
+  problemType = 'TERMINAL_TOO_MANY_REQUESTS_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
 export class NotModifiedError extends HTTPError {
   code = 304;
   problemType = 'NOT_MODIFIED';

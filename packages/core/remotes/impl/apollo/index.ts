@@ -16,7 +16,7 @@ import type {
 import axios from 'axios';
 import { Readable } from 'stream';
 import { BadRequestError } from '../../../errors';
-import { retryWhenAxiosRateLimited } from '../../../lib';
+import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
   CreateCommonObjectRecordResponse,
@@ -38,6 +38,8 @@ import {
   toApolloContactUpdateParams,
   toApolloSequenceStateCreateParams,
 } from './mappers';
+
+const MAX_PAGE_SIZE = 100; // undocumented, but seems to be the max page size for Apollo
 
 type ApolloPagination = {
   // Apollo sometimes returns a number, or the stringified number
@@ -121,7 +123,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   }
 
   async #getAccountPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedAccounts> {
-    return await retryWhenAxiosRateLimited(async () => {
+    return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
       }
@@ -130,6 +132,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         {
           api_key: this.#apiKey,
           page,
+          per_page: MAX_PAGE_SIZE,
         },
         {
           headers: this.#headers,
@@ -160,7 +163,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   }
 
   async #getContactPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedContacts> {
-    return await retryWhenAxiosRateLimited(async () => {
+    return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
       }
@@ -171,6 +174,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
           sort_by_field: 'contact_updated_at',
           sort_ascending: false,
           page,
+          per_page: MAX_PAGE_SIZE,
         },
         {
           headers: this.#headers,
@@ -201,7 +205,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   }
 
   async #getUserPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedUsers> {
-    return await retryWhenAxiosRateLimited(async () => {
+    return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
       }
@@ -210,6 +214,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         params: {
           api_key: this.#apiKey,
           page,
+          per_page: MAX_PAGE_SIZE,
         },
       });
       return response.data;
@@ -237,7 +242,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   }
 
   async #getSequencePage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedSequences> {
-    return await retryWhenAxiosRateLimited(async () => {
+    return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
       }
@@ -246,6 +251,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         {
           api_key: this.#apiKey,
           page,
+          per_page: MAX_PAGE_SIZE,
         },
         {
           headers: this.#headers,
@@ -276,7 +282,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   }
 
   async #listMailboxes(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
-    return await retryWhenAxiosRateLimited(async () => {
+    return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
       }
@@ -476,7 +482,8 @@ function getNextPage(pagination: ApolloPagination): number | undefined {
     return;
   }
   const pageAsNum = typeof pagination.page === 'number' ? pagination.page : parseInt(pagination.page);
-  if (pageAsNum === pagination.total_pages) {
+  // Using >= here to cover the case when there are no results: total_pages = 0 and page = 1
+  if (pageAsNum >= pagination.total_pages) {
     return;
   }
   return pageAsNum + 1;
