@@ -13,8 +13,8 @@ type CoreSequenceStep = {
 export type SequenceStep = BaseEngagementModel & CoreSequenceStep;
 
 export type SequenceStepCreateParams = {
-  /** Optional when creating step together with Sequence */
-  sequenceId?: string;
+  /** Can be empty when creating steps together with Sequence */
+  sequenceId: string;
   order?: number;
   name?: string;
   date?: string;

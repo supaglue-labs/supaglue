@@ -210,7 +210,8 @@ export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): 
     cadence_content: {
       step_groups: (sequence.steps ?? []).map(
         (step, index) =>
-          toSalesloftCadenceStepImportParams({ ...step, order: index + 1 }).cadence_content.step_groups[0]
+          toSalesloftCadenceStepImportParams({ ...step, order: index + 1, sequenceId: '' }).cadence_content
+            .step_groups[0]
       ),
       ...sequence.customFields,
     },

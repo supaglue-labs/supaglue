@@ -369,9 +369,6 @@ export const toOutreachSequenceStepCreateParams = ({
   taskNote,
   customFields,
 }: SequenceStepCreateParams): Record<string, any> => {
-  if (!sequenceId) {
-    throw new BadRequestError('Sequence ID is required for Outreach step creation');
-  }
   return {
     data: {
       attributes: {
