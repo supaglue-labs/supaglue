@@ -1519,8 +1519,8 @@
     "/customers/{customer_id}/connections/_provider_user_id": {
       "get": {
         "operationId": "getProviderUserId",
-        "summary": "Get logged in user ID and details",
-        "description": "This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.",
+        "summary": "Get logged in User ID and details",
+        "description": "This endpoint returns the ID of the logged in (common schema) User and details.\n\nThe common schema User ID maps to the following 3rd-party provider object IDs:\n\n| Provider  | Remote object ID  | \n| --------- | ----------------- | \n| Hubspot   | V3 Owner          | \n| Dynamics  | Azure System User | \n| Intercom  | Admin             |\n",
         "tags": [
           "Connections"
         ],
@@ -1530,6 +1530,17 @@
           }
         ],
         "parameters": [
+          {
+            "name": "x-sg-minor-version",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "1"
+              ],
+              "example": 1
+            }
+          },
           {
             "name": "provider_name",
             "in": "query",
@@ -1555,12 +1566,17 @@
                   "properties": {
                     "user_id": {
                       "type": "string",
-                      "description": "The ID of the logged in user. The ID originates from your customer's third-party Provider."
+                      "description": "The ID of the logged in user that originates from your customer's third-party Provider. Refer to the table above for the Provider ID mapping."
                     },
                     "raw_details": {
                       "type": "object",
                       "additionalProperties": true,
                       "description": "The raw data from the your customer's third-party Provider."
+                    },
+                    "additional_raw_details": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "description": "For some third-party Providers, there may be additional data used to lookup the common schema User ID (e.g. with Hubspot)"
                     }
                   },
                   "example": {

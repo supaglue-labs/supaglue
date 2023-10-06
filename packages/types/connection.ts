@@ -5,6 +5,7 @@ import type { CustomObjectConfig, StandardObjectConfig } from './sync_object_con
 export type RemoteUserIdAndDetails = {
   userId?: string;
   rawDetails?: Record<string, unknown>;
+  additionalRawDetails?: Record<string, unknown>;
 };
 
 export type ApiKeyConnectionCredentialsDecrypted = {

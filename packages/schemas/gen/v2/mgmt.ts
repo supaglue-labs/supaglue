@@ -278,8 +278,16 @@ export interface paths {
   };
   "/customers/{customer_id}/connections/_provider_user_id": {
     /**
-     * Get logged in user ID and details 
-     * @description This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.
+     * Get logged in User ID and details 
+     * @description This endpoint returns the ID of the logged in (common schema) User and details.
+     * 
+     * The common schema User ID maps to the following 3rd-party provider object IDs:
+     * 
+     * | Provider  | Remote object ID  | 
+     * | --------- | ----------------- | 
+     * | Hubspot   | V3 Owner          | 
+     * | Dynamics  | Azure System User | 
+     * | Intercom  | Admin             |
      */
     get: operations["getProviderUserId"];
     parameters: {
@@ -2365,13 +2373,24 @@ export interface operations {
     };
   };
   /**
-   * Get logged in user ID and details 
-   * @description This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.
+   * Get logged in User ID and details 
+   * @description This endpoint returns the ID of the logged in (common schema) User and details.
+   * 
+   * The common schema User ID maps to the following 3rd-party provider object IDs:
+   * 
+   * | Provider  | Remote object ID  | 
+   * | --------- | ----------------- | 
+   * | Hubspot   | V3 Owner          | 
+   * | Dynamics  | Azure System User | 
+   * | Intercom  | Admin             |
    */
   getProviderUserId: {
     parameters: {
       query: {
         provider_name: "hubspot" | "ms_dynamics_365_sales" | "intercom";
+      };
+      header?: {
+        "x-sg-minor-version"?: "1";
       };
       path: {
         customer_id: string;
@@ -2382,10 +2401,14 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            /** @description The ID of the logged in user. The ID originates from your customer's third-party Provider. */
+            /** @description The ID of the logged in user that originates from your customer's third-party Provider. Refer to the table above for the Provider ID mapping. */
             user_id?: string;
             /** @description The raw data from the your customer's third-party Provider. */
             raw_details?: {
+              [key: string]: unknown;
+            };
+            /** @description For some third-party Providers, there may be additional data used to lookup the common schema User ID (e.g. with Hubspot) */
+            additional_raw_details?: {
               [key: string]: unknown;
             };
           };

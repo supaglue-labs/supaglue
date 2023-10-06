@@ -1,12 +1,28 @@
 get:
   operationId: getProviderUserId
-  summary: Get logged in user ID and details
-  description: This endpoint returns the ID of the logged in user (this is sometimes known as the owner ID) and details.
+  summary: Get logged in User ID and details
+  description: |
+    This endpoint returns the ID of the logged in (common schema) User and details.
+
+    The common schema User ID maps to the following 3rd-party provider object IDs:
+
+    | Provider  | Remote object ID  | 
+    | --------- | ----------------- | 
+    | Hubspot   | V3 Owner          | 
+    | Dynamics  | Azure System User | 
+    | Intercom  | Admin             |
   tags:
     - Connections
   security:
     - x-api-key: []
   parameters:
+    - name: x-sg-minor-version
+      in: header
+      schema:
+        type: string
+        enum:
+          - '1'
+        example: 1
     - name: provider_name
       in: query
       required: true
@@ -27,11 +43,15 @@ get:
             properties:
               user_id:
                 type: string
-                description: The ID of the logged in user. The ID originates from your customer's third-party Provider.
+                description: The ID of the logged in user that originates from your customer's third-party Provider. Refer to the table above for the Provider ID mapping.
               raw_details:
                 type: object
                 additionalProperties: true
                 description: The raw data from the your customer's third-party Provider.
+              additional_raw_details:
+                type: object
+                additionalProperties: true
+                description: For some third-party Providers, there may be additional data used to lookup the common schema User ID (e.g. with Hubspot)
             example:
               user_id: '70115e3c-2700-4112-b28f-2706e08570e6'
               raw_details:
