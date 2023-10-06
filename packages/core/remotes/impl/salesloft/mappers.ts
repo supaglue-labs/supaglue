@@ -210,8 +210,7 @@ export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): 
     cadence_content: {
       step_groups: (sequence.steps ?? []).map(
         (step, index) =>
-          toSalesloftCadenceStepImportParams({ ...step, order: index + 1, sequenceId: '' }).cadence_content
-            .step_groups[0]
+          toSalesloftCadenceStepImportParams({ ...step, order: index + 1 }).cadence_content.step_groups[0]
       ),
       ...sequence.customFields,
     },
@@ -245,9 +244,12 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
     // @see https://share.cleanshot.com/BY66pmLW
     throw new BadRequestError('LinkedIn steps are not currently supported for Salesloft sequences');
   }
+  if (typeof step.template === 'string') {
+    throw new BadRequestError('Template IDs are not currently supported for Salesloft sequences');
+  }
 
   const cadenceStep: Step | null =
-    (step.type === 'manual_email' || step.type === 'auto_email') && 'body' in step.template
+    (step.type === 'manual_email' || step.type === 'auto_email') && step.template && 'body' in step.template
       ? {
           enabled: true,
           type: 'Email',

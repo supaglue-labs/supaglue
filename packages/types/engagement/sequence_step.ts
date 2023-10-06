@@ -14,13 +14,13 @@ export type SequenceStep = BaseEngagementModel & CoreSequenceStep;
 
 export type SequenceStepCreateParams = {
   /** Can be empty when creating steps together with Sequence */
-  sequenceId: string;
+  sequenceId?: string;
   order?: number;
   name?: string;
   date?: string;
   intervalSeconds?: number;
-  isReply: boolean;
-  template: SequenceTemplateId | SequenceTemplateCreateParams;
+  isReply?: boolean;
+  template?: SequenceTemplateId | SequenceTemplateCreateParams;
   type: 'auto_email' | 'manual_email' | 'task' | 'call' | 'linkedin_send_message';
   taskNote?: string;
   customFields?: Record<string, unknown>;
