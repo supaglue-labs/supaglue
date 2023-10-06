@@ -1,6 +1,21 @@
+get:
+  operationId: getProperty
+  summary: Get property
+  tags:
+    - Properties
+  security:
+    - x-api-key: []
+  responses:
+    '200':
+      description: Get property
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/property_unified.yaml
 patch:
   operationId: updateProperty
   summary: Update property
+  description: Update custom property
   tags:
     - Properties
   security:

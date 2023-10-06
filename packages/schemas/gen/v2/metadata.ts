@@ -107,7 +107,12 @@ export interface paths {
     };
   };
   "/properties/{object_name}/{property_name}": {
-    /** Update property */
+    /** Get property */
+    get: operations["getProperty"];
+    /**
+     * Update property 
+     * @description Update custom property
+     */
     patch: operations["updateProperty"];
     parameters: {
       header: {
@@ -189,11 +194,17 @@ export interface components {
     /**
      * @description Type of the field.
      * Support:
-     * | Provider                 | text         | textarea        | number        | picklist           | multipicklist        | date      | datetime      | boolean                 |
-     * | ------------------------ | ------------ | --------------- | ------------- | ------------------ | -------------------- | --------- | ------------- | ----------------------- |
-     * | Hubspot (type/fieldType) | string/text  | string/textarea | number/number | enumeration/select | enumeration/checkbox | date/date | datetime/date | boolean/booleancheckbox |
-     * | Salesforce               | Text         | Longtextarea    | Number        | Picklist           | Multipicklist        | Date      | Datetime      | Checkbox                |
-     * | Pipedrive                | varchar_auto | text            | double        | enum               | set                  | date      | date          | enum                    |
+     * 
+     *   | Field              | Hubspot (type/fieldType) | Salesforce     | Pipedrive     |
+     *   | ------------------ | ------------------------ | -------------- | ------------- |
+     *   | text               | string/text              | Text           | varchar_auto  |
+     *   | textarea           | string/textarea          | Longtextarea   | text          |
+     *   | number             | number/number            | Number         | double        |
+     *   | picklist           | enumeration/select       | Picklist       | enum          |
+     *   | multipicklist      | enumeration/checkbox     | Multipicklist  | set           |
+     *   | date               | date/date                | Date           | date          |
+     *   | datetime           | datetime/date            | Datetime       | date          |
+     *   | boolean            | boolean/booleancheckbox  | Checkbox       | enum          |
      *  
      * @enum {string}
      */
@@ -676,7 +687,30 @@ export interface operations {
       };
     };
   };
-  /** Update property */
+  /** Get property */
+  getProperty: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_name: string;
+        property_name: string;
+      };
+    };
+    responses: {
+      /** @description Get property */
+      200: {
+        content: {
+          "application/json": components["schemas"]["property_unified"];
+        };
+      };
+    };
+  };
+  /**
+   * Update property 
+   * @description Update custom property
+   */
   updateProperty: {
     parameters: {
       header: {
