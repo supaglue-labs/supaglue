@@ -16,6 +16,7 @@ export type SequenceStepCreateParams = {
   /** Optional when creating step together with Sequence */
   sequenceId?: string;
   order?: number;
+  name?: string;
   date?: string;
   intervalSeconds?: number;
   isReply: boolean;

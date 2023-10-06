@@ -230,11 +230,19 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
   if (step.date) {
     throw new BadRequestError('Only relative delays are supported for Salesloft sequences');
   }
+
   const day = Math.floor((step.intervalSeconds ?? 0) / 86400) + 1;
   const delayInMins = Math.floor(((step.intervalSeconds ?? 0) % 86400) / 60);
 
   if (delayInMins > 720) {
     throw new BadRequestError('Salesloft only supports delays up to 720 minutes within a day');
+  }
+
+  if (step.type === 'linkedin_send_message') {
+    // Not clear how to implement this at the moment. We need
+    // integration_id and integration_step_type_guid for this to work and it is quite Salesloft specific
+    // @see https://share.cleanshot.com/BY66pmLW
+    throw new BadRequestError('LinkedIn steps are not currently supported for Salesloft sequences');
   }
 
   const cadenceStep: Step | null =
@@ -255,13 +263,11 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
           type_settings: { instructions: step.taskNote ?? '' },
         }
       : {
-          // Fallback step
           enabled: true,
           type: 'Other',
           name: step.name ?? `Step ${step.order}`,
           type_settings: { instructions: `${step.type}: ${step.taskNote ?? ''}` },
         };
-  // TODO: Implement LinkedIn step
 
   return {
     cadence_content: {
