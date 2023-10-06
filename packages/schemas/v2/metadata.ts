@@ -55,6 +55,6 @@ export type CreateAssociationTypeResponse =
 
 export type ListPropertiesPathParams = never;
 export type ListPropertiesRequest = never;
-export type ListPropertiesQueryParams = Required<operations['listProperties']>['parameters']['query'];
+export type ListPropertiesQueryParams = Required<operations['listPropertiesDeprecated']>['parameters']['query'];
 export type ListPropertiesResponse =
-  operations['listProperties']['responses'][keyof operations['listProperties']['responses']]['content']['application/json'];
+  operations['listPropertiesDeprecated']['responses'][keyof operations['listPropertiesDeprecated']['responses']]['content']['application/json'];

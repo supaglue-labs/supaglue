@@ -49,12 +49,12 @@ echo "Running yarn generate..."
 yarn generate > /dev/null
 
 echo "Deleting old docs..."
-OLD_DOCS_VERSIONS=$(jq -r '.[]' docs/versions.json | tail -n +3)
+OLD_DOCS_VERSIONS=$(jq -r '.[]' docs/versions.json | tail -n +2)
 for OLD_DOCS_VERSION in $OLD_DOCS_VERSIONS; do
   rm -rf "docs/versioned_docs/version-${OLD_DOCS_VERSION}"
   rm "docs/versioned_sidebars/version-${OLD_DOCS_VERSION}-sidebars.json"
 done
-jq '.[0:2]' docs/versions.json > docs/versions.json.tmp && mv docs/versions.json.tmp docs/versions.json
+jq '.[0:1]' docs/versions.json > docs/versions.json.tmp && mv docs/versions.json.tmp docs/versions.json
 
 echo "Committing changes..."
 git add -A

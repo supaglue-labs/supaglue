@@ -4,6 +4,5 @@
 /.pnp.*                           binary linguist-generated
 /packages/schemas/gen/**/*        linguist-generated
 openapi/**/openapi.bundle.json    linguist-generated
-/apps/salesforce-pub-sub/gen/**/* linguist-generated
 /docs/docs/api/**/*               linguist-generated
 /docs/docs/api/introduction.md    -linguist-generated

@@ -5,7 +5,7 @@ description: "Delete magic link"
 sidebar_label: "Delete magic link"
 hide_title: true
 hide_table_of_contents: true
-api: {"operationId":"deleteMagicLink","tags":["Magic Links"],"security":[{"x-api-key":[]}],"responses":{"204":{"description":"Magic Link deleted"}},"description":"Delete magic link","parameters":[{"name":"magic_link_id","in":"path","required":true,"schema":{"type":"string","example":"6bf954f9-dba3-4c34-9275-3830dccb0030"}}],"method":"delete","path":"/magic_links/{magic_link_id}","servers":[{"url":"https://api.supaglue.io/mgmt/v2","description":"Supaglue API"}],"securitySchemes":{"x-api-key":{"type":"apiKey","name":"x-api-key","in":"header","description":"API key to allow developers to access the API"}},"info":{"version":"0.16.9","title":"Management API","contact":{"name":"Supaglue","email":"docs@supaglue.com","url":"https://supaglue.com"},"description":"#### Introduction\n\nWelcome to the Management API documentation. You can use this API to manage customer integrations and connections.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/mgmt/v2\n```\n"},"postman":{"name":"Delete magic link","description":{"type":"text/plain"},"url":{"path":["magic_links",":magic_link_id"],"host":["{{baseUrl}}"],"query":[],"variable":[{"disabled":false,"description":{"content":"(Required) ","type":"text/plain"},"type":"any","value":"","key":"magic_link_id"}]},"method":"DELETE","auth":{"type":"apikey","apikey":[{"type":"any","value":"x-api-key","key":"key"},{"type":"any","value":"<API Key>","key":"value"},{"type":"any","value":"header","key":"in"}]}}}
+api: eJyFVGtP2zAU/Sue9wWkNuloYWs1TdsEH9BAQjA0TaUC13ETi8Q2frRFVf777nXSFw8NJEiuz/U593GyotoIy7zU6jyjI5qJUnhxyXLJL6R6pB3qWe7oaExjjGDQ0UmHOsGDlf4ZjlZ02WVGdh8Fvk1qOLXCGa2cgMwVPeoN8F8mHLfSIBUQba8jDWdG67rzAnQaT0gVsWWjxzDLKohaF6kVvAAyQu4Rci8zQElMN8wXFMU8BWmBYORtECCdF6JiKMk/G0x23kqVA1IsWWVKDJ1MZ8PjwWzYzaas3x3w/qA7PPp83O1/6fcyzqe9Xr8HgqFU0FLobeuiQqAd0XSryaWrPYE1xQba+bqIYEtIKLw3bpSm0MvEBcPyMohE6rTKK5/Oj+jL7ty0GPLj6pzWOzO5wQKb3u9MZlMuRH5BoLPu3RbT9q0QLBP2FR/QEEARrwkrS72Awc1FifvjYoxz4eCpaAXVeNtMIzEW2tzRSz6dJENcK+ljoy+ZYjmoVT5mdSjXyjPuMa3Vt64TB1Qxia3KNHffNz3iuoKz/SbuHb5arI/wQ86VtzoLHGN38PtHlAAWWAsWsa+MAGXAl+iVhPzVgXCmSHCQUEgXMZBZxSzCg/NwlyVSeZE3BnOEqYxAfUpETpcg6/jD+DoowJEr7TykTw7WNdigEgMxhVswDd4DsZvnh1vEYrFITJOGhW6qThfaPjrDuNiEuiZMS8lTDcOYS7E4RPLYh5/MxZGR2+sLDD48PNyp/yxji8LOtvw7A3vLtnv936yiF0ufmpLJeFOc4Kr1z3jH0w4uGO1bHNa9AGLErVZTqODWlnWN4acgbPwQdeicWcmmuGdgskw6fAarzljpxCtJuHgwX1B1cN1+MQ4JbupbUtdWUmiaOcPtHFF4jE578TWqJ/XOZ+L07OLs9xlAWcAyd13ZWLB9QMlvsuzataHDv3XnHfhXnCz4/dsG3py8m7Bxf4PGeid1Xf8DsXIX+w==
 sidebar_class_name: "delete api-method"
 info_path: api/v2/mgmt/management-api
 custom_edit_url: null
@@ -13,8 +13,8 @@ custom_edit_url: null
 
 import ApiTabs from "@theme/ApiTabs";
 import DiscriminatorTabs from "@theme/DiscriminatorTabs";
-import MethodEndpoint from "@theme/ApiDemoPanel/MethodEndpoint";
-import SecuritySchemes from "@theme/ApiDemoPanel/SecuritySchemes";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
 import MimeTabs from "@theme/MimeTabs";
 import ParamsItem from "@theme/ParamsItem";
 import ResponseSamples from "@theme/ResponseSamples";

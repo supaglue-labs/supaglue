@@ -1,6 +1,7 @@
 get:
-  operationId: listProperties
+  operationId: listPropertiesDeprecated
   summary: List properties
+  deprecated: true
   tags:
     - Properties
   security:

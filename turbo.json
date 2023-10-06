@@ -70,11 +70,6 @@
     "@supaglue/db#generate": {
       "inputs": ["prisma/schema.prisma"],
       "outputMode": "errors-only"
-    },
-    "salesforce-pub-sub#generate": {
-      "outputs": ["gen"],
-      "outputMode": "errors-only",
-      "cache": false // cache is disabled because turbo can't detect changes in the source repo
     }
   },
   "globalDependencies": [

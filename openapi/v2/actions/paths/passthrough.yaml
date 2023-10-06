@@ -19,7 +19,7 @@ post:
               description: The path to send the request to (do not pass the domain)
             method:
               type: string
-              enum: [GET, POST, PUT, PATCH, DELETE] 
+              enum: [GET, POST, PUT, PATCH, DELETE]
               example: GET
             headers:
               type: object
@@ -35,8 +35,10 @@ post:
               description: Body to pass to downstream (can be string or JSON object)
               oneOf:
                 - type: string
+                  title: String body
                 - type: object
                   additionalProperties: true
+                  title: JSON body
           required:
             - path
             - method

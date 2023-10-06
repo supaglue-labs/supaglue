@@ -714,37 +714,6 @@
         },
         {
           "type": "category",
-          "label": "Salesforce CDC Events (beta)",
-          "collapsed": true,
-          "items": [
-            {
-              "type": "doc",
-              "id": "api/v2/mgmt/salesforce-cdc-create",
-              "label": "Salesforce record created (beta)",
-              "className": "api-method event"
-            },
-            {
-              "type": "doc",
-              "id": "api/v2/mgmt/salesforce-cdc-update",
-              "label": "Salesforce record updated (beta)",
-              "className": "api-method event"
-            },
-            {
-              "type": "doc",
-              "id": "api/v2/mgmt/salesforce-cdc-delete",
-              "label": "Salesforce record deleted (beta)",
-              "className": "api-method event"
-            },
-            {
-              "type": "doc",
-              "id": "api/v2/mgmt/salesforce-cdc-undelete",
-              "label": "Salesforce record undeleted (beta)",
-              "className": "api-method event"
-            }
-          ]
-        },
-        {
-          "type": "category",
           "label": "Webhook Events",
           "collapsed": true,
           "items": [
@@ -1669,12 +1638,6 @@
           },
           "collapsed": true,
           "items": [
-            {
-              "type": "doc",
-              "id": "api/v2/metadata/list-properties",
-              "label": "List properties",
-              "className": "api-method get"
-            },
             {
               "type": "doc",
               "id": "api/v2/metadata/list-properties-preview",
