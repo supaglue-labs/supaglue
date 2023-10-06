@@ -170,25 +170,32 @@ export function createSyncObjectRecords(
       throw ApplicationFailure.nonRetryable(`No destination found for id ${syncConfig.destinationId}`);
     }
 
-    const result = await writeObjects(writer);
+    try {
+      const result = await writeObjects(writer);
 
-    logEvent({
-      distinctId: distinctId ?? application.orgId,
-      eventName: 'Partially Completed Sync',
-      syncId: syncId,
-      providerName: connection.providerName,
-      modelName: object,
-      applicationId: application.id,
-    });
+      logEvent({
+        distinctId: distinctId ?? application.orgId,
+        eventName: 'Partially Completed Sync',
+        syncId: syncId,
+        providerName: connection.providerName,
+        modelName: object,
+        applicationId: application.id,
+      });
 
-    return {
-      syncId: syncId,
-      connectionId,
-      objectType,
-      object,
-      maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : null,
-      numRecordsSynced: result.numRecords,
-    };
+      return {
+        syncId: syncId,
+        connectionId,
+        objectType,
+        object,
+        maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : null,
+        numRecordsSynced: result.numRecords,
+      };
+    } catch (e: any) {
+      if (e.problemType === 'TERMINAL_TOO_MANY_REQUESTS_ERROR') {
+        throw ApplicationFailure.nonRetryable(e.message);
+      }
+      throw e;
+    }
   };
 }
 
