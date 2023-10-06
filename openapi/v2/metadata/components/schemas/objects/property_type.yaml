@@ -12,13 +12,13 @@ description: |
   Type of the field.
   Support:
 
-    | Field              | Hubspot (type/fieldType) | Salesforce     | Pipedrive     |
-    | ------------------ | ------------------------ | -------------- | ------------- |
-    | text               | string/text              | Text           | varchar_auto  |
-    | textarea           | string/textarea          | Longtextarea   | text          |
-    | number             | number/number            | Number         | double        |
-    | picklist           | enumeration/select       | Picklist       | enum          |
-    | multipicklist      | enumeration/checkbox     | Multipicklist  | set           |
-    | date               | date/date                | Date           | date          |
-    | datetime           | datetime/date            | Datetime       | date          |
-    | boolean            | boolean/booleancheckbox  | Checkbox       | enum          |
+  | Field              | Hubspot (type-fieldType) | Salesforce     | Pipedrive     |
+  | ------------------ | ------------------------ | -------------- | ------------- |
+  | text               | string-text              | Text           | varchar_auto  |
+  | textarea           | string-textarea          | Longtextarea   | text          |
+  | number             | number-number            | Number         | double        |
+  | picklist           | enumeration-select       | Picklist       | enum          |
+  | multipicklist      | enumeration-checkbox     | Multipicklist  | set           |
+  | date               | date-date                | Date           | date          |
+  | datetime           | datetime-date            | Datetime       | date          |
+  | boolean            | boolean-booleancheckbox  | Checkbox       | enum          |
