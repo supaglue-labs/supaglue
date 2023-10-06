@@ -18,8 +18,9 @@ if [ -n "$(git status --porcelain)" ]; then
   exit 1
 fi
 
-source $DIR/checkly.sh
+source $DIR/helpers.sh
 check_checkly_checks
+check_github_checks
 
 echo "Release version: ${VERSION}"
 

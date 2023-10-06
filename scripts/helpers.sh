@@ -39,3 +39,19 @@ check_checkly_checks() {
         exit 1
     fi
 }
+
+check_github_checks() {
+    # get the latest run of the workflow that deploys and runs integration tests in staging
+    LATEST_RUN=$(curl -L -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/supaglue-labs/supaglue/actions/workflows/api_build_docker.yml/runs | jq -rc '.workflow_runs | map(select(.head_branch == "main")) | .[0]')
+
+    # extract the conclussion and url
+    CONCLUSION=$(echo "$LATEST_RUN" | jq -r '.conclusion')
+    URL=$(echo "$LATEST_RUN" | jq -r '.html_url')
+
+    # if the conclusion is not success, then fail
+    if [ "$CONCLUSION" != "success" ]; then
+        echo "Latest integration tests failing in staging. Aborting release."
+        echo "Latest run: $URL"
+        exit 1
+    fi
+}
