@@ -1478,6 +1478,14 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
+
+    // Should we do this in parallel? Are there rate limit concerns?
+    for (const [index, step] of (params.steps ?? []).entries()) {
+      await this.createSequenceStep({
+        ...step,
+        order: step.order ?? index + 1,
+      });
+    }
     return response.data.data.id.toString();
   }
 
