@@ -242,7 +242,7 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
       ? {
           enabled: true,
           type: 'Email',
-          name: step.taskNote ?? `Step ${step.order}`,
+          name: [step.name ?? `Step ${step.order}`, step.taskNote].filter((n) => !!n).join(': '),
           type_settings: {
             email_template: { title: step.template.name, subject: step.template.subject, body: step.template.body },
           },
@@ -251,14 +251,14 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
       ? {
           enabled: true,
           type: 'Phone',
-          name: `Step ${step.order}`,
+          name: step.name ?? `Step ${step.order}`,
           type_settings: { instructions: step.taskNote ?? '' },
         }
       : {
           // Fallback step
           enabled: true,
           type: 'Other',
-          name: `Step ${step.order}`,
+          name: step.name ?? `Step ${step.order}`,
           type_settings: { instructions: `${step.type}: ${step.taskNote ?? ''}` },
         };
   // TODO: Implement LinkedIn step
