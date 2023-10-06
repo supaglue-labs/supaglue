@@ -310,28 +310,40 @@ interface StepGroup {
 }
 
 /**
- * Represents the parameters for an automated action.
+ * Represents the parameters for an automated action. Only valid for automated email steps
  */
-interface AutomatedSettings {
-  /** The time that the automated action will happen.*/
-  time_of_day: string;
-
-  /**
-   * Specifies whether the email is sent after the person's timezone
-   * or the user's timezone.
-   * Must be either "person" or "user".
-   */
-  timezone_mode: 'person' | 'user';
-
-  /**
-   * Describes if the step is due immediately or not.
-   * Must be either "at_time" or "after_time_delay".
-   */
-  send_type: 'at_time' | 'after_time_delay';
-
+type AutomatedSettings = {
   /** Determines whether or not the step is able to be sent on weekends */
   allow_send_on_weekends: boolean;
-}
+} & (
+  | {
+      /**
+       * Describes if the step is due immediately or not.
+       * Must be either "at_time" or "after_time_delay".
+       */
+      send_type: 'at_time';
+
+      /** The time that the automated action will happen. e.g. 09:00 */
+      time_of_day: string;
+
+      /**
+       * Specifies whether the email is sent after the person's timezone
+       * or the user's timezone.
+       * Must be either "person" or "user".
+       */
+      timezone_mode: 'person' | 'user';
+    }
+  | {
+      /**
+       * Describes if the step is due immediately or not.
+       * Must be either "at_time" or "after_time_delay".
+       */
+      send_type: 'after_time_delay';
+
+      /** must be a number between 0 and 720 (minutes */
+      delay_time: number;
+    }
+);
 
 type Step = {
   /** Describes if that step is currently enabled */
