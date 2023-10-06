@@ -34,6 +34,12 @@ paths:
     $ref: paths/association-types.yaml
   '/properties':
     $ref: paths/properties.yaml
+  '/properties/{object_name}':
+    $ref: paths/properties@{object_name}.yaml
+  '/properties/{object_name}/register':
+    $ref: paths/properties@{object_name}@register.yaml
+  '/properties/{object_name}/{property_name}':
+    $ref: paths/properties@{object_name}@{property_name}.yaml
 tags:
   - name: CustomObjects
     description: A `Custom Object` is an object that is defined by the user.
@@ -48,8 +54,18 @@ components:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
-    property:
-      $ref: ./components/schemas/objects/property.yaml
+    property_deprecated:
+      $ref: ./components/schemas/objects/property_deprecated.yaml
+    property_unified:
+      $ref: ./components/schemas/objects/property_unified.yaml
+    property_type:
+      $ref: ./components/schemas/objects/property_type.yaml
+    picklist_option:
+      $ref: ./components/schemas/objects/picklist_option.yaml
+    create_property:
+      $ref: ./components/schemas/create_property.yaml
+    update_property:
+      $ref: ./components/schemas/update_property.yaml
     standard_object:
       $ref: ./components/schemas/objects/standard_object.yaml
     custom_object:

@@ -1,0 +1,45 @@
+type: object
+properties:
+  id:
+    type: string
+    description: The machine name of the property as it appears in the third-party Provider.
+    example: FirstName
+  custom_name:
+    type: string
+    description: Only applicable for custom properties. This represents the unique identifier that can be used to refer to this property across all customers.
+  label:
+    type: string
+    description: The human-readable name of the property as provided by the third-party Provider.
+    example: First Name
+  description:
+    type: string
+    description: A description of the field.
+  is_required:
+    type: boolean
+    example: false
+  group_name:
+    type: string
+    example: supaglue
+    description: Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't.
+  type:
+    $ref: ./property_type.yaml
+  precision:
+    type: number
+    description: Only applicable in Salesforce. If not given, will default to 18.
+  scale:
+    type: number
+    description: Only applicable in Salesforce. If not given, will default to 0.
+  options:
+    type: array
+    description: The list of options for a picklist/multipicklist field.
+    items:
+      $ref: ./picklist_option.yaml
+  raw_details:
+    type: object
+    description: The raw details of the property as provided by the third-party Provider, if available.
+    additionalProperties: true
+    example: {}
+required:
+  - id
+  - label
+  - type

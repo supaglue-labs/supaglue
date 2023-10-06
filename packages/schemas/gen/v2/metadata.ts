@@ -62,13 +62,65 @@ export interface paths {
     };
   };
   "/properties": {
-    /** List properties */
-    get: operations["listProperties"];
+    /** List properties (deprecated) */
+    get: operations["listPropertiesDeprecated"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
         /** @description The provider name */
         "x-provider-name": string;
+      };
+    };
+  };
+  "/properties/{object_name}": {
+    /** List properties */
+    get: operations["listProperties"];
+    /**
+     * Create property 
+     * @description Creates a custom property in the provider and registers it in Supaglue.
+     */
+    post: operations["createProperty"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+  };
+  "/properties/{object_name}/register": {
+    /**
+     * Register Property 
+     * @description Registers a custom property in Supaglue.
+     * This may be useful for custom properties that were already created in the Customer's provider.
+     * E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.
+     */
+    post: operations["registerProperty"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+  };
+  "/properties/{object_name}/{property_name}": {
+    /** Get property */
+    get: operations["getProperty"];
+    /**
+     * Update property 
+     * @description Update custom property
+     */
+    patch: operations["updateProperty"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_name: string;
+        property_name: string;
       };
     };
   };
@@ -78,7 +130,7 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
-    property: {
+    property_deprecated: {
       /**
        * @description The machine name of the property as it appears in the third-party Provider. 
        * @example FirstName
@@ -101,6 +153,129 @@ export interface components {
       raw_details?: {
         [key: string]: unknown;
       };
+    };
+    property_unified: {
+      /**
+       * @description The machine name of the property as it appears in the third-party Provider. 
+       * @example FirstName
+       */
+      id: string;
+      /** @description Only applicable for custom properties. This represents the unique identifier that can be used to refer to this property across all customers. */
+      custom_name?: string;
+      /**
+       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @example First Name
+       */
+      label: string;
+      /** @description A description of the field. */
+      description?: string;
+      /** @example false */
+      is_required?: boolean;
+      /**
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @example supaglue
+       */
+      group_name?: string;
+      type: components["schemas"]["property_type"];
+      /** @description Only applicable in Salesforce. If not given, will default to 18. */
+      precision?: number;
+      /** @description Only applicable in Salesforce. If not given, will default to 0. */
+      scale?: number;
+      /** @description The list of options for a picklist/multipicklist field. */
+      options?: (components["schemas"]["picklist_option"])[];
+      /**
+       * @description The raw details of the property as provided by the third-party Provider, if available. 
+       * @example {}
+       */
+      raw_details?: {
+        [key: string]: unknown;
+      };
+    };
+    /**
+     * @description Type of the field.
+     * Support:
+     * 
+     * | Field              | Hubspot (type-fieldType) | Salesforce     | Pipedrive     |
+     * | ------------------ | ------------------------ | -------------- | ------------- |
+     * | text               | string-text              | Text           | varchar_auto  |
+     * | textarea           | string-textarea          | Longtextarea   | text          |
+     * | number             | number-number            | Number         | double        |
+     * | picklist           | enumeration-select       | Picklist       | enum          |
+     * | multipicklist      | enumeration-checkbox     | Multipicklist  | set           |
+     * | date               | date-date                | Date           | date          |
+     * | datetime           | datetime-date            | Datetime       | date          |
+     * | boolean            | boolean-booleancheckbox  | Checkbox       | enum          |
+     *  
+     * @enum {string}
+     */
+    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean";
+    picklist_option: {
+      /** @example Option 1 */
+      label: string;
+      /** @example option_1 */
+      value: string;
+      /** @description A description of this option. */
+      description?: string;
+      /** @description Defaults to false. */
+      hidden?: boolean;
+    };
+    create_property: {
+      /**
+       * @description The unique identifier to be used to refer to this property across all customers. Supaglue will use this to appropriately map to the provider field ID.
+       *  
+       * @example ticketId
+       */
+      name: string;
+      /**
+       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @example First Name
+       */
+      label: string;
+      /** @description A description of the field. */
+      description?: string;
+      /**
+       * @description Defaults to false. 
+       * @example false
+       */
+      is_required?: boolean;
+      /**
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @example supaglue
+       */
+      group_name?: string;
+      type: components["schemas"]["property_type"];
+      /** @description Only applicable in Salesforce. If not given, will default to 18. */
+      precision?: number;
+      /** @description Only applicable in Salesforce. If not given, will default to 0. */
+      scale?: number;
+      /** @description The list of options for a picklist/multipicklist field. */
+      options?: (components["schemas"]["picklist_option"])[];
+    };
+    update_property: {
+      /**
+       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @example First Name
+       */
+      label?: string;
+      /** @description A description of the field. */
+      description?: string;
+      /**
+       * @description Defaults to false. 
+       * @example false
+       */
+      is_required?: boolean;
+      /**
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @example supaglue
+       */
+      group_name?: string;
+      type?: components["schemas"]["property_type"];
+      /** @description Only applicable in Salesforce. If not given, will default to 18. */
+      precision?: number;
+      /** @description Only applicable in Salesforce. If not given, will default to 0. */
+      scale?: number;
+      /** @description The list of options for a picklist/multipicklist field. */
+      options?: (components["schemas"]["picklist_option"])[];
     };
     standard_object: {
       /** @example ticket */
@@ -399,8 +574,8 @@ export interface operations {
       };
     };
   };
-  /** List properties */
-  listProperties: {
+  /** List properties (deprecated) */
+  listPropertiesDeprecated: {
     parameters: {
       query: {
         type: "standard" | "custom";
@@ -417,8 +592,145 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            properties: (components["schemas"]["property"])[];
+            properties: (components["schemas"]["property_deprecated"])[];
           };
+        };
+      };
+    };
+  };
+  /** List properties */
+  listProperties: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+    responses: {
+      /** @description List properties */
+      200: {
+        content: {
+          "application/json": {
+            properties: (components["schemas"]["property_unified"])[];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Create property 
+   * @description Creates a custom property in the provider and registers it in Supaglue.
+   */
+  createProperty: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_property"];
+      };
+    };
+    responses: {
+      /** @description Create a property */
+      200: {
+        content: {
+          "application/json": components["schemas"]["property_unified"];
+        };
+      };
+    };
+  };
+  /**
+   * Register Property 
+   * @description Registers a custom property in Supaglue.
+   * This may be useful for custom properties that were already created in the Customer's provider.
+   * E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.
+   */
+  registerProperty: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /**
+           * @description The machine name of the property as it appears in the third-party Provider. 
+           * @example FirstName
+           */
+          id: string;
+          /**
+           * @description The unique identifier to be used to refer to this property across all customers. Supaglue will use this to appropriately map to the provider field ID.
+           *  
+           * @example ticketId
+           */
+          name: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Register a property */
+      200: {
+        content: {
+          "application/json": components["schemas"]["property_unified"];
+        };
+      };
+    };
+  };
+  /** Get property */
+  getProperty: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_name: string;
+        property_name: string;
+      };
+    };
+    responses: {
+      /** @description Get property */
+      200: {
+        content: {
+          "application/json": components["schemas"]["property_unified"];
+        };
+      };
+    };
+  };
+  /**
+   * Update property 
+   * @description Update custom property
+   */
+  updateProperty: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+      };
+      path: {
+        object_name: string;
+        property_name: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["update_property"];
+      };
+    };
+    responses: {
+      /** @description Create a property */
+      200: {
+        content: {
+          "application/json": components["schemas"]["property_unified"];
         };
       };
     };

@@ -1,6 +1,6 @@
 get:
-  operationId: listProperties
-  summary: List properties
+  operationId: listPropertiesDeprecated
+  summary: List properties (deprecated)
   tags:
     - Properties
   security:
@@ -31,7 +31,7 @@ get:
               properties:
                 type: array
                 items:
-                  $ref: ../components/schemas/objects/property.yaml
+                  $ref: ../components/schemas/objects/property_deprecated.yaml
             required:
               - properties
 parameters:
