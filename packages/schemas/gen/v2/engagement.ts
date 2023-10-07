@@ -401,7 +401,6 @@ export interface components {
        */
       type: "team" | "private";
       owner_id?: string;
-      test_key?: string;
       steps?: (components["schemas"]["create_sequence_step"])[];
       custom_fields?: components["schemas"]["custom_fields"];
     };

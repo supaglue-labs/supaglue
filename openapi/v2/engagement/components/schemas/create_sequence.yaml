@@ -12,8 +12,6 @@ properties:
     enum: [team, private]
   owner_id:
     type: string
-  test_key:
-    type: string
   steps: 
     type: array
     items:
