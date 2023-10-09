@@ -9,6 +9,7 @@ export const logEvent = ({
   entityId,
   syncId,
   applicationId,
+  applicationEnv,
   numRecordsSynced,
   isSuccess = true,
 }: {
@@ -19,6 +20,7 @@ export const logEvent = ({
   entityId?: string;
   syncId: string;
   applicationId: string;
+  applicationEnv: string;
   numRecordsSynced?: number;
   isSuccess?: boolean;
 }): void => {
@@ -27,14 +29,13 @@ export const logEvent = ({
     event: eventName,
     properties: {
       result: isSuccess ? 'success' : 'error',
-      params: {
-        modelName,
-        entityId,
-        providerName,
-        numRecordsSynced,
-        syncId,
-        applicationId,
-      },
+      modelName,
+      entityId,
+      providerName,
+      numRecordsSynced,
+      syncId,
+      applicationId,
+      applicationEnv,
       source: 'sync-workflows',
       system: getSystemProperties(),
     },

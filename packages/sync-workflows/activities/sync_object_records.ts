@@ -161,6 +161,7 @@ export function createSyncObjectRecords(
       providerName: connection.providerName,
       modelName: object,
       applicationId: application.id,
+      applicationEnv: application.environment,
     });
 
     const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
@@ -180,6 +181,7 @@ export function createSyncObjectRecords(
         providerName: connection.providerName,
         modelName: object,
         applicationId: application.id,
+        applicationEnv: application.environment,
       });
 
       return {
