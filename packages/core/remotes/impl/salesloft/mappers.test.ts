@@ -5,7 +5,7 @@
  */
 
 import { describe, expect, it } from '@jest/globals';
-import type { ContactCreateParams, SequenceStateCreateParams } from '@supaglue/types/engagement';
+import type { ContactCreateParams, SequenceCreateParams, SequenceStateCreateParams } from '@supaglue/types/engagement';
 import {
   fromSalesloftAccountToAccount,
   fromSalesloftCadenceMembershipToSequenceState,
@@ -13,6 +13,7 @@ import {
   fromSalesloftPersonToContact,
   fromSalesloftUserToUser,
   toSalesloftAccountCreateParams,
+  toSalesloftCadenceImportParams,
   toSalesloftContactCreateParams,
   toSalesloftSequenceStateCreateParams,
 } from './mappers';
@@ -207,6 +208,96 @@ describe('Salesloft mapper tests', () => {
       owner_id: 123,
     };
     expect(toSalesloftAccountCreateParams(record)).toEqual(expected);
+  });
+
+  it('should convert toSalesloftCadenceStepImportParams', () => {
+    const record: SequenceCreateParams = {
+      name: 'Sequence 1',
+      type: 'private',
+      steps: [
+        {
+          type: 'auto_email',
+          template: {
+            body: 'test body',
+            subject: 'test subject',
+            name: 'test template',
+          },
+          intervalSeconds: 86400,
+        },
+        {
+          type: 'auto_email',
+          template: {
+            body: 'test body',
+            subject: 'test subject',
+            name: 'test template',
+          },
+          intervalSeconds: 86400 * 2,
+        },
+      ],
+    };
+
+    expect(toSalesloftCadenceImportParams(record)).toMatchInlineSnapshot(`
+      {
+        "cadence_content": {
+          "step_groups": [
+            {
+              "automated": true,
+              "automated_settings": undefined,
+              "day": 2,
+              "due_immediately": false,
+              "reference_id": 1,
+              "steps": [
+                {
+                  "enabled": true,
+                  "name": "Step 1",
+                  "type": "Email",
+                  "type_settings": {
+                    "email_template": {
+                      "body": "test body",
+                      "subject": "test subject",
+                      "title": "test template",
+                    },
+                  },
+                },
+              ],
+            },
+            {
+              "automated": true,
+              "automated_settings": undefined,
+              "day": 3,
+              "due_immediately": false,
+              "reference_id": 2,
+              "steps": [
+                {
+                  "enabled": true,
+                  "name": "Step 2",
+                  "type": "Email",
+                  "type_settings": {
+                    "email_template": {
+                      "body": "test body",
+                      "subject": "test subject",
+                      "title": "test template",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+        },
+        "settings": {
+          "cadence_function": "outbound",
+          "external_identifier": null,
+          "name": "Sequence 1",
+          "remove_bounced": true,
+          "remove_replied": true,
+          "target_daily_people": 0,
+        },
+        "sharing_settings": {
+          "shared": true,
+          "team_cadence": false,
+        },
+      }
+    `);
   });
 
   it('should convert to Salesloft Contact create params correctly', () => {

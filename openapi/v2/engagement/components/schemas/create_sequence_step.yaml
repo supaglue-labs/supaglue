@@ -57,7 +57,7 @@ properties:
     description: If true, this step will be sent as a reply to the previous step.
   order:
     type: number
-    description: The step's display order within its sequence. Only applicable for Outreach when adding steps one at a time after the initial sequence creation.
+    description: The step's display order within its sequence. Only applicable for Outreach when adding steps one at a time after the initial sequence creation, otherwise when creating steps together with sequence order is implicit based on the order of step within the step array. Salesloft does not use the `order` param, and order is instead determined by `interval_seconds` which translates into the `day` parameter
   type:
     type: string
     enum: [auto_email, manual_email, call, task, linkedin_send_message]

@@ -1480,14 +1480,18 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     );
 
     const sequenceId = response.data.data.id.toString();
-    // Should we do this in parallel? Are there rate limit concerns?
-    for (const [index, step] of (params.steps ?? []).entries()) {
-      await this.createSequenceStep({
-        ...step,
-        order: step.order ?? index + 1,
-        sequenceId,
-      });
-    }
+
+    // There should be a low number of steps, so we will try to create them all in parallel.
+    await Promise.all(
+      (params.steps ?? []).map((step, index) =>
+        this.createSequenceStep({
+          ...step,
+          order: index + 1, // Ignore step.order and use the implicit order from array index instead.
+          sequenceId, // Ignore sequence.id as well.
+        })
+      )
+    );
+
     return sequenceId;
   }
 

@@ -195,6 +195,7 @@ export const toSalesloftSequenceStateCreateParams = (
  */
 export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): CadenceImport => {
   return {
+    ...(sequence.customFields ?? {}), // settings and sharing_settings are specifically extracted below
     settings: {
       name: sequence.name,
       target_daily_people: 0,
@@ -202,17 +203,18 @@ export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): 
       remove_bounced: true,
       remove_replied: true,
       external_identifier: null,
+      ...(sequence.customFields?.settings ?? {}),
     },
     sharing_settings: {
       team_cadence: sequence.type === 'team',
       shared: true, // the default when creating in the UI
+      ...(sequence.customFields?.sharing_settings ?? {}),
     },
     cadence_content: {
       step_groups: (sequence.steps ?? []).map(
         (step, index) =>
           toSalesloftCadenceStepImportParams({ ...step, order: index + 1 }).cadence_content.step_groups[0]
       ),
-      ...sequence.customFields,
     },
   };
 };
@@ -244,7 +246,7 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
     // @see https://share.cleanshot.com/BY66pmLW
     throw new BadRequestError('LinkedIn steps are not currently supported for Salesloft sequences');
   }
-  if (typeof step.template === 'string') {
+  if (step.template && 'id' in step.template) {
     throw new BadRequestError('Template IDs are not currently supported for Salesloft sequences');
   }
 
@@ -294,7 +296,7 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
 };
 
 /** @see https://gist.github.com/tonyxiao/6e14c2348e4672e91257c0b918d5ccab */
-interface CadenceImport {
+export interface CadenceImport {
   /** optional when cadence_content.cadence_id is specified */
   settings?: Settings;
   /** optional when cadence_content.cadence_id is specified */
