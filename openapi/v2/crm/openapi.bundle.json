@@ -1780,9 +1780,6 @@
             "nullable": true,
             "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
           },
-          "owner": {
-            "$ref": "#/components/schemas/user"
-          },
           "phone_numbers": {
             "$ref": "#/components/schemas/phone_numbers"
           },
@@ -1889,16 +1886,10 @@
             "nullable": true,
             "example": "fd089246-09b1-4e3b-a60a-7a76314bbcce"
           },
-          "account": {
-            "$ref": "#/components/schemas/account"
-          },
           "owner_id": {
             "type": "string",
             "nullable": true,
             "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
-          },
-          "owner": {
-            "$ref": "#/components/schemas/user"
           },
           "addresses": {
             "$ref": "#/components/schemas/addresses"
@@ -2076,9 +2067,6 @@
             "nullable": true,
             "example": "62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2"
           },
-          "owner": {
-            "$ref": "#/components/schemas/user"
-          },
           "phone_numbers": {
             "$ref": "#/components/schemas/phone_numbers"
           },
@@ -2188,9 +2176,6 @@
             "nullable": true,
             "example": "fd089246-09b1-4e3b-a60a-7a76314bbcce"
           },
-          "account": {
-            "$ref": "#/components/schemas/account"
-          },
           "amount": {
             "type": "integer",
             "nullable": true,
@@ -2226,9 +2211,6 @@
             "type": "string",
             "nullable": true,
             "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
-          },
-          "owner": {
-            "$ref": "#/components/schemas/user"
           },
           "pipeline": {
             "type": "string",
