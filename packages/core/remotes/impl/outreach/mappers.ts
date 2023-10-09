@@ -372,6 +372,11 @@ export const toOutreachSequenceStepCreateParams = ({
   if (!sequenceId) {
     throw new BadRequestError('Sequence ID is required for Outreach step creation');
   }
+  if (!date && !intervalSeconds) {
+    // outreach defaults to creating an initial step with a 1 week interval otherwise.
+    // This allows us to unify the semantics
+    intervalSeconds = 0;
+  }
   return {
     data: {
       attributes: {

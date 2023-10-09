@@ -222,7 +222,7 @@ describe('Salesloft mapper tests', () => {
             subject: 'test subject',
             name: 'test template',
           },
-          intervalSeconds: 86400,
+          intervalSeconds: 86400, // 1 day after sequence start
         },
         {
           type: 'auto_email',
@@ -231,7 +231,7 @@ describe('Salesloft mapper tests', () => {
             subject: 'test subject',
             name: 'test template',
           },
-          intervalSeconds: 86400 * 2,
+          intervalSeconds: 86400 * 2, // 2 days later
         },
       ],
     };
@@ -264,7 +264,7 @@ describe('Salesloft mapper tests', () => {
             {
               "automated": true,
               "automated_settings": undefined,
-              "day": 3,
+              "day": 4,
               "due_immediately": false,
               "reference_id": 2,
               "steps": [

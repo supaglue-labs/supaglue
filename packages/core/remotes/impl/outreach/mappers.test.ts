@@ -865,7 +865,7 @@ describe('Outreach mappers', () => {
             stepType: 'auto_email',
             order: 1,
             date: undefined,
-            interval: undefined,
+            interval: 0,
             taskNote: 'Test Note',
             custom1: 'value1',
           },
@@ -905,7 +905,7 @@ describe('Outreach mappers', () => {
             stepType: 'manual_email',
             order: 2,
             date: undefined,
-            interval: undefined,
+            interval: 0,
             custom3: 'value3',
           },
           relationships: {

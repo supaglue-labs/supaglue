@@ -194,6 +194,20 @@ export const toSalesloftSequenceStateCreateParams = (
  * - `ownerId` does not appear to be supported by salesloft
  */
 export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): CadenceImport => {
+  const stepGroups: StepGroup[] = [];
+  let dayOffset = 0; // salesloft day is always relative to start of the sequence, so we account for that here
+  for (const [index, step] of (sequence.steps ?? []).entries()) {
+    // salesloft does not have a concept of step groups within their UI
+    // and in fact seems to create a group for every step anyways... So we will replicate the same behavior
+    const group = toSalesloftCadenceStepImportParams({
+      ...step,
+      order: index + 1,
+      intervalSeconds: (step.intervalSeconds ?? 0) + dayOffset * 86400,
+    }).cadence_content.step_groups[0];
+    dayOffset = group.day - 1;
+    stepGroups.push(group);
+  }
+
   return {
     ...(sequence.customFields ?? {}), // settings and sharing_settings are specifically extracted below
     settings: {
@@ -210,12 +224,7 @@ export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): 
       shared: true, // the default when creating in the UI
       ...(sequence.customFields?.sharing_settings ?? {}),
     },
-    cadence_content: {
-      step_groups: (sequence.steps ?? []).map(
-        (step, index) =>
-          toSalesloftCadenceStepImportParams({ ...step, order: index + 1 }).cadence_content.step_groups[0]
-      ),
-    },
+    cadence_content: { step_groups: stepGroups },
   };
 };
 
@@ -233,7 +242,11 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
     throw new BadRequestError('Only relative delays are supported for Salesloft sequences');
   }
 
-  const day = Math.floor((step.intervalSeconds ?? 0) / 86400) + 1;
+  const day = (step.intervalSeconds ?? 0) / 86400 + 1;
+  if (!Number.isInteger(day)) {
+    throw new BadRequestError('Salesloft only supports intervals in whole days (i.e. multiples of 86400)');
+  }
+
   const delayInMins = Math.floor(((step.intervalSeconds ?? 0) % 86400) / 60);
 
   if (delayInMins > 720) {
