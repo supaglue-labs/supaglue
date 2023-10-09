@@ -4,8 +4,6 @@ properties:
     type: string
     nullable: true
     example: fd089246-09b1-4e3b-a60a-7a76314bbcce
-  account: 
-    $ref: ./account.yaml
   amount:
     type: integer
     nullable: true
@@ -35,8 +33,6 @@ properties:
     type: string
     nullable: true
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
-  owner:
-    $ref: ./user.yaml
   pipeline:
     type: string
     nullable: true
