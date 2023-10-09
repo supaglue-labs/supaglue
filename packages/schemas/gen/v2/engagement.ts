@@ -407,7 +407,7 @@ export interface components {
     create_sequence_step: {
       /** @description The name given by the user for the step. Used by Salesloft only. */
       name?: string;
-      /** @description The interval (in seconds) until this step will activate; only applicable to interval-based sequences. */
+      /** @description The interval (in seconds) until this step will activate after the previous step (in case of first step, relative to when prospect first enters a sequence); only applicable to interval-based sequences. This is 0 by default */
       interval_seconds?: number;
       /**
        * @description The date this step will activate; only applicable to date-based sequences. 

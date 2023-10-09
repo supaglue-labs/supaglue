@@ -1560,7 +1560,7 @@
           },
           "interval_seconds": {
             "type": "number",
-            "description": "The interval (in seconds) until this step will activate; only applicable to interval-based sequences."
+            "description": "The interval (in seconds) until this step will activate after the previous step (in case of first step, relative to when prospect first enters a sequence); only applicable to interval-based sequences. This is 0 by default"
           },
           "date": {
             "type": "string",
