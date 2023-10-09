@@ -435,7 +435,7 @@ export interface components {
       }]>;
       /** @description If true, this step will be sent as a reply to the previous step. */
       is_reply?: boolean;
-      /** @description The step's display order within its sequence. Only applicable for Outreach when adding steps one at a time after the initial sequence creation. */
+      /** @description The step's display order within its sequence. Only applicable for Outreach when adding steps one at a time after the initial sequence creation, otherwise when creating steps together with sequence order is implicit based on the order of step within the step array. Salesloft does not use the `order` param, and order is instead determined by `interval_seconds` which translates into the `day` parameter */
       order?: number;
       /**
        * @description The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.
