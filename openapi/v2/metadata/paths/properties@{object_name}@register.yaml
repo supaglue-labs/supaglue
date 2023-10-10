@@ -2,6 +2,9 @@ post:
   operationId: registerProperty
   summary: Register Property (preview)
   description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
     Registers a custom property in Supaglue.
     This may be useful for custom properties that were already created in the Customer's provider.
     E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.

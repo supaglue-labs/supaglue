@@ -446,6 +446,7 @@
       "get": {
         "operationId": "listPropertiesPreview",
         "summary": "List properties (preview)",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n",
         "tags": [
           "Properties"
         ],
@@ -481,7 +482,7 @@
       "post": {
         "operationId": "createProperty",
         "summary": "Create property",
-        "description": "Creates a custom property in the provider and registers it in Supaglue.\n",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\nCreates a custom property in the provider and registers it in Supaglue.\n",
         "tags": [
           "Properties"
         ],
@@ -536,7 +537,7 @@
       "post": {
         "operationId": "registerProperty",
         "summary": "Register Property (preview)",
-        "description": "Registers a custom property in Supaglue.\nThis may be useful for custom properties that were already created in the Customer's provider.\nE.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.\n",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\nRegisters a custom property in Supaglue.\nThis may be useful for custom properties that were already created in the Customer's provider.\nE.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.\n",
         "tags": [
           "Properties"
         ],
@@ -607,6 +608,7 @@
       "get": {
         "operationId": "getProperty",
         "summary": "Get property (preview)",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n",
         "tags": [
           "Properties"
         ],
