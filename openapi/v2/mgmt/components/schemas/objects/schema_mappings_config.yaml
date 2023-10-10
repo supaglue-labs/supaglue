@@ -1,5 +1,6 @@
 description: This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview#schemas). The field mappings here are set by your customers using the [Field Mappings API](https://docs.supaglue.com/api/v2/mgmt/update-object-field-mappings).
 type: object
+deprecated: true
 properties:
   common_objects:
     type: array

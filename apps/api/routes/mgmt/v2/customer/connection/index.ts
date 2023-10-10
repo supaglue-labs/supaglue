@@ -107,12 +107,7 @@ export default function init(app: Router): void {
         req.supaglueApplication.id
       );
 
-      // enrich with user_id, if we can.
-      // TODO remove this after users migrate to /_provider_user_id above
-      const [client] = await remoteService.getCrmRemoteClient(req.params.connection_id);
-      const { userId } = await client.getUserIdAndDetails();
-
-      return res.status(200).send(snakecaseKeys({ ...connection, userId }));
+      return res.status(200).send(snakecaseKeys(connection));
     }
   );
 

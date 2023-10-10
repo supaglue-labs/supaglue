@@ -15,7 +15,7 @@ get:
           schema:
             type: array
             items:
-              $ref: ../components/schemas/objects/customer.yaml
+              $ref: ../components/schemas/objects/simple_customer.yaml
 put:
   operationId: upsertCustomer
   summary: Upsert customer

@@ -12,27 +12,6 @@ example:
     user: myuser
 oneOf:
   - type: object
-    title: supaglue
-    properties:
-      id:
-        type: string
-        example: d455d20b-f6dc-4bc3-ab14-b4f21c4b4835
-      application_id:
-        type: string
-        example: 726fb798-d854-4c59-9a23-57e3e2f73eae
-      type:
-        type: string
-        enum:
-          - supaglue
-        example: supaglue
-      version:
-        type: number
-    required:
-      - id
-      - application_id
-      - type
-      - version
-  - type: object
     title: postgres
     properties:
       id:
@@ -53,12 +32,38 @@ oneOf:
         $ref: ./postgres_config_safe.yaml
       version:
         type: number
+        example: 1
+        description: A monotonically increasing version number of the destination configuration
     required:
       - id
       - application_id
       - name
       - type
       - config
+      - version
+  - type: object
+    title: supaglue
+    description: A Supaglue-hosted Postgres database destination for Listing APIs.
+    properties:
+      id:
+        type: string
+        example: d455d20b-f6dc-4bc3-ab14-b4f21c4b4835
+      application_id:
+        type: string
+        example: 726fb798-d854-4c59-9a23-57e3e2f73eae
+      type:
+        type: string
+        enum:
+          - supaglue
+        example: supaglue
+      version:
+        type: number
+        example: 1
+        description: A monotonically increasing version number of the destination configuration
+    required:
+      - id
+      - application_id
+      - type
       - version
   - type: object
     title: bigquery
@@ -81,6 +86,8 @@ oneOf:
         $ref: ./bigquery_config_safe.yaml
       version:
         type: number
+        example: 1
+        description: A monotonically increasing version number of the destination configuration
     required:
       - id
       - application_id
@@ -109,6 +116,8 @@ oneOf:
         $ref: ./mongodb_config_safe.yaml
       version:
         type: number
+        example: 1
+        description: A monotonically increasing version number of the destination configuration
     required:
       - id
       - application_id

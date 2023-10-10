@@ -439,6 +439,16 @@ export interface components {
       email: string;
       connections?: (components["schemas"]["connection"])[];
     };
+    simple_customer: {
+      /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
+      application_id: string;
+      /** @example your-customers-unique-application-id */
+      customer_id: string;
+      /** @example MyCompany Inc */
+      name: string;
+      /** @example contact@mycompany.com */
+      email: string;
+    };
     provider: {
       /** @example 0c4cb91f-e392-46f5-8934-17496371f932 */
       id: string;
@@ -449,11 +459,14 @@ export interface components {
        * @example oauth2 
        * @enum {string}
        */
-      auth_type: "oauth2" | "api_key";
+      auth_type: "oauth2" | "api_key" | "access_key_secret";
       name: components["schemas"]["provider_name"];
       config?: components["schemas"]["create_provider_config"];
       objects?: components["schemas"]["objects"];
-      /** @description This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview). The object/field mappings (aka [Entity Mappings](https://docs.supaglue.com/platform/entities/overview#entity-mapping)) here are set by you, the developer, and the mappings apply for all your customers. */
+      /**
+       * @deprecated 
+       * @description This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview). The object/field mappings (aka [Entity Mappings](https://docs.supaglue.com/platform/entities/overview#entity-mapping)) here are set by you, the developer, and the mappings apply for all your customers.
+       */
       entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
     };
     /**
@@ -476,17 +489,6 @@ export interface components {
       id: string;
       /** @example 726fb798-d854-4c59-9a23-57e3e2f73eae */
       application_id: string;
-      /**
-       * @example supaglue 
-       * @enum {string}
-       */
-      type: "supaglue";
-      version: number;
-    }, {
-      /** @example d455d20b-f6dc-4bc3-ab14-b4f21c4b4835 */
-      id: string;
-      /** @example 726fb798-d854-4c59-9a23-57e3e2f73eae */
-      application_id: string;
       /** @example My Postgres Destination */
       name: string;
       /**
@@ -495,6 +497,25 @@ export interface components {
        */
       type: "postgres";
       config: components["schemas"]["postgres_config_safe"];
+      /**
+       * @description A monotonically increasing version number of the destination configuration 
+       * @example 1
+       */
+      version: number;
+    }, {
+      /** @example d455d20b-f6dc-4bc3-ab14-b4f21c4b4835 */
+      id: string;
+      /** @example 726fb798-d854-4c59-9a23-57e3e2f73eae */
+      application_id: string;
+      /**
+       * @example supaglue 
+       * @enum {string}
+       */
+      type: "supaglue";
+      /**
+       * @description A monotonically increasing version number of the destination configuration 
+       * @example 1
+       */
       version: number;
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -509,6 +530,10 @@ export interface components {
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_safe"];
+      /**
+       * @description A monotonically increasing version number of the destination configuration 
+       * @example 1
+       */
       version: number;
     }, {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
@@ -523,6 +548,10 @@ export interface components {
        */
       type: "mongodb";
       config: components["schemas"]["mongodb_config_safe"];
+      /**
+       * @description A monotonically increasing version number of the destination configuration 
+       * @example 1
+       */
       version: number;
     }]>;
     postgres_config_safe: {
@@ -637,6 +666,7 @@ export interface components {
       /** @example mysensitivepassword */
       password: string;
     };
+    /** @deprecated */
     schema: {
       /** @example 649b1e49-2722-46a3-a7e7-10caae78a43f */
       id: string;
@@ -646,6 +676,7 @@ export interface components {
       name: string;
       config: components["schemas"]["schema_config"];
     };
+    /** @deprecated */
     schema_config: {
       fields: ({
           /**
@@ -668,7 +699,10 @@ export interface components {
     magic_link: {
       /** @example ec208408-db29-4705-b39e-4d33070b4ef6 */
       id: string;
-      /** @example created */
+      /**
+       * @description `new` or `consumed` 
+       * @example new
+       */
       status: string;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       application_id: string;
@@ -689,6 +723,7 @@ export interface components {
       return_url: string;
       /**
        * Format: date-time 
+       * @description Any ISO formatted date-time string indicating when the magic link expires. 
        * @example 2023-02-23T00:00:00Z
        */
       expires_at: Date;
@@ -705,6 +740,7 @@ export interface components {
       /** @example 18000 */
       expiration_secs: number;
     };
+    /** @deprecated */
     entity: {
       /** @example 649b1e49-2722-46a3-a7e7-10caae78a43f */
       id: string;
@@ -714,6 +750,7 @@ export interface components {
       name: string;
       config: components["schemas"]["entity_config"];
     };
+    /** @deprecated */
     entity_config: {
       fields: ({
           /** @example apolla_first_name */
@@ -792,7 +829,10 @@ export interface components {
        * @example https://app.hubspot.com/contacts/123456
        */
       instance_url: string;
-      /** @description This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview#schemas). The field mappings here are set by your customers using the [Field Mappings API](https://docs.supaglue.com/api/v2/mgmt/update-object-field-mappings). */
+      /**
+       * @deprecated 
+       * @description This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview#schemas). The field mappings here are set by your customers using the [Field Mappings API](https://docs.supaglue.com/api/v2/mgmt/update-object-field-mappings).
+       */
       schema_mappings_config?: {
         common_objects?: ({
             /** @example Contact__c */
@@ -806,10 +846,12 @@ export interface components {
           })[];
       };
       /**
+       * @deprecated 
        * @description This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview#entity-mapping). The object/field mappings here are set by your customers using the [Entity Mappings API](https://docs.supaglue.com/api/v2/mgmt/upsert-entity-mapping). 
        * @example []
        */
       entity_mappings?: (components["schemas"]["connection_entity_mapping"])[];
+      connection_sync_config?: components["schemas"]["connection_sync_config"];
     };
     /**
      * @example crm 
@@ -862,6 +904,7 @@ export interface components {
            */
           object: string;
         })[];
+      /** @deprecated */
       entities?: ({
           /** @example 3a82409f-c98f-4d25-bbd8-3335de3f12cc */
           entity_id: string;
@@ -943,22 +986,6 @@ export interface components {
       /** @example 7026e4e8-15d7-48d8-b997-f2592b654619 */
       id: string;
       /**
-       * @example entity 
-       * @enum {string}
-       */
-      type: "entity";
-      /** @example 94e6cb6c-0ec8-423f-8873-21054979a6b1 */
-      entity_id: string;
-      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
-      connection_id: string;
-      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
-      sync_config_id: string;
-      /** @example false */
-      paused: boolean;
-    }, {
-      /** @example 7026e4e8-15d7-48d8-b997-f2592b654619 */
-      id: string;
-      /**
        * @example object 
        * @enum {string}
        */
@@ -1003,16 +1030,15 @@ export interface components {
       sync_config_id: string;
       /** @example false */
       paused: boolean;
-    }]>;
-    sync_with_provider_and_customer: OneOf<[{
-      /** @example 971cb76d-9558-42fe-8f3b-8a531c32bd5f */
+    }, {
+      /** @example 7026e4e8-15d7-48d8-b997-f2592b654619 */
       id: string;
       /**
        * @example entity 
        * @enum {string}
        */
       type: "entity";
-      /** @example 70da3830-b717-49cb-91f0-22fb3f09a97a */
+      /** @example 94e6cb6c-0ec8-423f-8873-21054979a6b1 */
       entity_id: string;
       /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
       connection_id: string;
@@ -1020,11 +1046,8 @@ export interface components {
       sync_config_id: string;
       /** @example false */
       paused: boolean;
-      /** @example hubspot */
-      provider_name: string;
-      /** @example my-customer-1 */
-      customer_id: string;
-    }, {
+    }]>;
+    sync_with_provider_and_customer: OneOf<[{
       /** @example 971cb76d-9558-42fe-8f3b-8a531c32bd5f */
       id: string;
       /**
@@ -1049,8 +1072,32 @@ export interface components {
       provider_name: string;
       /** @example my-customer-1 */
       customer_id: string;
+    }, {
+      /** @example 971cb76d-9558-42fe-8f3b-8a531c32bd5f */
+      id: string;
+      /**
+       * @example entity 
+       * @enum {string}
+       */
+      type: "entity";
+      /** @example 70da3830-b717-49cb-91f0-22fb3f09a97a */
+      entity_id: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e4 */
+      connection_id: string;
+      /** @example 3217ea51-11c8-43c9-9547-6f197e02e5e5 */
+      sync_config_id: string;
+      /** @example false */
+      paused: boolean;
+      /** @example hubspot */
+      provider_name: string;
+      /** @example my-customer-1 */
+      customer_id: string;
     }]>;
     sync_run: OneOf<[{
+      /** @example 20eb4da3-6b38-4ec6-a82d-ecee59a9d6d9 */
+      id: string;
+      /** @example 629525f8-f6f7-436c-80fa-1cb23acc5bf8 */
+      sync_id: string;
       /** @enum {string} */
       object_type: "common" | "standard" | "custom";
       object: string;
@@ -1072,6 +1119,11 @@ export interface components {
       /** @example 100 */
       num_records_synced: number | null;
     }, {
+      /** @example 20eb4da3-6b38-4ec6-a82d-ecee59a9d6d9 */
+      id: string;
+      /** @example 629525f8-f6f7-436c-80fa-1cb23acc5bf8 */
+      sync_id: string;
+      /** @deprecated */
       entity_id: string;
       error_message: string | null;
       /** @example 2023-02-22T19:55:17.559Z */
@@ -1161,12 +1213,6 @@ export interface components {
       config: components["schemas"]["entity_config"];
     };
     create_destination: OneOf<[{
-      /**
-       * @example supaglue 
-       * @enum {string}
-       */
-      type: "supaglue";
-    }, {
       /** @example My Postgres Destination */
       name: string;
       /**
@@ -1175,6 +1221,12 @@ export interface components {
        */
       type: "postgres";
       config: components["schemas"]["postgres_config_unsafe"];
+    }, {
+      /**
+       * @example supaglue 
+       * @enum {string}
+       */
+      type: "supaglue";
     }, {
       /** @example My BigQuery Destination */
       name: string;
@@ -1386,12 +1438,14 @@ export interface components {
       type: "standard" | "custom";
       name: string;
     };
+    /** @deprecated */
     provider_entity_mapping: {
       /** @example apolla_contact */
       entity_id: string;
       object?: components["schemas"]["standard_object"];
       field_mappings?: (components["schemas"]["entity_field_mapping"])[];
     };
+    /** @deprecated */
     connection_entity_mapping: {
       entity_id: string;
       object?: components["schemas"]["standard_or_custom_object"];
@@ -1413,6 +1467,7 @@ export interface components {
           is_additional: boolean;
         })[];
     };
+    /** @deprecated */
     entity_field_mapping: {
       /**
        * @description The name of the field in your application. 
@@ -1547,7 +1602,7 @@ export interface operations {
       /** @description Customers */
       200: {
         content: {
-          "application/json": (components["schemas"]["customer"])[];
+          "application/json": (components["schemas"]["simple_customer"])[];
         };
       };
     };
@@ -1579,7 +1634,7 @@ export interface operations {
       /** @description Customer */
       200: {
         content: {
-          "application/json": components["schemas"]["customer"];
+          "application/json": components["schemas"]["simple_customer"];
         };
       };
     };
@@ -1595,7 +1650,7 @@ export interface operations {
       /** @description Customer */
       200: {
         content: {
-          "application/json": components["schemas"]["customer"];
+          "application/json": components["schemas"]["simple_customer"];
         };
       };
     };
@@ -2392,10 +2447,7 @@ export interface operations {
       /** @description Connection */
       200: {
         content: {
-          "application/json": components["schemas"]["connection"] & {
-            /** @description The id of the user associated with this connection. This is sometimes also known as the owner. */
-            user_id?: string;
-          };
+          "application/json": components["schemas"]["connection"];
         };
       };
     };
@@ -2432,7 +2484,10 @@ export interface operations {
         object_type?: "common" | "standard" | "custom";
         /** @description The object to filter by */
         object?: string;
-        /** @description The entity id to filter by */
+        /**
+         * @deprecated 
+         * @description The entity id to filter by
+         */
         entity_id?: string;
       };
     };
@@ -2458,9 +2513,6 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": OneOf<[{
-          /** @description The entity id to filter by */
-          entity_id: string;
-        }, {
           /**
            * @description The object type to filter by 
            * @example standard 
@@ -2484,6 +2536,9 @@ export interface operations {
            * @example contact
            */
           object: string;
+        }, {
+          /** @description The entity id to filter by */
+          entity_id: string;
         }]>;
       };
     };
@@ -2508,12 +2563,6 @@ export interface operations {
       content: {
         "application/json": OneOf<[{
           /**
-           * @description The entity id to filter by 
-           * @example cfba6060-c43a-4a63-8a8c-501c6099f8b0
-           */
-          entity_id: string;
-        }, {
-          /**
            * @description The object type to filter by 
            * @example standard 
            * @enum {string}
@@ -2524,6 +2573,12 @@ export interface operations {
            * @example contact
            */
           object: string;
+        }, {
+          /**
+           * @description The entity id to filter by 
+           * @example cfba6060-c43a-4a63-8a8c-501c6099f8b0
+           */
+          entity_id: string;
         }]>;
       };
     };
@@ -2547,11 +2602,6 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": OneOf<[{
-          /** @description The entity id to filter by */
-          entity_id: string;
-          /** @example true */
-          perform_full_refresh?: boolean;
-        }, {
           /**
            * @description The object type to filter by 
            * @example standard 
@@ -2577,6 +2627,11 @@ export interface operations {
            * @example contact
            */
           object: string;
+          /** @example true */
+          perform_full_refresh?: boolean;
+        }, {
+          /** @description The entity id to filter by */
+          entity_id: string;
           /** @example true */
           perform_full_refresh?: boolean;
         }]>;
@@ -2609,13 +2664,16 @@ export interface operations {
         object_type?: "common" | "standard" | "custom";
         /** @description The object to filter by */
         object?: string;
-        /** @description The entity id to filter by */
+        /**
+         * @deprecated 
+         * @description The entity id to filter by
+         */
         entity_id?: string;
         /** @description The status to filter by (case-insensitive) */
         status?: string;
-        /** @description The start time to filter by. Should start with one of [>, <] followed by an ISO 8601 timestamp. */
+        /** @description The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp. */
         start_timestamp?: string;
-        /** @description The end time to filter by. Should start with [>, <] followed by an ISO 8601 timestamp. */
+        /** @description The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp. */
         end_timestamp?: string;
       };
     };

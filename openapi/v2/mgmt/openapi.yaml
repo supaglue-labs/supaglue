@@ -119,6 +119,8 @@ components:
       $ref: ../../common/components/schemas/pagination.yaml
     customer:
       $ref: ./components/schemas/objects/customer.yaml
+    simple_customer:
+      $ref: ./components/schemas/objects/simple_customer.yaml
     provider:
       $ref: ./components/schemas/objects/provider.yaml
     destination:

@@ -2,6 +2,12 @@ oneOf:
   - type: object
     title: 'Data model: Objects'
     properties:
+      id:
+        type: string
+        example: 20eb4da3-6b38-4ec6-a82d-ecee59a9d6d9
+      sync_id:
+        type: string
+        example: 629525f8-f6f7-436c-80fa-1cb23acc5bf8
       object_type:
         type: string
         enum:
@@ -44,6 +50,8 @@ oneOf:
         nullable: true
         example: 100
     required:
+      - id
+      - sync_id
       - object_type
       - object
       - start_timestamp
@@ -58,9 +66,17 @@ oneOf:
       - num_records_synced
   - type: object
     title: 'Data model: Entities'
+    deprecated: true
     properties:
+      id:
+        type: string
+        example: 20eb4da3-6b38-4ec6-a82d-ecee59a9d6d9
+      sync_id:
+        type: string
+        example: 629525f8-f6f7-436c-80fa-1cb23acc5bf8
       entity_id:
         type: string
+        deprecated: true
       error_message:
         type: string
         nullable: true
@@ -95,6 +111,8 @@ oneOf:
         nullable: true
         example: 100
     required:
+      - id
+      - sync_id
       - entity_id
       - start_timestamp
       - end_timestamp

@@ -15,7 +15,6 @@ export type MagicLink = {
   expiresAt: Date;
   url: string;
   returnUrl: string;
-  // TODO: Make enums
   status: string;
 };
 

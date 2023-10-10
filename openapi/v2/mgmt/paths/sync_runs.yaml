@@ -48,6 +48,7 @@ get:
         example: account
       description: The object to filter by
     - name: entity_id
+      deprecated: true
       in: query
       schema:
         type: string
@@ -64,13 +65,13 @@ get:
       schema:
         type: string
         example: '>2021-01-06T03:24:53.434326Z'
-      description: The start time to filter by. Should start with one of [>, <] followed by an ISO 8601 timestamp.
+      description: The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp.
     - name: end_timestamp
       in: query
       schema:
         type: string
         example: '>2021-01-06T03:24:53.434326Z'
-      description: The end time to filter by. Should start with [>, <] followed by an ISO 8601 timestamp.
+      description: The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp.
   responses:
     '200':
       description: SyncRun
