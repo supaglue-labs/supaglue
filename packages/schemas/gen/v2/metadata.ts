@@ -62,8 +62,8 @@ export interface paths {
     };
   };
   "/properties": {
-    /** List properties (deprecated) */
-    get: operations["listPropertiesDeprecated"];
+    /** List properties */
+    get: operations["listProperties"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -73,11 +73,19 @@ export interface paths {
     };
   };
   "/properties/{object_name}": {
-    /** List properties */
-    get: operations["listProperties"];
+    /**
+     * List properties (preview) 
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     */
+    get: operations["listPropertiesPreview"];
     /**
      * Create property 
-     * @description Creates a custom property in the provider and registers it in Supaglue.
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * Creates a custom property in the provider and registers it in Supaglue.
      */
     post: operations["createProperty"];
     parameters: {
@@ -91,8 +99,11 @@ export interface paths {
   };
   "/properties/{object_name}/register": {
     /**
-     * Register Property 
-     * @description Registers a custom property in Supaglue.
+     * Register Property (preview) 
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * Registers a custom property in Supaglue.
      * This may be useful for custom properties that were already created in the Customer's provider.
      * E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.
      */
@@ -107,11 +118,16 @@ export interface paths {
     };
   };
   "/properties/{object_name}/{property_name}": {
-    /** Get property */
+    /**
+     * Get property (preview) 
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     */
     get: operations["getProperty"];
     /**
-     * Update property 
-     * @description Update custom property
+     * Update property (preview) 
+     * @description Update custom property (preview)
      */
     patch: operations["updateProperty"];
     parameters: {
@@ -574,8 +590,8 @@ export interface operations {
       };
     };
   };
-  /** List properties (deprecated) */
-  listPropertiesDeprecated: {
+  /** List properties */
+  listProperties: {
     parameters: {
       query: {
         type: "standard" | "custom";
@@ -598,8 +614,13 @@ export interface operations {
       };
     };
   };
-  /** List properties */
-  listProperties: {
+  /**
+   * List properties (preview) 
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   */
+  listPropertiesPreview: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -621,7 +642,10 @@ export interface operations {
   };
   /**
    * Create property 
-   * @description Creates a custom property in the provider and registers it in Supaglue.
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * Creates a custom property in the provider and registers it in Supaglue.
    */
   createProperty: {
     parameters: {
@@ -647,8 +671,11 @@ export interface operations {
     };
   };
   /**
-   * Register Property 
-   * @description Registers a custom property in Supaglue.
+   * Register Property (preview) 
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * Registers a custom property in Supaglue.
    * This may be useful for custom properties that were already created in the Customer's provider.
    * E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.
    */
@@ -687,7 +714,12 @@ export interface operations {
       };
     };
   };
-  /** Get property */
+  /**
+   * Get property (preview) 
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   */
   getProperty: {
     parameters: {
       header: {
@@ -708,8 +740,8 @@ export interface operations {
     };
   };
   /**
-   * Update property 
-   * @description Update custom property
+   * Update property (preview) 
+   * @description Update custom property (preview)
    */
   updateProperty: {
     parameters: {

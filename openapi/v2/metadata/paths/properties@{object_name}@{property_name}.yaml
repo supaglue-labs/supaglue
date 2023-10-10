@@ -1,6 +1,10 @@
 get:
   operationId: getProperty
-  summary: Get property
+  summary: Get property (preview)
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
   tags:
     - Properties
   security:
@@ -14,8 +18,8 @@ get:
             $ref: ../components/schemas/objects/property_unified.yaml
 patch:
   operationId: updateProperty
-  summary: Update property
-  description: Update custom property
+  summary: Update property (preview)
+  description: Update custom property (preview)
   tags:
     - Properties
   security:
