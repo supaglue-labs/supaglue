@@ -5,7 +5,7 @@ description: "Delete connection sync config"
 sidebar_label: "Delete connection sync config"
 hide_title: true
 hide_table_of_contents: true
-api: {"operationId":"deleteConnectionSyncConfig","tags":["ConnectionSyncConfigs"],"security":[{"x-api-key":[]}],"responses":{"204":{"description":"Connection Sync Config"}},"description":"Delete connection sync config","parameters":[{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true},{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}],"method":"delete","path":"/connection_sync_configs","servers":[{"url":"https://api.supaglue.io/mgmt/v2","description":"Supaglue API"}],"securitySchemes":{"x-api-key":{"type":"apiKey","name":"x-api-key","in":"header","description":"API key to allow developers to access the API"}},"info":{"version":"0.16.9","title":"Management API","contact":{"name":"Supaglue","email":"docs@supaglue.com","url":"https://supaglue.com"},"description":"#### Introduction\n\nWelcome to the Management API documentation. You can use this API to manage customer integrations and connections.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/mgmt/v2\n```\n"},"postman":{"name":"Delete connection sync config","description":{"type":"text/plain"},"url":{"path":["connection_sync_configs"],"host":["{{baseUrl}}"],"query":[],"variable":[]},"header":[{"disabled":false,"description":{"content":"(Required) The customer ID that uniquely identifies the customer in your application","type":"text/plain"},"key":"x-customer-id","value":""},{"disabled":false,"description":{"content":"(Required) The provider name","type":"text/plain"},"key":"x-provider-name","value":""}],"method":"DELETE","auth":{"type":"apikey","apikey":[{"type":"any","value":"x-api-key","key":"key"},{"type":"any","value":"<API Key>","key":"value"},{"type":"any","value":"header","key":"in"}]}}}
+api: eJytVOtLG0EQ/1e22y8KeaiUQqWUPvSD1IL4oJQYdN2bJIt3u+s+Lgnh/vfO7F2SS6IVpBESd+Y3M795Lrix4ERQRp9l/JhnkEOAH0ZrkCS8mmuJr5Ea8w4PYuz58YA/p/Z82OEeZHQqzBG04LOusKr7CPQaVqh14K3RHtDHgh8dfKCfDLx0ypIvjL52zMgzayJXVWcLeJJoMrnGe8LLJVMrnCgQ4XyiovGBVrOujD6YAlxXZYhS5GoCIgOHLy8nUAgiFeaW4D44pckbzERhcxIV87WLQ75D63qCnBo9OzthYSICi1o9RcjnTGWggxop8KhoAZVmcxMdE9bmSqZecKrWU1QOsCnBRag6rSysMyU6c90keUseXuTgR8ZJeD6JZQTWRNgig83E6k7MemJSzcME3/11U+6oKXeymQ8aD1cuWxJdTqRDsP6438dJ6floxTiP0FOmX4yL0C+P+Da3qwbDvl2c8ao1cVeUdD1ZrblblQAlP1HQWddwidmu3mY8DMMQxYJhIs/NlGVQQk4r45NMSvB1NxOhiryNDAWmRGsfB73Dj71PtD4qpOL/ElqMka0OyarDsUJByEBmDb9lntS0QigqVWak/7qqkTQF6jaLuKHcaet7/LAzHZzJYurOLf79hhzBQLlQEpvMGIaM9Egj2WN/TGRSaBY9GkyUTxi0LJJVe54DjOub4pnQWWtNfY+iDt4NLqOmub8wPqD5cG+Zg4u6Z1GmaQoeYggY2Jfj/TViOp32bG1Gia6y7k+Ne/RWSFiJujY+4Eb1DTajVDDdp+CpDt+FTy1jN5fnJLy/v7/Vrwxjg6LKNvFbDXvtIG30YjWWAWahb3OhktfUzUWzRwP+0h7h1E8wPkEWiwdM5MblVUViPDMuXdsOL4VT4oHGDW9vZznetHiZ8qTA1R2J3MMONRpG7Dmy27tstn6f/c/D9mzuaV13DnQpaAeOOafz92bi28fsnwS2b+uaQvvonZyen16folpEalb7ztRHpfmHCr5U6XnLXfsA1aHpm9J8Fv6ZZhUv2JcVvNa8aLC6ZzWachxWVfUX4KnAYw==
 sidebar_class_name: "delete api-method"
 info_path: api/v2/mgmt/management-api
 custom_edit_url: null
@@ -13,8 +13,8 @@ custom_edit_url: null
 
 import ApiTabs from "@theme/ApiTabs";
 import DiscriminatorTabs from "@theme/DiscriminatorTabs";
-import MethodEndpoint from "@theme/ApiDemoPanel/MethodEndpoint";
-import SecuritySchemes from "@theme/ApiDemoPanel/SecuritySchemes";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
 import MimeTabs from "@theme/MimeTabs";
 import ParamsItem from "@theme/ParamsItem";
 import ResponseSamples from "@theme/ResponseSamples";

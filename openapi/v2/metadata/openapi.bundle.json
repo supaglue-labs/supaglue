@@ -369,8 +369,9 @@
     },
     "/properties": {
       "get": {
-        "operationId": "listProperties",
+        "operationId": "listPropertiesDeprecated",
         "summary": "List properties",
+        "deprecated": true,
         "tags": [
           "Properties"
         ],
@@ -826,7 +827,7 @@
           "datetime",
           "boolean"
         ],
-        "description": "Type of the field.\nSupport:\n\n| Field              | Hubspot (type-fieldType) | Salesforce     | Pipedrive     |\n| ------------------ | ------------------------ | -------------- | ------------- |\n| text               | string-text              | Text           | varchar_auto  |\n| textarea           | string-textarea          | Longtextarea   | text          |\n| number             | number-number            | Number         | double        |\n| picklist           | enumeration-select       | Picklist       | enum          |\n| multipicklist      | enumeration-checkbox     | Multipicklist  | set           |\n| date               | date-date                | Date           | date          |\n| datetime           | datetime-date            | Datetime       | date          |\n| boolean            | boolean-booleancheckbox  | Checkbox       | enum          |\n"
+        "description": "Type of the field.\n\nSupport:\n\n<table>\n  <thead>\n    <tr>\n    <th>Field</th>\n    <th>Hubspot (type-fieldType)</th>\n    <th>Salesforce</th>\n    <th>Pipedrive</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n     <td>text</td>\n      <td>string-text</td>\n      <td>Text</td>\n      <td>varchar_auto</td>\n    </tr>\n    <tr>\n      <td>textarea</td>\n      <td>string-textarea</td>\n      <td>Longtextarea</td>\n      <td>text</td>\n    </tr>\n    <tr>\n      <td>number</td>\n      <td>number-number</td>\n      <td>Number</td>\n      <td>double</td>\n    </tr>\n    <tr>\n      <td>picklist</td>\n      <td>enumeration-select</td>\n      <td>Picklist</td>\n      <td>enum</td>\n    </tr>\n    <tr>\n      <td>multipicklist</td>\n      <td>enumeration-checkbox</td>\n      <td>Multipicklist</td>\n      <td>set</td>\n    </tr>\n    <tr>\n      <td>date</td>\n      <td>date-date</td>\n      <td>Date</td>\n      <td>date</td>\n    </tr>\n    <tr>\n      <td>datetime</td>\n      <td>datetime-date</td>\n      <td>Datetime</td>\n      <td>date</td>\n    </tr>\n    <tr>\n    <td>boolean</td>\n      <td>boolean-booleancheckbox</td>\n      <td>Checkbox</td>\n      <td>enum</td>\n    </tr>\n  </tbody>\n  </table>\n"
       },
       "picklist_option": {
         "type": "object",

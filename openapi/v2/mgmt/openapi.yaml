@@ -238,14 +238,6 @@ components:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml
 # Some tooling expects x-webhooks, while other tooling expects webhooks
 x-webhooks: &x-webhooks
-  salesforce_cdc.create:
-    $ref: ./webhooks/salesforce_cdc.create.yaml
-  salesforce_cdc.update:
-    $ref: ./webhooks/salesforce_cdc.update.yaml
-  salesforce_cdc.delete:
-    $ref: ./webhooks/salesforce_cdc.delete.yaml
-  salesforce_cdc.undelete:
-    $ref: ./webhooks/salesforce_cdc.undelete.yaml
   sync.complete:
     $ref: ./webhooks/sync.complete.yaml
   connection.created:

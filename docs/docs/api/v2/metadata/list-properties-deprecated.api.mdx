@@ -1,11 +1,11 @@
 ---
-id: list-properties
+id: list-properties-deprecated
 title: "List properties"
 description: "List properties"
 sidebar_label: "List properties"
 hide_title: true
 hide_table_of_contents: true
-api: {"operationId":"listProperties","tags":["Properties"],"security":[{"x-api-key":[]}],"parameters":[{"name":"type","in":"query","required":true,"schema":{"type":"string","enum":["standard","custom"]}},{"name":"name","in":"query","required":true,"schema":{"type":"string","description":"The name of the object for which you want to list properties."}},{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true},{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}],"responses":{"200":{"description":"List of properties","content":{"application/json":{"schema":{"type":"object","properties":{"properties":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string","description":"The machine name of the property as it appears in the third-party Provider.","example":"FirstName"},"label":{"type":"string","description":"The human-readable name of the property as provided by the third-party Provider.","example":"First Name"},"type":{"type":"string","description":"The type of the property as provided by the third-party Provider. These types are not unified by Supaglue. For Intercom, this is string, integer, boolean, or object. For Outreach, this is integer, boolean, number, array, or string.","example":"string"},"raw_details":{"type":"object","description":"The raw details of the property as provided by the third-party Provider, if available.","additionalProperties":true,"example":{}}},"required":["id","label"],"title":"property_deprecated"}}},"required":["properties"]}}}}},"description":"List properties","method":"get","path":"/properties","servers":[{"url":"https://api.supaglue.io/metadata/v2","description":"Supaglue API"}],"securitySchemes":{"x-api-key":{"type":"apiKey","name":"x-api-key","in":"header","description":"API key to allow developers to access the API"}},"info":{"version":"0.13.1","title":"Metadata API","contact":{"name":"Supaglue","email":"docs@supaglue.com","url":"https://supaglue.com"},"description":"#### Introduction\n\nWelcome to the Metadata API documentation for CRM. You can use this API to operate on metadata across multiple third-party providers.\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n```\nhttps://api.supaglue.io/metadata/v2\n```\n"},"postman":{"name":"List properties","description":{"type":"text/plain"},"url":{"path":["properties"],"host":["{{baseUrl}}"],"query":[{"disabled":false,"description":{"content":"(Required) ","type":"text/plain"},"key":"type","value":""},{"disabled":false,"description":{"content":"(Required) ","type":"text/plain"},"key":"name","value":""}],"variable":[]},"header":[{"disabled":false,"description":{"content":"(Required) The customer ID that uniquely identifies the customer in your application","type":"text/plain"},"key":"x-customer-id","value":""},{"disabled":false,"description":{"content":"(Required) The provider name","type":"text/plain"},"key":"x-provider-name","value":""},{"key":"Accept","value":"application/json"}],"method":"GET","auth":{"type":"apikey","apikey":[{"type":"any","value":"x-api-key","key":"key"},{"type":"any","value":"<API Key>","key":"value"},{"type":"any","value":"header","key":"in"}]}}}
+api: eJy1Vm1v2zYQ/isc96UBZDnpvhlDsa5dh2DtFqQtiiExGlo6W2wlUuWLHcPQf98dKclS7KZptsVAbJLHu+eee+OO6xqMcFKr85zPeCmtuzC05yTYl1AbyISDnCc83y9mznhIuBMry2dXfH+BzxNuIfNGui2e7PjtRNRy8hloNW/wtBZGVODA2HCucIFm3bYGNCEV/v7iwWxxYeCLl2ZvzWYFVILPdlF6xq0zUq1QEpSvCId1QuXCENjMW6crPm+apDcSvh5tJAebGVkTU7j9rgBG+pheMoe/9eITZI4ttWGbQmYF22rPNkI55jQjUlndk5TyIarbScQKZiLzDl4BIgfD73X6VlR1SVvVdq/ijDfHoHbn7PwlwhWOeSWRgnLLZA7KySXCCn70glKRC4aJui5lFhLkgK6RF+jfGpWZyZDm7/LDihIsMpjBcSc6C6y1cAfMnHZsrZXFPERDT09P6Wus5zWFAmO2jwYli1YOWSDpgbvTT5au7A6xx2DjxYEWPB2vWllhjKBEkw4q+20dmAIPyr1KZIVU4xxsNW2ZsEw6ihwIYymSdOoKafIJlh8KXLRMpiP+X0lj3Z/ELdJfigWUD8NS+EqoicFQi0X5dUht+HK22H4PINYhikAeAogkHo2AoQYbdVgmDPqjQ7lgiYSLb30tVqWHlL3CYj/HzDGZrhJShlxbFnElSLuDFZiELbQuQaiEoXiMerz6l3fIWVbsrx5ewca2oI2QRUFDVD/mqaUCOTJi8zEHJ2R5NNcOqcILrL3wWMbQ1SUTa1RB4SdkIs8l2RDlYDK0DbZHvWuaZljDVzy0v5h3WMtOuuBcB+fjYP4cXB0UEbb8cHyk7kdFj0Oo0DTyVhDKULgCF9ORjAWz7iaVNyU1NOdqO5tOcaqltssEqaeoDdPfien66QHPXcaw5xfnvBlMyLfUWGLdD+bkvnXU8g+g3tH32E7mbncd20MzDKVo8oiy1BTgNZTklg17WQY2dvsAqCFtS02Gydmo4zQ9+yk94/swvGkdDHdiyxRZaJktus5LyswKkwG3cp3ZX3qWsErwbEzj6PAgaD/iH1WY0bnPaO8aPx+gRGEgT8iFIS6GBn2FnTz07zCMX1y+SdnfOIszoZi3EGuNZPF+fPpgq1Csix+yYzSyU/nSSczTUcZ3A8imBOTqh6tLr6i9XmjrsAXOn3RuGa/SGvcUpcbCO6dVaterk73EZrNJ63iNfO+JmG60+WxrkUG/Nan9AmfSVGN01hI2J2Q8UPOrsCGG7P3l62t1c3NzrR6Qn60k0d0iGETxsE5GIelz08Gtm9alkEFPCOquraFxNSa8QCO0u9stEO97UzYNbccXGFVWLi11DqzFpSgtHJjsxzN/ctnW/AnjyXEooYS69+RaUELOOKeXyv9gpn2I7M3MaWEk2QkP3qSr0Uf7+V++3u7x5O4r9N8zd+zFdi+Auw/IEYQo9BxbV+0GZwfPNYpA39l//+0dTSNPWTnsqrGFtj8oMt2R2g50D9ttNE//CcxR8Z+pELFfP+vF48lXL/TdO0oTGTS7/gGusbW4
 sidebar_class_name: "get api-method"
 info_path: api/v2/metadata/metadata-api
 custom_edit_url: null
@@ -13,8 +13,8 @@ custom_edit_url: null
 
 import ApiTabs from "@theme/ApiTabs";
 import DiscriminatorTabs from "@theme/DiscriminatorTabs";
-import MethodEndpoint from "@theme/ApiDemoPanel/MethodEndpoint";
-import SecuritySchemes from "@theme/ApiDemoPanel/SecuritySchemes";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
 import MimeTabs from "@theme/MimeTabs";
 import ParamsItem from "@theme/ParamsItem";
 import ResponseSamples from "@theme/ResponseSamples";
@@ -28,7 +28,11 @@ import TabItem from "@theme/TabItem";
 
 <SecuritySchemes infoPath={"api/v2/metadata/metadata-api"}></SecuritySchemes>
 
+:::caution deprecated
 
+This endpoint has been deprecated and may be removed in future versions of the API.
+
+:::
 
 List properties
 

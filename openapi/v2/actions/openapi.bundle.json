@@ -70,11 +70,13 @@
                     "description": "Body to pass to downstream (can be string or JSON object)",
                     "oneOf": [
                       {
-                        "type": "string"
+                        "type": "string",
+                        "title": "String body"
                       },
                       {
                         "type": "object",
-                        "additionalProperties": true
+                        "additionalProperties": true,
+                        "title": "JSON body"
                       }
                     ]
                   }

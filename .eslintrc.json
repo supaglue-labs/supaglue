@@ -30,5 +30,5 @@
     "@typescript-eslint/no-misused-promises": ["warn", { "checksVoidReturn": false }],
     "@typescript-eslint/consistent-type-imports": "error"
   },
-  "ignorePatterns": ["node_modules/", "dist/", "coverage/", "/packages/schemas/gen/", "/apps/salesforce-pub-sub/gen/", "/packages/core/jest.config.js"]
+  "ignorePatterns": ["node_modules/", "dist/", "coverage/", "/packages/schemas/gen/", "/packages/core/jest.config.js"]
 }
