@@ -62,8 +62,8 @@ export interface paths {
     };
   };
   "/properties": {
-    /** List properties (deprecated) */
-    get: operations["listPropertiesDeprecated"];
+    /** List properties */
+    get: operations["listProperties"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -73,8 +73,8 @@ export interface paths {
     };
   };
   "/properties/{object_name}": {
-    /** List properties */
-    get: operations["listProperties"];
+    /** List properties (preview) */
+    get: operations["listPropertiesPreview"];
     /**
      * Create property 
      * @description Creates a custom property in the provider and registers it in Supaglue.
@@ -91,7 +91,7 @@ export interface paths {
   };
   "/properties/{object_name}/register": {
     /**
-     * Register Property 
+     * Register Property (preview) 
      * @description Registers a custom property in Supaglue.
      * This may be useful for custom properties that were already created in the Customer's provider.
      * E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.
@@ -107,11 +107,11 @@ export interface paths {
     };
   };
   "/properties/{object_name}/{property_name}": {
-    /** Get property */
+    /** Get property (preview) */
     get: operations["getProperty"];
     /**
-     * Update property 
-     * @description Update custom property
+     * Update property (preview) 
+     * @description Update custom property (preview)
      */
     patch: operations["updateProperty"];
     parameters: {
@@ -574,8 +574,8 @@ export interface operations {
       };
     };
   };
-  /** List properties (deprecated) */
-  listPropertiesDeprecated: {
+  /** List properties */
+  listProperties: {
     parameters: {
       query: {
         type: "standard" | "custom";
@@ -598,8 +598,8 @@ export interface operations {
       };
     };
   };
-  /** List properties */
-  listProperties: {
+  /** List properties (preview) */
+  listPropertiesPreview: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -647,7 +647,7 @@ export interface operations {
     };
   };
   /**
-   * Register Property 
+   * Register Property (preview) 
    * @description Registers a custom property in Supaglue.
    * This may be useful for custom properties that were already created in the Customer's provider.
    * E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.
@@ -687,7 +687,7 @@ export interface operations {
       };
     };
   };
-  /** Get property */
+  /** Get property (preview) */
   getProperty: {
     parameters: {
       header: {
@@ -708,8 +708,8 @@ export interface operations {
     };
   };
   /**
-   * Update property 
-   * @description Update custom property
+   * Update property (preview) 
+   * @description Update custom property (preview)
    */
   updateProperty: {
     parameters: {

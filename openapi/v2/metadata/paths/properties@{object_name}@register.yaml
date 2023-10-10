@@ -1,6 +1,6 @@
 post:
   operationId: registerProperty
-  summary: Register Property
+  summary: Register Property (preview)
   description: |
     Registers a custom property in Supaglue.
     This may be useful for custom properties that were already created in the Customer's provider.

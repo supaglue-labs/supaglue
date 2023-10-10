@@ -1,6 +1,6 @@
 get:
-  operationId: listProperties
-  summary: List properties
+  operationId: listPropertiesPreview
+  summary: List properties (preview)
   tags:
     - Properties
   security:

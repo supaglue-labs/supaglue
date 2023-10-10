@@ -369,8 +369,8 @@
     },
     "/properties": {
       "get": {
-        "operationId": "listPropertiesDeprecated",
-        "summary": "List properties (deprecated)",
+        "operationId": "listProperties",
+        "summary": "List properties",
         "tags": [
           "Properties"
         ],
@@ -444,8 +444,8 @@
     },
     "/properties/{object_name}": {
       "get": {
-        "operationId": "listProperties",
-        "summary": "List properties",
+        "operationId": "listPropertiesPreview",
+        "summary": "List properties (preview)",
         "tags": [
           "Properties"
         ],
@@ -535,7 +535,7 @@
     "/properties/{object_name}/register": {
       "post": {
         "operationId": "registerProperty",
-        "summary": "Register Property",
+        "summary": "Register Property (preview)",
         "description": "Registers a custom property in Supaglue.\nThis may be useful for custom properties that were already created in the Customer's provider.\nE.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.\n",
         "tags": [
           "Properties"
@@ -606,7 +606,7 @@
     "/properties/{object_name}/{property_name}": {
       "get": {
         "operationId": "getProperty",
-        "summary": "Get property",
+        "summary": "Get property (preview)",
         "tags": [
           "Properties"
         ],
@@ -630,8 +630,8 @@
       },
       "patch": {
         "operationId": "updateProperty",
-        "summary": "Update property",
-        "description": "Update custom property",
+        "summary": "Update property (preview)",
+        "description": "Update custom property (preview)",
         "tags": [
           "Properties"
         ],
