@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
-import { createRemoteApiKey } from '@/client';
+import { createRemoteApiKey, createTemporaryApiKey } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
-import { Card, Stack, TextField } from '@mui/material';
+import { Button, Card, Stack, TextField } from '@mui/material';
 import { useState } from 'react';
 import { RegenerateApiKey } from './RegenerateApiKey';
 
@@ -37,7 +37,25 @@ export default function ApiKeyTabPanel() {
           />
         </Stack>
 
-        <Stack direction="row" className="gap-2 justify-end">
+        <Stack direction="row" className="gap-2 justify-between">
+          <Button
+            variant="text"
+            onClick={async () => {
+              const response = await createTemporaryApiKey(activeApplicationId);
+              if (!response.ok) {
+                return addNotification({ message: response.errorMessage, severity: 'error' });
+              }
+              addNotification({
+                message: 'Successfully generated temporary API Key (valid for 24 hours)',
+                severity: 'success',
+              });
+              setDidRegenerate(true);
+              setApiKey(response.data.api_key);
+            }}
+          >
+            Generate Temporary API Key (24 hours)
+          </Button>
+
           <RegenerateApiKey
             disabled={false}
             onConfirm={async () => {
