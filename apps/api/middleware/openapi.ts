@@ -47,7 +47,7 @@ export const openapiMiddleware = (specDir: string, version = 'v2') => {
             error,
             originalUrl: req.originalUrl,
           },
-          'API reference validation error'
+          'API response validation error'
         );
       },
     },
