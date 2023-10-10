@@ -83,6 +83,18 @@ export async function createRemoteApiKey(applicationId: string): Promise<ClientR
   return await toClientResponse(result);
 }
 
+export async function createTemporaryApiKey(applicationId: string): Promise<ClientResponse<{ api_key: string }>> {
+  const result = await fetch(`/api/internal/api_keys/create_temporary`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-application-id': applicationId,
+    },
+  });
+
+  return await toClientResponse(result);
+}
+
 export async function createOrUpdateWebhook(
   applicationId: string,
   data: WebhookConfig

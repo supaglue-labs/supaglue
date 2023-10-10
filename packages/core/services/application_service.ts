@@ -32,7 +32,32 @@ export class ApplicationService {
     return fromApplicationModel(application);
   }
 
+  async #findByTemporaryApiKey(tempApiKey: string): Promise<Application | null> {
+    const { hashed: hashedApiKey } = await cryptoHash(tempApiKey);
+    const temporaryApiKey = await this.#prisma.temporaryApiKey.findFirst({
+      where: {
+        hashedApiKey,
+      },
+    });
+
+    if (!temporaryApiKey) {
+      return null;
+    }
+
+    if (temporaryApiKey.expiresAt < new Date()) {
+      throw new UnauthorizedError(`Temporary API key expired`);
+    }
+
+    const application = await this.getById(temporaryApiKey.applicationId);
+
+    return application;
+  }
+
   public async getByApiKey(apiKey: string): Promise<Application> {
+    const findByTemporaryApiKey = await this.#findByTemporaryApiKey(apiKey);
+    if (findByTemporaryApiKey) {
+      return findByTemporaryApiKey;
+    }
     const { hashed: hashedApiKey } = await cryptoHash(apiKey);
 
     const application = await this.#prisma.application.findMany({
@@ -129,6 +154,20 @@ export class ApplicationService {
     });
 
     return fromApplicationModel(updatedApplication);
+  }
+
+  public async createTemporaryApiKey(applicationId: string, expirySecs = 30): Promise<string> {
+    const apiKey = generateApiKey();
+    const { hashed: hashedApiKey } = await cryptoHash(apiKey);
+    const expiresAt = new Date(Date.now() + expirySecs * 1000);
+    await this.#prisma.temporaryApiKey.create({
+      data: {
+        applicationId,
+        expiresAt,
+        hashedApiKey,
+      },
+    });
+    return apiKey;
   }
 
   public async delete(id: string, orgId: string): Promise<void> {

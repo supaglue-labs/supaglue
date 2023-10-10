@@ -33,6 +33,7 @@ model Application {
   schemas      Schema[]
   entities     Entity[]
   magicLinks   MagicLink[]
+  temporaryApiKeys TemporaryApiKey[]
 
   @@unique([orgId, name])
   @@map("applications")
@@ -258,4 +259,15 @@ model MagicLink {
   status        String
 
   @@map("magic_links")
+}
+
+model TemporaryApiKey {
+  id String @id @default(uuid())
+  applicationId String @map("application_id")
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  hashedApiKey String @map("hashed_api_key") @unique
+  expiresAt DateTime @map("expires_at")
+  createdAt     DateTime    @default(now()) @map("created_at")
+
+  @@map("temporary_api_keys")
 }

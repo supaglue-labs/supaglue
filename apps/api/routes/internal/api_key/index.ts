@@ -16,6 +16,16 @@ export default function init(app: Router): void {
     return res.status(200).send(snakecaseKeys({ apiKey: updatedApplication.config.apiKey }));
   });
 
+  apiKeysRouter.post('/_generate_temporary_api_key', async (req: Request, res: Response) => {
+    const applicationId = req.supaglueApplication.id;
+
+    const apiKey = await applicationService.createTemporaryApiKey(
+      applicationId,
+      req.query.expirySecs ? parseInt(req.query.expirySecs as string) : undefined
+    );
+    return res.status(200).send({ api_key: apiKey });
+  });
+
   apiKeysRouter.post('/_revoke_api_key', async (req: Request, res: Response) => {
     const applicationId = req.supaglueApplication.id;
 
