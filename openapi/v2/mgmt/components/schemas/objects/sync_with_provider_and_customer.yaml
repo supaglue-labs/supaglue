@@ -1,44 +1,6 @@
 # this is verbose because our docs generator can't handle allOf with nested oneOf correctly
 oneOf:
   - type: object
-    title: 'Data model: Entities'
-    properties:
-      id:
-        type: string
-        example: 971cb76d-9558-42fe-8f3b-8a531c32bd5f
-      type:
-        type: string
-        enum:
-          - entity
-        example: entity
-      entity_id:
-        type: string
-        example: 70da3830-b717-49cb-91f0-22fb3f09a97a
-      connection_id:
-        type: string
-        example: 3217ea51-11c8-43c9-9547-6f197e02e5e4
-      sync_config_id:
-        type: string
-        example: 3217ea51-11c8-43c9-9547-6f197e02e5e5
-      paused:
-        type: boolean
-        example: false
-      provider_name:
-        type: string
-        example: hubspot
-      customer_id:
-        type: string
-        example: my-customer-1
-    required:
-      - id
-      - type
-      - entity_id
-      - connection_id
-      - sync_config_id
-      - paused
-      - provider_name
-      - customer_id
-  - type: object
     title: 'Data model: Objects'
     properties:
       id:
@@ -79,6 +41,44 @@ oneOf:
       - type
       - object_type
       - object
+      - connection_id
+      - sync_config_id
+      - paused
+      - provider_name
+      - customer_id
+  - type: object
+    title: 'Data model: Entities'
+    properties:
+      id:
+        type: string
+        example: 971cb76d-9558-42fe-8f3b-8a531c32bd5f
+      type:
+        type: string
+        enum:
+          - entity
+        example: entity
+      entity_id:
+        type: string
+        example: 70da3830-b717-49cb-91f0-22fb3f09a97a
+      connection_id:
+        type: string
+        example: 3217ea51-11c8-43c9-9547-6f197e02e5e4
+      sync_config_id:
+        type: string
+        example: 3217ea51-11c8-43c9-9547-6f197e02e5e5
+      paused:
+        type: boolean
+        example: false
+      provider_name:
+        type: string
+        example: hubspot
+      customer_id:
+        type: string
+        example: my-customer-1
+    required:
+      - id
+      - type
+      - entity_id
       - connection_id
       - sync_config_id
       - paused

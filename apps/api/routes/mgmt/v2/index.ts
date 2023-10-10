@@ -4,12 +4,10 @@ import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
 import { Router } from 'express';
 import connectionSyncConfig from './connection_sync_config';
 import customer from './customer';
-import destination from './destination';
 import entity from './entity';
 import entityMapping from './entity_mapping';
 import fieldMapping from './field_mapping';
 import magicLink from './magic_link';
-import provider from './provider';
 import schema from './schema';
 import sync from './sync';
 import syncConfig from './sync_config';
@@ -23,8 +21,6 @@ export default function init(app: Router): void {
   v2Router.use(pinoAndSentryContextMiddleware);
 
   customer(v2Router);
-  destination(v2Router);
-  provider(v2Router);
   schema(v2Router);
   syncConfig(v2Router);
   sync(v2Router);

@@ -24,6 +24,8 @@ properties:
     $ref: ./schema_mappings_config.yaml
   entity_mappings:
     $ref: ./connection_entity_mappings.yaml
+  connection_sync_config:
+    $ref: ./connection_sync_config.yaml
 required:
   - id
   - application_id

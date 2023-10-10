@@ -13,11 +13,6 @@ get:
           schema:
             allOf:
               - $ref: ../components/schemas/objects/connection.yaml
-              - type: object
-                properties:
-                  user_id:
-                    type: string
-                    description: The id of the user associated with this connection. This is sometimes also known as the owner.
 delete:
   operationId: deleteConnection
   summary: Delete connection

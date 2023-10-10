@@ -13,6 +13,7 @@ properties:
     enum:
       - oauth2
       - api_key
+      - access_key_secret
     example: oauth2
   name:
     $ref: ./provider_name.yaml

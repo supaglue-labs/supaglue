@@ -11,14 +11,7 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/customer.yaml
-          examples:
-            Example:
-              value:
-                application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
-                name: MyCompany Inc
-                email: contact@mycompany.com
-                customer_id: your-customers-unique-application-id
+            $ref: ../components/schemas/objects/simple_customer.yaml
 delete:
   operationId: deleteCustomer
   summary: Delete customer
@@ -32,14 +25,7 @@ delete:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/customer.yaml
-          examples:
-            Example:
-              value:
-                application_id: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
-                name: MyCompany Inc
-                email: contact@mycompany.com
-                customer_id: your-customers-unique-application-id
+            $ref: ../components/schemas/objects/simple_customer.yaml
 parameters:
   - name: customer_id
     in: path

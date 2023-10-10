@@ -49,6 +49,7 @@ properties:
         - object
   entities:
     type: array
+    deprecated: true
     items:
       type: object
       properties:

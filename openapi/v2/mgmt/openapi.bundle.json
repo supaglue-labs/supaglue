@@ -38,7 +38,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/customer"
+                    "$ref": "#/components/schemas/simple_customer"
                   }
                 }
               }
@@ -100,17 +100,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/customer"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-                      "name": "MyCompany Inc",
-                      "email": "contact@mycompany.com",
-                      "customer_id": "your-customers-unique-application-id"
-                    }
-                  }
+                  "$ref": "#/components/schemas/simple_customer"
                 }
               }
             }
@@ -134,17 +124,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/customer"
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "application_id": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69",
-                      "name": "MyCompany Inc",
-                      "email": "contact@mycompany.com",
-                      "customer_id": "your-customers-unique-application-id"
-                    }
-                  }
+                  "$ref": "#/components/schemas/simple_customer"
                 }
               }
             }
@@ -1629,15 +1609,6 @@
                   "allOf": [
                     {
                       "$ref": "#/components/schemas/connection"
-                    },
-                    {
-                      "type": "object",
-                      "properties": {
-                        "user_id": {
-                          "type": "string",
-                          "description": "The id of the user associated with this connection. This is sometimes also known as the owner."
-                        }
-                      }
                     }
                   ]
                 }
@@ -1757,6 +1728,7 @@
           },
           {
             "name": "entity_id",
+            "deprecated": true,
             "in": "query",
             "schema": {
               "type": "string",
@@ -1814,19 +1786,6 @@
                 "oneOf": [
                   {
                     "type": "object",
-                    "title": "Data model: Entities",
-                    "properties": {
-                      "entity_id": {
-                        "type": "string",
-                        "description": "The entity id to filter by"
-                      }
-                    },
-                    "required": [
-                      "entity_id"
-                    ]
-                  },
-                  {
-                    "type": "object",
                     "title": "Data model: Objects",
                     "properties": {
                       "object_type": {
@@ -1871,6 +1830,20 @@
                     "required": [
                       "object_type",
                       "object"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "Data model: Entities",
+                    "deprecated": true,
+                    "properties": {
+                      "entity_id": {
+                        "type": "string",
+                        "description": "The entity id to filter by"
+                      }
+                    },
+                    "required": [
+                      "entity_id"
                     ]
                   }
                 ]
@@ -1920,20 +1893,6 @@
                 "oneOf": [
                   {
                     "type": "object",
-                    "title": "Data model: Entities",
-                    "properties": {
-                      "entity_id": {
-                        "type": "string",
-                        "example": "cfba6060-c43a-4a63-8a8c-501c6099f8b0",
-                        "description": "The entity id to filter by"
-                      }
-                    },
-                    "required": [
-                      "entity_id"
-                    ]
-                  },
-                  {
-                    "type": "object",
                     "title": "Data model: Objects",
                     "properties": {
                       "object_type": {
@@ -1955,6 +1914,21 @@
                     "required": [
                       "object_type",
                       "object"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "Data model: Entities",
+                    "deprecated": true,
+                    "properties": {
+                      "entity_id": {
+                        "type": "string",
+                        "example": "cfba6060-c43a-4a63-8a8c-501c6099f8b0",
+                        "description": "The entity id to filter by"
+                      }
+                    },
+                    "required": [
+                      "entity_id"
                     ]
                   }
                 ]
@@ -2012,23 +1986,6 @@
                 "oneOf": [
                   {
                     "type": "object",
-                    "title": "Data model: Entities",
-                    "properties": {
-                      "entity_id": {
-                        "type": "string",
-                        "description": "The entity id to filter by"
-                      },
-                      "perform_full_refresh": {
-                        "type": "boolean",
-                        "example": true
-                      }
-                    },
-                    "required": [
-                      "entity_id"
-                    ]
-                  },
-                  {
-                    "type": "object",
                     "title": "Data model: Objects",
                     "properties": {
                       "object_type": {
@@ -2080,6 +2037,24 @@
                     "required": [
                       "object_type",
                       "object"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "title": "Data model: Entities",
+                    "deprecated": true,
+                    "properties": {
+                      "entity_id": {
+                        "type": "string",
+                        "description": "The entity id to filter by"
+                      },
+                      "perform_full_refresh": {
+                        "type": "boolean",
+                        "example": true
+                      }
+                    },
+                    "required": [
+                      "entity_id"
                     ]
                   }
                 ]
@@ -2183,6 +2158,7 @@
           },
           {
             "name": "entity_id",
+            "deprecated": true,
             "in": "query",
             "schema": {
               "type": "string",
@@ -2206,7 +2182,7 @@
               "type": "string",
               "example": ">2021-01-06T03:24:53.434326Z"
             },
-            "description": "The start time to filter by. Should start with one of [>, <] followed by an ISO 8601 timestamp."
+            "description": "The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp."
           },
           {
             "name": "end_timestamp",
@@ -2215,7 +2191,7 @@
               "type": "string",
               "example": ">2021-01-06T03:24:53.434326Z"
             },
-            "description": "The end time to filter by. Should start with [>, <] followed by an ISO 8601 timestamp."
+            "description": "The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp."
           }
         ],
         "responses": {
@@ -2372,6 +2348,33 @@
           "customer_id"
         ]
       },
+      "simple_customer": {
+        "type": "object",
+        "properties": {
+          "application_id": {
+            "type": "string",
+            "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
+          },
+          "customer_id": {
+            "type": "string",
+            "example": "your-customers-unique-application-id"
+          },
+          "name": {
+            "type": "string",
+            "example": "MyCompany Inc"
+          },
+          "email": {
+            "type": "string",
+            "example": "contact@mycompany.com"
+          }
+        },
+        "required": [
+          "application_id",
+          "name",
+          "email",
+          "customer_id"
+        ]
+      },
       "provider": {
         "type": "object",
         "properties": {
@@ -2390,7 +2393,8 @@
             "type": "string",
             "enum": [
               "oauth2",
-              "api_key"
+              "api_key",
+              "access_key_secret"
             ],
             "example": "oauth2"
           },
@@ -2405,6 +2409,7 @@
           },
           "entity_mappings": {
             "type": "array",
+            "deprecated": true,
             "description": "This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview). The object/field mappings (aka [Entity Mappings](https://docs.supaglue.com/platform/entities/overview#entity-mapping)) here are set by you, the developer, and the mappings apply for all your customers.",
             "items": {
               "$ref": "#/components/schemas/provider_entity_mapping"
@@ -2436,36 +2441,6 @@
         "oneOf": [
           {
             "type": "object",
-            "title": "supaglue",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "d455d20b-f6dc-4bc3-ab14-b4f21c4b4835"
-              },
-              "application_id": {
-                "type": "string",
-                "example": "726fb798-d854-4c59-9a23-57e3e2f73eae"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "supaglue"
-                ],
-                "example": "supaglue"
-              },
-              "version": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "id",
-              "application_id",
-              "type",
-              "version"
-            ]
-          },
-          {
-            "type": "object",
             "title": "postgres",
             "properties": {
               "id": {
@@ -2491,7 +2466,9 @@
                 "$ref": "#/components/schemas/postgres_config_safe"
               },
               "version": {
-                "type": "number"
+                "type": "number",
+                "example": 1,
+                "description": "A monotonically increasing version number of the destination configuration"
               }
             },
             "required": [
@@ -2500,6 +2477,39 @@
               "name",
               "type",
               "config",
+              "version"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "supaglue",
+            "description": "A Supaglue-hosted Postgres database destination for Listing APIs.",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "d455d20b-f6dc-4bc3-ab14-b4f21c4b4835"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "726fb798-d854-4c59-9a23-57e3e2f73eae"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "supaglue"
+                ],
+                "example": "supaglue"
+              },
+              "version": {
+                "type": "number",
+                "example": 1,
+                "description": "A monotonically increasing version number of the destination configuration"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "type",
               "version"
             ]
           },
@@ -2530,7 +2540,9 @@
                 "$ref": "#/components/schemas/bigquery_config_safe"
               },
               "version": {
-                "type": "number"
+                "type": "number",
+                "example": 1,
+                "description": "A monotonically increasing version number of the destination configuration"
               }
             },
             "required": [
@@ -2569,7 +2581,9 @@
                 "$ref": "#/components/schemas/mongodb_config_safe"
               },
               "version": {
-                "type": "number"
+                "type": "number",
+                "example": 1,
+                "description": "A monotonically increasing version number of the destination configuration"
               }
             },
             "required": [
@@ -2885,6 +2899,7 @@
       },
       "schema": {
         "type": "object",
+        "deprecated": true,
         "properties": {
           "id": {
             "type": "string",
@@ -2911,6 +2926,7 @@
       },
       "schema_config": {
         "type": "object",
+        "deprecated": true,
         "properties": {
           "fields": {
             "type": "array",
@@ -2953,7 +2969,8 @@
           },
           "status": {
             "type": "string",
-            "example": "created"
+            "description": "`new` or `consumed`",
+            "example": "new"
           },
           "application_id": {
             "type": "string",
@@ -2983,7 +3000,8 @@
           "expires_at": {
             "type": "string",
             "format": "date-time",
-            "example": "2023-02-23T00:00:00Z"
+            "example": "2023-02-23T00:00:00Z",
+            "description": "Any ISO formatted date-time string indicating when the magic link expires."
           }
         },
         "required": [
@@ -3027,6 +3045,7 @@
       },
       "entity": {
         "type": "object",
+        "deprecated": true,
         "properties": {
           "id": {
             "type": "string",
@@ -3053,6 +3072,7 @@
       },
       "entity_config": {
         "type": "object",
+        "deprecated": true,
         "properties": {
           "fields": {
             "type": "array",
@@ -3262,6 +3282,7 @@
           "schema_mappings_config": {
             "description": "This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview#schemas). The field mappings here are set by your customers using the [Field Mappings API](https://docs.supaglue.com/api/v2/mgmt/update-object-field-mappings).",
             "type": "object",
+            "deprecated": true,
             "properties": {
               "common_objects": {
                 "type": "array",
@@ -3313,10 +3334,14 @@
           "entity_mappings": {
             "type": "array",
             "description": "This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview#entity-mapping). The object/field mappings here are set by your customers using the [Entity Mappings API](https://docs.supaglue.com/api/v2/mgmt/upsert-entity-mapping).",
+            "deprecated": true,
             "items": {
               "$ref": "#/components/schemas/connection_entity_mapping"
             },
             "example": []
+          },
+          "connection_sync_config": {
+            "$ref": "#/components/schemas/connection_sync_config"
           }
         },
         "required": [
@@ -3438,6 +3463,7 @@
           },
           "entities": {
             "type": "array",
+            "deprecated": true,
             "items": {
               "type": "object",
               "properties": {
@@ -3633,47 +3659,6 @@
         "oneOf": [
           {
             "type": "object",
-            "title": "Data model: Entities",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "7026e4e8-15d7-48d8-b997-f2592b654619"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "entity"
-                ],
-                "example": "entity"
-              },
-              "entity_id": {
-                "type": "string",
-                "example": "94e6cb6c-0ec8-423f-8873-21054979a6b1"
-              },
-              "connection_id": {
-                "type": "string",
-                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
-              },
-              "sync_config_id": {
-                "type": "string",
-                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
-              },
-              "paused": {
-                "type": "boolean",
-                "example": false
-              }
-            },
-            "required": [
-              "id",
-              "type",
-              "entity_id",
-              "connection_id",
-              "sync_config_id",
-              "paused"
-            ]
-          },
-          {
-            "type": "object",
             "title": "Data model: Objects",
             "properties": {
               "id": {
@@ -3773,18 +3758,15 @@
               "sync_config_id",
               "paused"
             ]
-          }
-        ]
-      },
-      "sync_with_provider_and_customer": {
-        "oneOf": [
+          },
           {
             "type": "object",
             "title": "Data model: Entities",
+            "deprecated": true,
             "properties": {
               "id": {
                 "type": "string",
-                "example": "971cb76d-9558-42fe-8f3b-8a531c32bd5f"
+                "example": "7026e4e8-15d7-48d8-b997-f2592b654619"
               },
               "type": {
                 "type": "string",
@@ -3795,7 +3777,7 @@
               },
               "entity_id": {
                 "type": "string",
-                "example": "70da3830-b717-49cb-91f0-22fb3f09a97a"
+                "example": "94e6cb6c-0ec8-423f-8873-21054979a6b1"
               },
               "connection_id": {
                 "type": "string",
@@ -3808,14 +3790,6 @@
               "paused": {
                 "type": "boolean",
                 "example": false
-              },
-              "provider_name": {
-                "type": "string",
-                "example": "hubspot"
-              },
-              "customer_id": {
-                "type": "string",
-                "example": "my-customer-1"
               }
             },
             "required": [
@@ -3824,11 +3798,13 @@
               "entity_id",
               "connection_id",
               "sync_config_id",
-              "paused",
-              "provider_name",
-              "customer_id"
+              "paused"
             ]
-          },
+          }
+        ]
+      },
+      "sync_with_provider_and_customer": {
+        "oneOf": [
           {
             "type": "object",
             "title": "Data model: Objects",
@@ -3889,6 +3865,57 @@
               "provider_name",
               "customer_id"
             ]
+          },
+          {
+            "type": "object",
+            "title": "Data model: Entities",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "971cb76d-9558-42fe-8f3b-8a531c32bd5f"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "entity"
+                ],
+                "example": "entity"
+              },
+              "entity_id": {
+                "type": "string",
+                "example": "70da3830-b717-49cb-91f0-22fb3f09a97a"
+              },
+              "connection_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e4"
+              },
+              "sync_config_id": {
+                "type": "string",
+                "example": "3217ea51-11c8-43c9-9547-6f197e02e5e5"
+              },
+              "paused": {
+                "type": "boolean",
+                "example": false
+              },
+              "provider_name": {
+                "type": "string",
+                "example": "hubspot"
+              },
+              "customer_id": {
+                "type": "string",
+                "example": "my-customer-1"
+              }
+            },
+            "required": [
+              "id",
+              "type",
+              "entity_id",
+              "connection_id",
+              "sync_config_id",
+              "paused",
+              "provider_name",
+              "customer_id"
+            ]
           }
         ]
       },
@@ -3898,6 +3925,14 @@
             "type": "object",
             "title": "Data model: Objects",
             "properties": {
+              "id": {
+                "type": "string",
+                "example": "20eb4da3-6b38-4ec6-a82d-ecee59a9d6d9"
+              },
+              "sync_id": {
+                "type": "string",
+                "example": "629525f8-f6f7-436c-80fa-1cb23acc5bf8"
+              },
               "object_type": {
                 "type": "string",
                 "enum": [
@@ -3955,6 +3990,8 @@
               }
             },
             "required": [
+              "id",
+              "sync_id",
               "object_type",
               "object",
               "start_timestamp",
@@ -3972,9 +4009,19 @@
           {
             "type": "object",
             "title": "Data model: Entities",
+            "deprecated": true,
             "properties": {
+              "id": {
+                "type": "string",
+                "example": "20eb4da3-6b38-4ec6-a82d-ecee59a9d6d9"
+              },
+              "sync_id": {
+                "type": "string",
+                "example": "629525f8-f6f7-436c-80fa-1cb23acc5bf8"
+              },
               "entity_id": {
-                "type": "string"
+                "type": "string",
+                "deprecated": true
               },
               "error_message": {
                 "type": "string",
@@ -4022,6 +4069,8 @@
               }
             },
             "required": [
+              "id",
+              "sync_id",
               "entity_id",
               "start_timestamp",
               "end_timestamp",
@@ -4312,22 +4361,6 @@
             "type": "object",
             "title": "postgres",
             "properties": {
-              "type": {
-                "type": "string",
-                "enum": [
-                  "supaglue"
-                ],
-                "example": "supaglue"
-              }
-            },
-            "required": [
-              "type"
-            ]
-          },
-          {
-            "type": "object",
-            "title": "postgres",
-            "properties": {
               "name": {
                 "type": "string",
                 "example": "My Postgres Destination"
@@ -4347,6 +4380,23 @@
               "name",
               "type",
               "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "supaglue",
+            "description": "A Supaglue-hosted Postgres database destination for Listing APIs.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "supaglue"
+                ],
+                "example": "supaglue"
+              }
+            },
+            "required": [
+              "type"
             ]
           },
           {
@@ -4881,6 +4931,7 @@
       },
       "provider_entity_mapping": {
         "type": "object",
+        "deprecated": true,
         "properties": {
           "entity_id": {
             "type": "string",
@@ -4902,6 +4953,7 @@
       },
       "connection_entity_mapping": {
         "type": "object",
+        "deprecated": true,
         "properties": {
           "entity_id": {
             "type": "string"
@@ -4992,6 +5044,7 @@
       },
       "entity_field_mapping": {
         "type": "object",
+        "deprecated": true,
         "properties": {
           "entity_field": {
             "type": "string",

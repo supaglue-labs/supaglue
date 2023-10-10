@@ -49,6 +49,7 @@ get:
         example: contact
       description: The object to filter by
     - name: entity_id
+      deprecated: true
       in: query
       schema:
         type: string

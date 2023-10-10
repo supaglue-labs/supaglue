@@ -1,3 +1,4 @@
+import { logger } from '@supaglue/core/lib';
 import type { NextFunction, Request, Response } from 'express';
 import * as OpenApiValidator from 'express-openapi-validator';
 import fs from 'fs';
@@ -38,6 +39,17 @@ export const openapiMiddleware = (specDir: string, version = 'v2') => {
     validateSecurity: false,
     validateRequests: {
       removeAdditional: true,
+    },
+    validateResponses: {
+      onError: (error, body, req) => {
+        logger.error(
+          {
+            error,
+            originalUrl: req.originalUrl,
+          },
+          'API response validation error'
+        );
+      },
     },
   });
 };

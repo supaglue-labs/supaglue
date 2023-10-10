@@ -5,7 +5,8 @@ properties:
     example: ec208408-db29-4705-b39e-4d33070b4ef6
   status:
     type: string
-    example: created
+    description: '`new` or `consumed`'
+    example: new
   application_id:
     type: string
     example: d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69
@@ -29,6 +30,7 @@ properties:
     type: string
     format: date-time
     example: '2023-02-23T00:00:00Z'
+    description: Any ISO formatted date-time string indicating when the magic link expires.
 required:
   - id
   - status

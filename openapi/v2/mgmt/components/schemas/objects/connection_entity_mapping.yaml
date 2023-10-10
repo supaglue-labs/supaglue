@@ -1,4 +1,5 @@
 type: object
+deprecated: true
 properties:
   entity_id:
     type: string
@@ -7,6 +8,6 @@ properties:
   field_mappings:
     type: array
     items:
-      $ref: ./entity_field_mapping.yaml  
+      $ref: ./entity_field_mapping.yaml
 required:
   - entity_id

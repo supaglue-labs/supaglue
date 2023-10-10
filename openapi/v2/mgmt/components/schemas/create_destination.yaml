@@ -2,16 +2,6 @@ oneOf:
   - type: object
     title: postgres
     properties:
-      type:
-        type: string
-        enum:
-          - supaglue
-        example: supaglue
-    required:
-      - type
-  - type: object
-    title: postgres
-    properties:
       name:
         type: string
         example: My Postgres Destination
@@ -26,6 +16,17 @@ oneOf:
       - name
       - type
       - config
+  - type: object
+    title: supaglue
+    description: A Supaglue-hosted Postgres database destination for Listing APIs.
+    properties:
+      type:
+        type: string
+        enum:
+          - supaglue
+        example: supaglue
+    required:
+      - type
   - type: object
     title: bigquery
     properties:

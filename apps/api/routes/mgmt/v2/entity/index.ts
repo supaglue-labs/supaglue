@@ -23,6 +23,9 @@ import { Router } from 'express';
 
 const { entityService } = getDependencyContainer();
 
+/**
+ * @deprecated
+ */
 export default function init(app: Router): void {
   const entityRouter = Router({ mergeParams: true });
 

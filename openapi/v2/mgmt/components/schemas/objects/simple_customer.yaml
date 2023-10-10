@@ -1,4 +1,3 @@
-# Supaglue Customer with connections
 type: object
 properties:
   application_id:
@@ -13,10 +12,6 @@ properties:
   email:
     type: string
     example: contact@mycompany.com
-  connections:
-    type: array
-    items:
-      $ref: ./connection.yaml
 required:
   - application_id
   - name

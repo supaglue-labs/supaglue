@@ -12,17 +12,6 @@ post:
         schema:
           oneOf:
             - type: object
-              title: 'Data model: Entities'
-              properties:
-                entity_id:
-                  type: string
-                  description: The entity id to filter by
-                perform_full_refresh:
-                  type: boolean
-                  example: true
-              required:
-                - entity_id
-            - type: object
               title: 'Data model: Objects'
               properties:
                 object_type:
@@ -61,6 +50,18 @@ post:
               required:
                 - object_type
                 - object
+            - type: object
+              title: 'Data model: Entities'
+              deprecated: true
+              properties:
+                entity_id:
+                  type: string
+                  description: The entity id to filter by
+                perform_full_refresh:
+                  type: boolean
+                  example: true
+              required:
+                - entity_id
 
   responses:
     '200':
