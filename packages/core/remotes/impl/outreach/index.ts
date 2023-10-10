@@ -1478,7 +1478,21 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         headers: this.getAuthHeadersForPassthroughRequest(),
       }
     );
-    return response.data.data.id.toString();
+
+    const sequenceId = response.data.data.id.toString();
+
+    // There should be a low number of steps, so we will try to create them all in parallel.
+    await Promise.all(
+      (params.steps ?? []).map((step, index) =>
+        this.createSequenceStep({
+          ...step,
+          order: index + 1, // Ignore step.order and use the implicit order from array index instead.
+          sequenceId, // Ignore sequence.id as well.
+        })
+      )
+    );
+
+    return sequenceId;
   }
 
   async createSequenceStep(params: SequenceStepCreateParams): Promise<string> {

@@ -6,11 +6,14 @@ import type {
   EmailAddress,
   PhoneNumber,
   Sequence,
+  SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
+  SequenceStepCreateParams,
   User,
 } from '@supaglue/types/engagement';
 import { camelcaseKeys } from '@supaglue/utils';
+import { BadRequestError } from '../../../errors';
 
 export const fromSalesloftAccountToAccount = (record: Record<string, any>): Account => {
   return {
@@ -185,3 +188,236 @@ export const toSalesloftSequenceStateCreateParams = (
     user_id: sequenceState.userId,
   };
 };
+
+/**
+ * Issues:
+ * - `ownerId` does not appear to be supported by salesloft
+ */
+export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): CadenceImport => {
+  const stepGroups: StepGroup[] = [];
+  let dayOffset = 0; // salesloft day is always relative to start of the sequence, so we account for that here
+  for (const [index, step] of (sequence.steps ?? []).entries()) {
+    // salesloft does not have a concept of step groups within their UI
+    // and in fact seems to create a group for every step anyways... So we will replicate the same behavior
+    const group = toSalesloftCadenceStepImportParams({
+      ...step,
+      order: index + 1,
+      intervalSeconds: (step.intervalSeconds ?? 0) + dayOffset * 86400,
+    }).cadence_content.step_groups[0];
+    dayOffset = group.day - 1;
+    stepGroups.push(group);
+  }
+
+  return {
+    ...(sequence.customFields ?? {}), // settings and sharing_settings are specifically extracted below
+    settings: {
+      name: sequence.name,
+      target_daily_people: 0,
+      cadence_function: 'outbound',
+      remove_bounced: true,
+      remove_replied: true,
+      external_identifier: null,
+      ...(sequence.customFields?.settings ?? {}),
+    },
+    sharing_settings: {
+      team_cadence: sequence.type === 'team',
+      shared: true, // the default when creating in the UI
+      ...(sequence.customFields?.sharing_settings ?? {}),
+    },
+    cadence_content: { step_groups: stepGroups },
+  };
+};
+
+/**
+ * Issues:
+ * - `linkedin_send_message` is not natively supported
+ * - No ability to use existing template ID
+ * - Step group vs. steps
+ * - date / interval based sequences vs. day based sequences
+ * - Differentiate between auto-email vs. manual email
+ * - Only works if a cadence has exactly 0 steps... https://share.cleanshot.com/dVx6sqTD
+ */
+export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParams): CadenceImport => {
+  if (step.date) {
+    throw new BadRequestError('Only relative delays are supported for Salesloft sequences');
+  }
+
+  const day = (step.intervalSeconds ?? 0) / 86400 + 1;
+  if (!Number.isInteger(day)) {
+    throw new BadRequestError('Salesloft only supports intervals in whole days (i.e. multiples of 86400)');
+  }
+
+  const delayInMins = Math.floor(((step.intervalSeconds ?? 0) % 86400) / 60);
+
+  if (delayInMins > 720) {
+    throw new BadRequestError('Salesloft only supports delays up to 720 minutes within a day');
+  }
+
+  if (step.type === 'linkedin_send_message') {
+    // Not clear how to implement this at the moment. We need
+    // integration_id and integration_step_type_guid for this to work and it is quite Salesloft specific
+    // @see https://share.cleanshot.com/BY66pmLW
+    throw new BadRequestError('LinkedIn steps are not currently supported for Salesloft sequences');
+  }
+  if (step.template && 'id' in step.template) {
+    throw new BadRequestError('Template IDs are not currently supported for Salesloft sequences');
+  }
+
+  const cadenceStep: Step | null =
+    (step.type === 'manual_email' || step.type === 'auto_email') && step.template && 'body' in step.template
+      ? {
+          enabled: true,
+          type: 'Email',
+          name: [step.name ?? `Step ${step.order}`, step.taskNote].filter((n) => !!n).join(': '),
+          type_settings: {
+            email_template: { title: step.template.name, subject: step.template.subject, body: step.template.body },
+          },
+        }
+      : step.type === 'call'
+      ? {
+          enabled: true,
+          type: 'Phone',
+          name: step.name ?? `Step ${step.order}`,
+          type_settings: { instructions: step.taskNote ?? '' },
+        }
+      : {
+          enabled: true,
+          type: 'Other',
+          name: step.name ?? `Step ${step.order}`,
+          type_settings: { instructions: `${step.type}: ${step.taskNote ?? ''}` },
+        };
+
+  return {
+    cadence_content: {
+      cadence_id: step.sequenceId ? parseInt(step.sequenceId, 10) : undefined,
+      step_groups: [
+        {
+          day,
+          automated: step.type === 'auto_email',
+          automated_settings:
+            step.type === 'auto_email' && delayInMins !== 0
+              ? { send_type: 'after_time_delay', delay_time: delayInMins }
+              : undefined,
+          due_immediately: false,
+          steps: cadenceStep ? [cadenceStep] : [],
+          reference_id: step.order ?? null,
+        },
+      ],
+      ...step.customFields,
+    },
+  };
+};
+
+/** @see https://gist.github.com/tonyxiao/6e14c2348e4672e91257c0b918d5ccab */
+export interface CadenceImport {
+  /** optional when cadence_content.cadence_id is specified */
+  settings?: Settings;
+  /** optional when cadence_content.cadence_id is specified */
+  sharing_settings?: SharingSettings;
+  cadence_content: {
+    /** For importing */
+    cadence_id?: number;
+    step_groups: StepGroup[];
+  };
+}
+
+interface Settings {
+  name: string;
+  target_daily_people: number;
+  remove_replied: boolean;
+  remove_bounced: boolean;
+  remove_people_when_meeting_booked?: boolean;
+  external_identifier: null | string | number;
+  /** https://share.cleanshot.com/1JmgKzwV */
+  cadence_function: 'outbound' | 'inbound' | 'event' | 'other';
+}
+
+interface SharingSettings {
+  team_cadence: boolean;
+  shared: boolean;
+}
+
+interface StepGroup {
+  /** Collection of all the settings for an automated step. Only valid if automated is true. */
+  automated_settings?: AutomatedSettings;
+  /** Describes if the step happens with or without human intervention. Can only be true if steps in group are Email steps. */
+  automated: boolean;
+  /** The day that the step will be executed */
+  day: number;
+  /** Describes if the step is due immediately or not. */
+  due_immediately: boolean;
+  /** Used to correlate threaded email steps. Required for email step, can pass 0 for example. */
+  reference_id?: number | null;
+  /** All of the steps that belong to a particular day */
+  steps: Step[];
+}
+
+/**
+ * Represents the parameters for an automated action. Only valid for automated email steps
+ */
+type AutomatedSettings = {
+  /** Determines whether or not the step is able to be sent on weekends */
+  allow_send_on_weekends?: boolean;
+} & (
+  | {
+      /**
+       * Describes if the step is due immediately or not.
+       * Must be either "at_time" or "after_time_delay".
+       */
+      send_type: 'at_time';
+
+      /** The time that the automated action will happen. e.g. 09:00 */
+      time_of_day: string;
+
+      /**
+       * Specifies whether the email is sent after the person's timezone
+       * or the user's timezone.
+       * Must be either "person" or "user".
+       */
+      timezone_mode: 'person' | 'user';
+    }
+  | {
+      /**
+       * Describes if the step is due immediately or not.
+       * Must be either "at_time" or "after_time_delay".
+       */
+      send_type: 'after_time_delay';
+
+      /** must be a number between 0 and 720 (minutes */
+      delay_time: number;
+    }
+);
+
+type Step = {
+  /** Describes if that step is currently enabled */
+  enabled: boolean;
+  /** The name given by the user for the step */
+  name: string;
+} & (
+  | { type: 'Phone'; type_settings: { instructions: string } }
+  | { type: 'Other'; type_settings: { instructions: string } }
+  | {
+      type: 'Integration';
+      type_settings: {
+        /** The instructions to follow when executing that step */
+        instructions: string;
+        /** Identifies the Salesloft integration you are trying to use */
+        integration_id: number;
+        /** For LinkedIn steps, identifies one of the LinkedIn Steps. */
+        integration_step_type_guid: string;
+      };
+    }
+  | {
+      type: 'Email';
+      type_settings: {
+        /** Used to reference the step group of the previous email in a thread */
+        previous_email_step_group_reference_id?: number;
+        /** Content for the email template used in this step */
+        email_template?: {
+          title?: string;
+          subject?: string;
+          body?: string;
+        };
+      };
+    }
+);

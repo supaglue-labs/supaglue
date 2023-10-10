@@ -8253,6 +8253,7 @@ __metadata:
   resolution: "api@workspace:apps/api"
   dependencies:
     "@godaddy/terminus": ^4.11.2
+    "@hapi/boom": ^10.0.1
     "@sentry/integrations": ^7.64.0
     "@sentry/node": ^7.64.0
     "@supaglue/core": "workspace:*"

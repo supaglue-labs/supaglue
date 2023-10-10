@@ -12,6 +12,10 @@ properties:
     enum: [team, private]
   owner_id:
     type: string
+  steps: 
+    type: array
+    items:
+      $ref: ./create_sequence_step.yaml
   custom_fields:
     $ref: ./objects/custom_fields.yaml
 required:

@@ -1,6 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
+import type { Boom } from '@hapi/boom';
 import { Client as HubspotClient } from '@hubspot/api-client';
-import { BadRequestError } from '@supaglue/core/errors';
+import { BadRequestError, InternalServerError } from '@supaglue/core/errors';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes';
 import type {
   ConnectionCreateParamsAny,
@@ -24,6 +25,10 @@ import type { Request, Response } from 'express';
 import { Router } from 'express';
 import type { AuthorizationMethod } from 'simple-oauth2';
 import simpleOauth2 from 'simple-oauth2';
+
+function isBoom<T>(err: any): err is Boom<T> {
+  return err.isBoom;
+}
 
 const { providerService, connectionAndSyncService, applicationService } = getDependencyContainer();
 
@@ -231,21 +236,25 @@ export default function init(app: Router): void {
 
       // TODO: We should move all the logic that is conditional on providerName
       // to their respective files
-      const tokenWrapper = await client.getToken(
-        {
-          code,
-          redirect_uri: REDIRECT_URI,
-          ...additionalAuthParams,
-        },
-        {
-          headers:
-            providerName === 'gong'
-              ? {
-                  Authorization: `Basic ${Buffer.from(`${oauthClientId}:${oauthClientSecret}`).toString('base64')}`,
-                }
-              : undefined,
-        }
-      );
+      const tokenWrapper = await client
+        .getToken(
+          { code, redirect_uri: REDIRECT_URI, ...additionalAuthParams },
+          {
+            headers:
+              providerName === 'gong'
+                ? { Authorization: `Basic ${Buffer.from(`${oauthClientId}:${oauthClientSecret}`).toString('base64')}` }
+                : undefined,
+          }
+        )
+        .catch((err) => {
+          if (isBoom(err)) {
+            // simple-oauth2 throws boom error.
+            // Avoids circular reference issue when throwing a boom error directly
+            // Though we aren't able to get the actual json response data @see https://share.cleanshot.com/DwwWn5Cj
+            throw new InternalServerError(err.message);
+          }
+          throw err;
+        });
 
       let instanceUrl = (tokenWrapper.token['instance_url'] as string) ?? '';
 

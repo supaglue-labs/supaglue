@@ -1,5 +1,6 @@
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
+import type { SequenceStepCreateParams } from './sequence_step';
 
 export type SnakecasedKeysSequence = SnakecasedKeys<Sequence>;
 export type SnakecasedKeysSequenceWithTenant = SnakecasedKeysSequence & SnakecasedEngagementTenantFields;
@@ -26,5 +27,6 @@ export type SequenceCreateParams = {
   ownerId?: string;
   tags?: string[];
   type: 'team' | 'private';
+  steps?: SequenceStepCreateParams[];
   customFields?: Record<string, unknown>;
 };

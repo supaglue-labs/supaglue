@@ -13,8 +13,10 @@ import type {
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
   Sequence,
+  SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
+  SequenceStepCreateParams,
   User,
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
@@ -31,6 +33,8 @@ import {
   fromSalesloftPersonToContact,
   fromSalesloftUserToUser,
   toSalesloftAccountCreateParams,
+  toSalesloftCadenceImportParams,
+  toSalesloftCadenceStepImportParams,
   toSalesloftContactCreateParams,
   toSalesloftSequenceStateCreateParams,
 } from './mappers';
@@ -289,6 +293,30 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     return response.data.data.id.toString();
   }
 
+  async #importSequence(params: SequenceCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    const response = await axios.post<{ data: { cadence: { id: number } } }>(
+      `${this.#baseURL}/v2/cadence_imports`,
+      toSalesloftCadenceImportParams(params),
+      { headers: this.#headers }
+    );
+    return response.data.data.cadence.id.toString();
+  }
+
+  async #importSequenceStep(params: SequenceStepCreateParams): Promise<string> {
+    await this.maybeRefreshAccessToken();
+
+    const response = await axios.post<{ data: { cadence: { id: number } } }>(
+      `${this.#baseURL}/v2/cadence_imports`,
+      toSalesloftCadenceStepImportParams(params),
+      { headers: this.#headers }
+    );
+    // TODO: The response does not contain step Id... So the return value is only the cadence ID
+    // Should we do a fetch on the cadence instead? But the problem is we also don't have a way to
+    // definitively idenfiy the step we just created
+    return response.data.data.cadence.id.toString();
+  }
+
   public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
@@ -310,6 +338,9 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
           id: await this.#createRecord('/v2/people', toSalesloftContactCreateParams(params as ContactCreateParams)),
         };
       case 'sequence':
+        return { id: await this.#importSequence(params as SequenceCreateParams) };
+      case 'sequence_step':
+        return { id: await this.#importSequenceStep(params as SequenceStepCreateParams) };
       case 'mailbox':
       case 'user':
         throw new BadRequestError(`Create operation not supported for ${commonObjectType} object in Salesloft`);

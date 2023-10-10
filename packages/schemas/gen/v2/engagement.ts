@@ -401,10 +401,13 @@ export interface components {
        */
       type: "team" | "private";
       owner_id?: string;
+      steps?: (components["schemas"]["create_sequence_step"])[];
       custom_fields?: components["schemas"]["custom_fields"];
     };
     create_sequence_step: {
-      /** @description The interval (in seconds) until this step will activate; only applicable to interval-based sequences. */
+      /** @description The name given by the user for the step. Used by Salesloft only. */
+      name?: string;
+      /** @description The interval (in seconds) until this step will activate after the previous step (in case of first step, relative to when prospect first enters a sequence); only applicable to interval-based sequences. This is 0 by default */
       interval_seconds?: number;
       /**
        * @description The date this step will activate; only applicable to date-based sequences. 
@@ -412,7 +415,7 @@ export interface components {
        */
       date?: string;
       /** @description The email/message template to be used for this step. Only applicable for email or message steps. */
-      template: OneOf<[{
+      template?: OneOf<[{
         /** @description The ID of the template to use for this step. */
         id: string;
       }, {
@@ -431,9 +434,9 @@ export interface components {
         custom_fields?: components["schemas"]["custom_fields"];
       }]>;
       /** @description If true, this step will be sent as a reply to the previous step. */
-      is_reply: boolean;
-      /** @description The step's display order within its sequence. */
-      order: number;
+      is_reply?: boolean;
+      /** @description The step's display order within its sequence. Only applicable for Outreach when adding steps one at a time after the initial sequence creation, otherwise when creating steps together with sequence order is implicit based on the order of step within the step array. Salesloft does not use the `order` param, and order is instead determined by `interval_seconds` which translates into the `day` parameter */
+      order?: number;
       /**
        * @description The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.
        *  
