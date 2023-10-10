@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.16.8
+  version: 0.16.9
   title: Actions API
   contact:
     name: Supaglue
