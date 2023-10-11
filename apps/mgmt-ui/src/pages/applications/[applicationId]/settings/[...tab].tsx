@@ -34,7 +34,7 @@ export default function Home(props: SupaglueProps) {
   const { tab = [] } = router.query;
   const [value, setValue] = React.useState(0);
   const activeApplicationId = useActiveApplicationId();
-  const enableWebhooksTab = !!process.env.NEXT_PUBLIC_SVIX_API_TOKEN;
+  const enableWebhooksTab = !!props.SVIX_API_TOKEN;
 
   React.useEffect(() => {
     const tabIndex = settingsHeaderTabs.findIndex((settingsHeaderTab) => settingsHeaderTab.value === tab[0]);
@@ -73,7 +73,7 @@ export default function Home(props: SupaglueProps) {
       <TabContainer>
         {enableWebhooksTab ? (
           <TabPanel value={value} index={0} className="w-full">
-            <WebhookTabPanel applicationId={activeApplicationId} />
+            <WebhookTabPanel applicationId={activeApplicationId} svixApiToken={props.SVIX_API_TOKEN} />
           </TabPanel>
         ) : null}
         <TabPanel value={value} index={1} className="w-full">

@@ -7,7 +7,7 @@ import { type GetServerSideProps } from 'next';
 import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { useState } from 'react';
-import { API_HOST, IS_CLOUD, LEKKO_API_KEY } from '../../api';
+import { API_HOST, IS_CLOUD, LEKKO_API_KEY, SVIX_API_TOKEN } from '../../api';
 
 //
 // Lekkodefaults
@@ -42,6 +42,7 @@ export type PublicEnvProps = {
   IS_CLOUD: boolean;
   CLERK_ACCOUNT_URL: string;
   CLERK_ORGANIZATION_URL: string;
+  SVIX_API_TOKEN?: string;
   lekko: {
     homeCtaButtonConfig: HomeCtaButton;
     entitiesWhitelistConfig: EntitiesWhitelist;
@@ -128,6 +129,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
       IS_CLOUD,
       CLERK_ACCOUNT_URL,
       CLERK_ORGANIZATION_URL,
+      SVIX_API_TOKEN,
       lekko: { homeCtaButtonConfig, entitiesWhitelistConfig, schemasWhitelistConfig },
     },
   };

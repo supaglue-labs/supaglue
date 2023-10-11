@@ -6,13 +6,19 @@ import { AppPortal } from 'svix-react';
 import 'svix-react/style.css';
 import Spinner from '../Spinner';
 
-export default function WebhookTabPanel({ applicationId }: { applicationId: string }) {
+export default function WebhookTabPanel({
+  applicationId,
+  svixApiToken,
+}: {
+  applicationId: string;
+  svixApiToken?: string;
+}) {
   const [svixDashboardUrl, setSvixDashboardUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const getDashboardUrl = async () => {
-      if (process.env.NEXT_PUBLIC_SVIX_API_TOKEN) {
-        const svix = new Svix(process.env.NEXT_PUBLIC_SVIX_API_TOKEN as string, {
+      if (svixApiToken) {
+        const svix = new Svix(svixApiToken, {
           serverUrl: process.env.NEXT_PUBLIC_SVIX_SERVER_URL,
         });
         const dashboardUrl = (await svix.authentication.appPortalAccess(applicationId, {})).url;
