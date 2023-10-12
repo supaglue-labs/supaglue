@@ -33,8 +33,8 @@ export default function Home(props: SupaglueProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { tab = [] } = router.query;
   const [value, setValue] = React.useState(0);
-  const { svixDashboardUrl } = props;
   const activeApplicationId = useActiveApplicationId();
+  const enableWebhooksTab = !!props.SVIX_API_TOKEN;
 
   React.useEffect(() => {
     const tabIndex = settingsHeaderTabs.findIndex((settingsHeaderTab) => settingsHeaderTab.value === tab[0]);
@@ -51,7 +51,7 @@ export default function Home(props: SupaglueProps) {
         {...props}
         tabs={
           <Tabs value={value} textColor="inherit">
-            {svixDashboardUrl ? (
+            {enableWebhooksTab ? (
               <Tab
                 label="Webhooks"
                 onClick={async () => {
@@ -71,9 +71,9 @@ export default function Home(props: SupaglueProps) {
         onDrawerToggle={handleDrawerToggle}
       />
       <TabContainer>
-        {svixDashboardUrl ? (
+        {enableWebhooksTab ? (
           <TabPanel value={value} index={0} className="w-full">
-            <WebhookTabPanel svixDashboardUrl={svixDashboardUrl} />
+            <WebhookTabPanel applicationId={activeApplicationId} svixApiToken={props.SVIX_API_TOKEN} />
           </TabPanel>
         ) : null}
         <TabPanel value={value} index={1} className="w-full">
