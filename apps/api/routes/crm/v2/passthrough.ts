@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { addLogContext } from '@supaglue/core/lib/logger';
 import type {
   SendPassthroughRequestPathParams,
   SendPassthroughRequestRequest,
@@ -20,6 +21,12 @@ export default function init(app: Router): void {
       res: Response<SendPassthroughRequestResponse>
     ) => {
       const response = await passthroughService.send(req.customerConnection.id, req.body);
+      addLogContext('passthrough', {
+        method: req.body.method,
+        path: req.body.path,
+        headers: req.body.headers,
+        query: req.body.query,
+      });
       return res.status(200).send(response);
     }
   );
