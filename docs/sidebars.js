@@ -104,8 +104,9 @@ const sidebars = {
           type: 'doc',
         },
         {
+          // TODO: rename the url to standard-objects
           id: 'platform/objects/overview',
-          label: 'Objects',
+          label: 'Standard Objects',
           type: 'doc',
         },
       ],
