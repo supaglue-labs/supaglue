@@ -37,7 +37,7 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
-import { getCommonObjectSchemaSetupSql, getSsl, logger, SCHEMAS_OR_ENTITIES_APPLICATION_IDS } from '../lib';
+import { getCommonObjectSchemaSetupSql, getSsl, logger, omit, SCHEMAS_OR_ENTITIES_APPLICATION_IDS } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import {
@@ -109,7 +109,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
         _supaglue_provider_name: providerName,
         _supaglue_customer_id: customerId,
         _supaglue_emitted_at: new Date(),
-        _supaglue_unified_data: unifiedData,
+        _supaglue_unified_data: omit(unifiedData, ['raw_data']),
         ...unifiedData,
       };
 
@@ -220,7 +220,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 _supaglue_provider_name: providerName,
                 _supaglue_customer_id: customerId,
                 _supaglue_emitted_at: emittedAt,
-                _supaglue_unified_data: unifiedData,
+                _supaglue_unified_data: omit(unifiedData, ['raw_data']),
                 ...unifiedData,
               };
 

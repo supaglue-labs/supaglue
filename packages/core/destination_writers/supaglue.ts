@@ -24,6 +24,7 @@ import {
   getPgPool,
   getSchemaName,
   logger,
+  omit,
   sanitizeForPostgres,
 } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
@@ -143,7 +144,7 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
                 _supaglue_provider_name: providerName,
                 _supaglue_customer_id: customerId,
                 _supaglue_emitted_at: emittedAt,
-                _supaglue_unified_data: unifiedData,
+                _supaglue_unified_data: omit(unifiedData, ['raw_data']),
                 ...unifiedData,
               };
 
