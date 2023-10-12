@@ -103,12 +103,14 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
 
       const mapper = getSnakecasedKeysMapper(category, commonObjectType);
 
+      const unifiedData = mapper(record);
       const mappedRecord = {
         _supaglue_application_id: applicationId,
         _supaglue_provider_name: providerName,
         _supaglue_customer_id: customerId,
         _supaglue_emitted_at: new Date(),
-        ...mapper(record),
+        _supaglue_unified_data: unifiedData,
+        ...unifiedData,
       };
 
       const columnsStr = columns.join(',');
@@ -212,12 +214,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
           transform: (chunk, encoding, callback) => {
             try {
               const { record, emittedAt } = chunk;
+              const unifiedData = mapper(record);
               const mappedRecord = {
                 _supaglue_application_id: applicationId,
                 _supaglue_provider_name: providerName,
                 _supaglue_customer_id: customerId,
                 _supaglue_emitted_at: emittedAt,
-                ...mapper(record),
+                _supaglue_unified_data: unifiedData,
+                ...unifiedData,
               };
 
               ++tempTableRowCount;
