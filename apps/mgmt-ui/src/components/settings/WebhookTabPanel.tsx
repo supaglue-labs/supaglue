@@ -1,8 +1,38 @@
 import { Box } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { Svix } from 'svix';
 import { AppPortal } from 'svix-react';
 
 import 'svix-react/style.css';
-export default function WebhookTabPanel({ svixDashboardUrl }: { svixDashboardUrl: string }) {
+import Spinner from '../Spinner';
+
+export default function WebhookTabPanel({
+  applicationId,
+  svixApiToken,
+}: {
+  applicationId: string;
+  svixApiToken?: string;
+}) {
+  const [svixDashboardUrl, setSvixDashboardUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const getDashboardUrl = async () => {
+      if (svixApiToken) {
+        const svix = new Svix(svixApiToken, {
+          serverUrl: process.env.NEXT_PUBLIC_SVIX_SERVER_URL,
+        });
+        const dashboardUrl = (await svix.authentication.appPortalAccess(applicationId, {})).url;
+        setSvixDashboardUrl(dashboardUrl);
+      }
+    };
+
+    void getDashboardUrl();
+  }, [applicationId]);
+
+  if (!svixDashboardUrl) {
+    return <Spinner />;
+  }
+
   return (
     <Box
       sx={{

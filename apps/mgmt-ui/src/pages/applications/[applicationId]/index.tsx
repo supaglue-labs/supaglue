@@ -7,8 +7,7 @@ import { type GetServerSideProps } from 'next';
 import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { useState } from 'react';
-import { Svix } from 'svix';
-import { API_HOST, IS_CLOUD, LEKKO_API_KEY } from '../../api';
+import { API_HOST, IS_CLOUD, LEKKO_API_KEY, SVIX_API_TOKEN } from '../../api';
 
 //
 // Lekkodefaults
@@ -43,6 +42,7 @@ export type PublicEnvProps = {
   IS_CLOUD: boolean;
   CLERK_ACCOUNT_URL: string;
   CLERK_ORGANIZATION_URL: string;
+  SVIX_API_TOKEN?: string;
   lekko: {
     homeCtaButtonConfig: HomeCtaButton;
     entitiesWhitelistConfig: EntitiesWhitelist;
@@ -50,9 +50,8 @@ export type PublicEnvProps = {
   };
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ req, res, query, resolvedUrl }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, res, resolvedUrl }) => {
   let session: Session | null = null;
-  const applicationId = query.applicationId as string;
 
   if (!IS_CLOUD) {
     session = await getServerSession(req, res, authOptions);
@@ -75,12 +74,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
         },
       };
     }
-  }
-
-  let svixDashboardUrl: string | null = null;
-  if (process.env.SVIX_API_TOKEN) {
-    const svix = new Svix(process.env.SVIX_API_TOKEN, { serverUrl: process.env.SVIX_SERVER_URL });
-    svixDashboardUrl = (await svix.authentication.appPortalAccess(applicationId, {})).url;
   }
 
   // Lekko defaults
@@ -131,12 +124,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, query, 
     props: {
       session,
       signedIn: true,
-      svixDashboardUrl,
       ...buildClerkProps(req),
       API_HOST,
       IS_CLOUD,
       CLERK_ACCOUNT_URL,
       CLERK_ORGANIZATION_URL,
+      SVIX_API_TOKEN,
       lekko: { homeCtaButtonConfig, entitiesWhitelistConfig, schemasWhitelistConfig },
     },
   };
