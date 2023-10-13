@@ -90,8 +90,13 @@ export class ManagedDataService {
       const result = await client.query<T>(
         getSql(qualifiedTable, applicationId, customerId, providerName, objectType, pageSize + 1, cursor, modifiedAfter)
       );
+      const records = result.rows.map(({ _supaglue_unified_data, ...row }) => ({
+        ...row,
+        // Hoist the unified data up to top level
+        ...(_supaglue_unified_data ?? {}),
+      })) as T[];
       return getPaginatedSupaglueRecords<T>(
-        result.rows,
+        records,
         parseInt(total),
         pageSize,
         objectType === 'common' ? 'id' : '_supaglue_id',
