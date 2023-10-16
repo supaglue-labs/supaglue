@@ -1,0 +1,38 @@
+type: object
+properties:
+  id:
+    type: string
+    example: 42579f73-8524-4570-9b67-ecbd702c6b14
+  name:
+    type: string
+    example: ticket
+  description:
+    type: string
+    nullable: true
+    example: Ticket object
+  labels:
+    type: object
+    properties:
+      singular:
+        type: string
+        example: Ticket
+      plural:
+        type: string
+        example: Tickets
+    required:
+      - singular
+      - plural
+  fields:
+    type: array
+    items:
+      $ref: ./custom_object_field.yaml
+  raw_data:
+    type: object
+    description: The raw data returned by the provider.
+    additionalProperties: true    
+required:
+  - id
+  - name
+  - description
+  - labels
+  - fields
