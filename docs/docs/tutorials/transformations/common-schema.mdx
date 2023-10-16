@@ -3,7 +3,7 @@ import TabItem from '@theme/TabItem';
 
 # Common schema
 
-Suppose your application integrates with multiple third-party [Providers](../../integration-patterns/managed-syncs#provider) in one category, like Salesforce, Hubspot, and Pipedrive in CRM. In that case, you likely want to read their data in a unified way. For example, for reading contacts from these CRMs, use one table in your database instead of three tables.
+Suppose your application integrates with multiple third-party [Providers](../../integration-patterns/managed-syncs#provider) in one category, like Salesforce, HubSpot, and Pipedrive in CRM. In that case, you likely want to read their data in a unified way. For example, for reading contacts from these CRMs, use one table in your database instead of three tables.
 
 This tutorial will teach you how to structure your transformation code and how to build a common schema using Salesforce as an example.
 
@@ -19,7 +19,7 @@ We also will use the following technologies:
 
 ## Scenario
 
-Our example application has the concepts of users, opportunities, leads, accounts, and contacts and you want to create a table for each to store data from Salesforce, Hubspot, and Pipedrive. The schemas for these models (using Prisma syntax) look like the following:
+Our example application has the concepts of users, opportunities, leads, accounts, and contacts and you want to create a table for each to store data from Salesforce, HubSpot, and Pipedrive. The schemas for these models (using Prisma syntax) look like the following:
 
 <Tabs>
 

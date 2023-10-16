@@ -4,13 +4,13 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Association Bridge Tables
 
-This tutorial will show how to populate bridge tables between your database tables when syncing records from Supaglue-managed tables. We'll use Hubspot Contacts and Deals as an example.
+This tutorial will show how to populate bridge tables between your database tables when syncing records from Supaglue-managed tables. We'll use HubSpot Contacts and Deals as an example.
 
 ## Prerequisites
 
 This tutorial assumes you have gone through Supaglue's [Quickstart](../../quickstart) and will use the following technologies:
 
-- Hubspot
+- HubSpot
 - NextJS
 - Prisma
 
@@ -27,7 +27,7 @@ In your application, you may have chosen to normalize your database tables, and 
   }}
 />
 
-Some third-party providers, like Hubspot, do not expose their data in a many-to-many way. For example, Hubspot's Contacts and Deals are separate objects and return (one-to-many) associations as member fields on the objects themselves.
+Some third-party providers, like HubSpot, do not expose their data in a many-to-many way. For example, HubSpot's Contacts and Deals are separate objects and return (one-to-many) associations as member fields on the objects themselves.
 
 <ThemedImage
   alt="hubspot associations"
@@ -38,7 +38,7 @@ Some third-party providers, like Hubspot, do not expose their data in a many-to-
   }}
 />
 
-This tutorial will review how to sync associations from third-party providers like Hubspot into your database.
+This tutorial will review how to sync associations from third-party providers like HubSpot into your database.
 
 ## Write objects and associations
 
@@ -46,8 +46,8 @@ We will go over how to do the following:
 
 1. Listen for Supaglue's `sync.complete` webhook event to trigger a workflow
 2. Write Supaglue's data into three tables:
-   - `contacts` table containing transformed Hubspot Contacts data
-   - `deals` table containing transformed Hubspot Deals data
+   - `contacts` table containing transformed HubSpot Contacts data
+   - `deals` table containing transformed HubSpot Deals data
    - `contacts_deals` table, which acts as a bridge table for the many-to-many relationship
 3. (Optional) Reconcile the bridge table entries to write foreign keys between `contacts_deals` and `contacts`/`deals` tables
 
@@ -57,8 +57,8 @@ The bridge table will contain the following columns:
 | --------------------- | --------------------------------------------------------------------------------------------------- |
 | `customer_id`         | The unique ID for the customer whose data you are syncing                                           |
 | `provider_name`       | `hubspot`                                                                                           |
-| `supaglue_contact_id` | The original ID in the remote provider (Hubspot)                                                    |
-| `supaglue_deal_id`    | The original ID in the remote provider (Hubspot)                                                    |
+| `supaglue_contact_id` | The original ID in the remote provider (HubSpot)                                                    |
+| `supaglue_deal_id`    | The original ID in the remote provider (HubSpot)                                                    |
 | `contact_id`          | The ID your application has assigned to this contact, used as a Foreign Key to the `contacts` table |
 | `deal_id`             | The ID your application has assigned to this deal, used as a Foreign Key to the `deals` table       |
 | `last_modified_at`    | The timestamp this row was last modified                                                            |

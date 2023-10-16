@@ -45,7 +45,7 @@ Let's view the two collections we will work with. In this tutorial, we'll be usi
 }
 ```
 
-- `entityId`: your customer's opportunity ID in their third-party Provider (e.g. Hubspot). This is the opportunity join key.
+- `entityId`: your customer's opportunity ID in their third-party Provider (e.g. HubSpot). This is the opportunity join key.
 - `userId`: your customer's ID.
 
 ### Supaglue's collection
