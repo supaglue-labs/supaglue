@@ -120,12 +120,6 @@ components:
       $ref: ./components/schemas/objects/list_membership.yaml
     create_update_opportunity:
       $ref: ./components/schemas/create_update_opportunity.yaml
-    association_cardinality_or_unknown:
-      $ref: ./components/schemas/objects/association_cardinality_or_unknown.yaml
-    association_cardinality:
-      $ref: ./components/schemas/objects/association_cardinality.yaml
-    association_cardinality_schema:
-      $ref: ./components/schemas/objects/association_schema.yaml
     custom_object_schema:
       $ref: ./components/schemas/objects/custom_object_schema.yaml
     custom_object_field:

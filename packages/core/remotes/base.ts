@@ -12,7 +12,7 @@ import type {
   ObjectAssociation,
   ObjectAssociationCreateParams,
 } from '@supaglue/types/association';
-import type { AssociationCardinality, SimpleAssociationSchema } from '@supaglue/types/association_schema';
+import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
 import type { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
@@ -45,8 +45,7 @@ export interface RemoteClient {
     sourceObject: string,
     targetObject: string,
     keyName: string,
-    displayName: string,
-    cardinality: AssociationCardinality
+    displayName: string
   ): Promise<void>;
 
   listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]>;
@@ -139,8 +138,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     sourceObject: string,
     targetObject: string,
     keyName: string,
-    displayName: string,
-    cardinality: AssociationCardinality
+    displayName: string
   ): Promise<void> {
     throw new Error('Not implemented');
   }

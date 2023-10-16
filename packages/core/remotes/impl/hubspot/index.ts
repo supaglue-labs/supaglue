@@ -25,7 +25,7 @@ import type {
   ObjectAssociation,
   ObjectAssociationCreateParams,
 } from '@supaglue/types/association';
-import type { AssociationCardinality, SimpleAssociationSchema } from '@supaglue/types/association_schema';
+import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
 import type {
   Account,
   AccountCreateParams,
@@ -99,7 +99,6 @@ import {
   fromHubSpotContactToContact_v2,
   fromHubSpotDealToOpportunity,
   fromHubspotOwnerToUser,
-  fromObjectToHubspotObjectType,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
   toHubspotContactCreateParams,
@@ -2027,19 +2026,15 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     });
   }
 
-  public async listAssociationTypes(
-    sourceObject: StandardOrCustomObject,
-    targetObject: StandardOrCustomObject
+  public override async listAssociationSchemas(
+    sourceObject: string,
+    targetObject: string
   ): Promise<SimpleAssociationSchema[]> {
     await this.maybeRefreshAccessToken();
-    const response = await this.#client.crm.associations.v4.schema.definitionsApi.getAll(
-      fromObjectToHubspotObjectType(sourceObject),
-      fromObjectToHubspotObjectType(targetObject)
-    );
+    const response = await this.#client.crm.associations.v4.schema.definitionsApi.getAll(sourceObject, targetObject);
     return response.results.map((result) => ({
       id: result.typeId.toString(),
       displayName: result.label ?? '',
-      cardinality: 'UNKNOWN',
     }));
   }
 
@@ -2047,12 +2042,8 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     sourceObject: string,
     targetObject: string,
     keyName: string,
-    displayName: string,
-    cardinality: AssociationCardinality
+    displayName: string
   ): Promise<void> {
-    if (cardinality !== 'ONE_TO_MANY') {
-      throw new BadRequestError('Only ONE_TO_MANY cardinality is supported in HubSpot');
-    }
     await this.maybeRefreshAccessToken();
     await this.#client.crm.associations.v4.schema.definitionsApi.create(sourceObject, targetObject, {
       label: displayName,

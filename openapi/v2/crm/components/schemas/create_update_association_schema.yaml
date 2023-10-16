@@ -8,11 +8,8 @@ properties:
     type: string
   display_name:
     type: string
-  cardinality:
-    $ref: ./objects/association_cardinality.yaml
 required:
   - source_object
   - target_object
   - suggested_key_name
   - display_name
-  - cardinality

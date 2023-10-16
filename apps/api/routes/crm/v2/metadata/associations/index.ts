@@ -55,7 +55,6 @@ export default function init(app: Router): void {
         targetObject: req.body.target_object,
         keyName: req.body.suggested_key_name,
         displayName: req.body.display_name,
-        cardinality: req.body.cardinality,
       });
       return res.status(201).send();
     }

@@ -678,19 +678,6 @@ export interface components {
       pipeline?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
-    /** @enum {string} */
-    association_cardinality_or_unknown: "ONE_TO_MANY" | "UNKNOWN";
-    /** @enum {string} */
-    association_cardinality: "ONE_TO_MANY";
-    association_cardinality_schema: {
-      id: string;
-      /** @example contact */
-      source_object: string;
-      /** @example my_custom_object */
-      target_object: string;
-      display_name: string;
-      cardinality: components["schemas"]["association_cardinality_or_unknown"];
-    };
     custom_object_schema: {
       /** @example ticket */
       name: string;
@@ -862,7 +849,6 @@ export interface components {
       target_object: string;
       suggested_key_name: string;
       display_name: string;
-      cardinality: components["schemas"]["association_cardinality"];
     };
     create_update_association: {
       association_schema_id: string;
@@ -1849,7 +1835,14 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            results?: (components["schemas"]["association_cardinality_schema"])[];
+            results?: ({
+                id: string;
+                /** @example contact */
+                source_object: string;
+                /** @example my_custom_object */
+                target_object: string;
+                display_name: string;
+              })[];
           };
         };
       };

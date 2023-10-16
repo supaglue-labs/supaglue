@@ -72,7 +72,6 @@ export class MetadataService {
     return res.map((associationSchema) => ({
       id: associationSchema.id,
       displayName: associationSchema.displayName,
-      cardinality: associationSchema.cardinality,
       sourceObject,
       targetObject,
     }));
@@ -84,8 +83,7 @@ export class MetadataService {
       params.sourceObject,
       params.targetObject,
       params.keyName,
-      params.displayName,
-      params.cardinality
+      params.displayName
     );
   }
 }

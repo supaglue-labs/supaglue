@@ -1820,7 +1820,29 @@
                     "results": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/association_cardinality_schema"
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "source_object": {
+                            "type": "string",
+                            "example": "contact"
+                          },
+                          "target_object": {
+                            "type": "string",
+                            "example": "my_custom_object"
+                          },
+                          "display_name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "source_object",
+                          "target_object",
+                          "display_name"
+                        ]
                       }
                     }
                   }
@@ -3130,48 +3152,6 @@
           }
         }
       },
-      "association_cardinality_or_unknown": {
-        "type": "string",
-        "enum": [
-          "ONE_TO_MANY",
-          "UNKNOWN"
-        ]
-      },
-      "association_cardinality": {
-        "type": "string",
-        "enum": [
-          "ONE_TO_MANY"
-        ]
-      },
-      "association_cardinality_schema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "source_object": {
-            "type": "string",
-            "example": "contact"
-          },
-          "target_object": {
-            "type": "string",
-            "example": "my_custom_object"
-          },
-          "display_name": {
-            "type": "string"
-          },
-          "cardinality": {
-            "$ref": "#/components/schemas/association_cardinality_or_unknown"
-          }
-        },
-        "required": [
-          "id",
-          "source_object",
-          "target_object",
-          "display_name",
-          "cardinality"
-        ]
-      },
       "custom_object_schema": {
         "type": "object",
         "properties": {
@@ -3605,17 +3585,13 @@
           },
           "display_name": {
             "type": "string"
-          },
-          "cardinality": {
-            "$ref": "#/components/schemas/association_cardinality"
           }
         },
         "required": [
           "source_object",
           "target_object",
           "suggested_key_name",
-          "display_name",
-          "cardinality"
+          "display_name"
         ]
       },
       "create_update_association": {

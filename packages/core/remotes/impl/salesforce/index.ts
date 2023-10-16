@@ -20,7 +20,7 @@ import type {
   ObjectAssociation,
   ObjectAssociationCreateParams,
 } from '@supaglue/types/association';
-import type { AssociationCardinality, SimpleAssociationSchema } from '@supaglue/types/association_schema';
+import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
 import type {
   Account,
   AccountCreateParams,
@@ -858,7 +858,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public async listAssociationSchemas(sourceObject: string, targetObject: string): Promise<SimpleAssociationSchema[]> {
+  public override async listAssociationSchemas(
+    sourceObject: string,
+    targetObject: string
+  ): Promise<SimpleAssociationSchema[]> {
     const metadata = await this.#client.describe(sourceObject);
 
     const associationSchemaFields = metadata.fields.filter(
@@ -870,7 +873,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       sourceObject,
       targetObject,
       displayName: field.label ?? '',
-      cardinality: 'UNKNOWN',
     }));
   }
 
@@ -878,13 +880,8 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     sourceObject: string,
     targetObject: string,
     keyName: string,
-    displayName: string,
-    cardinality: AssociationCardinality
+    displayName: string
   ): Promise<void> {
-    if (cardinality !== 'ONE_TO_MANY') {
-      throw new BadRequestError('Only ONE_TO_MANY cardinality is supported in Salesforce');
-    }
-
     // if keyName doesn't end with __c, we need to add it ourselves
     if (!keyName.endsWith('__c')) {
       keyName = `${keyName}__c`;
