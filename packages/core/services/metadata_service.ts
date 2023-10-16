@@ -1,10 +1,5 @@
-import type { AssociationType, AssociationTypeCreateParams } from '@supaglue/types/association_type';
-import type {
-  CustomObject,
-  CustomObjectCreateParams,
-  CustomObjectUpdateParams,
-  SimpleCustomObject,
-} from '@supaglue/types/custom_object';
+import type { AssociationSchema, AssociationSchemaCreateParams } from '@supaglue/types/association_schema';
+import type { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/custom_object';
 import type { ConnectionService } from '.';
 import { remoteDuration } from '../lib/metrics';
 import type { RemoteService } from './remote_service';
@@ -28,7 +23,7 @@ export class MetadataService {
     return result;
   }
 
-  public async listCustomObjects(connectionId: string): Promise<SimpleCustomObject[]> {
+  public async listCustomObjects(connectionId: string): Promise<string[]> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'list' });
@@ -66,45 +61,28 @@ export class MetadataService {
     end();
   }
 
-  public async getAssociationTypes(
+  public async getAssociationSchemas(
     connectionId: string,
-    sourceEntityId: string,
-    targetEntityId: string
-  ): Promise<AssociationType[]> {
+    sourceObject: string,
+    targetObject: string
+  ): Promise<AssociationSchema[]> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
     // TODO: We should only need to fetch the connection once, not twice
-    const { object: sourceObject } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
-      connectionId,
-      sourceEntityId
-    );
-    const { object: targetObject } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
-      connectionId,
-      targetEntityId
-    );
-    const res = await remoteClient.listAssociationTypes(sourceObject, targetObject);
-    return res.map((associationType) => ({
-      id: associationType.id,
-      displayName: associationType.displayName,
-      cardinality: associationType.cardinality,
-      sourceEntityId,
-      targetEntityId,
+    const res = await remoteClient.listAssociationSchemas(sourceObject, targetObject);
+    return res.map((associationSchema) => ({
+      id: associationSchema.id,
+      displayName: associationSchema.displayName,
+      cardinality: associationSchema.cardinality,
+      sourceObject,
+      targetObject,
     }));
   }
 
-  public async createAssociationType(connectionId: string, params: AssociationTypeCreateParams): Promise<void> {
+  public async createAssociationSchema(connectionId: string, params: AssociationSchemaCreateParams): Promise<void> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
-    // TODO: we should only need to fetch the connection once, not twice
-    const { object: sourceObject } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
-      connectionId,
-      params.sourceEntityId
-    );
-    const { object: targetObject } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
-      connectionId,
-      params.targetEntityId
-    );
-    await remoteClient.createAssociationType(
-      sourceObject,
-      targetObject,
+    await remoteClient.createAssociationSchema(
+      params.sourceObject,
+      params.targetObject,
       params.keyName,
       params.displayName,
       params.cardinality

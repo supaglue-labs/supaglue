@@ -1,6 +1,6 @@
 get:
   operationId: getCustomObject
-  summary: Get customObject
+  summary: Get Custom Object Details
   tags:
     - CustomObjects
   security:

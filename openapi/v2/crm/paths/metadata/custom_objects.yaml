@@ -14,7 +14,7 @@ get:
           schema:
             type: array
             items:
-              $ref: ../../components/schemas/objects/simple_custom_object.yaml
+              type: string
 post:
   operationId: createCustomObject
   summary: Create customObject

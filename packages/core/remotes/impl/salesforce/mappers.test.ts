@@ -807,7 +807,6 @@ describe('Salesforce Mappers', () => {
       } as DescribeSObjectResult;
 
       const expectedOutput = {
-        id: 'TestFullName',
         name: 'TestFullName',
         description: null,
         labels: {

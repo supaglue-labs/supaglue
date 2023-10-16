@@ -1914,7 +1914,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/simple_custom_object"
+                    "type": "string"
                   }
                 }
               }
@@ -1996,7 +1996,7 @@
     "/metadata/custom_objects/{object_name}": {
       "get": {
         "operationId": "getCustomObject",
-        "summary": "Get customObject",
+        "summary": "Get Custom Object Details",
         "tags": [
           "CustomObjects"
         ],

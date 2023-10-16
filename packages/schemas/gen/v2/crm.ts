@@ -295,7 +295,7 @@ export interface paths {
     };
   };
   "/metadata/custom_objects/{object_name}": {
-    /** Get customObject */
+    /** Get Custom Object Details */
     get: operations["getCustomObject"];
     /** Update customObject */
     put: operations["updateCustomObject"];
@@ -1895,7 +1895,7 @@ export interface operations {
       /** @description CustomObject */
       200: {
         content: {
-          "application/json": (components["schemas"]["simple_custom_object"])[];
+          "application/json": (string)[];
         };
       };
     };
@@ -1930,7 +1930,7 @@ export interface operations {
       };
     };
   };
-  /** Get customObject */
+  /** Get Custom Object Details */
   getCustomObject: {
     parameters: {
       header: {

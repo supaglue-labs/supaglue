@@ -12,13 +12,8 @@ import type {
   ObjectAssociation,
   ObjectAssociationCreateParams,
 } from '@supaglue/types/association';
-import type { AssociationTypeCardinality, SimpleAssociationType } from '@supaglue/types/association_type';
-import type {
-  CustomObject,
-  CustomObjectCreateParams,
-  CustomObjectUpdateParams,
-  SimpleCustomObject,
-} from '@supaglue/types/custom_object';
+import type { AssociationCardinality, SimpleAssociationSchema } from '@supaglue/types/association_schema';
+import type { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import axios from 'axios';
@@ -40,21 +35,18 @@ export interface RemoteClient {
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
   listStandardObjects(): Promise<string[]>;
-  listCustomObjects(): Promise<SimpleCustomObject[]>;
+  listCustomObjects(): Promise<string[]>;
   getCustomObject(id: string): Promise<CustomObject>;
   createCustomObject(params: CustomObjectCreateParams): Promise<string>;
   updateCustomObject(params: CustomObjectUpdateParams): Promise<void>;
 
-  listAssociationTypes(
-    sourceObject: StandardOrCustomObject,
-    targetObject: StandardOrCustomObject
-  ): Promise<SimpleAssociationType[]>;
-  createAssociationType(
-    sourceObject: StandardOrCustomObject,
-    targetObject: StandardOrCustomObject,
+  listAssociationSchemas(sourceObject: string, targetObject: string): Promise<SimpleAssociationSchema[]>;
+  createAssociationSchema(
+    sourceObject: string,
+    targetObject: string,
     keyName: string,
     displayName: string,
-    cardinality: AssociationTypeCardinality
+    cardinality: AssociationCardinality
   ): Promise<void>;
 
   listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]>;
@@ -127,7 +119,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   public async listStandardObjects(): Promise<string[]> {
     throw new Error('Not implemented');
   }
-  public async listCustomObjects(): Promise<SimpleCustomObject[]> {
+  public async listCustomObjects(): Promise<string[]> {
     throw new Error('Not implemented');
   }
   public async getCustomObject(id: string): Promise<CustomObject> {
@@ -140,18 +132,15 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new Error('Not implemented');
   }
 
-  public async listAssociationTypes(
-    sourceObject: StandardOrCustomObject,
-    targetObject: StandardOrCustomObject
-  ): Promise<SimpleAssociationType[]> {
+  public async listAssociationSchemas(sourceObject: string, targetObject: string): Promise<SimpleAssociationSchema[]> {
     throw new Error('Not implemented');
   }
-  public async createAssociationType(
-    sourceObject: StandardOrCustomObject,
-    targetObject: StandardOrCustomObject,
+  public async createAssociationSchema(
+    sourceObject: string,
+    targetObject: string,
     keyName: string,
     displayName: string,
-    cardinality: AssociationTypeCardinality
+    cardinality: AssociationCardinality
   ): Promise<void> {
     throw new Error('Not implemented');
   }

@@ -1,3 +1,4 @@
+import { getDependencyContainer } from '@/dependency_container';
 import type {
   CreateCustomObjectPathParams,
   CreateCustomObjectRequest,
@@ -11,10 +12,9 @@ import type {
   UpdateCustomObjectPathParams,
   UpdateCustomObjectRequest,
   UpdateCustomObjectResponse,
-} from '@/../../packages/schemas/v2/crm';
-import { camelcaseKeys } from '@/../../packages/utils/camelcase';
-import { snakecaseKeys } from '@/../../packages/utils/snakecase';
-import { getDependencyContainer } from '@/dependency_container';
+} from '@supaglue/schemas/v2/crm';
+import { camelcaseKeys } from '@supaglue/utils/camelcase';
+import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 

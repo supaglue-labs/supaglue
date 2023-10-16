@@ -478,6 +478,5 @@ export const toCustomObject = (salesforceCustomObject: DescribeSObjectResult): C
           };
         }),
     ],
-    rawData: salesforceCustomObject,
   };
 };
