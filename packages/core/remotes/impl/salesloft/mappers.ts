@@ -35,6 +35,7 @@ export const fromSalesloftPersonToContact = (record: Record<string, any>): Conta
     firstName: record.first_name ?? null,
     lastName: record.last_name ?? null,
     jobTitle: record.title ?? null,
+    companyName: record.person_company_name ?? null,
     address: {
       street1: null,
       street2: null,
@@ -168,6 +169,7 @@ export const toSalesloftContactCreateParams = (contact: ContactCreateParams): Re
     city: contact.address?.city,
     state: contact.address?.state,
     country: contact.address?.country,
+    person_company_name: contact.companyName,
     email_address: contact.emailAddresses?.find((e) => e.emailAddressType === 'primary')?.emailAddress,
     personal_email_address: contact.emailAddresses?.find((e) => e.emailAddressType === 'personal')?.emailAddress,
     phone: contact.phoneNumbers?.find((e) => e.phoneNumberType === 'primary')?.phoneNumber,

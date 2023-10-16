@@ -120,6 +120,7 @@ export const fromOutreachProspectToContact = (record: OutreachRecord): Contact =
     firstName: (attributes.firstName as string) ?? null,
     lastName: (attributes.lastName as string) ?? null,
     jobTitle: (attributes.title as string) ?? null,
+    companyName: (attributes.company as string) ?? null,
     address: {
       street1: (attributes.addressStreet as string) ?? null,
       street2: (attributes.addressStreet2 as string) ?? null,
@@ -232,11 +233,13 @@ export const toOutreachProspectCreateParams = ({
   customFields,
   ownerId,
   accountId,
+  companyName,
 }: ContactCreateParams): Record<string, any> => {
   const attributes = {
     firstName,
     lastName,
     title: jobTitle,
+    company: companyName,
     ...toOutreachProspectAddressParams(address),
     ...toOutreachProspectEmailParams(emailAddresses),
     ...toOutreachProspectPhoneNumbers(phoneNumbers),
