@@ -1,0 +1,49 @@
+---
+id: get-user
+title: "Get user"
+description: "The common schema User maps to the following 3rd-party provider objects:"
+sidebar_label: "Get user"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVm1P40YQ/itb9wtIOAmBozSqqtJeRdG1KuLlri2gsLEnyd7Zu759SXCD/3tn1nbivOqOa781QkB2n5155n1mgcpAcyuUvIiDXjACe2tABwdBDCbSIqMbPL8ZA4tUmirJTDSGlDOCsZRnhlnFLF4PVZKoqZAjdqTjMOPa5izTaiJiBKrBe4is6d3Le/nMLutj9syuIFUWKgC7eE1nhAnrD2v83zgjzC9uYDJlGb15e8R+n0qSWX9KzOtc8lREhr6f/e00sOvcWEhLA0rMhbSg0TyPiVMhWfPzfC/RH5aPTNC7C+iZCR4OAgOR08LmeDgLnkKeifAD0LeHAm/Rfp6CJSzdIwdANwoZJS6GvubTfswtR7mC3PvRgc7xS+nboDcLbJ7Rg4FSCXDSD088zRI8s9pBsRqfd2PAGGiKRaWDoQ5GOtgQLIqN2VCjhRQpjA9bjk8rKA7mJJ/CyBmrUtChiGuGY+Cxz4s1isZqDHqTYZDmCxGHwRpZn0zVPUXcjrllTgr0QpIz5COtGAownuwciFHJldOMZ1kiIp+yqFTDRyc0xLVfGlbUxoX+5CV2GJ6AGSodwWYj5uldadhKxmHS9BfOzLgdr8E/jVKn++o0GkQn4Umn2wmPjzo8PD0+hZDzIY8GPB4ecyRLGagBa0MaMCSw2+nQn2UTqkqPFKa/tHTf8G37vSHQbJ1VWar4EM3H5mFFqQLN28X81fHRYRe9WHpkHShdkvBBneBNk89B6RGwPwiHApCMSD5PwshL+MG4jI8SBy0sdZIkTJ9HVkxgY8Eti0N4pIFbiPvcfop2TJuUkAHWIIRW+ARZUOp2ut2w0w2739x0Oj3/8xdxcln83ytBw2NIsDvFu1vNkCeGLE+4sf1UxVSV26i9iErRLIK7wFdIVUtlmJtBWorAkqeWLNpAF6vBCpvUlYh6C1KN/XmsqqlH6UxV2QvaBDHtWVWzBfUK0JO6kzudUBuxNjO9dhu7fmueVkK1I522J9218XldQdjZ5UVQNIbHNRVXWT+NETL3Lp68gbx2Sq+BWW1ny/pQDUMUjQNOU5nFMIGEqtWPax5FYMr26glRSsihIsVkZymj0zo8aX0bLFx3K71D2U9Xv/lnZefA4NC7imBt6DyAmA8qMsuld7DixNW6XLbla/zQhNYqdhGd0Q7xDhIEQ7171NTI7j3kt89Qq0uxq/le1mJ/KsciLhkGFR8I45H4eIpB8FJSl1iBqUq3a+uLYVOB59LrIvOxRcJI6bxFXO7eCpiubEdYDQR82KttJC+0moa2s4RbKpp2+TIsXxpKoX0v9qu7Kydp7F0qY1MuF8K0k60MzySl3MBZiyaayWh/gZhOp62sfOaV1ZrbU6U/mIxHMD8KMzfApt9WGPoJWuKVe6f/yI1PEHZ79eu9fHx8vJe7874CUQwr5Y3UOAfL3IbdcrYYQP+vmXXhW3iylCHCO9OXy6xqUHe+hxnE9uq1AhvKGP1Nd7PZAKN2q5OioONysaS+FQtDkyOuuvqOIHzxLrnFCt/aNq3AE04doxf4zjjhWpQj7rNI711Vc2SfbdNf91SZN3XWvGpfFg8Irdrqiyn8mxvuDl+ubuoLRx58AfHVrXYngdUle4lCCTrDaZPZxt3alklxnw/j859vEMsd5XpzEJZTr/qHIrMxns0JWaqn30RmI/w7am84Yr+fw8ubrQ/mA7fOZkqYovgH/Cok0w==
+sidebar_class_name: "get api-method"
+info_path: api/v2/crm/unified-crm-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get user</h1>
+
+<MethodEndpoint method={"get"} path={"/users/{user_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/crm/unified-crm-api"}></SecuritySchemes>
+
+
+
+The common schema User maps to the following 3rd-party provider objects:
+
+| Provider  | Remote object ID  | 
+| --------- | ----------------- | 
+| Hubpot   | V3 Owner          | 
+| Dynamics  | Azure System User | 
+| Intercom  | Admin             |
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"user_id","in":"path","required":true,"schema":{"type":"string","example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean","example":true},"description":"Whether to include raw data fetched from the 3rd party provider."}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+User
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":54312}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"George Xing"}}></SchemaItem><SchemaItem collapsible={false} name={"email"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"george@supaglue.com"}}></SchemaItem><SchemaItem collapsible={false} name={"is_active"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean","nullable":true}}></SchemaItem><SchemaItem collapsible={false} name={"created_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"format":"date-time","example":"2022-02-27T00:00:00Z"}}></SchemaItem><SchemaItem collapsible={false} name={"updated_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"format":"date-time","example":"2022-02-27T00:00:00Z"}}></SchemaItem><SchemaItem collapsible={false} name={"is_deleted"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean","example":false}}></SchemaItem><SchemaItem collapsible={false} name={"last_modified_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","format":"date-time","example":"2022-02-27T00:00:00Z"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"id\": 54312,\n  \"name\": \"George Xing\",\n  \"email\": \"george@supaglue.com\",\n  \"is_active\": true,\n  \"created_at\": \"2022-02-27T00:00:00Z\",\n  \"updated_at\": \"2022-02-27T00:00:00Z\",\n  \"is_deleted\": false,\n  \"last_modified_at\": \"2022-02-27T00:00:00Z\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
