@@ -3,7 +3,7 @@ export type SimpleCustomObject = {
   name: string;
 };
 
-type BaseCustomObject = {
+export type CustomObject = {
   name: string;
   description: string | null;
   labels: {
@@ -15,10 +15,7 @@ type BaseCustomObject = {
   // TODO: timestamps?
 };
 
-export type CustomObject = BaseCustomObject & {
-  id: string;
-};
-export type CustomObjectCreateParams = BaseCustomObject;
+export type CustomObjectCreateParams = CustomObject;
 export type CustomObjectUpdateParams = CustomObject;
 
 export type CustomObjectField = {

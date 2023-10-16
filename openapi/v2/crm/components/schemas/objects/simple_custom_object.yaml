@@ -1,11 +1,7 @@
 type: object
 properties:
-  id:
-    type: string
-    example: 42579f73-8524-4570-9b67-ecbd702c6b14
   name:
     type: string
     example: ticket
 required:
-  - id
   - name

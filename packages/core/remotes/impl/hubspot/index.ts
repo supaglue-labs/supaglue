@@ -1872,7 +1872,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.getById(id);
     return {
-      id: response.objectTypeId,
       name: response.name,
       description: null,
       primaryFieldKeyName: response.primaryDisplayProperty ?? '',
@@ -1937,7 +1936,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
     // Only update fields that have changed; for example, if you pass in the same
     // labels as the existing object, hubspot will throw an error.
-    const existingObject = await this.getCustomObject(params.id);
+    const existingObject = await this.getCustomObject(params.name);
 
     const labels =
       params.labels.singular === existingObject.labels.singular && params.labels.plural === existingObject.labels.plural
@@ -1945,7 +1944,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         : params.labels;
 
     // Update the main object
-    await this.#client.crm.schemas.coreApi.update(params.id, {
+    await this.#client.crm.schemas.coreApi.update(params.name, {
       // ignoring name because you can't update that in hubspot
       labels,
       requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.keyName),
@@ -1974,13 +1973,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     );
 
     // Delete fields
-    await this.#client.crm.properties.batchApi.archive(params.id, {
+    await this.#client.crm.properties.batchApi.archive(params.name, {
       inputs: fieldNamesToDelete.map((keyName) => ({ name: keyName })),
     });
 
     // Update fields
     for (const field of fieldsToUpdate) {
-      await this.#client.crm.properties.coreApi.update(params.id, field.keyName, {
+      await this.#client.crm.properties.coreApi.update(params.name, field.keyName, {
         label: field.displayName,
         type: field.fieldType,
         fieldType: field.fieldType === 'number' ? 'number' : 'text', // TODO: support field formats
@@ -1989,13 +1988,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
     // Create fields
     // TODO: We should not assume that there is only one group
-    const { results: groups } = await this.#client.crm.properties.groupsApi.getAll(params.id);
+    const { results: groups } = await this.#client.crm.properties.groupsApi.getAll(params.name);
     const unarchivedGroups = groups.filter((group) => !group.archived);
     if (!unarchivedGroups.length || unarchivedGroups.length > 1) {
       throw new Error('Expected exactly one property group');
     }
 
-    await this.#client.crm.properties.batchApi.create(params.id, {
+    await this.#client.crm.properties.batchApi.create(params.name, {
       inputs: fieldsToCreate.map((field) => ({
         name: field.keyName,
         label: field.displayName,

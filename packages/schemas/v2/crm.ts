@@ -138,3 +138,42 @@ export type GetListMembershipQueryParams = Required<operations['listListMembersh
 export type GetListMembershipRequest = never;
 export type GetListMembershipResponse =
   operations['listListMemberships']['responses'][keyof operations['listListMemberships']['responses']]['content']['application/json'];
+
+export type ListCustomObjectsPathParams = never;
+export type ListCustomObjectsQueryParams = never;
+export type ListCustomObjectsRequest = never;
+export type ListCustomObjectsResponse =
+  operations['listCustomObjects']['responses'][keyof operations['listCustomObjects']['responses']]['content']['application/json'];
+
+export type CreateCustomObjectPathParams = never;
+export type CreateCustomObjectQueryParams = never;
+export type CreateCustomObjectRequest = operations['createCustomObject']['requestBody']['content']['application/json'];
+export type CreateCustomObjectResponse =
+  operations['createCustomObject']['responses'][keyof operations['createCustomObject']['responses']]['content']['application/json'];
+
+export type GetCustomObjectPathParams = paths[`/metadata/custom_objects/{object_name}`]['parameters']['path'];
+export type GetCustomObjectQueryParams = never;
+export type GetCustomObjectRequest = never;
+export type GetCustomObjectResponse =
+  operations['getCustomObject']['responses'][keyof operations['getCustomObject']['responses']]['content']['application/json'];
+
+export type UpdateCustomObjectPathParams = paths[`/metadata/custom_objects/{object_name}`]['parameters']['path'];
+export type UpdateCustomObjectQueryParams = never;
+export type UpdateCustomObjectRequest = operations['updateCustomObject']['requestBody']['content']['application/json'];
+export type UpdateCustomObjectResponse =
+  operations['updateCustomObject']['responses'][keyof operations['updateCustomObject']['responses']]['content']['application/json'];
+
+export type GetAssociationSchemasPathParams = never;
+export type GetAssociationSchemasQueryParams = Required<
+  Required<operations['getAssociationSchemas']>['parameters']
+>['query'];
+export type GetAssociationSchemasRequest = never;
+export type GetAssociationSchemasResponse =
+  operations['getAssociationSchemas']['responses'][keyof operations['getAssociationSchemas']['responses']]['content']['application/json'];
+
+export type CreateAssociationSchemaPathParams = never;
+export type CreateAssociationSchemaQueryParams = never;
+export type CreateAssociationSchemaRequest =
+  operations['createAssociationSchema']['requestBody']['content']['application/json'];
+export type CreateAssociationSchemaResponse =
+  operations['createAssociationSchema']['responses'][keyof operations['createAssociationSchema']['responses']]['content']['application/json'];

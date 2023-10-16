@@ -1,0 +1,20 @@
+type: object
+properties:
+  id:
+    type: string
+  source_object:
+    type: string
+    example: contact
+  target_object:
+    type: string
+    example: my_custom_object
+  display_name:
+    type: string
+  cardinality:
+    $ref: ./association_cardinality_or_unknown.yaml
+required:
+  - id
+  - source_object
+  - target_object
+  - display_name
+  - cardinality

@@ -1,0 +1,73 @@
+post:
+  operationId: createCustomObjectRecord
+  summary: Create custom object record
+  tags:
+    - Custom Objects
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            record:
+              $ref: ../../components/schemas/create_update_custom_object_record.yaml
+          required:
+            - record
+        example:
+          record:
+            first_name: George
+            last_activity_at: '2022-02-10T00:00:00Z'
+            last_name: Xing
+            account_id: 64571bff-48ea-4469-9fa0-ee1a0bab38bd
+  responses:
+    '201':
+      description: Custom Object Record created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../../common/components/schemas/errors.yaml
+              record:
+                $ref: ../../../../common/components/schemas/created_model.yaml
+              warnings:
+                $ref: ../../../../common/components/schemas/warnings.yaml
+get:
+  operationId: listCustomObjectRecords
+  summary: List custom object records
+  tags:
+    - Custom Objects
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../../common/components/parameters/query/include_raw_data.yaml
+    - $ref: ../../../../common/components/parameters/query/read_from_cache.yaml
+    - $ref: ../../../../common/components/parameters/query/modified_after.yaml
+    - $ref: ../../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../../common/components/parameters/query/cursor.yaml
+  responses:
+    200:
+      description: Paginated Custom Objects
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../../components/schemas/objects/custom_object_record.yaml
+            required:
+              - pagination
+              - records
+parameters:
+  - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../components/parameters/header/x-provider-name.yaml
+  - $ref: ../../components/parameters/path/object_name.yaml

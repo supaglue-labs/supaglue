@@ -1,0 +1,12 @@
+type: object
+properties:
+  association_schema_id:
+    type: string
+  source_record_id:
+    type: string
+  target_record_id:
+    type: string
+required:
+  - association_schema_id
+  - source_record_id
+  - target_record_id

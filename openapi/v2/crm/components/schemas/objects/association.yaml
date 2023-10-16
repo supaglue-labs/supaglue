@@ -1,0 +1,13 @@
+type: object
+description: An instance of an association between two records.
+properties:
+  source_record_id:
+    type: string
+  target_record_id:
+    type: string
+  association_schema_id:
+    type: string
+required:
+  - source_record_id
+  - target_record_id
+  - association_schema_id

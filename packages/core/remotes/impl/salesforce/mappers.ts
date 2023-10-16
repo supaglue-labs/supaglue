@@ -452,7 +452,6 @@ export const toCustomObject = (salesforceCustomObject: DescribeSObjectResult): C
     throw new Error(`unexpectedly, custom object missing nameField`);
   }
   return {
-    id: salesforceCustomObject.name,
     name: salesforceCustomObject.name,
     description: null,
     labels: {
@@ -479,5 +478,6 @@ export const toCustomObject = (salesforceCustomObject: DescribeSObjectResult): C
           };
         }),
     ],
+    rawData: salesforceCustomObject,
   };
 };

@@ -26,12 +26,6 @@ servers:
 paths:
   '/objects/standard':
     $ref: paths/objects@standard.yaml
-  '/objects/custom':
-    $ref: paths/objects@custom.yaml
-  '/objects/custom/{custom_object_id}':
-    $ref: paths/objects@custom@{custom_object_id}.yaml
-  '/association-types':
-    $ref: paths/association-types.yaml
   '/properties':
     $ref: paths/properties.yaml
   '/properties/{object_name}':
@@ -41,12 +35,8 @@ paths:
   '/properties/{object_name}/{property_name}':
     $ref: paths/properties@{object_name}@{property_name}.yaml
 tags:
-  - name: CustomObjects
-    description: A `Custom Object` is an object that is defined by the user.
   - name: StandardObjects
     description: A `Standard Object` is an object that is available by default in the provider.
-  - name: AssociationTypes
-    description: An `Association Type` is a type of association between two entities.
   - name: Properties
     description: A `Property` is a field in a Provider Object.
 components:
@@ -68,24 +58,8 @@ components:
       $ref: ./components/schemas/update_property.yaml
     standard_object:
       $ref: ./components/schemas/objects/standard_object.yaml
-    custom_object:
-      $ref: ./components/schemas/objects/custom_object.yaml
-    simple_custom_object:
-      $ref: ./components/schemas/objects/simple_custom_object.yaml
-    create_update_custom_object:
-      $ref: ./components/schemas/create_update_custom_object.yaml
-    create_update_association_type:
-      $ref: ./components/schemas/create_update_association_type.yaml
     object_type:
       $ref: ./components/schemas/objects/object_type.yaml
-    association_type_cardinality:
-      $ref: ./components/schemas/objects/association_type_cardinality.yaml
-    association_type_cardinality_or_unknown:
-      $ref: ./components/schemas/objects/association_type_cardinality_or_unknown.yaml
-    custom_object_field:
-      $ref: ./components/schemas/objects/custom_object_field.yaml
-    association_type:
-      $ref: ./components/schemas/objects/association_type.yaml
     object:
       $ref: ./components/schemas/objects/object.yaml
     errors:

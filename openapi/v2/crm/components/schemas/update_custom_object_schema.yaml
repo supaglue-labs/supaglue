@@ -1,8 +1,5 @@
 type: object
 properties:
-  name:
-    type: string
-    example: ticket
   description:
     type: string
     nullable: true
@@ -19,12 +16,16 @@ properties:
     required:
       - singular
       - plural
+  primary_field_key_name:
+    type: string
+    description: The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field.
+    example: ticket_id
   fields:
     type: array
     items:
-      $ref: ./custom_object_field.yaml
+      $ref: ./objects/custom_object_field.yaml
 required:
-  - name
   - description
   - labels
+  - primary_field_key_name
   - fields

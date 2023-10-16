@@ -1407,6 +1407,679 @@
         }
       ]
     },
+    "/custom_objects/{object_name}": {
+      "post": {
+        "operationId": "createCustomObjectRecord",
+        "summary": "Create custom object record",
+        "tags": [
+          "Custom Objects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_custom_object_record"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              },
+              "example": {
+                "record": {
+                  "first_name": "George",
+                  "last_activity_at": "2022-02-10T00:00:00Z",
+                  "last_name": "Xing",
+                  "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Custom Object Record created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listCustomObjectRecords",
+        "summary": "List custom object records",
+        "tags": [
+          "Custom Objects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/read_from_cache"
+          },
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated Custom Objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/custom_object_record"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "$ref": "#/components/parameters/object_name"
+        }
+      ]
+    },
+    "/custom_objects/{object_name}/{record_id}": {
+      "patch": {
+        "operationId": "updateCustomObjectRecord",
+        "summary": "Update custom object record",
+        "tags": [
+          "Custom Objects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_custom_object_record"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              },
+              "example": {
+                "record": {
+                  "first_name": "George",
+                  "last_activity_at": "2022-02-10T00:00:00Z",
+                  "last_name": "Xing",
+                  "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Custom Object Record created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getCustomObjectRecord",
+        "summary": "Get custom object record",
+        "tags": [
+          "Custom Objects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/read_from_cache"
+          },
+          {
+            "$ref": "#/components/parameters/modified_after"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Custom Object Record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/custom_object_record"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "$ref": "#/components/parameters/object_name"
+        },
+        {
+          "name": "record_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the record to retrieve or update",
+          "schema": {
+            "type": "string",
+            "example": "82de27cb-6f8c-4278-b783-82d1d916eddc"
+          }
+        }
+      ]
+    },
+    "/associations": {
+      "get": {
+        "operationId": "getAssociations",
+        "tags": [
+          "Associations"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List associations between two records",
+        "description": "Get a list of associations",
+        "parameters": [
+          {
+            "name": "source_record_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "source_object",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "target_object",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Associations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/association"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "createAssociation",
+        "summary": "Create association",
+        "tags": [
+          "Associations"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_association"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Association created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "association": {
+                      "$ref": "#/components/schemas/association"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/metadata/associations": {
+      "get": {
+        "operationId": "getAssociationSchemas",
+        "tags": [
+          "AssociationSchemas"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "summary": "List associationSchemas",
+        "description": "Get a list of associationSchemas",
+        "parameters": [
+          {
+            "name": "source_object",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "target_object",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "AssociationSchemas",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/association_cardinality_schema"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createAssociationSchema",
+        "summary": "Create associationSchema",
+        "tags": [
+          "AssociationSchemas"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_update_association_schema"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "AssociationSchema created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "association_schema": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "id"
+                      ]
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/metadata/custom_objects": {
+      "get": {
+        "operationId": "listCustomObjects",
+        "summary": "List customObjects",
+        "tags": [
+          "CustomObjects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "CustomObject",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/simple_custom_object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createCustomObject",
+        "summary": "Create customObject",
+        "tags": [
+          "CustomObjects"
+        ],
+        "parameters": [],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "object": {
+                    "$ref": "#/components/schemas/create_custom_object_schema"
+                  }
+                },
+                "required": [
+                  "object"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "CustomObject created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "object": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ]
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/metadata/custom_objects/{object_name}": {
+      "get": {
+        "operationId": "getCustomObject",
+        "summary": "Get customObject",
+        "tags": [
+          "CustomObjects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "CustomObject",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/custom_object_schema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "updateCustomObject",
+        "summary": "Update customObject",
+        "tags": [
+          "CustomObjects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "object": {
+                    "$ref": "#/components/schemas/update_custom_object_schema"
+                  }
+                },
+                "required": [
+                  "object"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CustomObject updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "$ref": "#/components/parameters/object_name"
+        }
+      ]
+    },
     "/lists": {
       "get": {
         "operationId": "listLists",
@@ -1723,6 +2396,18 @@
     {
       "name": "Lists",
       "description": "The `List` Object represents a collection of CRM records."
+    },
+    {
+      "name": "CustomObjects",
+      "description": "A `Custom Object` is an object that is defined by the user."
+    },
+    {
+      "name": "AssociationSchemas",
+      "description": "An `Association Schema` is an object describing an association between two entities."
+    },
+    {
+      "name": "Association",
+      "description": "An `Association` is an instance of a relationship between two entities."
     },
     {
       "name": "Passthrough",
@@ -2445,6 +3130,189 @@
           }
         }
       },
+      "association_cardinality_or_unknown": {
+        "type": "string",
+        "enum": [
+          "ONE_TO_MANY",
+          "UNKNOWN"
+        ]
+      },
+      "association_cardinality": {
+        "type": "string",
+        "enum": [
+          "ONE_TO_MANY"
+        ]
+      },
+      "association_cardinality_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "source_object": {
+            "type": "string",
+            "example": "contact"
+          },
+          "target_object": {
+            "type": "string",
+            "example": "my_custom_object"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "cardinality": {
+            "$ref": "#/components/schemas/association_cardinality_or_unknown"
+          }
+        },
+        "required": [
+          "id",
+          "source_object",
+          "target_object",
+          "display_name",
+          "cardinality"
+        ]
+      },
+      "custom_object_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "ticket"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Ticket object"
+          },
+          "labels": {
+            "type": "object",
+            "properties": {
+              "singular": {
+                "type": "string",
+                "example": "Ticket"
+              },
+              "plural": {
+                "type": "string",
+                "example": "Tickets"
+              }
+            },
+            "required": [
+              "singular",
+              "plural"
+            ]
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/custom_object_field"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "labels",
+          "fields"
+        ]
+      },
+      "custom_object_field": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "example": "Ticket ID"
+          },
+          "key_name": {
+            "type": "string",
+            "example": "ticket_id",
+            "description": "In Salesforce, this must end with `__c`."
+          },
+          "is_required": {
+            "type": "boolean",
+            "example": false
+          },
+          "field_type": {
+            "type": "string",
+            "enum": [
+              "string",
+              "number"
+            ],
+            "description": "In Salesforce, when this is set to 'string', the max length will be set to 255 by default. In Salesforce, when it is set to 'number', the precision and scale will be set to 18 and 0, respectively."
+          }
+        },
+        "required": [
+          "display_name",
+          "key_name",
+          "is_required",
+          "field_type"
+        ]
+      },
+      "custom_object_record": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "custom_object_name": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "additional_fields": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "id",
+          "custom_object_name",
+          "data"
+        ],
+        "example": {
+          "id": "001Fn00023f8oYYIA0",
+          "custom_object_id": "MyCustomObject__c",
+          "data": {
+            "Name": "Acme Corp",
+            "Description": "We create the best embedded integration platforms."
+          }
+        }
+      },
+      "simple_custom_object": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "ticket"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "association": {
+        "type": "object",
+        "description": "An instance of an association between two records.",
+        "properties": {
+          "source_record_id": {
+            "type": "string"
+          },
+          "target_record_id": {
+            "type": "string"
+          },
+          "association_schema_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_record_id",
+          "target_record_id",
+          "association_schema_id"
+        ]
+      },
       "errors": {
         "type": "array",
         "items": {
@@ -2722,6 +3590,165 @@
           "evangelist",
           "other"
         ]
+      },
+      "create_update_association_schema": {
+        "type": "object",
+        "properties": {
+          "source_object": {
+            "type": "string"
+          },
+          "target_object": {
+            "type": "string"
+          },
+          "suggested_key_name": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "cardinality": {
+            "$ref": "#/components/schemas/association_cardinality"
+          }
+        },
+        "required": [
+          "source_object",
+          "target_object",
+          "suggested_key_name",
+          "display_name",
+          "cardinality"
+        ]
+      },
+      "create_update_association": {
+        "type": "object",
+        "properties": {
+          "association_schema_id": {
+            "type": "string"
+          },
+          "source_record_id": {
+            "type": "string"
+          },
+          "target_record_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "association_schema_id",
+          "source_record_id",
+          "target_record_id"
+        ]
+      },
+      "create_update_custom_object_record": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "create_custom_object_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "ticket",
+            "description": "The name you'd like to use for the custom object. For Salesforce, we will append `__c` if necessary. For HubSpot, it will pass through as-is."
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Ticket object"
+          },
+          "labels": {
+            "type": "object",
+            "properties": {
+              "singular": {
+                "type": "string",
+                "example": "Ticket"
+              },
+              "plural": {
+                "type": "string",
+                "example": "Tickets"
+              }
+            },
+            "required": [
+              "singular",
+              "plural"
+            ]
+          },
+          "primary_field_key_name": {
+            "type": "string",
+            "description": "The key name of the \"primary\" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the \"Name\" field.",
+            "example": "ticket_id"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/custom_object_field"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "description",
+          "labels",
+          "primary_field_key_name",
+          "fields"
+        ]
+      },
+      "update_custom_object_schema": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "example": "Ticket object"
+          },
+          "labels": {
+            "type": "object",
+            "properties": {
+              "singular": {
+                "type": "string",
+                "example": "Ticket"
+              },
+              "plural": {
+                "type": "string",
+                "example": "Tickets"
+              }
+            },
+            "required": [
+              "singular",
+              "plural"
+            ]
+          },
+          "primary_field_key_name": {
+            "type": "string",
+            "description": "The key name of the \"primary\" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the \"Name\" field.",
+            "example": "ticket_id"
+          },
+          "fields": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/custom_object_field"
+            }
+          }
+        },
+        "required": [
+          "description",
+          "labels",
+          "primary_field_key_name",
+          "fields"
+        ]
+      },
+      "created_custom_object_record": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "custom_object_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "custom_object_id"
+        ]
       }
     },
     "parameters": {
@@ -2853,6 +3880,16 @@
           "example": "contact"
         },
         "description": "The Supaglue common object type to fetch a list for.",
+        "required": true
+      },
+      "object_name": {
+        "name": "object_name",
+        "in": "path",
+        "schema": {
+          "type": "string",
+          "example": "MyCustomObject__c"
+        },
+        "description": "The unique name of the custom object. For Salesforce, this should end with __c. For Hubspot, this will typically be the singular form of the object.",
         "required": true
       }
     }
