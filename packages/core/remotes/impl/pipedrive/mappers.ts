@@ -282,7 +282,7 @@ export const toPipedrivePersonUpdateParams = (params: ContactCreateParams, field
 
 export const toPipedriveLeadCreateParams = (params: LeadCreateParams, fields: PipedriveObjectField[]) => {
   if (!params.convertedAccountId && !params.convertedContactId) {
-    throw new BadRequestError('Either convertedAccountId or convertedContactId must be provided');
+    throw new BadRequestError('Either converted_account_id or converted_contact_id must be provided');
   }
   return toPipedriveLeadUpdateParams(params, fields);
 };
