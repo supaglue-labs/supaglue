@@ -1229,6 +1229,12 @@
             "nullable": true,
             "example": "CEO"
           },
+          "company_name": {
+            "type": "string",
+            "nullable": true,
+            "example": "Acme Inc.",
+            "description": "Maps to `company` field in Outreach (which creates an invisible account internally) and `person_company_name` in Salesloft (which is a field on person unrelated to the account object, accessible by the account_name_or_company field in email templates)"
+          },
           "address": {
             "$ref": "#/components/schemas/address"
           },

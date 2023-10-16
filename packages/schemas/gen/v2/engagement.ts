@@ -258,6 +258,11 @@ export interface components {
       last_name?: string | null;
       /** @example CEO */
       job_title?: string | null;
+      /**
+       * @description Maps to `company` field in Outreach (which creates an invisible account internally) and `person_company_name` in Salesloft (which is a field on person unrelated to the account object, accessible by the account_name_or_company field in email templates) 
+       * @example Acme Inc.
+       */
+      company_name?: string | null;
       address?: components["schemas"]["address"];
       email_addresses?: components["schemas"]["email_addresses"];
       phone_numbers?: components["schemas"]["phone_numbers"];

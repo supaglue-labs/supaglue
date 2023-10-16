@@ -14,6 +14,7 @@ type CoreContact = {
   lastName: string | null;
   jobTitle: string | null;
   address: Address | null;
+  companyName?: string | null;
   emailAddresses: EmailAddress[];
   phoneNumbers: PhoneNumber[];
   openCount: number;
