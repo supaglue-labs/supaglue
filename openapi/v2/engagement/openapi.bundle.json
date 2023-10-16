@@ -1595,7 +1595,7 @@
                   },
                   "name": {
                     "type": "string",
-                    "description": "The name of the template."
+                    "description": "The name of the template. In Outreach, if missing this will create an `invisible` template that doesn't show up in the templates list UI."
                   },
                   "to": {
                     "type": "array",
@@ -1624,8 +1624,7 @@
                 },
                 "required": [
                   "body",
-                  "subject",
-                  "name"
+                  "subject"
                 ]
               }
             ]

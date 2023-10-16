@@ -30,7 +30,7 @@ properties:
             description: The subject of the email.
           name:
             type: string
-            description: The name of the template.
+            description: The name of the template. In Outreach, if missing this will create an `invisible` template that doesn't show up in the templates list UI. 
           to:
             type: array
             description: A list of default person and email address pairs to receive this template in the "to" field
@@ -51,7 +51,6 @@ properties:
         required:
           - body
           - subject
-          - name
   is_reply:
     type: boolean
     description: If true, this step will be sent as a reply to the previous step.
