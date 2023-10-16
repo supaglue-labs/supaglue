@@ -33,7 +33,7 @@ export type SequenceTemplateId = {
 export type SequenceTemplateCreateParams = {
   body: string;
   subject: string;
-  name: string;
+  name?: string;
   to?: string[];
   cc?: string[];
   bcc?: string[];
