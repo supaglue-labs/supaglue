@@ -55,6 +55,7 @@ import type {
   CustomObjectCreateParams,
   CustomObjectFieldType,
   CustomObjectUpdateParams,
+  SimpleCustomObject,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
@@ -1882,10 +1883,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return HUBSPOT_STANDARD_OBJECT_TYPES as unknown as string[];
   }
 
-  public override async listCustomObjects(): Promise<string[]> {
+  public override async listCustomObjects(): Promise<SimpleCustomObject[]> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.getAll();
-    return response.results.map((object) => object.name);
+    return response.results.map((object) => ({ id: object.id, name: object.name }));
   }
 
   public override async getCustomObject(id: string): Promise<CustomObject> {

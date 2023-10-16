@@ -1,6 +1,9 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { connectionHeaderMiddleware } from '@/middleware/connection';
 import type {
+  ListCustomObjectsPathParams,
+  ListCustomObjectsRequest,
+  ListCustomObjectsResponse,
   ListStandardObjectsPathParams,
   ListStandardObjectsRequest,
   ListStandardObjectsResponse,
@@ -23,6 +26,17 @@ export default function init(app: Router): void {
     ) => {
       const standardObjects = await metadataService.listStandardObjects(req.customerConnection.id);
       return res.status(200).send(standardObjects.map((name) => ({ name })));
+    }
+  );
+
+  objectRouter.get(
+    '/custom',
+    async (
+      req: Request<ListCustomObjectsPathParams, ListCustomObjectsResponse, ListCustomObjectsRequest>,
+      res: Response<ListCustomObjectsResponse>
+    ) => {
+      const customObjects = await metadataService.listCustomObjects(req.customerConnection.id);
+      return res.status(200).send(customObjects);
     }
   );
 

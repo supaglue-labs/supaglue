@@ -30,7 +30,7 @@ export default function init(app: Router): void {
       res: Response<ListCustomObjectsResponse>
     ) => {
       const customObjects = await metadataService.listCustomObjects(req.customerConnection.id);
-      return res.status(200).send(customObjects);
+      return res.status(200).send(customObjects.map(({ name }) => name));
     }
   );
 

@@ -24,6 +24,8 @@ servers:
   - url: 'https://api.supaglue.io/metadata/v2'
     description: Supaglue API
 paths:
+  '/objects/custom':
+    $ref: paths/objects@custom.yaml
   '/objects/standard':
     $ref: paths/objects@standard.yaml
   '/properties':
@@ -58,6 +60,8 @@ components:
       $ref: ./components/schemas/update_property.yaml
     standard_object:
       $ref: ./components/schemas/objects/standard_object.yaml
+    simple_custom_object:
+      $ref: ./components/schemas/objects/simple_custom_object.yaml
     object_type:
       $ref: ./components/schemas/objects/object_type.yaml
     object:

@@ -1,5 +1,10 @@
 import type { AssociationSchema, AssociationSchemaCreateParams } from '@supaglue/types/association_schema';
-import type { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/custom_object';
+import type {
+  CustomObject,
+  CustomObjectCreateParams,
+  CustomObjectUpdateParams,
+  SimpleCustomObject,
+} from '@supaglue/types/custom_object';
 import type { ConnectionService } from '.';
 import { remoteDuration } from '../lib/metrics';
 import type { RemoteService } from './remote_service';
@@ -23,7 +28,7 @@ export class MetadataService {
     return result;
   }
 
-  public async listCustomObjects(connectionId: string): Promise<string[]> {
+  public async listCustomObjects(connectionId: string): Promise<SimpleCustomObject[]> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'list' });

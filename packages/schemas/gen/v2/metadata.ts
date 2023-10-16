@@ -5,6 +5,19 @@
 
 
 export interface paths {
+  "/objects/custom": {
+    /**
+     * List custom objects (deprecated) 
+     * @deprecated
+     */
+    get: operations["listCustomObjects"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/objects/standard": {
     /** List standardObjects */
     get: operations["listStandardObjects"];
@@ -305,6 +318,12 @@ export interface components {
       /** @example ticket */
       name: string;
     };
+    simple_custom_object: {
+      /** @example 42579f73-8524-4570-9b67-ecbd702c6b14 */
+      id: string;
+      /** @example ticket */
+      name: string;
+    };
     /** @enum {string} */
     object_type: "common" | "standard" | "custom";
     object: {
@@ -350,6 +369,26 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  /**
+   * List custom objects (deprecated) 
+   * @deprecated
+   */
+  listCustomObjects: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Custom objects */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["simple_custom_object"])[];
+        };
+      };
+    };
+  };
   /** List standardObjects */
   listStandardObjects: {
     parameters: {

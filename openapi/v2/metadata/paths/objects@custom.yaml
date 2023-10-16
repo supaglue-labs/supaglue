@@ -1,0 +1,21 @@
+get:
+  operationId: listCustomObjects
+  deprecated: true
+  summary: List custom objects (deprecated)
+  tags:
+    - CustomObjects
+  security:
+    - x-api-key: []
+  parameters: []
+  responses:
+    200:
+      description: Custom objects
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/objects/simple_custom_object.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../components/parameters/header/x-provider-name.yaml

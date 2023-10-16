@@ -13,7 +13,12 @@ import type {
   ObjectAssociationCreateParams,
 } from '@supaglue/types/association';
 import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
-import type { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/custom_object';
+import type {
+  CustomObject,
+  CustomObjectCreateParams,
+  CustomObjectUpdateParams,
+  SimpleCustomObject,
+} from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import axios from 'axios';
@@ -35,7 +40,7 @@ export interface RemoteClient {
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
   listStandardObjects(): Promise<string[]>;
-  listCustomObjects(): Promise<string[]>;
+  listCustomObjects(): Promise<SimpleCustomObject[]>;
   getCustomObject(id: string): Promise<CustomObject>;
   createCustomObject(params: CustomObjectCreateParams): Promise<string>;
   updateCustomObject(params: CustomObjectUpdateParams): Promise<void>;
@@ -118,7 +123,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   public async listStandardObjects(): Promise<string[]> {
     throw new Error('Not implemented');
   }
-  public async listCustomObjects(): Promise<string[]> {
+  public async listCustomObjects(): Promise<SimpleCustomObject[]> {
     throw new Error('Not implemented');
   }
   public async getCustomObject(id: string): Promise<CustomObject> {

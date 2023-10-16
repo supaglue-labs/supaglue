@@ -17,6 +17,45 @@
     }
   ],
   "paths": {
+    "/objects/custom": {
+      "get": {
+        "operationId": "listCustomObjects",
+        "deprecated": true,
+        "summary": "List custom objects (deprecated)",
+        "tags": [
+          "CustomObjects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Custom objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/simple_custom_object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/objects/standard": {
       "get": {
         "operationId": "listStandardObjects",
@@ -637,6 +676,23 @@
           }
         },
         "required": [
+          "name"
+        ]
+      },
+      "simple_custom_object": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "42579f73-8524-4570-9b67-ecbd702c6b14"
+          },
+          "name": {
+            "type": "string",
+            "example": "ticket"
+          }
+        },
+        "required": [
+          "id",
           "name"
         ]
       },

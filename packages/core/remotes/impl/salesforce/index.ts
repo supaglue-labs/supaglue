@@ -46,7 +46,12 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import type { CustomObject, CustomObjectCreateParams, CustomObjectUpdateParams } from '@supaglue/types/custom_object';
+import type {
+  CustomObject,
+  CustomObjectCreateParams,
+  CustomObjectUpdateParams,
+  SimpleCustomObject,
+} from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
@@ -313,11 +318,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return SALESFORCE_OBJECTS as unknown as string[];
   }
 
-  public override async listCustomObjects(): Promise<string[]> {
+  public override async listCustomObjects(): Promise<SimpleCustomObject[]> {
     const metadata = await this.#client.describeGlobal();
     // this returns standard objects and external objects too,
     // so we need to filter them out
-    return metadata.sobjects.filter(({ custom }) => custom).map(({ name }) => name);
+    return metadata.sobjects.filter(({ custom }) => custom).map(({ name }) => ({ id: name, name }));
   }
 
   public override async listStandardObjectRecords(
