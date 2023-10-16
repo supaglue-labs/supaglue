@@ -1,0 +1,46 @@
+---
+id: get-association-types
+title: "List associationTypes"
+description: "Get a list of associationTypes"
+sidebar_label: "List associationTypes"
+hide_title: true
+hide_table_of_contents: true
+api: eJy1VmtvGjkU/Suu90sj8Ujab6iqNrtbVagNidJEVUUQMTMXcDNju35AEOK/917PDAwwpatuFySSsY/v85zrWXNtwAovteqnvMdn4C+d04mMS3crA463eArGQiI8IMTbAC3uxczx3pAfgUct7iAJVvoV7q/5c1sY2X4CehptRmTLJVYaOoH+3oNngmXSeaanTBy7NsKKHDxYF80pfMBjTgebwBiURz9jmSJQkrlvAewKH1wyh1zw3pp7tEMHvJVqxjctbuFbkLbKZNPa2vTCYva/1+ZzOwnO6xxse2dwDiIFe8Jii8OzyE1GS/lqZ+KCfO3X724OrNpn/X+YnwvPgpIYdLZiMqVsphIcbtSAUrEVVpAJYzKZxHrzk1kYqxdozLbjyq/k4UQGbqqxa81JVB5Y6eEgmBGtOKOVQ1ago1fn5/Rn304DcxOtPNaAsLVku18dHVgfR64nXyHxxDtLwvCycIe+Q+ZdDSisFcQK6SF3PzeA3W8izhGPm0BHxGwCpdKZTKzGRcsaAImwqVQii8Js6JQKOQn6evBufHc9vrocfMHV+8GHwfXnAakancdG1jQ6JiPjmuGxtuOgnpReKr7Z08WQR/436LZBdnu57Ed+IhD0WHxaHAfGXJfjLM4QP8eHbu1E25cEcWAX1XAJNiNae29cr9vFudVxwYhZFqAjdReNilR40V284ocM/lTi2OVNn29qM/ATEaygQG0S7lhk5AcgGm2VVmEONXbA9Js+QxTzmoks00uWwgIyIpyLa0kCrtB8DGhD1qaaHFOyhY3zzsXrzgXfFfSqTDCeKaQjkiidMroqS6JLLiQVK9WJ+3NbpUTnuLdfxr3NI+n/gR/WV97qNCS09oDfz5AhGCgTSqEeF0OHIUeyxC4yHCjs79urDvuiA0uEYsHhsbl0EYvni9sNGGKr/mF1rMbq5KhoicOJ8DZt40XjV9sx5DoUyPDF8DYoGpc32vlcqNHLKi0bVMfgmiJqTIL3WnXcYna2QyyXy44pjlHu20J0l9o+OSMS2C61TZjgbOpq7M5CwvKMnMfS/CVc7CG7v/34oB4fHx/Uv+BniaRylxHUuviRLtuGm3avMevd5Pz5HV2S2cOz76JwZXQcWbAutTfkx9pDlcwxONpcryeY573NNhtaLm5cUiROAjHJaIBMRebgRJAvb8tZc8Z+FFGUXtMIWggidY9zuvP+B5cNI27nckQPVpLP+IrUqjT/y/n/zneCE1kdvtv89yo2vQecDODwtWQvhAJ0iaPQ+Nre0WsAdWB7Ybx/d4dYEYi09SldjOTyH+pMtaVWNdv18V24p18KphH+hoSN8//tFl7s/PDA9jYo0FSMEV543wEgZxeH
+sidebar_class_name: "get api-method"
+info_path: api/v2/metadata/metadata-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>List associationTypes</h1>
+
+<MethodEndpoint method={"get"} path={"/association-types"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/metadata/metadata-api"}></SecuritySchemes>
+
+:::caution deprecated
+
+This endpoint has been deprecated and may be removed in future versions of the API.
+
+:::
+
+Get a list of associationTypes
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"source_entity_id","in":"query","schema":{"type":"string"},"required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"target_entity_id","in":"query","schema":{"type":"string"},"required":true}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+AssociationTypes
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>results</strong><span className={"openapi-schema__name"}> object[]</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"source_entity_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"target_entity_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"display_name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"cardinality"} required={true} schemaName={"association_type_cardinality_or_unknown"} qualifierMessage={"**Possible values:** [`ONE_TO_MANY`, `UNKNOWN`]"} schema={{"type":"string","enum":["ONE_TO_MANY","UNKNOWN"],"title":"association_type_cardinality_or_unknown"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"results\": [\n    {\n      \"id\": \"string\",\n      \"source_entity_id\": \"string\",\n      \"target_entity_id\": \"string\",\n      \"display_name\": \"string\",\n      \"cardinality\": \"ONE_TO_MANY\"\n    }\n  ]\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

@@ -1,0 +1,42 @@
+---
+id: delete-connection
+title: "Delete connection"
+description: "Delete connection"
+sidebar_label: "Delete connection"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VNtq20AQ/ZXt9iUBW0pDKdSU0rTJQ2gKIWkoxTHNWppYS6TdzV7sGKN/78xKlqXEpQ+F2mBLcz1nbhuuDVjhpVbnOZ/wHErw8EUrBRkJ+Yh7sXB8MuU7oeOzEXeQBSv9GlUb/jQWRo4fgN5mNWotOIOGgJ4bfnz0lv5ycJmVJoad8BPFoDJ+zeY6XzPpmAUfrIKcacVcyDJw7j6ULCJCl4TX9ehZjNOIlmV9uEZYUaHUuohM4QtaZsF5XYH9JXO0keRshC84IX0M0gKS9zYA8soKqATh9WtDrs5bqRaUfRetS/gv8bBMCLTQu7pH+BhlwtMtYJduetjrdJeaNH0cNaem2OWWebAlBiq8N26SptifxAUjFmWAROq0WlQ+XR7z5yW9bm3YyeU5r3t9viYeTT973e5YoeQrCkbbEu1s2vIUIHKwL/JhGoZWzGsmylKvsN9LKGkoXZTFOWC+aAHVFO1eU2Ii2sQ4St68S97TqEpfUvJvQokFolU+eo2oYV5kntxafFueqMT2SCpVrjP3qatRpivUDYs4UL6Yxtf4YefKW52H2JRb/P6AEo2BuBCJITKGKQO9xAVM2E8dWCYUCw4dCtwJskHPKnqx7SAwqTwsmq11TKi8twEuoazTV9OroNCOXWrn0X12sOVgg0oMyhRNwTx4j4ndcnG4s1itVolp3IhoxzpdafvgjMigE41NmJcySzU2YylhdUjJYx0+Cxdbxm6uLkh4d3d3q/4yjK0VVbbN32vYvl0f1L8bRQ9PPjWlkDFS7OCm3atpdwgcuk+GV6FXxKgcLDluQoGYKMRmM0dyN7asaxI/BrDx7o34Ulgp5jSCuH+5dPSM230vSgcv0NJMYusR8MFVezMOGQ3xPhbbLVO0T0tBgzvh+BiXcHDd6Ez9z9SDKtWzunfUTs8uzr6foakIVPz+rWgOQ/tA1dqbpX9EmnT0Swz3mn+gecMr9LEzbzR/dOhuUmNNfGd1Xf8GN+1wjA==
+sidebar_class_name: "delete api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Delete connection</h1>
+
+<MethodEndpoint method={"delete"} path={"/customers/{customer_id}/connections/{connection_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+
+
+Delete connection
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"connection_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"204"} value={"204"}><div>
+
+An empty body is returned on successful deletion.
+
+</div><div></div></TabItem></ApiTabs></div></div>
+      
