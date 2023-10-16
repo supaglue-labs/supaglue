@@ -219,7 +219,7 @@ createTerminus(server, {
       return;
     },
   },
-  timeout: process.env.ENVIRONMENT === 'development' ? 0 : 10000,
+  timeout: 10000,
   beforeShutdown: async () => {
     logger.info('Server is shutting down');
     metricsServer.close();
