@@ -423,8 +423,8 @@ export interface components {
         body: string;
         /** @description The subject of the email. */
         subject: string;
-        /** @description The name of the template. */
-        name: string;
+        /** @description The name of the template. In Outreach, if missing this will create an `invisible` template that doesn't show up in the templates list UI. */
+        name?: string;
         /** @description A list of default person and email address pairs to receive this template in the "to" field */
         to?: (string)[];
         /** @description A list of default person and email address pairs to receive this template in the "cc" field */
