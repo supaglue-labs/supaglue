@@ -54,10 +54,10 @@ paths:
     $ref: paths/opportunities@{opportunity_id}.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
-  '/custom_objects/{object_name}':
-    $ref: paths/custom_objects/{object_name}.yaml
-  '/custom_objects/{object_name}/{record_id}':
-    $ref: paths/custom_objects/{object_name}@{record_id}.yaml
+  '/custom_objects/{object_name}/records':
+    $ref: paths/custom_objects/{object_name}@records.yaml
+  '/custom_objects/{object_name}/records/{record_id}':
+    $ref: paths/custom_objects/{object_name}@records@{record_id}.yaml
   '/associations':
     $ref: paths/associations.yaml
   '/metadata/associations':

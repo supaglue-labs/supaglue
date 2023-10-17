@@ -4,7 +4,7 @@ get:
     - Associations
   security:
     - x-api-key: []
-  summary: List associations between two records
+  summary: List associations for a record and target object
   description: >-
     Get a list of associations
   parameters:
@@ -36,8 +36,8 @@ get:
                 items:
                   $ref: ../components/schemas/objects/association.yaml
 put:
-  operationId: createAssociation
-  summary: Create association
+  operationId: upsertAssociation
+  summary: Upsert association
   tags:
     - Associations
   parameters: []

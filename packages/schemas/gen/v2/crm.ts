@@ -220,7 +220,7 @@ export interface paths {
       };
     };
   };
-  "/custom_objects/{object_name}": {
+  "/custom_objects/{object_name}/records": {
     /** List custom object records */
     get: operations["listCustomObjectRecords"];
     /** Create custom object record */
@@ -235,7 +235,7 @@ export interface paths {
       };
     };
   };
-  "/custom_objects/{object_name}/{record_id}": {
+  "/custom_objects/{object_name}/records/{record_id}": {
     /** Get custom object record */
     get: operations["getCustomObjectRecord"];
     /** Update custom object record */
@@ -254,12 +254,12 @@ export interface paths {
   };
   "/associations": {
     /**
-     * List associations between two records 
+     * List associations for a record and target object 
      * @description Get a list of associations
      */
     get: operations["getAssociations"];
-    /** Create association */
-    put: operations["createAssociation"];
+    /** Upsert association */
+    put: operations["upsertAssociation"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -270,10 +270,10 @@ export interface paths {
   "/metadata/associations": {
     /**
      * List associationSchemas 
-     * @description Get a list of associationSchemas
+     * @description Get a list of Association Schemas
      */
     get: operations["getAssociationSchemas"];
-    /** Create associationSchema */
+    /** Create Association Schema */
     post: operations["createAssociationSchema"];
     parameters: {
       header: {
@@ -875,6 +875,7 @@ export interface components {
     create_update_association_schema: {
       source_object: string;
       target_object: string;
+      /** @description The underlying provider may change this (e.g. adding `__c` for Salesforce). */
       suggested_key_name: string;
       display_name: string;
     };
@@ -1859,7 +1860,7 @@ export interface operations {
     };
   };
   /**
-   * List associations between two records 
+   * List associations for a record and target object 
    * @description Get a list of associations
    */
   getAssociations: {
@@ -1885,8 +1886,8 @@ export interface operations {
       };
     };
   };
-  /** Create association */
-  createAssociation: {
+  /** Upsert association */
+  upsertAssociation: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1913,7 +1914,7 @@ export interface operations {
   };
   /**
    * List associationSchemas 
-   * @description Get a list of associationSchemas
+   * @description Get a list of Association Schemas
    */
   getAssociationSchemas: {
     parameters: {
@@ -1927,7 +1928,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description AssociationSchemas */
+      /** @description List of Association Schemas */
       200: {
         content: {
           "application/json": {
@@ -1944,7 +1945,7 @@ export interface operations {
       };
     };
   };
-  /** Create associationSchema */
+  /** Create Association Schema */
   createAssociationSchema: {
     parameters: {
       header: {
@@ -1958,7 +1959,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description AssociationSchema created */
+      /** @description Association Schema created */
       201: {
         content: {
           "application/json": {
@@ -1981,7 +1982,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description CustomObject */
+      /** @description An array containing the names of Custom Objects */
       200: {
         content: {
           "application/json": (string)[];

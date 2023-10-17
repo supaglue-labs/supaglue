@@ -6,6 +6,7 @@ properties:
     type: string
   suggested_key_name:
     type: string
+    description: The underlying provider may change this (e.g. adding `__c` for Salesforce).
   display_name:
     type: string
 required:

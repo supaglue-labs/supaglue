@@ -8,7 +8,7 @@ get:
   parameters: []
   responses:
     200:
-      description: CustomObject
+      description: An array containing the names of Custom Objects
       content:
         application/json:
           schema:

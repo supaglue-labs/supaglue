@@ -1407,7 +1407,7 @@
         }
       ]
     },
-    "/custom_objects/{object_name}": {
+    "/custom_objects/{object_name}/records": {
       "post": {
         "operationId": "createCustomObjectRecord",
         "summary": "Create custom object record",
@@ -1535,7 +1535,7 @@
         }
       ]
     },
-    "/custom_objects/{object_name}/{record_id}": {
+    "/custom_objects/{object_name}/records/{record_id}": {
       "patch": {
         "operationId": "updateCustomObjectRecord",
         "summary": "Update custom object record",
@@ -1671,7 +1671,7 @@
             "x-api-key": []
           }
         ],
-        "summary": "List associations between two records",
+        "summary": "List associations for a record and target object",
         "description": "Get a list of associations",
         "parameters": [
           {
@@ -1721,8 +1721,8 @@
         }
       },
       "put": {
-        "operationId": "createAssociation",
-        "summary": "Create association",
+        "operationId": "upsertAssociation",
+        "summary": "Upsert association",
         "tags": [
           "Associations"
         ],
@@ -1787,7 +1787,7 @@
           }
         ],
         "summary": "List associationSchemas",
-        "description": "Get a list of associationSchemas",
+        "description": "Get a list of Association Schemas",
         "parameters": [
           {
             "name": "source_object",
@@ -1808,7 +1808,7 @@
         ],
         "responses": {
           "200": {
-            "description": "AssociationSchemas",
+            "description": "List of Association Schemas",
             "content": {
               "application/json": {
                 "schema": {
@@ -1851,7 +1851,7 @@
       },
       "post": {
         "operationId": "createAssociationSchema",
-        "summary": "Create associationSchema",
+        "summary": "Create Association Schema",
         "tags": [
           "AssociationSchemas"
         ],
@@ -1873,7 +1873,7 @@
         },
         "responses": {
           "201": {
-            "description": "AssociationSchema created",
+            "description": "Association Schema created",
             "content": {
               "application/json": {
                 "schema": {
@@ -1927,7 +1927,7 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "CustomObject",
+            "description": "An array containing the names of Custom Objects",
             "content": {
               "application/json": {
                 "schema": {
@@ -3629,7 +3629,8 @@
             "type": "string"
           },
           "suggested_key_name": {
-            "type": "string"
+            "type": "string",
+            "description": "The underlying provider may change this (e.g. adding `__c` for Salesforce)."
           },
           "display_name": {
             "type": "string"
