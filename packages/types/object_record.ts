@@ -44,8 +44,8 @@ type BaseCreatedObjectRecord = {
   id: string;
 };
 
-export type CreatedStandardObjectRecord = BaseCreatedObjectRecord & {
-  standardObjectName: string;
+export type CreatedObjectRecord = BaseCreatedObjectRecord & {
+  objectName: string;
 };
 
 export type ObjectRecordUpsertData = Record<string, unknown>;
@@ -57,11 +57,9 @@ type BaseObjectRecord = {
   data: ObjectRecordData;
 };
 
-export type StandardObjectRecord = BaseObjectRecord & {
-  standardObjectName: string;
+export type ObjectRecord = BaseObjectRecord & {
+  objectName: string;
 };
-
-export type ObjectRecord = StandardObjectRecord;
 
 export type ObjectRecordWithMetadata = ObjectRecord & {
   metadata: ObjectMetadata;
@@ -79,8 +77,6 @@ export type BaseFullRecord = {
   metadata: ObjectMetadata;
 };
 
-export type StandardFullObjectRecord = BaseFullRecord & {
-  standardObjectName: string;
+export type FullObjectRecord = BaseFullRecord & {
+  objectName: string;
 };
-
-export type FullObjectRecord = StandardFullObjectRecord;

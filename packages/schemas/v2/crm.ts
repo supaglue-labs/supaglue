@@ -179,3 +179,31 @@ export type CreateAssociationSchemaRequest =
   operations['createAssociationSchema']['requestBody']['content']['application/json'];
 export type CreateAssociationSchemaResponse =
   operations['createAssociationSchema']['responses'][keyof operations['createAssociationSchema']['responses']]['content']['application/json'];
+
+export type CreateCustomObjectRecordPathParams = paths['/custom_objects/{object_name}/records']['parameters']['path'];
+export type CreateCustomObjectRecordQueryParams = never;
+export type CreateCustomObjectRecordRequest =
+  operations['createCustomObjectRecord']['requestBody']['content']['application/json'];
+export type CreateCustomObjectRecordResponse =
+  operations['createCustomObjectRecord']['responses'][keyof operations['createCustomObjectRecord']['responses']]['content']['application/json'];
+
+export type ListCustomObjectRecordsPathParams = paths['/custom_objects/{object_name}/records']['parameters']['path'];
+export type ListCustomObjectRecordsQueryParams = Required<operations['listCustomObjectRecords']>['parameters']['query'];
+export type ListCustomObjectRecordsRequest = never;
+export type ListCustomObjectRecordsResponse =
+  operations['listCustomObjectRecords']['responses'][keyof operations['listCustomObjectRecords']['responses']]['content']['application/json'];
+
+export type GetCustomObjectRecordPathParams =
+  paths['/custom_objects/{object_name}/records/{record_id}']['parameters']['path'];
+export type GetCustomObjectRecordQueryParams = Required<operations['getCustomObjectRecord']>['parameters']['query'];
+export type GetCustomObjectRecordRequest = never;
+export type GetCustomObjectRecordResponse =
+  operations['getCustomObjectRecord']['responses'][keyof operations['getCustomObjectRecord']['responses']]['content']['application/json'];
+
+export type UpdateCustomObjectRecordPathParams =
+  paths['/custom_objects/{object_name}/records/{record_id}']['parameters']['path'];
+export type UpdateCustomObjectRecordQueryParams = Required<operations['getCustomObjectRecord']>['parameters']['query'];
+export type UpdateCustomObjectRecordRequest =
+  operations['updateCustomObjectRecord']['requestBody']['content']['application/json'];
+export type UpdateCustomObjectRecordResponse =
+  operations['updateCustomObjectRecord']['responses'][keyof operations['updateCustomObjectRecord']['responses']]['content']['application/json'];

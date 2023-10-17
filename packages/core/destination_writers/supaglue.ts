@@ -4,9 +4,9 @@ import type {
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
   FullEntityRecord,
+  FullObjectRecord,
   MappedListedObjectRecord,
   ProviderCategory,
-  StandardFullObjectRecord,
 } from '@supaglue/types';
 import { stringify } from 'csv-stringify';
 import type { Pool, PoolClient } from 'pg';
@@ -259,7 +259,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   public override async upsertStandardObjectRecord(
     connection: ConnectionSafeAny,
     objectName: string,
-    record: StandardFullObjectRecord
+    record: FullObjectRecord
   ): Promise<void> {
     return;
   }

@@ -7,10 +7,10 @@ import type {
   ConnectionSyncConfig,
   DestinationUnsafe,
   FullEntityRecord,
+  FullObjectRecord,
   MappedListedObjectRecord,
   ProviderCategory,
   ProviderName,
-  StandardFullObjectRecord,
 } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
@@ -334,7 +334,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   public override async upsertStandardObjectRecord(
     connection: ConnectionSafeAny,
     objectName: string,
-    record: StandardFullObjectRecord
+    record: FullObjectRecord
   ): Promise<void> {
     return await this.#upsertRecord(connection, getObjectTableName(connection.providerName, objectName), record);
   }

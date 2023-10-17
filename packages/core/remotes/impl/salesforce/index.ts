@@ -527,7 +527,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     });
     return {
       id: record.Id as string,
-      standardObjectName: object.name,
+      objectName: object.name,
       data: record,
       metadata: {
         isDeleted: record.IsDeleted === 'true',
@@ -540,9 +540,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     object: StandardOrCustomObject,
     data: ObjectRecordUpsertData
   ): Promise<string> {
-    const response = await this.#client.create(object.name, data);
+    let objectName = object.name;
+    if (object.type === 'custom') {
+      objectName = objectName.endsWith('__c') ? objectName : `${objectName}__c`;
+    }
+    const response = await this.#client.create(objectName, data);
     if (!response.success) {
-      throw new Error(`Failed to create Salesforce ${object.name}`);
+      throw new Error(`Failed to create Salesforce ${objectName}`);
     }
     return response.id;
   }
@@ -552,12 +556,16 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     id: string,
     data: ObjectRecordUpsertData
   ): Promise<void> {
-    const response = await this.#client.update(object.name, {
+    let objectName = object.name;
+    if (object.type === 'custom') {
+      objectName = objectName.endsWith('__c') ? objectName : `${objectName}__c`;
+    }
+    const response = await this.#client.update(objectName, {
       Id: id,
       ...data,
     });
     if (!response.success) {
-      throw new Error(`Failed to update Salesforce ${object.name}: ${JSON.stringify(response)}`);
+      throw new Error(`Failed to update Salesforce ${objectName}: ${JSON.stringify(response)}`);
     }
   }
 

@@ -749,9 +749,6 @@ export interface components {
       id: string;
       custom_object_name: string;
       data: {
-        additional_fields?: {
-          [key: string]: unknown;
-        };
         [key: string]: unknown;
       };
     };
@@ -1759,16 +1756,6 @@ export interface operations {
     };
     requestBody: {
       content: {
-        /**
-         * @example {
-         *   "record": {
-         *     "first_name": "George",
-         *     "last_activity_at": "2022-02-10T00:00:00Z",
-         *     "last_name": "Xing",
-         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
-         *   }
-         * }
-         */
         "application/json": {
           record: components["schemas"]["create_update_custom_object_record"];
         };
@@ -1831,16 +1818,6 @@ export interface operations {
     };
     requestBody: {
       content: {
-        /**
-         * @example {
-         *   "record": {
-         *     "first_name": "George",
-         *     "last_activity_at": "2022-02-10T00:00:00Z",
-         *     "last_name": "Xing",
-         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
-         *   }
-         * }
-         */
         "application/json": {
           record: components["schemas"]["create_update_custom_object_record"];
         };

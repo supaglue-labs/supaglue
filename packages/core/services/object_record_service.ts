@@ -1,12 +1,13 @@
 import type {
   ConnectionSafeAny,
-  CreatedStandardObjectRecord,
+  CreatedObjectRecord,
+  FullObjectRecord,
+  ObjectRecord,
   ObjectRecordData,
   ObjectRecordUpsertData,
-  StandardFullObjectRecord,
-  StandardObjectRecord,
 } from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { ConnectionService, RemoteService } from '.';
 import { BadRequestError, CacheInvalidationError } from '../errors';
 import type { DestinationService } from './destination_service';
@@ -34,7 +35,7 @@ export class ObjectRecordService {
     connection: ConnectionSafeAny,
     objectName: string,
     data: ObjectRecordUpsertData
-  ): Promise<CreatedStandardObjectRecord> {
+  ): Promise<CreatedObjectRecord> {
     const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(
       connection.id,
       'standard',
@@ -54,8 +55,30 @@ export class ObjectRecordService {
 
     return {
       id,
-      standardObjectName: objectName,
+      objectName,
     };
+  }
+
+  public async createCustomObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    data: ObjectRecordUpsertData
+  ): Promise<string> {
+    if (!['salesforce', 'hubspot'].includes(connection.providerName)) {
+      throw new BadRequestError(`Provider ${connection.providerName} does not support custom object writes`);
+    }
+    const remoteClient = await this.#remoteService.getRemoteClient(connection.id);
+    const id = await remoteClient.createObjectRecord(
+      {
+        type: 'custom',
+        name: objectName,
+      },
+      data
+    );
+
+    // TODO: Implement cache invalidation once custom object syncs are supported again
+
+    return id;
   }
 
   async #cacheInvalidateStandardObjectRecord(
@@ -86,52 +109,64 @@ export class ObjectRecordService {
     connection: ConnectionSafeAny,
     objectName: string,
     recordId: string
-  ): Promise<StandardFullObjectRecord> {
-    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(
-      connection.id,
-      'standard',
-      objectName
-    );
+  ): Promise<FullObjectRecord> {
+    return await this.#getFullObjectRecord(connection, { type: 'standard', name: objectName }, recordId);
+  }
+
+  async #getCustomFullObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    recordId: string
+  ): Promise<FullObjectRecord> {
+    return await this.#getFullObjectRecord(connection, { type: 'custom', name: objectName }, recordId);
+  }
+
+  async #getFullObjectRecord(
+    connection: ConnectionSafeAny,
+    standardOrCustomObject: StandardOrCustomObject,
+    recordId: string
+  ): Promise<FullObjectRecord> {
+    let fieldMappingConfig = null;
+    if (standardOrCustomObject.type === 'standard') {
+      fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(
+        connection.id,
+        'standard',
+        standardOrCustomObject.name
+      );
+    }
     const remoteClient = await this.#remoteService.getRemoteClient(connection.id);
     const fields =
-      fieldMappingConfig.type === 'inherit_all_fields'
-        ? (await remoteClient.listProperties({ type: 'standard', name: objectName })).map((p) => p.id)
+      !fieldMappingConfig || fieldMappingConfig?.type === 'inherit_all_fields'
+        ? (await remoteClient.listProperties(standardOrCustomObject)).map((p) => p.id)
         : [
             ...new Set([
               ...fieldMappingConfig.coreFieldMappings.map((m) => m.mappedField),
               ...fieldMappingConfig.additionalFieldMappings.map((m) => m.mappedField),
             ]),
           ];
-    const record = await remoteClient.getObjectRecord(
-      {
-        type: 'standard',
-        name: objectName,
-      },
-      recordId,
-      fields
-    );
+    const record = await remoteClient.getObjectRecord(standardOrCustomObject, recordId, fields);
     return {
       id: recordId,
-      standardObjectName: objectName,
-      mappedProperties: mapObjectToSchema(record.data, fieldMappingConfig),
+      objectName: standardOrCustomObject.name,
+      mappedProperties: fieldMappingConfig ? mapObjectToSchema(record.data, fieldMappingConfig) : record.data,
       rawData: record.data,
       metadata: record.metadata,
     };
   }
 
-  public async getStandardObjectRecord(
+  public async getCustomObjectRecord(
     connection: ConnectionSafeAny,
     objectName: string,
     recordId: string
-  ): Promise<StandardObjectRecord> {
-    const {
-      id,
-      standardObjectName,
-      mappedProperties: mappedData,
-    } = await this.#getStandardFullObjectRecord(connection, objectName, recordId);
+  ): Promise<ObjectRecord> {
+    const { id, mappedProperties: mappedData } = await this.#getCustomFullObjectRecord(
+      connection,
+      objectName,
+      recordId
+    );
     return {
       id,
-      standardObjectName,
+      objectName,
       data: mappedData,
     };
   }
@@ -158,6 +193,24 @@ export class ObjectRecordService {
       unmappedData
     );
     await this.#cacheInvalidateStandardObjectRecord(connection, objectName, recordId);
+  }
+
+  public async updateCustomObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    recordId: string,
+    data: ObjectRecordUpsertData
+  ): Promise<void> {
+    const remoteClient = await this.#remoteService.getRemoteClient(connection.id);
+    await remoteClient.updateObjectRecord(
+      {
+        type: 'custom',
+        name: objectName,
+      },
+      recordId,
+      data
+    );
+    // TODO: Implement cache invalidation for custom objects
   }
 }
 
