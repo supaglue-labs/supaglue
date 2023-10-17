@@ -25,7 +25,7 @@ export default function init(app: Router): void {
   const router = Router();
 
   router.get(
-    '/',
+    '/:object_name/records',
     async (
       req: Request<
         ListCustomObjectRecordsPathParams,
@@ -40,7 +40,7 @@ export default function init(app: Router): void {
   );
 
   router.get(
-    '/:record_id',
+    '/:object_name/records/:record_id',
     async (
       req: Request<
         GetCustomObjectRecordPathParams,
@@ -60,7 +60,7 @@ export default function init(app: Router): void {
   );
 
   router.post(
-    '/',
+    '/:object_name/records',
     async (
       req: Request<
         CreateCustomObjectRecordPathParams,
@@ -79,7 +79,7 @@ export default function init(app: Router): void {
   );
 
   router.patch(
-    '/:record_id',
+    '/:object_name/records/:record_id',
     async (
       req: Request<
         UpdateCustomObjectRecordPathParams,
@@ -98,5 +98,5 @@ export default function init(app: Router): void {
     }
   );
 
-  app.use('/custom_objects/:object_name/records', router);
+  app.use('/custom_objects', router);
 }
