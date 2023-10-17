@@ -1,0 +1,58 @@
+get:
+  operationId: listCustomObjectSchemas
+  summary: List Custom Object Schemas
+  tags:
+    - CustomObjectSchemas
+  security:
+    - x-api-key: []
+  parameters: []
+  responses:
+    200:
+      description: An array containing the names of Custom Objects
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+post:
+  operationId: createCustomObjectSchema
+  summary: Create Custom Object Schema
+  tags:
+    - CustomObjectSchemas
+  parameters: []
+  security:
+    - x-api-key: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            object:
+              $ref: ../../components/schemas/create_custom_object_schema.yaml
+          required:
+            - object
+  responses:
+    '201':
+      description: Custom Object Schema created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../../common/components/schemas/errors.yaml
+              object:
+                type: object
+                properties:
+                  name:
+                    type: string
+                required:
+                  - name
+              warnings:
+                $ref: ../../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../components/parameters/header/x-provider-name.yaml

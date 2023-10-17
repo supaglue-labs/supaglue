@@ -1,7 +1,7 @@
 type BaseAssociation = {
   sourceRecord: AssociatedRecord;
   targetRecord: AssociatedRecord;
-  associationTypeId: string;
+  associationSchemaId: string;
 };
 
 export type Association = BaseAssociation;
@@ -10,36 +10,26 @@ export type AssociationCreateParams = BaseAssociation;
 type BaseObjectAssociation = {
   sourceRecord: AssociatedObjectRecord;
   targetRecord: AssociatedObjectRecord;
-  associationTypeId: string;
+  associationSchemaId: string;
 };
 
 export type ObjectAssociation = BaseObjectAssociation;
 export type ObjectAssociationCreateParams = BaseObjectAssociation;
 
 export type ListAssociationsParams = {
-  sourceRecord: AssociatedRecord;
+  sourceRecord: AssociatedObjectRecord;
   targetEntityId: string;
 };
 
 export type ListObjectAssociationsParams = {
   sourceRecord: AssociatedObjectRecord;
-  targetObject: StandardOrCustomObject;
+  targetObject: string;
 };
 
 type AssociatedObjectRecord = {
   id: string;
-  object: StandardOrCustomObject;
+  objectName: string;
 };
-
-type StandardOrCustomObject =
-  | {
-      type: 'standard';
-      name: string;
-    }
-  | {
-      type: 'custom';
-      id: string;
-    };
 
 type AssociatedRecord = {
   id: string;

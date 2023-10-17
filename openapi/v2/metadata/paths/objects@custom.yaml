@@ -1,6 +1,7 @@
 get:
   operationId: listCustomObjects
-  summary: List customObjects
+  deprecated: true
+  summary: List custom objects (deprecated)
   tags:
     - CustomObjects
   security:
@@ -8,51 +9,13 @@ get:
   parameters: []
   responses:
     200:
-      description: CustomObject
+      description: Custom objects
       content:
         application/json:
           schema:
             type: array
             items:
               $ref: ../components/schemas/objects/simple_custom_object.yaml
-post:
-  operationId: createCustomObject
-  summary: Create customObject
-  tags:
-    - CustomObjects
-  parameters: []
-  security:
-    - x-api-key: []
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            object:
-              $ref: ../components/schemas/create_update_custom_object.yaml
-          required:
-            - object
-  responses:
-    '201':
-      description: CustomObject created
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              errors:
-                $ref: ../../../common/components/schemas/errors.yaml
-              object:
-                type: object
-                properties:
-                  id:
-                    type: string
-                required:
-                  - id
-              warnings:
-                $ref: ../../../common/components/schemas/warnings.yaml
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../components/parameters/header/x-provider-name.yaml

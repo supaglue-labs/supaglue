@@ -313,7 +313,21 @@ const sidebars = {
       label: 'CRM API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: require('./docs/api/v2/crm/sidebar.js'),
+      items: [
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        ...require('./docs/api/v2/crm/sidebar.js').filter(
+          (item) => !['AssociationSchemas', 'CustomObjectSchemas'].includes(item.label)
+        ),
+        {
+          type: 'category',
+          label: 'Metadata',
+          items:
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            require('./docs/api/v2/crm/sidebar.js').filter((item) =>
+              ['AssociationSchemas', 'CustomObjectSchemas'].includes(item.label)
+            ),
+        },
+      ],
     },
     {
       type: 'category',

@@ -220,6 +220,95 @@ export interface paths {
       };
     };
   };
+  "/custom_objects/{object_name}/records": {
+    /** List custom object records */
+    get: operations["listCustomObjectRecords"];
+    /** Create custom object record */
+    post: operations["createCustomObjectRecord"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+      };
+    };
+  };
+  "/custom_objects/{object_name}/records/{record_id}": {
+    /** Get custom object record */
+    get: operations["getCustomObjectRecord"];
+    /** Update custom object record */
+    patch: operations["updateCustomObjectRecord"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+        /** @description The ID of the record to retrieve or update */
+        record_id: string;
+      };
+    };
+  };
+  "/associations": {
+    /**
+     * List associations for a record and target object 
+     * @description Get a list of associations
+     */
+    get: operations["getAssociations"];
+    /** Upsert association */
+    put: operations["upsertAssociation"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/metadata/associations": {
+    /**
+     * List associationSchemas 
+     * @description Get a list of Association Schemas
+     */
+    get: operations["getAssociationSchemas"];
+    /** Create Association Schema */
+    post: operations["createAssociationSchema"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/metadata/custom_objects": {
+    /** List Custom Object Schemas */
+    get: operations["listCustomObjectSchemas"];
+    /** Create Custom Object Schema */
+    post: operations["createCustomObjectSchema"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/metadata/custom_objects/{object_name}": {
+    /** Get Custom Object Schema Details */
+    get: operations["getCustomObjectSchema"];
+    /** Update Custom Object Schema */
+    put: operations["updateCustomObjectSchema"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+      };
+    };
+  };
   "/lists": {
     /** List lists */
     get: operations["listLists"];
@@ -589,6 +678,93 @@ export interface components {
       pipeline?: string | null;
       custom_fields?: components["schemas"]["custom_fields"];
     };
+    custom_object_schema: {
+      /** @example ticket */
+      name: string;
+      /** @example Ticket object */
+      description: string | null;
+      labels: {
+        /** @example Ticket */
+        singular: string;
+        /** @example Tickets */
+        plural: string;
+      };
+      fields: (components["schemas"]["custom_object_field"])[];
+    };
+    custom_object_field: {
+      /**
+       * @description The machine name of the property as it appears in the third-party Provider. In Salesforce, this must end with `__c`. 
+       * @example FirstName
+       */
+      id: string;
+      /**
+       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @example First Name
+       */
+      label: string;
+      /** @description A description of the field. */
+      description?: string;
+      /** @example false */
+      is_required?: boolean;
+      /**
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @example supaglue
+       */
+      group_name?: string;
+      type: components["schemas"]["property_type"];
+      /** @description Only applicable in Salesforce. If not given, will default to 18. */
+      precision?: number;
+      /** @description Only applicable in Salesforce. If not given, will default to 0. */
+      scale?: number;
+      /** @description The list of options for a picklist/multipicklist field. */
+      options?: ({
+          /** @example Option 1 */
+          label: string;
+          /** @example option_1 */
+          value: string;
+          /** @description A description of this option. */
+          description?: string;
+          /** @description Defaults to false. */
+          hidden?: boolean;
+        })[];
+      /**
+       * @description The raw details of the property as provided by the third-party Provider, if available. 
+       * @example {}
+       */
+      raw_details?: {
+        [key: string]: unknown;
+      };
+    };
+    /**
+     * @example {
+     *   "id": "001Fn00023f8oYYIA0",
+     *   "custom_object_id": "MyCustomObject__c",
+     *   "data": {
+     *     "Name": "Acme Corp",
+     *     "Description": "We create the best embedded integration platforms."
+     *   }
+     * }
+     */
+    custom_object_record: {
+      id: string;
+      custom_object_name: string;
+      data: {
+        additional_fields?: {
+          [key: string]: unknown;
+        };
+        [key: string]: unknown;
+      };
+    };
+    simple_custom_object: {
+      /** @example ticket */
+      name: string;
+    };
+    /** @description An instance of an association between two records. */
+    association: {
+      source_record_id: string;
+      target_record_id: string;
+      association_schema_id: string;
+    };
     errors: ({
         /**
          * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
@@ -696,6 +872,131 @@ export interface components {
     filter: components["schemas"]["equals_filter"] | components["schemas"]["contains_filter"];
     /** @enum {string|null} */
     lifecycle_stage: "subscriber" | "lead" | "marketingqualifiedlead" | "salesqualifiedlead" | "opportunity" | "customer" | "evangelist" | "other" | null;
+    create_update_association_schema: {
+      source_object: string;
+      target_object: string;
+      /** @description The underlying provider may change this (e.g. adding `__c` for Salesforce). */
+      suggested_key_name: string;
+      display_name: string;
+    };
+    create_update_association: {
+      association_schema_id: string;
+      source_record_id: string;
+      target_record_id: string;
+    };
+    create_update_custom_object_record: {
+      [key: string]: unknown;
+    };
+    create_custom_object_schema: {
+      /**
+       * @description The name you'd like to use for the custom object. For Salesforce, we will append `__c` if necessary. For HubSpot, it will pass through as-is. 
+       * @example ticket
+       */
+      name: string;
+      /** @example Ticket object */
+      description: string | null;
+      labels: {
+        /** @example Ticket */
+        singular: string;
+        /** @example Tickets */
+        plural: string;
+      };
+      /**
+       * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field. 
+       * @example ticket_id
+       */
+      primary_field_id: string;
+      fields: (components["schemas"]["custom_object_field"])[];
+    };
+    update_custom_object_schema: {
+      /** @example Ticket object */
+      description: string | null;
+      labels: {
+        /** @example Ticket */
+        singular: string;
+        /** @example Tickets */
+        plural: string;
+      };
+      /**
+       * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field. 
+       * @example ticket_id
+       */
+      primary_field_id: string;
+      fields: (components["schemas"]["custom_object_field"])[];
+    };
+    created_custom_object_record: {
+      id: string;
+      custom_object_id: string;
+    };
+    /**
+     * @description Type of the field.
+     * 
+     * Support:
+     * 
+     * <table>
+     *   <thead>
+     *     <tr>
+     *     <th>Field</th>
+     *     <th>Hubspot (type-fieldType)</th>
+     *     <th>Salesforce</th>
+     *     <th>Pipedrive</th>
+     *     </tr>
+     *   </thead>
+     *   <tbody>
+     *     <tr>
+     *      <td>text</td>
+     *       <td>string-text</td>
+     *       <td>Text</td>
+     *       <td>varchar_auto</td>
+     *     </tr>
+     *     <tr>
+     *       <td>textarea</td>
+     *       <td>string-textarea</td>
+     *       <td>Textarea</td>
+     *       <td>text</td>
+     *     </tr>
+     *     <tr>
+     *       <td>number</td>
+     *       <td>number-number</td>
+     *       <td>Int/Double (depending on scale)</td>
+     *       <td>double</td>
+     *     </tr>
+     *     <tr>
+     *       <td>picklist</td>
+     *       <td>enumeration-select</td>
+     *       <td>Picklist</td>
+     *       <td>enum</td>
+     *     </tr>
+     *     <tr>
+     *       <td>multipicklist</td>
+     *       <td>enumeration-checkbox</td>
+     *       <td>Multipicklist</td>
+     *       <td>set</td>
+     *     </tr>
+     *     <tr>
+     *       <td>date</td>
+     *       <td>date-date</td>
+     *       <td>Date</td>
+     *       <td>date</td>
+     *     </tr>
+     *     <tr>
+     *       <td>datetime</td>
+     *       <td>datetime-date</td>
+     *       <td>Datetime</td>
+     *       <td>date</td>
+     *     </tr>
+     *     <tr>
+     *     <td>boolean</td>
+     *       <td>bool-booleancheckbox</td>
+     *       <td>Checkbox</td>
+     *       <td>enum</td>
+     *     </tr>
+     *   </tbody>
+     *   </table>
+     *  
+     * @enum {string}
+     */
+    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "other";
   };
   responses: never;
   parameters: {
@@ -730,6 +1031,8 @@ export interface components {
     "x-provider-name": string;
     /** @description The Supaglue common object type to fetch a list for. */
     object_type: "contact" | "account" | "opportunity" | "lead";
+    /** @description The unique name of the custom object. For Salesforce, this should end with __c. For Hubspot, this will typically be the singular form of the object. */
+    object_name: string;
   };
   requestBodies: never;
   headers: never;
@@ -1410,6 +1713,359 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["user"];
+        };
+      };
+    };
+  };
+  /** List custom object records */
+  listCustomObjectRecords: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Custom Objects */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["custom_object_record"])[];
+          };
+        };
+      };
+    };
+  };
+  /** Create custom object record */
+  createCustomObjectRecord: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+      };
+    };
+    requestBody: {
+      content: {
+        /**
+         * @example {
+         *   "record": {
+         *     "first_name": "George",
+         *     "last_activity_at": "2022-02-10T00:00:00Z",
+         *     "last_name": "Xing",
+         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+         *   }
+         * }
+         */
+        "application/json": {
+          record: components["schemas"]["create_update_custom_object_record"];
+        };
+      };
+    };
+    responses: {
+      /** @description Custom Object Record created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** Get custom object record */
+  getCustomObjectRecord: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+        /** @description The ID of the record to retrieve or update */
+        record_id: string;
+      };
+    };
+    responses: {
+      /** @description Custom Object Record */
+      200: {
+        content: {
+          "application/json": components["schemas"]["custom_object_record"];
+        };
+      };
+    };
+  };
+  /** Update custom object record */
+  updateCustomObjectRecord: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+        /** @description The ID of the record to retrieve or update */
+        record_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        /**
+         * @example {
+         *   "record": {
+         *     "first_name": "George",
+         *     "last_activity_at": "2022-02-10T00:00:00Z",
+         *     "last_name": "Xing",
+         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
+         *   }
+         * }
+         */
+        "application/json": {
+          record: components["schemas"]["create_update_custom_object_record"];
+        };
+      };
+    };
+    responses: {
+      /** @description Custom Object Record created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * List associations for a record and target object 
+   * @description Get a list of associations
+   */
+  getAssociations: {
+    parameters: {
+      query: {
+        source_record_id: string;
+        source_object: string;
+        target_object: string;
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Associations */
+      200: {
+        content: {
+          "application/json": {
+            results?: (components["schemas"]["association"])[];
+          };
+        };
+      };
+    };
+  };
+  /** Upsert association */
+  upsertAssociation: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_association"];
+      };
+    };
+    responses: {
+      /** @description Association created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            association?: components["schemas"]["association"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * List associationSchemas 
+   * @description Get a list of Association Schemas
+   */
+  getAssociationSchemas: {
+    parameters: {
+      query: {
+        source_object: string;
+        target_object: string;
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description List of Association Schemas */
+      200: {
+        content: {
+          "application/json": {
+            results?: ({
+                id: string;
+                /** @example contact */
+                source_object: string;
+                /** @example my_custom_object */
+                target_object: string;
+                display_name: string;
+              })[];
+          };
+        };
+      };
+    };
+  };
+  /** Create Association Schema */
+  createAssociationSchema: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_update_association_schema"];
+      };
+    };
+    responses: {
+      /** @description Association Schema created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            association_schema?: {
+              id: string;
+            };
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** List Custom Object Schemas */
+  listCustomObjectSchemas: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description An array containing the names of Custom Objects */
+      200: {
+        content: {
+          "application/json": (string)[];
+        };
+      };
+    };
+  };
+  /** Create Custom Object Schema */
+  createCustomObjectSchema: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          object: components["schemas"]["create_custom_object_schema"];
+        };
+      };
+    };
+    responses: {
+      /** @description Custom Object Schema created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            object?: {
+              name: string;
+            };
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** Get Custom Object Schema Details */
+  getCustomObjectSchema: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+      };
+    };
+    responses: {
+      /** @description CustomObject */
+      200: {
+        content: {
+          "application/json": components["schemas"]["custom_object_schema"];
+        };
+      };
+    };
+  };
+  /** Update Custom Object Schema */
+  updateCustomObjectSchema: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          object: components["schemas"]["update_custom_object_schema"];
+        };
+      };
+    };
+    responses: {
+      /** @description Custom Object Schema updated */
+      200: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            warnings?: components["schemas"]["warnings"];
+          };
         };
       };
     };

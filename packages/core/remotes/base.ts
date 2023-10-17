@@ -12,12 +12,12 @@ import type {
   ObjectAssociation,
   ObjectAssociationCreateParams,
 } from '@supaglue/types/association';
-import type { AssociationTypeCardinality, SimpleAssociationType } from '@supaglue/types/association_type';
+import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
 import type {
-  CustomObject,
-  CustomObjectCreateParams,
-  CustomObjectUpdateParams,
-  SimpleCustomObject,
+  CustomObjectSchema,
+  CustomObjectSchemaCreateParams,
+  CustomObjectSchemaUpdateParams,
+  SimpleCustomObjectSchema,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
@@ -40,21 +40,17 @@ export interface RemoteClient {
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
   listStandardObjects(): Promise<string[]>;
-  listCustomObjects(): Promise<SimpleCustomObject[]>;
-  getCustomObject(id: string): Promise<CustomObject>;
-  createCustomObject(params: CustomObjectCreateParams): Promise<string>;
-  updateCustomObject(params: CustomObjectUpdateParams): Promise<void>;
+  listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]>;
+  getCustomObjectSchema(id: string): Promise<CustomObjectSchema>;
+  createCustomObjectSchema(params: CustomObjectSchemaCreateParams): Promise<string>;
+  updateCustomObjectSchema(params: CustomObjectSchemaUpdateParams): Promise<void>;
 
-  listAssociationTypes(
-    sourceObject: StandardOrCustomObject,
-    targetObject: StandardOrCustomObject
-  ): Promise<SimpleAssociationType[]>;
-  createAssociationType(
-    sourceObject: StandardOrCustomObject,
-    targetObject: StandardOrCustomObject,
+  listAssociationSchemas(sourceObject: string, targetObject: string): Promise<SimpleAssociationSchema[]>;
+  createAssociationSchema(
+    sourceObject: string,
+    targetObject: string,
     keyName: string,
-    displayName: string,
-    cardinality: AssociationTypeCardinality
+    displayName: string
   ): Promise<void>;
 
   listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]>;
@@ -127,31 +123,27 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   public async listStandardObjects(): Promise<string[]> {
     throw new Error('Not implemented');
   }
-  public async listCustomObjects(): Promise<SimpleCustomObject[]> {
+  public async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
     throw new Error('Not implemented');
   }
-  public async getCustomObject(id: string): Promise<CustomObject> {
+  public async getCustomObjectSchema(id: string): Promise<CustomObjectSchema> {
     throw new Error('Not implemented');
   }
-  public async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
+  public async createCustomObjectSchema(params: CustomObjectSchemaCreateParams): Promise<string> {
     throw new Error('Not implemented');
   }
-  public async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
+  public async updateCustomObjectSchema(params: CustomObjectSchemaUpdateParams): Promise<void> {
     throw new Error('Not implemented');
   }
 
-  public async listAssociationTypes(
-    sourceObject: StandardOrCustomObject,
-    targetObject: StandardOrCustomObject
-  ): Promise<SimpleAssociationType[]> {
+  public async listAssociationSchemas(sourceObject: string, targetObject: string): Promise<SimpleAssociationSchema[]> {
     throw new Error('Not implemented');
   }
-  public async createAssociationType(
-    sourceObject: StandardOrCustomObject,
-    targetObject: StandardOrCustomObject,
+  public async createAssociationSchema(
+    sourceObject: string,
+    targetObject: string,
     keyName: string,
-    displayName: string,
-    cardinality: AssociationTypeCardinality
+    displayName: string
   ): Promise<void> {
     throw new Error('Not implemented');
   }

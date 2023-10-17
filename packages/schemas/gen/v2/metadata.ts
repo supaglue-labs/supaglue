@@ -5,55 +5,22 @@
 
 
 export interface paths {
+  "/objects/custom": {
+    /**
+     * List custom objects (deprecated) 
+     * @deprecated
+     */
+    get: operations["listCustomObjects"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/objects/standard": {
     /** List standardObjects */
     get: operations["listStandardObjects"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-  };
-  "/objects/custom": {
-    /** List customObjects */
-    get: operations["listCustomObjects"];
-    /** Create customObject */
-    post: operations["createCustomObject"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-  };
-  "/objects/custom/{custom_object_id}": {
-    /** Get customObject */
-    get: operations["getCustomObject"];
-    /** Update customObject */
-    put: operations["updateCustomObject"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-      path: {
-        custom_object_id: string;
-      };
-    };
-  };
-  "/association-types": {
-    /**
-     * List associationTypes 
-     * @deprecated 
-     * @description Get a list of associationTypes
-     */
-    get: operations["getAssociationTypes"];
-    /**
-     * Create associationType 
-     * @deprecated
-     */
-    post: operations["createAssociationType"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -234,13 +201,13 @@ export interface components {
      *     <tr>
      *       <td>textarea</td>
      *       <td>string-textarea</td>
-     *       <td>Longtextarea</td>
+     *       <td>Textarea</td>
      *       <td>text</td>
      *     </tr>
      *     <tr>
      *       <td>number</td>
      *       <td>number-number</td>
-     *       <td>Number</td>
+     *       <td>Int/Double (depending on scale)</td>
      *       <td>double</td>
      *     </tr>
      *     <tr>
@@ -269,7 +236,7 @@ export interface components {
      *     </tr>
      *     <tr>
      *     <td>boolean</td>
-     *       <td>boolean-booleancheckbox</td>
+     *       <td>bool-booleancheckbox</td>
      *       <td>Checkbox</td>
      *       <td>enum</td>
      *     </tr>
@@ -278,7 +245,7 @@ export interface components {
      *  
      * @enum {string}
      */
-    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean";
+    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "other";
     picklist_option: {
       /** @example Option 1 */
       label: string;
@@ -351,84 +318,14 @@ export interface components {
       /** @example ticket */
       name: string;
     };
-    custom_object: {
-      /** @example 42579f73-8524-4570-9b67-ecbd702c6b14 */
-      id: string;
-      /** @example ticket */
-      name: string;
-      /** @example Ticket object */
-      description: string | null;
-      labels: {
-        /** @example Ticket */
-        singular: string;
-        /** @example Tickets */
-        plural: string;
-      };
-      fields: (components["schemas"]["custom_object_field"])[];
-    };
     simple_custom_object: {
       /** @example 42579f73-8524-4570-9b67-ecbd702c6b14 */
       id: string;
       /** @example ticket */
       name: string;
     };
-    create_update_custom_object: {
-      /**
-       * @description The name you'd like to use for the custom object. For Salesforce, we will append `__c` if necessary. For HubSpot, it will pass through as-is. 
-       * @example ticket
-       */
-      suggested_name: string;
-      /** @example Ticket object */
-      description: string | null;
-      labels: {
-        /** @example Ticket */
-        singular: string;
-        /** @example Tickets */
-        plural: string;
-      };
-      /**
-       * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field. 
-       * @example ticket_id
-       */
-      primary_field_key_name: string;
-      fields: (components["schemas"]["custom_object_field"])[];
-    };
-    create_update_association_type: {
-      source_entity_id: string;
-      target_entity_id: string;
-      suggested_key_name: string;
-      display_name: string;
-      cardinality: components["schemas"]["association_type_cardinality"];
-    };
     /** @enum {string} */
     object_type: "common" | "standard" | "custom";
-    /** @enum {string} */
-    association_type_cardinality: "ONE_TO_MANY";
-    /** @enum {string} */
-    association_type_cardinality_or_unknown: "ONE_TO_MANY" | "UNKNOWN";
-    custom_object_field: {
-      /** @example Ticket ID */
-      display_name: string;
-      /**
-       * @description In Salesforce, this must end with `__c`. 
-       * @example ticket_id
-       */
-      key_name: string;
-      /** @example false */
-      is_required: boolean;
-      /**
-       * @description In Salesforce, when this is set to 'string', the max length will be set to 255 by default. In Salesforce, when it is set to 'number', the precision and scale will be set to 18 and 0, respectively. 
-       * @enum {string}
-       */
-      field_type: "string" | "number";
-    };
-    association_type: {
-      id: string;
-      source_entity_id: string;
-      target_entity_id: string;
-      display_name: string;
-      cardinality: components["schemas"]["association_type_cardinality_or_unknown"];
-    };
     object: {
       id: string;
       origin_type: components["schemas"]["object_type"];
@@ -472,6 +369,26 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  /**
+   * List custom objects (deprecated) 
+   * @deprecated
+   */
+  listCustomObjects: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Custom objects */
+      200: {
+        content: {
+          "application/json": (components["schemas"]["simple_custom_object"])[];
+        };
+      };
+    };
+  };
   /** List standardObjects */
   listStandardObjects: {
     parameters: {
@@ -485,161 +402,6 @@ export interface operations {
       200: {
         content: {
           "application/json": (components["schemas"]["standard_object"])[];
-        };
-      };
-    };
-  };
-  /** List customObjects */
-  listCustomObjects: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    responses: {
-      /** @description CustomObject */
-      200: {
-        content: {
-          "application/json": (components["schemas"]["simple_custom_object"])[];
-        };
-      };
-    };
-  };
-  /** Create customObject */
-  createCustomObject: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          object: components["schemas"]["create_update_custom_object"];
-        };
-      };
-    };
-    responses: {
-      /** @description CustomObject created */
-      201: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-            object?: {
-              id: string;
-            };
-            warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  /** Get customObject */
-  getCustomObject: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-      path: {
-        custom_object_id: string;
-      };
-    };
-    responses: {
-      /** @description CustomObject */
-      200: {
-        content: {
-          "application/json": components["schemas"]["custom_object"];
-        };
-      };
-    };
-  };
-  /** Update customObject */
-  updateCustomObject: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-      path: {
-        custom_object_id: string;
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          object: components["schemas"]["create_update_custom_object"];
-        };
-      };
-    };
-    responses: {
-      /** @description CustomObject updated */
-      200: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-            warnings?: components["schemas"]["warnings"];
-          };
-        };
-      };
-    };
-  };
-  /**
-   * List associationTypes 
-   * @deprecated 
-   * @description Get a list of associationTypes
-   */
-  getAssociationTypes: {
-    parameters: {
-      query: {
-        source_entity_id: string;
-        target_entity_id: string;
-      };
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    responses: {
-      /** @description AssociationTypes */
-      200: {
-        content: {
-          "application/json": {
-            results?: (components["schemas"]["association_type"])[];
-          };
-        };
-      };
-    };
-  };
-  /**
-   * Create associationType 
-   * @deprecated
-   */
-  createAssociationType: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["create_update_association_type"];
-      };
-    };
-    responses: {
-      /** @description AssociationType created */
-      201: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-            association_type?: {
-              id: string;
-            };
-            warnings?: components["schemas"]["warnings"];
-          };
         };
       };
     };

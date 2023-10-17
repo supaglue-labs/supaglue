@@ -4,7 +4,10 @@
  * @group unit/mappers/hubspot
  */
 
+import type { Property as HubspotProperty } from '@hubspot/api-client/lib/codegen/crm/properties/index';
+import type { ObjectSchema } from '@hubspot/api-client/lib/codegen/crm/schemas/index';
 import { describe, expect, test } from '@jest/globals';
+import type { PropertyType } from '@supaglue/types';
 import type { AccountCreateParams, ContactCreateParams, OpportunityCreateParams } from '@supaglue/types/crm';
 import {
   CRM_FAX,
@@ -22,9 +25,14 @@ import {
   fromHubSpotContactToContact,
   fromHubSpotDealToOpportunity,
   fromHubspotOwnerToUser,
+  getPropertyType,
+  toCustomObject,
   toHubspotAccountCreateParams,
   toHubspotContactCreateParams,
   toHubspotOpportunityCreateParams,
+  toHubspotTypeAndFieldType,
+  toPropertyUnified,
+  toRawDetails,
 } from './mappers';
 
 describe('Hubspot Mappers', () => {
@@ -512,6 +520,345 @@ describe('Hubspot Mappers', () => {
         },
         updatedAt: DATE,
       });
+    });
+  });
+  describe('toCustomObject', () => {
+    test('should convert an ObjectSchema to a CustomObject', () => {
+      const object = {
+        name: 'TestObject',
+        description: 'Test description',
+        primaryDisplayProperty: 'name',
+        labels: {
+          singular: 'Test Singular',
+          plural: 'Test Plural',
+        },
+        properties: [
+          {
+            name: 'name',
+            label: 'Name',
+            description: 'Name',
+            type: 'string',
+            fieldType: 'text',
+          },
+          {
+            name: 'property1',
+            label: 'Property 1',
+            description: 'Description 1',
+            type: 'string',
+            fieldType: 'textarea',
+          },
+          {
+            name: 'property2',
+            label: 'Property 2',
+            description: 'Description 2',
+            type: 'number',
+          },
+          {
+            name: 'property3',
+            label: 'Property 3',
+            description: 'Description 3',
+            type: 'enumeration',
+            fieldType: 'select',
+          },
+          {
+            name: 'property4',
+            label: 'Property 4',
+            description: 'Description 4',
+            type: 'enumeration',
+            fieldType: 'checkbox',
+          },
+          {
+            name: 'property5',
+            label: 'Property 5',
+            description: 'Description 5',
+            type: 'bool',
+          },
+          {
+            name: 'property6',
+            label: 'Property 6',
+            description: 'Description 6',
+            type: 'date',
+          },
+          {
+            name: 'property7',
+            label: 'Property 7',
+            description: 'Description 7',
+            type: 'datetime',
+          },
+        ],
+        requiredProperties: ['property1'],
+      } as unknown as ObjectSchema;
+
+      const customObject = toCustomObject(object);
+
+      expect(customObject).toEqual({
+        description: null,
+        fields: [
+          {
+            description: 'Name',
+            groupName: undefined,
+            id: 'name',
+            isRequired: false,
+            label: 'Name',
+            options: undefined,
+            rawDetails: {
+              description: 'Name',
+              fieldType: 'text',
+              label: 'Name',
+              name: 'name',
+              type: 'string',
+            },
+            type: 'text',
+          },
+          {
+            description: 'Description 1',
+            groupName: undefined,
+            id: 'property1',
+            isRequired: true,
+            label: 'Property 1',
+            options: undefined,
+            rawDetails: {
+              description: 'Description 1',
+              fieldType: 'textarea',
+              label: 'Property 1',
+              name: 'property1',
+              type: 'string',
+            },
+            type: 'textarea',
+          },
+          {
+            description: 'Description 2',
+            groupName: undefined,
+            id: 'property2',
+            isRequired: false,
+            label: 'Property 2',
+            options: undefined,
+            rawDetails: {
+              description: 'Description 2',
+              label: 'Property 2',
+              name: 'property2',
+              type: 'number',
+            },
+            type: 'number',
+          },
+          {
+            description: 'Description 3',
+            groupName: undefined,
+            id: 'property3',
+            isRequired: false,
+            label: 'Property 3',
+            options: undefined,
+            rawDetails: {
+              description: 'Description 3',
+              fieldType: 'select',
+              label: 'Property 3',
+              name: 'property3',
+              type: 'enumeration',
+            },
+            type: 'picklist',
+          },
+          {
+            description: 'Description 4',
+            groupName: undefined,
+            id: 'property4',
+            isRequired: false,
+            label: 'Property 4',
+            options: undefined,
+            rawDetails: {
+              description: 'Description 4',
+              fieldType: 'checkbox',
+              label: 'Property 4',
+              name: 'property4',
+              type: 'enumeration',
+            },
+            type: 'multipicklist',
+          },
+          {
+            description: 'Description 5',
+            groupName: undefined,
+            id: 'property5',
+            isRequired: false,
+            label: 'Property 5',
+            options: undefined,
+            rawDetails: {
+              description: 'Description 5',
+              label: 'Property 5',
+              name: 'property5',
+              type: 'bool',
+            },
+            type: 'boolean',
+          },
+          {
+            description: 'Description 6',
+            groupName: undefined,
+            id: 'property6',
+            isRequired: false,
+            label: 'Property 6',
+            options: undefined,
+            rawDetails: {
+              description: 'Description 6',
+              label: 'Property 6',
+              name: 'property6',
+              type: 'date',
+            },
+            type: 'date',
+          },
+          {
+            description: 'Description 7',
+            groupName: undefined,
+            id: 'property7',
+            isRequired: false,
+            label: 'Property 7',
+            options: undefined,
+            rawDetails: {
+              description: 'Description 7',
+              label: 'Property 7',
+              name: 'property7',
+              type: 'datetime',
+            },
+            type: 'datetime',
+          },
+        ],
+        labels: {
+          plural: 'Test Plural',
+          singular: 'Test Singular',
+        },
+        name: 'TestObject',
+        primaryFieldId: 'name',
+      });
+    });
+  });
+
+  describe('toPropertyUnified', () => {
+    test('should convert a Property to a PropertyUnified', () => {
+      const property = {
+        name: 'property1',
+        label: 'Property 1',
+        description: 'Description 1',
+        fieldType: 'text',
+      } as HubspotProperty;
+
+      const requiredSet = new Set(['property1']);
+      const propertyUnified = toPropertyUnified(property, requiredSet);
+
+      expect(propertyUnified).toEqual({
+        id: 'property1',
+        label: 'Property 1',
+        description: 'Description 1',
+        type: 'text',
+        isRequired: true,
+        groupName: undefined,
+        rawDetails: {
+          name: 'property1',
+          label: 'Property 1',
+          description: 'Description 1',
+          fieldType: 'text',
+        },
+      });
+    });
+  });
+
+  describe('getPropertyType', () => {
+    test('should return the correct PropertyType', () => {
+      expect(getPropertyType({ fieldType: 'text', type: 'string' } as HubspotProperty)).toEqual('text');
+      expect(getPropertyType({ fieldType: 'textarea', type: 'string' } as HubspotProperty)).toEqual('textarea');
+      expect(getPropertyType({ fieldType: 'number', type: 'number' } as HubspotProperty)).toEqual('number');
+      expect(getPropertyType({ fieldType: 'select', type: 'enumeration' } as HubspotProperty)).toEqual('picklist');
+      expect(getPropertyType({ fieldType: 'checkbox', type: 'enumeration' } as HubspotProperty)).toEqual(
+        'multipicklist'
+      );
+      expect(getPropertyType({ type: 'date' } as HubspotProperty)).toEqual('date');
+      expect(getPropertyType({ type: 'datetime' } as HubspotProperty)).toEqual('datetime');
+      expect(getPropertyType({ type: 'bool' } as HubspotProperty)).toEqual('boolean');
+      expect(getPropertyType({ fieldType: 'unknown', type: 'unknown' } as HubspotProperty)).toEqual('other');
+    });
+  });
+
+  describe('toRawDetails', () => {
+    test('should convert a Property to a Record<string, unknown>', () => {
+      const property = {
+        name: 'property1',
+        label: 'Property 1',
+        description: 'Description 1',
+        fieldType: 'text',
+      } as HubspotProperty;
+
+      const rawDetails = toRawDetails(property);
+
+      expect(rawDetails).toEqual(property);
+    });
+  });
+  describe('toHubspotTypeAndFieldType', () => {
+    test('should return the correct type and fieldType for text', () => {
+      const propertyType: PropertyType = 'text';
+
+      const result = toHubspotTypeAndFieldType(propertyType);
+
+      expect(result).toEqual({ type: 'string', fieldType: 'text' });
+    });
+
+    test('should return the correct type and fieldType for textarea', () => {
+      const propertyType: PropertyType = 'textarea';
+
+      const result = toHubspotTypeAndFieldType(propertyType);
+
+      expect(result).toEqual({ type: 'string', fieldType: 'textarea' });
+    });
+
+    test('should return the correct type and fieldType for number', () => {
+      const propertyType: PropertyType = 'number';
+
+      const result = toHubspotTypeAndFieldType(propertyType);
+
+      expect(result).toEqual({ type: 'number', fieldType: 'number' });
+    });
+
+    test('should return the correct type and fieldType for picklist', () => {
+      const propertyType: PropertyType = 'picklist';
+
+      const result = toHubspotTypeAndFieldType(propertyType);
+
+      expect(result).toEqual({ type: 'enumeration', fieldType: 'select' });
+    });
+
+    test('should return the correct type and fieldType for multipicklist', () => {
+      const propertyType: PropertyType = 'multipicklist';
+
+      const result = toHubspotTypeAndFieldType(propertyType);
+
+      expect(result).toEqual({ type: 'enumeration', fieldType: 'checkbox' });
+    });
+
+    test('should return the correct type and fieldType for date', () => {
+      const propertyType: PropertyType = 'date';
+
+      const result = toHubspotTypeAndFieldType(propertyType);
+
+      expect(result).toEqual({ type: 'date', fieldType: 'date' });
+    });
+
+    test('should return the correct type and fieldType for datetime', () => {
+      const propertyType: PropertyType = 'datetime';
+
+      const result = toHubspotTypeAndFieldType(propertyType);
+
+      expect(result).toEqual({ type: 'datetime', fieldType: 'date' });
+    });
+
+    test('should return the correct type and fieldType for boolean', () => {
+      const propertyType: PropertyType = 'boolean';
+
+      const result = toHubspotTypeAndFieldType(propertyType);
+
+      expect(result).toEqual({ type: 'bool', fieldType: 'booleancheckbox' });
+    });
+
+    test('should return the default type and fieldType for an unknown type', () => {
+      const propertyType: PropertyType = 'other';
+
+      const result = toHubspotTypeAndFieldType(propertyType);
+
+      expect(result).toEqual({ type: 'string', fieldType: 'text' });
     });
   });
 });

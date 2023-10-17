@@ -1,5 +1,12 @@
 import type { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
 import type {
+  Property as HubspotProperty,
+  PropertyUpdateFieldTypeEnum,
+  PropertyUpdateTypeEnum,
+} from '@hubspot/api-client/lib/codegen/crm/properties/index';
+import type { ObjectSchema } from '@hubspot/api-client/lib/codegen/crm/schemas/index';
+import type { PicklistOption, PropertyType, PropertyUnified } from '@supaglue/types';
+import type {
   Account,
   AccountCreateParams,
   Contact,
@@ -10,6 +17,7 @@ import type {
   User,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
+import type { CustomObjectSchema } from '@supaglue/types/custom_object';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { PipelineStageMapping, RecordWithFlattenedAssociations } from '.';
 import { BadRequestError } from '../../../errors';
@@ -481,4 +489,118 @@ export const toHubspotContactUpdateParams = toHubspotContactCreateParams;
 
 export const nullToEmptyString = (value: string | undefined | null): string | undefined => {
   return value === null ? '' : value;
+};
+
+export const toCustomObject = (object: ObjectSchema): CustomObjectSchema => {
+  const requiredSet = new Set(object.requiredProperties);
+  return {
+    name: object.name,
+    description: null,
+    primaryFieldId: object.primaryDisplayProperty ?? '',
+    labels: {
+      singular: object.labels.singular ?? '',
+      plural: object.labels.plural ?? '',
+    },
+    fields: object.properties.map((property) => toPropertyUnified(property, requiredSet)),
+  };
+};
+
+export const toPropertyUnified = (property: HubspotProperty, requiredSet: Set<string>): PropertyUnified => {
+  return {
+    id: property.name,
+    label: property.label,
+    description: property.description,
+    type: getPropertyType(property),
+    isRequired: requiredSet.has(property.name),
+    groupName: property.groupName,
+    options: getPicklistOptions(property),
+    rawDetails: toRawDetails(property),
+  };
+};
+
+export const getPicklistOptions = (property: HubspotProperty): PicklistOption[] | undefined => {
+  return property.options?.map((option) => ({
+    label: option.label,
+    value: option.value,
+    description: option.description,
+    hidden: option.hidden,
+  }));
+};
+
+export const getPropertyType = (property: HubspotProperty): PropertyType => {
+  if (property.fieldType === 'text') {
+    return 'text';
+  }
+  if (property.fieldType === 'textarea') {
+    return 'textarea';
+  }
+  if (property.type === 'number') {
+    return 'number';
+  }
+  if (property.type === 'enumeration') {
+    if (property.fieldType === 'select') {
+      return 'picklist';
+    }
+    if (property.fieldType === 'checkbox') {
+      return 'multipicklist';
+    }
+  }
+  if (property.type === 'date') {
+    return 'date';
+  }
+  if (property.type === 'datetime') {
+    return 'datetime';
+  }
+  if (property.type === 'bool') {
+    return 'boolean';
+  }
+  return 'other';
+};
+
+export const toHubspotTypeAndFieldType = (
+  propertyType: PropertyType
+): { type: PropertyUpdateTypeEnum; fieldType: PropertyUpdateFieldTypeEnum } => {
+  switch (propertyType) {
+    case 'text': {
+      return { type: 'string', fieldType: 'text' };
+    }
+    case 'textarea': {
+      return { type: 'string', fieldType: 'textarea' };
+    }
+    case 'number': {
+      return { type: 'number', fieldType: 'number' };
+    }
+    case 'picklist': {
+      return { type: 'enumeration', fieldType: 'select' };
+    }
+    case 'multipicklist': {
+      return { type: 'enumeration', fieldType: 'checkbox' };
+    }
+    case 'date': {
+      return { type: 'date', fieldType: 'date' };
+    }
+    case 'datetime': {
+      return {
+        type: 'datetime',
+        fieldType: 'date',
+      };
+    }
+    case 'boolean': {
+      return { type: 'bool', fieldType: 'booleancheckbox' };
+    }
+    default:
+      return { type: 'string', fieldType: 'text' };
+  }
+};
+
+export const toRawDetails = (property: HubspotProperty): Record<string, unknown> => {
+  const record: Record<string, unknown> = {};
+
+  for (const key in property) {
+    if (Object.hasOwnProperty.call(property, key)) {
+      record[key] = property[key as keyof HubspotProperty];
+    }
+  }
+
+  return record;
 };

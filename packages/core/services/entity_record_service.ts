@@ -1,5 +1,4 @@
 import type { ConnectionSafeAny, ObjectRecordUpsertData } from '@supaglue/types';
-import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/association';
 import type {
   CreatedEntityRecord,
   EntityRecord,
@@ -148,75 +147,6 @@ export class EntityRecordService {
     await remoteClient.updateObjectRecord(object, recordId, mappedData);
 
     await this.#cacheInvalidateEntityRecord(connection, entityName, entity.id, recordId);
-  }
-
-  public async listAssociations(connectionId: string, params: ListAssociationsParams): Promise<Association[]> {
-    const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
-    // map entity to object
-    const { object: sourceObject } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
-      connectionId,
-      params.sourceRecord.entityId
-    );
-    const { object: targetObject } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
-      connectionId,
-      params.targetEntityId
-    );
-    const ret = await remoteClient.listAssociations({
-      sourceRecord: {
-        id: params.sourceRecord.id,
-        object:
-          sourceObject.type === 'standard'
-            ? { type: 'standard', name: sourceObject.name }
-            : { type: 'custom', id: sourceObject.name },
-      },
-      targetObject:
-        targetObject.type === 'standard'
-          ? { type: 'standard', name: targetObject.name }
-          : { type: 'custom', id: targetObject.name },
-    });
-    return ret.map((r) => ({
-      sourceRecord: params.sourceRecord,
-      targetRecord: {
-        id: r.targetRecord.id,
-        entityId: params.targetEntityId,
-      },
-      associationTypeId: r.associationTypeId,
-    }));
-  }
-
-  public async createAssociation(connectionId: string, params: AssociationCreateParams): Promise<Association> {
-    const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
-    // map entity to object
-    const { object: sourceObject } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
-      connectionId,
-      params.sourceRecord.entityId
-    );
-    const { object: targetObject } = await this.#connectionService.getObjectAndFieldMappingConfigForEntity(
-      connectionId,
-      params.targetRecord.entityId
-    );
-    const ret = await remoteClient.createAssociation({
-      sourceRecord: {
-        id: params.sourceRecord.id,
-        object:
-          sourceObject.type === 'standard'
-            ? { type: 'standard', name: sourceObject.name }
-            : { type: 'custom', id: sourceObject.name },
-      },
-      targetRecord: {
-        id: params.targetRecord.id,
-        object:
-          targetObject.type === 'standard'
-            ? { type: 'standard', name: targetObject.name }
-            : { type: 'custom', id: targetObject.name },
-      },
-      associationTypeId: params.associationTypeId,
-    });
-    return {
-      sourceRecord: params.sourceRecord,
-      targetRecord: params.targetRecord,
-      associationTypeId: ret.associationTypeId,
-    };
   }
 }
 

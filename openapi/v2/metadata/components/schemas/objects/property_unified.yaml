@@ -22,7 +22,7 @@ properties:
     example: supaglue
     description: Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't.
   type:
-    $ref: ./property_type.yaml
+    $ref: ../../../../../common/components/schemas/property_type.yaml
   precision:
     type: number
     description: Only applicable in Salesforce. If not given, will default to 18.
@@ -33,7 +33,7 @@ properties:
     type: array
     description: The list of options for a picklist/multipicklist field.
     items:
-      $ref: ./picklist_option.yaml
+      $ref: ../../../../../common/components/schemas/picklist_option.yaml
   raw_details:
     type: object
     description: The raw details of the property as provided by the third-party Provider, if available.

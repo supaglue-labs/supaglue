@@ -1,25 +1,24 @@
-export type SimpleCustomObject = {
+import type { PropertyUnified } from './property';
+
+export type SimpleCustomObjectSchema = {
   id: string;
   name: string;
 };
 
-type BaseCustomObject = {
+export type CustomObjectSchema = {
   name: string;
   description: string | null;
   labels: {
     singular: string;
     plural: string;
   };
-  primaryFieldKeyName: string;
-  fields: CustomObjectField[];
+  primaryFieldId: string;
+  fields: PropertyUnified[];
   // TODO: timestamps?
 };
 
-export type CustomObject = BaseCustomObject & {
-  id: string;
-};
-export type CustomObjectCreateParams = BaseCustomObject;
-export type CustomObjectUpdateParams = CustomObject;
+export type CustomObjectSchemaCreateParams = CustomObjectSchema;
+export type CustomObjectSchemaUpdateParams = CustomObjectSchema;
 
 export type CustomObjectField = {
   displayName: string;

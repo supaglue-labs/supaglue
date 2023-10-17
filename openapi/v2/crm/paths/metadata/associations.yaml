@@ -1,0 +1,68 @@
+get:
+  operationId: getAssociationSchemas
+  tags:
+    - AssociationSchemas
+  security:
+    - x-api-key: []
+  summary: List associationSchemas
+  description: >-
+    Get a list of Association Schemas
+  parameters:
+    - name: source_object
+      in: query
+      schema:
+        type: string
+      required: true
+    - name: target_object
+      in: query
+      schema:
+        type: string
+      required: true
+  responses:
+    '200':
+      description: List of Association Schemas
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              results:
+                type: array
+                items:
+                  $ref: ../../components/schemas/objects/association_schema.yaml
+post:
+  operationId: createAssociationSchema
+  summary: Create Association Schema
+  tags:
+    - AssociationSchemas
+  parameters: []
+  security:
+    - x-api-key: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../../components/schemas/create_update_association_schema.yaml
+  responses:
+    '201':
+      description: Association Schema created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../../common/components/schemas/errors.yaml
+              association_schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                required:
+                  - id
+              warnings:
+                $ref: ../../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../components/parameters/header/x-provider-name.yaml
