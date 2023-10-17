@@ -166,6 +166,8 @@ components:
       $ref: ./components/schemas/update_custom_object_schema.yaml
     created_custom_object_record:
       $ref: ./components/schemas/created_custom_object_record.yaml
+    property_type:
+      $ref: ../../common/components/schemas/property_type.yaml
   parameters:
     include_deleted_data:
       $ref: ../../common/components/parameters/query/include_deleted_data.yaml

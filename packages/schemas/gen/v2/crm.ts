@@ -692,20 +692,48 @@ export interface components {
       fields: (components["schemas"]["custom_object_field"])[];
     };
     custom_object_field: {
-      /** @example Ticket ID */
-      display_name: string;
       /**
-       * @description In Salesforce, this must end with `__c`. 
-       * @example ticket_id
+       * @description The machine name of the property as it appears in the third-party Provider. In Salesforce, this must end with `__c`. 
+       * @example FirstName
        */
-      key_name: string;
+      id: string;
+      /**
+       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @example First Name
+       */
+      label: string;
+      /** @description A description of the field. */
+      description?: string;
       /** @example false */
-      is_required: boolean;
+      is_required?: boolean;
       /**
-       * @description In Salesforce, when this is set to 'string', the max length will be set to 255 by default. In Salesforce, when it is set to 'number', the precision and scale will be set to 18 and 0, respectively. 
-       * @enum {string}
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @example supaglue
        */
-      field_type: "string" | "number";
+      group_name?: string;
+      type: components["schemas"]["property_type"];
+      /** @description Only applicable in Salesforce. If not given, will default to 18. */
+      precision?: number;
+      /** @description Only applicable in Salesforce. If not given, will default to 0. */
+      scale?: number;
+      /** @description The list of options for a picklist/multipicklist field. */
+      options?: ({
+          /** @example Option 1 */
+          label: string;
+          /** @example option_1 */
+          value: string;
+          /** @description A description of this option. */
+          description?: string;
+          /** @description Defaults to false. */
+          hidden?: boolean;
+        })[];
+      /**
+       * @description The raw details of the property as provided by the third-party Provider, if available. 
+       * @example {}
+       */
+      raw_details?: {
+        [key: string]: unknown;
+      };
     };
     /**
      * @example {
@@ -876,7 +904,7 @@ export interface components {
        * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field. 
        * @example ticket_id
        */
-      primary_field_key_name: string;
+      primary_field_id: string;
       fields: (components["schemas"]["custom_object_field"])[];
     };
     update_custom_object_schema: {
@@ -892,13 +920,82 @@ export interface components {
        * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field. 
        * @example ticket_id
        */
-      primary_field_key_name: string;
+      primary_field_id: string;
       fields: (components["schemas"]["custom_object_field"])[];
     };
     created_custom_object_record: {
       id: string;
       custom_object_id: string;
     };
+    /**
+     * @description Type of the field.
+     * 
+     * Support:
+     * 
+     * <table>
+     *   <thead>
+     *     <tr>
+     *     <th>Field</th>
+     *     <th>Hubspot (type-fieldType)</th>
+     *     <th>Salesforce</th>
+     *     <th>Pipedrive</th>
+     *     </tr>
+     *   </thead>
+     *   <tbody>
+     *     <tr>
+     *      <td>text</td>
+     *       <td>string-text</td>
+     *       <td>Text</td>
+     *       <td>varchar_auto</td>
+     *     </tr>
+     *     <tr>
+     *       <td>textarea</td>
+     *       <td>string-textarea</td>
+     *       <td>Textarea</td>
+     *       <td>text</td>
+     *     </tr>
+     *     <tr>
+     *       <td>number</td>
+     *       <td>number-number</td>
+     *       <td>Int/Double (depending on scale)</td>
+     *       <td>double</td>
+     *     </tr>
+     *     <tr>
+     *       <td>picklist</td>
+     *       <td>enumeration-select</td>
+     *       <td>Picklist</td>
+     *       <td>enum</td>
+     *     </tr>
+     *     <tr>
+     *       <td>multipicklist</td>
+     *       <td>enumeration-checkbox</td>
+     *       <td>Multipicklist</td>
+     *       <td>set</td>
+     *     </tr>
+     *     <tr>
+     *       <td>date</td>
+     *       <td>date-date</td>
+     *       <td>Date</td>
+     *       <td>date</td>
+     *     </tr>
+     *     <tr>
+     *       <td>datetime</td>
+     *       <td>datetime-date</td>
+     *       <td>Datetime</td>
+     *       <td>date</td>
+     *     </tr>
+     *     <tr>
+     *     <td>boolean</td>
+     *       <td>bool-booleancheckbox</td>
+     *       <td>Checkbox</td>
+     *       <td>enum</td>
+     *     </tr>
+     *   </tbody>
+     *   </table>
+     *  
+     * @enum {string}
+     */
+    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "other";
   };
   responses: never;
   parameters: {

@@ -51,9 +51,9 @@ components:
     property_unified:
       $ref: ./components/schemas/objects/property_unified.yaml
     property_type:
-      $ref: ./components/schemas/objects/property_type.yaml
+      $ref: ../../common/components/schemas/property_type.yaml
     picklist_option:
-      $ref: ./components/schemas/objects/picklist_option.yaml
+      $ref: ../../common/components/schemas/picklist_option.yaml
     create_property:
       $ref: ./components/schemas/create_property.yaml
     update_property:

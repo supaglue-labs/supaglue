@@ -89,6 +89,7 @@ import {
   toSalesforceAccountUpdateParams,
   toSalesforceContactCreateParams,
   toSalesforceContactUpdateParams,
+  toSalesforceCustomField,
   toSalesforceLeadCreateParams,
   toSalesforceLeadUpdateParams,
   toSalesforceOpportunityCreateParams,
@@ -586,33 +587,29 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       throw new BadRequestError('Cannot create custom object with no fields');
     }
 
-    const primaryField = params.fields.find((field) => field.keyName === params.primaryFieldKeyName);
+    const primaryField = params.fields.find((field) => field.id === params.primaryFieldId);
 
     if (!primaryField) {
-      throw new BadRequestError(`Could not find primary field with key name ${params.primaryFieldKeyName}`);
+      throw new BadRequestError(`Could not find primary field with key name ${params.primaryFieldId}`);
     }
 
-    if (primaryField.fieldType !== 'string') {
+    if (primaryField.type !== 'text') {
       throw new BadRequestError(
-        `Primary field must be of type string, but was ${primaryField.fieldType} with key name ${params.primaryFieldKeyName}`
+        `Primary field must be of type text, but was ${primaryField.type} with key name ${params.primaryFieldId}`
       );
     }
 
     if (!primaryField.isRequired) {
-      throw new BadRequestError(
-        `Primary field must be required, but was not with key name ${params.primaryFieldKeyName}`
-      );
+      throw new BadRequestError(`Primary field must be required, but was not with key name ${params.primaryFieldId}`);
     }
 
-    if (capitalizeString(primaryField.keyName) !== 'Name') {
-      throw new BadRequestError(
-        `Primary field for salesforce must have key name 'Name', but was ${primaryField.keyName}`
-      );
+    if (capitalizeString(primaryField.id) !== 'Name') {
+      throw new BadRequestError(`Primary field for salesforce must have key name 'Name', but was ${primaryField.id}`);
     }
 
-    const nonPrimaryFields = params.fields.filter((field) => field.keyName !== params.primaryFieldKeyName);
+    const nonPrimaryFields = params.fields.filter((field) => field.id !== params.primaryFieldId);
 
-    if (nonPrimaryFields.some((field) => !field.keyName.endsWith('__c'))) {
+    if (nonPrimaryFields.some((field) => !field.id.endsWith('__c'))) {
       throw new BadRequestError('Custom object field key names must end with __c');
     }
   }
@@ -622,9 +619,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     await this.validateCustomObject(params);
 
-    const primaryField = params.fields.find((field) => field.keyName === params.primaryFieldKeyName);
+    const primaryField = params.fields.find((field) => field.id === params.primaryFieldId);
 
-    const nonPrimaryFields = params.fields.filter((field) => field.keyName !== params.primaryFieldKeyName);
+    const nonPrimaryFields = params.fields.filter((field) => field.id !== params.primaryFieldId);
     const results = await this.#client.metadata.create('CustomObject', [
       {
         deploymentStatus: 'Deployed',
@@ -633,18 +630,18 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         label: params.labels.singular,
         pluralLabel: params.labels.plural,
         nameField: {
-          label: primaryField?.displayName,
+          label: primaryField?.label,
           type: 'Text',
         },
         fields: nonPrimaryFields.map((field) => {
           const base = {
-            fullName: field.keyName,
-            label: field.displayName,
-            type: field.fieldType === 'string' ? 'Text' : 'Number',
+            fullName: field.id,
+            label: field.label,
+            type: field.type === 'text' ? 'Text' : 'Number',
             required: field.isRequired,
           };
 
-          if (field.fieldType === 'string') {
+          if (field.type === 'text') {
             return {
               ...base,
               // TODO: support configurations per field type
@@ -655,8 +652,8 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
           return {
             ...base,
             // TODO: support configurations per field type
-            precision: field.fieldType === 'number' ? 18 : undefined,
-            scale: field.fieldType === 'number' ? 0 : undefined,
+            precision: field.precision,
+            scale: field.scale,
           };
         }),
       },
@@ -684,32 +681,31 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     await this.validateCustomObject(params);
 
-    const primaryField = params.fields.find((field) => field.keyName === params.primaryFieldKeyName);
+    const primaryField = params.fields.find((field) => field.id === params.primaryFieldId);
 
-    const nonPrimaryFields = params.fields.filter((field) => field.keyName !== params.primaryFieldKeyName);
+    const nonPrimaryFields = params.fields.filter((field) => field.id !== params.primaryFieldId);
 
     // Check against existing object
     const existingObject = await this.getCustomObject(objectName);
     const existingObjectNonPrimaryAndLookupFields = existingObject.fields.filter(
-      (field) => field.keyName !== existingObject.primaryFieldKeyName
+      (field) => field.id !== existingObject.primaryFieldId
     );
 
     // Calculate which fields got added, updated, or deleted
     const addedFields = nonPrimaryFields.filter(
-      (field) =>
-        !existingObjectNonPrimaryAndLookupFields.some((existingField) => existingField.keyName === field.keyName)
+      (field) => !existingObjectNonPrimaryAndLookupFields.some((existingField) => existingField.id === field.id)
     );
     const updatedFields = nonPrimaryFields.filter((field) =>
       existingObjectNonPrimaryAndLookupFields.some(
         (existingField) =>
-          existingField.keyName === field.keyName &&
-          (existingField.displayName !== field.displayName ||
-            existingField.fieldType !== field.fieldType ||
+          existingField.id === field.id &&
+          (existingField.label !== field.label ||
+            existingField.type !== field.type ||
             existingField.isRequired !== field.isRequired)
       )
     );
     const deletedFields = existingObjectNonPrimaryAndLookupFields.filter(
-      (existingField) => !nonPrimaryFields.some((field) => field.keyName === existingField.keyName)
+      (existingField) => !nonPrimaryFields.some((field) => field.id === existingField.id)
     );
 
     // Update object and existing fields
@@ -721,32 +717,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         label: params.labels.singular,
         pluralLabel: params.labels.plural,
         nameField: {
-          label: primaryField?.displayName,
+          label: primaryField?.label,
           type: 'Text',
         },
-        fields: updatedFields.map((field) => {
-          const base = {
-            fullName: field.keyName,
-            label: field.displayName,
-            type: field.fieldType === 'string' ? 'Text' : 'Number',
-            required: field.isRequired,
-          };
-
-          if (field.fieldType === 'string') {
-            return {
-              ...base,
-              // TODO: support configurations per field type
-              length: 255,
-            };
-          } else {
-            return {
-              ...base,
-              // TODO: support configurations per field type
-              precision: field.fieldType === 'number' ? 18 : undefined,
-              scale: field.fieldType === 'number' ? 0 : undefined,
-            };
-          }
-        }),
+        fields: updatedFields.map((field) => toSalesforceCustomField(objectName, field)),
       },
     ]);
     if (updateObjectResults.some((result) => !result.success)) {
@@ -757,29 +731,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     if (addedFields.length) {
       const addCustomFieldsResults = await this.#client.metadata.create(
         'CustomField',
-        addedFields.map((field) => {
-          const base = {
-            fullName: `${objectName}.${field.keyName}`,
-            label: field.displayName,
-            type: field.fieldType === 'string' ? 'Text' : 'Number',
-            required: field.isRequired,
-          };
-
-          if (field.fieldType === 'string') {
-            return {
-              ...base,
-              // TODO: support configurations per field type
-              length: 255,
-            };
-          } else {
-            return {
-              ...base,
-              // TODO: support configurations per field type
-              precision: field.fieldType === 'number' ? 18 : undefined,
-              scale: field.fieldType === 'number' ? 0 : undefined,
-            };
-          }
-        })
+        addedFields.map((field) => toSalesforceCustomField(objectName, field))
       );
 
       if (addCustomFieldsResults.some((result) => !result.success)) {
@@ -823,7 +775,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
     const existingFieldPermissionFieldNames = existingFieldPermissions.map((fieldPermission) => fieldPermission.Field);
     const fieldsToAddPermissionsFor = nonPrimaryFields.filter(
-      (field) => !existingFieldPermissionFieldNames.includes(`${objectName}.${field.keyName}`)
+      (field) => !existingFieldPermissionFieldNames.includes(`${objectName}.${field.id}`)
     );
 
     const { compositeResponse } = await this.#client.requestPost<{ compositeResponse: { httpStatusCode: number }[] }>(
@@ -833,13 +785,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         // call to this endpoint succeeded creating additional fields but failed to
         // add permissions for them.
         compositeRequest: fieldsToAddPermissionsFor.map((field) => ({
-          referenceId: field.keyName,
+          referenceId: field.id,
           method: 'POST',
           url: `/services/data/v${SALESFORCE_API_VERSION}/sobjects/FieldPermissions/`,
           body: {
             ParentId: permissionSetId,
             SobjectType: objectName,
-            Field: `${objectName}.${field.keyName}`,
+            Field: `${objectName}.${field.id}`,
             PermissionsEdit: true,
             PermissionsRead: true,
           },
@@ -855,7 +807,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     if (deletedFields.length) {
       const deleteFieldResults = await this.#client.metadata.delete(
         'CustomField',
-        deletedFields.map((field) => `${objectName}.${field.keyName}`)
+        deletedFields.map((field) => `${objectName}.${field.id}`)
       );
       if (deleteFieldResults.some((result) => !result.success)) {
         throw new Error(`Failed to delete custom fields: ${JSON.stringify(deleteFieldResults, null, 2)}`);
@@ -884,12 +836,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public override async createAssociationSchema(
     sourceObject: string,
     targetObject: string,
-    keyName: string,
-    displayName: string
+    id: string,
+    label: string
   ): Promise<void> {
-    // if keyName doesn't end with __c, we need to add it ourselves
-    if (!keyName.endsWith('__c')) {
-      keyName = `${keyName}__c`;
+    // if id doesn't end with __c, we need to add it ourselves
+    if (!id.endsWith('__c')) {
+      id = `${id}__c`;
     }
 
     // Look up source custom object to figure out a relationship name
@@ -897,11 +849,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const sourceCustomObjectMetadata = await this.#client.metadata.read('CustomObject', sourceObject);
 
     // If the relationship field doesn't already exist, create it
-    const existingField = sourceCustomObjectMetadata.fields?.find((field) => field.fullName === keyName);
+    const existingField = sourceCustomObjectMetadata.fields?.find((field) => field.fullName === id);
 
     const customFieldPayload = {
-      fullName: `${sourceObject}.${keyName}`,
-      label: displayName,
+      fullName: `${sourceObject}.${id}`,
+      label: label,
       // The custom field name you provided Related Opportunity on object Opportunity can
       // only contain alphanumeric characters, must begin with a letter, cannot end
       // with an underscore or contain two consecutive underscore characters, and
@@ -952,7 +904,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // Figure out which fields already have permissions
     const { records: existingFieldPermissions } = await this.#client.query(
-      `SELECT Id,Field FROM FieldPermissions WHERE SobjectType='${sourceObject}' AND ParentId='${permissionSetId}' AND Field='${sourceObject}.${keyName}'`
+      `SELECT Id,Field FROM FieldPermissions WHERE SobjectType='${sourceObject}' AND ParentId='${permissionSetId}' AND Field='${sourceObject}.${id}'`
     );
     if (existingFieldPermissions.length) {
       // Update permission
@@ -961,7 +913,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         Id: existingFieldPermission.Id as string,
         ParentId: permissionSetId,
         SobjectType: sourceObject,
-        Field: `${sourceObject}.${keyName}`,
+        Field: `${sourceObject}.${id}`,
         PermissionsEdit: true,
         PermissionsRead: true,
       });
@@ -975,7 +927,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       const result = await this.#client.create('FieldPermissions', {
         ParentId: permissionSetId,
         SobjectType: sourceObject,
-        Field: `${sourceObject}.${keyName}`,
+        Field: `${sourceObject}.${id}`,
         PermissionsEdit: true,
         PermissionsRead: true,
       });
@@ -1018,16 +970,16 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   public override async createAssociation(params: ObjectAssociationCreateParams): Promise<ObjectAssociation> {
-    // keyName looks like `MyCustomObject__c.MyLookupField__c`. We should validate and then pull out the second part after the '.'
-    const keyNameParts = params.associationSchemaId.split('.');
-    if (keyNameParts.length !== 2) {
+    // id looks like `MyCustomObject__c.MyLookupField__c`. We should validate and then pull out the second part after the '.'
+    const idParts = params.associationSchemaId.split('.');
+    if (idParts.length !== 2) {
       throw new BadRequestError(`Invalid association type id ${params.associationSchemaId}`);
     }
-    const keyName = keyNameParts[1];
+    const id = idParts[1];
 
     const result = await this.#client.update(params.sourceRecord.objectName, {
       Id: params.sourceRecord.id,
-      [keyName]: params.targetRecord.id,
+      [id]: params.targetRecord.id,
     });
     if (!result.success) {
       throw new Error(`Failed to create Salesforce association: ${JSON.stringify(result.errors, null, 2)}`);

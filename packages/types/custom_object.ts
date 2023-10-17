@@ -1,3 +1,5 @@
+import type { PropertyUnified } from './property';
+
 export type SimpleCustomObject = {
   id: string;
   name: string;
@@ -10,8 +12,8 @@ export type CustomObject = {
     singular: string;
     plural: string;
   };
-  primaryFieldKeyName: string;
-  fields: CustomObjectField[];
+  primaryFieldId: string;
+  fields: PropertyUnified[];
   // TODO: timestamps?
 };
 

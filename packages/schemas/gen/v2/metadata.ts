@@ -201,13 +201,13 @@ export interface components {
      *     <tr>
      *       <td>textarea</td>
      *       <td>string-textarea</td>
-     *       <td>Longtextarea</td>
+     *       <td>Textarea</td>
      *       <td>text</td>
      *     </tr>
      *     <tr>
      *       <td>number</td>
      *       <td>number-number</td>
-     *       <td>Number</td>
+     *       <td>Int/Double (depending on scale)</td>
      *       <td>double</td>
      *     </tr>
      *     <tr>
@@ -236,7 +236,7 @@ export interface components {
      *     </tr>
      *     <tr>
      *     <td>boolean</td>
-     *       <td>boolean-booleancheckbox</td>
+     *       <td>bool-booleancheckbox</td>
      *       <td>Checkbox</td>
      *       <td>enum</td>
      *     </tr>
@@ -245,7 +245,7 @@ export interface components {
      *  
      * @enum {string}
      */
-    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean";
+    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "other";
     picklist_option: {
       /** @example Option 1 */
       label: string;
