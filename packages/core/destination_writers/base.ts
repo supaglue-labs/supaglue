@@ -3,9 +3,9 @@ import type {
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  FullObjectRecord,
   PropertiesWithAdditionalFields,
   ProviderCategory,
-  StandardFullObjectRecord,
   TransformedPropertiesWithAdditionalFields,
 } from '@supaglue/types';
 import type { FullEntityRecord } from '@supaglue/types/entity_record';
@@ -65,7 +65,7 @@ export interface DestinationWriter {
   upsertStandardObjectRecord(
     connection: ConnectionSafeAny,
     objectName: string,
-    record: StandardFullObjectRecord
+    record: FullObjectRecord
   ): Promise<void>;
 
   /**
@@ -108,7 +108,7 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
   abstract upsertStandardObjectRecord(
     connection: ConnectionSafeAny,
     objectName: string,
-    record: StandardFullObjectRecord
+    record: FullObjectRecord
   ): Promise<void>;
 
   abstract upsertEntityRecord(

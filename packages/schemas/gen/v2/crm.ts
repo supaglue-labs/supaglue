@@ -269,11 +269,11 @@ export interface paths {
   };
   "/metadata/associations": {
     /**
-     * List associationSchemas 
+     * List association schemas 
      * @description Get a list of Association Schemas
      */
     get: operations["getAssociationSchemas"];
-    /** Create Association Schema */
+    /** Create association schema */
     post: operations["createAssociationSchema"];
     parameters: {
       header: {
@@ -283,9 +283,9 @@ export interface paths {
     };
   };
   "/metadata/custom_objects": {
-    /** List Custom Object Schemas */
+    /** List custom object schemas */
     get: operations["listCustomObjectSchemas"];
-    /** Create Custom Object Schema */
+    /** Create custom object schema */
     post: operations["createCustomObjectSchema"];
     parameters: {
       header: {
@@ -295,9 +295,9 @@ export interface paths {
     };
   };
   "/metadata/custom_objects/{object_name}": {
-    /** Get Custom Object Schema Details */
+    /** Get custom object schema details */
     get: operations["getCustomObjectSchema"];
-    /** Update Custom Object Schema */
+    /** Update custom object schema */
     put: operations["updateCustomObjectSchema"];
     parameters: {
       header: {
@@ -749,9 +749,6 @@ export interface components {
       id: string;
       custom_object_name: string;
       data: {
-        additional_fields?: {
-          [key: string]: unknown;
-        };
         [key: string]: unknown;
       };
     };
@@ -1759,16 +1756,6 @@ export interface operations {
     };
     requestBody: {
       content: {
-        /**
-         * @example {
-         *   "record": {
-         *     "first_name": "George",
-         *     "last_activity_at": "2022-02-10T00:00:00Z",
-         *     "last_name": "Xing",
-         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
-         *   }
-         * }
-         */
         "application/json": {
           record: components["schemas"]["create_update_custom_object_record"];
         };
@@ -1831,16 +1818,6 @@ export interface operations {
     };
     requestBody: {
       content: {
-        /**
-         * @example {
-         *   "record": {
-         *     "first_name": "George",
-         *     "last_activity_at": "2022-02-10T00:00:00Z",
-         *     "last_name": "Xing",
-         *     "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
-         *   }
-         * }
-         */
         "application/json": {
           record: components["schemas"]["create_update_custom_object_record"];
         };
@@ -1913,7 +1890,7 @@ export interface operations {
     };
   };
   /**
-   * List associationSchemas 
+   * List association schemas 
    * @description Get a list of Association Schemas
    */
   getAssociationSchemas: {
@@ -1945,7 +1922,7 @@ export interface operations {
       };
     };
   };
-  /** Create Association Schema */
+  /** Create association schema */
   createAssociationSchema: {
     parameters: {
       header: {
@@ -1973,7 +1950,7 @@ export interface operations {
       };
     };
   };
-  /** List Custom Object Schemas */
+  /** List custom object schemas */
   listCustomObjectSchemas: {
     parameters: {
       header: {
@@ -1990,7 +1967,7 @@ export interface operations {
       };
     };
   };
-  /** Create Custom Object Schema */
+  /** Create custom object schema */
   createCustomObjectSchema: {
     parameters: {
       header: {
@@ -2020,7 +1997,7 @@ export interface operations {
       };
     };
   };
-  /** Get Custom Object Schema Details */
+  /** Get custom object schema details */
   getCustomObjectSchema: {
     parameters: {
       header: {
@@ -2040,7 +2017,7 @@ export interface operations {
       };
     };
   };
-  /** Update Custom Object Schema */
+  /** Update custom object schema */
   updateCustomObjectSchema: {
     parameters: {
       header: {

@@ -1,6 +1,6 @@
 get:
   operationId: getCustomObjectSchema
-  summary: Get Custom Object Schema Details
+  summary: Get custom object schema details
   tags:
     - CustomObjectSchemas
   security:
@@ -14,7 +14,7 @@ get:
             $ref: ../../components/schemas/objects/custom_object_schema.yaml
 put:
   operationId: updateCustomObjectSchema
-  summary: Update Custom Object Schema
+  summary: Update custom object schema
   tags:
     - CustomObjectSchemas
   security:

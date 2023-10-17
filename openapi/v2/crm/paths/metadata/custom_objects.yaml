@@ -1,6 +1,6 @@
 get:
   operationId: listCustomObjectSchemas
-  summary: List Custom Object Schemas
+  summary: List custom object schemas
   tags:
     - CustomObjectSchemas
   security:
@@ -17,7 +17,7 @@ get:
               type: string
 post:
   operationId: createCustomObjectSchema
-  summary: Create Custom Object Schema
+  summary: Create custom object schema
   tags:
     - CustomObjectSchemas
   parameters: []

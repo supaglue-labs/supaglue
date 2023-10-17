@@ -1434,14 +1434,6 @@
                 "required": [
                   "record"
                 ]
-              },
-              "example": {
-                "record": {
-                  "first_name": "George",
-                  "last_activity_at": "2022-02-10T00:00:00Z",
-                  "last_name": "Xing",
-                  "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
-                }
               }
             }
           }
@@ -1561,14 +1553,6 @@
                 "required": [
                   "record"
                 ]
-              },
-              "example": {
-                "record": {
-                  "first_name": "George",
-                  "last_activity_at": "2022-02-10T00:00:00Z",
-                  "last_name": "Xing",
-                  "account_id": "64571bff-48ea-4469-9fa0-ee1a0bab38bd"
-                }
               }
             }
           }
@@ -1786,7 +1770,7 @@
             "x-api-key": []
           }
         ],
-        "summary": "List associationSchemas",
+        "summary": "List association schemas",
         "description": "Get a list of Association Schemas",
         "parameters": [
           {
@@ -1851,7 +1835,7 @@
       },
       "post": {
         "operationId": "createAssociationSchema",
-        "summary": "Create Association Schema",
+        "summary": "Create association schema",
         "tags": [
           "AssociationSchemas"
         ],
@@ -1915,7 +1899,7 @@
     "/metadata/custom_objects": {
       "get": {
         "operationId": "listCustomObjectSchemas",
-        "summary": "List Custom Object Schemas",
+        "summary": "List custom object schemas",
         "tags": [
           "CustomObjectSchemas"
         ],
@@ -1943,7 +1927,7 @@
       },
       "post": {
         "operationId": "createCustomObjectSchema",
-        "summary": "Create Custom Object Schema",
+        "summary": "Create custom object schema",
         "tags": [
           "CustomObjectSchemas"
         ],
@@ -2015,7 +1999,7 @@
     "/metadata/custom_objects/{object_name}": {
       "get": {
         "operationId": "getCustomObjectSchema",
-        "summary": "Get Custom Object Schema Details",
+        "summary": "Get custom object schema details",
         "tags": [
           "CustomObjectSchemas"
         ],
@@ -2039,7 +2023,7 @@
       },
       "put": {
         "operationId": "updateCustomObjectSchema",
-        "summary": "Update Custom Object Schema",
+        "summary": "Update custom object schema",
         "tags": [
           "CustomObjectSchemas"
         ],
@@ -3286,12 +3270,6 @@
           },
           "data": {
             "type": "object",
-            "properties": {
-              "additional_fields": {
-                "type": "object",
-                "additionalProperties": true
-              }
-            },
             "additionalProperties": true
           }
         },

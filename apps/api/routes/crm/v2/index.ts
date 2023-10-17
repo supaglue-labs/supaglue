@@ -3,6 +3,7 @@ import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
 import { Router } from 'express';
 import accounts from './account';
 import contacts from './contact';
+import customObjects from './custom_objects';
 import leads from './lead';
 import lists from './list';
 import metadata from './metadata';
@@ -23,6 +24,7 @@ export default function init(app: Router): void {
   users(v2Router);
   lists(v2Router);
   metadata(v2Router);
+  customObjects(v2Router);
 
   passthrough(v2Router);
 
