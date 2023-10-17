@@ -1,8 +1,8 @@
 get:
-  operationId: listCustomObjects
-  summary: List customObjects
+  operationId: listCustomObjectSchemas
+  summary: List Custom Object Schemas
   tags:
-    - CustomObjects
+    - CustomObjectSchemas
   security:
     - x-api-key: []
   parameters: []
@@ -16,10 +16,10 @@ get:
             items:
               type: string
 post:
-  operationId: createCustomObject
-  summary: Create customObject
+  operationId: createCustomObjectSchema
+  summary: Create Custom Object Schema
   tags:
-    - CustomObjects
+    - CustomObjectSchemas
   parameters: []
   security:
     - x-api-key: []
@@ -36,7 +36,7 @@ post:
             - object
   responses:
     '201':
-      description: CustomObject created
+      description: Custom Object Schema created
       content:
         application/json:
           schema:

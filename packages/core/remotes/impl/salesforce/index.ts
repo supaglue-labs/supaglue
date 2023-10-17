@@ -47,10 +47,10 @@ import type {
   User,
 } from '@supaglue/types/crm';
 import type {
-  CustomObject,
-  CustomObjectCreateParams,
-  CustomObjectUpdateParams,
-  SimpleCustomObject,
+  CustomObjectSchema,
+  CustomObjectSchemaCreateParams,
+  CustomObjectSchemaUpdateParams,
+  SimpleCustomObjectSchema,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
@@ -319,7 +319,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return SALESFORCE_OBJECTS as unknown as string[];
   }
 
-  public override async listCustomObjects(): Promise<SimpleCustomObject[]> {
+  public override async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
     const metadata = await this.#client.describeGlobal();
     // this returns standard objects and external objects too,
     // so we need to filter them out
@@ -575,14 +575,14 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return await super.sendPassthroughRequest(request);
   }
 
-  public override async getCustomObject(name: string): Promise<CustomObject> {
+  public override async getCustomObjectSchema(name: string): Promise<CustomObjectSchema> {
     const objectName = name.endsWith('__c') ? name : `${name}__c`;
 
     const metadata = await this.#client.describe(objectName);
     return toCustomObject(metadata);
   }
 
-  validateCustomObject(params: CustomObjectCreateParams): void {
+  validateCustomObject(params: CustomObjectSchemaCreateParams): void {
     if (!params.fields.length) {
       throw new BadRequestError('Cannot create custom object with no fields');
     }
@@ -614,7 +614,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
+  public override async createCustomObjectSchema(params: CustomObjectSchemaCreateParams): Promise<string> {
     const objectName = params.name.endsWith('__c') ? params.name : `${params.name}__c`;
 
     await this.validateCustomObject(params);
@@ -675,7 +675,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   // TODO: This does not work. Fix this.
-  public override async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
+  public override async updateCustomObjectSchema(params: CustomObjectSchemaUpdateParams): Promise<void> {
     const objectName = params.name.endsWith('__c') ? params.name : `${params.name}__c`;
     // Validate stuff
 
@@ -686,7 +686,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const nonPrimaryFields = params.fields.filter((field) => field.id !== params.primaryFieldId);
 
     // Check against existing object
-    const existingObject = await this.getCustomObject(objectName);
+    const existingObject = await this.getCustomObjectSchema(objectName);
     const existingObjectNonPrimaryAndLookupFields = existingObject.fields.filter(
       (field) => field.id !== existingObject.primaryFieldId
     );

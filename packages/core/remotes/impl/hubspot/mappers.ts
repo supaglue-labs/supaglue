@@ -17,7 +17,7 @@ import type {
   User,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supaglue/types/crm/common';
-import type { CustomObject } from '@supaglue/types/custom_object';
+import type { CustomObjectSchema } from '@supaglue/types/custom_object';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { PipelineStageMapping, RecordWithFlattenedAssociations } from '.';
 import { BadRequestError } from '../../../errors';
@@ -491,7 +491,7 @@ export const nullToEmptyString = (value: string | undefined | null): string | un
   return value === null ? '' : value;
 };
 
-export const toCustomObject = (object: ObjectSchema): CustomObject => {
+export const toCustomObject = (object: ObjectSchema): CustomObjectSchema => {
   const requiredSet = new Set(object.requiredProperties);
   return {
     name: object.name,

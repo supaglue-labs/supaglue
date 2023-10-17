@@ -283,10 +283,10 @@ export interface paths {
     };
   };
   "/metadata/custom_objects": {
-    /** List customObjects */
-    get: operations["listCustomObjects"];
-    /** Create customObject */
-    post: operations["createCustomObject"];
+    /** List Custom Object Schemas */
+    get: operations["listCustomObjectSchemas"];
+    /** Create Custom Object Schema */
+    post: operations["createCustomObjectSchema"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -295,10 +295,10 @@ export interface paths {
     };
   };
   "/metadata/custom_objects/{object_name}": {
-    /** Get Custom Object Details */
-    get: operations["getCustomObject"];
-    /** Update customObject */
-    put: operations["updateCustomObject"];
+    /** Get Custom Object Schema Details */
+    get: operations["getCustomObjectSchema"];
+    /** Update Custom Object Schema */
+    put: operations["updateCustomObjectSchema"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1721,7 +1721,6 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
-        read_from_cache?: components["parameters"]["read_from_cache"];
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
@@ -1973,8 +1972,8 @@ export interface operations {
       };
     };
   };
-  /** List customObjects */
-  listCustomObjects: {
+  /** List Custom Object Schemas */
+  listCustomObjectSchemas: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1990,8 +1989,8 @@ export interface operations {
       };
     };
   };
-  /** Create customObject */
-  createCustomObject: {
+  /** Create Custom Object Schema */
+  createCustomObjectSchema: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -2006,7 +2005,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description CustomObject created */
+      /** @description Custom Object Schema created */
       201: {
         content: {
           "application/json": {
@@ -2020,8 +2019,8 @@ export interface operations {
       };
     };
   };
-  /** Get Custom Object Details */
-  getCustomObject: {
+  /** Get Custom Object Schema Details */
+  getCustomObjectSchema: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -2040,8 +2039,8 @@ export interface operations {
       };
     };
   };
-  /** Update customObject */
-  updateCustomObject: {
+  /** Update Custom Object Schema */
+  updateCustomObjectSchema: {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -2059,7 +2058,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description CustomObject updated */
+      /** @description Custom Object Schema updated */
       200: {
         content: {
           "application/json": {

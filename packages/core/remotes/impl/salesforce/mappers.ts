@@ -18,7 +18,7 @@ import type {
   User,
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
-import type { CustomObject } from '@supaglue/types/custom_object';
+import type { CustomObjectSchema } from '@supaglue/types/custom_object';
 import type { DescribeSObjectResult, Field } from 'jsforce';
 
 export function getMapperForCommonObjectType<T extends CRMCommonObjectType>(
@@ -447,7 +447,7 @@ const toSalesforceEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<
   };
 };
 
-export const toCustomObject = (salesforceCustomObject: DescribeSObjectResult): CustomObject => {
+export const toCustomObject = (salesforceCustomObject: DescribeSObjectResult): CustomObjectSchema => {
   const nameField = salesforceCustomObject.fields.find((field) => field.nameField);
   if (!nameField) {
     throw new Error(`unexpectedly, custom object missing nameField`);

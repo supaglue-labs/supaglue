@@ -1,11 +1,11 @@
 import type { PropertyUnified } from './property';
 
-export type SimpleCustomObject = {
+export type SimpleCustomObjectSchema = {
   id: string;
   name: string;
 };
 
-export type CustomObject = {
+export type CustomObjectSchema = {
   name: string;
   description: string | null;
   labels: {
@@ -17,8 +17,8 @@ export type CustomObject = {
   // TODO: timestamps?
 };
 
-export type CustomObjectCreateParams = CustomObject;
-export type CustomObjectUpdateParams = CustomObject;
+export type CustomObjectSchemaCreateParams = CustomObjectSchema;
+export type CustomObjectSchemaUpdateParams = CustomObjectSchema;
 
 export type CustomObjectField = {
   displayName: string;

@@ -2,7 +2,7 @@ patch:
   operationId: updateCustomObjectRecord
   summary: Update custom object record
   tags:
-    - Custom Objects
+    - CustomObjects
   security:
     - x-api-key: []
   requestBody:
@@ -40,7 +40,7 @@ get:
   operationId: getCustomObjectRecord
   summary: Get custom object record
   tags:
-    - Custom Objects
+    - CustomObjects
   security:
     - x-api-key: []
   parameters:

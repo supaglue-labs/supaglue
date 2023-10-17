@@ -139,29 +139,31 @@ export type GetListMembershipRequest = never;
 export type GetListMembershipResponse =
   operations['listListMemberships']['responses'][keyof operations['listListMemberships']['responses']]['content']['application/json'];
 
-export type ListCustomObjectsPathParams = never;
-export type ListCustomObjectsQueryParams = never;
-export type ListCustomObjectsRequest = never;
-export type ListCustomObjectsResponse =
-  operations['listCustomObjects']['responses'][keyof operations['listCustomObjects']['responses']]['content']['application/json'];
+export type ListCustomObjectSchemasPathParams = never;
+export type ListCustomObjectSchemasQueryParams = never;
+export type ListCustomObjectSchemasRequest = never;
+export type ListCustomObjectSchemasResponse =
+  operations['listCustomObjectSchemas']['responses'][keyof operations['listCustomObjectSchemas']['responses']]['content']['application/json'];
 
-export type CreateCustomObjectPathParams = never;
-export type CreateCustomObjectQueryParams = never;
-export type CreateCustomObjectRequest = operations['createCustomObject']['requestBody']['content']['application/json'];
-export type CreateCustomObjectResponse =
-  operations['createCustomObject']['responses'][keyof operations['createCustomObject']['responses']]['content']['application/json'];
+export type CreateCustomObjectSchemaPathParams = never;
+export type CreateCustomObjectSchemaQueryParams = never;
+export type CreateCustomObjectSchemaRequest =
+  operations['createCustomObjectSchema']['requestBody']['content']['application/json'];
+export type CreateCustomObjectSchemaResponse =
+  operations['createCustomObjectSchema']['responses'][keyof operations['createCustomObjectSchema']['responses']]['content']['application/json'];
 
-export type GetCustomObjectPathParams = paths[`/metadata/custom_objects/{object_name}`]['parameters']['path'];
-export type GetCustomObjectQueryParams = never;
-export type GetCustomObjectRequest = never;
-export type GetCustomObjectResponse =
-  operations['getCustomObject']['responses'][keyof operations['getCustomObject']['responses']]['content']['application/json'];
+export type GetCustomObjectSchemaPathParams = paths[`/metadata/custom_objects/{object_name}`]['parameters']['path'];
+export type GetCustomObjectSchemaQueryParams = never;
+export type GetCustomObjectSchemaRequest = never;
+export type GetCustomObjectSchemaResponse =
+  operations['getCustomObjectSchema']['responses'][keyof operations['getCustomObjectSchema']['responses']]['content']['application/json'];
 
-export type UpdateCustomObjectPathParams = paths[`/metadata/custom_objects/{object_name}`]['parameters']['path'];
-export type UpdateCustomObjectQueryParams = never;
-export type UpdateCustomObjectRequest = operations['updateCustomObject']['requestBody']['content']['application/json'];
-export type UpdateCustomObjectResponse =
-  operations['updateCustomObject']['responses'][keyof operations['updateCustomObject']['responses']]['content']['application/json'];
+export type UpdateCustomObjectSchemaPathParams = paths[`/metadata/custom_objects/{object_name}`]['parameters']['path'];
+export type UpdateCustomObjectSchemaQueryParams = never;
+export type UpdateCustomObjectSchemaRequest =
+  operations['updateCustomObjectSchema']['requestBody']['content']['application/json'];
+export type UpdateCustomObjectSchemaResponse =
+  operations['updateCustomObjectSchema']['responses'][keyof operations['updateCustomObjectSchema']['responses']]['content']['application/json'];
 
 export type GetAssociationSchemasPathParams = never;
 export type GetAssociationSchemasQueryParams = Required<

@@ -1,9 +1,9 @@
 import type { AssociationSchema, AssociationSchemaCreateParams } from '@supaglue/types/association_schema';
 import type {
-  CustomObject,
-  CustomObjectCreateParams,
-  CustomObjectUpdateParams,
-  SimpleCustomObject,
+  CustomObjectSchema,
+  CustomObjectSchemaCreateParams,
+  CustomObjectSchemaUpdateParams,
+  SimpleCustomObjectSchema,
 } from '@supaglue/types/custom_object';
 import type { ConnectionService } from '.';
 import { remoteDuration } from '../lib/metrics';
@@ -28,41 +28,41 @@ export class MetadataService {
     return result;
   }
 
-  public async listCustomObjects(connectionId: string): Promise<SimpleCustomObject[]> {
+  public async listCustomObjectSchemas(connectionId: string): Promise<SimpleCustomObjectSchema[]> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'list' });
-    const result = await remoteClient.listCustomObjects();
+    const result = await remoteClient.listCustomObjectSchemas();
     end();
 
     return result;
   }
 
-  public async getCustomObject(connectionId: string, id: string): Promise<CustomObject> {
+  public async getCustomObjectSchema(connectionId: string, id: string): Promise<CustomObjectSchema> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'get' });
-    const result = await remoteClient.getCustomObject(id);
+    const result = await remoteClient.getCustomObjectSchema(id);
     end();
 
     return result;
   }
 
-  public async createCustomObject(connectionId: string, params: CustomObjectCreateParams): Promise<string> {
+  public async createCustomObjectSchema(connectionId: string, params: CustomObjectSchemaCreateParams): Promise<string> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'create' });
-    const result = await remoteClient.createCustomObject(params);
+    const result = await remoteClient.createCustomObjectSchema(params);
     end();
 
     return result;
   }
 
-  public async updateCustomObject(connectionId: string, params: CustomObjectUpdateParams): Promise<void> {
+  public async updateCustomObjectSchema(connectionId: string, params: CustomObjectSchemaUpdateParams): Promise<void> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'update' });
-    await remoteClient.updateCustomObject(params);
+    await remoteClient.updateCustomObjectSchema(params);
     end();
   }
 

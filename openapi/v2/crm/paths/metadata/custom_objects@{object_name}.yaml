@@ -1,8 +1,8 @@
 get:
-  operationId: getCustomObject
-  summary: Get Custom Object Details
+  operationId: getCustomObjectSchema
+  summary: Get Custom Object Schema Details
   tags:
-    - CustomObjects
+    - CustomObjectSchemas
   security:
     - x-api-key: []
   responses:
@@ -13,10 +13,10 @@ get:
           schema:
             $ref: ../../components/schemas/objects/custom_object_schema.yaml
 put:
-  operationId: updateCustomObject
-  summary: Update customObject
+  operationId: updateCustomObjectSchema
+  summary: Update Custom Object Schema
   tags:
-    - CustomObjects
+    - CustomObjectSchemas
   security:
     - x-api-key: []
   requestBody:
@@ -32,7 +32,7 @@ put:
             - object
   responses:
     200:
-      description: CustomObject updated
+      description: Custom Object Schema updated
       content:
         application/json:
           schema:

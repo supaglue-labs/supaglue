@@ -51,10 +51,10 @@ import type {
   User,
 } from '@supaglue/types/crm';
 import type {
-  CustomObject,
-  CustomObjectCreateParams,
-  CustomObjectUpdateParams,
-  SimpleCustomObject,
+  CustomObjectSchema,
+  CustomObjectSchemaCreateParams,
+  CustomObjectSchemaUpdateParams,
+  SimpleCustomObjectSchema,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
@@ -1884,19 +1884,19 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return HUBSPOT_STANDARD_OBJECT_TYPES as unknown as string[];
   }
 
-  public override async listCustomObjects(): Promise<SimpleCustomObject[]> {
+  public override async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.getAll();
     return response.results.map((object) => ({ id: object.id, name: object.name }));
   }
 
-  public override async getCustomObject(id: string): Promise<CustomObject> {
+  public override async getCustomObjectSchema(id: string): Promise<CustomObjectSchema> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.getById(id);
     return toCustomObject(response);
   }
 
-  public override async createCustomObject(params: CustomObjectCreateParams): Promise<string> {
+  public override async createCustomObjectSchema(params: CustomObjectSchemaCreateParams): Promise<string> {
     // TODO: Some of this general validation should be moved out of the provider-specific code
     if (!params.fields.length) {
       throw new Error('Cannot create custom object with no fields');
@@ -1936,12 +1936,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return response.name;
   }
 
-  public override async updateCustomObject(params: CustomObjectUpdateParams): Promise<void> {
+  public override async updateCustomObjectSchema(params: CustomObjectSchemaUpdateParams): Promise<void> {
     await this.maybeRefreshAccessToken();
 
     // Only update fields that have changed; for example, if you pass in the same
     // labels as the existing object, hubspot will throw an error.
-    const existingObject = await this.getCustomObject(params.name);
+    const existingObject = await this.getCustomObjectSchema(params.name);
 
     const labels =
       params.labels.singular === existingObject.labels.singular && params.labels.plural === existingObject.labels.plural

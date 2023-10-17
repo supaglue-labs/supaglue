@@ -1412,7 +1412,7 @@
         "operationId": "createCustomObjectRecord",
         "summary": "Create custom object record",
         "tags": [
-          "Custom Objects"
+          "CustomObjects"
         ],
         "security": [
           {
@@ -1474,7 +1474,7 @@
         "operationId": "listCustomObjectRecords",
         "summary": "List custom object records",
         "tags": [
-          "Custom Objects"
+          "CustomObjects"
         ],
         "security": [
           {
@@ -1484,9 +1484,6 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/read_from_cache"
           },
           {
             "$ref": "#/components/parameters/modified_after"
@@ -1543,7 +1540,7 @@
         "operationId": "updateCustomObjectRecord",
         "summary": "Update custom object record",
         "tags": [
-          "Custom Objects"
+          "CustomObjects"
         ],
         "security": [
           {
@@ -1604,7 +1601,7 @@
         "operationId": "getCustomObjectRecord",
         "summary": "Get custom object record",
         "tags": [
-          "Custom Objects"
+          "CustomObjects"
         ],
         "security": [
           {
@@ -1917,10 +1914,10 @@
     },
     "/metadata/custom_objects": {
       "get": {
-        "operationId": "listCustomObjects",
-        "summary": "List customObjects",
+        "operationId": "listCustomObjectSchemas",
+        "summary": "List Custom Object Schemas",
         "tags": [
-          "CustomObjects"
+          "CustomObjectSchemas"
         ],
         "security": [
           {
@@ -1945,10 +1942,10 @@
         }
       },
       "post": {
-        "operationId": "createCustomObject",
-        "summary": "Create customObject",
+        "operationId": "createCustomObjectSchema",
+        "summary": "Create Custom Object Schema",
         "tags": [
-          "CustomObjects"
+          "CustomObjectSchemas"
         ],
         "parameters": [],
         "security": [
@@ -1976,7 +1973,7 @@
         },
         "responses": {
           "201": {
-            "description": "CustomObject created",
+            "description": "Custom Object Schema created",
             "content": {
               "application/json": {
                 "schema": {
@@ -2017,10 +2014,10 @@
     },
     "/metadata/custom_objects/{object_name}": {
       "get": {
-        "operationId": "getCustomObject",
-        "summary": "Get Custom Object Details",
+        "operationId": "getCustomObjectSchema",
+        "summary": "Get Custom Object Schema Details",
         "tags": [
-          "CustomObjects"
+          "CustomObjectSchemas"
         ],
         "security": [
           {
@@ -2041,10 +2038,10 @@
         }
       },
       "put": {
-        "operationId": "updateCustomObject",
-        "summary": "Update customObject",
+        "operationId": "updateCustomObjectSchema",
+        "summary": "Update Custom Object Schema",
         "tags": [
-          "CustomObjects"
+          "CustomObjectSchemas"
         ],
         "security": [
           {
@@ -2071,7 +2068,7 @@
         },
         "responses": {
           "200": {
-            "description": "CustomObject updated",
+            "description": "Custom Object Schema updated",
             "content": {
               "application/json": {
                 "schema": {
@@ -2420,8 +2417,12 @@
       "description": "The `List` Object represents a collection of CRM records."
     },
     {
+      "name": "CustomObjectSchemas",
+      "description": "A `Custom Object Schema` is an object schema defined by the user."
+    },
+    {
       "name": "CustomObjects",
-      "description": "A `Custom Object` is an object that is defined by the user."
+      "description": "A `Custom Object` is an instance of a `Custom Object Schema`."
     },
     {
       "name": "AssociationSchemas",

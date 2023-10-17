@@ -85,8 +85,10 @@ tags:
     description: The `User` Common Object represents a "user" that can log in to CRMs.
   - name: Lists
     description: The `List` Object represents a collection of CRM records.
+  - name: CustomObjectSchemas
+    description: A `Custom Object Schema` is an object schema defined by the user.
   - name: CustomObjects
-    description: A `Custom Object` is an object that is defined by the user.
+    description: A `Custom Object` is an instance of a `Custom Object Schema`.
   - name: AssociationSchemas
     description: An `Association Schema` is an object describing an association between two entities.
   - name: Association

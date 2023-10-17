@@ -1,17 +1,17 @@
 import { getDependencyContainer } from '@/dependency_container';
 import type {
-  CreateCustomObjectPathParams,
-  CreateCustomObjectRequest,
-  CreateCustomObjectResponse,
-  GetCustomObjectPathParams,
-  GetCustomObjectRequest,
-  GetCustomObjectResponse,
-  ListCustomObjectsPathParams,
-  ListCustomObjectsRequest,
-  ListCustomObjectsResponse,
-  UpdateCustomObjectPathParams,
-  UpdateCustomObjectRequest,
-  UpdateCustomObjectResponse,
+  CreateCustomObjectSchemaPathParams,
+  CreateCustomObjectSchemaRequest,
+  CreateCustomObjectSchemaResponse,
+  GetCustomObjectSchemaPathParams,
+  GetCustomObjectSchemaRequest,
+  GetCustomObjectSchemaResponse,
+  ListCustomObjectSchemasPathParams,
+  ListCustomObjectSchemasRequest,
+  ListCustomObjectSchemasResponse,
+  UpdateCustomObjectSchemaPathParams,
+  UpdateCustomObjectSchemaRequest,
+  UpdateCustomObjectSchemaResponse,
 } from '@supaglue/schemas/v2/crm';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
@@ -26,10 +26,10 @@ export default function init(app: Router): void {
   router.get(
     '/',
     async (
-      req: Request<ListCustomObjectsPathParams, ListCustomObjectsResponse, ListCustomObjectsRequest>,
-      res: Response<ListCustomObjectsResponse>
+      req: Request<ListCustomObjectSchemasPathParams, ListCustomObjectSchemasResponse, ListCustomObjectSchemasRequest>,
+      res: Response<ListCustomObjectSchemasResponse>
     ) => {
-      const customObjects = await metadataService.listCustomObjects(req.customerConnection.id);
+      const customObjects = await metadataService.listCustomObjectSchemas(req.customerConnection.id);
       return res.status(200).send(customObjects.map(({ name }) => name));
     }
   );
@@ -37,10 +37,17 @@ export default function init(app: Router): void {
   router.post(
     '/',
     async (
-      req: Request<CreateCustomObjectPathParams, CreateCustomObjectResponse, CreateCustomObjectRequest>,
-      res: Response<CreateCustomObjectResponse>
+      req: Request<
+        CreateCustomObjectSchemaPathParams,
+        CreateCustomObjectSchemaResponse,
+        CreateCustomObjectSchemaRequest
+      >,
+      res: Response<CreateCustomObjectSchemaResponse>
     ) => {
-      const name = await metadataService.createCustomObject(req.customerConnection.id, camelcaseKeys(req.body.object));
+      const name = await metadataService.createCustomObjectSchema(
+        req.customerConnection.id,
+        camelcaseKeys(req.body.object)
+      );
       return res.status(201).send({ object: { name } });
     }
   );
@@ -48,10 +55,13 @@ export default function init(app: Router): void {
   router.get(
     '/:object_name',
     async (
-      req: Request<GetCustomObjectPathParams, GetCustomObjectResponse, GetCustomObjectRequest>,
-      res: Response<GetCustomObjectResponse>
+      req: Request<GetCustomObjectSchemaPathParams, GetCustomObjectSchemaResponse, GetCustomObjectSchemaRequest>,
+      res: Response<GetCustomObjectSchemaResponse>
     ) => {
-      const customObject = await metadataService.getCustomObject(req.customerConnection.id, req.params.object_name);
+      const customObject = await metadataService.getCustomObjectSchema(
+        req.customerConnection.id,
+        req.params.object_name
+      );
       return res.status(200).send(snakecaseKeys(customObject));
     }
   );
@@ -59,10 +69,14 @@ export default function init(app: Router): void {
   router.put(
     '/:object_name',
     async (
-      req: Request<UpdateCustomObjectPathParams, UpdateCustomObjectResponse, UpdateCustomObjectRequest>,
-      res: Response<UpdateCustomObjectResponse>
+      req: Request<
+        UpdateCustomObjectSchemaPathParams,
+        UpdateCustomObjectSchemaResponse,
+        UpdateCustomObjectSchemaRequest
+      >,
+      res: Response<UpdateCustomObjectSchemaResponse>
     ) => {
-      await metadataService.updateCustomObject(req.customerConnection.id, {
+      await metadataService.updateCustomObjectSchema(req.customerConnection.id, {
         ...camelcaseKeys(req.body.object),
         name: req.params.object_name,
       });
