@@ -1,0 +1,42 @@
+---
+id: delete-customer
+title: "Delete customer"
+description: "Delete customer"
+sidebar_label: "Delete customer"
+hide_title: true
+hide_table_of_contents: true
+api: eJydVW1v2zYQ/isc96UBLCnNijQxhqFdmw/BWqBIVwxDajQ0dbbZSiTLFzuGof++O+olUtwXYDEQy8fn7p67e446cGPBiaCMvi75nJdQQYBX0QdTg+MzHsTa8/kt702eL2bcg4xOhT0eHPh9JqzKvgD9WjR46sBboz2g34GfnZ7SVwleOmUpD2YZxZdGB9CBMMLaSsnEpfjsCXjgXm6gFvQU9hbQ1Sw/gwzoaB0xD6pNM/L9pMoR3gen9BrxcC9qW5GpvJCw/G21yi6Wz1fZs5V4ni0vSsgunl2eXZ6tzqU4v+QNUutY/jTg3kSX9WifRa2+RshGlDKMgAG1qOHHkd7uX5naCr1n11qSCxavqh/7UAeFDC/qvWx9c/zmTUOD+BqVg5Lm96hBHZk+wbRYnGFQIQX3irJ86k8xbEORp+N8nUTD5MNUrXAYPpBcSCJt4ZMcM67I1Yqw4WOmwUWYHY/9f3edBIlMNuZB3Ykfpp3zYnAvDiNyDSeJu21PPzocAd+EYP28KFDtuY9WrKsIuTJFva5DsT3jj7vyvsOwl++ueTPamvdUXCvb0e4MpaLlLzT0chlhup5tQJSpy9N8mIYhigXDRFWZHSthCxUtiU82KcHj06Yj1FC0laHEVGgb4zR/ep4/PeUPAngrtFgjXR2S26yXG/l1BPtCBzVho430L4YmkR5nj7o4OTxS1K/4hysQnCmjJNtH/PwDFYKBiqEqpswYpoz0I40+Z/+ayKTQLHp02CifMOhZJ69Bq0zh9bNuL0DPhC4Z1qch5fQ5Zb395fYmasSxd8YHdF886WtwUecWbZpksIwhYGK/XZ88IHa7XW5bNyp0qLrYGffFWyFhMGU2LlG5hcFpbBXsTih56sOfwqeZsQ83b8h4d3f3Uf9EjR2KOtvlHw3seF8n3R+UGOA+FLYSKsVJ8zt0q3M7LLNH9/mj22ODKQlzOCyR+wdXNQ2ZcT9dekvM+FY4JZakMNyvUnl6xg1dicrDEZ3hHcGf3HQXxQkjjX6LZr9FmvZlK0iXc46PackmV1CzQHi3TESjRbzEPbFh5Hv0WppcKa+v3lz9fYVwEakv4y1uV7Z7oATfpDZe75YB/W9m34H/TkLA++GPAd6efNdhuC1aNDVpgXf4f/c1v1o=
+sidebar_class_name: "delete api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Delete customer</h1>
+
+<MethodEndpoint method={"delete"} path={"/customers/{customer_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+
+
+Delete customer
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string","example":"your-customers-unique-application-id"}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Customer
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"your-customers-unique-application-id"}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"MyCompany Inc"}}></SchemaItem><SchemaItem collapsible={false} name={"email"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"contact@mycompany.com"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n  \"customer_id\": \"your-customers-unique-application-id\",\n  \"name\": \"MyCompany Inc\",\n  \"email\": \"contact@mycompany.com\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
