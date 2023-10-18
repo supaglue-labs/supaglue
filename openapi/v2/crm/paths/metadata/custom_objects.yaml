@@ -13,7 +13,7 @@ get:
     | Provider    | Supported |
     | ----------- | --------- |
     | Hubspot     | Yes       |
-    | Salesforce  | Yes       | 
+    | Salesforce  | No        | 
     | Pipedrive   | No        |
     | MS Dynamics | No        |
   parameters: []
@@ -40,7 +40,7 @@ post:
     | Provider    | Supported | Notes                                                   |
     | ----------- | --------- | ------------------------------------------------------- |
     | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
-    | Salesforce  | Yes       | All field types supported except picklist/multipicklist |
+    | Salesforce  | No        |                                                         |
     | Pipedrive   | No        |                                                         |
     | MS Dynamics | No        |                                                         |
   security:
