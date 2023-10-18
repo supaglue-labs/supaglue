@@ -1,0 +1,47 @@
+---
+id: get-contact
+title: "Get contact"
+description: ":::note"
+sidebar_label: "Get contact"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVm1PGzkQ/iu+vS9EYvMCNCTR6VSuRRXqfagoHDolCLzeSeKya29tb0IU7X+/mX3LhgRE6X2440NI7PHMM49nnvHa0wkY7qRWF6E38mbgPmjluHDeoReCFUYmtIlbo9FIaQcTdTWXlk2Bu9QAw69aRSvGF1xGPIhwRbEvBhYSlsxpZiEC4ZhIrdMxGLJmOjXsXDkwiZEWWBJx1WbjMi5L7e1BjM6cHjng8XubJnwWpdAWOm6xqTYs1hRY4dc4R96eKAQ3URN1CQhKWcZZ5U0H3yj+Uro5c3NgM7kAxWSIZzBDx2fWG4290tp6t4eeBZEa6Va4vvYefZ5I/wHo122Guwk3PAbEbvN9hT+QG6lElIZwZ/jyLuSOo2tJnH1PwazwhxVziLk3WntuldCBQOsIOEGARx4nEa45k0L2lPSbOSBqQ0yWMRjGYBQDr8Ch25BNjY7z3I5NyBCfW7HE6IUMwbS97LAG+ehXt+DLsEI4B452+yBaZ6SaNRF68WrjouftgL1CDNU+u/iImDhep5LIAlYI4lFOTiXYHGxtiPWyoorgSRJJkV8oBjXwPZUGwoqXRhZVcn6+8pY8LI/AYvkI2J9EFYGVEZ4FI4q6udvwmXA33znxOlTdo3cDEYi+3+8edf2T4y73BycD8DmfchHwcHrCES8VoQGbaGXBksOjbpf+bWdRFvTHohYJJpJPZg2WO98s2a53wRVNgweRCJQHJ4tIRdK7Kag0ylu/SnaT0gedWrzfTwZmxDRQX9/xMMQE7MtkzPDI+yVfWceNb/RKaOp/cpLMtYI7lcYB3vcPoXnX6w4Gw+7R8Li4dodo9sJ43sX5I6qDQw1hZ9ZKBKcc9eYVduANjwM748qScy6ETgvGX+98MBwOoAeh3xOnff8k6J/4w+7w1B+Gx6cAg0Ew7U+xAJrVNfbKEt2mFmvESRc1ShTPZXQUtWuuS6WnC6ZyHXmd0sp21puSzqibwCwqrUtNRI3mXGJHnQ7qYruWZqk7TooHcJhiZ3G0Mzu+lobs7MuFlzVE9iuVXlFdDamtScOVz0ACWjd/ZfO07bfjYRiGVnQ1PIo0CiYsIKJatvmaEMhSLkM5oIy8TTUFpmwLH912r9/udb0NldeK5CtkV1WqdJodlNOuVTYakV03S515dUW4FGpht6Ya7m1zu7W5o1D//UH8K/6xC+WMDlNBGzSbbyDCg0BYiPiKzJzCmtEWQ3bSGMWqcMj+1ikTXCEYPEn5kj26WGL1lL6kCf3tsWfbFHD8F6WOMWNMtdC4HHUd7PagIpyupN3Mr4NcOMqrU5z3i/N2U+atPMQv48tU5Uxr62KuNi5NqtoJrilqjiB1DrOxi1lrY7FcLttJcSwPWcXvLLV5sAkXUC/5SRqgbHc0lmdeaxQ8Z/kPbvMiZteXf07U/f39RL2mQ0vTXE8LCI2a/QRYJ/tfgevNLPkf1OEbHoSF7jh4dFQCMmcob851qZXjqsktmo8aDwBUtTlSSRbrdYDXcm2iLKPl4hVIEhpKS5Sg/k55ZOEFcn/64fdMLrm+7nuvLjip1MjL5XnBjSxm1A+BPrgsB1OLPRe/Ena1asascDXozG7RupT3N6P4N1+kL9D59GW94fLwJ4A/fYW+CODpo3gLQmF0hlMvcY29nbcgXX39QPh0foW2PKWibw7kYvqWX+hm9l5pc1IX4emTwOw1/40kDEf977V5sfPsgXrwVwVNBZNl/wBrOiSU
+sidebar_class_name: "get api-method"
+info_path: api/v2/ticketing/unified-ticketing-api-preview
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get contact</h1>
+
+<MethodEndpoint method={"get"} path={"/contacts/{contact_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/ticketing/unified-ticketing-api-preview"}></SecuritySchemes>
+
+
+
+:::note
+This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+:::
+
+Returns a Contact object with the given id.
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"contact_id","in":"path","required":true,"schema":{"type":"string","example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean","example":true},"description":"Whether to include raw data fetched from the 3rd party provider."}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+ContactData
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"Cousin Greg"}}></SchemaItem><SchemaItem collapsible={false} name={"email_address"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"greg@waystar-royco.com"}}></SchemaItem><SchemaItem collapsible={false} name={"phone_number"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"5108890293"}}></SchemaItem><SchemaItem collapsible={false} name={"details"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"Executive Assistant to Tom Wambsgans"}}></SchemaItem><SchemaItem collapsible={false} name={"account"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"8998e1ed-1c76-4b64-9097-9d37ee88bf6f"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"name\": \"Cousin Greg\",\n  \"email_address\": \"greg@waystar-royco.com\",\n  \"phone_number\": \"5108890293\",\n  \"details\": \"Executive Assistant to Tom Wambsgans\",\n  \"account\": \"8998e1ed-1c76-4b64-9097-9d37ee88bf6f\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
