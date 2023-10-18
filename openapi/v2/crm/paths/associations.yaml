@@ -5,8 +5,17 @@ get:
   security:
     - x-api-key: []
   summary: List associations for a record and target object
-  description: >-
+  description: |
     Get a list of associations
+
+    Support:
+
+    | Provider    | Supported |
+    | ----------- | --------- |
+    | Hubspot     | Yes       |
+    | Salesforce  | No        |
+    | Pipedrive   | No        |
+    | MS Dynamics | No        |
   parameters:
     - name: source_record_id
       in: query
@@ -41,6 +50,17 @@ put:
   tags:
     - Associations
   parameters: []
+  description: |
+    Upsert association
+
+    Support:
+
+    | Provider    | Supported |
+    | ----------- | --------- |
+    | Hubspot     | Yes       |
+    | Salesforce  | No        |
+    | Pipedrive   | No        |
+    | MS Dynamics | No        |
   security:
     - x-api-key: []
   requestBody:

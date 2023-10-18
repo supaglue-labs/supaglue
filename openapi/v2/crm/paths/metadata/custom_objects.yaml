@@ -5,6 +5,17 @@ get:
     - CustomObjectSchemas
   security:
     - x-api-key: []
+  description: |
+    List custom object schemas
+
+    Support:
+
+    | Provider    | Supported |
+    | ----------- | --------- |
+    | Hubspot     | Yes       |
+    | Salesforce  | Yes       | 
+    | Pipedrive   | No        |
+    | MS Dynamics | No        |
   parameters: []
   responses:
     200:
@@ -21,6 +32,17 @@ post:
   tags:
     - CustomObjectSchemas
   parameters: []
+  description: |
+    Create custom object schema
+
+    Support:
+
+    | Provider    | Supported | Notes                                                   |
+    | ----------- | --------- | ------------------------------------------------------- |
+    | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
+    | Salesforce  | Yes       | All field types supported except picklist/multipicklist |
+    | Pipedrive   | No        |                                                         |
+    | MS Dynamics | No        |                                                         |
   security:
     - x-api-key: []
   requestBody:

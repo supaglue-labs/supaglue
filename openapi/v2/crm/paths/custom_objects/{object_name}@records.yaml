@@ -5,6 +5,17 @@ post:
     - CustomObjects
   security:
     - x-api-key: []
+  description: |
+    Create custom object record
+
+    Support:
+
+    | Provider    | Supported |
+    | ----------- | --------- |
+    | Hubspot     | Yes       |
+    | Salesforce  | No        | 
+    | Pipedrive   | No        |
+    | MS Dynamics | No        |
   parameters: []
   requestBody:
     required: true
@@ -36,6 +47,17 @@ get:
   summary: List custom object records
   tags:
     - CustomObjects
+  description: |
+    List custom object records
+
+    Support:
+
+    | Provider    | Supported |
+    | ----------- | --------- |
+    | Hubspot     | Yes       |
+    | Salesforce  | No        |
+    | Pipedrive   | No        |
+    | MS Dynamics | No        |
   security:
     - x-api-key: []
   parameters:
