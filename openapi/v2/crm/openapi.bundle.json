@@ -1844,7 +1844,7 @@
         "tags": [
           "AssociationSchemas"
         ],
-        "description": "Create an association schema\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "description": "Create an association schema\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n\nNote: When creating a new association schema for Hubspot, Hubspot will also create a default association schema (with an empty name). Either can be used to create associations.\n",
         "parameters": [],
         "security": [
           {

@@ -354,6 +354,8 @@ export interface paths {
      * | Salesforce  | No        | 
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
+     * 
+     * Note: When creating a new association schema for Hubspot, Hubspot will also create a default association schema (with an empty name). Either can be used to create associations.
      */
     post: operations["createAssociationSchema"];
     parameters: {
@@ -2156,6 +2158,8 @@ export interface operations {
    * | Salesforce  | No        | 
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
+   * 
+   * Note: When creating a new association schema for Hubspot, Hubspot will also create a default association schema (with an empty name). Either can be used to create associations.
    */
   createAssociationSchema: {
     parameters: {
