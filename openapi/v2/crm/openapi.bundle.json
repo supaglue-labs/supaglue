@@ -1465,20 +1465,17 @@
       },
       "get": {
         "operationId": "listCustomObjectRecords",
-        "summary": "List custom object records (preview)",
+        "summary": "List custom object records",
         "tags": [
           "CustomObjects"
         ],
-        "description": "List custom object records (preview)\n",
+        "description": "List custom object records\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "security": [
           {
             "x-api-key": []
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/components/parameters/include_raw_data"
-          },
           {
             "$ref": "#/components/parameters/modified_after"
           },
