@@ -1,0 +1,47 @@
+---
+id: get-tag
+title: "Get tag"
+description: ":::note"
+sidebar_label: "Get tag"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVttu4zYQ/RVWfYmBSHKyaRAYRdFtd7EI2odF1umisI1kLI1tbiRSS1J2DMP/3hlRkmU7CfbShzYPsU0Oec6cuXA2gS7QgJNaXafBIJijG8I8OA1StImRBW/Q8mAwUNrhWA0X0ooZgisNCvqqVbYWsASZwTSjFSXeG1xKXAmnhcUMEyeS0jqdo2FroUsj3iqHpjDSoigyUJEY/a6VAzIt7eQkp8ucHjiE/FdbFjDPSowSnffETBuRawZW9DWvWEdjReTGaqxukEgpK0CQB0JPPzH2SrqFcAsUc7lEJWRK9uSdg7kNBqNgyJ+T08BiUhrp1rS2CR5DKGT4gPxrsqXdAgzkSJxtta/oB2kiVZKVKd4ZWN2l4ICulazV5xLNmn7YZIE5BINN4NYFH5hqnSEwPD5CXmS05kyJ20OxPy6QGBtWsMYQhCEYg6R3dG0qZkbnlV+vTCqIn1uLwuilTNFEwfa0JfkYNuqHMm0YLhDI7imK1hmp5l2GQb7eXXEWHJEdEodmX1y/IU5AYVSSVKDMID7KyZlEW5FtDSlP1pwJUBSZTKpAEqjBz6U0mDa6dLxonAurlW/xw0KGltImwaedaBBEjfAsGcqdu52WBbjFkfWXMeqf/3SVTJPL8LJ/3g8vXvUhvLq4whBgBskU0tkFEFdOQIO20Mqi5QvP+33+OPAA5m98DiZUSiQ6m3TUjT9ZttscE/OFQgdJAGoFTnoU7+xL9IcyeUBHq+L1+2vi2RVh5M8TdSddVqtGNls2o1Ja6LrZMC4rOAhirsl449XdclDRLJuSK03G8XausIM4pvKM2s4gdewaJvHy/Kh1fagNPctOrX9gJbyznYpvPaaVP5DruM3BxuYw+/bxCEaQFVcvZJmmusUlZiytrdaSBK2vhkY27mYMzN76O/rR2WV01g928t0qrqJU7IkuTupm26vjTi10F7vWc44aN1VaSnVi95oq7e1ru7d5VCj//XfgR/oT18oZnZYJb/DT8BEzOojMhYVvxKwkbBXtCVKnzKl2/IXib12KBBSRoZPsL9vTFSvKnvouadJwv/vaiAFHf7HrhJmTq77kKtYt2OSkEZxDEnX9i0kLx37F/nzoz9tdmvcqiB9GN6WqlNbW5aB2V5pSRQWtKS6OaekceWOX897OYrVaRYU/VkE2+PFKmwdbQILtUliUU+oisab0rHKNwSuVfwNbJbG4vflzrO7v78fqSyq0NuXkqil0cvYdOuGOB5DNrq39D3LwK2cR328cPjoOvayUqYpyU/fGkZ9XTulx8W8PdbEFScc7m82UwnBrsu2Wl/3wwS0zlZZloD47g8ziC4J+97zxjA9VP31qTFoCd6VBULXjJRjJRL+S9MlN/dj0xHP4TSNX6y5mw6uWcjshy7qVfzODf3MIekHKw2Fup+PpdxA/HHxeJHA4h+1R8Eav6YUrXGfvaAzhsLdDwLu3Q7KFkhO9+/j6l7b+wpF5MpzdV9nD838m86T5z9yu6Fn/pTX3O88eaB/5Jpk5YbbbfwDzaJYj
+sidebar_class_name: "get api-method"
+info_path: api/v2/ticketing/unified-ticketing-api-preview
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get tag</h1>
+
+<MethodEndpoint method={"get"} path={"/tags/{tag_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/ticketing/unified-ticketing-api-preview"}></SecuritySchemes>
+
+
+
+:::note
+This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+:::
+
+Returns a Tag object with the given id.
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"tag_id","in":"path","required":true,"schema":{"type":"string","example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean","example":true},"description":"Whether to include raw data fetched from the 3rd party provider."}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+TagData
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"Ticketing API"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"name\": \"Ticketing API\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
