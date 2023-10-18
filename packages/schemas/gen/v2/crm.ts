@@ -222,17 +222,8 @@ export interface paths {
   };
   "/custom_objects/{object_name}/records": {
     /**
-     * List custom object records 
-     * @description List custom object records
-     * 
-     * Support:
-     * 
-     * | Provider    | Supported |
-     * | ----------- | --------- |
-     * | Hubspot     | Yes       |
-     * | Salesforce  | No        |
-     * | Pipedrive   | No        |
-     * | MS Dynamics | No        |
+     * List custom object records (preview) 
+     * @description List custom object records (preview)
      */
     get: operations["listCustomObjectRecords"];
     /**
@@ -382,7 +373,7 @@ export interface paths {
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | No        | 
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
@@ -396,7 +387,7 @@ export interface paths {
      * | Provider    | Supported | Notes                                                   |
      * | ----------- | --------- | ------------------------------------------------------- |
      * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
-     * | Salesforce  | Yes       | All field types supported except picklist/multipicklist |
+     * | Salesforce  | No        |                                                         |
      * | Pipedrive   | No        |                                                         |
      * | MS Dynamics | No        |                                                         |
      */
@@ -418,7 +409,7 @@ export interface paths {
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | No        | 
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
@@ -432,7 +423,7 @@ export interface paths {
      * | Provider    | Supported | Notes                                                   |
      * | ----------- | --------- | ------------------------------------------------------- |
      * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
-     * | Salesforce  | Yes       | All field types supported except picklist/multipicklist |
+     * | Salesforce  | No        |                                                         |
      * | Pipedrive   | No        |                                                         |
      * | MS Dynamics | No        |                                                         |
      */
@@ -1877,17 +1868,8 @@ export interface operations {
     };
   };
   /**
-   * List custom object records 
-   * @description List custom object records
-   * 
-   * Support:
-   * 
-   * | Provider    | Supported |
-   * | ----------- | --------- |
-   * | Hubspot     | Yes       |
-   * | Salesforce  | No        |
-   * | Pipedrive   | No        |
-   * | MS Dynamics | No        |
+   * List custom object records (preview) 
+   * @description List custom object records (preview)
    */
   listCustomObjectRecords: {
     parameters: {
@@ -2211,7 +2193,7 @@ export interface operations {
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | No        | 
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2240,7 +2222,7 @@ export interface operations {
    * | Provider    | Supported | Notes                                                   |
    * | ----------- | --------- | ------------------------------------------------------- |
    * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
-   * | Salesforce  | Yes       | All field types supported except picklist/multipicklist |
+   * | Salesforce  | No        |                                                         |
    * | Pipedrive   | No        |                                                         |
    * | MS Dynamics | No        |                                                         |
    */
@@ -2282,7 +2264,7 @@ export interface operations {
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | No        | 
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2314,7 +2296,7 @@ export interface operations {
    * | Provider    | Supported | Notes                                                   |
    * | ----------- | --------- | ------------------------------------------------------- |
    * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
-   * | Salesforce  | Yes       | All field types supported except picklist/multipicklist |
+   * | Salesforce  | No        |                                                         |
    * | Pipedrive   | No        |                                                         |
    * | MS Dynamics | No        |                                                         |
    */
