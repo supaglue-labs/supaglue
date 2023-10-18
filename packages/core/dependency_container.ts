@@ -3,6 +3,7 @@ import prisma from '@supaglue/db';
 import type { Pool } from 'pg';
 import { getPgPool } from './lib';
 import {
+  AssociationService,
   ConnectionService,
   CustomerService,
   ProviderService,
@@ -64,6 +65,7 @@ export type CoreDependencyContainer = {
    */
   entityRecordService: EntityRecordService;
   objectRecordService: ObjectRecordService;
+  associationService: AssociationService;
 };
 
 // global
@@ -124,6 +126,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     destinationService,
     syncService
   );
+  const associationService = new AssociationService(connectionService, remoteService);
 
   return {
     pgPool,
@@ -150,6 +153,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     syncRunService,
     entityRecordService,
     objectRecordService,
+    associationService,
   };
 }
 

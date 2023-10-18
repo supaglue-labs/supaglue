@@ -7,11 +7,7 @@ import type {
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
-import type {
-  ListObjectAssociationsParams,
-  ObjectAssociation,
-  ObjectAssociationCreateParams,
-} from '@supaglue/types/association';
+import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/association';
 import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
 import type {
   CustomObjectSchema,
@@ -53,8 +49,8 @@ export interface RemoteClient {
     displayName: string
   ): Promise<void>;
 
-  listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]>;
-  createAssociation(params: ObjectAssociationCreateParams): Promise<ObjectAssociation>;
+  listAssociations(params: ListAssociationsParams): Promise<Association[]>;
+  createAssociation(params: AssociationCreateParams): Promise<Association>;
 
   listStandardObjectRecords(
     object: string,
@@ -148,10 +144,10 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new Error('Not implemented');
   }
 
-  public async listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]> {
+  public async listAssociations(params: ListAssociationsParams): Promise<Association[]> {
     throw new Error('Not implemented');
   }
-  public async createAssociation(params: ObjectAssociationCreateParams): Promise<ObjectAssociation> {
+  public async createAssociation(params: AssociationCreateParams): Promise<Association> {
     throw new Error('Not implemented');
   }
 

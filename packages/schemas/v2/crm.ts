@@ -209,7 +209,7 @@ export type UpdateCustomObjectRecordResponse =
   operations['updateCustomObjectRecord']['responses'][keyof operations['updateCustomObjectRecord']['responses']]['content']['application/json'];
 
 export type ListAssociationsPathParams = never;
-export type ListAssociationsQueryParams = never;
+export type ListAssociationsQueryParams = Required<operations['listAssociations']>['parameters']['query'];
 export type ListAssociationsRequest = never;
 export type ListAssociationsResponse =
   operations['listAssociations']['responses'][keyof operations['listAssociations']['responses']]['content']['application/json'];

@@ -2,11 +2,23 @@ type: object
 properties:
   association_schema_id:
     type: string
+  source_object:
+    type: string
+    description: The name of the object that the source record belongs to.
+    example: company
   source_record_id:
     type: string
+    example: 45636a40-87e3-4707-b43c-39fecf9a8f4b
+  target_object:
+    type: string
+    description: The name of the object that the target record belongs to.
+    example: contact
   target_record_id:
     type: string
+    example: ad204784-a71b-440a-8482-c3d5ab64110f
 required:
   - association_schema_id
   - source_record_id
   - target_record_id
+  - source_object
+  - target_object

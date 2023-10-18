@@ -758,9 +758,21 @@ export interface components {
     };
     /** @description An instance of an association between two records. */
     association: {
-      source_record_id: string;
-      target_record_id: string;
       association_schema_id: string;
+      /**
+       * @description The name of the object that the source record belongs to. 
+       * @example company
+       */
+      source_object: string;
+      /** @example 45636a40-87e3-4707-b43c-39fecf9a8f4b */
+      source_record_id: string;
+      /**
+       * @description The name of the object that the target record belongs to. 
+       * @example contact
+       */
+      target_object: string;
+      /** @example ad204784-a71b-440a-8482-c3d5ab64110f */
+      target_record_id: string;
     };
     errors: ({
         /**
@@ -878,7 +890,19 @@ export interface components {
     };
     create_update_association: {
       association_schema_id: string;
+      /**
+       * @description The name of the object that the source record belongs to. 
+       * @example company
+       */
+      source_object: string;
+      /** @example 45636a40-87e3-4707-b43c-39fecf9a8f4b */
       source_record_id: string;
+      /**
+       * @description The name of the object that the target record belongs to. 
+       * @example contact
+       */
+      target_object: string;
+      /** @example ad204784-a71b-440a-8482-c3d5ab64110f */
       target_record_id: string;
     };
     create_update_custom_object_record: {
