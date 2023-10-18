@@ -1469,7 +1469,7 @@
         "tags": [
           "CustomObjects"
         ],
-        "description": "List custom object records\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "description": "List custom object records\nNote: This endpoint will only work if a Sync is setup with the Supaglue managed destination.\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "security": [
           {
             "x-api-key": []

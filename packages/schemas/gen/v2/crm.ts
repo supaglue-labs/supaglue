@@ -224,6 +224,7 @@ export interface paths {
     /**
      * List custom object records 
      * @description List custom object records
+     * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
      * 
      * Support:
      * 
@@ -1881,6 +1882,7 @@ export interface operations {
   /**
    * List custom object records 
    * @description List custom object records
+   * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
    * 
    * Support:
    * 
