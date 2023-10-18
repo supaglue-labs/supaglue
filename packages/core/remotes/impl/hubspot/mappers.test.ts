@@ -572,6 +572,7 @@ describe('Hubspot Mappers', () => {
             label: 'Property 5',
             description: 'Description 5',
             type: 'bool',
+            fieldType: 'booleancheckbox',
           },
           {
             name: 'property6',
@@ -685,6 +686,7 @@ describe('Hubspot Mappers', () => {
               label: 'Property 5',
               name: 'property5',
               type: 'bool',
+              fieldType: 'booleancheckbox',
             },
             type: 'boolean',
           },
@@ -769,7 +771,7 @@ describe('Hubspot Mappers', () => {
       );
       expect(getPropertyType({ type: 'date' } as HubspotProperty)).toEqual('date');
       expect(getPropertyType({ type: 'datetime' } as HubspotProperty)).toEqual('datetime');
-      expect(getPropertyType({ type: 'bool' } as HubspotProperty)).toEqual('boolean');
+      expect(getPropertyType({ type: 'bool', fieldType: 'booleancheckbox' } as HubspotProperty)).toEqual('boolean');
       expect(getPropertyType({ fieldType: 'unknown', type: 'unknown' } as HubspotProperty)).toEqual('other');
     });
   });
