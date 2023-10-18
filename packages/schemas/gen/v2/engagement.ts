@@ -35,7 +35,16 @@ export interface paths {
     };
   };
   "/accounts/{account_id}": {
-    /** Get account */
+    /**
+     * Get account 
+     * @description Support:
+     * 
+     * | Provider   | Supported | 
+     * | ---------- | --------- | 
+     * | Salesloft  | Yes       | 
+     * | Outreach   | Yes       | 
+     * | Apollo     | No        |
+     */
     get: operations["getAccount"];
     /** Update account */
     patch: operations["updateAccount"];
@@ -676,7 +685,16 @@ export interface operations {
       };
     };
   };
-  /** Get account */
+  /**
+   * Get account 
+   * @description Support:
+   * 
+   * | Provider   | Supported | 
+   * | ---------- | --------- | 
+   * | Salesloft  | Yes       | 
+   * | Outreach   | Yes       | 
+   * | Apollo     | No        |
+   */
   getAccount: {
     parameters: {
       query?: {
