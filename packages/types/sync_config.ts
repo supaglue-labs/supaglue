@@ -1,5 +1,5 @@
 import type { SyncStrategyType } from './sync';
-import type { CommonObjectConfig, StandardObjectConfig } from './sync_object_config';
+import type { CommonObjectConfig, CustomObjectConfig, StandardObjectConfig } from './sync_object_config';
 
 export type SyncConfig = {
   id: string;
@@ -20,6 +20,7 @@ export type SyncConfigData = {
   entities?: {
     entityId: string;
   }[];
+  customObjects?: CustomObjectConfig[];
 };
 
 export type SyncStrategyConfig = {

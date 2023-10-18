@@ -3461,6 +3461,23 @@
               ]
             }
           },
+          "custom_objects": {
+            "description": "A list of case-sensitive custom objects to be synced. Only supported for Salesforce and Hubspot.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "object": {
+                  "type": "string",
+                  "description": "The custom object name (case sensitive). For Salesforce, this should end with `__c`.",
+                  "example": "MyCustomObject__c"
+                }
+              },
+              "required": [
+                "object"
+              ]
+            }
+          },
           "entities": {
             "type": "array",
             "deprecated": true,

@@ -415,6 +415,32 @@ export class ConnectionAndSyncService {
             });
           }
 
+          if (syncConfig.config.customObjects?.length) {
+            const customObjectSyncArgs: Prisma.SyncCreateManyInput[] = [];
+            for (const customObject of syncConfig.config.customObjects) {
+              const customObjectSyncId = uuidv4();
+              syncIds.push(customObjectSyncId);
+              customObjectSyncArgs.push({
+                id: customObjectSyncId,
+                type: 'object',
+                objectType: 'custom',
+                object: customObject.object,
+                connectionId,
+                paused: !autoStart,
+                syncConfigId: syncConfig.id,
+                strategy: {
+                  type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+                },
+                state: {
+                  phase: 'created',
+                },
+              });
+            }
+            await tx.sync.createMany({
+              data: customObjectSyncArgs,
+            });
+          }
+
           if (syncConfig.config.entities?.length) {
             const entitySyncArgs: Prisma.SyncCreateManyInput[] = [];
             for (const entity of syncConfig.config.entities) {

@@ -58,7 +58,9 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
   const [strategy, setStrategy] = useState<SyncStrategyType>('full then incremental');
   const [commonObjects, setCommonObjects] = useState<CommonObjectType[]>([]);
   const [standardObjects, setStandardObjects] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState<string>('');
+  const [customObjects, setCustomObjects] = useState<string[]>([]);
+  const [standardInputValue, setStandardInputValue] = useState<string>('');
+  const [customInputValue, setCustomInputValue] = useState<string>('');
   const [entityIds, setEntityIds] = useState<string[]>([]);
   const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
   const router = useRouter();
@@ -79,6 +81,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
     setStrategy(syncConfig?.config?.defaultConfig?.strategy ?? 'full then incremental');
     setCommonObjects(syncConfig?.config?.commonObjects?.map((o) => o.object) ?? []);
     setStandardObjects(syncConfig?.config?.standardObjects?.map((o) => o.object) ?? []);
+    setCustomObjects(syncConfig?.config?.customObjects?.map((o) => o.object) ?? []);
     setEntityIds(syncConfig?.config?.entities?.map((entity) => entity.entityId) ?? []);
   }, [syncConfig?.id]);
 
@@ -118,6 +121,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
           },
           commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
           standardObjects: standardObjects.map((object) => ({ object })),
+          customObjects: customObjects.map((object) => ({ object })),
           entities: entityIds.map((entityId) => ({ entityId })),
         },
       };
@@ -158,9 +162,8 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
   };
 
   const selectedProvider = providers.find((p) => p.id === providerId);
-  const selectedDestination = destinations?.find((d) => d.id === destinationId);
-  const supportsStandardDestinations = ['postgres', 'bigquery', 'mongodb', 'supaglue'];
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
+  const supportsCustomObjects = ['hubspot', 'salesforce'];
 
   const commonObjectsSupported = selectedProvider?.category !== 'no_category';
 
@@ -307,17 +310,14 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
               <Stack className="gap-2">
                 <Typography variant="subtitle1">Standard objects</Typography>
                 <Autocomplete
-                  disabled={
-                    !supportsStandardObjects.includes(String(selectedProvider?.name)) ||
-                    !supportsStandardDestinations.includes(String(selectedDestination?.type))
-                  }
+                  disabled={!supportsStandardObjects.includes(String(selectedProvider?.name))}
                   size="small"
                   key={providerId}
                   multiple
                   id="standard-objects"
                   options={standardObjectsOptions}
                   value={standardObjects}
-                  inputValue={inputValue}
+                  inputValue={standardInputValue}
                   autoSelect
                   freeSolo
                   renderTags={(value: readonly string[], getTagProps) =>
@@ -331,10 +331,10 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                       if (newObject) {
                         setStandardObjects([...standardObjects, newObject]);
                       }
-                      setInputValue('');
+                      setStandardInputValue('');
                       return;
                     }
-                    setInputValue(newInputValue);
+                    setStandardInputValue(newInputValue);
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -345,6 +345,51 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                   )}
                   onChange={(event: any, value: string[]) => {
                     setStandardObjects(value.map((v) => v.trim()));
+                  }}
+                />
+              </Stack>
+              <Stack className="gap-2">
+                <Typography variant="subtitle1">Custom objects</Typography>
+                <Autocomplete
+                  disabled={!supportsCustomObjects.includes(String(selectedProvider?.name))}
+                  size="small"
+                  key={providerId}
+                  multiple
+                  id="custom-objects"
+                  options={[]}
+                  value={customObjects}
+                  inputValue={customInputValue}
+                  autoSelect
+                  freeSolo
+                  renderTags={(value: readonly string[], getTagProps) =>
+                    value.map((option: string, index: number) => (
+                      <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                    ))
+                  }
+                  onInputChange={(event, newInputValue) => {
+                    if (newInputValue.endsWith(',')) {
+                      const newObject = newInputValue.slice(0, -1).trim();
+                      if (newObject) {
+                        setCustomObjects([...customObjects, newObject]);
+                      }
+                      setCustomInputValue('');
+                      return;
+                    }
+                    setCustomInputValue(newInputValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Custom objects"
+                      helperText={`Custom objects in ${
+                        selectedProvider?.name
+                      }. (Note: names are case-sensitive. Press enter or comma to add multiple fields. ${
+                        selectedProvider?.name === 'salesforce' ? 'For Salesforce, these should all end with __c.' : ''
+                      })`}
+                    />
+                  )}
+                  onChange={(event: any, value: string[]) => {
+                    setCustomObjects(value.map((v) => v.trim()));
                   }}
                 />
               </Stack>
