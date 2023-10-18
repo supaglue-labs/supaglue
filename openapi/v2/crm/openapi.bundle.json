@@ -1646,7 +1646,7 @@
     },
     "/associations": {
       "get": {
-        "operationId": "getAssociations",
+        "operationId": "listAssociations",
         "tags": [
           "Associations"
         ],

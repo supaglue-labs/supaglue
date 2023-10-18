@@ -257,7 +257,7 @@ export interface paths {
      * List associations for a record and target object 
      * @description Get a list of associations
      */
-    get: operations["getAssociations"];
+    get: operations["listAssociations"];
     /** Upsert association */
     put: operations["upsertAssociation"];
     parameters: {
@@ -1840,7 +1840,7 @@ export interface operations {
    * List associations for a record and target object 
    * @description Get a list of associations
    */
-  getAssociations: {
+  listAssociations: {
     parameters: {
       query: {
         source_record_id: string;
