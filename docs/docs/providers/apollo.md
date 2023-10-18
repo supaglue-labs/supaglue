@@ -28,6 +28,7 @@ Apollo is both a sales engagement connector and a data enrichment provider.
 | Object          | Soft delete supported | Sync strategy |
 | --------------- | --------------------- | ------------- |
 | Users           | Yes                   | Full          |
+| Accounts        | Yes                   | Full          |
 | Contacts        | Yes                   | Full          |
 | Sequences       | Yes                   | Full          |
 | Sequence States | Yes                   | Full          |

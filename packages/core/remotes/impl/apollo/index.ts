@@ -411,7 +411,8 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         )) as CreateCommonObjectRecordResponse<T>;
       case 'contact':
         return (await this.createContact(params as ContactCreateParams)) as CreateCommonObjectRecordResponse<T>;
-      case 'account': // return (await this.createAccount(params as AccountCreateParams)) as CreateCommonObjectRecordResponse<T>;
+      case 'account':
+        return (await this.createAccount(params as AccountCreateParams)) as CreateCommonObjectRecordResponse<T>;
       case 'sequence':
       case 'mailbox':
       case 'user':
@@ -427,8 +428,8 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   ): Promise<UpdateCommonObjectRecordResponse<T>> {
     // TODO: figure out why type assertion is required here
     switch (commonObjectType) {
-      // case 'account':
-      //   return (await this.updateAccount(params as AccountUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
+      case 'account':
+        return (await this.updateAccount(params as AccountUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
       case 'contact':
         return (await this.updateContact(params as ContactUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
       default:

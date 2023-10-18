@@ -31,9 +31,11 @@ N/A
 
 | Object           | Soft delete supported | Sync strategy       |
 | ---------------- | --------------------- | ------------------- |
-| `call`           | No (Yes if "Full")    | Full or Incremental |
-| `detailedCall`   | No (Yes if "Full")    | Full or Incremental |
+| `call`           | No\*                  | Full or Incremental |
+| `detailedCall`   | No\*                  | Full or Incremental |
 | `callTranscript` | Yes                   | Full                |
+
+[*] Soft deletes are supported if the sync strategy is "Full"
 
 #### Supported custom objects:
 

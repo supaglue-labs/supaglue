@@ -249,6 +249,7 @@
       "get": {
         "operationId": "getAccount",
         "summary": "Get account",
+        "description": "Support:\n\n| Provider   | Supported | \n| ---------- | --------- | \n| Salesloft  | Yes       | \n| Outreach   | Yes       | \n| Apollo     | No        |\n",
         "tags": [
           "Accounts"
         ],
