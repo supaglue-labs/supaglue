@@ -5,6 +5,17 @@ patch:
     - CustomObjects
   security:
     - x-api-key: []
+  description: |
+    Update custom object record
+
+    Support:
+
+    | Provider    | Supported |
+    | ----------- | --------- |
+    | Hubspot     | Yes       |
+    | Salesforce  | Yes       |
+    | Pipedrive   | No        |
+    | MS Dynamics | No        |
   requestBody:
     required: true
     content:
@@ -37,6 +48,17 @@ get:
     - CustomObjects
   security:
     - x-api-key: []
+  description: |
+    Get custom object record
+
+    Support:
+
+    | Provider    | Supported |
+    | ----------- | --------- |
+    | Hubspot     | Yes       |
+    | Salesforce  | Yes       |
+    | Pipedrive   | No        |
+    | MS Dynamics | No        |
   parameters:
     - $ref: ../../../../common/components/parameters/query/include_raw_data.yaml
     - $ref: ../../../../common/components/parameters/query/read_from_cache.yaml

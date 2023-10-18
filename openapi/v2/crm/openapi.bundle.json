@@ -1419,6 +1419,7 @@
             "x-api-key": []
           }
         ],
+        "description": "Create custom object record\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1464,10 +1465,11 @@
       },
       "get": {
         "operationId": "listCustomObjectRecords",
-        "summary": "List custom object records",
+        "summary": "List custom object records (preview)",
         "tags": [
           "CustomObjects"
         ],
+        "description": "List custom object records (preview)\n",
         "security": [
           {
             "x-api-key": []
@@ -1539,6 +1541,7 @@
             "x-api-key": []
           }
         ],
+        "description": "Update custom object record\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -1592,6 +1595,7 @@
             "x-api-key": []
           }
         ],
+        "description": "Get custom object record\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [
           {
             "$ref": "#/components/parameters/include_raw_data"
@@ -1656,7 +1660,7 @@
           }
         ],
         "summary": "List associations for a record and target object",
-        "description": "Get a list of associations",
+        "description": "Get a list of associations\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [
           {
             "name": "source_record_id",
@@ -1711,6 +1715,7 @@
           "Associations"
         ],
         "parameters": [],
+        "description": "Upsert association\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "security": [
           {
             "x-api-key": []
@@ -1771,7 +1776,7 @@
           }
         ],
         "summary": "List association schemas",
-        "description": "Get a list of Association Schemas",
+        "description": "Get a list of Association Schemas\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [
           {
             "name": "source_object",
@@ -1839,6 +1844,7 @@
         "tags": [
           "AssociationSchemas"
         ],
+        "description": "Create an association schema\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [],
         "security": [
           {
@@ -1908,6 +1914,7 @@
             "x-api-key": []
           }
         ],
+        "description": "List custom object schemas\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [],
         "responses": {
           "200": {
@@ -1932,6 +1939,7 @@
           "CustomObjectSchemas"
         ],
         "parameters": [],
+        "description": "Create custom object schema\n\nSupport:\n\n| Provider    | Supported | Notes                                                   |\n| ----------- | --------- | ------------------------------------------------------- |\n| Hubspot     | Yes       | All field types supported except picklist/multipicklist |\n| Salesforce  | No        |                                                         |\n| Pipedrive   | No        |                                                         |\n| MS Dynamics | No        |                                                         |\n",
         "security": [
           {
             "x-api-key": []
@@ -2008,6 +2016,7 @@
             "x-api-key": []
           }
         ],
+        "description": "Get custom object schema details\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "responses": {
           "200": {
             "description": "CustomObject",
@@ -2027,6 +2036,7 @@
         "tags": [
           "CustomObjectSchemas"
         ],
+        "description": "Update custom object schema\n\nSupport:\n\n| Provider    | Supported | Notes                                                   |\n| ----------- | --------- | ------------------------------------------------------- |\n| Hubspot     | Yes       | All field types supported except picklist/multipicklist |\n| Salesforce  | No        |                                                         |\n| Pipedrive   | No        |                                                         |\n| MS Dynamics | No        |                                                         |\n",
         "security": [
           {
             "x-api-key": []

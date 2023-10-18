@@ -221,9 +221,24 @@ export interface paths {
     };
   };
   "/custom_objects/{object_name}/records": {
-    /** List custom object records */
+    /**
+     * List custom object records (preview) 
+     * @description List custom object records (preview)
+     */
     get: operations["listCustomObjectRecords"];
-    /** Create custom object record */
+    /**
+     * Create custom object record 
+     * @description Create custom object record
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | No        | 
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
     post: operations["createCustomObjectRecord"];
     parameters: {
       header: {
@@ -236,9 +251,33 @@ export interface paths {
     };
   };
   "/custom_objects/{object_name}/records/{record_id}": {
-    /** Get custom object record */
+    /**
+     * Get custom object record 
+     * @description Get custom object record
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | Yes       |
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
     get: operations["getCustomObjectRecord"];
-    /** Update custom object record */
+    /**
+     * Update custom object record 
+     * @description Update custom object record
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | Yes       |
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
     patch: operations["updateCustomObjectRecord"];
     parameters: {
       header: {
@@ -256,9 +295,30 @@ export interface paths {
     /**
      * List associations for a record and target object 
      * @description Get a list of associations
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | No        |
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
      */
     get: operations["listAssociations"];
-    /** Upsert association */
+    /**
+     * Upsert association 
+     * @description Upsert association
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | No        |
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
     put: operations["upsertAssociation"];
     parameters: {
       header: {
@@ -271,9 +331,30 @@ export interface paths {
     /**
      * List association schemas 
      * @description Get a list of Association Schemas
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | No        | 
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
      */
     get: operations["getAssociationSchemas"];
-    /** Create association schema */
+    /**
+     * Create association schema 
+     * @description Create an association schema
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | No        | 
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
     post: operations["createAssociationSchema"];
     parameters: {
       header: {
@@ -283,9 +364,33 @@ export interface paths {
     };
   };
   "/metadata/custom_objects": {
-    /** List custom object schemas */
+    /**
+     * List custom object schemas 
+     * @description List custom object schemas
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | No        | 
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
     get: operations["listCustomObjectSchemas"];
-    /** Create custom object schema */
+    /**
+     * Create custom object schema 
+     * @description Create custom object schema
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported | Notes                                                   |
+     * | ----------- | --------- | ------------------------------------------------------- |
+     * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
+     * | Salesforce  | No        |                                                         |
+     * | Pipedrive   | No        |                                                         |
+     * | MS Dynamics | No        |                                                         |
+     */
     post: operations["createCustomObjectSchema"];
     parameters: {
       header: {
@@ -295,9 +400,33 @@ export interface paths {
     };
   };
   "/metadata/custom_objects/{object_name}": {
-    /** Get custom object schema details */
+    /**
+     * Get custom object schema details 
+     * @description Get custom object schema details
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | No        | 
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
     get: operations["getCustomObjectSchema"];
-    /** Update custom object schema */
+    /**
+     * Update custom object schema 
+     * @description Update custom object schema
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported | Notes                                                   |
+     * | ----------- | --------- | ------------------------------------------------------- |
+     * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
+     * | Salesforce  | No        |                                                         |
+     * | Pipedrive   | No        |                                                         |
+     * | MS Dynamics | No        |                                                         |
+     */
     put: operations["updateCustomObjectSchema"];
     parameters: {
       header: {
@@ -1738,7 +1867,10 @@ export interface operations {
       };
     };
   };
-  /** List custom object records */
+  /**
+   * List custom object records (preview) 
+   * @description List custom object records (preview)
+   */
   listCustomObjectRecords: {
     parameters: {
       query?: {
@@ -1767,7 +1899,19 @@ export interface operations {
       };
     };
   };
-  /** Create custom object record */
+  /**
+   * Create custom object record 
+   * @description Create custom object record
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | No        | 
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
   createCustomObjectRecord: {
     parameters: {
       header: {
@@ -1798,7 +1942,19 @@ export interface operations {
       };
     };
   };
-  /** Get custom object record */
+  /**
+   * Get custom object record 
+   * @description Get custom object record
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | Yes       |
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
   getCustomObjectRecord: {
     parameters: {
       query?: {
@@ -1827,7 +1983,19 @@ export interface operations {
       };
     };
   };
-  /** Update custom object record */
+  /**
+   * Update custom object record 
+   * @description Update custom object record
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | Yes       |
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
   updateCustomObjectRecord: {
     parameters: {
       header: {
@@ -1863,6 +2031,15 @@ export interface operations {
   /**
    * List associations for a record and target object 
    * @description Get a list of associations
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | No        |
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
    */
   listAssociations: {
     parameters: {
@@ -1887,7 +2064,19 @@ export interface operations {
       };
     };
   };
-  /** Upsert association */
+  /**
+   * Upsert association 
+   * @description Upsert association
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | No        |
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
   upsertAssociation: {
     parameters: {
       header: {
@@ -1916,6 +2105,15 @@ export interface operations {
   /**
    * List association schemas 
    * @description Get a list of Association Schemas
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | No        | 
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
    */
   getAssociationSchemas: {
     parameters: {
@@ -1946,7 +2144,19 @@ export interface operations {
       };
     };
   };
-  /** Create association schema */
+  /**
+   * Create association schema 
+   * @description Create an association schema
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | No        | 
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
   createAssociationSchema: {
     parameters: {
       header: {
@@ -1974,7 +2184,19 @@ export interface operations {
       };
     };
   };
-  /** List custom object schemas */
+  /**
+   * List custom object schemas 
+   * @description List custom object schemas
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | No        | 
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
   listCustomObjectSchemas: {
     parameters: {
       header: {
@@ -1991,7 +2213,19 @@ export interface operations {
       };
     };
   };
-  /** Create custom object schema */
+  /**
+   * Create custom object schema 
+   * @description Create custom object schema
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported | Notes                                                   |
+   * | ----------- | --------- | ------------------------------------------------------- |
+   * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
+   * | Salesforce  | No        |                                                         |
+   * | Pipedrive   | No        |                                                         |
+   * | MS Dynamics | No        |                                                         |
+   */
   createCustomObjectSchema: {
     parameters: {
       header: {
@@ -2021,7 +2255,19 @@ export interface operations {
       };
     };
   };
-  /** Get custom object schema details */
+  /**
+   * Get custom object schema details 
+   * @description Get custom object schema details
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | No        | 
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
   getCustomObjectSchema: {
     parameters: {
       header: {
@@ -2041,7 +2287,19 @@ export interface operations {
       };
     };
   };
-  /** Update custom object schema */
+  /**
+   * Update custom object schema 
+   * @description Update custom object schema
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported | Notes                                                   |
+   * | ----------- | --------- | ------------------------------------------------------- |
+   * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
+   * | Salesforce  | No        |                                                         |
+   * | Pipedrive   | No        |                                                         |
+   * | MS Dynamics | No        |                                                         |
+   */
   updateCustomObjectSchema: {
     parameters: {
       header: {
