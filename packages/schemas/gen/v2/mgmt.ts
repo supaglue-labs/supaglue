@@ -904,6 +904,14 @@ export interface components {
            */
           object: string;
         })[];
+      /** @description A list of case-sensitive custom objects to be synced. Only supported for Salesforce and Hubspot. */
+      custom_objects?: ({
+          /**
+           * @description The custom object name (case sensitive). For Salesforce, this should end with `__c`. 
+           * @example MyCustomObject__c
+           */
+          object: string;
+        })[];
       /** @deprecated */
       entities?: ({
           /** @example 3a82409f-c98f-4d25-bbd8-3335de3f12cc */
