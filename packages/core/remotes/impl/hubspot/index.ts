@@ -95,6 +95,7 @@ import {
   fromHubSpotContactToContact_v2,
   fromHubSpotDealToOpportunity,
   fromHubspotOwnerToUser,
+  getHubspotOptions,
   toCustomObject,
   toHubspotAccountCreateParams,
   toHubspotAccountUpdateParams,
@@ -1896,6 +1897,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       properties: params.fields.map((field) => ({
         name: field.id,
         label: field.label,
+        options: getHubspotOptions(field),
         ...toHubspotTypeAndFieldType(field.type),
       })),
       requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.id),
@@ -1955,6 +1957,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     for (const field of fieldsToUpdate) {
       await this.#client.crm.properties.coreApi.update(params.name, field.id, {
         label: field.label,
+        options: getHubspotOptions(field),
         ...toHubspotTypeAndFieldType(field.type),
       });
     }
@@ -1971,6 +1974,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       inputs: fieldsToCreate.map((field) => ({
         name: field.id,
         label: field.label,
+        options: getHubspotOptions(field),
         ...toHubspotTypeAndFieldType(field.type),
         groupName: unarchivedGroups[0].name, // TODO
       })),

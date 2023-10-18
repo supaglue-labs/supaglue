@@ -4,7 +4,7 @@ import type {
   PropertyUpdateFieldTypeEnum,
   PropertyUpdateTypeEnum,
 } from '@hubspot/api-client/lib/codegen/crm/properties/index';
-import type { ObjectSchema } from '@hubspot/api-client/lib/codegen/crm/schemas/index';
+import type { ObjectSchema, OptionInput } from '@hubspot/api-client/lib/codegen/crm/schemas/index';
 import type { PicklistOption, PropertyType, PropertyUnified } from '@supaglue/types';
 import type {
   Account,
@@ -551,7 +551,7 @@ export const getPropertyType = (property: HubspotProperty): PropertyType => {
   if (property.type === 'datetime') {
     return 'datetime';
   }
-  if (property.type === 'bool') {
+  if (property.fieldType === 'booleancheckbox') {
     return 'boolean';
   }
   return 'other';
@@ -603,4 +603,25 @@ export const toRawDetails = (property: HubspotProperty): Record<string, unknown>
   }
 
   return record;
+};
+
+export const getHubspotOptions = (property: PropertyUnified): OptionInput[] | undefined => {
+  // TODO: Support picklist
+  if (property.type !== 'boolean') {
+    return;
+  }
+  return [
+    {
+      label: 'Yes',
+      value: 'true',
+      displayOrder: 1,
+      hidden: false,
+    },
+    {
+      label: 'No',
+      value: 'false',
+      displayOrder: 2,
+      hidden: false,
+    },
+  ];
 };
