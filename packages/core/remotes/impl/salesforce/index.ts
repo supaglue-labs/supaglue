@@ -15,11 +15,7 @@ import type {
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
-import type {
-  ListObjectAssociationsParams,
-  ObjectAssociation,
-  ObjectAssociationCreateParams,
-} from '@supaglue/types/association';
+import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/association';
 import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
 import type {
   Account,
@@ -947,7 +943,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
   }
 
-  public override async listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]> {
+  public override async listAssociations(params: ListAssociationsParams): Promise<Association[]> {
     // Use the metadata API to find out if there are fields that are lookups to the target object
     const metadata = await this.#client.describe(params.sourceRecord.objectName);
 
@@ -977,7 +973,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     });
   }
 
-  public override async createAssociation(params: ObjectAssociationCreateParams): Promise<ObjectAssociation> {
+  public override async createAssociation(params: AssociationCreateParams): Promise<Association> {
     // id looks like `MyCustomObject__c.MyLookupField__c`. We should validate and then pull out the second part after the '.'
     const idParts = params.associationSchemaId.split('.');
     if (idParts.length !== 2) {

@@ -2,6 +2,7 @@ import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/o
 import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
 import { Router } from 'express';
 import accounts from './account';
+import associations from './associations';
 import contacts from './contact';
 import customObjects from './custom_objects';
 import leads from './lead';
@@ -25,6 +26,7 @@ export default function init(app: Router): void {
   lists(v2Router);
   metadata(v2Router);
   customObjects(v2Router);
+  associations(v2Router);
 
   passthrough(v2Router);
 

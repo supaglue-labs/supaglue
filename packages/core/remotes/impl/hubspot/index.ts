@@ -20,11 +20,7 @@ import type {
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
-import type {
-  ListObjectAssociationsParams,
-  ObjectAssociation,
-  ObjectAssociationCreateParams,
-} from '@supaglue/types/association';
+import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/association';
 import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
 import type {
   Account,
@@ -1831,7 +1827,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     });
   }
 
-  public override async listAssociations(params: ListObjectAssociationsParams): Promise<ObjectAssociation[]> {
+  public override async listAssociations(params: ListAssociationsParams): Promise<Association[]> {
     await this.maybeRefreshAccessToken();
     const fromObjectType = params.sourceRecord.objectName;
     const toObjectType = params.targetObject;
@@ -2032,7 +2028,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     });
   }
 
-  public override async createAssociation(params: ObjectAssociationCreateParams): Promise<ObjectAssociation> {
+  public override async createAssociation(params: AssociationCreateParams): Promise<Association> {
     await this.maybeRefreshAccessToken();
 
     await this.#client.crm.associations.v4.batchApi.create(

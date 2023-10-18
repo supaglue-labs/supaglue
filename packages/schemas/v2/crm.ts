@@ -202,8 +202,20 @@ export type GetCustomObjectRecordResponse =
 
 export type UpdateCustomObjectRecordPathParams =
   paths['/custom_objects/{object_name}/records/{record_id}']['parameters']['path'];
-export type UpdateCustomObjectRecordQueryParams = Required<operations['getCustomObjectRecord']>['parameters']['query'];
+export type UpdateCustomObjectRecordQueryParams = never;
 export type UpdateCustomObjectRecordRequest =
   operations['updateCustomObjectRecord']['requestBody']['content']['application/json'];
 export type UpdateCustomObjectRecordResponse =
   operations['updateCustomObjectRecord']['responses'][keyof operations['updateCustomObjectRecord']['responses']]['content']['application/json'];
+
+export type ListAssociationsPathParams = never;
+export type ListAssociationsQueryParams = Required<operations['listAssociations']>['parameters']['query'];
+export type ListAssociationsRequest = never;
+export type ListAssociationsResponse =
+  operations['listAssociations']['responses'][keyof operations['listAssociations']['responses']]['content']['application/json'];
+
+export type UpsertAssociationPathParams = never;
+export type UpsertAssociationQueryParams = never;
+export type UpsertAssociationRequest = operations['upsertAssociation']['requestBody']['content']['application/json'];
+export type UpsertAssociationResponse =
+  operations['upsertAssociation']['responses'][keyof operations['upsertAssociation']['responses']]['content']['application/json'];
