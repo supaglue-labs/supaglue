@@ -2152,14 +2152,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            results?: ({
-                id: string;
-                /** @example contact */
-                source_object: string;
-                /** @example my_custom_object */
-                target_object: string;
-                display_name: string;
-              })[];
+            results?: (paths["/metadata/associations"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["association_schema"])[];
           };
         };
       };
@@ -2200,6 +2193,11 @@ export interface operations {
             errors?: components["schemas"]["errors"];
             association_schema?: {
               id: string;
+              /** @example contact */
+              source_object: string;
+              /** @example my_custom_object */
+              target_object: string;
+              display_name: string;
             };
             warnings?: components["schemas"]["warnings"];
           };
