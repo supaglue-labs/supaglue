@@ -58,6 +58,10 @@ paths:
     $ref: paths/custom_objects/{object_name}@records.yaml
   '/custom_objects/{object_name}/records/{record_id}':
     $ref: paths/custom_objects/{object_name}@records@{record_id}.yaml
+  '/standard_objects/{object_name}/records':
+    $ref: paths/standard_objects/{object_name}@records.yaml
+  '/standard_objects/{object_name}/records/{record_id}':
+    $ref: paths/standard_objects/{object_name}@records@{record_id}.yaml
   '/associations':
     $ref: paths/associations.yaml
   '/metadata/associations':
@@ -128,6 +132,8 @@ components:
       $ref: ./components/schemas/objects/custom_object_field.yaml
     custom_object_record:
       $ref: ./components/schemas/objects/custom_object_record.yaml
+    standard_object_record:
+      $ref: ./components/schemas/objects/standard_object_record.yaml
     simple_custom_object:
       $ref: ./components/schemas/objects/simple_custom_object.yaml
     association:
@@ -164,6 +170,8 @@ components:
       $ref: ./components/schemas/create_update_association.yaml
     create_update_custom_object_record:
       $ref: ./components/schemas/create_update_custom_object_record.yaml
+    create_update_standard_object_record:
+      $ref: ./components/schemas/create_update_standard_object_record.yaml
     create_custom_object_schema:
       $ref: ./components/schemas/create_custom_object_schema.yaml
     update_custom_object_schema:

@@ -195,7 +195,7 @@ export type ListCustomObjectRecordsResponse =
 
 export type GetCustomObjectRecordPathParams =
   paths['/custom_objects/{object_name}/records/{record_id}']['parameters']['path'];
-export type GetCustomObjectRecordQueryParams = Required<operations['getCustomObjectRecord']>['parameters']['query'];
+export type GetCustomObjectRecordQueryParams = never;
 export type GetCustomObjectRecordRequest = never;
 export type GetCustomObjectRecordResponse =
   operations['getCustomObjectRecord']['responses'][keyof operations['getCustomObjectRecord']['responses']]['content']['application/json'];
@@ -207,6 +207,38 @@ export type UpdateCustomObjectRecordRequest =
   operations['updateCustomObjectRecord']['requestBody']['content']['application/json'];
 export type UpdateCustomObjectRecordResponse =
   operations['updateCustomObjectRecord']['responses'][keyof operations['updateCustomObjectRecord']['responses']]['content']['application/json'];
+
+export type CreateStandardObjectRecordPathParams =
+  paths['/standard_objects/{object_name}/records']['parameters']['path'];
+export type CreateStandardObjectRecordQueryParams = never;
+export type CreateStandardObjectRecordRequest =
+  operations['createStandardObjectRecord']['requestBody']['content']['application/json'];
+export type CreateStandardObjectRecordResponse =
+  operations['createStandardObjectRecord']['responses'][keyof operations['createStandardObjectRecord']['responses']]['content']['application/json'];
+
+export type ListStandardObjectRecordsPathParams =
+  paths['/standard_objects/{object_name}/records']['parameters']['path'];
+export type ListStandardObjectRecordsQueryParams = Required<
+  operations['listStandardObjectRecords']
+>['parameters']['query'];
+export type ListStandardObjectRecordsRequest = never;
+export type ListStandardObjectRecordsResponse =
+  operations['listStandardObjectRecords']['responses'][keyof operations['listStandardObjectRecords']['responses']]['content']['application/json'];
+
+export type GetStandardObjectRecordPathParams =
+  paths['/standard_objects/{object_name}/records/{record_id}']['parameters']['path'];
+export type GetStandardObjectRecordQueryParams = never;
+export type GetStandardObjectRecordRequest = never;
+export type GetStandardObjectRecordResponse =
+  operations['getStandardObjectRecord']['responses'][keyof operations['getStandardObjectRecord']['responses']]['content']['application/json'];
+
+export type UpdateStandardObjectRecordPathParams =
+  paths['/standard_objects/{object_name}/records/{record_id}']['parameters']['path'];
+export type UpdateStandardObjectRecordQueryParams = never;
+export type UpdateStandardObjectRecordRequest =
+  operations['updateStandardObjectRecord']['requestBody']['content']['application/json'];
+export type UpdateStandardObjectRecordResponse =
+  operations['updateStandardObjectRecord']['responses'][keyof operations['updateStandardObjectRecord']['responses']]['content']['application/json'];
 
 export type ListAssociationsPathParams = never;
 export type ListAssociationsQueryParams = Required<operations['listAssociations']>['parameters']['query'];

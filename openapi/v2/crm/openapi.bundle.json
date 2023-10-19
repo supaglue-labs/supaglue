@@ -1593,13 +1593,110 @@
           }
         ],
         "description": "Get custom object record\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "responses": {
+          "200": {
+            "description": "Custom Object Record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/custom_object_record"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "$ref": "#/components/parameters/object_name"
+        },
+        {
+          "name": "record_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the record to retrieve or update",
+          "schema": {
+            "type": "string",
+            "example": "82de27cb-6f8c-4278-b783-82d1d916eddc"
+          }
+        }
+      ]
+    },
+    "/standard_objects/{object_name}/records": {
+      "post": {
+        "operationId": "createStandardObjectRecord",
+        "summary": "Create standard object record",
+        "tags": [
+          "StandardObjects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "description": "Create standard object record\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_standard_object_record"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Standard Object Record created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listStandardObjectRecords",
+        "summary": "List standard object records",
+        "tags": [
+          "StandardObjects"
+        ],
+        "description": "List standard object records\nNote: This endpoint will only work if a Sync is setup with the Supaglue managed destination.\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
         "parameters": [
-          {
-            "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/read_from_cache"
-          },
           {
             "$ref": "#/components/parameters/modified_after"
           },
@@ -1612,11 +1709,118 @@
         ],
         "responses": {
           "200": {
-            "description": "Custom Object Record",
+            "description": "Paginated Standard Objects",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/custom_object_record"
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/standard_object_record"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "$ref": "#/components/parameters/object_name"
+        }
+      ]
+    },
+    "/standard_objects/{object_name}/records/{record_id}": {
+      "patch": {
+        "operationId": "updateStandardObjectRecord",
+        "summary": "Update standard object record",
+        "tags": [
+          "StandardObjects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "description": "Update standard object record\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_update_standard_object_record"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Standard Object Record created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "record": {
+                      "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "getStandardObjectRecord",
+        "summary": "Get standard object record",
+        "tags": [
+          "StandardObjects"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "description": "Get standard object record\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "responses": {
+          "200": {
+            "description": "Standard Object Record",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/standard_object_record"
                 }
               }
             }
@@ -3257,7 +3461,35 @@
         ],
         "example": {
           "id": "001Fn00023f8oYYIA0",
-          "custom_object_id": "MyCustomObject__c",
+          "custom_object_name": "MyCustomObject__c",
+          "data": {
+            "Name": "Acme Corp",
+            "Description": "We create the best embedded integration platforms."
+          }
+        }
+      },
+      "standard_object_record": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "object_name": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "id",
+          "object_name",
+          "data"
+        ],
+        "example": {
+          "id": "001Fn00023f8oYYIA0",
+          "object_name": "Account",
           "data": {
             "Name": "Acme Corp",
             "Description": "We create the best embedded integration platforms."
@@ -3671,6 +3903,10 @@
         ]
       },
       "create_update_custom_object_record": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "create_update_standard_object_record": {
         "type": "object",
         "additionalProperties": true
       },
