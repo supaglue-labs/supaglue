@@ -2,6 +2,7 @@ import { getDependencyContainer } from '@/dependency_container';
 import type { Boom } from '@hapi/boom';
 import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError, InternalServerError } from '@supaglue/core/errors';
+import { logger } from '@supaglue/core/lib/logger';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes';
 import type {
   ConnectionCreateParamsAny,
@@ -251,6 +252,7 @@ export default function init(app: Router): void {
             // simple-oauth2 throws boom error.
             // Avoids circular reference issue when throwing a boom error directly
             // Though we aren't able to get the actual json response data @see https://share.cleanshot.com/DwwWn5Cj
+            logger.error(err, 'oauth error');
             throw new InternalServerError(err.message);
           }
           throw err;

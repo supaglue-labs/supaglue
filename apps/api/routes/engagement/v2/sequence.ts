@@ -46,7 +46,7 @@ export default function init(app: Router): void {
         req.customerConnection,
         camelcaseKeysSansCustomFields(req.body.record)
       );
-      return res.status(200).send({ record: { id } });
+      return res.status(201).send({ record: { id } });
     }
   );
 
@@ -60,7 +60,7 @@ export default function init(app: Router): void {
         ...camelcaseKeysSansCustomFields(req.body.record),
         sequenceId: req.params.sequence_id,
       });
-      return res.status(200).send({ record: { id } });
+      return res.status(201).send({ record: { id } });
     }
   );
 

@@ -39,7 +39,7 @@ describe('contact', () => {
           headers: { 'x-provider-name': providerName },
         }
       );
-      expect(response.status).toEqual(200);
+      expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
 
       const getResponse = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
@@ -62,7 +62,7 @@ describe('contact', () => {
           headers: { 'x-provider-name': providerName },
         }
       );
-      expect(response.status).toEqual(200);
+      expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
 
       const updateResponse = await apiClient.patch<UpdateContactResponse>(
@@ -106,6 +106,7 @@ describe('contact', () => {
       const getResponse = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
         headers: { 'x-provider-name': providerName },
       });
+      expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record?.id);
       expect(getResponse.data.first_name).toEqual(testContact.first_name);
       expect(getResponse.data.last_name).toEqual(testContact.last_name);
@@ -135,6 +136,7 @@ describe('contact', () => {
       const getResponse2 = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
         headers: { 'x-provider-name': providerName },
       });
+      expect(getResponse2.status).toEqual(200);
       expect(getResponse2.data.id).toEqual(response.data.record?.id);
       expect(getResponse2.data.first_name).toEqual('updated');
       expect(getResponse2.data.last_name).toEqual('contact');

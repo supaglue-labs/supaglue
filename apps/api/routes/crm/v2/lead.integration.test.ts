@@ -38,7 +38,7 @@ describe('lead', () => {
             headers: { 'x-provider-name': providerName },
           }
         );
-        expect(contactResponse.status).toEqual(200);
+        expect(contactResponse.status).toEqual(201);
         expect(contactResponse.data.record?.id).toBeTruthy();
         convertedContactId = contactResponse.data.record?.id;
       }
@@ -50,7 +50,7 @@ describe('lead', () => {
           headers: { 'x-provider-name': providerName },
         }
       );
-      expect(response.status).toEqual(200);
+      expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
 
       const getResponse = await apiClient.get<GetLeadResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
@@ -79,7 +79,7 @@ describe('lead', () => {
             headers: { 'x-provider-name': providerName },
           }
         );
-        expect(contactResponse.status).toEqual(200);
+        expect(contactResponse.status).toEqual(201);
         expect(contactResponse.data.record?.id).toBeTruthy();
         convertedContactId = contactResponse.data.record?.id;
       }
@@ -91,7 +91,7 @@ describe('lead', () => {
           headers: { 'x-provider-name': providerName },
         }
       );
-      expect(response.status).toEqual(200);
+      expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
 
       const updateResponse = await apiClient.patch<UpdateLeadResponse>(

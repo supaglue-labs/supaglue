@@ -36,7 +36,7 @@ describe('account', () => {
           headers: { 'x-provider-name': providerName },
         }
       );
-      expect(response.status).toEqual(200);
+      expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
 
       const getResponse = await apiClient.get<GetAccountResponse>(`/crm/v2/accounts/${response.data.record?.id}`, {
@@ -58,7 +58,7 @@ describe('account', () => {
           headers: { 'x-provider-name': providerName },
         }
       );
-      expect(response.status).toEqual(200);
+      expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
 
       const updateResponse = await apiClient.patch<UpdateAccountResponse>(
