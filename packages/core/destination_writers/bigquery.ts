@@ -625,6 +625,11 @@ const schemaByCommonObjectType: {
           mode: 'REQUIRED',
         },
         {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+        {
           name: 'id',
           type: 'STRING',
           mode: 'REQUIRED',
@@ -729,6 +734,11 @@ const schemaByCommonObjectType: {
           mode: 'REQUIRED',
         },
         {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+        {
           name: 'id',
           type: 'STRING',
           mode: 'REQUIRED',
@@ -826,6 +836,11 @@ const schemaByCommonObjectType: {
           name: '_supaglue_emitted_at',
           type: 'TIMESTAMP',
           mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
         },
         {
           name: 'id',
@@ -942,6 +957,11 @@ const schemaByCommonObjectType: {
           mode: 'REQUIRED',
         },
         {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+        {
           name: 'id',
           type: 'STRING',
           mode: 'REQUIRED',
@@ -1046,6 +1066,11 @@ const schemaByCommonObjectType: {
           mode: 'REQUIRED',
         },
         {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+        {
           name: 'id',
           type: 'STRING',
           mode: 'REQUIRED',
@@ -1117,6 +1142,11 @@ const schemaByCommonObjectType: {
           mode: 'REQUIRED',
         },
         {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+        {
           name: 'id',
           type: 'STRING',
           mode: 'REQUIRED',
@@ -1184,6 +1214,11 @@ const schemaByCommonObjectType: {
           name: '_supaglue_emitted_at',
           type: 'TIMESTAMP',
           mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
         },
         {
           name: 'id',
@@ -1300,6 +1335,11 @@ const schemaByCommonObjectType: {
           mode: 'REQUIRED',
         },
         {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+        {
           name: 'id',
           type: 'STRING',
           mode: 'REQUIRED',
@@ -1362,6 +1402,11 @@ const schemaByCommonObjectType: {
           name: '_supaglue_emitted_at',
           type: 'TIMESTAMP',
           mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
         },
         {
           name: 'id',
@@ -1448,6 +1493,11 @@ const schemaByCommonObjectType: {
           mode: 'REQUIRED',
         },
         {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
+        },
+        {
           name: 'id',
           type: 'STRING',
           mode: 'REQUIRED',
@@ -1510,6 +1560,11 @@ const schemaByCommonObjectType: {
           name: '_supaglue_emitted_at',
           type: 'TIMESTAMP',
           mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
         },
         {
           name: 'id',
@@ -1589,6 +1644,11 @@ const schemaByCommonObjectType: {
           name: '_supaglue_emitted_at',
           type: 'TIMESTAMP',
           mode: 'REQUIRED',
+        },
+        {
+          name: '_supaglue_unified_data',
+          type: 'JSON',
+          mode: 'NULLABLE',
         },
         {
           name: 'id',
