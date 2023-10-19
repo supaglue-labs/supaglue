@@ -41,10 +41,10 @@ export const openapiMiddleware = (specDir: string, version = 'v2') => {
       removeAdditional: true,
     },
     validateResponses: {
-      onError: (error, body, req) => {
-        logger.error(
+      onError: (err, body, req) => {
+        logger.warn(
           {
-            error,
+            err,
             originalUrl: req.originalUrl,
           },
           'API response validation error'
