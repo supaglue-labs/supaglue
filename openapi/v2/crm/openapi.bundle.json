@@ -1803,7 +1803,7 @@
                     "results": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/paths/~1metadata~1associations/post/responses/201/content/application~1json/schema/properties/association_schema"
+                        "$ref": "#/components/schemas/association_schema"
                       }
                     }
                   }
@@ -1848,29 +1848,7 @@
                       "$ref": "#/components/schemas/errors"
                     },
                     "association_schema": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string"
-                        },
-                        "source_object": {
-                          "type": "string",
-                          "example": "contact"
-                        },
-                        "target_object": {
-                          "type": "string",
-                          "example": "my_custom_object"
-                        },
-                        "display_name": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "id",
-                        "source_object",
-                        "target_object",
-                        "display_name"
-                      ]
+                      "$ref": "#/components/schemas/association_schema"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -3330,6 +3308,31 @@
           "target_record_id",
           "source_object",
           "target_object"
+        ]
+      },
+      "association_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "source_object": {
+            "type": "string",
+            "example": "contact"
+          },
+          "target_object": {
+            "type": "string",
+            "example": "my_custom_object"
+          },
+          "display_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "source_object",
+          "target_object",
+          "display_name"
         ]
       },
       "errors": {

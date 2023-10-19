@@ -82,9 +82,12 @@ export class MetadataService {
     }));
   }
 
-  public async createAssociationSchema(connectionId: string, params: AssociationSchemaCreateParams): Promise<void> {
+  public async createAssociationSchema(
+    connectionId: string,
+    params: AssociationSchemaCreateParams
+  ): Promise<AssociationSchema> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
-    await remoteClient.createAssociationSchema(
+    return await remoteClient.createAssociationSchema(
       params.sourceObject,
       params.targetObject,
       params.keyName,

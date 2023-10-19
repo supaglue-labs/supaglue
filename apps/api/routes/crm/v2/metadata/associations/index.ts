@@ -50,13 +50,20 @@ export default function init(app: Router): void {
       req: Request<CreateAssociationSchemaPathParams, CreateAssociationSchemaResponse, CreateAssociationSchemaRequest>,
       res: Response<CreateAssociationSchemaResponse>
     ) => {
-      await metadataService.createAssociationSchema(req.customerConnection.id, {
+      const created = await metadataService.createAssociationSchema(req.customerConnection.id, {
         sourceObject: req.body.source_object,
         targetObject: req.body.target_object,
         keyName: req.body.suggested_key_name,
         displayName: req.body.display_name,
       });
-      return res.status(201).send();
+      return res.status(201).send({
+        association_schema: {
+          id: created.id,
+          source_object: created.sourceObject,
+          target_object: created.targetObject,
+          display_name: created.displayName,
+        },
+      });
     }
   );
   app.use('/associations', router);

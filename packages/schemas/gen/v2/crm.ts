@@ -915,6 +915,14 @@ export interface components {
       /** @example ad204784-a71b-440a-8482-c3d5ab64110f */
       target_record_id: string;
     };
+    association_schema: {
+      id: string;
+      /** @example contact */
+      source_object: string;
+      /** @example my_custom_object */
+      target_object: string;
+      display_name: string;
+    };
     errors: ({
         /**
          * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
@@ -2152,7 +2160,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            results?: (paths["/metadata/associations"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["association_schema"])[];
+            results?: (components["schemas"]["association_schema"])[];
           };
         };
       };
@@ -2191,14 +2199,7 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            association_schema?: {
-              id: string;
-              /** @example contact */
-              source_object: string;
-              /** @example my_custom_object */
-              target_object: string;
-              display_name: string;
-            };
+            association_schema?: components["schemas"]["association_schema"];
             warnings?: components["schemas"]["warnings"];
           };
         };
