@@ -3,6 +3,7 @@ export type SnakecasedCrmTenantFields = {
   _supaglue_provider_name: string;
   _supaglue_customer_id: string;
   _supaglue_emitted_at: Date;
+  _supaglue_unified_data: Record<string, any>;
 };
 
 export type BaseCrmModel = {

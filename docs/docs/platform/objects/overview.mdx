@@ -59,6 +59,8 @@ Indexes:
     "salesforce_Contract_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 ```
 
+Note there used to be a `_supaglue_mapped_data` jsonb column that has since been deprecated. 
+
 :::info
 Please note that Supaglue metadata fields differ slightly between [Common Objects](../common-schemas/overview) and Objects.
 :::

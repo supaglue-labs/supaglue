@@ -1,11 +1,12 @@
-import type { SnakecasedKeysCrmLeadWithTenant } from '@supaglue/types/crm';
-import { arrayOfAllKeys } from '../util';
-
-export const keysOfSnakecasedLeadWithTenant = arrayOfAllKeys<SnakecasedKeysCrmLeadWithTenant>()([
+export const keysOfSnakecasedLeadWithTenant = [
   '_supaglue_application_id',
   '_supaglue_provider_name',
   '_supaglue_customer_id',
   '_supaglue_emitted_at',
+  '_supaglue_unified_data',
+  // _supaglue_raw_data // to be added
+  // _supaglue_id // to be added
+  // @deprecated fields below. All future fields shall only go into `_supaglue_unified_data` jsonb field
   'id',
   'created_at',
   'updated_at',
@@ -24,4 +25,4 @@ export const keysOfSnakecasedLeadWithTenant = arrayOfAllKeys<SnakecasedKeysCrmLe
   'converted_account_id',
   'owner_id',
   'raw_data',
-]);
+];
