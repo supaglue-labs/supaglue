@@ -1,5 +1,5 @@
 import { apiKeyHeaderMiddleware } from '@/middleware/api_key';
-import { openapiMiddleware } from '@/middleware/openapi';
+import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
 import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
 import { Router } from 'express';
 import object from './object';
@@ -14,6 +14,8 @@ export default function init(app: Router): void {
 
   object(v2Router);
   property(v2Router);
+
+  v2Router.use(openApiErrorHandlerMiddleware);
 
   app.use('/v2', v2Router);
 }
