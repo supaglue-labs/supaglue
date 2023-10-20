@@ -886,14 +886,14 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         results: response.data.results.map(({ associations, ...rest }) => ({
           ...rest,
           associations: Object.entries(associations ?? {}).reduce((acc, [associatedObjectTypeKey, { results }]) => {
-            const deduped = [...new Set(results.map(({ id }) => id))];
+            const dedupedIds = [...new Set(results.map(({ id }) => id))];
             // If associatedObjectType is for a standard object, it will be pluralized, and we should use the singular form
             if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectTypeKey)) {
               if (!(associatedObjectTypeKey in hubspotStandardObjectPluralizedToType)) {
                 throw new Error(`Couldn't find matching standard object type for ${associatedObjectTypeKey}`);
               }
               const standardObjectType = hubspotStandardObjectPluralizedToType[associatedObjectTypeKey];
-              acc[standardObjectType] = deduped;
+              acc[standardObjectType] = dedupedIds;
               return acc;
             }
 
@@ -905,7 +905,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
             if (!matchingCustomObjectSchema) {
               throw new Error(`Couldn't find matching custom object schema for ${associatedObjectTypeKey}`);
             }
-            acc[matchingCustomObjectSchema.objectTypeId] = deduped;
+            acc[matchingCustomObjectSchema.objectTypeId] = dedupedIds;
             return acc;
           }, {} as Record<string, string[]>),
         })),
