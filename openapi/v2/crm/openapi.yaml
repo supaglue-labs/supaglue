@@ -132,6 +132,8 @@ components:
       $ref: ./components/schemas/objects/simple_custom_object.yaml
     association:
       $ref: ./components/schemas/objects/association.yaml
+    association_schema:
+      $ref: ./components/schemas/objects/association_schema.yaml
     errors:
       $ref: ../../common/components/schemas/errors.yaml
     warnings:

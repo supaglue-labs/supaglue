@@ -21,7 +21,7 @@ import type {
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/association';
-import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
+import type { AssociationSchema, SimpleAssociationSchema } from '@supaglue/types/association_schema';
 import type {
   Account,
   AccountCreateParams,
@@ -1998,12 +1998,23 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     targetObject: string,
     id: string,
     label: string
-  ): Promise<void> {
+  ): Promise<AssociationSchema> {
     await this.maybeRefreshAccessToken();
     await this.#client.crm.associations.v4.schema.definitionsApi.create(sourceObject, targetObject, {
       label: label,
       name: id,
     });
+    const response = await this.#client.crm.associations.v4.schema.definitionsApi.getAll(sourceObject, targetObject);
+    const created = response.results.find((result) => result.label === label);
+    if (!created) {
+      throw new InternalServerError(`Unable to created association schema`);
+    }
+    return {
+      id: created.typeId.toString(),
+      targetObject,
+      sourceObject,
+      displayName: label,
+    };
   }
 
   public override async createAssociation(params: AssociationCreateParams): Promise<Association> {

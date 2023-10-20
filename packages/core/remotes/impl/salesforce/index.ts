@@ -16,7 +16,7 @@ import type {
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/association';
-import type { SimpleAssociationSchema } from '@supaglue/types/association_schema';
+import type { AssociationSchema, SimpleAssociationSchema } from '@supaglue/types/association_schema';
 import type {
   Account,
   AccountCreateParams,
@@ -842,7 +842,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     targetObject: string,
     id: string,
     label: string
-  ): Promise<void> {
+  ): Promise<AssociationSchema> {
     // if id doesn't end with __c, we need to add it ourselves
     if (!id.endsWith('__c')) {
       id = `${id}__c`;
@@ -941,6 +941,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         );
       }
     }
+    return {
+      id: `${sourceObject}.${id}`,
+      sourceObject,
+      targetObject,
+      displayName: label,
+    };
   }
 
   public override async listAssociations(params: ListAssociationsParams): Promise<Association[]> {

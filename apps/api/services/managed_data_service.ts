@@ -168,6 +168,38 @@ export class ManagedDataService {
       pageSize
     );
   }
+
+  public async getCustomObjectRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    objectName: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SupaglueStandardRecord>> {
+    if (pageSize < 1) {
+      throw new BadRequestError('Page size must be greater than 0');
+    }
+    if (pageSize > MAX_PAGE_SIZE) {
+      throw new BadRequestError(`Page size cannot exceed ${MAX_PAGE_SIZE}`);
+    }
+    if (!['hubspot', 'salesforce'].includes(providerName)) {
+      throw new BadRequestError(`Provider ${providerName} does not support custom object list reads`);
+    }
+    const records = await this.#getRecords<SupaglueStandardRecord>(
+      applicationId,
+      'crm',
+      providerName,
+      customerId,
+      objectName,
+      'custom',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+    return records;
+  }
 }
 
 const getCountSql = (

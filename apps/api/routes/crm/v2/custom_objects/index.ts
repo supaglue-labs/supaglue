@@ -1,5 +1,4 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { NotImplementedError } from '@supaglue/core/errors';
 import type {
   CreateCustomObjectRecordPathParams,
   CreateCustomObjectRecordRequest,
@@ -19,7 +18,7 @@ import type {
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { objectRecordService } = getDependencyContainer();
+const { objectRecordService, managedDataService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -35,7 +34,23 @@ export default function init(app: Router): void {
       >,
       res: Response<ListCustomObjectRecordsResponse>
     ) => {
-      throw new NotImplementedError();
+      const { pagination, records } = await managedDataService.getCustomObjectRecords(
+        req.supaglueApplication.id,
+        req.customerConnection.providerName,
+        req.customerId,
+        req.params.object_name,
+        req.query?.cursor,
+        req.query?.modified_after as unknown as string | undefined,
+        req.query?.page_size ? parseInt(req.query.page_size) : undefined
+      );
+      return res.status(200).send({
+        pagination,
+        records: records.map((record) => ({
+          id: record._supaglue_id,
+          custom_object_name: req.params.object_name,
+          data: record._supaglue_raw_data,
+        })),
+      });
     }
   );
 

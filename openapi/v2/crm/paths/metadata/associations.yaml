@@ -77,12 +77,7 @@ post:
               errors:
                 $ref: ../../../../common/components/schemas/errors.yaml
               association_schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                required:
-                  - id
+                $ref: ../../components/schemas/objects/association_schema.yaml
               warnings:
                 $ref: ../../../../common/components/schemas/warnings.yaml
 parameters:
