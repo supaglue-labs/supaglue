@@ -160,7 +160,7 @@ export interface components {
        * @example false
        */
       is_required?: boolean;
-      /** @description Required for boolean fields in Salesforce. */
+      /** @description The default value for the property. Only supported for Salesforce. */
       default_value?: string | number | boolean;
       /**
        * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 

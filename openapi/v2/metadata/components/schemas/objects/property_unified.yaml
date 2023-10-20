@@ -19,7 +19,7 @@ properties:
     description: Whether or not this field is required. Must be false for Salesforce boolean fields.
     example: false
   default_value:
-    description: Required for boolean fields in Salesforce.
+    description: The default value for the property. Only supported for Salesforce.
     oneOf:
       - type: string
       - type: number

@@ -1419,7 +1419,7 @@
             "x-api-key": []
           }
         ],
-        "description": "Create custom object record\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "description": "Create custom object record\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -1469,7 +1469,7 @@
         "tags": [
           "CustomObjects"
         ],
-        "description": "List custom object records\nNote: This endpoint will only work if a Sync is setup with the Supaglue managed destination.\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "description": "List custom object records\nNote: This endpoint will only work if a Sync is setup with the Supaglue managed destination.\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "security": [
           {
             "x-api-key": []
@@ -2085,7 +2085,7 @@
             "x-api-key": []
           }
         ],
-        "description": "List custom object schemas\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "description": "List custom object schemas\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [],
         "responses": {
           "200": {
@@ -2110,7 +2110,7 @@
           "CustomObjectSchemas"
         ],
         "parameters": [],
-        "description": "Create custom object schema\n\nSupport:\n\n| Provider    | Supported | Notes                                                   |\n| ----------- | --------- | ------------------------------------------------------- |\n| Hubspot     | Yes       | All field types supported except picklist/multipicklist |\n| Salesforce  | No        |                                                         |\n| Pipedrive   | No        |                                                         |\n| MS Dynamics | No        |                                                         |\n",
+        "description": "Create custom object schema\n\nSupport:\n\n| Provider    | Supported | Notes                                                   |\n| ----------- | --------- | ------------------------------------------------------- |\n| Hubspot     | Yes       | All field types supported except picklist/multipicklist |\n| Salesforce  | Yes       | All field types supported except picklist/multipicklist |\n| Pipedrive   | No        |                                                         |\n| MS Dynamics | No        |                                                         |\n",
         "security": [
           {
             "x-api-key": []
@@ -2187,7 +2187,7 @@
             "x-api-key": []
           }
         ],
-        "description": "Get custom object schema details\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "description": "Get custom object schema details\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "responses": {
           "200": {
             "description": "CustomObject",
@@ -2207,7 +2207,7 @@
         "tags": [
           "CustomObjectSchemas"
         ],
-        "description": "Update custom object schema\n\nSupport:\n\n| Provider    | Supported | Notes                                                   |\n| ----------- | --------- | ------------------------------------------------------- |\n| Hubspot     | Yes       | All field types supported except picklist/multipicklist |\n| Salesforce  | No        |                                                         |\n| Pipedrive   | No        |                                                         |\n| MS Dynamics | No        |                                                         |\n",
+        "description": "Update custom object schema\n\nSupport:\n\n| Provider    | Supported | Notes                                                   |\n| ----------- | --------- | ------------------------------------------------------- |\n| Hubspot     | Yes       | All field types supported except picklist/multipicklist |\n| Salesforce  | Yes       | All field types supported except picklist/multipicklist |\n| Pipedrive   | No        |                                                         |\n| MS Dynamics | No        |                                                         |\n",
         "security": [
           {
             "x-api-key": []
@@ -3384,6 +3384,7 @@
             "example": false
           },
           "default_value": {
+            "description": "The default value for the property. Only supported for Salesforce.",
             "oneOf": [
               {
                 "type": "string"

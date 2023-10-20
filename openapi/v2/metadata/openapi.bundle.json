@@ -500,7 +500,7 @@
             "example": false
           },
           "default_value": {
-            "description": "Required for boolean fields in Salesforce.",
+            "description": "The default value for the property. Only supported for Salesforce.",
             "oneOf": [
               {
                 "type": "string"

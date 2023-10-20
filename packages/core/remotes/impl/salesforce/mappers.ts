@@ -1,4 +1,4 @@
-import type { PicklistOption, PropertyType, PropertyUnified } from '@supaglue/types';
+import type { PropertyType, PropertyUnified } from '@supaglue/types';
 import type {
   Account,
   AccountCreateParams,
@@ -19,8 +19,10 @@ import type {
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import type { CustomObjectSchema } from '@supaglue/types/custom_object';
-import type { DescribeSObjectResult, Field } from 'jsforce';
-import type { CustomField as SalesforceCustomField } from 'jsforce/lib/api/metadata/schema';
+import type {
+  CustomField as SalesforceCustomField,
+  CustomObject as SalesforceCustomObject,
+} from 'jsforce/lib/api/metadata/schema';
 
 export function getMapperForCommonObjectType<T extends CRMCommonObjectType>(
   commonObjectType: T
@@ -448,77 +450,60 @@ const toSalesforceEmailCreateParams = (emailAddresses?: EmailAddress[]): Record<
   };
 };
 
-export const toCustomObject = (salesforceCustomObject: DescribeSObjectResult): CustomObjectSchema => {
-  const nameField = salesforceCustomObject.fields.find((field) => field.nameField);
+export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): CustomObjectSchema => {
+  const { nameField } = salesforceCustomObject;
   if (!nameField) {
     throw new Error(`unexpectedly, custom object missing nameField`);
   }
   return {
-    name: salesforceCustomObject.name,
-    description: null,
+    name: salesforceCustomObject.fullName!,
+    description: salesforceCustomObject.description ?? null,
     labels: {
-      singular: salesforceCustomObject.label,
-      plural: salesforceCustomObject.labelPlural,
+      singular: salesforceCustomObject.label!,
+      plural: salesforceCustomObject.pluralLabel!,
     },
-    primaryFieldId: 'Name',
-    fields: salesforceCustomObject.fields.map(toPropertyUnified),
+    primaryFieldId: nameField.fullName!,
+    fields: [nameField, ...salesforceCustomObject.fields].map(toPropertyUnified),
   };
 };
 
-export const toPropertyUnified = (salesforceField: Field): PropertyUnified => {
-  const type = toPropertyType(salesforceField.type);
+export const toPropertyUnified = (salesforceField: SalesforceCustomField): PropertyUnified => {
+  const type = toPropertyType(salesforceField.type!);
   return {
-    id: salesforceField.name,
-    label: salesforceField.label,
+    id: salesforceField.fullName!,
+    label: salesforceField.label!,
     type,
-    scale: salesforceField.scale,
-    precision: salesforceField.precision,
-    // Salesforce does not support the concept of required boolean fields, so we leave it blank
-    isRequired: type === 'boolean' ? undefined : !salesforceField.nillable,
+    scale: salesforceField.scale ?? undefined,
+    precision: salesforceField.precision ?? undefined,
+    isRequired: salesforceField.required ?? false,
     groupName: undefined,
-    options: getPicklistoptions(salesforceField),
-    description: salesforceField.label,
+    options: [],
+    description: salesforceField.description ?? undefined,
     rawDetails: salesforceField,
   };
 };
 
 export const toPropertyType = (salesforceType: string): PropertyType => {
   switch (salesforceType) {
-    case 'datetime':
+    case 'DateTime':
       return 'datetime';
-    case 'date':
+    case 'Date':
       return 'date';
-    case 'double':
-    case 'int':
-    case 'number':
+    case 'Number':
       return 'number';
-    case 'id':
-    case 'reference':
-    case 'string':
+    case 'Text':
       return 'text';
-    case 'boolean':
+    case 'Checkbox':
       return 'boolean';
-    case 'picklist':
+    case 'Picklist':
       return 'picklist';
-    case 'multipicklist':
+    case 'Multipicklist':
       return 'multipicklist';
-    case 'textarea':
+    case 'TextArea':
       return 'textarea';
     default:
       return 'other';
   }
-};
-
-export const getPicklistoptions = (salesforceField: Field): PicklistOption[] | undefined => {
-  if (!salesforceField.picklistValues) {
-    return;
-  }
-  return salesforceField.picklistValues.map((picklistValue) => ({
-    label: picklistValue.label,
-    value: picklistValue.value,
-    description: picklistValue.label,
-    hidden: !picklistValue.active,
-  }));
 };
 
 // TODO: Figure out what to do with id and reference types
@@ -537,9 +522,9 @@ export const toSalesforceType = (property: PropertyUnified): string => {
     case 'multipicklist':
       return 'Multipicklist';
     case 'date':
-      return 'Date;';
+      return 'Date';
     case 'datetime':
-      return 'Datetime';
+      return 'DateTime';
     default:
       return 'Text';
   }
