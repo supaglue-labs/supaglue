@@ -44,15 +44,24 @@ post:
                 $ref: ../../../../common/components/schemas/warnings.yaml
 get:
   operationId: listCustomObjectRecords
-  summary: List custom object records (preview)
+  summary: List custom object records
   tags:
     - CustomObjects
   description: |
-    List custom object records (preview)
+    List custom object records
+    Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
+
+    Support:
+
+    | Provider    | Supported |
+    | ----------- | --------- |
+    | Hubspot     | Yes       |
+    | Salesforce  | No        | 
+    | Pipedrive   | No        |
+    | MS Dynamics | No        |
   security:
     - x-api-key: []
   parameters:
-    - $ref: ../../../../common/components/parameters/query/include_raw_data.yaml
     - $ref: ../../../../common/components/parameters/query/modified_after.yaml
     - $ref: ../../../../common/components/parameters/query/page_size.yaml
     - $ref: ../../../../common/components/parameters/query/cursor.yaml

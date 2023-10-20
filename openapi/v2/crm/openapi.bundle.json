@@ -1465,20 +1465,17 @@
       },
       "get": {
         "operationId": "listCustomObjectRecords",
-        "summary": "List custom object records (preview)",
+        "summary": "List custom object records",
         "tags": [
           "CustomObjects"
         ],
-        "description": "List custom object records (preview)\n",
+        "description": "List custom object records\nNote: This endpoint will only work if a Sync is setup with the Supaglue managed destination.\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "security": [
           {
             "x-api-key": []
           }
         ],
         "parameters": [
-          {
-            "$ref": "#/components/parameters/include_raw_data"
-          },
           {
             "$ref": "#/components/parameters/modified_after"
           },
@@ -1806,29 +1803,7 @@
                     "results": {
                       "type": "array",
                       "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {
-                            "type": "string"
-                          },
-                          "source_object": {
-                            "type": "string",
-                            "example": "contact"
-                          },
-                          "target_object": {
-                            "type": "string",
-                            "example": "my_custom_object"
-                          },
-                          "display_name": {
-                            "type": "string"
-                          }
-                        },
-                        "required": [
-                          "id",
-                          "source_object",
-                          "target_object",
-                          "display_name"
-                        ]
+                        "$ref": "#/components/schemas/association_schema"
                       }
                     }
                   }
@@ -1873,15 +1848,7 @@
                       "$ref": "#/components/schemas/errors"
                     },
                     "association_schema": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string"
-                        }
-                      },
-                      "required": [
-                        "id"
-                      ]
+                      "$ref": "#/components/schemas/association_schema"
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"
@@ -3341,6 +3308,31 @@
           "target_record_id",
           "source_object",
           "target_object"
+        ]
+      },
+      "association_schema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "source_object": {
+            "type": "string",
+            "example": "contact"
+          },
+          "target_object": {
+            "type": "string",
+            "example": "my_custom_object"
+          },
+          "display_name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "source_object",
+          "target_object",
+          "display_name"
         ]
       },
       "errors": {

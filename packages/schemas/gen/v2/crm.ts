@@ -222,8 +222,18 @@ export interface paths {
   };
   "/custom_objects/{object_name}/records": {
     /**
-     * List custom object records (preview) 
-     * @description List custom object records (preview)
+     * List custom object records 
+     * @description List custom object records
+     * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | No        | 
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
      */
     get: operations["listCustomObjectRecords"];
     /**
@@ -904,6 +914,14 @@ export interface components {
       target_object: string;
       /** @example ad204784-a71b-440a-8482-c3d5ab64110f */
       target_record_id: string;
+    };
+    association_schema: {
+      id: string;
+      /** @example contact */
+      source_object: string;
+      /** @example my_custom_object */
+      target_object: string;
+      display_name: string;
     };
     errors: ({
         /**
@@ -1870,13 +1888,22 @@ export interface operations {
     };
   };
   /**
-   * List custom object records (preview) 
-   * @description List custom object records (preview)
+   * List custom object records 
+   * @description List custom object records
+   * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | No        | 
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
    */
   listCustomObjectRecords: {
     parameters: {
       query?: {
-        include_raw_data?: components["parameters"]["include_raw_data"];
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
@@ -2133,14 +2160,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            results?: ({
-                id: string;
-                /** @example contact */
-                source_object: string;
-                /** @example my_custom_object */
-                target_object: string;
-                display_name: string;
-              })[];
+            results?: (components["schemas"]["association_schema"])[];
           };
         };
       };
@@ -2179,9 +2199,7 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
-            association_schema?: {
-              id: string;
-            };
+            association_schema?: components["schemas"]["association_schema"];
             warnings?: components["schemas"]["warnings"];
           };
         };
