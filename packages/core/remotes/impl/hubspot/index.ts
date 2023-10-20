@@ -886,13 +886,14 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         results: response.data.results.map(({ associations, ...rest }) => ({
           ...rest,
           associations: Object.entries(associations ?? {}).reduce((acc, [associatedObjectTypeKey, { results }]) => {
+            const dedupedIds = [...new Set(results.map(({ id }) => id))];
             // If associatedObjectType is for a standard object, it will be pluralized, and we should use the singular form
             if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectTypeKey)) {
               if (!(associatedObjectTypeKey in hubspotStandardObjectPluralizedToType)) {
                 throw new Error(`Couldn't find matching standard object type for ${associatedObjectTypeKey}`);
               }
               const standardObjectType = hubspotStandardObjectPluralizedToType[associatedObjectTypeKey];
-              acc[standardObjectType] = results.map(({ id }) => id);
+              acc[standardObjectType] = dedupedIds;
               return acc;
             }
 
@@ -904,7 +905,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
             if (!matchingCustomObjectSchema) {
               throw new Error(`Couldn't find matching custom object schema for ${associatedObjectTypeKey}`);
             }
-            acc[matchingCustomObjectSchema.objectTypeId] = results.map(({ id }) => id);
+            acc[matchingCustomObjectSchema.objectTypeId] = dedupedIds;
             return acc;
           }, {} as Record<string, string[]>),
         })),
@@ -1839,7 +1840,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         inputs: fromObjectIds.map((id) => ({ id })),
       });
       return associations.results
-        .map((result) => ({ [result._from.id]: result.to.map(({ id }) => id) }))
+        .map((result) => ({ [result._from.id]: [...new Set(result.to.map(({ id }) => id))] }))
         .reduce((acc, curr) => ({ ...acc, ...curr }), {});
     });
   }
