@@ -199,6 +199,14 @@ export class MongoDBDestinationWriter extends BaseDestinationWriter {
     return await this.#upsertRecord(connection, getObjectCollectionName(connection.providerName, objectName), record);
   }
 
+  public override async upsertCustomObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: FullObjectRecord
+  ): Promise<void> {
+    return await this.#upsertRecord(connection, getObjectCollectionName(connection.providerName, objectName), record);
+  }
+
   public override async writeEntityRecords(
     connection: ConnectionSafeAny,
     entityName: string,

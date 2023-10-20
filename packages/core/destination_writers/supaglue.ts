@@ -267,6 +267,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     return;
   }
 
+  public override async upsertCustomObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: FullObjectRecord
+  ): Promise<void> {
+    return;
+  }
+
   public override async writeEntityRecords(
     connection: ConnectionSafeAny,
     entityName: string,

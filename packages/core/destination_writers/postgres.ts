@@ -343,6 +343,14 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     return await this.#upsertRecord(connection, getObjectTableName(connection.providerName, objectName), record);
   }
 
+  public override async upsertCustomObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: FullObjectRecord
+  ): Promise<void> {
+    return await this.#upsertRecord(connection, getObjectTableName(connection.providerName, objectName), record);
+  }
+
   public override async writeEntityRecords(
     connection: ConnectionSafeAny,
     entityName: string,
