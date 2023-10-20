@@ -161,7 +161,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_account
   "last_activity_at" TIMESTAMP(3),
   "lifecycle_stage" TEXT,
   "owner_id" TEXT,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   -- Duplicates can exist for accounts (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
@@ -186,7 +187,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_contact
   "account_id" TEXT,
   "owner_id" TEXT,
   "last_activity_at" TIMESTAMP(3),
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   -- Duplicates can exist for contacts (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
@@ -214,7 +216,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_leads' 
   "converted_contact_id" TEXT,
   "converted_account_id" TEXT,
   "owner_id" TEXT,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   -- Duplicates can exist for leads (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
@@ -242,7 +245,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "account_id" TEXT,
   "owner_id" TEXT,
   "last_activity_at" TIMESTAMP(3),
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   -- Duplicates can exist for opportunities (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
@@ -261,7 +265,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? 'temp_crm_users' 
   "name" TEXT,
   "email" TEXT,
   "is_active" BOOLEAN,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   -- Duplicates can exist for users (e.g. Hubspot)
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
@@ -284,7 +289,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "name" TEXT,
   "domain" TEXT,
   "owner_id" TEXT,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 )${partition ? ' PARTITION BY LIST ( _supaglue_customer_id );' : ';'}`,
@@ -313,7 +319,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "click_count" INTEGER NOT NULL,
   "reply_count" INTEGER NOT NULL,
   "bounced_count" INTEGER NOT NULL,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
@@ -332,7 +339,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "email" TEXT,
   "user_id" TEXT,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 )${partition ? ' PARTITION BY LIST ( _supaglue_customer_id );' : ';'}`,
@@ -355,7 +363,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "num_steps" INTEGER NOT NULL,
   "metrics" JSONB,
   "is_enabled" BOOLEAN NOT NULL,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 )${partition ? ' PARTITION BY LIST ( _supaglue_customer_id );' : ';'}`,
@@ -377,7 +386,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "mailbox_id" TEXT,
   "user_id" TEXT,
   "state" TEXT,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 );`,
@@ -396,7 +406,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "last_modified_at" TIMESTAMP(3) NOT NULL,
   "sequence_id" TEXT NOT NULL,
   "name" TEXT NOT NULL,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 )${partition ? ' PARTITION BY LIST ( _supaglue_customer_id );' : ';'}`,
@@ -416,7 +427,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "first_name" TEXT,
   "last_name" TEXT,
   "email" TEXT,
-  "raw_data" JSONB
+  "raw_data" JSONB,
+  "_supaglue_unified_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
 )${partition ? ' PARTITION BY LIST ( _supaglue_customer_id );' : ';'}`,

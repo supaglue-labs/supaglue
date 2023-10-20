@@ -1,5 +1,5 @@
 import { apiKeyHeaderMiddleware } from '@/middleware/api_key';
-import { openapiMiddleware } from '@/middleware/openapi';
+import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
 import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
 import { Router } from 'express';
 import connectionSyncConfig from './connection_sync_config';
@@ -30,6 +30,8 @@ export default function init(app: Router): void {
   entity(v2Router);
   entityMapping(v2Router);
   magicLink(v2Router);
+
+  v2Router.use(openApiErrorHandlerMiddleware);
 
   app.use('/v2', v2Router);
 }

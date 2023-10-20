@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { openapiMiddleware } from '@/middleware/openapi';
+import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
 import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
 import { addLogContext } from '@supaglue/core/lib/logger';
 import type {
@@ -33,6 +33,8 @@ export default function init(app: Router): void {
       return res.status(200).send(response);
     }
   );
+
+  v2Router.use(openApiErrorHandlerMiddleware);
 
   app.use('/v2', v2Router);
 }
