@@ -249,6 +249,9 @@ function getObjectsString(syncConfig: SyncConfig): string {
   if (syncConfig.config.standardObjects?.length) {
     objectsList.push(...syncConfig.config.standardObjects.map((object) => object.object));
   }
+  if (syncConfig.config.customObjects?.length) {
+    objectsList.push(...syncConfig.config.customObjects.map((object) => object.object));
+  }
   if (objectsList.length > 6) {
     return `${objectsList.slice(0, 6).join(', ')}...`;
   }
