@@ -154,20 +154,29 @@ export class ObjectRecordService {
     };
   }
 
+  public async getStandardObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    recordId: string
+  ): Promise<ObjectRecord> {
+    const { id, rawData } = await this.#getStandardFullObjectRecord(connection, objectName, recordId);
+    return {
+      id,
+      objectName,
+      data: rawData,
+    };
+  }
+
   public async getCustomObjectRecord(
     connection: ConnectionSafeAny,
     objectName: string,
     recordId: string
   ): Promise<ObjectRecord> {
-    const { id, mappedProperties: mappedData } = await this.#getCustomFullObjectRecord(
-      connection,
-      objectName,
-      recordId
-    );
+    const { id, rawData } = await this.#getCustomFullObjectRecord(connection, objectName, recordId);
     return {
       id,
       objectName,
-      data: mappedData,
+      data: rawData,
     };
   }
 

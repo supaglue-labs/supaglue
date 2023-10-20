@@ -10,6 +10,7 @@ import lists from './list';
 import metadata from './metadata';
 import opportunities from './opportunity';
 import passthrough from './passthrough';
+import standardObjects from './standard_objects';
 import users from './user';
 
 export default function init(app: Router): void {
@@ -26,6 +27,7 @@ export default function init(app: Router): void {
   lists(v2Router);
   metadata(v2Router);
   customObjects(v2Router);
+  standardObjects(v2Router);
   associations(v2Router);
 
   passthrough(v2Router);
