@@ -24,6 +24,7 @@ import {
   getPgPool,
   getSchemaName,
   logger,
+  omit,
   sanitizeForPostgres,
 } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
@@ -137,12 +138,14 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
           transform: (chunk, encoding, callback) => {
             try {
               const { record, emittedAt } = chunk;
+              const unifiedData = mapper(record);
               const mappedRecord = {
                 _supaglue_application_id: applicationId,
                 _supaglue_provider_name: providerName,
                 _supaglue_customer_id: customerId,
                 _supaglue_emitted_at: emittedAt,
-                ...mapper(record),
+                _supaglue_unified_data: omit(unifiedData, ['raw_data']),
+                ...unifiedData,
               };
 
               ++tempTableRowCount;

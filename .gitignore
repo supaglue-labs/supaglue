@@ -32,3 +32,5 @@ docker-compose.override.yml
 
 tsconfig.*.json
 !tsconfig.build.json
+
+cli/
