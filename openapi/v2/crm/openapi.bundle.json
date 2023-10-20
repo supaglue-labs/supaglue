@@ -1861,7 +1861,7 @@
           }
         ],
         "summary": "List associations for a record and target object",
-        "description": "Get a list of associations\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "description": "Get a list of associations\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [
           {
             "name": "source_record_id",
@@ -1916,7 +1916,7 @@
           "Associations"
         ],
         "parameters": [],
-        "description": "Upsert association\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "description": "Upsert association\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       |\n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "security": [
           {
             "x-api-key": []
@@ -2023,7 +2023,7 @@
         "tags": [
           "AssociationSchemas"
         ],
-        "description": "Create an association schema\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n\nNote: When creating a new association schema for Hubspot, Hubspot will also create a default association schema (with an empty name). Either can be used to create associations.\n",
+        "description": "Create an association schema\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n\nNote: When creating a new association schema for Hubspot, Hubspot will also create a default association schema (with an empty name). Either can be used to create associations.\n",
         "parameters": [],
         "security": [
           {

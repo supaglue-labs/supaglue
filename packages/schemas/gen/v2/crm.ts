@@ -392,7 +392,7 @@ export interface paths {
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | No        |
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
@@ -406,7 +406,7 @@ export interface paths {
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | No        |
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
@@ -442,7 +442,7 @@ export interface paths {
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | No        | 
+     * | Salesforce  | Yes       | 
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      * 
@@ -2328,7 +2328,7 @@ export interface operations {
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | No        |
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2364,7 +2364,7 @@ export interface operations {
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | No        |
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2437,7 +2437,7 @@ export interface operations {
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | No        | 
+   * | Salesforce  | Yes       | 
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    * 
