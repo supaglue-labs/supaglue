@@ -4,10 +4,10 @@ import type {
   CreateAssociationSchemaPathParams,
   CreateAssociationSchemaRequest,
   CreateAssociationSchemaResponse,
-  GetAssociationSchemasPathParams,
-  GetAssociationSchemasQueryParams,
-  GetAssociationSchemasRequest,
-  GetAssociationSchemasResponse,
+  ListAssociationSchemasPathParams,
+  ListAssociationSchemasQueryParams,
+  ListAssociationSchemasRequest,
+  ListAssociationSchemasResponse,
 } from '@supaglue/schemas/v2/crm';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
@@ -22,12 +22,12 @@ export default function init(app: Router): void {
     '/',
     async (
       req: Request<
-        GetAssociationSchemasPathParams,
-        GetAssociationSchemasResponse,
-        GetAssociationSchemasRequest,
-        GetAssociationSchemasQueryParams
+        ListAssociationSchemasPathParams,
+        ListAssociationSchemasResponse,
+        ListAssociationSchemasRequest,
+        ListAssociationSchemasQueryParams
       >,
-      res: Response<GetAssociationSchemasResponse>
+      res: Response<ListAssociationSchemasResponse>
     ) => {
       const { source_object, target_object } = req.query;
 
@@ -35,7 +35,7 @@ export default function init(app: Router): void {
         throw new BadRequestError('Missing required query params');
       }
 
-      const associationSchemas = await metadataService.getAssociationSchemas(
+      const associationSchemas = await metadataService.listAssociationSchemas(
         req.customerConnection.id,
         source_object,
         target_object

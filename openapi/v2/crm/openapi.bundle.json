@@ -1967,7 +1967,7 @@
     },
     "/metadata/associations": {
       "get": {
-        "operationId": "getAssociationSchemas",
+        "operationId": "listAssociationSchemas",
         "tags": [
           "AssociationSchemas"
         ],
@@ -1977,7 +1977,7 @@
           }
         ],
         "summary": "List association schemas",
-        "description": "Get a list of Association Schemas\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | No        | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "description": "Get a list of Association Schemas\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
         "parameters": [
           {
             "name": "source_object",
@@ -3380,7 +3380,21 @@
           },
           "is_required": {
             "type": "boolean",
+            "description": "Whether or not this field is required. Must be false for Salesforce boolean fields.",
             "example": false
+          },
+          "default_value": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
           },
           "group_name": {
             "type": "string",

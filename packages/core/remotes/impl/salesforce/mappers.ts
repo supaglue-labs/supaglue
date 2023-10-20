@@ -20,6 +20,7 @@ import type {
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import type { CustomObjectSchema } from '@supaglue/types/custom_object';
 import type { DescribeSObjectResult, Field } from 'jsforce';
+import type { CustomField as SalesforceCustomField } from 'jsforce/lib/api/metadata/schema';
 
 export function getMapperForCommonObjectType<T extends CRMCommonObjectType>(
   commonObjectType: T
@@ -465,13 +466,15 @@ export const toCustomObject = (salesforceCustomObject: DescribeSObjectResult): C
 };
 
 export const toPropertyUnified = (salesforceField: Field): PropertyUnified => {
+  const type = toPropertyType(salesforceField.type);
   return {
     id: salesforceField.name,
     label: salesforceField.label,
-    type: toPropertyType(salesforceField.type),
+    type,
     scale: salesforceField.scale,
     precision: salesforceField.precision,
-    isRequired: !salesforceField.nillable,
+    // Salesforce does not support the concept of required boolean fields, so we leave it blank
+    isRequired: type === 'boolean' ? undefined : !salesforceField.nillable,
     groupName: undefined,
     options: getPicklistoptions(salesforceField),
     description: salesforceField.label,
@@ -522,42 +525,92 @@ export const getPicklistoptions = (salesforceField: Field): PicklistOption[] | u
 export const toSalesforceType = (property: PropertyUnified): string => {
   switch (property.type) {
     case 'number':
-      return property.scale === 0 ? 'int' : 'double';
+      return 'Number';
     case 'text':
-      return 'string';
+      return 'Text';
     case 'textarea':
-      return 'textarea';
+      return 'TextArea';
     case 'boolean':
-      return 'boolean';
+      return 'Checkbox';
     case 'picklist':
-      return 'picklist';
+      return 'Picklist';
     case 'multipicklist':
-      return 'multipicklist';
+      return 'Multipicklist';
     case 'date':
-      return 'date;';
+      return 'Date;';
     case 'datetime':
-      return 'datetime';
+      return 'Datetime';
     default:
-      return 'string';
+      return 'Text';
   }
 };
 
-export const toSalesforceCustomField = (objectName: string, property: PropertyUnified): Record<string, unknown> => {
-  const base = {
-    fullName: `${objectName}.${property.id}`,
+export const toSalesforceCustomFieldCreateParams = (
+  objectName: string,
+  property: PropertyUnified,
+  prefixed = false
+): Partial<SalesforceCustomField> => {
+  const base: Partial<SalesforceCustomField> = {
+    // When calling the CustomObjects API, it does not need to be prefixed.
+    // However, when calling the CustomFields API, it needs to be prefixed.
+    fullName: prefixed ? `${objectName}.${property.id}` : property.id,
     label: property.label,
     type: toSalesforceType(property),
     required: property.isRequired,
-    scale: property.scale,
-    precision: property.precision,
+    defaultValue: property.defaultValue?.toString() ?? null,
   };
-  if (property.type === 'text' || property.type === 'textarea') {
+  // if (property.defaultValue) {
+  //   base = { ...base, defaultValue: property.defaultValue.toString() };
+  // }
+  if (property.type === 'text') {
     return {
       ...base,
       // TODO: Maybe textarea should be longer
       length: 255,
     };
   }
+  if (property.type === 'number') {
+    return {
+      ...base,
+      scale: property.scale,
+      precision: property.precision,
+    };
+  }
+  if (property.type === 'boolean') {
+    return {
+      ...base,
+      // Salesforce does not support the concept of required boolean fields
+      required: false,
+      // JS Force (incorrectly) expects string here
+      // This is required for boolean fields
+      defaultValue: property.defaultValue?.toString() ?? 'false',
+    };
+  }
   // TODO: Support picklist options
   return base;
+};
+
+export const toSalesforceCustomObjectCreateParams = (
+  objectName: string,
+  labels: {
+    singular: string;
+    plural: string;
+  },
+  description: string | null,
+  primaryField: PropertyUnified,
+  nonPrimaryFieldsToUpdate: PropertyUnified[]
+) => {
+  return {
+    deploymentStatus: 'Deployed',
+    sharingModel: 'ReadWrite',
+    fullName: objectName,
+    description,
+    label: labels.singular,
+    pluralLabel: labels.plural,
+    nameField: {
+      label: primaryField?.label,
+      type: 'Text',
+    },
+    fields: nonPrimaryFieldsToUpdate.map((field) => toSalesforceCustomFieldCreateParams(objectName, field)),
+  };
 };

@@ -428,11 +428,11 @@ export interface paths {
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | No        | 
+     * | Salesforce  | Yes       | 
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
-    get: operations["getAssociationSchemas"];
+    get: operations["listAssociationSchemas"];
     /**
      * Create association schema 
      * @description Create an association schema
@@ -926,8 +926,12 @@ export interface components {
       label: string;
       /** @description A description of the field. */
       description?: string;
-      /** @example false */
+      /**
+       * @description Whether or not this field is required. Must be false for Salesforce boolean fields. 
+       * @example false
+       */
       is_required?: boolean;
+      default_value?: string | number | boolean;
       /**
        * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
        * @example supaglue
@@ -2397,11 +2401,11 @@ export interface operations {
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | No        | 
+   * | Salesforce  | Yes       | 
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
-  getAssociationSchemas: {
+  listAssociationSchemas: {
     parameters: {
       query: {
         source_object: string;
