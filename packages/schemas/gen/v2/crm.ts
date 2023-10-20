@@ -301,6 +301,87 @@ export interface paths {
       };
     };
   };
+  "/standard_objects/{object_name}/records": {
+    /**
+     * List standard object records 
+     * @description List standard object records
+     * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | Yes       | 
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
+    get: operations["listStandardObjectRecords"];
+    /**
+     * Create standard object record 
+     * @description Create standard object record
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | Yes       | 
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
+    post: operations["createStandardObjectRecord"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+      };
+    };
+  };
+  "/standard_objects/{object_name}/records/{record_id}": {
+    /**
+     * Get standard object record 
+     * @description Get standard object record
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | Yes       |
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
+    get: operations["getStandardObjectRecord"];
+    /**
+     * Update standard object record 
+     * @description Update standard object record
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | Yes       |
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
+    patch: operations["updateStandardObjectRecord"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+        /** @description The ID of the record to retrieve or update */
+        record_id: string;
+      };
+    };
+  };
   "/associations": {
     /**
      * List associations for a record and target object 
@@ -879,7 +960,7 @@ export interface components {
     /**
      * @example {
      *   "id": "001Fn00023f8oYYIA0",
-     *   "custom_object_id": "MyCustomObject__c",
+     *   "custom_object_name": "MyCustomObject__c",
      *   "data": {
      *     "Name": "Acme Corp",
      *     "Description": "We create the best embedded integration platforms."
@@ -889,6 +970,23 @@ export interface components {
     custom_object_record: {
       id: string;
       custom_object_name: string;
+      data: {
+        [key: string]: unknown;
+      };
+    };
+    /**
+     * @example {
+     *   "id": "001Fn00023f8oYYIA0",
+     *   "object_name": "Account",
+     *   "data": {
+     *     "Name": "Acme Corp",
+     *     "Description": "We create the best embedded integration platforms."
+     *   }
+     * }
+     */
+    standard_object_record: {
+      id: string;
+      object_name: string;
       data: {
         [key: string]: unknown;
       };
@@ -1055,6 +1153,9 @@ export interface components {
       target_record_id: string;
     };
     create_update_custom_object_record: {
+      [key: string]: unknown;
+    };
+    create_update_standard_object_record: {
       [key: string]: unknown;
     };
     create_custom_object_schema: {
@@ -1986,13 +2087,6 @@ export interface operations {
    */
   getCustomObjectRecord: {
     parameters: {
-      query?: {
-        include_raw_data?: components["parameters"]["include_raw_data"];
-        read_from_cache?: components["parameters"]["read_from_cache"];
-        modified_after?: components["parameters"]["modified_after"];
-        page_size?: components["parameters"]["page_size"];
-        cursor?: components["parameters"]["cursor"];
-      };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
         "x-provider-name": components["parameters"]["x-provider-name"];
@@ -2046,6 +2140,169 @@ export interface operations {
     };
     responses: {
       /** @description Custom Object Record created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * List standard object records 
+   * @description List standard object records
+   * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | Yes       | 
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
+  listStandardObjectRecords: {
+    parameters: {
+      query?: {
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Standard Objects */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["standard_object_record"])[];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Create standard object record 
+   * @description Create standard object record
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | Yes       | 
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
+  createStandardObjectRecord: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_update_standard_object_record"];
+        };
+      };
+    };
+    responses: {
+      /** @description Standard Object Record created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Get standard object record 
+   * @description Get standard object record
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | Yes       |
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
+  getStandardObjectRecord: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+        /** @description The ID of the record to retrieve or update */
+        record_id: string;
+      };
+    };
+    responses: {
+      /** @description Standard Object Record */
+      200: {
+        content: {
+          "application/json": components["schemas"]["standard_object_record"];
+        };
+      };
+    };
+  };
+  /**
+   * Update standard object record 
+   * @description Update standard object record
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | Yes       |
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
+  updateStandardObjectRecord: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: components["parameters"]["object_name"];
+        /** @description The ID of the record to retrieve or update */
+        record_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_update_standard_object_record"];
+        };
+      };
+    };
+    responses: {
+      /** @description Standard Object Record created */
       201: {
         content: {
           "application/json": {

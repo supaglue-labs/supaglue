@@ -2,18 +2,18 @@ type: object
 properties:
   id:
     type: string
-  custom_object_name:
+  object_name:
     type: string
   data:
     type: object
     additionalProperties: true
 required:
   - id
-  - custom_object_name
+  - object_name
   - data
 example:
   id: 001Fn00023f8oYYIA0
-  custom_object_name: MyCustomObject__c
+  object_name: Account
   data:
     Name: Acme Corp
     Description: We create the best embedded integration platforms.

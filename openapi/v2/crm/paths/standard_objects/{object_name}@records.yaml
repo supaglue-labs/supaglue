@@ -1,21 +1,22 @@
-patch:
-  operationId: updateCustomObjectRecord
-  summary: Update custom object record
+post:
+  operationId: createStandardObjectRecord
+  summary: Create standard object record
   tags:
-    - CustomObjects
+    - StandardObjects
   security:
     - x-api-key: []
   description: |
-    Update custom object record
+    Create standard object record
 
     Support:
 
     | Provider    | Supported |
     | ----------- | --------- |
     | Hubspot     | Yes       |
-    | Salesforce  | Yes       |
+    | Salesforce  | Yes       | 
     | Pipedrive   | No        |
     | MS Dynamics | No        |
+  parameters: []
   requestBody:
     required: true
     content:
@@ -24,12 +25,12 @@ patch:
           type: object
           properties:
             record:
-              $ref: ../../components/schemas/create_update_custom_object_record.yaml
+              $ref: ../../components/schemas/create_update_standard_object_record.yaml
           required:
             - record
   responses:
     '201':
-      description: Custom Object Record created
+      description: Standard Object Record created
       content:
         application/json:
           schema:
@@ -42,38 +43,46 @@ patch:
               warnings:
                 $ref: ../../../../common/components/schemas/warnings.yaml
 get:
-  operationId: getCustomObjectRecord
-  summary: Get custom object record
+  operationId: listStandardObjectRecords
+  summary: List standard object records
   tags:
-    - CustomObjects
-  security:
-    - x-api-key: []
+    - StandardObjects
   description: |
-    Get custom object record
+    List standard object records
+    Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
 
     Support:
 
     | Provider    | Supported |
     | ----------- | --------- |
     | Hubspot     | Yes       |
-    | Salesforce  | Yes       |
+    | Salesforce  | Yes       | 
     | Pipedrive   | No        |
     | MS Dynamics | No        |
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../../common/components/parameters/query/modified_after.yaml
+    - $ref: ../../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../../common/components/parameters/query/cursor.yaml
   responses:
     200:
-      description: Custom Object Record
+      description: Paginated Standard Objects
       content:
         application/json:
           schema:
-            $ref: ../../components/schemas/objects/custom_object_record.yaml
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../../components/schemas/objects/standard_object_record.yaml
+            required:
+              - pagination
+              - records
 parameters:
   - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../components/parameters/header/x-provider-name.yaml
   - $ref: ../../components/parameters/path/object_name.yaml
-  - name: record_id
-    in: path
-    required: true
-    description: The ID of the record to retrieve or update
-    schema:
-      type: string
-      example: 82de27cb-6f8c-4278-b783-82d1d916eddc
