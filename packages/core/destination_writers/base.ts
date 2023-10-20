@@ -71,6 +71,14 @@ export interface DestinationWriter {
   /**
    *
    * @param connection
+   * @param objectName
+   * @param record
+   */
+  upsertCustomObjectRecord(connection: ConnectionSafeAny, objectName: string, record: FullObjectRecord): Promise<void>;
+
+  /**
+   *
+   * @param connection
    * @param entityName
    * @param stream this streams objects of type ObjectRecord<T>
    * @param heartbeat
@@ -106,6 +114,12 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
   ): Promise<void>;
 
   abstract upsertStandardObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: FullObjectRecord
+  ): Promise<void>;
+
+  abstract upsertCustomObjectRecord(
     connection: ConnectionSafeAny,
     objectName: string,
     record: FullObjectRecord

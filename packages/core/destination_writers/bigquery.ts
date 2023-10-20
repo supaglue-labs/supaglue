@@ -261,6 +261,15 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     return;
   }
 
+  public override async upsertCustomObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    record: FullObjectRecord
+  ): Promise<void> {
+    // Do nothing
+    return;
+  }
+
   public override async writeEntityRecords(
     connection: ConnectionSafeAny,
     entityName: string,

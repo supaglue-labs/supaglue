@@ -63,7 +63,7 @@ export class ObjectRecordService {
     connection: ConnectionSafeAny,
     objectName: string,
     data: ObjectRecordUpsertData
-  ): Promise<string> {
+  ): Promise<CreatedObjectRecord> {
     if (!['salesforce', 'hubspot'].includes(connection.providerName)) {
       throw new BadRequestError(`Provider ${connection.providerName} does not support custom object writes`);
     }
@@ -77,8 +77,12 @@ export class ObjectRecordService {
     );
 
     // TODO: Implement cache invalidation once custom object syncs are supported again
+    await this.#cacheInvalidateCustomObjectRecord(connection, objectName, id);
 
-    return id;
+    return {
+      id,
+      objectName,
+    };
   }
 
   async #cacheInvalidateStandardObjectRecord(
@@ -99,6 +103,26 @@ export class ObjectRecordService {
       try {
         const record = await this.#getStandardFullObjectRecord(connection, objectName, id);
         await writer.upsertStandardObjectRecord(connection, objectName, record);
+      } catch (err: any) {
+        throw new CacheInvalidationError(err.message, err);
+      }
+    }
+  }
+
+  async #cacheInvalidateCustomObjectRecord(
+    connection: ConnectionSafeAny,
+    objectName: string,
+    id: string
+  ): Promise<void> {
+    const sync = await this.#syncService.findByConnectionIdAndObjectTypeAndObject(connection.id, 'custom', objectName);
+    if (!sync || sync.paused) {
+      return;
+    }
+    const [writer] = await this.#destinationService.getWriterByProviderId(connection.providerId);
+    if (writer) {
+      try {
+        const record = await this.#getCustomFullObjectRecord(connection, objectName, id);
+        await writer.upsertCustomObjectRecord(connection, objectName, record);
       } catch (err: any) {
         throw new CacheInvalidationError(err.message, err);
       }
@@ -219,7 +243,7 @@ export class ObjectRecordService {
       recordId,
       data
     );
-    // TODO: Implement cache invalidation for custom objects
+    await this.#cacheInvalidateCustomObjectRecord(connection, objectName, recordId);
   }
 }
 

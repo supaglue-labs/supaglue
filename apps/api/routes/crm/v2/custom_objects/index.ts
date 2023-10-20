@@ -84,7 +84,7 @@ export default function init(app: Router): void {
       >,
       res: Response<CreateCustomObjectRecordResponse>
     ) => {
-      const id = await objectRecordService.createCustomObjectRecord(
+      const { id } = await objectRecordService.createCustomObjectRecord(
         req.customerConnection,
         req.params.object_name,
         req.body.record
