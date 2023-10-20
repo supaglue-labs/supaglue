@@ -179,6 +179,23 @@ export class SyncService {
           },
         }))
       );
+    } else if (syncConfig.config.customObjects?.length) {
+      syncArgs.push(
+        ...syncConfig.config.customObjects.map((customObject) => ({
+          type: 'object',
+          objectType: 'custom',
+          object: customObject.object,
+          connectionId: connection.id,
+          syncConfigId: syncConfig.id,
+          paused: !autoStart,
+          strategy: {
+            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
+          },
+          state: {
+            phase: 'created',
+          },
+        }))
+      );
     }
 
     // Entity
