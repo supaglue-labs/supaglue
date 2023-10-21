@@ -418,6 +418,13 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (!params.sequenceId) {
       throw new Error('Sequence ID is required');
     }
+    const intOnly = (n: number | null | undefined) => (Number.isInteger(n) ? (n as number) : null);
+    const divide = (n: number | null, by: number) => (n != null ? n / by : null);
+
+    const seconds = intOnly(params.intervalSeconds);
+    const minutes = intOnly(divide(seconds, 60));
+    const hours = intOnly(divide(minutes, 60));
+    const days = intOnly(divide(hours, 24));
 
     const r = await this.#api.postEmailerStep({
       emailer_campaign_id: params.sequenceId,
@@ -428,8 +435,13 @@ class ApolloClient extends AbstractEngagementRemoteClient {
           : params.type === 'task'
           ? 'action_item'
           : params.type,
-      wait_mode: 'second',
-      wait_time: params.intervalSeconds ?? 0,
+      ...(days
+        ? { wait_mode: 'day', wait_time: days }
+        : hours
+        ? { wait_mode: 'hour', wait_time: hours }
+        : minutes
+        ? { wait_mode: 'minute', wait_time: minutes }
+        : { wait_mode: 'second', wait_time: seconds ?? 0 }),
       exact_datetime: params.date, // Not clear exactly how this works
       note: params.taskNote,
       ...params.customFields,

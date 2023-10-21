@@ -71,7 +71,7 @@ export const apolloEmailerStep = z.object({
     'linkedin_step_view_profile',
     'linkedin_step_interact_post',
   ]),
-  wait_mode: z.enum(['second', 'minute', 'day']), // Maybe hour and others too
+  wait_mode: z.enum(['second', 'minute', 'hour', 'day']),
   note: z.string().nullish(),
   max_emails_per_day: z.number().nullish(),
   exact_datetime: z.string().nullish(),
