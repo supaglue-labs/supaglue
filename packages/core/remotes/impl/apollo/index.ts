@@ -134,7 +134,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       case 'user':
       case 'mailbox':
       case 'sequence_state':
-        throw new BadRequestError(`Get operation not supported for common object ${commonObjectType}`);
+        throw new BadRequestError(`Get operation not supported for common object ${commonObjectType} in Apollo`);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
