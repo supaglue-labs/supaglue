@@ -150,7 +150,7 @@ export interface paths {
     };
   };
   "/sequence_states": {
-    /** Create sequence state */
+    /** Create sequence state (aka adding contact to sequence) */
     post: operations["createSequenceState"];
     parameters: {
       header: {
@@ -992,7 +992,7 @@ export interface operations {
       };
     };
   };
-  /** Create sequence state */
+  /** Create sequence state (aka adding contact to sequence) */
   createSequenceState: {
     parameters: {
       header: {

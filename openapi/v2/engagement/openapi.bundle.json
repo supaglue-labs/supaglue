@@ -866,7 +866,7 @@
     "/sequence_states": {
       "post": {
         "operationId": "createSequenceState",
-        "summary": "Create sequence state",
+        "summary": "Create sequence state (aka adding contact to sequence)",
         "tags": [
           "Sequence States"
         ],
