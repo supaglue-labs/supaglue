@@ -19,6 +19,7 @@ import axios from 'axios';
 import { Readable } from 'stream';
 import { BadRequestError } from '../../../errors';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
+import { parseProxyConfig } from '../../../lib/util';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
   CreateCommonObjectRecordResponse,
@@ -86,13 +87,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     this.#headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' };
     this.#api = createApolloClient({
       apiKey,
-      axiosConfig: {
-        proxy: {
-          protocol: 'http',
-          host: '10.0.0.19',
-          port: 9090,
-        },
-      },
+      axiosConfig: { proxy: parseProxyConfig(process.env.PROXY_URL) },
     });
   }
 
