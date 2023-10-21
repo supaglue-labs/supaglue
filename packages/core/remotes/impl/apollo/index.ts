@@ -26,8 +26,7 @@ import type {
 } from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
-// @ts-expect-error Getting working but it should still work... We need a story around mts files
-import { createApolloClient } from './client.mjs';
+import { createApolloClient } from './client';
 import {
   fromApolloAccountToAccount,
   fromApolloContactCampaignStatusToSequenceState,

@@ -2,7 +2,7 @@ import { extendApi } from '@anatine/zod-openapi';
 import { Zodios } from '@zodios/core';
 import type { AxiosRequestConfig } from 'axios';
 import z from 'zod';
-import { api as defineApi } from 'zodios-api-shorthand';
+import { defineApi } from '../../utils/mts-workaround';
 
 /**
  * TODO: type the string validation better. This is technically an enum of 'loading' values

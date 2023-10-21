@@ -15,8 +15,7 @@ import type {
 } from '@supaglue/types/engagement';
 import { camelcaseKeys } from '@supaglue/utils';
 import { pick, removeValues } from '../../../lib/util';
-// @ts-expect-error The current file is a CommonJS module whose imports will produce 'require' calls; however, the referenced file is an ECMAScript module and cannot be imported with 'require'. Consider writing a dynamic 'import("./client.mjs")' call instead.
-import type { ApolloEmailerCampaign } from './client.mjs';
+import type { ApolloEmailerCampaign } from './client';
 
 export const fromApolloAccountToAccount = (record: Record<string, any>): Account => {
   return {
