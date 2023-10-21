@@ -39,7 +39,7 @@ export const apolloEmailerCampaign = extendApi(
     opt_out_rate: apolloMetric,
     demo_rate: apolloMetric,
   }),
-  { example: require('./examples/emailer-campaign.json') }
+  { example: require('./examples/emailer-campaign.example.json') }
 );
 
 /** Aka CreateSequence */

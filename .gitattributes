@@ -4,5 +4,6 @@
 /.pnp.*                           binary linguist-generated
 /packages/schemas/gen/**/*        linguist-generated
 openapi/**/openapi.bundle.json    linguist-generated
+*.example.json                    linguist-generated
 /docs/docs/api/**/*               linguist-generated
 /docs/docs/api/introduction.md    -linguist-generated
