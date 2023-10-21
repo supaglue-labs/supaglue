@@ -192,6 +192,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@anatine/zod-openapi@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@anatine/zod-openapi@npm:2.2.0"
+  dependencies:
+    ts-deepmerge: ^6.0.3
+  peerDependencies:
+    openapi3-ts: ^4.1.2
+    zod: ^3.20.0
+  checksum: 18b4e7e6d0525a325836c1d3b8fe45b5cdb19ace017fe0631e7c24e17cc266062a0c38bf52f10e799643192a4f26b2dd109b727ae59fd49827ac7fabcccdcc57
+  languageName: node
+  linkType: hard
+
 "@apidevtools/json-schema-ref-parser@npm:9.0.6":
   version: 9.0.6
   resolution: "@apidevtools/json-schema-ref-parser@npm:9.0.6"
@@ -6228,6 +6240,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/core@workspace:packages/core"
   dependencies:
+    "@anatine/zod-openapi": ^2.2.0
     "@google-cloud/bigquery": ^6.2.0
     "@hubspot/api-client": 9.1.0
     "@linear/sdk": ^7.0.1
@@ -6245,6 +6258,7 @@ __metadata:
     "@types/pluralize": ^0.0.29
     "@types/qs": ^6
     "@types/uuid": ^9.0.1
+    "@zodios/core": ^10.9.6
     async-retry: ^1.3.3
     axios: ^1.3.4
     csv-parse: ^5.3.5
@@ -6252,6 +6266,7 @@ __metadata:
     jsforce: ^2.0.0-beta.20
     mongodb: ^5.8.0
     odata: ^1.3.2
+    openapi3-ts: ^4.1.2
     pg: ^8.10.2
     pg-copy-streams: ^6.0.6
     pino: ^8.11.0
@@ -6266,6 +6281,8 @@ __metadata:
     svix: ^0.84.1
     typescript: ^4.9.5
     uuid: ^9.0.0
+    zod: ^3.22.4
+    zodios-api-shorthand: ^1.2.6
   peerDependencies:
     simple-oauth2: ^5.0.0
   languageName: unknown
@@ -6765,6 +6782,13 @@ __metadata:
   version: 1.0.1
   resolution: "@tsconfig/node18@npm:1.0.1"
   checksum: aba11b453e40b03a33321e5b2bd51ba2d5213503bb95f1ecd56a5dd0be31eef1ab9ddfe06b4eae99075692641de905d57a38d671a9288bacac82327d393de1e2
+  languageName: node
+  linkType: hard
+
+"@tshttp/status@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@tshttp/status@npm:2.0.0"
+  checksum: 56375bdcd67d1b422b62aa46e182cbd2e86a0b5666a8a1c01d45b1f1ad4f792882bd75dcc2fcdff306042c21e5b5a45d8cd0680ecb9371d48be74a26a7942b1c
   languageName: node
   linkType: hard
 
@@ -7886,6 +7910,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@zodios/core@npm:^10.7.1, @zodios/core@npm:^10.9.6":
+  version: 10.9.6
+  resolution: "@zodios/core@npm:10.9.6"
+  peerDependencies:
+    axios: ^0.x || ^1.0.0
+    zod: ^3.x
+  checksum: 482a80bd4da661734f9ed276a92d9275fa1b76011bef26ede4a851e4c495d9103e6c9456074b9e50e4c89ad7e83fcead6ea45ffba615e6ff54b8088433ba47fc
+  languageName: node
+  linkType: hard
+
+"@zodios/express@npm:^10.4.4":
+  version: 10.6.1
+  resolution: "@zodios/express@npm:10.6.1"
+  peerDependencies:
+    "@zodios/core": ">=10.4.4 <11.0.0"
+    express: 4.x
+    zod: ^3.x
+  checksum: 6517e2986903eeecd17304de1cd2af346e43cc6e5cdea1efd119c3b6cb12ce1a5c5683345269019ba8f4b60e097a27d996afd42d92acc296e9c9269bfb7e852b
+  languageName: node
+  linkType: hard
+
 "JSONStream@npm:^1.0.4":
   version: 1.3.5
   resolution: "JSONStream@npm:1.3.5"
@@ -8593,6 +8638,17 @@ __metadata:
     follow-redirects: ^1.14.9
     form-data: ^4.0.0
   checksum: 38cb7540465fe8c4102850c4368053c21683af85c5fdf0ea619f9628abbcb59415d1e22ebc8a6390d2bbc9b58a9806c874f139767389c862ec9b772235f06854
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.2.0":
+  version: 1.5.1
+  resolution: "axios@npm:1.5.1"
+  dependencies:
+    follow-redirects: ^1.15.0
+    form-data: ^4.0.0
+    proxy-from-env: ^1.1.0
+  checksum: 4444f06601f4ede154183767863d2b8e472b4a6bfc5253597ed6d21899887e1fd0ee2b3de792ac4f8459fe2e359d2aa07c216e45fd8b9e4e0688a6ebf48a5a8d
   languageName: node
   linkType: hard
 
@@ -12318,7 +12374,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.17.3":
+"express@npm:^4.17.3, express@npm:^4.18.2":
   version: 4.18.2
   resolution: "express@npm:4.18.2"
   dependencies:
@@ -17894,6 +17950,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"openapi3-ts@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "openapi3-ts@npm:4.1.2"
+  dependencies:
+    yaml: ^2.2.2
+  checksum: 019a66f4195966bf58ee29f913b91e39975616458fdb40a15507a3b3e338eacfc882def0dda1a5001edf962e382ed6f46c8a0d40684adcccb868960267df30d9
+  languageName: node
+  linkType: hard
+
 "opener@npm:^1.5.2":
   version: 1.5.2
   resolution: "opener@npm:1.5.2"
@@ -22734,6 +22799,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ts-deepmerge@npm:^6.0.3":
+  version: 6.2.0
+  resolution: "ts-deepmerge@npm:6.2.0"
+  checksum: 88014409051cf614c5cd26c60eb2605a59b0b98896609b0483503083a2727362409b1db9b7e4bf4446733396881f32cd504ef8141dd448e38304dcdf1f9d39d0
+  languageName: node
+  linkType: hard
+
 "ts-interface-checker@npm:^0.1.9":
   version: 0.1.13
   resolution: "ts-interface-checker@npm:0.1.13"
@@ -22828,6 +22900,13 @@ __metadata:
   bin:
     ts-patch: bin/cli.js
   checksum: 05ab14bb3552b0264c61751009f6a78f5d95b6c695e4bfd8183e7666a617e6ec9653e12a0453a0abc623591a56fd0c0f0c9c590b87be5b177332429db97cbfd1
+  languageName: node
+  linkType: hard
+
+"ts-toolbelt@npm:^9.6.0":
+  version: 9.6.0
+  resolution: "ts-toolbelt@npm:9.6.0"
+  checksum: 9f35fd95d895a5d32ea9fd2e532a695b0bae6cbff6832b77292efa188a0ed1ed6e54f63f74a8920390f3d909a7a3adb20a144686372a8e78b420246a9bd3d58a
   languageName: node
   linkType: hard
 
@@ -23117,7 +23196,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.9.5, typescript@npm:^4.6.4, typescript@npm:^4.7.4, typescript@npm:^4.9.5":
+"typescript@npm:4.9.5, typescript@npm:^4.6.4, typescript@npm:^4.7.4, typescript@npm:^4.8.3, typescript@npm:^4.9.5":
   version: 4.9.5
   resolution: "typescript@npm:4.9.5"
   bin:
@@ -23127,7 +23206,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.9.5#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.5#~builtin<compat/typescript>":
+"typescript@patch:typescript@4.9.5#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.8.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.5#~builtin<compat/typescript>":
   version: 4.9.5
   resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"
   bin:
@@ -24557,6 +24636,29 @@ __metadata:
   version: 3.21.4
   resolution: "zod@npm:3.21.4"
   checksum: f185ba87342ff16f7a06686767c2b2a7af41110c7edf7c1974095d8db7a73792696bcb4a00853de0d2edeb34a5b2ea6a55871bc864227dace682a0a28de33e1f
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.19.1, zod@npm:^3.22.4":
+  version: 3.22.4
+  resolution: "zod@npm:3.22.4"
+  checksum: 80bfd7f8039b24fddeb0718a2ec7c02aa9856e4838d6aa4864335a047b6b37a3273b191ef335bf0b2002e5c514ef261ffcda5a589fb084a48c336ffc4cdbab7f
+  languageName: node
+  linkType: hard
+
+"zodios-api-shorthand@npm:^1.2.6":
+  version: 1.2.6
+  resolution: "zodios-api-shorthand@npm:1.2.6"
+  dependencies:
+    "@tshttp/status": ^2.0.0
+    "@zodios/core": ^10.7.1
+    "@zodios/express": ^10.4.4
+    axios: ^1.2.0
+    express: ^4.18.2
+    ts-toolbelt: ^9.6.0
+    typescript: ^4.8.3
+    zod: ^3.19.1
+  checksum: 3b990b92fe6b785c7b4a7c9d5baa045020bf7442bfbf803779e8ac22c3a5d969ebc90a15a286a672036b9472ff4bdaed83d78c17eb5ec025b4c2f60d25e32660
   languageName: node
   linkType: hard
 
