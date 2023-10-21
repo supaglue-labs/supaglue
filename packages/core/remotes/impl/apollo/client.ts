@@ -63,11 +63,13 @@ export const apolloEmailerStep = z.object({
 
   type: z.enum([
     'auto_email',
-    // Value guessed, not tested for now https://share.cleanshot.com/BNBcpYSw
     'manual_email',
-    'phone_call',
+    'call',
     'action_item',
-    'linkedin_send_message',
+    'linkedin_step_message',
+    'linkedin_step_connect',
+    'linkedin_step_view_profile',
+    'linkedin_step_interact_post',
   ]),
   wait_mode: z.enum(['second', 'minute', 'day']), // Maybe hour and others too
   note: z.string().nullish(),
@@ -92,11 +94,13 @@ export type ApolloCreateEmailerStep = z.infer<typeof apolloCreateEmailerStep>;
 export const apolloCreateEmailerStep = apolloEmailerStep.pick({
   emailer_campaign_id: true,
   priority: true,
+  /** Doesn't work if already taken */
   position: true,
   type: true,
   wait_mode: true,
   wait_time: true,
   exact_datetime: true,
+  note: true,
 });
 
 /** aka EmailTemplate */
@@ -125,7 +129,7 @@ export const apolloEmailerTouch = z.object({
   emailer_template_id: z.string().nullish(),
   emailer_template: apolloEmailerTemplate.nullish(),
   status: z.string().nullish(),
-  type: z.string().nullish(),
+  type: z.enum(['reply_to_thread', 'new_thread']).nullish(),
   include_signature: z.boolean().nullish(),
   has_personalized_opener: z.boolean().nullish(),
   personalized_opener_fallback_option: z.string().nullish(),
@@ -154,6 +158,7 @@ export const apolloEmailerTouchUpdate = apolloEmailerTouch.pick({
   id: true,
   emailer_step_id: true,
   emailer_template: true,
+  type: true,
 });
 
 export const apolloEmailerCampaignResponse = z.object({
@@ -178,8 +183,9 @@ export const apolloApi = defineApi({
     body: apolloCreateEmailerStep,
     response: z.object({
       emailer_step: apolloEmailerStep,
-      emailer_touch: apolloEmailerTouch,
-      emailer_template: apolloEmailerTemplate,
+      // Null for templatable steps (e.g. tasks / calls)
+      emailer_touch: apolloEmailerTouch.nullish(),
+      emailer_template: apolloEmailerTemplate.nullish(),
     }),
   },
   'DELETE EmailerStep': {

@@ -403,11 +403,12 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       user_id: params.ownerId,
       ...params.customFields,
     });
-    await Promise.all(
-      (params.steps ?? []).map((step, i) =>
-        this.createSequenceStep({ ...step, sequenceId: res.emailer_campaign.id, order: i + 1 })
-      )
-    );
+
+    // Cannot create steps concurrently for apollo otherwise we run into race conditions
+    // due to apollo's lack of support for arbitary `position` https://share.cleanshot.com/KrZyhsMq
+    for (const [i, step] of (params.steps ?? []).entries()) {
+      await this.createSequenceStep({ ...step, sequenceId: res.emailer_campaign.id, order: i + 1 });
+    }
     return { id: res.emailer_campaign.id };
   }
 
@@ -417,34 +418,42 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (!params.sequenceId) {
       throw new Error('Sequence ID is required');
     }
-    if (params.type !== 'auto_email') {
-      throw new Error('Only auto_email steps are supported for apollo at the moment');
-    }
+
     const r = await this.#api.postEmailerStep({
       emailer_campaign_id: params.sequenceId,
       position: params.order ?? 1,
-      type: 'auto_email',
-      // uncomment when we support other types
-      // type: params.type === 'call' ? 'phone_call' : params.type === 'task' ? 'action_item' : params.type,
+      type:
+        params.type === 'linkedin_send_message'
+          ? 'linkedin_step_message'
+          : params.type === 'task'
+          ? 'action_item'
+          : params.type,
       wait_mode: 'second',
       wait_time: params.intervalSeconds ?? 0,
       exact_datetime: params.date, // Not clear exactly how this works
+      note: params.taskNote,
+      ...params.customFields,
     });
-    await this.#api.putEmailerTouch(
-      {
-        id: r.emailer_touch.id,
-        emailer_step_id: r.emailer_step.id,
-        emailer_template:
-          params.template && 'id' in params.template
-            ? { id: params.template.id }
-            : {
-                id: r.emailer_template.id,
-                subject: params.template?.subject,
-                body_html: params.template?.body,
-              },
-      },
-      { params: { id: r.emailer_touch.id } }
-    );
+
+    // Only exists for templatable steps like tasks / calls
+    if (r.emailer_touch && r.emailer_template) {
+      await this.#api.putEmailerTouch(
+        {
+          id: r.emailer_touch.id,
+          emailer_step_id: r.emailer_step.id,
+          emailer_template:
+            params.template && 'id' in params.template
+              ? { id: params.template.id }
+              : {
+                  id: r.emailer_template.id,
+                  subject: params.template?.subject,
+                  body_html: params.template?.body,
+                },
+          type: params.isReply ? 'reply_to_thread' : 'new_thread',
+        },
+        { params: { id: r.emailer_touch.id } }
+      );
+    }
     return { id: r.emailer_step.id };
   }
 
