@@ -1473,6 +1473,7 @@
           },
           "tags": {
             "type": "array",
+            "description": "Raw values in Outreach, ids in Apollo, and not supported in Salesloft",
             "items": {
               "type": "string"
             }
@@ -1522,6 +1523,7 @@
           },
           "tags": {
             "type": "array",
+            "description": "Raw values in Outreach, ids in Apollo, and not supported in Salesloft",
             "items": {
               "type": "string"
             }

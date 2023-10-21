@@ -19,6 +19,7 @@ export const apolloEmailerCampaign = extendApi(
     created_at: z.string().datetime(),
     permissions: z.enum(['team_can_use', 'team_can_view', 'private']).optional(),
     active: z.boolean(),
+    archived: z.boolean(),
     label_ids: z.array(z.string()),
     num_steps: z.number().nullish(),
     user_id: z.string().nullish(),
@@ -43,10 +44,12 @@ export const apolloEmailerCampaign = extendApi(
 
 /** Aka CreateSequence */
 export type ApolloCreateEmailerCampaign = z.infer<typeof apolloCreateEmailerCampaign>;
-export const apolloCreateEmailerCampaign = apolloEmailerCampaign.pick({
+export const apolloCreateEmailerCampaign = apolloEmailerCampaign.partial().pick({
   creation_type: true,
   name: true,
   permissions: true,
+  user_id: true,
+  label_ids: true,
   active: true,
 });
 
@@ -58,7 +61,14 @@ export const apolloEmailerStep = z.object({
   position: z.number().nullish(),
   wait_time: z.number().nullish(),
 
-  type: z.enum(['auto_email']), // maybe manual email and others
+  type: z.enum([
+    'auto_email',
+    // Value guessed, not tested for now https://share.cleanshot.com/BNBcpYSw
+    'manual_email',
+    'phone_call',
+    'action_item',
+    'linkedin_send_message',
+  ]),
   wait_mode: z.enum(['second', 'minute', 'day']), // Maybe hour and others too
   note: z.string().nullish(),
   max_emails_per_day: z.number().nullish(),

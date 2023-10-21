@@ -13,6 +13,10 @@ import type {
   SequenceStateCreateParams,
   User,
 } from '@supaglue/types/engagement';
+import { camelcaseKeys } from '@supaglue/utils';
+import { pick, removeValues } from '../../../lib/util';
+// @ts-expect-error The current file is a CommonJS module whose imports will produce 'require' calls; however, the referenced file is an ECMAScript module and cannot be imported with 'require'. Consider writing a dynamic 'import("./client.mjs")' call instead.
+import type { ApolloEmailerCampaign } from './client.mjs';
 
 export const fromApolloAccountToAccount = (record: Record<string, any>): Account => {
   return {
@@ -234,3 +238,39 @@ export const toApolloSequenceStateCreateParams = (params: SequenceStateCreatePar
     userId: params.userId,
   };
 };
+
+export const fromApolloEmailerCampaignToSequence = (c: ApolloEmailerCampaign): Sequence => ({
+  name: c.name ?? '',
+  createdAt: c.created_at ? new Date(c.created_at) : null,
+  updatedAt: null,
+  id: c.id,
+  ownerId: c.user_id ?? null,
+  numSteps: c.num_steps ?? 0,
+  isEnabled: c.active ?? false,
+  isDeleted: c.archived,
+  lastModifiedAt: new Date(), // Apollo does not return this so we have no way of knowning
+  tags: c.label_ids, // Apollo labels require explicit ids, but we don't have mapping for them
+  metrics: camelcaseKeys(
+    removeValues(
+      pick(c, [
+        'unique_scheduled',
+        'unique_delivered',
+        'unique_bounced',
+        'unique_opened',
+        'unique_replied',
+        'unique_demoed',
+        'unique_clicked',
+        'unique_unsubscribed',
+        'bounce_rate',
+        'open_rate',
+        'click_rate',
+        'reply_rate',
+        'spam_blocked_rate',
+        'opt_out_rate',
+        'demo_rate',
+      ]),
+      (_, v) => typeof v !== 'number'
+    )
+  ),
+  rawData: c,
+});

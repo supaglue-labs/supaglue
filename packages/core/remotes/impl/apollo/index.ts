@@ -34,6 +34,7 @@ import {
   fromApolloContactToContact,
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
+  fromApolloEmailerCampaignToSequence,
   fromApolloSequenceToSequence,
   fromApolloUserToUser,
   toApolloAccountCreateParams,
@@ -128,6 +129,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     switch (commonObjectType) {
       case 'contact':
       case 'sequence':
+        return this.#api
+          .getEmailerCampaign({ params: { id } })
+          .then(({ emailer_campaign: c }) => fromApolloEmailerCampaignToSequence(c));
       case 'user':
       case 'mailbox':
       case 'sequence_state':
@@ -394,7 +398,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   async createSequence(params: SequenceCreateParams): Promise<CreateCommonObjectRecordResponse<'sequence'>> {
     const res = await this.#api.postEmailerCampaign({
       name: params.name,
+      permissions: params.type === 'private' ? 'private' : 'team_can_use',
       active: true,
+      label_ids: params.tags,
+      user_id: params.ownerId,
+      ...params.customFields,
     });
     await Promise.all(
       (params.steps ?? []).map((step, i) =>
@@ -410,31 +418,35 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (!params.sequenceId) {
       throw new Error('Sequence ID is required');
     }
-    const r1 = await this.#api.postEmailerStep({
+    if (params.type !== 'auto_email') {
+      throw new Error('Only auto_email steps are supported for apollo at the moment');
+    }
+    const r = await this.#api.postEmailerStep({
       emailer_campaign_id: params.sequenceId,
-      priority: 'high',
       position: params.order ?? 1,
       type: 'auto_email',
+      // uncomment when we support other types
+      // type: params.type === 'call' ? 'phone_call' : params.type === 'task' ? 'action_item' : params.type,
       wait_mode: 'second',
       wait_time: params.intervalSeconds ?? 0,
+      exact_datetime: params.date, // Not clear exactly how this works
     });
     await this.#api.putEmailerTouch(
       {
-        id: r1.emailer_touch.id,
-        emailer_step_id: r1.emailer_step.id,
+        id: r.emailer_touch.id,
+        emailer_step_id: r.emailer_step.id,
         emailer_template:
           params.template && 'id' in params.template
             ? { id: params.template.id }
             : {
-                id: r1.emailer_template.id,
+                id: r.emailer_template.id,
                 subject: params.template?.subject,
                 body_html: params.template?.body,
               },
       },
-      { params: { id: r1.emailer_touch.id } }
+      { params: { id: r.emailer_touch.id } }
     );
-
-    return { id: r1.emailer_step.id };
+    return { id: r.emailer_step.id };
   }
 
   async createSequenceState(

@@ -1,5 +1,10 @@
+export const removeValues = (obj: Record<string, any>, fn: (k: string, v: any) => boolean) => {
+  Object.keys(obj).forEach((key) => (fn(key, obj[key]) ? delete obj[key] : {}));
+  return obj;
+};
+
 export const removeUndefinedValues = (obj: Record<string, any>): void => {
-  Object.keys(obj).forEach((key) => (obj[key] === undefined ? delete obj[key] : {}));
+  removeValues(obj, (_, v) => v === undefined);
 };
 
 export const intersection = (listA: string[], listB: string[]): string[] => {
@@ -35,5 +40,17 @@ export function omit<T, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
   for (const key of keys) {
     delete result[key];
   }
+  return result;
+}
+
+type Pick<T, K extends keyof T> = {
+  [P in K]: T[P];
+};
+
+export function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+  const result = {} as Pick<T, K>;
+  keys.forEach((key) => {
+    result[key] = obj[key];
+  });
   return result;
 }

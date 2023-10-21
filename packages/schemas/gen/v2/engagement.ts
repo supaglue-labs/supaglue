@@ -380,6 +380,7 @@ export interface components {
       /** @example true */
       is_enabled: boolean;
       name: string | null;
+      /** @description Raw values in Outreach, ids in Apollo, and not supported in Salesloft */
       tags: (string)[];
       num_steps: number;
       metrics: {
@@ -403,6 +404,7 @@ export interface components {
     };
     create_sequence: {
       name: string;
+      /** @description Raw values in Outreach, ids in Apollo, and not supported in Salesloft */
       tags?: (string)[];
       /**
        * @description The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner. 
