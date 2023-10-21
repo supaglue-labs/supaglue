@@ -59,7 +59,7 @@ export const apolloEmailerStep = z.object({
   wait_time: z.number().nullish(),
 
   type: z.enum(['auto_email']), // maybe manual email and others
-  wait_mode: z.enum(['minute', 'day']), // Maybe hour and others too
+  wait_mode: z.enum(['second', 'minute', 'day']), // Maybe hour and others too
   note: z.string().nullish(),
   max_emails_per_day: z.number().nullish(),
   exact_datetime: z.string().nullish(),
@@ -183,7 +183,7 @@ export const apolloApi = defineApi({
   },
 });
 
-export function createApolloClient(cfg: { apiKey: string; axiosConfig: AxiosRequestConfig }) {
+export function createApolloClient(cfg: { apiKey: string; axiosConfig?: AxiosRequestConfig }) {
   return new Zodios(apolloApi, {
     axiosConfig: {
       baseURL: 'https://app.apollo.io/api',

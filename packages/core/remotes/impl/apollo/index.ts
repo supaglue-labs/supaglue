@@ -11,7 +11,9 @@ import type {
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
+  SequenceCreateParams,
   SequenceStateCreateParams,
+  SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
@@ -24,6 +26,8 @@ import type {
 } from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
+// @ts-expect-error Getting working but it should still work... We need a story around mts files
+import { createApolloClient } from './client.mjs';
 import {
   fromApolloAccountToAccount,
   fromApolloContactCampaignStatusToSequenceState,
@@ -73,12 +77,23 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   readonly #apiKey: string;
   readonly #headers: Record<string, string>;
   readonly #baseURL: string;
+  readonly #api: ReturnType<typeof createApolloClient>;
 
   public constructor(apiKey: string) {
     super('https://api.apollo.io');
     this.#baseURL = 'https://api.apollo.io';
     this.#apiKey = apiKey;
     this.#headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' };
+    this.#api = createApolloClient({
+      apiKey,
+      axiosConfig: {
+        proxy: {
+          protocol: 'http',
+          host: '10.0.0.19',
+          port: 9090,
+        },
+      },
+    });
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
@@ -376,6 +391,52 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     };
   }
 
+  async createSequence(params: SequenceCreateParams): Promise<CreateCommonObjectRecordResponse<'sequence'>> {
+    const res = await this.#api.postEmailerCampaign({
+      name: params.name,
+      active: true,
+    });
+    await Promise.all(
+      (params.steps ?? []).map((step, i) =>
+        this.createSequenceStep({ ...step, sequenceId: res.emailer_campaign.id, order: i + 1 })
+      )
+    );
+    return { id: res.emailer_campaign.id };
+  }
+
+  async createSequenceStep(
+    params: SequenceStepCreateParams
+  ): Promise<CreateCommonObjectRecordResponse<'sequence_step'>> {
+    if (!params.sequenceId) {
+      throw new Error('Sequence ID is required');
+    }
+    const r1 = await this.#api.postEmailerStep({
+      emailer_campaign_id: params.sequenceId,
+      priority: 'high',
+      position: params.order ?? 1,
+      type: 'auto_email',
+      wait_mode: 'second',
+      wait_time: params.intervalSeconds ?? 0,
+    });
+    await this.#api.putEmailerTouch(
+      {
+        id: r1.emailer_touch.id,
+        emailer_step_id: r1.emailer_step.id,
+        emailer_template:
+          params.template && 'id' in params.template
+            ? { id: params.template.id }
+            : {
+                id: r1.emailer_template.id,
+                subject: params.template?.subject,
+                body_html: params.template?.body,
+              },
+      },
+      { params: { id: r1.emailer_touch.id } }
+    );
+
+    return { id: r1.emailer_step.id };
+  }
+
   async createSequenceState(
     params: SequenceStateCreateParams
   ): Promise<CreateCommonObjectRecordResponse<'sequence_state'>> {
@@ -414,6 +475,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       case 'account':
         return (await this.createAccount(params as AccountCreateParams)) as CreateCommonObjectRecordResponse<T>;
       case 'sequence':
+        return (await this.createSequence(params as SequenceCreateParams)) as CreateCommonObjectRecordResponse<T>;
+      case 'sequence_step':
+        return (await this.createSequenceStep(
+          params as SequenceStepCreateParams
+        )) as CreateCommonObjectRecordResponse<T>;
       case 'mailbox':
       case 'user':
         throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
