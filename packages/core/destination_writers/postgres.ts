@@ -72,25 +72,23 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       : this.#destination.config.schema;
   }
 
-  public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
-    { providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
+  protected async upsertCommonObjectRecordImpl<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
+    { providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonObjectType: T,
-    record: CommonObjectTypeMapForCategory<P>['object']
+    record: CommonObjectTypeMapForCategory<P>['object'],
+    schema: string,
+    table: string
   ): Promise<void> {
     if (category === 'no_category' || !commonObjectType) {
       throw new Error(`Common objects not supported for provider: ${providerName}`);
     }
-    const schema = this.#getSchema(connectionSyncConfig);
-    const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `"${schema}".${table}`;
     const childLogger = logger.child({ providerName, customerId, commonObjectType });
 
     const client = await this.#getClient();
 
     try {
-      // Create tables if necessary
-      // TODO: We should only need to do this once at the beginning
-      await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema));
+      await this.setupCommonObjectTable(client, schema, table, category, commonObjectType);
 
       const columns = getColumnsForCommonObject(category, commonObjectType);
       const columnsToUpdate = columns.filter(
@@ -148,16 +146,52 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     }
   }
 
-  public override async writeCommonObjectRecords(
-    { id: connectionId, providerName, customerId, category, applicationId, connectionSyncConfig }: ConnectionSafeAny,
+  public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
+    connection: ConnectionSafeAny,
+    commonObjectType: T,
+    record: CommonObjectTypeMapForCategory<P>['object']
+  ): Promise<void> {
+    const { providerName, category, connectionSyncConfig } = connection;
+    if (category === 'no_category' || !commonObjectType) {
+      throw new Error(`Common objects not supported for provider: ${providerName}`);
+    }
+    const schema = this.#getSchema(connectionSyncConfig);
+    const table = getCommonObjectTableName(category, commonObjectType);
+    return await this.upsertCommonObjectRecordImpl(connection, commonObjectType, record, schema, table);
+  }
+
+  protected async setupCommonObjectTable(
+    client: PoolClient,
+    schema: string,
+    table: string,
+    category: ProviderCategory,
+    commonObjectType: CommonObjectType,
+    temp = false
+  ) {
+    if (!temp) {
+      // Create tables if necessary
+      // TODO: We should only need to do this once at the beginning
+      await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema));
+      return;
+    }
+
+    const tempTable = `temp_${table}`;
+    // Create a temporary table
+    // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
+    await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ true));
+    await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, last_modified_at DESC)`);
+  }
+
+  protected async writeCommonObjectRecordsImpl(
+    { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
     heartbeat: () => void,
-    diffAndDeleteRecords: boolean
+    diffAndDeleteRecords: boolean,
+    schema: string,
+    table: string
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
-    const schema = this.#getSchema(connectionSyncConfig);
-    const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `temp_${table}`;
     const dedupedTempTable = `deduped_temp_${table}`;
@@ -165,14 +199,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     const client = await this.#getClient();
 
     try {
-      // Create tables if necessary
-      // TODO: We should only need to do this once at the beginning
-      await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema));
-
-      // Create a temporary table
-      // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
-      await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ true));
-      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, last_modified_at DESC)`);
+      await this.setupCommonObjectTable(client, schema, table, category, commonObjectType);
+      await this.setupCommonObjectTable(client, schema, table, category, commonObjectType, /* temp */ true);
 
       const columns = getColumnsForCommonObject(category, commonObjectType);
       const columnsToUpdate = columns.filter(
@@ -315,6 +343,27 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     } finally {
       client.release();
     }
+  }
+
+  public override async writeCommonObjectRecords(
+    connection: ConnectionSafeAny,
+    commonObjectType: CommonObjectType,
+    inputStream: Readable,
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
+  ): Promise<WriteCommonObjectRecordsResult> {
+    const { category, connectionSyncConfig } = connection;
+    const schema = this.#getSchema(connectionSyncConfig);
+    const table = getCommonObjectTableName(category, commonObjectType);
+    return await this.writeCommonObjectRecordsImpl(
+      connection,
+      commonObjectType,
+      inputStream,
+      heartbeat,
+      diffAndDeleteRecords,
+      schema,
+      table
+    );
   }
 
   public override async writeObjectRecords(

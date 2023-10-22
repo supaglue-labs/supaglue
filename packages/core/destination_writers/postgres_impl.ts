@@ -1,79 +1,197 @@
 import type {
+  BaseFullRecord,
   CommonObjectType,
   CommonObjectTypeForCategory,
   CommonObjectTypeMapForCategory,
   ConnectionSafeAny,
+  ConnectionSyncConfig,
+  DestinationUnsafe,
   FullEntityRecord,
   FullObjectRecord,
   MappedListedObjectRecord,
   ProviderCategory,
+  ProviderName,
 } from '@supaglue/types';
+import type { CRMCommonObjectType } from '@supaglue/types/crm';
+import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
+import { slugifyForTableName } from '@supaglue/utils';
 import { stringify } from 'csv-stringify';
-import type { Pool, PoolClient } from 'pg';
+import type { PoolClient } from 'pg';
+import { Pool } from 'pg';
 import { from as copyFrom } from 'pg-copy-streams';
 import type { pino } from 'pino';
 import type { Readable } from 'stream';
 import { Transform } from 'stream';
 import { pipeline } from 'stream/promises';
-import { NotImplementedError } from '../errors';
 import {
-  getColumnsForCommonObject,
-  getCommonObjectSchemaSetupSql,
-  getCommonObjectTableName,
-  getObjectTableName,
-  getPgPool,
-  getSchemaName,
-  logger,
-  omit,
-  sanitizeForPostgres,
-} from '../lib';
+  keysOfSnakecasedCrmAccountWithTenant,
+  keysOfSnakecasedCrmContactWithTenant,
+  keysOfSnakecasedCrmUserWithTenant,
+  keysOfSnakecasedLeadWithTenant,
+  keysOfSnakecasedOpportunityWithTenant,
+} from '../keys/crm';
+import { keysOfSnakecasedEngagementAccountWithTenant } from '../keys/engagement/account';
+import { keysOfSnakecasedEngagementContactWithTenant } from '../keys/engagement/contact';
+import { keysOfSnakecasedMailboxWithTenant } from '../keys/engagement/mailbox';
+import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence';
+import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
+import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
+import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
+import { getCommonObjectSchemaSetupSql, getSsl, logger, omit, SCHEMAS_OR_ENTITIES_APPLICATION_IDS } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
-import { PostgresDestinationWriter } from './postgres';
-import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
+import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
+import {
+  getSnakecasedKeysMapper,
+  jsonStringifyWithoutNullChars,
+  shouldDeleteRecords,
+  stripNullCharsFromString,
+} from './util';
 
-async function createPartitionIfNotExists(
-  client: PoolClient,
-  schema: string,
-  table: string,
-  customerId: string,
-  columnName: string
-) {
-  const partitionName = `${table}_${sanitizeForPostgres(customerId)}`;
+export class PostgresDestinationWriterImpl extends BaseDestinationWriter {
+  readonly #destination: DestinationUnsafe<'postgres'>;
 
-  // If partition doesn't exist, create it
-  const createPartitionQuery = `CREATE TABLE IF NOT EXISTS ${schema}.${partitionName} PARTITION OF ${schema}.${table} FOR VALUES IN ('${customerId}')`;
-  const createIndexQuery = `CREATE INDEX IF NOT EXISTS ${partitionName}_id_index ON ${schema}.${partitionName} (${columnName});`;
-  await client.query(createPartitionQuery);
-  await client.query(createIndexQuery);
-}
-
-export class SupaglueDestinationWriter extends PostgresDestinationWriter {
-  #pgPool: Pool;
-  constructor() {
-    this.#pgPool = getPgPool(process.env.SUPAGLUE_MANAGED_DATABASE_URL!);
+  public constructor(destination: DestinationUnsafe<'postgres'>) {
+    super();
+    this.#destination = destination;
   }
+
   async #getClient(): Promise<PoolClient> {
-    return await this.#pgPool.connect();
+    const { sslMode, ...rest } = this.#destination.config;
+    const pool = new Pool({
+      ...rest,
+      max: 20,
+      statement_timeout: 60 * 60 * 1000, // 1 hour - assuming that COPY FROM STDIN is subject to this timeout
+      ssl: getSsl(sslMode),
+    });
+    return await pool.connect();
+  }
+
+  #getSchema(connectionSyncConfig?: ConnectionSyncConfig): string {
+    return connectionSyncConfig?.destinationConfig?.type === 'postgres'
+      ? connectionSyncConfig.destinationConfig.schema
+      : this.#destination.config.schema;
+  }
+
+  protected async upsertCommonObjectRecordImpl<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
+    { providerName, customerId, category, applicationId }: ConnectionSafeAny,
+    commonObjectType: T,
+    record: CommonObjectTypeMapForCategory<P>['object'],
+    schema: string,
+    table: string
+  ): Promise<void> {
+    if (category === 'no_category' || !commonObjectType) {
+      throw new Error(`Common objects not supported for provider: ${providerName}`);
+    }
+    const qualifiedTable = `"${schema}".${table}`;
+    const childLogger = logger.child({ providerName, customerId, commonObjectType });
+
+    const client = await this.#getClient();
+
+    try {
+      await this.setupCommonObjectTable(client, schema, table, category, commonObjectType);
+
+      const columns = getColumnsForCommonObject(category, commonObjectType);
+      const columnsToUpdate = columns.filter(
+        (c) =>
+          c !== '_supaglue_application_id' &&
+          c !== '_supaglue_provider_name' &&
+          c !== '_supaglue_customer_id' &&
+          c !== 'id'
+      );
+
+      const mapper = getSnakecasedKeysMapper(category, commonObjectType);
+
+      const unifiedData = mapper(record);
+      const mappedRecord = {
+        _supaglue_application_id: applicationId,
+        _supaglue_provider_name: providerName,
+        _supaglue_customer_id: customerId,
+        _supaglue_emitted_at: new Date(),
+        _supaglue_unified_data: omit(unifiedData, ['raw_data']),
+        ...unifiedData,
+      };
+
+      const columnsStr = columns.join(',');
+      const columnPlaceholderValuesStr = columns.map((column, index) => `$${index + 1}`).join(',');
+      const columnsToUpdateStr = columnsToUpdate.join(',');
+      const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
+      const values = columns.map((column) => {
+        const value = mappedRecord[column];
+        // pg doesn't seem to convert objects to JSON even though the docs say it does
+        // https://node-postgres.com/features/queries
+        if (value !== null && value !== undefined && typeof value === 'object') {
+          return jsonStringifyWithoutNullChars(value);
+        }
+
+        if (typeof value === 'string') {
+          return stripNullCharsFromString(value);
+        }
+
+        return value;
+      });
+
+      await client.query(
+        `INSERT INTO ${qualifiedTable} (${columnsStr})
+VALUES
+  (${columnPlaceholderValuesStr})
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
+        values
+      );
+    } catch (err) {
+      childLogger.error({ err }, 'Error upserting common object record');
+      throw err;
+    } finally {
+      client.release();
+    }
   }
 
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
-    { providerName, customerId, category, applicationId }: ConnectionSafeAny,
+    connection: ConnectionSafeAny,
     commonObjectType: T,
     record: CommonObjectTypeMapForCategory<P>['object']
   ): Promise<void> {
-    return;
+    const { providerName, category, connectionSyncConfig } = connection;
+    if (category === 'no_category' || !commonObjectType) {
+      throw new Error(`Common objects not supported for provider: ${providerName}`);
+    }
+    const schema = this.#getSchema(connectionSyncConfig);
+    const table = getCommonObjectTableName(category, commonObjectType);
+    return await this.upsertCommonObjectRecordImpl(connection, commonObjectType, record, schema, table);
   }
 
-  public override async writeCommonObjectRecords(
+  protected async setupCommonObjectTable(
+    client: PoolClient,
+    schema: string,
+    table: string,
+    category: ProviderCategory,
+    commonObjectType: CommonObjectType,
+    temp = false
+  ) {
+    if (!temp) {
+      // Create tables if necessary
+      // TODO: We should only need to do this once at the beginning
+      await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema));
+      return;
+    }
+
+    const tempTable = `temp_${table}`;
+    // Create a temporary table
+    // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
+    await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ true));
+    await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, last_modified_at DESC)`);
+  }
+
+  protected async writeCommonObjectRecordsImpl(
     { id: connectionId, providerName, customerId, category, applicationId }: ConnectionSafeAny,
     commonObjectType: CommonObjectType,
     inputStream: Readable,
     heartbeat: () => void,
-    diffAndDeleteRecords: boolean
+    diffAndDeleteRecords: boolean,
+    schema: string,
+    table: string
   ): Promise<WriteCommonObjectRecordsResult> {
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
-    const schema = getSchemaName(applicationId);
-    const table = getCommonObjectTableName(category, commonObjectType);
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `temp_${table}`;
     const dedupedTempTable = `deduped_temp_${table}`;
@@ -81,21 +199,8 @@ export class SupaglueDestinationWriter extends PostgresDestinationWriter {
     const client = await this.#getClient();
 
     try {
-      // Create tables if necessary
-      // TODO: We should only need to do this once at the beginning
-      await client.query(getSchemaSetupSql(schema));
-      await client.query(
-        getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ false, /* partition */ true)
-      );
-      await createPartitionIfNotExists(client, schema, table, customerId, 'last_modified_at');
-
-      // Create a temporary table
-      // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
-      await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
-      await client.query(
-        getCommonObjectSchemaSetupSql(category, commonObjectType)(schema, /* temp */ true, /* partition */ false)
-      );
-      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (id ASC, last_modified_at DESC)`);
+      await this.setupCommonObjectTable(client, schema, table, category, commonObjectType);
+      await this.setupCommonObjectTable(client, schema, table, category, commonObjectType, /* temp */ true);
 
       const columns = getColumnsForCommonObject(category, commonObjectType);
       const columnsToUpdate = columns.filter(
@@ -215,7 +320,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         await client.query(`
         UPDATE ${qualifiedTable} AS destination
         SET is_deleted = TRUE
-        WHERE 
+        WHERE
           destination._supaglue_application_id = '${applicationId}' AND
           destination._supaglue_provider_name = '${providerName}' AND
           destination._supaglue_customer_id = '${customerId}'
@@ -238,6 +343,27 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     } finally {
       client.release();
     }
+  }
+
+  public override async writeCommonObjectRecords(
+    connection: ConnectionSafeAny,
+    commonObjectType: CommonObjectType,
+    inputStream: Readable,
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
+  ): Promise<WriteCommonObjectRecordsResult> {
+    const { category, connectionSyncConfig } = connection;
+    const schema = this.#getSchema(connectionSyncConfig);
+    const table = getCommonObjectTableName(category, commonObjectType);
+    return await this.writeCommonObjectRecordsImpl(
+      connection,
+      commonObjectType,
+      inputStream,
+      heartbeat,
+      diffAndDeleteRecords,
+      schema,
+      table
+    );
   }
 
   public override async writeObjectRecords(
@@ -274,20 +400,48 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     return await this.#upsertRecord(connection, getObjectTableName(connection.providerName, objectName), record);
   }
 
-  async #upsertRecord(
-    { providerName, customerId, applicationId }: ConnectionSafeAny,
-    table: string,
-    record: FullObjectRecord
+  public override async writeEntityRecords(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    inputStream: Readable,
+    heartbeat: () => void,
+    diffAndDeleteRecords: boolean
+  ): Promise<WriteEntityRecordsResult> {
+    const { id: connectionId, providerName, customerId } = connection;
+    return await this.#writeRecords(
+      connection,
+      getEntityTableName(entityName),
+      inputStream,
+      heartbeat,
+      logger.child({ connectionId, providerName, customerId, entityName }),
+      diffAndDeleteRecords
+    );
+  }
+
+  public override async upsertEntityRecord(
+    connection: ConnectionSafeAny,
+    entityName: string,
+    record: FullEntityRecord
   ): Promise<void> {
-    const schema = getSchemaName(applicationId);
+    return await this.#upsertRecord(connection, getEntityTableName(entityName), record);
+  }
+
+  async #upsertRecord(
+    { providerName, customerId, applicationId, connectionSyncConfig }: ConnectionSafeAny,
+    table: string,
+    record: BaseFullRecord
+  ): Promise<void> {
+    const schema = this.#getSchema(connectionSyncConfig);
     const qualifiedTable = `"${schema}".${table}`;
     const client = await this.#getClient();
     const childLogger = logger.child({ providerName, customerId });
+    // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
+    const isSchemasOrEntitiesApplication = SCHEMAS_OR_ENTITIES_APPLICATION_IDS.includes(applicationId);
 
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await this.#setupStandardObjectTable(client, schema, table, customerId);
+      await client.query(getObjectOrEntitySchemaSetupSql(table, schema));
 
       const mappedRecord: Record<string, string | boolean | object> = {
         _supaglue_application_id: applicationId,
@@ -298,6 +452,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         _supaglue_last_modified_at: record.metadata.lastModifiedAt,
         _supaglue_is_deleted: record.metadata.isDeleted,
         _supaglue_raw_data: record.rawData,
+        _supaglue_mapped_data: isSchemasOrEntitiesApplication
+          ? toTransformedPropertiesWithAdditionalFields(record.mappedProperties)
+          : {},
       };
       const columns = Object.keys(mappedRecord);
       const columnsToUpdate = columns.filter(
@@ -343,53 +500,32 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     }
   }
 
-  public override async writeEntityRecords(
-    connection: ConnectionSafeAny,
-    entityName: string,
-    inputStream: Readable,
-    heartbeat: () => void
-  ): Promise<WriteEntityRecordsResult> {
-    throw new NotImplementedError('Managed supaglue destination is not supported for entities');
-  }
-
-  public override async upsertEntityRecord(
-    connection: ConnectionSafeAny,
-    entityName: string,
-    record: FullEntityRecord
-  ): Promise<void> {
-    throw new NotImplementedError('Managed supaglue destination is not supported for entities');
-  }
-
-  async #setupStandardObjectTable(client: PoolClient, schema: string, table: string, customerId: string) {
-    await client.query(getSchemaSetupSql(schema));
-    await client.query(getTableSetupSql(table, schema));
-    await createPartitionIfNotExists(client, schema, table, customerId, '_supaglue_last_modified_at');
-  }
-
   async #writeRecords(
-    { providerName, customerId, applicationId }: ConnectionSafeAny,
+    { providerName, customerId, applicationId, connectionSyncConfig }: ConnectionSafeAny,
     table: string,
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger,
     diffAndDeleteRecords: boolean
   ): Promise<WriteObjectRecordsResult> {
-    const schema = getSchemaName(applicationId);
-    const qualifiedTable = `${schema}.${table}`;
-    const tempTable = `temp_${table}`;
-    const dedupedTempTable = `deduped_temp_${table}`;
+    const schema = this.#getSchema(connectionSyncConfig);
+    const qualifiedTable = `"${schema}".${table}`;
+    const tempTable = `"temp_${table}"`;
+    const dedupedTempTable = `"deduped_temp_${table}"`;
+    // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
+    const isSchemasOrEntitiesApplication = SCHEMAS_OR_ENTITIES_APPLICATION_IDS.includes(applicationId);
 
     const client = await this.#getClient();
 
     try {
       // Create tables if necessary
       // TODO: We should only need to do this once at the beginning
-      await this.#setupStandardObjectTable(client, schema, table, customerId);
+      await client.query(getObjectOrEntitySchemaSetupSql(table, schema));
 
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
-      await client.query(getTableSetupSql(table, schema, /* temp */ true));
+      await client.query(getObjectOrEntitySchemaSetupSql(table, schema, /* temp */ true));
       await client.query(
         `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_id ASC, _supaglue_last_modified_at DESC)`
       );
@@ -404,6 +540,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         '_supaglue_last_modified_at',
         '_supaglue_is_deleted',
         '_supaglue_raw_data',
+        '_supaglue_mapped_data',
       ];
       const columnsToUpdate = columns.filter(
         (c) =>
@@ -450,6 +587,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 _supaglue_last_modified_at: record.lastModifiedAt,
                 _supaglue_is_deleted: record.isDeleted,
                 _supaglue_raw_data: record.rawData,
+                _supaglue_mapped_data: isSchemasOrEntitiesApplication
+                  ? toTransformedPropertiesWithAdditionalFields(record.mappedProperties)
+                  : {},
               };
 
               ++tempTableRowCount;
@@ -523,9 +663,10 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         await client.query(`
           UPDATE ${qualifiedTable} AS destination
           SET _supaglue_is_deleted = TRUE
-          WHERE destination._supaglue_application_id = '${applicationId}'
-          AND destination._supaglue_provider_name = '${providerName}'
-          AND destination._supaglue_customer_id = '${customerId}'
+          WHERE
+            destination._supaglue_application_id = '${applicationId}' AND
+            destination._supaglue_provider_name = '${providerName}' AND
+            destination._supaglue_customer_id = '${customerId}'
           AND NOT EXISTS (
               SELECT 1
               FROM ${dedupedTempTable} AS temp
@@ -533,6 +674,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
           );
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
+        heartbeat();
       }
 
       // We don't drop deduped temp table here because we're closing the connection here anyway.
@@ -547,11 +689,75 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
   }
 }
 
-const getSchemaSetupSql = (schema: string) => {
-  return `CREATE SCHEMA IF NOT EXISTS ${schema};`;
+const getObjectTableName = (providerName: ProviderName, object: string) => {
+  const cleanObjectName = slugifyForTableName(object);
+  return `${providerName}_${cleanObjectName}`;
 };
 
-const getTableSetupSql = (baseTableName: string, schema: string, temp?: boolean) => {
+const getEntityTableName = (entityName: string) => {
+  const cleanEntityName = slugifyForTableName(entityName);
+  return `entity_${cleanEntityName}`;
+};
+
+const getCommonObjectTableName = (category: ProviderCategory, commonObjectType: CommonObjectType) => {
+  if (category === 'crm') {
+    return tableNamesByCommonObjectType.crm[commonObjectType as CRMCommonObjectType];
+  }
+  return tableNamesByCommonObjectType.engagement[commonObjectType as EngagementCommonObjectType];
+};
+
+const tableNamesByCommonObjectType: {
+  crm: Record<CRMCommonObjectType, string>;
+  engagement: Record<EngagementCommonObjectType, string>;
+} = {
+  crm: {
+    account: 'crm_accounts',
+    contact: 'crm_contacts',
+    lead: 'crm_leads',
+    opportunity: 'crm_opportunities',
+    user: 'crm_users',
+  },
+  engagement: {
+    account: 'engagement_accounts',
+    contact: 'engagement_contacts',
+    sequence_state: 'engagement_sequence_states',
+    sequence_step: 'engagement_sequence_steps',
+    user: 'engagement_users',
+    sequence: 'engagement_sequences',
+    mailbox: 'engagement_mailboxes',
+  },
+};
+
+const getColumnsForCommonObject = (category: ProviderCategory, commonObjectType: CommonObjectType) => {
+  if (category === 'crm') {
+    return columnsByCommonObjectType.crm[commonObjectType as CRMCommonObjectType];
+  }
+  return columnsByCommonObjectType.engagement[commonObjectType as EngagementCommonObjectType];
+};
+
+const columnsByCommonObjectType: {
+  crm: Record<CRMCommonObjectType, string[]>;
+  engagement: Record<EngagementCommonObjectType, string[]>;
+} = {
+  crm: {
+    account: keysOfSnakecasedCrmAccountWithTenant,
+    contact: keysOfSnakecasedCrmContactWithTenant,
+    lead: keysOfSnakecasedLeadWithTenant,
+    opportunity: keysOfSnakecasedOpportunityWithTenant,
+    user: keysOfSnakecasedCrmUserWithTenant,
+  },
+  engagement: {
+    account: keysOfSnakecasedEngagementAccountWithTenant,
+    contact: keysOfSnakecasedEngagementContactWithTenant,
+    sequence_state: keysOfSnakecasedSequenceStateWithTenant,
+    sequence_step: keysOfSnakecasedSequenceStepWithTenant,
+    user: keysOfSnakecasedEngagementUserWithTenant,
+    sequence: keysOfSnakecasedSequenceWithTenant,
+    mailbox: keysOfSnakecasedMailboxWithTenant,
+  },
+};
+
+const getObjectOrEntitySchemaSetupSql = (baseTableName: string, schema: string, temp?: boolean) => {
   const tableName = temp ? `temp_${baseTableName}` : baseTableName;
 
   return `-- CreateTable
@@ -563,26 +769,13 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `${tableName}` : 
   "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "_supaglue_last_modified_at" TIMESTAMP(3) NOT NULL,
   "_supaglue_is_deleted" BOOLEAN NOT NULL,
-  "_supaglue_raw_data" JSONB NOT NULL
+  "_supaglue_raw_data" JSONB NOT NULL,
+  "_supaglue_mapped_data" JSONB NOT NULL
 
   ${
     temp
       ? ''
       : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "_supaglue_id")'
   }
-    
-)${temp ? ';' : ' PARTITION BY LIST ( _supaglue_customer_id );'}`;
+);`;
 };
-
-function stripNullCharsFromString(str: string) {
-  return str.replace(/\0/g, '');
-}
-
-function jsonStringifyWithoutNullChars(obj: object) {
-  return JSON.stringify(obj, (key, value) => {
-    if (typeof value === 'string') {
-      return stripNullCharsFromString(value);
-    }
-    return value;
-  });
-}
