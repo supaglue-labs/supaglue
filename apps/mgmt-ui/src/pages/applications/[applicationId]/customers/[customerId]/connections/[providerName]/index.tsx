@@ -41,29 +41,17 @@ import { useEffect, useState } from 'react';
 
 export { getServerSideProps };
 
-type FriendlyStandardOrCustomObject =
-  | {
-      type: 'standard';
-      name: string;
-    }
-  | {
-      type: 'custom';
-      id: string;
-      name: string;
-    };
+type FriendlyStandardOrCustomObject = {
+  type: 'standard' | 'custom';
+  name: string;
+};
 
-type FriendlyStandardOrCustomObjectWithAttribution =
-  | {
-      type: 'standard';
-      name: string;
-      from: 'developer' | 'customer';
-    }
-  | {
-      type: 'custom';
-      id: string;
-      name: string;
-      from: 'developer' | 'customer';
-    };
+type FriendlyStandardOrCustomObjectWithAttribution = {
+  type: 'standard' | 'custom';
+  id: string;
+  name: string;
+  from: 'developer' | 'customer';
+};
 
 export default function Home(props: SupaglueProps) {
   const applicationId = useActiveApplicationId();
@@ -232,6 +220,7 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
     mergedEntityMapping.object
       ? {
           type: mergedEntityMapping.object.type,
+          id: mergedEntityMapping.object.name,
           name: mergedEntityMapping.object.name,
           from: mergedEntityMapping.object.from,
         }
@@ -314,12 +303,13 @@ function EntityObjectMapping({ entity, customerId, providerName, object, setObje
     setObjectOptions([
       ...standardObjectOptions.map(({ name }) => ({
         type: 'standard' as const,
+        id: name,
         name,
       })),
-      ...customObjectOptions.map((object) => ({
+      ...customObjectOptions.map(({ name }) => ({
         type: 'custom' as const,
-        id: object.id,
-        name: object.name,
+        id: name,
+        name: name,
       })),
     ]);
   }, [standardObjectOptions, customObjectOptions, customObjectOptionsError, standardObjectOptionsError]);
