@@ -65,6 +65,7 @@ import {
   NotFoundError,
   NotModifiedError,
   RemoteProviderError,
+  ServiceUnavailableError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -1539,6 +1540,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       0,
       error.message.includes(':') ? error.message.indexOf(':') : error.message.length
     );
+
+    // errors from Oauth library
+    if (error.title === 'ERROR_HTTP_503') {
+      return new ServiceUnavailableError(error.message, error);
+    }
 
     // https://developer.salesforce.com/docs/atlas.en-us.210.0.object_reference.meta/object_reference/sforce_api_calls_concepts_core_data_objects.htm#i1421192
     switch (error.errorCode) {

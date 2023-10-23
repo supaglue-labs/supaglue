@@ -2181,6 +2181,9 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const error = err as any;
     switch (error.code) {
       case 400:
+        if (error.body?.message === 'one or more associations are not valid') {
+          return new BadRequestError(error.body?.message, error);
+        }
         return new InternalServerError(error.body?.message, error);
       case 401:
         return new UnauthorizedError(error.body?.message, error);
