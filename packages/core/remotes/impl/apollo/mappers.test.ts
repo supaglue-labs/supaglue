@@ -393,14 +393,14 @@ describe('Conversion functions', () => {
       demo_rate: 0.2,
     };
 
-    const result = fromApolloEmailerCampaignToSequence(apolloEmailerCampaign);
+    const { lastModifiedAt: _, ...result } = fromApolloEmailerCampaignToSequence(apolloEmailerCampaign);
+
     expect(result).toMatchInlineSnapshot(`
       {
         "createdAt": 2022-01-01T00:00:00.000Z,
         "id": "123456",
         "isDeleted": false,
         "isEnabled": true,
-        "lastModifiedAt": 2023-10-23T21:02:55.976Z,
         "metrics": {
           "bounceRate": 0.05,
           "clickRate": 0.3,
