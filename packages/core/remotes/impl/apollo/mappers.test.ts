@@ -11,6 +11,7 @@ import {
   fromApolloContactToContact,
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
+  fromApolloEmailerCampaignToSequence,
   fromApolloSequenceToSequence,
   fromApolloUserToUser,
   getRawAddressString,
@@ -363,5 +364,97 @@ describe('Conversion functions', () => {
     };
 
     expect(toApolloSequenceStateCreateParams(params)).toEqual(expected);
+  });
+
+  test('should convert ApolloEmailerCampaign to Sequence format', () => {
+    const apolloEmailerCampaign = {
+      name: 'Test Campaign',
+      created_at: '2022-01-01T00:00:00.000Z',
+      id: '123456',
+      user_id: '789',
+      num_steps: 3,
+      active: true,
+      archived: false,
+      label_ids: ['lbl1234', 'lbl_zzzz'],
+      unique_scheduled: 100,
+      unique_delivered: 90,
+      unique_bounced: 5,
+      unique_opened: 80,
+      unique_replied: 10,
+      unique_demoed: 20,
+      unique_clicked: 30,
+      unique_unsubscribed: 5,
+      bounce_rate: 0.05,
+      open_rate: 0.8,
+      click_rate: 0.3,
+      reply_rate: 0.1,
+      spam_blocked_rate: 0.01,
+      opt_out_rate: 0.02,
+      demo_rate: 0.2,
+    };
+
+    const result = fromApolloEmailerCampaignToSequence(apolloEmailerCampaign);
+    expect(result).toMatchInlineSnapshot(`
+      {
+        "createdAt": 2022-01-01T00:00:00.000Z,
+        "id": "123456",
+        "isDeleted": false,
+        "isEnabled": true,
+        "lastModifiedAt": 2023-10-23T21:02:55.976Z,
+        "metrics": {
+          "bounceRate": 0.05,
+          "clickRate": 0.3,
+          "demoRate": 0.2,
+          "openRate": 0.8,
+          "optOutRate": 0.02,
+          "replyRate": 0.1,
+          "spamBlockedRate": 0.01,
+          "uniqueBounced": 5,
+          "uniqueClicked": 30,
+          "uniqueDelivered": 90,
+          "uniqueDemoed": 20,
+          "uniqueOpened": 80,
+          "uniqueReplied": 10,
+          "uniqueScheduled": 100,
+          "uniqueUnsubscribed": 5,
+        },
+        "name": "Test Campaign",
+        "numSteps": 3,
+        "ownerId": "789",
+        "rawData": {
+          "active": true,
+          "archived": false,
+          "bounce_rate": 0.05,
+          "click_rate": 0.3,
+          "created_at": "2022-01-01T00:00:00.000Z",
+          "demo_rate": 0.2,
+          "id": "123456",
+          "label_ids": [
+            "lbl1234",
+            "lbl_zzzz",
+          ],
+          "name": "Test Campaign",
+          "num_steps": 3,
+          "open_rate": 0.8,
+          "opt_out_rate": 0.02,
+          "reply_rate": 0.1,
+          "spam_blocked_rate": 0.01,
+          "unique_bounced": 5,
+          "unique_clicked": 30,
+          "unique_delivered": 90,
+          "unique_demoed": 20,
+          "unique_opened": 80,
+          "unique_replied": 10,
+          "unique_scheduled": 100,
+          "unique_unsubscribed": 5,
+          "user_id": "789",
+        },
+        "tags": [
+          "lbl1234",
+          "lbl_zzzz",
+        ],
+        "updatedAt": null,
+      }
+    `);
   });
 });
