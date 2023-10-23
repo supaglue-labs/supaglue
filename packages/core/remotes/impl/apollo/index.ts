@@ -11,12 +11,15 @@ import type {
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
+  SequenceCreateParams,
   SequenceStateCreateParams,
+  SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
 import { BadRequestError } from '../../../errors';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
+import { parseProxyConfig } from '../../../lib/util';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
   CreateCommonObjectRecordResponse,
@@ -24,12 +27,14 @@ import type {
 } from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
+import { createApolloClient } from './client';
 import {
   fromApolloAccountToAccount,
   fromApolloContactCampaignStatusToSequenceState,
   fromApolloContactToContact,
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
+  fromApolloEmailerCampaignToSequence,
   fromApolloSequenceToSequence,
   fromApolloUserToUser,
   toApolloAccountCreateParams,
@@ -73,12 +78,17 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   readonly #apiKey: string;
   readonly #headers: Record<string, string>;
   readonly #baseURL: string;
+  readonly #api: ReturnType<typeof createApolloClient>;
 
   public constructor(apiKey: string) {
     super('https://api.apollo.io');
     this.#baseURL = 'https://api.apollo.io';
     this.#apiKey = apiKey;
     this.#headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' };
+    this.#api = createApolloClient({
+      apiKey,
+      axiosConfig: { proxy: parseProxyConfig(process.env.PROXY_URL) },
+    });
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
@@ -113,10 +123,13 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     switch (commonObjectType) {
       case 'contact':
       case 'sequence':
+        return this.#api
+          .getEmailerCampaign({ params: { id } })
+          .then(({ emailer_campaign: c }) => fromApolloEmailerCampaignToSequence(c));
       case 'user':
       case 'mailbox':
       case 'sequence_state':
-        throw new BadRequestError(`Get operation not supported for common object ${commonObjectType}`);
+        throw new BadRequestError(`Get operation not supported for common object ${commonObjectType} in Apollo`);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
@@ -376,6 +389,81 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     };
   }
 
+  async createSequence(params: SequenceCreateParams): Promise<CreateCommonObjectRecordResponse<'sequence'>> {
+    const res = await this.#api.postEmailerCampaign({
+      name: params.name,
+      permissions: params.type === 'private' ? 'private' : 'team_can_use',
+      active: true,
+      label_ids: params.tags,
+      user_id: params.ownerId,
+      ...params.customFields,
+    });
+
+    // Cannot create steps concurrently for apollo otherwise we run into race conditions
+    // due to apollo's lack of support for arbitary `position` https://share.cleanshot.com/KrZyhsMq
+    for (const [i, step] of (params.steps ?? []).entries()) {
+      await this.createSequenceStep({ ...step, sequenceId: res.emailer_campaign.id, order: i + 1 });
+    }
+    return { id: res.emailer_campaign.id };
+  }
+
+  async createSequenceStep(
+    params: SequenceStepCreateParams
+  ): Promise<CreateCommonObjectRecordResponse<'sequence_step'>> {
+    if (!params.sequenceId) {
+      throw new Error('Sequence ID is required');
+    }
+    const intOnly = (n: number | null | undefined) => (Number.isInteger(n) ? (n as number) : null);
+    const divide = (n: number | null, by: number) => (n != null ? n / by : null);
+
+    const seconds = intOnly(params.intervalSeconds);
+    const minutes = intOnly(divide(seconds, 60));
+    const hours = intOnly(divide(minutes, 60));
+    const days = intOnly(divide(hours, 24));
+
+    const r = await this.#api.postEmailerStep({
+      emailer_campaign_id: params.sequenceId,
+      position: params.order ?? 1,
+      type:
+        params.type === 'linkedin_send_message'
+          ? 'linkedin_step_message'
+          : params.type === 'task'
+          ? 'action_item'
+          : params.type,
+      ...(days
+        ? { wait_mode: 'day', wait_time: days }
+        : hours
+        ? { wait_mode: 'hour', wait_time: hours }
+        : minutes
+        ? { wait_mode: 'minute', wait_time: minutes }
+        : { wait_mode: 'second', wait_time: seconds ?? 0 }),
+      exact_datetime: params.date, // Not clear exactly how this works
+      note: params.taskNote,
+      ...params.customFields,
+    });
+
+    // Only exists for templatable steps like tasks / calls
+    if (r.emailer_touch && r.emailer_template) {
+      await this.#api.putEmailerTouch(
+        {
+          id: r.emailer_touch.id,
+          emailer_step_id: r.emailer_step.id,
+          emailer_template:
+            params.template && 'id' in params.template
+              ? { id: params.template.id }
+              : {
+                  id: r.emailer_template.id,
+                  subject: params.template?.subject,
+                  body_html: params.template?.body,
+                },
+          type: params.isReply ? 'reply_to_thread' : 'new_thread',
+        },
+        { params: { id: r.emailer_touch.id } }
+      );
+    }
+    return { id: r.emailer_step.id };
+  }
+
   async createSequenceState(
     params: SequenceStateCreateParams
   ): Promise<CreateCommonObjectRecordResponse<'sequence_state'>> {
@@ -414,6 +502,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       case 'account':
         return (await this.createAccount(params as AccountCreateParams)) as CreateCommonObjectRecordResponse<T>;
       case 'sequence':
+        return (await this.createSequence(params as SequenceCreateParams)) as CreateCommonObjectRecordResponse<T>;
+      case 'sequence_step':
+        return (await this.createSequenceStep(
+          params as SequenceStepCreateParams
+        )) as CreateCommonObjectRecordResponse<T>;
       case 'mailbox':
       case 'user':
         throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);

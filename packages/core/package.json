@@ -6,6 +6,7 @@
   "types": "index.ts",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
+    "@anatine/zod-openapi": "^2.2.0",
     "@google-cloud/bigquery": "^6.2.0",
     "@hubspot/api-client": "9.1.0",
     "@linear/sdk": "^7.0.1",
@@ -16,6 +17,7 @@
     "@supaglue/types": "workspace:^",
     "@supaglue/utils": "workspace:*",
     "@temporalio/proto": "1.8.0",
+    "@zodios/core": "^10.9.6",
     "async-retry": "^1.3.3",
     "axios": "^1.3.4",
     "csv-parse": "^5.3.5",
@@ -35,7 +37,9 @@
     "prom-client": "^14.2.0",
     "qs": "^6.11.2",
     "svix": "^0.84.1",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "zod": "^3.22.4",
+    "zodios-api-shorthand": "^1.2.6"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
@@ -45,6 +49,7 @@
     "@types/pluralize": "^0.0.29",
     "@types/qs": "^6",
     "@types/uuid": "^9.0.1",
+    "openapi3-ts": "^4.1.2",
     "typescript": "^4.9.5"
   },
   "peerDependencies": {

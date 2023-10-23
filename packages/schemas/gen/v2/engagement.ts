@@ -113,7 +113,10 @@ export interface paths {
     };
   };
   "/sequences": {
-    /** Create sequence */
+    /**
+     * Create sequence 
+     * @description Note this uses an undocumented private api endpoint for Apollo and should be considered to be in alpha state
+     */
     post: operations["createSequence"];
     parameters: {
       header: {
@@ -150,7 +153,7 @@ export interface paths {
     };
   };
   "/sequence_states": {
-    /** Create sequence state */
+    /** Create sequence state (aka adding contact to sequence) */
     post: operations["createSequenceState"];
     parameters: {
       header: {
@@ -380,6 +383,7 @@ export interface components {
       /** @example true */
       is_enabled: boolean;
       name: string | null;
+      /** @description Raw values in Outreach, ids in Apollo, and not supported in Salesloft */
       tags: (string)[];
       num_steps: number;
       metrics: {
@@ -403,6 +407,7 @@ export interface components {
     };
     create_sequence: {
       name: string;
+      /** @description Raw values in Outreach, ids in Apollo, and not supported in Salesloft */
       tags?: (string)[];
       /**
        * @description The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner. 
@@ -907,7 +912,10 @@ export interface operations {
       };
     };
   };
-  /** Create sequence */
+  /**
+   * Create sequence 
+   * @description Note this uses an undocumented private api endpoint for Apollo and should be considered to be in alpha state
+   */
   createSequence: {
     parameters: {
       header: {
@@ -990,7 +998,7 @@ export interface operations {
       };
     };
   };
-  /** Create sequence state */
+  /** Create sequence state (aka adding contact to sequence) */
   createSequenceState: {
     parameters: {
       header: {

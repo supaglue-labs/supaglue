@@ -1,6 +1,7 @@
 post:
   operationId: createSequence
-  summary: Create sequence 
+  summary: Create sequence
+  description: Note this uses an undocumented private api endpoint for Apollo and should be considered to be in alpha state
   tags:
     - Sequences
   security:

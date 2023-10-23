@@ -681,6 +681,7 @@
       "post": {
         "operationId": "createSequence",
         "summary": "Create sequence",
+        "description": "Note this uses an undocumented private api endpoint for Apollo and should be considered to be in alpha state",
         "tags": [
           "Sequences"
         ],
@@ -866,7 +867,7 @@
     "/sequence_states": {
       "post": {
         "operationId": "createSequenceState",
-        "summary": "Create sequence state",
+        "summary": "Create sequence state (aka adding contact to sequence)",
         "tags": [
           "Sequence States"
         ],
@@ -1473,6 +1474,7 @@
           },
           "tags": {
             "type": "array",
+            "description": "Raw values in Outreach, ids in Apollo, and not supported in Salesloft",
             "items": {
               "type": "string"
             }
@@ -1522,6 +1524,7 @@
           },
           "tags": {
             "type": "array",
+            "description": "Raw values in Outreach, ids in Apollo, and not supported in Salesloft",
             "items": {
               "type": "string"
             }
