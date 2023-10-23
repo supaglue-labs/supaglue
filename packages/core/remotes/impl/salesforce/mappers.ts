@@ -463,14 +463,17 @@ export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): 
       plural: salesforceCustomObject.pluralLabel!,
     },
     primaryFieldId: nameField.fullName!,
-    fields: [nameField, ...salesforceCustomObject.fields].map(toPropertyUnified),
+    fields: [
+      toPropertyUnified(nameField, /* isNameField */ true),
+      ...salesforceCustomObject.fields.map((field) => toPropertyUnified(field)),
+    ],
   };
 };
 
-export const toPropertyUnified = (salesforceField: SalesforceCustomField): PropertyUnified => {
+export const toPropertyUnified = (salesforceField: SalesforceCustomField, isNameField = false): PropertyUnified => {
   const type = toPropertyType(salesforceField.type!);
   return {
-    id: salesforceField.fullName!,
+    id: isNameField ? 'Name' : salesforceField.fullName!,
     label: salesforceField.label!,
     type,
     scale: salesforceField.scale ?? undefined,
