@@ -13,7 +13,7 @@ get:
     | Provider    | Supported |
     | ----------- | --------- |
     | Hubspot     | Yes       |
-    | Salesforce  | No        | 
+    | Salesforce  | Yes       | 
     | Pipedrive   | No        |
     | MS Dynamics | No        |
   responses:
@@ -36,7 +36,7 @@ put:
     | Provider    | Supported | Notes                                                   |
     | ----------- | --------- | ------------------------------------------------------- |
     | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
-    | Salesforce  | No        |                                                         |
+    | Salesforce  | Yes       | All field types supported except picklist/multipicklist |
     | Pipedrive   | No        |                                                         |
     | MS Dynamics | No        |                                                         |
   security:

@@ -155,8 +155,13 @@ export interface components {
       label: string;
       /** @description A description of the field. */
       description?: string;
-      /** @example false */
+      /**
+       * @description Whether or not this field is required. Must be false for Salesforce boolean fields. 
+       * @example false
+       */
       is_required?: boolean;
+      /** @description The default value for the property. Only supported for Salesforce. */
+      default_value?: string | number | boolean;
       /**
        * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
        * @example supaglue

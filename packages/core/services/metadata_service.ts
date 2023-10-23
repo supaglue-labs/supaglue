@@ -66,7 +66,7 @@ export class MetadataService {
     end();
   }
 
-  public async getAssociationSchemas(
+  public async listAssociationSchemas(
     connectionId: string,
     sourceObject: string,
     targetObject: string

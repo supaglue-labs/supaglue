@@ -13,7 +13,7 @@ post:
     | Provider    | Supported |
     | ----------- | --------- |
     | Hubspot     | Yes       |
-    | Salesforce  | No        | 
+    | Salesforce  | Yes       | 
     | Pipedrive   | No        |
     | MS Dynamics | No        |
   parameters: []
@@ -56,7 +56,7 @@ get:
     | Provider    | Supported |
     | ----------- | --------- |
     | Hubspot     | Yes       |
-    | Salesforce  | No        | 
+    | Salesforce  | Yes       | 
     | Pipedrive   | No        |
     | MS Dynamics | No        |
   security:
