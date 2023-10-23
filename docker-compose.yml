@@ -68,10 +68,15 @@ services:
         - action: sync
           path: ./packages
           target: /workspace/packages
+        - action: sync
+          path: ./openapi
+          target: /workspace/openapi
         - action: rebuild
           path: package.json
         - action: rebuild
           path: ./apps/api/package.json
+        - action: rebuild
+          path: ./yarn.lock
     environment:
       <<: [*common-env, *fe-api-common-env]
       SUPAGLUE_API_PORT: ${SUPAGLUE_API_PORT:-8080}
@@ -107,6 +112,8 @@ services:
           path: package.json
         - action: rebuild
           path: ./apps/sync-worker/package.json
+        - action: rebuild
+          path: ./yarn.lock
     environment:
       <<: *common-env
     restart: on-failure
@@ -130,7 +137,7 @@ services:
       - temporalitedata:/data
 
   init:
-    image: node:18-bullseye
+    image: node:18-bullseye-slim
     environment:
       <<: *common-env
       DO_SEED: '0'
