@@ -681,7 +681,7 @@ describe('Pipedrive mappers', () => {
 
       expect(() => {
         toPipedriveLeadCreateParams(leadCreateParams, []);
-      }).toThrow('Either convertedAccountId or convertedContactId must be provided');
+      }).toThrow('Either converted_account_id or converted_contact_id must be provided');
     });
 
     test('should transform LeadCreateParams to Pipedrive lead params', () => {

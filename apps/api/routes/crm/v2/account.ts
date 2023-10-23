@@ -22,7 +22,7 @@ import type {
   UpsertAccountResponse,
 } from '@supaglue/schemas/v2/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
-import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
+import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
@@ -97,7 +97,7 @@ export default function init(app: Router): void {
         req.customerConnection,
         camelcaseKeysSansCustomFields(req.body.record)
       );
-      return res.status(200).send({ record: { id } });
+      return res.status(201).send({ record: { id } });
     }
   );
 
@@ -109,7 +109,7 @@ export default function init(app: Router): void {
     ) => {
       const id = await crmCommonObjectService.upsert('account', req.customerConnection, {
         record: camelcaseKeysSansCustomFields(req.body.record),
-        upsertOn: camelcaseKeys(req.body.upsert_on),
+        upsertOn: req.body.upsert_on,
       });
       return res.status(200).send({ record: { id } });
     }

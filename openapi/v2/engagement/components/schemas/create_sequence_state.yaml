@@ -16,3 +16,4 @@ properties:
 required:
   - contact_id
   - sequence_id
+  

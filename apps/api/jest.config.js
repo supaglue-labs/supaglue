@@ -5,4 +5,5 @@ module.exports = {
   testEnvironment: 'node',
   testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
+  runner: 'groups',
 };

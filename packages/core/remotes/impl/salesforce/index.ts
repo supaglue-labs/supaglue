@@ -1191,7 +1191,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async upsertAccount(params: AccountUpsertParams): Promise<string> {
     if (params.upsertOn.key !== 'website') {
-      throw new BadRequestError(`Upsert key must be 'website' for Salesfoce accounts`);
+      throw new BadRequestError(`Upsert key must be 'website' for Salesforce accounts`);
     }
     const response = await this.#client.query(
       `SELECT Id FROM Account WHERE Website IN (${params.upsertOn.values.map((value) => `'${value}'`).join(', ')})`
