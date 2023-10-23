@@ -462,7 +462,7 @@ export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): 
       singular: salesforceCustomObject.label!,
       plural: salesforceCustomObject.pluralLabel!,
     },
-    primaryFieldId: nameField.fullName!,
+    primaryFieldId: 'Name',
     fields: [
       toPropertyUnified(nameField, /* isNameField */ true),
       ...salesforceCustomObject.fields.map((field) => toPropertyUnified(field)),
