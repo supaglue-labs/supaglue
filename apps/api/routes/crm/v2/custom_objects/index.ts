@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { BadRequestError } from '@supaglue/core/errors';
 import type {
   CreateCustomObjectRecordPathParams,
   CreateCustomObjectRecordRequest,
@@ -34,6 +35,9 @@ export default function init(app: Router): void {
       >,
       res: Response<ListCustomObjectRecordsResponse>
     ) => {
+      if (req.query?.read_from_cache?.toString() !== 'true') {
+        throw new BadRequestError('Uncached reads not supported for standard object list reads.');
+      }
       const { pagination, records } = await managedDataService.getCustomObjectRecords(
         req.supaglueApplication.id,
         req.customerConnection.providerName,
