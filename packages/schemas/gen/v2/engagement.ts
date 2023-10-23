@@ -113,7 +113,10 @@ export interface paths {
     };
   };
   "/sequences": {
-    /** Create sequence */
+    /**
+     * Create sequence 
+     * @description Note this uses an undocumented private api endpoint for Apollo and should be considered to be in alpha state
+     */
     post: operations["createSequence"];
     parameters: {
       header: {
@@ -909,7 +912,10 @@ export interface operations {
       };
     };
   };
-  /** Create sequence */
+  /**
+   * Create sequence 
+   * @description Note this uses an undocumented private api endpoint for Apollo and should be considered to be in alpha state
+   */
   createSequence: {
     parameters: {
       header: {
