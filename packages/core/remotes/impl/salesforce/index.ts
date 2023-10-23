@@ -645,6 +645,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     await this.validateCustomObject(params);
 
     const objectName = params.name.endsWith('__c') ? params.name : `${params.name}__c`;
+    const readResponse = await this.#client.metadata.read('CustomObject', objectName);
+    if (readResponse.fullName) {
+      throw new BadRequestError(`Custom object with name ${objectName} already exists`);
+    }
+
     const primaryField = params.fields.find((field) => field.id === params.primaryFieldId);
     const nonPrimaryFields = params.fields.filter((field) => field.id !== params.primaryFieldId);
     const result = await this.#client.metadata.create(

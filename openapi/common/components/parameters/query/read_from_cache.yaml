@@ -7,4 +7,4 @@ description: |
   Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. 
 
 
-  **NOTE**: `read_from_cache=true` requires you to use the Supaglue Managed Destination and select [Common Objects](https://docs.supaglue.com/platform/common-schemas/overview#configuration) to be synced.
+  **NOTE**: `read_from_cache=true` requires you to have the object synced to the Supaglue Managed Destination.

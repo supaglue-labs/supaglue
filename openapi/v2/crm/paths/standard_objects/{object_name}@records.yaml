@@ -62,6 +62,7 @@ get:
   security:
     - x-api-key: []
   parameters:
+    - $ref: ../../../../common/components/parameters/query/read_from_cache.yaml
     - $ref: ../../../../common/components/parameters/query/modified_after.yaml
     - $ref: ../../../../common/components/parameters/query/page_size.yaml
     - $ref: ../../../../common/components/parameters/query/cursor.yaml
