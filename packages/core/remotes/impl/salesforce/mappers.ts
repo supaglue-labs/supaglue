@@ -462,7 +462,8 @@ export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): 
       singular: salesforceCustomObject.label!,
       plural: salesforceCustomObject.pluralLabel!,
     },
-    primaryFieldId: nameField.fullName!,
+    // Salesforce name field must be called "Name"
+    primaryFieldId: 'Name',
     fields: [nameField, ...salesforceCustomObject.fields].map(toPropertyUnified),
   };
 };
