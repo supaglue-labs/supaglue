@@ -41,29 +41,17 @@ import { useEffect, useState } from 'react';
 
 export { getServerSideProps };
 
-type FriendlyStandardOrCustomObject =
-  | {
-      type: 'standard';
-      name: string;
-    }
-  | {
-      type: 'custom';
-      id: string;
-      name: string;
-    };
+type FriendlyStandardOrCustomObject = {
+  type: 'standard' | 'custom';
+  name: string;
+};
 
-type FriendlyStandardOrCustomObjectWithAttribution =
-  | {
-      type: 'standard';
-      name: string;
-      from: 'developer' | 'customer';
-    }
-  | {
-      type: 'custom';
-      id: string;
-      name: string;
-      from: 'developer' | 'customer';
-    };
+type FriendlyStandardOrCustomObjectWithAttribution = {
+  type: 'standard' | 'custom';
+  id: string;
+  name: string;
+  from: 'developer' | 'customer';
+};
 
 export default function Home(props: SupaglueProps) {
   const applicationId = useActiveApplicationId();
@@ -175,23 +163,15 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
   const [mergedEntityMapping, setMergedEntityMapping] = useState<MergedEntityMapping>(initialMapping);
   const [isDirty, setIsDirty] = useState<boolean>(false);
 
-  const { data: customObjectOptions = [] } = useCustomObjects(customerId, providerName);
-
   const setObject = (selected: FriendlyStandardOrCustomObject | undefined) => {
     setMergedEntityMapping({
       ...mergedEntityMapping,
       object: selected
-        ? selected.type === 'standard'
-          ? {
-              type: 'standard',
-              name: selected.name,
-              from: 'customer',
-            }
-          : {
-              type: 'custom',
-              name: selected.id,
-              from: 'customer',
-            }
+        ? {
+            type: selected.type,
+            name: selected.name,
+            from: 'customer',
+          }
         : undefined,
     });
     setIsDirty(true);
@@ -238,18 +218,12 @@ function EntityMapping({ customerId, entity, providerName, initialMapping, saveE
 
   const entityMappingFriendlyObjectWithAttribution: FriendlyStandardOrCustomObjectWithAttribution | undefined =
     mergedEntityMapping.object
-      ? mergedEntityMapping.object.type === 'standard'
-        ? {
-            type: 'standard',
-            name: mergedEntityMapping.object.name,
-            from: mergedEntityMapping.object.from,
-          }
-        : {
-            type: 'custom',
-            id: mergedEntityMapping.object.name,
-            name: customObjectOptions.find(({ id }) => id === mergedEntityMapping.object?.name)?.name ?? '',
-            from: mergedEntityMapping.object.from,
-          }
+      ? {
+          type: mergedEntityMapping.object.type,
+          id: mergedEntityMapping.object.name,
+          name: mergedEntityMapping.object.name,
+          from: mergedEntityMapping.object.from,
+        }
       : undefined;
 
   return (
@@ -329,12 +303,13 @@ function EntityObjectMapping({ entity, customerId, providerName, object, setObje
     setObjectOptions([
       ...standardObjectOptions.map(({ name }) => ({
         type: 'standard' as const,
+        id: name,
         name,
       })),
-      ...customObjectOptions.map((object) => ({
+      ...customObjectOptions.map(({ name }) => ({
         type: 'custom' as const,
-        id: object.id,
-        name: object.name,
+        id: name,
+        name: name,
       })),
     ]);
   }, [standardObjectOptions, customObjectOptions, customObjectOptionsError, standardObjectOptionsError]);

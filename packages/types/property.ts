@@ -33,6 +33,7 @@ export type PropertyUnified = {
   label: string;
   description?: string;
   isRequired?: boolean;
+  defaultValue?: string | number | boolean;
   groupName?: string;
   type: PropertyType;
   precision?: number;

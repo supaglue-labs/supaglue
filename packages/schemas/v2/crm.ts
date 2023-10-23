@@ -165,13 +165,13 @@ export type UpdateCustomObjectSchemaRequest =
 export type UpdateCustomObjectSchemaResponse =
   operations['updateCustomObjectSchema']['responses'][keyof operations['updateCustomObjectSchema']['responses']]['content']['application/json'];
 
-export type GetAssociationSchemasPathParams = never;
-export type GetAssociationSchemasQueryParams = Required<
-  Required<operations['getAssociationSchemas']>['parameters']
+export type ListAssociationSchemasPathParams = never;
+export type ListAssociationSchemasQueryParams = Required<
+  Required<operations['listAssociationSchemas']>['parameters']
 >['query'];
-export type GetAssociationSchemasRequest = never;
-export type GetAssociationSchemasResponse =
-  operations['getAssociationSchemas']['responses'][keyof operations['getAssociationSchemas']['responses']]['content']['application/json'];
+export type ListAssociationSchemasRequest = never;
+export type ListAssociationSchemasResponse =
+  operations['listAssociationSchemas']['responses'][keyof operations['listAssociationSchemas']['responses']]['content']['application/json'];
 
 export type CreateAssociationSchemaPathParams = never;
 export type CreateAssociationSchemaQueryParams = never;

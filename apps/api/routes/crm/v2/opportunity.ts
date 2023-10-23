@@ -52,7 +52,7 @@ export default function init(app: Router): void {
         ...camelcaseKeysSansCustomFields(req.body.record),
         closeDate: stringOrNullOrUndefinedToDate(req.body.record.close_date),
       });
-      return res.status(200).send({ record: { id } });
+      return res.status(201).send({ record: { id } });
     }
   );
 

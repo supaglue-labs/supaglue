@@ -44,7 +44,9 @@
       "outputMode": "errors-only"
     },
     "test": {},
-    "test:integration": {},
+    "test:integration": {
+      "cache": false
+    },
     "test:watch": {
       "cache": false,
       "persistent": true
