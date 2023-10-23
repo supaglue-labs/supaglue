@@ -33,10 +33,6 @@ on:
         required: true
       TURBO_TOKEN:
         required: true
-      ALERTS_SLACK_WEBHOOK_URL:
-        required: true
-      STAGING_TESTING_API_KEY:
-        required: true
       build-args:
         description: arguments to pass to docker build
         required: false
