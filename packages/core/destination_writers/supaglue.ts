@@ -281,7 +281,8 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `${tableName}` : 
   "_supaglue_emitted_at" TIMESTAMP(3) NOT NULL,
   "_supaglue_last_modified_at" TIMESTAMP(3) NOT NULL,
   "_supaglue_is_deleted" BOOLEAN NOT NULL,
-  "_supaglue_raw_data" JSONB NOT NULL
+  "_supaglue_raw_data" JSONB NOT NULL,
+  "_supaglue_mapped_data" JSONB NOT NULL
 
   ${
     temp
