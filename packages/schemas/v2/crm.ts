@@ -78,6 +78,12 @@ export type GetLeadRequest = never;
 export type GetLeadResponse =
   operations['getLead']['responses'][keyof operations['getLead']['responses']]['content']['application/json'];
 
+export type ListLeadsPathParams = never;
+export type ListLeadsQueryParams = Required<operations['listLeads']>['parameters']['query'];
+export type ListLeadsRequest = never;
+export type ListLeadsResponse =
+  operations['listLeads']['responses'][keyof operations['listLeads']['responses']]['content']['application/json'];
+
 export type UpdateLeadPathParams = paths['/leads/{lead_id}']['parameters']['path'];
 export type UpdateLeadQueryParams = Required<operations['getLead']>['parameters']['query'];
 export type UpdateLeadRequest = operations['updateLead']['requestBody']['content']['application/json'];
@@ -108,6 +114,12 @@ export type GetOpportunityRequest = never;
 export type GetOpportunityResponse =
   operations['getOpportunity']['responses'][keyof operations['getOpportunity']['responses']]['content']['application/json'];
 
+export type ListOpportunitiesPathParams = never;
+export type ListOpportunitiesQueryParams = Required<operations['listOpportunities']>['parameters']['query'];
+export type ListOpportunitiesRequest = never;
+export type ListOpportunitiesResponse =
+  operations['listOpportunities']['responses'][keyof operations['listOpportunities']['responses']]['content']['application/json'];
+
 export type UpdateOpportunityPathParams = paths['/opportunities/{opportunity_id}']['parameters']['path'];
 export type UpdateOpportunityQueryParams = Required<operations['getOpportunity']>['parameters']['query'];
 export type UpdateOpportunityRequest = operations['updateOpportunity']['requestBody']['content']['application/json'];
@@ -119,6 +131,12 @@ export type GetUserQueryParams = Required<operations['getUser']>['parameters']['
 export type GetUserRequest = never;
 export type GetUserResponse =
   operations['getUser']['responses'][keyof operations['getUser']['responses']]['content']['application/json'];
+
+export type ListUsersPathParams = never;
+export type ListUsersQueryParams = Required<operations['listUsers']>['parameters']['query'];
+export type ListUsersRequest = never;
+export type ListUsersResponse =
+  operations['listUsers']['responses'][keyof operations['listUsers']['responses']]['content']['application/json'];
 
 export type SendPassthroughRequestPathParams = never;
 export type SendPassthroughRequestQueryParams = never;

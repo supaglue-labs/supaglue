@@ -114,6 +114,8 @@ export interface paths {
     };
   };
   "/leads": {
+    /** List leads */
+    get: operations["listLeads"];
     /** Create lead */
     post: operations["createLead"];
     parameters: {
@@ -174,6 +176,8 @@ export interface paths {
     };
   };
   "/opportunities": {
+    /** List opportunities */
+    get: operations["listOpportunities"];
     /** Create opportunity */
     post: operations["createOpportunity"];
     parameters: {
@@ -195,6 +199,16 @@ export interface paths {
       };
       path: {
         opportunity_id: string;
+      };
+    };
+  };
+  "/users": {
+    /** List users */
+    get: operations["listUsers"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -1681,6 +1695,33 @@ export interface operations {
       };
     };
   };
+  /** List leads */
+  listLeads: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Leads */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["lead"])[];
+          };
+        };
+      };
+    };
+  };
   /** Create lead */
   createLead: {
     parameters: {
@@ -1868,6 +1909,33 @@ export interface operations {
       };
     };
   };
+  /** List opportunities */
+  listOpportunities: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Leads */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["opportunity"])[];
+          };
+        };
+      };
+    };
+  };
   /** Create opportunity */
   createOpportunity: {
     parameters: {
@@ -1956,6 +2024,33 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** List users */
+  listUsers: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Leads */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["user"])[];
           };
         };
       };
