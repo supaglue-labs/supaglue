@@ -19,7 +19,7 @@ import type {
   SnakecasedKeysCrmAccount,
   SnakecasedKeysCrmContact,
   SnakecasedKeysCrmLead,
-  SnakecasedKeysOpportunity,
+  SnakecasedKeysCrmOpportunity,
 } from '@supaglue/types/crm';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
@@ -162,7 +162,7 @@ export default function init(app: Router): void {
             }
           );
 
-          const snakecasedRecords: SnakecasedKeysOpportunity[] = records.map((record) =>
+          const snakecasedRecords: SnakecasedKeysCrmOpportunity[] = records.map((record) =>
             toSnakecasedKeysCrmOpportunity(record)
           );
 

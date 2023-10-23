@@ -15,7 +15,13 @@ import { getCategoryForProvider } from '@supaglue/core/remotes';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { SyncService } from '@supaglue/core/services/sync_service';
 import type { CommonObjectType, ProviderCategory, ProviderName } from '@supaglue/types';
-import type { SnakecasedKeysCrmAccount, SnakecasedKeysCrmContact } from '@supaglue/types/crm';
+import type {
+  SnakecasedKeysCrmAccount,
+  SnakecasedKeysCrmContact,
+  SnakecasedKeysCrmLead,
+  SnakecasedKeysCrmOpportunity,
+  SnakecasedKeysCrmUser,
+} from '@supaglue/types/crm';
 import type { ObjectType } from '@supaglue/types/sync';
 import type { Pool, PoolClient } from 'pg';
 
@@ -167,6 +173,72 @@ export class ManagedDataService {
       providerName,
       customerId,
       'contact',
+      'common',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+  }
+
+  public async getCrmLeadRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SnakecasedKeysCrmLead>> {
+    if (providerName === 'hubspot') {
+      throw new BadRequestError(`Provider ${providerName} does not support leads`);
+    }
+    return await this.#getRecords<SnakecasedKeysCrmLead>(
+      applicationId,
+      'crm',
+      providerName,
+      customerId,
+      'lead',
+      'common',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+  }
+
+  public async getCrmOpportunityRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SnakecasedKeysCrmOpportunity>> {
+    return await this.#getRecords<SnakecasedKeysCrmOpportunity>(
+      applicationId,
+      'crm',
+      providerName,
+      customerId,
+      'opportunity',
+      'common',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+  }
+
+  public async getCrmUserRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SnakecasedKeysCrmUser>> {
+    return await this.#getRecords<SnakecasedKeysCrmUser>(
+      applicationId,
+      'crm',
+      providerName,
+      customerId,
+      'user',
       'common',
       cursorStr,
       modifiedAfter,

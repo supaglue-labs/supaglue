@@ -5,9 +5,8 @@ import type { SnakecasedKeys } from '../snakecased_keys';
 export const OPPORTUNITY_STATUSES = ['OPEN', 'WON', 'LOST'] as const;
 export type OpportunityStatus = (typeof OPPORTUNITY_STATUSES)[number];
 
-/* @todo: rename to `SnakecasedKeysCrmOpportunity` for consistency with others */
-export type SnakecasedKeysOpportunity = SnakecasedKeys<Opportunity>;
-export type SnakecasedKeysOpportunityWithTenant = SnakecasedKeysOpportunity & SnakecasedCrmTenantFields;
+export type SnakecasedKeysCrmOpportunity = SnakecasedKeys<Opportunity>;
+export type SnakecasedKeysCrmOpportunityWithTenant = SnakecasedKeysCrmOpportunity & SnakecasedCrmTenantFields;
 
 type CoreOpportunity = {
   name: string | null;

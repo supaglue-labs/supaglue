@@ -1,5 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { BadRequestError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmLead } from '@supaglue/core/mappers/crm';
+import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
   CreateLeadPathParams,
   CreateLeadRequest,
@@ -8,6 +10,10 @@ import type {
   GetLeadQueryParams,
   GetLeadRequest,
   GetLeadResponse,
+  ListLeadsPathParams,
+  ListLeadsQueryParams,
+  ListLeadsRequest,
+  ListLeadsResponse,
   SearchLeadsPathParams,
   SearchLeadsQueryParams,
   SearchLeadsRequest,
@@ -19,11 +25,12 @@ import type {
   UpsertLeadRequest,
   UpsertLeadResponse,
 } from '@supaglue/schemas/v2/crm';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { crmCommonObjectService } = getDependencyContainer();
+const { crmCommonObjectService, managedDataService, connectionService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -39,6 +46,43 @@ export default function init(app: Router): void {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysLead;
       return res.status(200).send(req.query?.include_raw_data?.toString() === 'true' ? snakecasedKeysLead : rest);
+    }
+  );
+
+  router.get(
+    '/',
+    async (
+      req: Request<ListLeadsPathParams, ListLeadsResponse, ListLeadsRequest, ListLeadsQueryParams>,
+      res: Response<ListLeadsResponse>
+    ) => {
+      if (req.query?.read_from_cache?.toString() !== 'true') {
+        throw new BadRequestError('Uncached reads not yet implemented for leads.');
+      }
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
+      const { pagination, records } = await managedDataService.getCrmLeadRecords(
+        req.supaglueApplication.id,
+        req.customerConnection.providerName,
+        req.customerId,
+        req.query?.cursor,
+        req.query?.modified_after as unknown as string | undefined,
+        req.query?.page_size ? parseInt(req.query.page_size) : undefined
+      );
+      let fieldMappingConfig: FieldMappingConfig | undefined = undefined;
+      if (includeRawData) {
+        fieldMappingConfig = await connectionService.getFieldMappingConfig(req.customerConnection.id, 'common', 'lead');
+      }
+      return res.status(200).send({
+        pagination,
+        records: records.map((record) => ({
+          ...record,
+          raw_data:
+            includeRawData && fieldMappingConfig ? toMappedProperties(record.raw_data, fieldMappingConfig) : undefined,
+          _supaglue_application_id: undefined,
+          _supaglue_customer_id: undefined,
+          _supaglue_provider_name: undefined,
+          _supaglue_emitted_at: undefined,
+        })),
+      });
     }
   );
 

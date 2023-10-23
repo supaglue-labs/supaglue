@@ -52,6 +52,8 @@ paths:
     $ref: paths/opportunities.yaml
   '/opportunities/{opportunity_id}':
     $ref: paths/opportunities@{opportunity_id}.yaml
+  '/users':
+    $ref: paths/users.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
   '/custom_objects/{object_name}/records':
