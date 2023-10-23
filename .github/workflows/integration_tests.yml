@@ -55,8 +55,8 @@ jobs:
         run: yarn test:integration
         env:
           API_KEY: ${{ secrets.TESTING_API_KEY }}
-          API_URL: ${{ github.event.inputs.api_url }}
-          CUSTOMER_ID: ${{ github.event.inputs.customer_id }}
+          API_URL: ${{ inputs.api-url }}
+          CUSTOMER_ID: ${{ inputs.customer-id }}
 
       - name: Slack on failure
         id: slack
@@ -65,7 +65,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "🚨 ${{ github.event.inputs.environment }} Integration tests failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+              "text": "🚨 ${{ inputs.environment }} Integration tests failed: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
               "blocks": [
                 {
                   "type": "section",
@@ -79,7 +79,7 @@ jobs:
                   "elements": [
                     {
                       "type": "mrkdwn",
-                      "text": "Environment: ${{ github.event.inputs.environment }}"
+                      "text": "Environment: ${{ inputs.environment }}"
                     },
                     {
                       "type": "mrkdwn",
@@ -94,7 +94,7 @@ jobs:
           SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
 
       - name: Send PagerDuty alert on failure
-        if: failure() && github.event.inputs.page-on-failure
+        if: failure() && inputs.page-on-failure
         uses: Entle/action-pagerduty-alert@0.2.0
         with:
           pagerduty-integration-key: '${{ secrets.PAGERDUTY_INTEGRATION_KEY }}'

@@ -44,3 +44,17 @@ jobs:
       STAGING_KUBECONFIG: ${{ secrets.STAGING_KUBECONFIG }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+
+  test:
+    name: Run staging integration tests
+    needs: build_and_push
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/integration_tests.yml
+    with:
+      api-url: https://api.staging.supaglue.io
+      customer-id: customer1
+      environment: Staging
+    secrets:
+      TESTING_API_KEY: ${{ secrets.STAGING_TESTING_API_KEY }}
+      SLACK_WEBHOOK_URL: ${{ secrets.ALERTS_SLACK_WEBHOOK_URL }}
+      PAGERDUTY_INTEGRATION_KEY: ${{ secrets.PAGERDUTY_INTEGRATION_KEY }}

@@ -144,17 +144,3 @@ jobs:
           ${{ steps.kubectl.outputs.kubectl-path }} rollout restart deployment -n supaglue supaglue-${{ inputs.workspace }}
           ${{ steps.kubectl.outputs.kubectl-path }} rollout status deployment -n supaglue --timeout 0 supaglue-${{ inputs.workspace }}
           ${{ steps.kubectl.outputs.kubectl-path }} exec deploy/supaglue-api -n supaglue -- sh -c "npx prisma@4.12.0 migrate deploy && node node_modules/@supaglue/db/prisma/seed.js"
-
-  test:
-    name: Run staging integration tests
-    needs: deploy
-    if: inputs.workspace == 'api' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
-    uses: ./.github/workflows/integration_tests.yml
-    with:
-      api-url: https://api.staging.supaglue.io
-      customer-id: customer1
-      environment: Staging
-    secrets:
-      TESTING_API_KEY: ${{ secrets.STAGING_TESTING_API_KEY }}
-      SLACK_WEBHOOK_URL: ${{ secrets.ALERTS_SLACK_WEBHOOK_URL }}
-      PAGERDUTY_INTEGRATION_KEY: ${{ secrets.PAGERDUTY_INTEGRATION_KEY }}
