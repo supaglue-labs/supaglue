@@ -38,8 +38,9 @@ export const apolloEmailerCampaign = extendApi(
     spam_blocked_rate: apolloMetric,
     opt_out_rate: apolloMetric,
     demo_rate: apolloMetric,
-  }),
-  { example: require('./examples/emailer-campaign.example.json') }
+  })
+  // TODO: Configure json import in the future
+  // { example: require('./examples/emailer-campaign.example.json') }
 );
 
 /** Aka CreateSequence */
