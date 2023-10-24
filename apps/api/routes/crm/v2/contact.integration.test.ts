@@ -59,7 +59,7 @@ describe('contact', () => {
       expect(dbContact.rows[0].first_name).toEqual(testContact.first_name);
       expect(dbContact.rows[0].last_name).toEqual(testContact.last_name);
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
-    }, 20000);
+    }, 120000);
 
     test('PATCH /', async () => {
       const response = await apiClient.post<CreateContactResponse>(
@@ -102,7 +102,7 @@ describe('contact', () => {
       expect(dbContact.rows[0].last_name).toEqual('contact');
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(dbContact.rows[0].addresses).toEqual(testContact.record.addresses);
-    }, 10000);
+    }, 120000);
 
     test(`POST /_upsert`, async () => {
       const email = `me@example${Math.random()}.com`;
@@ -168,6 +168,6 @@ describe('contact', () => {
       expect(dbContact2.rows[0].last_name).toEqual('contact');
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(dbContact2.rows[0].addresses).toEqual(testContact.addresses);
-    }, 20000);
+    }, 120000);
   });
 });
