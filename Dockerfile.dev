@@ -1,10 +1,11 @@
 FROM node:18-bullseye-slim AS base
 
 FROM base AS builder
+ARG APP
 WORKDIR /workspace
 RUN yarn global add turbo
 COPY . .
-RUN --mount=type=cache,mode=0777,target=/workspace/.yarn/cache,id=api-yarn-cache turbo prune --scope=api --docker
+RUN --mount=type=cache,mode=0777,target=/workspace/.yarn/cache,sharing=private turbo prune --scope=${APP} --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM base AS dev
@@ -16,4 +17,4 @@ COPY .yarnrc.build.yml .yarnrc.yml
 COPY .yarn .yarn
 COPY --from=builder /workspace/out/json/ .
 COPY --from=builder /workspace/out/yarn.lock ./yarn.lock
-RUN --mount=type=cache,mode=0777,target=/workspace/.yarn/cache,id=api-yarn-cache yarn install
+RUN --mount=type=cache,mode=0777,target=/workspace/.yarn/cache,sharing=private yarn install
