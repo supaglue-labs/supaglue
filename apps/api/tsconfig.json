@@ -10,5 +10,5 @@
     },
     "plugins": [{ "transform": "typescript-transform-paths" }]
   },
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts", "integration-test-environment.js"]
 }
