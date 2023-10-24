@@ -1,0 +1,46 @@
+---
+id: create-entity
+title: "Create entity"
+description: "Create entity"
+sidebar_label: "Create entity"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVluP4jYU/iup+9KVCAwM4qaq6u5qH0Zt1dHMrqqKQYyTnIB3E9u1HRiE8t97jk0gDLM7D+1DHwoSJOd++c6x9ywDbSDlDjI2c6aCDlMaDHdCyRsksdQAMj9IJ9yOdZjjK8tmc+YJAixbdJiFtDLEns337CnmWsRfgN4WNXI1N7wEB4b08N3AXxVY905lKLL3r8KcvKdKOpCOWFzrQqQ+lN5nqyTRbLqGktOT22nA+FTyGVKHkWlDgfuYkCvRZ0vKOiPkCqXgiZe6IFK5iyFkVXuvuVi9ZPayPueOcgFFZlua3BhOlRIOSvtvBMq1Kgq+zIWxbunF67rTqts82FgQlReF2i55lgmqGi+WPrxliaVEs+1wEqUK4PLC1iGf101hK7F6PsJQx+WhiC9GdyxxSy1Aa1npjP6aZtRB32olbSjR4KpPfxnY1AhN0aByQGQUbGTsHwDntQ6L7Nv9GQ2nSR+G03gwHgzi4Yhfx3wM47h/lXIO4wkfXueEsVZUy9dsZpMUkus8jyfJOI+HOR/HySSDeDKcDqaDfJTy0ZRs/g/z/wzMBYHwWY87Xwd/C+515xm233tQR9AsXVyfa0XLWCvrS8vdGt960Cxh2sFmE1bsnlWmQO7aOW1nvR6u466tNF8VFXSF6pWr0vU2A/bc6f1BJnp7e8Pq1lq/p8kJXWwt9xMQtPgFdk2qs5YMgoMMr4FnYC78oZsIpSKnIt+DKIMNFIQZ62lpChaf1oeAsEg0ynen0+NDA50GXedYFzJXxKOyBI9X3f6o279mpyb8xiVfYXLSeSdhifDUtWw2ZSGsllxQZTOV2p+PJU1Vibzzmp8xL9r7PX6iG+mMyqqUaA/4/QMKFAZKnXI+jyxClxW9eGR1oz9VFaVcRpVFhbWwXgY1S68VpZV1aMtEAlfiKhzmNuIyizA/Cd6n7ZLX+Xfzu0qiXHSL0EL1xQ9NDqaSXY00SaBJKufQsd2s3pwkttttVwc1SvSYdW+rzBereQpHUqyrBAejp7AbGwHbN+Tc1+Edt77D0ae7X4n4+Pj4IF/B7kGKKnvw32rY8+E5q/0RtQ6eXE8XXHgrvnv7w1zNGbQuN2saOaTt9wlG+skUdU1kRKHZhQvNhhvBE8ITXng6DdxpEP2gsPfhYIo/kmcSJzTNLg+putNovEXsa/dN2UVrK9z+fv8RhZPDjapUGekYvkUi/c7YA34Z3ex85/21i+h7VnC5qhAyKBPs+u1aURnaAx6m+fBAmTUsuWtF2Z78kAj9Uloviv9IXcfV8dNRPHC+qnBcJEGaWoenQf03Qc62gQ==
+sidebar_class_name: "post api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Create entity</h1>
+
+<MethodEndpoint method={"post"} path={"/entities"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+:::caution deprecated
+
+This endpoint has been deprecated and may be removed in future versions of the API.
+
+:::
+
+Create entity
+
+## Request
+
+<MimeTabs className={"openapi-tabs__mime"}><TabItem label={"application/json"} value={"application/json-schema"}><details style={{}} className={"openapi-markdown__details mime"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-mime"}><h3 className={"openapi-markdown__details-summary-header-body"}>Body</h3><strong className={"openapi-schema__required"}>required</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"my-entity"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property openapi-schema__strikethrough"}>config</strong><span className={"openapi-schema__name"}> object</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span><span className={"openapi-schema__deprecated"}>deprecated</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>fields</strong><span className={"openapi-schema__name"}> object[]</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"apolla_first_name"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem><SchemaItem collapsible={false} name={"allow_additional_field_mappings"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean"}}></SchemaItem></div></details></SchemaItem></ul></details></TabItem></MimeTabs><div><div><ApiTabs><TabItem label={"201"} value={"201"}><div>
+
+Entity created
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"649b1e49-2722-46a3-a7e7-10caae78a43f"}}></SchemaItem><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"my-entity"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property openapi-schema__strikethrough"}>config</strong><span className={"openapi-schema__name"}> object</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span><span className={"openapi-schema__deprecated"}>deprecated</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>fields</strong><span className={"openapi-schema__name"}> object[]</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"apolla_first_name"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem><SchemaItem collapsible={false} name={"allow_additional_field_mappings"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean"}}></SchemaItem></div></details></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"id\": \"649b1e49-2722-46a3-a7e7-10caae78a43f\",\n  \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n  \"name\": \"my-entity\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
