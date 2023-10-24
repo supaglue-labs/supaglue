@@ -5,7 +5,7 @@ on:
   repository_dispatch:
     types: [production_integration_tests]
   schedule:
-    - cron: '*/5 * * * *' # every 5 minutes
+    - cron: '*/30 * * * *' # every 30 minutes
 
 concurrency:
   group: ${{ github.repository }}-api-${{ github.event.number || github.head_ref || github.sha }}-${{ github.workflow }}-${{ github.event_name }}
