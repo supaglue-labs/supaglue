@@ -283,7 +283,7 @@ export interface components {
        */
       is_required?: boolean;
       /**
-       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. If not specified, Supaglue will create the field in the 'custom_properties' group. 
        * @example supaglue
        */
       group_name?: string;
