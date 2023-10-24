@@ -45,11 +45,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supaglue}
 
   api:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.dev
-      args:
-        - APP=api
+    image: node:18-bullseye
     ports:
       - '8080:8080'
     depends_on:
@@ -57,26 +53,9 @@ services:
         condition: service_started
       init:
         condition: service_completed_successfully
-    working_dir: /workspace
-    develop:
-      watch:
-        - action: sync
-          path: ./apps/api
-          target: /workspace/apps/api
-          ignore:
-            - node_modules/
-        - action: sync
-          path: ./packages
-          target: /workspace/packages
-        - action: sync
-          path: ./openapi
-          target: /workspace/openapi
-        - action: rebuild
-          path: package.json
-        - action: rebuild
-          path: ./apps/api/package.json
-        - action: rebuild
-          path: ./yarn.lock
+    volumes:
+      - .:/app
+    working_dir: /app
     environment:
       <<: [*common-env, *fe-api-common-env]
       SUPAGLUE_API_PORT: ${SUPAGLUE_API_PORT:-8080}
@@ -84,40 +63,22 @@ services:
       SUPAGLUE_SYNC_PERIOD_MS:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
     restart: on-failure
-    command: /bin/sh -c "yarn workspace api start"
+    command: /bin/sh -c "./apps/api/scripts/start_dev.sh"
 
   sync-worker:
-    build:
-      context: .
-      dockerfile: ./Dockerfile.dev
-      args:
-        - APP=sync-worker
+    image: node:18-bullseye
     depends_on:
       postgres:
         condition: service_started
       init:
         condition: service_completed_successfully
-    working_dir: /workspace
-    develop:
-      watch:
-        - action: sync
-          path: ./apps/sync-worker
-          target: /workspace/apps/sync-worker
-          ignore:
-            - node_modules/
-        - action: sync
-          path: ./packages
-          target: /workspace/packages
-        - action: rebuild
-          path: package.json
-        - action: rebuild
-          path: ./apps/sync-worker/package.json
-        - action: rebuild
-          path: ./yarn.lock
+    volumes:
+      - .:/app
+    working_dir: /app
     environment:
       <<: *common-env
     restart: on-failure
-    command: /bin/sh -c "yarn workspace sync-worker start"
+    command: /bin/sh -c "./apps/sync-worker/scripts/start_dev.sh"
 
   temporal:
     image: alpine:3.18.0
@@ -137,7 +98,7 @@ services:
       - temporalitedata:/data
 
   init:
-    image: node:18-bullseye-slim
+    image: node:18-bullseye
     environment:
       <<: *common-env
       DO_SEED: '0'
@@ -148,6 +109,7 @@ services:
       - sh
       - -c
       - |
+        yarn install
         yarn workspace @supaglue/db prisma migrate dev
         yarn workspace @supaglue/db prisma db seed
         yarn workspace api init-temporal
