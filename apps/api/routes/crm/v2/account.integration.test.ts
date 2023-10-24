@@ -2,6 +2,7 @@
  * Tests accounts endpoints
  *
  * @group integration/crm/v2/accounts
+ * @jest-environment ./integration-test-environment
  */
 
 import type {
@@ -48,6 +49,12 @@ describe('account', () => {
       expect(getResponse.data.name).toEqual(testAccount.name);
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(getResponse.data.addresses).toEqual(testAccount.record.addresses);
+
+      // test that the db was updated
+      const dbAccount = await db.query('SELECT * FROM crm_accounts WHERE id = $1', [response.data.record?.id]);
+      expect(dbAccount.rows[0].name).toEqual(testAccount.name);
+      // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
+      // expect(dbAccount.rows[0].addresses).toEqual(testAccount.record.addresses);
     }, 20000);
 
     test('PATCH /', async () => {
@@ -82,6 +89,12 @@ describe('account', () => {
       expect(getResponse.data.name).toEqual('updated account');
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(getResponse.data.addresses).toEqual(testAccount.record.addresses);
+
+      // test that the db was updated
+      const dbAccount = await db.query('SELECT * FROM crm_accounts WHERE id = $1', [response.data.record?.id]);
+      expect(dbAccount.rows[0].name).toEqual('updated account');
+      // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
+      // expect(dbAccount.rows[0].addresses).toEqual(testAccount.record.addresses);
     }, 10000);
 
     testIf(
@@ -113,6 +126,14 @@ describe('account', () => {
         expect(getResponse.data.website).toEqual(website);
         expect(getResponse.data.name).toEqual(testAccount.name);
 
+        // test that the db was updated
+        const dbAccount = await db.query('SELECT * FROM crm_accounts WHERE id = $1', [response.data.record?.id]);
+        expect(dbAccount.rows[0].name).toEqual(testAccount.name);
+        // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
+        // expect(dbAccount.rows[0].addresses).toEqual(testAccount.addresses);
+        expect(dbAccount.rows[0].website).toEqual(website);
+        expect(dbAccount.rows[0].name).toEqual(testAccount.name);
+
         // sleep for 12 seconds to allow hubspot to update indexes
         if (providerName === 'hubspot') {
           await new Promise((resolve) => setTimeout(resolve, 12000));
@@ -139,6 +160,13 @@ describe('account', () => {
         // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
         // expect(getResponse.data.addresses).toEqual(testAccount.addresses);
         expect(getResponse2.data.website).toEqual(website);
+
+        // test that the db was updated
+        const dbAccount2 = await db.query('SELECT * FROM crm_accounts WHERE id = $1', [response.data.record?.id]);
+        expect(dbAccount2.rows[0].name).toEqual('updated account');
+        // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
+        // expect(dbAccount2.rows[0].addresses).toEqual(testAccount.addresses);
+        expect(dbAccount2.rows[0].website).toEqual(website);
       },
       20000
     );
