@@ -915,18 +915,6 @@
               "id": "api/v2/crm/update-lead",
               "label": "Update lead",
               "className": "api-method patch"
-            },
-            {
-              "type": "doc",
-              "id": "api/v2/crm/list-opportunities",
-              "label": "List opportunities",
-              "className": "api-method get"
-            },
-            {
-              "type": "doc",
-              "id": "api/v2/crm/list-users",
-              "label": "List users",
-              "className": "api-method get"
             }
           ]
         },
@@ -944,6 +932,12 @@
               "id": "api/v2/crm/create-opportunity",
               "label": "Create opportunity",
               "className": "api-method post"
+            },
+            {
+              "type": "doc",
+              "id": "api/v2/crm/list-opportunities",
+              "label": "List opportunities",
+              "className": "api-method get"
             },
             {
               "type": "doc",
@@ -968,6 +962,12 @@
           },
           "collapsed": true,
           "items": [
+            {
+              "type": "doc",
+              "id": "api/v2/crm/list-users",
+              "label": "List users",
+              "className": "api-method get"
+            },
             {
               "type": "doc",
               "id": "api/v2/crm/get-user",
