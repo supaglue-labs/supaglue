@@ -91,7 +91,7 @@ export default function Navigator(props: DrawerProps & SupaglueProps) {
         },
         {
           id: 'Settings',
-          to: `/applications/${applicationId}/settings/webhooks`,
+          to: `/applications/${applicationId}/settings/api_keys`,
           icon: <SettingsIcon />,
           active: false,
         },

@@ -19,12 +19,12 @@ type SettingsHeaderTab = {
 };
 const settingsHeaderTabs: SettingsHeaderTab[] = [
   {
-    label: 'Webhooks',
-    value: 'webhooks',
-  },
-  {
     label: 'API Keys',
     value: 'api_keys',
+  },
+  {
+    label: 'Webhooks',
+    value: 'webhooks',
   },
 ];
 
@@ -51,6 +51,12 @@ export default function Home(props: SupaglueProps) {
         {...props}
         tabs={
           <Tabs value={value} textColor="inherit">
+            <Tab
+              label="API Key"
+              onClick={async () => {
+                await router.push(`/applications/${activeApplicationId}/settings/api_keys`);
+              }}
+            />
             {enableWebhooksTab ? (
               <Tab
                 label="Webhooks"
@@ -59,26 +65,20 @@ export default function Home(props: SupaglueProps) {
                 }}
               />
             ) : null}
-            <Tab
-              label="API Key"
-              onClick={async () => {
-                await router.push(`/applications/${activeApplicationId}/settings/api_keys`);
-              }}
-            />
           </Tabs>
         }
         title="Settings"
         onDrawerToggle={handleDrawerToggle}
       />
       <TabContainer>
+        <TabPanel value={value} index={0} className="w-full">
+          <ApiKeyTabPanel />
+        </TabPanel>
         {enableWebhooksTab ? (
-          <TabPanel value={value} index={0} className="w-full">
+          <TabPanel value={value} index={1} className="w-full">
             <WebhookTabPanel applicationId={activeApplicationId} svixApiToken={props.SVIX_API_TOKEN} />
           </TabPanel>
         ) : null}
-        <TabPanel value={value} index={1} className="w-full">
-          <ApiKeyTabPanel />
-        </TabPanel>
       </TabContainer>
     </Box>
   );
