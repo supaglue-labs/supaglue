@@ -2,6 +2,7 @@
  * Tests leads endpoints
  *
  * @group integration/crm/v2/leads
+ * @jest-environment ./integration-test-environment
  */
 
 import type {
@@ -66,6 +67,16 @@ describe('lead', () => {
         expect(getResponse.data.company).toEqual(testLead.company);
       }
       expect(getResponse.data.title).toEqual(testLead.title);
+
+      // test that the db was updated
+      const dbLead = await db.query('SELECT * FROM crm_leads WHERE id = $1', [response.data.record?.id]);
+      // pipedrive doesn't support first_name, last_name and company on leads
+      if (providerName !== 'pipedrive') {
+        expect(dbLead.rows[0].first_name).toEqual(testLead.first_name);
+        expect(dbLead.rows[0].last_name).toEqual(testLead.last_name);
+        expect(dbLead.rows[0].company).toEqual(testLead.company);
+      }
+      expect(dbLead.rows[0].title).toEqual(testLead.title);
     }, 20000);
 
     test('PATCH /', async () => {
@@ -121,6 +132,16 @@ describe('lead', () => {
         expect(getResponse.data.company).toEqual(testLead.company);
       }
       expect(getResponse.data.title).toEqual('new title');
+
+      // test that the db was updated
+      const dbLead = await db.query('SELECT * FROM crm_leads WHERE id = $1', [response.data.record?.id]);
+      // pipedrive doesn't support first_name, last_name and company on leads
+      if (providerName !== 'pipedrive') {
+        expect(dbLead.rows[0].first_name).toEqual('updated');
+        expect(dbLead.rows[0].last_name).toEqual('lead');
+        expect(dbLead.rows[0].company).toEqual(testLead.company);
+      }
+      expect(dbLead.rows[0].title).toEqual('new title');
     }, 10000);
 
     testIf(
@@ -149,6 +170,13 @@ describe('lead', () => {
         expect(getResponse.data.company).toEqual(testLead.company);
         expect(getResponse.data.title).toEqual(testLead.title);
 
+        // test that the db was updated
+        const dbLead = await db.query('SELECT * FROM crm_leads WHERE id = $1', [response.data.record?.id]);
+        expect(dbLead.rows[0].first_name).toEqual(testLead.first_name);
+        expect(dbLead.rows[0].last_name).toEqual(testLead.last_name);
+        expect(dbLead.rows[0].company).toEqual(testLead.company);
+        expect(dbLead.rows[0].title).toEqual(testLead.title);
+
         const testLeadUpsert2 = {
           upsert_on: { key: 'email', values: [email] },
           record: {
@@ -170,6 +198,13 @@ describe('lead', () => {
         expect(getResponse2.data.last_name).toEqual('lead');
         expect(getResponse2.data.company).toEqual(testLead.company);
         expect(getResponse2.data.title).toEqual(testLead.title);
+
+        // test that the db was updated
+        const dbLead2 = await db.query('SELECT * FROM crm_leads WHERE id = $1', [response.data.record?.id]);
+        expect(dbLead2.rows[0].first_name).toEqual('updated');
+        expect(dbLead2.rows[0].last_name).toEqual('lead');
+        expect(dbLead2.rows[0].company).toEqual(testLead.company);
+        expect(dbLead2.rows[0].title).toEqual(testLead.title);
       },
       20000
     );
