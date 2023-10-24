@@ -43,7 +43,7 @@ get:
   operationId: listOpportunities
   summary: List opportunities
   tags:
-    - Leads
+    - Opportunities
   security:
     - x-api-key: []
   parameters:

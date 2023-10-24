@@ -2,7 +2,7 @@ get:
   operationId: listUsers
   summary: List users
   tags:
-    - Leads
+    - Users
   security:
     - x-api-key: []
   parameters:
