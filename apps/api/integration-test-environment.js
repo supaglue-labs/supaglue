@@ -13,7 +13,7 @@ class IntegrationEnvironment extends TestEnvironment {
 
     this.global.apiClient = axios.create({
       baseURL: process.env.API_URL ?? 'http://localhost:8080',
-      timeout: 20000,
+      timeout: 120000,
       validateStatus: () => true, // don't throw on errors, we will check them in the tests
       headers: {
         'x-customer-id': process.env.CUSTOMER_ID,

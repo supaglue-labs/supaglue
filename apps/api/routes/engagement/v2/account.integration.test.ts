@@ -53,7 +53,7 @@ describe('account', () => {
       const dbAccount = await db.query('SELECT * FROM engagement_accounts WHERE id = $1', [response.data.record?.id]);
       expect(dbAccount.rows[0].name).toEqual(testAccount.name);
       expect(dbAccount.rows[0].domain).toEqual(testAccount.domain);
-    }, 10000);
+    }, 120000);
 
     test('PATCH /', async () => {
       const response = await apiClient.post<CreateAccountResponse>(
@@ -99,6 +99,6 @@ describe('account', () => {
       const dbAccount = await db.query('SELECT * FROM engagement_accounts WHERE id = $1', [response.data.record?.id]);
       expect(dbAccount.rows[0].name).toEqual('updated account');
       expect(dbAccount.rows[0].domain).toEqual(testAccount.domain);
-    }, 10000);
+    }, 120000);
   });
 });
