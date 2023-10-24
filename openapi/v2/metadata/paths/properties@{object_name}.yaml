@@ -56,5 +56,4 @@ parameters:
     required: true
     schema:
       type: string
-      description: The name of the object.
       example: contact

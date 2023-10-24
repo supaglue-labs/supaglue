@@ -1,11 +1,19 @@
 import type { PublicOwner as HubspotOwner } from '@hubspot/api-client/lib/codegen/crm/owners';
 import type {
   Property as HubspotProperty,
+  PropertyCreate as HubspotPropertyCreate,
+  PropertyUpdate as HubspotPropertyUpdate,
   PropertyUpdateFieldTypeEnum,
   PropertyUpdateTypeEnum,
 } from '@hubspot/api-client/lib/codegen/crm/properties/index';
 import type { ObjectSchema, OptionInput } from '@hubspot/api-client/lib/codegen/crm/schemas/index';
-import type { PicklistOption, PropertyType, PropertyUnified } from '@supaglue/types';
+import type {
+  CreatePropertyParams,
+  PicklistOption,
+  PropertyType,
+  PropertyUnified,
+  UpdatePropertyParams,
+} from '@supaglue/types';
 import type {
   Account,
   AccountCreateParams,
@@ -20,6 +28,7 @@ import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from '@supagl
 import type { CustomObjectSchema } from '@supaglue/types/custom_object';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { PipelineStageMapping, RecordWithFlattenedAssociations } from '.';
+import { DEFAULT_PROPERTY_GROUP } from '.';
 import { BadRequestError } from '../../../errors';
 import { maxDate, removeUndefinedValues } from '../../../lib';
 import { getFullName } from '../../utils/name';
@@ -605,7 +614,9 @@ export const toRawDetails = (property: HubspotProperty): Record<string, unknown>
   return record;
 };
 
-export const getHubspotOptions = (property: PropertyUnified): OptionInput[] | undefined => {
+export const getHubspotOptions = (
+  property: PropertyUnified | CreatePropertyParams | UpdatePropertyParams
+): OptionInput[] | undefined => {
   // TODO: Support picklist
   if (property.type !== 'boolean') {
     return;
@@ -624,4 +635,36 @@ export const getHubspotOptions = (property: PropertyUnified): OptionInput[] | un
       hidden: false,
     },
   ];
+};
+
+export const toHubspotCreatePropertyParams = (
+  objectName: string,
+  params: CreatePropertyParams
+): HubspotPropertyCreate => {
+  const { type, fieldType } = toHubspotTypeAndFieldType(params.type);
+  return {
+    name: params.name,
+    label: params.label,
+    type,
+    fieldType,
+    groupName: params.groupName ?? DEFAULT_PROPERTY_GROUP,
+    description: params.description,
+    options: getHubspotOptions(params),
+  };
+};
+
+export const toHubspotUpdatePropertyParams = (params: UpdatePropertyParams): HubspotPropertyUpdate => {
+  let type = undefined;
+  let fieldType = undefined;
+  if (params.type) {
+    ({ type, fieldType } = toHubspotTypeAndFieldType(params.type));
+  }
+  return {
+    label: params.label,
+    type,
+    fieldType,
+    groupName: params.groupName,
+    description: params.description,
+    options: getHubspotOptions(params),
+  };
 };

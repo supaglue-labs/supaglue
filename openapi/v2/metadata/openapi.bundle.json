@@ -52,7 +52,14 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "name": "x-provider-name",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "example": "salesforce"
+          },
+          "description": "The provider name",
+          "required": true
         }
       ]
     },
@@ -90,7 +97,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/components/parameters/x-provider-name"
+          "$ref": "#/paths/~1objects~1custom/parameters/1"
         }
       ]
     },
@@ -159,14 +166,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "name": "x-provider-name",
-          "in": "header",
-          "schema": {
-            "type": "string",
-            "example": "salesforce"
-          },
-          "description": "The provider name",
-          "required": true
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -247,7 +247,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1properties/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "object_name",
@@ -255,7 +255,6 @@
           "required": true,
           "schema": {
             "type": "string",
-            "description": "The name of the object.",
             "example": "contact"
           }
         }
@@ -284,7 +283,7 @@
                   "id": {
                     "type": "string",
                     "description": "The machine name of the property as it appears in the third-party Provider.",
-                    "example": "FirstName"
+                    "example": 1234523
                   },
                   "name": {
                     "type": "string",
@@ -318,7 +317,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1properties/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "object_name",
@@ -398,7 +397,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1properties/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "object_name",
