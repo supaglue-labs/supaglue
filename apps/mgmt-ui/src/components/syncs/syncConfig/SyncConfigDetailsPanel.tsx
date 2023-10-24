@@ -281,7 +281,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
           {provider && (
             <>
               <Stack className="gap-2">
-                <Typography variant="subtitle1">Common objects</Typography>
+                <Typography variant="subtitle1">Supaglue common objects</Typography>
                 <Autocomplete
                   size="small"
                   disabled={!commonObjectsSupported}
