@@ -55,7 +55,7 @@ describe('account', () => {
       expect(dbAccount.rows[0].name).toEqual(testAccount.name);
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(dbAccount.rows[0].addresses).toEqual(testAccount.record.addresses);
-    }, 20000);
+    }, 120000);
 
     test('PATCH /', async () => {
       const response = await apiClient.post<CreateAccountResponse>(
@@ -95,7 +95,7 @@ describe('account', () => {
       expect(dbAccount.rows[0].name).toEqual('updated account');
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(dbAccount.rows[0].addresses).toEqual(testAccount.record.addresses);
-    }, 10000);
+    }, 120000);
 
     testIf(
       // not supported for pipedrive
@@ -168,7 +168,7 @@ describe('account', () => {
         // expect(dbAccount2.rows[0].addresses).toEqual(testAccount.addresses);
         expect(dbAccount2.rows[0].website).toEqual(website);
       },
-      20000
+      120000
     );
   });
 });

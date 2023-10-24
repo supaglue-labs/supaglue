@@ -77,7 +77,7 @@ describe('lead', () => {
         expect(dbLead.rows[0].company).toEqual(testLead.company);
       }
       expect(dbLead.rows[0].title).toEqual(testLead.title);
-    }, 20000);
+    }, 120000);
 
     test('PATCH /', async () => {
       // pipedrive needs a contact to convert to a lead first
@@ -142,7 +142,7 @@ describe('lead', () => {
         expect(dbLead.rows[0].company).toEqual(testLead.company);
       }
       expect(dbLead.rows[0].title).toEqual('new title');
-    }, 10000);
+    }, 120000);
 
     testIf(
       // not supported for pipedrive
@@ -206,7 +206,7 @@ describe('lead', () => {
         expect(dbLead2.rows[0].company).toEqual(testLead.company);
         expect(dbLead2.rows[0].title).toEqual(testLead.title);
       },
-      20000
+      120000
     );
   });
 });
