@@ -29,6 +29,9 @@ on:
       PAGERDUTY_INTEGRATION_KEY:
         description: The PagerDuty integration key to use for paging
         required: true
+      TESTING_DATABASE_URL:
+        description: The database URL to use for testing
+        required: true
 
 jobs:
   test:
@@ -57,6 +60,7 @@ jobs:
           API_KEY: ${{ secrets.TESTING_API_KEY }}
           API_URL: ${{ inputs.api-url }}
           CUSTOMER_ID: ${{ inputs.customer-id }}
+          TESTING_DATABASE_URL: ${{ secrets.TESTING_DATABASE_URL }}
 
       - name: Slack on failure
         id: slack

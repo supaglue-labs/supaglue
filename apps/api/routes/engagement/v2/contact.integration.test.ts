@@ -2,6 +2,7 @@
  * Tests contacts endpoints
  *
  * @group integration/engagement/v2/contacts
+ * @jest-environment ./integration-test-environment
  */
 
 import type {
@@ -50,10 +51,32 @@ describe('contact', () => {
         }
       );
 
+      let expectedEmailAddresses = testContact.email_addresses;
+
+      if (providerName === 'outreach') {
+        // outreach does not support email_address_type
+        expectedEmailAddresses =
+          expectedEmailAddresses?.map((emailAddress) => {
+            return {
+              email_address: emailAddress.email_address,
+              email_address_type: null,
+            };
+          }) ?? [];
+      }
+
       expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record?.id);
       expect(getResponse.data.first_name).toEqual(testContact.first_name);
       expect(getResponse.data.last_name).toEqual(testContact.last_name);
+      expect(getResponse.data.job_title).toEqual(testContact.job_title);
+      expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
+
+      // test that the db was updated
+      const dbContact = await db.query('SELECT * FROM engagement_contacts WHERE id = $1', [response.data.record?.id]);
+      expect(dbContact.rows[0].first_name).toEqual(testContact.first_name);
+      expect(dbContact.rows[0].last_name).toEqual(testContact.last_name);
+      expect(dbContact.rows[0].job_title).toEqual(testContact.job_title);
+      expect(dbContact.rows[0].email_addresses).toEqual(expectedEmailAddresses);
     }, 20000);
 
     test('PATCH /', async () => {
@@ -92,10 +115,33 @@ describe('contact', () => {
           headers: { 'x-provider-name': providerName },
         }
       );
+
+      let expectedEmailAddresses = testContact.email_addresses;
+
+      if (providerName === 'outreach') {
+        // outreach does not support email_address_type
+        expectedEmailAddresses =
+          expectedEmailAddresses?.map((emailAddress) => {
+            return {
+              email_address: emailAddress.email_address,
+              email_address_type: null,
+            };
+          }) ?? [];
+      }
+
       expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record?.id);
       expect(getResponse.data.first_name).toEqual('updated');
       expect(getResponse.data.last_name).toEqual('contact');
+      expect(getResponse.data.job_title).toEqual(testContact.job_title);
+      expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
+
+      // test that the db was updated
+      const dbContact = await db.query('SELECT * FROM engagement_contacts WHERE id = $1', [response.data.record?.id]);
+      expect(dbContact.rows[0].first_name).toEqual('updated');
+      expect(dbContact.rows[0].last_name).toEqual('contact');
+      expect(dbContact.rows[0].job_title).toEqual(testContact.job_title);
+      expect(dbContact.rows[0].email_addresses).toEqual(expectedEmailAddresses);
     }, 10000);
   });
 });

@@ -17,9 +17,10 @@ jobs:
     with:
       api-url: https://api.supaglue.io
       customer-id: customer1
-      page-on-failure: false
+      page-on-failure: true
       environment: Production
     secrets:
       TESTING_API_KEY: ${{ secrets.PRODUCTION_TESTING_API_KEY }}
       SLACK_WEBHOOK_URL: ${{ secrets.ALERTS_SLACK_WEBHOOK_URL }}
       PAGERDUTY_INTEGRATION_KEY: ${{ secrets.PAGERDUTY_INTEGRATION_KEY }}
+      TESTING_DATABASE_URL: ${{ secrets.PRODUCTION_TESTING_DATABASE_URL }}
