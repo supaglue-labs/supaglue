@@ -25,6 +25,7 @@ import { maxDate, removeUndefinedValues } from '../../../lib';
 import { getFullName } from '../../utils/name';
 
 const MAX_NUM_EMPLOYEES = 7000000000;
+const MAX_AMOUNT = 2147483647; // int4 limit
 
 export const fromObjectToHubspotObjectType = (object: StandardOrCustomObject): string => {
   return object.name;
@@ -287,6 +288,12 @@ export const fromHubSpotDealToOpportunity = (
     }
   }
 
+  // TODO: This should be parseFloat, but we need to migrate our customers
+  let amount = properties.amount ? parseInt(properties.amount) : null;
+  if (amount && amount > MAX_AMOUNT) {
+    amount = null;
+  }
+
   return {
     id,
     name: properties.dealname ?? null,
@@ -296,7 +303,7 @@ export const fromHubSpotDealToOpportunity = (
     status,
     pipeline,
     accountId,
-    amount: properties.amount ? parseInt(properties.amount) : null,
+    amount: amount,
     closeDate: properties.closedate ? new Date(properties.closedate) : null,
     stage,
     createdAt: new Date(createdAt),
