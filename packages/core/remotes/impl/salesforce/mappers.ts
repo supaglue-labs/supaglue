@@ -334,6 +334,7 @@ export const fromSalesforceOpportunityToOpportunity = (
     accountId: record.AccountId ?? null,
     // pipeline is not supported in salesforce
     pipeline: null,
+    // TODO: This should be parseFloat, but we need to migrate our customers
     amount: record.Amount ? parseInt(record.Amount) : null,
     lastActivityAt: record.LastActivityDate ? new Date(record.LastActivityDate) : null,
     createdAt: record.CreatedDate ? new Date(record.CreatedDate) : null,

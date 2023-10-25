@@ -288,7 +288,8 @@ export const fromHubSpotDealToOpportunity = (
     }
   }
 
-  let amount = properties.amount ? parseFloat(properties.amount) : null;
+  // TODO: This should be parseFloat, but we need to migrate our customers
+  let amount = properties.amount ? parseInt(properties.amount) : null;
   if (amount && amount > MAX_AMOUNT) {
     amount = null;
   }
