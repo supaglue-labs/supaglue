@@ -1,0 +1,42 @@
+---
+id: get-sequence-state
+title: "Get sequence state"
+description: "Get sequence state"
+sidebar_label: "Get sequence state"
+hide_title: true
+hide_table_of_contents: true
+api: eJy1V21v2zYQ/iuc9qUBQlu2ZDs2hmEdVhTB9qFI2hVbEriURNlsJVEjKTuGof++O+rFku0EabsZhm2Rx7vn3p6j947MuWJGyOw6chbOiptb/k/Bs5DfGma4c+kYttLO4s5p1ond0M7DpaN5WChhdrC9dx4pywX9wvHpoYTdnCmWcsOVtvsZPIAFkYVJEfGlYttlxAwDCyKDdVCudvCgwzVPmbPYO2aX44FAyoSzDLb4I0vzBNaMKnh56URch0rkCB7kPq65WXNFjCS1DQI2CNogMTegNiKxkikBKeKpiAA+syO5khsRcTVwyssW5CMNC21kyhUVUYNwzRnInYOojRLZqovQSXcHFSPnBOx7wNDsk+vfABMzpMgERCHZEcCTGRELri3YVlBkZCcLRVieJyK0WQOjChIjFI+auHS8aJyjduVb/JCFUZyF6/MuNPpJrf9JKLounqXG4lkegpozsz45+DJocRxMxzPXpyyKIupPfE6D4GpKeeTO5vOZ60Xh1CmxEhXXucw0FC0oHLsufvWd6Rc3mAllZiAJKNmJ9vCzRvH9KT4ZfOahgYMQEugoIypj4OhzPkx8bzSGyNqonJPMiiRhQVPzXe9ZaMSGY1oQKjwtz9t6WkM4mbsQIo9ecd+j/hXz6dVo4tNRHASuy8K5Nw1Qf8pEEsjHWv+xvqfz483jaBRzl7pzP6A+m45o4M9i6nGPha7njSFDqL/QXH21cha4E8/lMZ2OMPlsPqfBeBrQaTABQ+EsnI5tcNrC+1oDwRUU1GTk0lHou9Tn8RTqjEOIeOBNYn8eeZ7t6xDaw/BoycxLoh9LlaKkA7TEqRG2aw5Gx+54TN0xHc/eu+7Cvv+2Icqj/9+I0MuIJ0DY0fPsG7NEI/0mTJtlKiMkqqegfROUsssHd44lC133ZacYD5XT64F+znsJ6gWy5/AZb4A3jDDJKXsBwLI8ocO33JBGjrRoYSTJeq4iNyDZLZxhX58e7k/osbRuqE0zPAuVIHMbk+vFcAiDdqCLnK2Sgg+EHPJsxVY8Bb4absbOMbLbWpK8fnftlJ2xfYskVvFUZ3i3SYSV3zmO5HacNDLHg6RvD8wQkMJBzJJEwgjmG54gK2q7FoZcV4PNAsLKy2KJhtHdSoc7GM0GrnNIwYfMJoa8aV21p9vM2+aucDb+YqVhuWD1yVD/0kYslCmWQi+kvc2T5P4IL3KdGSWjIsS1++wjT0CUo0foSoMPnX91AHlBwHSBv+z8GJC/ZEFClhEoXTgntD0AOraQEKssLRIjoDtwV0W0f0nRZCtgPbMmO6GA6cRXUu0G94Ds7k/BtwTApTIj1aAi0Icd+YdXjdsYmEHX92GeMINdO6wU0EqB7tTYhTXyw91NkeGN5J3UJmXZQacqskEOaxmWZlAYA37rzeriILHdbgd5dczabAAMt1J90TkLebtE8yKA6TuUUBsb8Msat+n4lWlbQeTDzR+4+OnTp/vsRR1Sy2KaaxSd6jnbx71qaBvE8EeD8RJWla2nfd3jd0ecoUHJ4vQSBM24BgQov98H4NAHlZQlLlfXYWz9SGgk96gm3hMw7U3l+2/Al+c9s7Rw7uK+YdhmC8eyyoYpUU2hrwL96qam+gvylP2Gj7Jd12aD6zSq5QMcqsnpm8H8lzf0Z6J6/E/jENLL7wB+fC9/FsDxn4QehEroNXB2bjp7J3dirIB22r198x5kWYGd0B0n1eyof2Bmzma2O2cq8/iJYM6K/4QcAIPq51a82nnyQDu2mrrGginLfwFBCh5x
+sidebar_class_name: "get api-method"
+info_path: api/v2/engagement/unified-engagement-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get sequence state</h1>
+
+<MethodEndpoint method={"get"} path={"/sequence_states/{sequence_state_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/engagement/unified-engagement-api"}></SecuritySchemes>
+
+
+
+Get sequence state
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"sequence_state_id","in":"path","required":true,"schema":{"type":"string","example":"ffb62704-addd-454e-bb86-ed0799703dc6"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean","example":true},"description":"Whether to include raw data fetched from the 3rd party provider."}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"outreach"},"description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Sequence State
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":54312}}></SchemaItem><SchemaItem collapsible={false} name={"state"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"active"}}></SchemaItem><SchemaItem collapsible={false} name={"contact_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"c590dc63-8e43-48a4-8154-1fbb00ac936b"}}></SchemaItem><SchemaItem collapsible={false} name={"mailbox_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"nullable":true,"type":"string","example":"39fd1fe0-094b-4a61-b47f-3e3ac033203d"}}></SchemaItem><SchemaItem collapsible={false} name={"user_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"nullable":true,"type":"string","example":"ab0530ef-61dd-4a99-b26b-6b5a61c7c62e"}}></SchemaItem><SchemaItem collapsible={false} name={"sequence_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"nullable":true,"type":"string","example":"b854e510-1c40-4ef6-ade4-8eb35f49d331"}}></SchemaItem><SchemaItem collapsible={false} name={"created_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"format":"date-time","example":"2022-02-27T00:00:00Z"}}></SchemaItem><SchemaItem collapsible={false} name={"updated_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"format":"date-time","example":"2022-02-27T00:00:00Z"}}></SchemaItem><SchemaItem collapsible={false} name={"is_deleted"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean","example":false}}></SchemaItem><SchemaItem collapsible={false} name={"last_modified_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","format":"date-time","example":"2022-02-27T00:00:00Z"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"id\": 54312,\n  \"state\": \"active\",\n  \"contact_id\": \"c590dc63-8e43-48a4-8154-1fbb00ac936b\",\n  \"mailbox_id\": \"39fd1fe0-094b-4a61-b47f-3e3ac033203d\",\n  \"user_id\": \"ab0530ef-61dd-4a99-b26b-6b5a61c7c62e\",\n  \"sequence_id\": \"b854e510-1c40-4ef6-ade4-8eb35f49d331\",\n  \"created_at\": \"2022-02-27T00:00:00Z\",\n  \"updated_at\": \"2022-02-27T00:00:00Z\",\n  \"is_deleted\": false,\n  \"last_modified_at\": \"2022-02-27T00:00:00Z\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
