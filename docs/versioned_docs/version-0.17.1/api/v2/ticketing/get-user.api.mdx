@@ -1,0 +1,47 @@
+---
+id: get-user
+title: "Get user"
+description: ":::note"
+sidebar_label: "Get user"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVt9zGjcQ/lfU64uZ4Y4zpjZhOp2mTZp62oeMYzfTAQ8WdwsovpMukg7MMPzv3dX9BGxPnPQlfsAgrbTffvvtrraeykBzK5S8jL2RtwB7Y0B7XS8GE2mR0Q6uj0YjqSxM5PVSGDYHbnMNDL8qmWwYX3GR8FmCK5K917ASsGZWMQMJRJZFubEqBU3WTOWavZUWdKaFAZYlXAZs/LuSlqNpbm5PUrzMqpEFnv5q8owvkhyCSKUdNleapYocS/yaOtjBRCK4iZzIK0BQ0jDOKASmZp/I+VrYJbNLYAuxAslEjAcwPMsXxhuNPTI13m3XMxDlWtgNLm69B59nwr8H+nW7w92Ma56CJVval/gDWREySvIYppqvpzG3HO8VxNbnHPQGf5hoCSn3RlvPbjI6MFMqAU7+4YGnWYJrVuewO6T74xIQsiYOSx8MfTDygeRbvDZmc61SF9iZjhnisxuWabUSMejA23VrkA9+xb8v4grhEnjs0nwE0Vgt5KKN0Es3zRWn3hHYa8RQ7bPLN4iJYyKlQBZQG4hHWjEXYBzY2hCVsiEt8CxLRORSiU41fM6FhrjipRVFFZzvVr4mDsMTMCicCB4PovLASg9PgslRNNOGzIzb5ZH5l0EK+z8No1l07p+H/dAfnIXcHw6G4HM+59GMx/MBR7CkQA0mU9KAoQv7YUj/9kMgKb8pVBhhOSHtZNPit/fJkOH2GFlRK3gQKcB+YEXhpgj3GL/ME1fuVaRNPH+KhP0BYkEEAxXylMcxQjfP07CEJNurdTovzBRbAlbt8wU054mhCqJ+0XbDteZUhMJC+qj7Jgp3RRvP+fB0Fs7jC38Qwrk/mL069YfQP/P7w9PB8KIfvgpnlJauh53Pcv0yjpbWZmbU69XxCtVzikLy5yKBaSaiIMNLyEEjqrFXynKf1zZPKBMrbFJJFC/Y0R3YuJaq7O6UY5LryHM+TW9binlHRQR6VbW4XCctrNgOgzZeK6J7sBhpb9U/GhYfSkP2+v2lt2v11g+ku0JarQ7bZCwTfwGlrK75yuaw2vf9oRuGVtQteZIo7JOwgoSEbNxaFCFRrvs4QCQtnB/kmKIt7giD04sg9BoCbyQ1rZhdV5HSYXZSTrdOWWRIfFModeBVknApVpHZV3b3gNpD2X9vg/dH/GOX0moV5xFt0Cz+CAkeBMJCvFdkOgprRjsM2clTbFTFhexflbOISwSDJylesscr1iie8i6hY39/2JmAHI7/odDRZ4qhFv3Noa6d3Z5UhFNKgnZ8PeTCUly94rxfnDeNyjvOxQ/jq1w6ppWxKZfNlTqXQYZrkmpjlluL0ZjVotNYrNfrICuOOZeV/95a6XuT8QjqJT/LZ9iyewrV6bRGzh3Lv3HjNMxurv6eyLu7u4n8kgItTUlcJYSWZt8BJf+4qrbNEPkORPjS11/RcCw8WEq+cNy4styW7XHsOii111E17bGRLZE+2ttuZ5iKG53sdrRcvPeoa8bCEBNxPVOe5PSbn3hPROFa6mMv0xWnzjTyXEdecS2K6fQi0CdX5TjqsKf8V71cbto+K1wVl7tbNC3b+VdD+D8fns9wefiAbojsfgPww8fmswAO3757EAqj1zjlMtvaO3r4Ud7rp8C7t9doy3PSensAF9O2/EKZeTSf7clcuKdPAvOo+c/Us3C0/1KbFztPHqgHfaVmEsxu9x+umxeF
+sidebar_class_name: "get api-method"
+info_path: api/v2/ticketing/unified-ticketing-api-preview
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get user</h1>
+
+<MethodEndpoint method={"get"} path={"/users/{user_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/ticketing/unified-ticketing-api-preview"}></SecuritySchemes>
+
+
+
+:::note
+This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+:::
+
+Returns a User object with the given id.
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"user_id","in":"path","required":true,"schema":{"type":"string","example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean","example":true},"description":"Whether to include raw data fetched from the 3rd party provider."}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+UserData
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"Hil Feig"}}></SchemaItem><SchemaItem collapsible={false} name={"email_address"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"help@supaglue.com"}}></SchemaItem><SchemaItem collapsible={false} name={"is_active"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean","example":false}}></SchemaItem><SchemaItem collapsible={false} name={"teams"} required={false} schemaName={"string[]"} qualifierMessage={undefined} schema={{"type":"array","items":{"type":"string","nullable":false,"example":"681b0fd7-40e6-4b91-8e23-2814872090be"}}}></SchemaItem><SchemaItem collapsible={false} name={"avatar"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"https://supaglue.io/user_profile_pic.png"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"name\": \"Hil Feig\",\n  \"email_address\": \"help@supaglue.com\",\n  \"is_active\": false,\n  \"teams\": [\n    \"681b0fd7-40e6-4b91-8e23-2814872090be\"\n  ],\n  \"avatar\": \"https://supaglue.io/user_profile_pic.png\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
