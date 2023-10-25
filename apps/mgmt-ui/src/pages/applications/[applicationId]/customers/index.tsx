@@ -18,7 +18,7 @@ import { PeopleAltOutlined } from '@mui/icons-material';
 import LinkIcon from '@mui/icons-material/Link';
 import { Box, Breadcrumbs, Grid, IconButton, Menu, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGridPro } from '@mui/x-data-grid-pro';
 import type { ProviderName } from '@supaglue/types';
 import { type ConnectionSafeAny } from '@supaglue/types';
 import Link from 'next/link';
@@ -175,7 +175,7 @@ export default function Home(props: SupaglueProps) {
             </Grid>
 
             <div style={{ height: '100%', width: '100%' }}>
-              <DataGrid
+              <DataGridPro
                 rows={rows}
                 columns={columns}
                 autoHeight
