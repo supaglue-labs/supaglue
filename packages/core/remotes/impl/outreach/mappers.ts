@@ -44,6 +44,8 @@ export const fromOutreachSequenceToSequence = (record: OutreachRecord): Sequence
     isEnabled: attributes.enabled as boolean,
     numSteps: attributes.sequenceStepCount as number,
     tags: attributes.tags as string[],
+    isArchived: attributes.locked as boolean,
+    shareType: 'private', // TODO Implement this?
     metrics: {
       scheduleCount: (attributes.scheduleCount as number) ?? 0,
       openCount: (attributes.openCount as number) ?? 0,
