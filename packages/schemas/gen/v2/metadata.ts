@@ -14,7 +14,8 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
+        /** @description The provider name */
+        "x-provider-name": string;
       };
     };
   };
@@ -24,7 +25,6 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -37,8 +37,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        /** @description The provider name */
-        "x-provider-name": string;
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -61,6 +60,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         object_name: string;
@@ -81,6 +81,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         object_name: string;
@@ -103,6 +104,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         object_name: string;
@@ -281,7 +283,7 @@ export interface components {
        */
       is_required?: boolean;
       /**
-       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. If not specified, Supaglue will create the field in the 'custom_properties' group. 
        * @example supaglue
        */
       group_name?: string;
@@ -382,7 +384,8 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
+        /** @description The provider name */
+        "x-provider-name": string;
       };
     };
     responses: {
@@ -399,7 +402,6 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -423,8 +425,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        /** @description The provider name */
-        "x-provider-name": string;
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -448,6 +449,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         object_name: string;
@@ -475,6 +477,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         object_name: string;
@@ -507,6 +510,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         object_name: string;
@@ -517,7 +521,7 @@ export interface operations {
         "application/json": {
           /**
            * @description The machine name of the property as it appears in the third-party Provider. 
-           * @example FirstName
+           * @example 1234523
            */
           id: string;
           /**
@@ -548,6 +552,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         object_name: string;
@@ -571,6 +576,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         object_name: string;
