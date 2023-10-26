@@ -21,6 +21,8 @@ Supaglue supports the following Common Objects:
 | `updated_at`                 | N/A                 | `updated_at`                   | `updatedAt`                      |
 | `last_modified_at`           | `createdat`         | `updated_at`                   | `updatedAt`                      |
 | `is_deleted`                 | `archived` OR false | `archived_at`                  | false                            |
+| `is_archived`                | `archived`          | `current_state`                | `locked`                         |
+| `share_type`                 | `permissions`       | `shared`                       | `shareType`                      |
 
 ## Sequence States
 
@@ -49,6 +51,7 @@ Supaglue supports the following Common Objects:
 | `updated_at`                 | N/A          | `updated_at`    | `updatedAt`    |
 | `last_modified_at`           | `created_at` | `updated_at`    | `updatedAt`    |
 | `is_deleted`                 | false        | false           | false          |
+| `is_locked`                  | N/A          | `active`        | `locked`       |
 
 ## Contacts
 
@@ -103,3 +106,4 @@ Supaglue supports the following Common Objects:
 | `updated_at`                 | `last_synced_at` | N/A             | `updatedAt`                     |
 | `last_modified_at`           | `last_synced_at` | N/A             | `updatedAt`                     |
 | `is_deleted`                 | N/A              | N/A             | false                           |
+| `is_disabled`                | `active`         | N/A             | `sendDisabled`                  |
