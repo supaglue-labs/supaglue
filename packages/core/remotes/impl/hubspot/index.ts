@@ -1290,9 +1290,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           name: groupName,
           label: groupName,
         });
-      } catch (e) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
+      } catch (e: any) {
         if (e.code === 409) {
           // group already exists, so we're good
           return;
