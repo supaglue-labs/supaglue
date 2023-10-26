@@ -1,7 +1,7 @@
 import type { PrismaClient } from '@supaglue/db';
 import { Prisma } from '@supaglue/db';
 import type { Customer, CustomerExpandedSafe, CustomerUpsertParams } from '@supaglue/types';
-import { NotFoundError } from '../errors';
+import { BadRequestError, NotFoundError } from '../errors';
 import { fromCustomerModel, fromCustomerModelExpandedUnsafe, toCustomerModelCreateParams } from '../mappers/customer';
 
 export class CustomerService {
@@ -53,6 +53,9 @@ export class CustomerService {
   }
 
   public async upsert(customer: CustomerUpsertParams): Promise<Customer> {
+    if (!customer.customerId) {
+      throw new BadRequestError('Customer id is required');
+    }
     const updatedCustomer = await this.#prisma.customer.upsert({
       where: {
         applicationId_externalIdentifier: {
