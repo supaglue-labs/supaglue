@@ -124,6 +124,7 @@ describe('Conversion functions', () => {
       lastModifiedAt: new Date('2023-09-12T10:00:00Z'),
       isDeleted: false,
       rawData: record,
+      isLocked: null,
     };
 
     expect(fromApolloUserToUser(record)).toEqual(expected);
@@ -146,6 +147,7 @@ describe('Conversion functions', () => {
       lastModifiedAt: new Date('2023-09-12T10:00:00Z'),
       isDeleted: false,
       rawData: record,
+      isDisabled: null,
     };
 
     expect(fromApolloEmailAccountsToMailbox(record)).toEqual(expected);
@@ -344,10 +346,9 @@ describe('Conversion functions', () => {
       {
         "createdAt": 2022-01-01T00:00:00.000Z,
         "id": "123456",
+        "isArchived": false,
         "isDeleted": false,
         "isEnabled": true,
-        "shareType": "team",
-        "isArchived": false,
         "metrics": {
           "bounceRate": 0.05,
           "clickRate": 0.3,
@@ -396,6 +397,7 @@ describe('Conversion functions', () => {
           "unique_unsubscribed": 5,
           "user_id": "789",
         },
+        "shareType": "team",
         "tags": [
           "lbl1234",
           "lbl_zzzz",

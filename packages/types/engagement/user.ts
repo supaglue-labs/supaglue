@@ -8,7 +8,7 @@ type CoreUser = {
   firstName: string | null;
   lastName: string | null;
   email: string | null;
-  isLocked: boolean | null;
+  isLocked: boolean | null | undefined;
 };
 
 export type User = BaseEngagementModel & CoreUser;

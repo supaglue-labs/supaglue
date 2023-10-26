@@ -131,7 +131,7 @@ describe('Salesloft mapper tests', () => {
       lastModifiedAt: new Date('2023-01-02T10:00:00Z'),
       isDeleted: false,
       rawData: record,
-      isLocked: false,
+      isLocked: undefined,
     };
     expect(fromSalesloftUserToUser(record as any as SalesloftUser)).toEqual(expected);
   });
@@ -168,7 +168,7 @@ describe('Salesloft mapper tests', () => {
       lastModifiedAt: new Date('2023-01-02T10:00:00Z'),
       isDeleted: false,
       rawData: record,
-      shareType: 'team',
+      shareType: 'private',
       isArchived: false,
     };
     expect(fromSalesloftCadenceToSequence(record as any as SalesloftCadence, stepCount)).toEqual(expected);

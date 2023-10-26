@@ -143,7 +143,7 @@ describe('Outreach mappers', () => {
         lastModifiedAt: new Date('2023-09-14T12:34:56.789Z'),
         ownerId: null,
         rawData: record,
-        isArchived: false,
+        isArchived: undefined,
         shareType: 'team',
       };
 
@@ -177,7 +177,7 @@ describe('Outreach mappers', () => {
         isDeleted: false,
         lastModifiedAt: new Date('2023-09-11T12:34:56.789Z'),
         rawData: record,
-        isLocked: false,
+        isLocked: undefined,
       };
 
       expect(fromOutreachUserToUser(record as unknown as OutreachUser)).toEqual(expectedResult);
@@ -205,7 +205,7 @@ describe('Outreach mappers', () => {
         isDeleted: false,
         lastModifiedAt: new Date('2023-09-12T12:34:56.789Z'),
         rawData: record,
-        isLocked: false,
+        isLocked: undefined,
       };
 
       expect(fromOutreachUserToUser(record as any as OutreachUser)).toEqual(expectedResult);
@@ -239,7 +239,7 @@ describe('Outreach mappers', () => {
         lastModifiedAt: new Date('2023-09-13T12:34:56.789Z'),
         userId: '100',
         rawData: record,
-        isDisabled: false,
+        isDisabled: undefined,
       };
 
       expect(fromOutreachMailboxToMailbox(record as any as OutreachMailbox)).toEqual(expectedResult);
@@ -265,7 +265,7 @@ describe('Outreach mappers', () => {
         lastModifiedAt: new Date('2023-09-14T12:34:56.789Z'),
         userId: null,
         rawData: record,
-        isDisabled: false,
+        isDisabled: undefined,
       };
 
       expect(fromOutreachMailboxToMailbox(record as any as OutreachMailbox)).toEqual(expectedResult);

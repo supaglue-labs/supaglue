@@ -114,7 +114,7 @@ export const fromApolloEmailAccountsToMailbox = (record: Record<string, any>): M
     lastModifiedAt: new Date(record.last_synced_at),
     isDeleted: false,
     rawData: record,
-    isDisabled: !record.active,
+    isDisabled: record.active != null ? !record.active : null,
   };
 };
 
