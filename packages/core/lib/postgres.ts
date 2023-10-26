@@ -1,9 +1,10 @@
-import type { CommonObjectType, ProviderCategory, ProviderName } from '@supaglue/types';
+import type { CommonObjectType, PostgresConfigUnsafe, ProviderCategory, ProviderName } from '@supaglue/types';
 import type { CRMCommonObjectType } from '@supaglue/types/crm';
 import type { EngagementCommonObjectType } from '@supaglue/types/engagement';
 import { slugifyForTableName } from '@supaglue/utils';
-import fs from 'fs';
+import type { PoolConfig } from 'pg';
 import { Pool } from 'pg';
+import { parse } from 'pg-connection-string';
 import {
   keysOfSnakecasedCrmAccountWithTenant,
   keysOfSnakecasedCrmContactWithTenant,
@@ -22,27 +23,11 @@ import {
 } from '../keys/engagement';
 
 export const getPgPool = (connectionString: string): Pool => {
-  // parse the connectionString URL to get the ssl config from the query string
-  const parsedConnectionString = new URL(connectionString);
-  const caCertPath = parsedConnectionString.searchParams.get('sslcert');
-  const sslMode = parsedConnectionString.searchParams.get('sslmode');
-  const sslAccept = parsedConnectionString.searchParams.get('sslaccept');
-  // delete from the query string so that the connectionString can be passed to the pgPool
-  parsedConnectionString.searchParams.delete('sslcert');
-  parsedConnectionString.searchParams.delete('sslmode');
-  parsedConnectionString.searchParams.delete('sslaccept');
-  const ssl =
-    sslMode === 'require' || sslMode === 'prefer'
-      ? {
-          ca: caCertPath ? fs.readFileSync(caCertPath).toString() : undefined,
-          rejectUnauthorized: sslAccept === 'strict',
-        }
-      : undefined;
+  const connectionConfig = parse(connectionString) as PoolConfig;
 
   return new Pool({
-    connectionString: parsedConnectionString.toString(),
     max: 5,
-    ssl,
+    ...connectionConfig,
   });
 };
 
@@ -435,6 +420,62 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   },
 };
 
-export function getSsl(sslMode: 'disable' | 'allow' | 'prefer' | 'require' | undefined): boolean | undefined {
-  return sslMode === undefined || sslMode === 'disable' || sslMode === 'allow' ? undefined : true;
+export function getSsl(config: PostgresConfigUnsafe): PoolConfig['ssl'] {
+  let sslConfig: PoolConfig['ssl'];
+  // the mapping here is the same as the one used in pg-connection-string, with `allow` added since we had it before
+  // https://github.com/brianc/node-postgres/tree/master/packages/pg-connection-string#tcp-connections
+  switch (config.sslMode) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore we've removed this from the interface, but there may be some configured in the db
+    case 'allow':
+    case 'prefer':
+    case 'require':
+    case 'verify-ca':
+    case 'verify-full':
+      sslConfig = {}; // to allow us to add keys later if required
+      break;
+    case 'no-verify':
+      sslConfig = { rejectUnauthorized: false };
+      break;
+    case 'disable':
+    default:
+      sslConfig = false;
+  }
+
+  if (sslConfig) {
+    if (config.serverCaCert) {
+      sslConfig = {
+        ca: config.serverCaCert,
+        ...sslConfig,
+      };
+    }
+
+    if (config.clientCert) {
+      sslConfig = {
+        cert: config.clientCert,
+        ...sslConfig,
+      };
+    }
+
+    if (config.clientKey) {
+      sslConfig = {
+        key: config.clientKey,
+        ...sslConfig,
+      };
+    }
+
+    if (config.serverName) {
+      sslConfig = {
+        servername: config.serverName,
+        ...sslConfig,
+      };
+    }
+
+    // if sslconfig is empty object, return true instead
+    if (Object.keys(sslConfig).length === 0) {
+      sslConfig = true;
+    }
+  }
+
+  return sslConfig;
 }

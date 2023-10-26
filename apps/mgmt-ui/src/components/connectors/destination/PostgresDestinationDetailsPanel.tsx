@@ -8,7 +8,7 @@ import { useDestinations } from '@/hooks/useDestinations';
 import getIcon from '@/utils/companyToIcon';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import type { DestinationSafeAny } from '@supaglue/types';
+import type { DestinationSafeAny, PostgresConfigAtLeastSafe } from '@supaglue/types';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { postgresDestinationCardInfo } from './DestinationTabPanelContainer';
@@ -34,7 +34,11 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
   const [schema, setSchema] = useState<string>('');
   const [user, setUser] = useState<string>('');
   const [password, setPassword] = useState<KnownOrUnknownValue>({ type: 'known', value: '' });
-  const [sslMode, setSslMode] = useState<'disable' | 'allow' | 'prefer' | 'require' | undefined>(undefined);
+  const [sslMode, setSslMode] = useState<PostgresConfigAtLeastSafe['sslMode']>(undefined);
+  const [serverCaCert, setServerCaCert] = useState<string | undefined>(undefined);
+  const [clientCert, setClientCert] = useState<string | undefined>(undefined);
+  const [clientKey, setClientKey] = useState<string | undefined>(undefined);
+  const [serverName, setServerName] = useState<string | undefined>(undefined);
   const [isTestSuccessful, setIsTestSuccessful] = useState<boolean>(false);
   const [isTesting, setIsTesting] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -78,6 +82,10 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           user,
           password: password.type === 'known' ? password.value : undefined,
           sslMode,
+          serverCaCert,
+          clientCert,
+          clientKey,
+          serverName,
         },
         version: destination.version,
       });
@@ -99,6 +107,10 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
         user,
         password: password.type === 'known' ? password.value : '', // TODO: shouldn't allow empty string
         sslMode,
+        serverCaCert,
+        clientCert,
+        clientKey,
+        serverName,
       },
     });
     if (!response.ok) {
@@ -157,6 +169,10 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
               user,
               password: password.type === 'known' ? password.value : undefined,
               sslMode,
+              serverCaCert,
+              clientCert,
+              clientKey,
+              serverName,
             },
           } as any); // TODO: fix typing
           setIsTesting(false);
@@ -220,7 +236,7 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
             size="small"
             label="Host"
             variant="outlined"
-            helperText={`Ensure that the host is accessible from the Supaglue servers (CIDR range found in Destination docs).`}
+            helperText="Ensure that the host is accessible from the Supaglue servers (CIDR range found in Destination docs)."
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setHost(event.target.value);
               setIsDirty(true);
@@ -253,14 +269,99 @@ export default function PostgresDestinationDetailsPanel({ isLoading }: PostgresD
           <Select
             name="SSL Mode"
             onChange={(value: string) => {
-              setSslMode(value as 'disable' | 'allow' | 'prefer' | 'require');
+              setSslMode(value as PostgresConfigAtLeastSafe['sslMode']);
               setIsDirty(true);
               setIsTestSuccessful(false);
             }}
             value={sslMode ?? 'disable'}
-            options={[{ value: 'disable' }, { value: 'allow' }, { value: 'prefer' }, { value: 'require' }]}
+            options={[
+              { value: 'disable' },
+              { value: 'no-verify' },
+              { value: 'prefer' },
+              { value: 'require' },
+              { value: 'verify-ca' },
+              { value: 'verify-full' },
+            ]}
           />
         </Stack>
+
+        {sslMode === 'prefer' || sslMode === 'require' || sslMode === 'verify-ca' || sslMode === 'verify-full' ? (
+          <>
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">CA Certificate</Typography>
+              <TextField
+                required={false}
+                multiline={true}
+                minRows={3}
+                value={serverCaCert}
+                size="small"
+                variant="outlined"
+                placeholder="---BEGIN CERTIFICATE-----"
+                helperText="The CA certificate used to verify the server's certificate."
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                  setServerCaCert(event.target.value);
+                  setIsDirty(true);
+                  setIsTestSuccessful(false);
+                }}
+              />
+            </Stack>
+
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">Client Certificate</Typography>
+              <TextField
+                required={false}
+                multiline={true}
+                minRows={3}
+                value={clientCert}
+                size="small"
+                variant="outlined"
+                placeholder="---BEGIN CERTIFICATE-----"
+                helperText="The client public certificate used to authenticate to the server."
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                  setClientCert(event.target.value);
+                  setIsDirty(true);
+                  setIsTestSuccessful(false);
+                }}
+              />
+            </Stack>
+
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">Client Key</Typography>
+              <TextField
+                required={false}
+                multiline={true}
+                minRows={3}
+                value={clientKey}
+                size="small"
+                variant="outlined"
+                placeholder="---BEGIN RSA PRIVATE KEY-----"
+                helperText="The client private key used to authenticate to the server."
+                onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                  setClientKey(event.target.value);
+                  setIsDirty(true);
+                  setIsTestSuccessful(false);
+                }}
+              />
+            </Stack>
+
+            <Stack className="gap-2">
+              <Typography variant="subtitle1">Server Name</Typography>
+              <TextField
+                required={false}
+                value={serverName}
+                size="small"
+                label="Server Name"
+                variant="outlined"
+                helperText="The server name per the SNI TLS extension."
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setServerName(event.target.value);
+                  setIsDirty(true);
+                  setIsTestSuccessful(false);
+                }}
+              />
+            </Stack>
+          </>
+        ) : null}
 
         <Stack className="gap-2">
           <Typography variant="subtitle1">Database</Typography>
