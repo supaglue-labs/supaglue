@@ -41,3 +41,9 @@ export type PropertyUnified = {
   options?: PicklistOption[];
   rawDetails?: Record<string, unknown>;
 };
+
+export type CreatePropertyParams = Omit<PropertyUnified, 'id' | 'customName' | 'rawDetails'> & {
+  name: string;
+};
+
+export type UpdatePropertyParams = Partial<Omit<PropertyUnified, 'id' | 'customName' | 'rawDetails'>>;

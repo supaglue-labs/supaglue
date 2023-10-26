@@ -1,11 +1,14 @@
 import type {
+  CreatePropertyParams,
   ObjectRecordUpsertData,
   ObjectRecordWithMetadata,
   Property,
+  PropertyUnified,
   RemoteUserIdAndDetails,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
+  UpdatePropertyParams,
 } from '@supaglue/types';
 import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/association';
 import type { AssociationSchema, SimpleAssociationSchema } from '@supaglue/types/association_schema';
@@ -30,6 +33,10 @@ export interface RemoteClient {
   on<U extends keyof RemoteClientEvents>(event: U, listener: RemoteClientEvents[U]): this;
 
   listProperties(object: StandardOrCustomObjectDef): Promise<Property[]>;
+  listPropertiesUnified(objectName: string): Promise<PropertyUnified[]>;
+  getProperty(objectName: string, propertyName: string): Promise<PropertyUnified>;
+  createProperty(objectName: string, params: CreatePropertyParams): Promise<PropertyUnified>;
+  updateProperty(objectName: string, propertyName: string, params: UpdatePropertyParams): Promise<PropertyUnified>;
 
   createObjectRecord(object: StandardOrCustomObject, data: ObjectRecordUpsertData): Promise<string>;
   getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecordWithMetadata>;
@@ -93,11 +100,31 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   }
 
   public listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
+  }
+
+  public listPropertiesUnified(objectName: string): Promise<PropertyUnified[]> {
+    throw new NotImplementedError();
+  }
+
+  getProperty(objectName: string, propertyName: string): Promise<PropertyUnified> {
+    throw new NotImplementedError();
+  }
+
+  public createProperty(objectName: string, params: CreatePropertyParams): Promise<PropertyUnified> {
+    throw new NotImplementedError();
+  }
+
+  public updateProperty(
+    objectName: string,
+    propertyName: string,
+    params: UpdatePropertyParams
+  ): Promise<PropertyUnified> {
+    throw new NotImplementedError();
   }
 
   public async createObjectRecord(object: StandardOrCustomObject, data: ObjectRecordUpsertData): Promise<string> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public async getObjectRecord(
@@ -105,7 +132,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     id: string,
     fields: string[]
   ): Promise<ObjectRecordWithMetadata> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public async updateObjectRecord(
@@ -113,27 +140,27 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     id: string,
     data: ObjectRecordUpsertData
   ): Promise<void> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public async listStandardObjects(): Promise<string[]> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async getCustomObjectSchema(id: string): Promise<CustomObjectSchema> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async createCustomObjectSchema(params: CustomObjectSchemaCreateParams): Promise<string> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async updateCustomObjectSchema(params: CustomObjectSchemaUpdateParams): Promise<void> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public async listAssociationSchemas(sourceObject: string, targetObject: string): Promise<SimpleAssociationSchema[]> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async createAssociationSchema(
     sourceObject: string,
@@ -141,14 +168,14 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     keyName: string,
     displayName: string
   ): Promise<AssociationSchema> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public async listAssociations(params: ListAssociationsParams): Promise<Association[]> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async createAssociation(params: AssociationCreateParams): Promise<Association> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public async listStandardObjectRecords(
@@ -157,7 +184,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public listCustomObjectRecords(
@@ -166,7 +193,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {

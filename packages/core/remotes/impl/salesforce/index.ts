@@ -75,6 +75,7 @@ import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
 import { toMappedProperties } from '../../utils/properties';
+import { capitalizeString } from '../../utils/string';
 import {
   fromSalesforceAccountToAccount,
   fromSalesforceContactToContact,
@@ -1772,10 +1773,3 @@ export const authConfig: ConnectorAuthConfig = {
   authorizeHost: 'https://login.salesforce.com',
   authorizePath: '/services/oauth2/authorize',
 };
-
-function capitalizeString(str: string): string {
-  if (!str) {
-    return str;
-  }
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}

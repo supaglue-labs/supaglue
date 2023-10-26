@@ -3,7 +3,7 @@ properties:
   id:
     type: string
     description: The machine name of the property as it appears in the third-party Provider.
-    example: FirstName
+    example: 1234523
   name:
     type: string
     description: |

@@ -6,6 +6,7 @@ import type {
 } from '@hubspot/api-client/lib/codegen/crm/owners';
 import type {
   ConnectionUnsafe,
+  CreatePropertyParams,
   CRMProvider,
   ListedObjectRecord,
   ListedObjectRecordRawDataOnly,
@@ -14,11 +15,13 @@ import type {
   ObjectRecordWithMetadata,
   PaginationParams,
   Property,
+  PropertyUnified,
   Provider,
   RemoteUserIdAndDetails,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
+  UpdatePropertyParams,
 } from '@supaglue/types';
 import type { Association, AssociationCreateParams, ListAssociationsParams } from '@supaglue/types/association';
 import type { AssociationSchema, SimpleAssociationSchema } from '@supaglue/types/association_schema';
@@ -101,13 +104,19 @@ import {
   toHubspotAccountUpdateParams,
   toHubspotContactCreateParams,
   toHubspotContactUpdateParams,
+  toHubspotCreatePropertyParams,
   toHubspotOpportunityCreateParams,
   toHubspotOpportunityUpdateParams,
   toHubspotTypeAndFieldType,
+  toHubspotUpdatePropertyParams,
+  toPropertyUnified,
 } from './mappers';
 
 const HUBSPOT_RECORD_LIMIT = 100; // remote API limit
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
+
+export const DEFAULT_PROPERTY_GROUP = 'custom_properties';
+const DEFAULT_PROPERTY_GROUP_LABEL = 'Custom Properties';
 
 // TODO move this to lekko
 const FETCH_ASSOCIATIONS_APPLICATION_IDS = ['9773053e-a13f-4249-b641-301a51952708'];
@@ -1211,6 +1220,84 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
     return await this.listPropertiesForRawObjectName(object.name);
+  }
+
+  public override async listPropertiesUnified(objectName: string): Promise<PropertyUnified[]> {
+    const objectSchema = await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      return await this.#client.crm.schemas.coreApi.getById(objectName);
+    });
+    return objectSchema.properties.map((property) =>
+      toPropertyUnified(property, new Set(objectSchema.requiredProperties))
+    );
+  }
+
+  public override async getProperty(objectName: string, propertyName: string): Promise<PropertyUnified> {
+    const objectSchema = await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      return await this.#client.crm.schemas.coreApi.getById(objectName);
+    });
+    const found = objectSchema.properties.find((property) => property.name === propertyName);
+    if (!found) {
+      throw new NotFoundError(`Property ${propertyName} not found on object ${objectName}`);
+    }
+    return toPropertyUnified(found, new Set(objectSchema.requiredProperties));
+  }
+
+  public override async createProperty(objectName: string, params: CreatePropertyParams): Promise<PropertyUnified> {
+    if (objectName === 'user') {
+      throw new BadRequestError('Cannot create properties on the user object');
+    }
+    const groupName = params.groupName ?? DEFAULT_PROPERTY_GROUP;
+    await this.#upsertPropertyGroup(objectName, groupName);
+    const created = await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      return await this.#client.crm.properties.coreApi.create(
+        objectName,
+        toHubspotCreatePropertyParams(objectName, params)
+      );
+    });
+    return toPropertyUnified(created, new Set(params.isRequired ? [params.name] : []));
+  }
+
+  public override async updateProperty(
+    objectName: string,
+    propertyName: string,
+    params: UpdatePropertyParams
+  ): Promise<PropertyUnified> {
+    if (objectName === 'user') {
+      throw new BadRequestError('Cannot create properties on the user object');
+    }
+    if (params.groupName) {
+      await this.#upsertPropertyGroup(objectName, params.groupName);
+    }
+    await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      return await this.#client.crm.properties.coreApi.update(
+        objectName,
+        propertyName,
+        toHubspotUpdatePropertyParams(params)
+      );
+    });
+    return await this.getProperty(objectName, propertyName);
+  }
+
+  async #upsertPropertyGroup(objectName: string, groupName: string) {
+    await retryWhenRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      try {
+        await this.#client.crm.properties.groupsApi.create(objectName, {
+          name: groupName,
+          label: groupName,
+        });
+      } catch (e: any) {
+        if (e.code === 409) {
+          // group already exists, so we're good
+          return;
+        }
+        throw e;
+      }
+    });
   }
 
   public async listPropertiesForRawObjectName(objectName: string): Promise<Property[]> {

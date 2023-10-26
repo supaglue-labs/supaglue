@@ -19,7 +19,7 @@ properties:
   group_name:
     type: string
     example: supaglue
-    description: Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't.
+    description: Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. If not specified, Supaglue will create the field in the 'custom_properties' group.
   type:
     $ref: ../../../../common/components/schemas/property_type.yaml
   precision:
