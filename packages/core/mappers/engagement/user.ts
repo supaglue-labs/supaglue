@@ -11,5 +11,6 @@ export const toSnakecasedKeysEngagementUser = (user: User): SnakecasedKeysEngage
     updated_at: user.updatedAt,
     is_deleted: user.isDeleted,
     raw_data: user.rawData,
+    is_locked: user.isLocked,
   };
 };

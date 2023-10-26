@@ -10,5 +10,6 @@ export const toSnakecasedKeysMailbox = (mailbox: Mailbox): SnakecasedKeysMailbox
     updated_at: mailbox.updatedAt,
     is_deleted: mailbox.isDeleted,
     raw_data: mailbox.rawData,
+    is_disabled: mailbox.isDisabled,
   };
 };
