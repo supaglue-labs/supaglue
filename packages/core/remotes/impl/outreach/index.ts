@@ -22,6 +22,7 @@ import type {
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
+import z from 'zod';
 import {
   BadRequestError,
   ConflictError,
@@ -60,6 +61,70 @@ const OUTREACH_RECORD_LIMIT = 1000;
 const DEFAULT_LIST_PARAMS = {
   'page[size]': OUTREACH_RECORD_LIMIT,
 };
+
+export type OutreachUser = z.infer<typeof outreachUser>;
+export type OutreachMailbox = z.infer<typeof outreachMailbox>;
+export type OutreachSequence = z.infer<typeof outreachSequence>;
+
+export const outreachSequence = z
+  .object({
+    id: z.number(),
+    attributes: z.object({
+      name: z.string(),
+      description: z.string().nullable(),
+      locked: z.boolean(),
+      lockedAt: z.string().datetime(),
+      shareType: z.enum(['private', 'read_only', 'shared']),
+      enabled: z.boolean(),
+      deliverCount: z.number().nullable(),
+      bounceCount: z.number().nullable(),
+      clickCount: z.number().nullable(),
+      openCount: z.number().nullable(),
+      optOutCount: z.number().nullable(),
+      replyCount: z.number().nullable(),
+      scheduleCount: z.number().nullable(),
+      failureCount: z.number().nullable(),
+      neutralReplyCount: z.number().nullable(),
+      negativeReplyCount: z.number().nullable(),
+      positiveReplyCount: z.number().nullable(),
+      numRepliedProspects: z.number().nullable(),
+      numContactedProspects: z.number().nullable(),
+      sequenceStepCount: z.number(),
+      tags: z.array(z.string()),
+      createdAt: z.string().datetime(),
+      updatedAt: z.string().datetime(),
+    }),
+  })
+  .catchall(z.any());
+
+export const outreachMailbox = z
+  .object({
+    id: z.number(),
+    attributes: z
+      .object({
+        email: z.string(),
+        userId: z.number(),
+        createdAt: z.string().datetime(),
+        updatedAt: z.string().datetime(),
+        sendDisabled: z.boolean(),
+      })
+      .catchall(z.any()),
+  })
+  .catchall(z.any());
+
+export const outreachUser = z
+  .object({
+    id: z.number(),
+    attributes: z.object({
+      firstName: z.string(),
+      lastName: z.string(),
+      email: z.string(),
+      createdAt: z.string().datetime(),
+      updatedAt: z.string().datetime(),
+      locked: z.boolean(),
+    }),
+  })
+  .catchall(z.any());
 
 export type OutreachRecord = {
   id: number;

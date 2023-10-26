@@ -7,7 +7,7 @@ export type SnakecasedKeysMailboxWithTenant = SnakecasedKeysMailbox & Snakecased
 type CoreMailbox = {
   email: string | null;
   userId: string | null;
-  isDisabled?: boolean | null;
+  isDisabled: boolean | null;
 };
 
 export type Mailbox = BaseEngagementModel & CoreMailbox;
