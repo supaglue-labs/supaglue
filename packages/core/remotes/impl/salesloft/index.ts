@@ -144,12 +144,12 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.#getRecord<Contact>(id, '/v2/people', fromSalesloftPersonToContact);
       case 'user':
-        return await this.#getRecord<User>(id, '/v2/users', fromSalesloftUserToUser);
+        return await this.#getRecord<User>(id, '/v2/users', (r: any) => fromSalesloftUserToUser(r));
       case 'account':
         return await this.#getRecord<Account>(id, '/v2/accounts', fromSalesloftAccountToAccount);
       case 'sequence': {
         const stepCount = await this.#getCadenceStepCount(id);
-        return await this.#getRecord<Sequence>(id, '/v2/cadences', (data) =>
+        return await this.#getRecord<Sequence>(id, '/v2/cadences', (data: any) =>
           fromSalesloftCadenceToSequence(data, stepCount)
         );
       }
@@ -231,7 +231,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     const stepCounts = await this.#getCadenceStepCounts();
     return await this.#listRecords(
       '/v2/cadences',
-      (data) => fromSalesloftCadenceToSequence(data, stepCounts[data.id?.toString()] ?? 0),
+      (data: any) => fromSalesloftCadenceToSequence(data, stepCounts[data.id?.toString()] ?? 0),
       updatedAfter
     );
   }
@@ -267,7 +267,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.#listRecords(`/v2/people`, fromSalesloftPersonToContact, updatedAfter);
       case 'user':
-        return await this.#listRecords(`/v2/users`, fromSalesloftUserToUser, updatedAfter);
+        return await this.#listRecords(`/v2/users`, (r: any) => fromSalesloftUserToUser(r), updatedAfter);
       case 'account':
         return await this.#listRecords(`/v2/accounts`, fromSalesloftAccountToAccount, updatedAfter);
       case 'sequence':

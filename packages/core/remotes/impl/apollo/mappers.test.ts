@@ -12,7 +12,6 @@ import {
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
   fromApolloEmailerCampaignToSequence,
-  fromApolloSequenceToSequence,
   fromApolloUserToUser,
   getRawAddressString,
   toApolloAccountCreateParams,
@@ -125,63 +124,10 @@ describe('Conversion functions', () => {
       lastModifiedAt: new Date('2023-09-12T10:00:00Z'),
       isDeleted: false,
       rawData: record,
+      isLocked: null,
     };
 
     expect(fromApolloUserToUser(record)).toEqual(expected);
-  });
-  it('should convert Apollo sequence to sequence correctly', () => {
-    const record = {
-      id: '100',
-      name: 'Test Sequence',
-      active: true,
-      num_steps: 3,
-      unique_scheduled: 100,
-      unique_delivered: 90,
-      unique_bounced: 5,
-      unique_clicked: 20,
-      unique_opened: 70,
-      unique_replied: 10,
-      unique_demoed: 1,
-      bounce_rate: 0.05,
-      open_rate: 0.7,
-      click_rate: 0.2,
-      reply_rate: 0.1,
-      spam_blocked_rate: 0.01,
-      demo_rate: 0.01,
-      created_at: '2023-09-12T10:00:00Z',
-      archived: false,
-      user_id: '1',
-    };
-
-    const expected = {
-      id: '100',
-      name: 'Test Sequence',
-      isEnabled: true,
-      numSteps: 3,
-      tags: [],
-      metrics: {
-        uniqueScheduled: 100,
-        uniqueDelivered: 90,
-        uniqueBounced: 5,
-        uniqueClicked: 20,
-        uniqueOpened: 70,
-        uniqueReplied: 10,
-        uniqueDemoed: 1,
-        bounceRate: 0.05,
-        openRate: 0.7,
-        clickRate: 0.2,
-        replyRate: 0.1,
-        spamBlockedRate: 0.01,
-        demoRate: 0.01,
-      },
-      ownerId: '1',
-      createdAt: new Date('2023-09-12T10:00:00Z'),
-      updatedAt: null,
-      lastModifiedAt: new Date('2023-09-12T10:00:00Z'),
-      isDeleted: false,
-      rawData: record,
-    };
-    expect(fromApolloSequenceToSequence(record)).toEqual(expected);
   });
 
   it('should convert Apollo email accounts to mailbox correctly', () => {
@@ -201,6 +147,7 @@ describe('Conversion functions', () => {
       lastModifiedAt: new Date('2023-09-12T10:00:00Z'),
       isDeleted: false,
       rawData: record,
+      isDisabled: null,
     };
 
     expect(fromApolloEmailAccountsToMailbox(record)).toEqual(expected);
@@ -399,6 +346,7 @@ describe('Conversion functions', () => {
       {
         "createdAt": 2022-01-01T00:00:00.000Z,
         "id": "123456",
+        "isArchived": false,
         "isDeleted": false,
         "isEnabled": true,
         "metrics": {
@@ -449,6 +397,7 @@ describe('Conversion functions', () => {
           "unique_unsubscribed": 5,
           "user_id": "789",
         },
+        "shareType": "team",
         "tags": [
           "lbl1234",
           "lbl_zzzz",

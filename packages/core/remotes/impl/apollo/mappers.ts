@@ -100,38 +100,7 @@ export const fromApolloUserToUser = (record: Record<string, any>): User => {
     lastModifiedAt: new Date(record.created_at),
     isDeleted: false,
     rawData: record,
-  };
-};
-
-export const fromApolloSequenceToSequence = (record: Record<string, any>): Sequence => {
-  return {
-    id: record.id,
-    name: record.name ?? null,
-    isEnabled: record.active,
-    numSteps: record.num_steps,
-    tags: [],
-    metrics: {
-      uniqueScheduled: record.unique_scheduled ?? 0,
-      uniqueDelivered: record.unique_delivered ?? 0,
-      uniqueBounced: record.unique_bounced ?? 0,
-      uniqueClicked: record.unique_clicked ?? 0,
-      uniqueOpened: record.unique_opened ?? 0,
-      uniqueReplied: record.unique_replied ?? 0,
-      uniqueDemoed: record.unique_demoed ?? 0,
-      bounceRate: record.bounce_rate ?? 0.0,
-      openRate: record.open_rate ?? 0.0,
-      clickRate: record.click_rate ?? 0.0,
-      replyRate: record.reply_rate ?? 0.0,
-      spamBlockedRate: record.spam_blocked_rate ?? 0.0,
-      demoRate: record.demo_rate ?? 0.0,
-    },
-    ownerId: record.user_id ?? null,
-    createdAt: new Date(record.created_at),
-    // Not supported by apollo
-    updatedAt: null,
-    lastModifiedAt: new Date(record.created_at),
-    isDeleted: record.archived ?? false,
-    rawData: record,
+    isLocked: null, // apollo has no concept of this
   };
 };
 
@@ -145,6 +114,7 @@ export const fromApolloEmailAccountsToMailbox = (record: Record<string, any>): M
     lastModifiedAt: new Date(record.last_synced_at),
     isDeleted: false,
     rawData: record,
+    isDisabled: record.active != null ? !record.active : null,
   };
 };
 
@@ -247,6 +217,8 @@ export const fromApolloEmailerCampaignToSequence = (c: ApolloEmailerCampaign): S
   numSteps: c.num_steps ?? 0,
   isEnabled: c.active ?? false,
   isDeleted: c.archived,
+  isArchived: c.archived,
+  shareType: c.permissions === 'private' ? 'private' : 'team',
   lastModifiedAt: new Date(), // Apollo does not return this so we have no way of knowning
   tags: c.label_ids, // Apollo labels require explicit ids, but we don't have mapping for them
   metrics: camelcaseKeys(

@@ -32,6 +32,11 @@ properties:
     type: string
     format: date-time
     example: '2022-02-27T00:00:00Z' 
+  is_locked: 
+    type: boolean
+    nullable: true
+    description: When locked, cannot send email or take most actions in the app. This is null when provider does not have such concept (e.g. apollo)
+  
 required:
   - id
   - first_name

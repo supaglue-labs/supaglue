@@ -5,7 +5,6 @@
  */
 
 import { describe, expect, it } from '@jest/globals';
-import type { User } from '@sentry/node';
 import type {
   Account,
   AccountCreateParams,
@@ -22,8 +21,9 @@ import type {
   SequenceStepCreateParams,
   SequenceTemplateCreateParams,
   SequenceTemplateId,
+  User,
 } from '@supaglue/types/engagement';
-import type { OutreachRecord } from '.';
+import type { OutreachMailbox, OutreachRecord, OutreachSequence, OutreachUser } from '.';
 import { BadRequestError } from '../../../errors';
 import {
   fromOutreachAccountToAccount,
@@ -45,11 +45,14 @@ import {
 describe('Outreach mappers', () => {
   describe('fromOutreachSequenceToSequence Function', () => {
     it('should convert a valid OutreachRecord to Sequence', () => {
-      const record: OutreachRecord = {
+      const record: OutreachSequence = {
         id: 1,
         attributes: {
           name: 'Test Sequence',
           enabled: true,
+          locked: false,
+          lockedAt: null,
+          shareType: 'read_only',
           sequenceStepCount: 5,
           tags: ['tag1', 'tag2'],
           scheduleCount: 10,
@@ -73,6 +76,8 @@ describe('Outreach mappers', () => {
         isEnabled: true,
         numSteps: 5,
         tags: ['tag1', 'tag2'],
+        isArchived: false,
+        shareType: 'team',
         metrics: {
           scheduleCount: 10,
           openCount: 0,
@@ -138,9 +143,11 @@ describe('Outreach mappers', () => {
         lastModifiedAt: new Date('2023-09-14T12:34:56.789Z'),
         ownerId: null,
         rawData: record,
+        isArchived: undefined,
+        shareType: 'team',
       };
 
-      expect(fromOutreachSequenceToSequence(record)).toEqual(expectedResult);
+      expect(fromOutreachSequenceToSequence(record as unknown as OutreachSequence)).toEqual(expectedResult);
     });
 
     // Add more tests as necessary
@@ -170,9 +177,10 @@ describe('Outreach mappers', () => {
         isDeleted: false,
         lastModifiedAt: new Date('2023-09-11T12:34:56.789Z'),
         rawData: record,
+        isLocked: undefined,
       };
 
-      expect(fromOutreachUserToUser(record)).toEqual(expectedResult);
+      expect(fromOutreachUserToUser(record as unknown as OutreachUser)).toEqual(expectedResult);
     });
 
     it('should handle missing attributes gracefully', () => {
@@ -197,9 +205,10 @@ describe('Outreach mappers', () => {
         isDeleted: false,
         lastModifiedAt: new Date('2023-09-12T12:34:56.789Z'),
         rawData: record,
+        isLocked: undefined,
       };
 
-      expect(fromOutreachUserToUser(record)).toEqual(expectedResult);
+      expect(fromOutreachUserToUser(record as any as OutreachUser)).toEqual(expectedResult);
     });
   });
   describe('fromOutreachMailboxToMailbox Function', () => {
@@ -230,9 +239,10 @@ describe('Outreach mappers', () => {
         lastModifiedAt: new Date('2023-09-13T12:34:56.789Z'),
         userId: '100',
         rawData: record,
+        isDisabled: undefined,
       };
 
-      expect(fromOutreachMailboxToMailbox(record)).toEqual(expectedResult);
+      expect(fromOutreachMailboxToMailbox(record as any as OutreachMailbox)).toEqual(expectedResult);
     });
 
     it('should handle missing attributes gracefully', () => {
@@ -255,9 +265,10 @@ describe('Outreach mappers', () => {
         lastModifiedAt: new Date('2023-09-14T12:34:56.789Z'),
         userId: null,
         rawData: record,
+        isDisabled: undefined,
       };
 
-      expect(fromOutreachMailboxToMailbox(record)).toEqual(expectedResult);
+      expect(fromOutreachMailboxToMailbox(record as any as OutreachMailbox)).toEqual(expectedResult);
     });
   });
   describe('fromOutreachAccountToAccount Function', () => {

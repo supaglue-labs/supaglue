@@ -347,6 +347,8 @@ export interface components {
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
+      /** @description When disabled, cannot be used to send email. */
+      is_disabled?: boolean | null;
     };
     user: {
       /** @example 54312 */
@@ -374,6 +376,8 @@ export interface components {
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
+      /** @description When locked, cannot send email or take most actions in the app. This is null when provider does not have such concept (e.g. apollo) */
+      is_locked?: boolean | null;
     };
     sequence: {
       /** @example 95fe0d29-e8cc-48ac-9afd-e02d8037a597 */
@@ -404,6 +408,13 @@ export interface components {
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
+      /** @description When archived, cannot add contact to sequence or send mail. This is null when provider does not have such concept (e.g. apollo) */
+      is_archived?: boolean | null;
+      /**
+       * @description The share type of the sequence. If `team` will share with the whole team. `private` will only share with the owner. 
+       * @enum {string}
+       */
+      share_type?: "team" | "private";
     };
     create_sequence: {
       name: string;
