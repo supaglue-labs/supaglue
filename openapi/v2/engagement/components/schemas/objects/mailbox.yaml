@@ -28,6 +28,10 @@ properties:
     type: string
     format: date-time
     example: '2022-02-27T00:00:00Z' 
+  is_disabled: 
+    type: boolean
+    nullable: true
+    description: When disabled, cannot be used to send email.
 required:
   - id
   - email

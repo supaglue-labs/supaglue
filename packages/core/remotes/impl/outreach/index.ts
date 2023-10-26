@@ -22,6 +22,7 @@ import type {
 } from '@supaglue/types/engagement';
 import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
+import z from 'zod';
 import {
   BadRequestError,
   ConflictError,
@@ -60,6 +61,70 @@ const OUTREACH_RECORD_LIMIT = 1000;
 const DEFAULT_LIST_PARAMS = {
   'page[size]': OUTREACH_RECORD_LIMIT,
 };
+
+export type OutreachUser = z.infer<typeof outreachUser>;
+export type OutreachMailbox = z.infer<typeof outreachMailbox>;
+export type OutreachSequence = z.infer<typeof outreachSequence>;
+
+export const outreachSequence = z
+  .object({
+    id: z.number(),
+    attributes: z.object({
+      name: z.string(),
+      description: z.string().nullish(),
+      locked: z.boolean(),
+      lockedAt: z.string().datetime().nullish(),
+      shareType: z.enum(['private', 'read_only', 'shared']),
+      enabled: z.boolean(),
+      deliverCount: z.number().nullish(),
+      bounceCount: z.number().nullish(),
+      clickCount: z.number().nullish(),
+      openCount: z.number().nullish(),
+      optOutCount: z.number().nullish(),
+      replyCount: z.number().nullish(),
+      scheduleCount: z.number().nullish(),
+      failureCount: z.number().nullish(),
+      neutralReplyCount: z.number().nullish(),
+      negativeReplyCount: z.number().nullish(),
+      positiveReplyCount: z.number().nullish(),
+      numRepliedProspects: z.number().nullish(),
+      numContactedProspects: z.number().nullish(),
+      sequenceStepCount: z.number(),
+      tags: z.array(z.string()),
+      createdAt: z.string().datetime(),
+      updatedAt: z.string().datetime(),
+    }),
+  })
+  .catchall(z.any());
+
+export const outreachMailbox = z
+  .object({
+    id: z.number(),
+    attributes: z
+      .object({
+        email: z.string(),
+        userId: z.number(),
+        createdAt: z.string().datetime(),
+        updatedAt: z.string().datetime(),
+        sendDisabled: z.boolean(),
+      })
+      .catchall(z.any()),
+  })
+  .catchall(z.any());
+
+export const outreachUser = z
+  .object({
+    id: z.number(),
+    attributes: z.object({
+      firstName: z.string(),
+      lastName: z.string(),
+      email: z.string(),
+      createdAt: z.string().datetime(),
+      updatedAt: z.string().datetime(),
+      locked: z.boolean(),
+    }),
+  })
+  .catchall(z.any());
 
 export type OutreachRecord = {
   id: number;
@@ -1279,11 +1344,11 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.#getRecord(id, '/api/v2/prospects', fromOutreachProspectToContact);
       case 'user':
-        return await this.#getRecord(id, '/api/v2/users', fromOutreachUserToUser);
+        return await this.#getRecord(id, '/api/v2/users', (r: any) => fromOutreachUserToUser(r));
       case 'sequence':
-        return await this.#getRecord(id, '/api/v2/sequences', fromOutreachSequenceToSequence);
+        return await this.#getRecord(id, '/api/v2/sequences', (r: any) => fromOutreachSequenceToSequence(r));
       case 'mailbox':
-        return await this.#getRecord(id, '/api/v2/mailboxes', fromOutreachMailboxToMailbox);
+        return await this.#getRecord(id, '/api/v2/mailboxes', (r: any) => fromOutreachMailboxToMailbox(r));
       case 'sequence_state':
         return await this.#getRecord(id, '/api/v2/sequenceStates', fromOutreachSequenceStateToSequenceState);
       case 'account':
@@ -1308,11 +1373,15 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.#listRecords('/api/v2/prospects', fromOutreachProspectToContact, updatedAfter);
       case 'user':
-        return await this.#listRecords('/api/v2/users', fromOutreachUserToUser, updatedAfter);
+        return await this.#listRecords('/api/v2/users', (r: any) => fromOutreachUserToUser(r), updatedAfter);
       case 'sequence':
-        return await this.#listRecords('/api/v2/sequences', fromOutreachSequenceToSequence, updatedAfter);
+        return await this.#listRecords(
+          '/api/v2/sequences',
+          (r: any) => fromOutreachSequenceToSequence(r),
+          updatedAfter
+        );
       case 'mailbox':
-        return await this.#listRecords('/api/v2/mailboxes', fromOutreachMailboxToMailbox, updatedAfter);
+        return await this.#listRecords('/api/v2/mailboxes', (r: any) => fromOutreachMailboxToMailbox(r), updatedAfter);
       case 'sequence_state':
         return await this.#listRecords(
           '/api/v2/sequenceStates',

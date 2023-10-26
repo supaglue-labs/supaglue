@@ -13,8 +13,106 @@ import type {
   User,
 } from '@supaglue/types/engagement';
 import { camelcaseKeys } from '@supaglue/utils';
+import z from 'zod';
 import { BadRequestError } from '../../../errors';
 
+export const salesloftPerson = z.object({
+  id: z.number(),
+  first_name: z.string().nullish(),
+  last_name: z.string().nullish(),
+  city: z.string().nullish(),
+  state: z.string().nullish(),
+  country: z.string().nullish(),
+  title: z.string().nullish(),
+  owner: z.object({ id: z.number() }).nullish(),
+  account: z.object({ id: z.number() }).nullish(),
+  phone: z.string().nullish(),
+  home_phone: z.string().nullish(),
+  mobile_phone: z.string().nullish(),
+  email_address: z.string().nullish(),
+  secondary_email_address: z.string().nullish(),
+  personal_email_address: z.string().nullish(),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime(),
+  counts: z.object({
+    emails_sent: z.number().nullish(),
+    emails_viewed: z.number().nullish(),
+    emails_clicked: z.number().nullish(),
+    emails_replied_to: z.number().nullish(),
+    emails_bounced: z.number().nullish(),
+    calls: z.number().nullish(),
+  }),
+  custom_fields: z.record(z.any()),
+});
+
+export type SalesloftPerson = z.infer<typeof salesloftPerson>;
+
+export const salesloftUser = z
+  .object({
+    id: z.number(),
+    guid: z.string(),
+    created_at: z.string().datetime(),
+    updated_at: z.string().datetime(),
+    first_name: z.string().nullish(),
+    name: z.string().nullish(),
+    last_name: z.string().nullish(),
+    job_role: z.string().nullish(),
+    active: z.boolean(),
+    time_zone: z.string().nullish(),
+    slack_username: z.string().nullish(),
+    twitter_handle: z.string().nullish(),
+    email: z.string().nullish(),
+    email_client_email_address: z.string().nullish(),
+    sending_email_address: z.string().nullish(),
+    from_address: z.string().nullish(),
+    full_email_address: z.string().nullish(),
+    bcc_email_address: z.string().nullish(),
+    work_country: z.string().nullish(),
+    email_signature: z.string().nullish(),
+    email_signature_type: z.string().nullish(),
+    email_signature_click_tracking_disabled: z.boolean().nullish(),
+    team_admin: z.boolean().nullish(),
+    local_dial_enabled: z.boolean().nullish(),
+    click_to_call_enabled: z.boolean().nullish(),
+    email_client_configured: z.boolean().nullish(),
+    crm_connected: z.boolean().nullish(),
+  })
+  .catchall(z.any());
+
+export type SalesloftUser = z.infer<typeof salesloftUser>;
+
+export const salesloftCadence = z
+  .object({
+    id: z.number(),
+    created_at: z.string().datetime(),
+    updated_at: z.string().datetime(),
+    name: z.string().nullish(),
+    current_state: z.enum(['draft', 'active', 'archived', 'expired', 'deleted']),
+    archived_at: z.string().nullish(),
+    team_cadence: z.boolean().nullish(),
+    shared: z.boolean(),
+    remove_bounces_enabled: z.boolean().nullish(),
+    remove_replies_enabled: z.boolean().nullish(),
+    opt_out_link_included: z.boolean().nullish(),
+    draft: z.boolean().nullish(),
+    cadence_framework_id: z.number().nullish(),
+    cadence_function: z.string().nullish(),
+    external_identifier: z.string().nullish(),
+    tags: z.array(z.string()),
+    counts: z
+      .object({
+        cadence_people: z.number().nullish(),
+        people_acted_on_count: z.number().nullish(),
+        target_daily_people: z.number().nullish(),
+        opportunities_created: z.number().nullish(),
+        meetings_booked: z.number().nullish(),
+      })
+
+      .nullish(),
+  })
+  .catchall(z.any());
+
+export type SalesloftCadence = z.infer<typeof salesloftCadence>;
 export const fromSalesloftAccountToAccount = (record: Record<string, any>): Account => {
   return {
     id: record.id.toString(),
@@ -105,7 +203,7 @@ export const fromSalesloftPersonToPhoneNumbers = (record: Record<string, any>): 
   return out;
 };
 
-export const fromSalesloftUserToUser = (record: Record<string, any>): User => {
+export const fromSalesloftUserToUser = (record: SalesloftUser): User => {
   return {
     id: record.id.toString(),
     firstName: record.first_name ?? null,
@@ -116,16 +214,17 @@ export const fromSalesloftUserToUser = (record: Record<string, any>): User => {
     lastModifiedAt: new Date(record.updated_at),
     isDeleted: false,
     rawData: record,
+    isLocked: record.active,
   };
 };
 
-export const fromSalesloftCadenceToSequence = (record: Record<string, any>, stepCount: number): Sequence => {
+export const fromSalesloftCadenceToSequence = (record: SalesloftCadence, stepCount: number): Sequence => {
   return {
     id: record.id.toString(),
     name: record.name ?? null,
     isEnabled: !record.draft,
     numSteps: stepCount,
-    metrics: camelcaseKeys(record.counts),
+    metrics: camelcaseKeys(record.counts ?? {}),
     tags: record.tags ?? [],
     ownerId: record.owner?.id?.toString() ?? null,
     createdAt: new Date(record.created_at),
@@ -133,6 +232,8 @@ export const fromSalesloftCadenceToSequence = (record: Record<string, any>, step
     lastModifiedAt: new Date(record.updated_at),
     isDeleted: !!record.archived_at,
     rawData: record,
+    isArchived: record.current_state === 'archived',
+    shareType: record.shared ? 'team' : 'private',
   };
 };
 

@@ -14,5 +14,7 @@ export const toSnakecasedKeysSequence = (sequence: Sequence): SnakecasedKeysSequ
     updated_at: sequence.updatedAt,
     is_deleted: sequence.isDeleted,
     raw_data: sequence.rawData,
+    is_archived: sequence.isArchived,
+    share_type: sequence.shareType,
   };
 };

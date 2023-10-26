@@ -17,67 +17,71 @@ import type {
   SequenceTemplateCreateParams,
   User,
 } from '@supaglue/types/engagement';
-import type { OutreachRecord } from '.';
+import type { OutreachMailbox, OutreachRecord, OutreachSequence, OutreachUser } from '.';
 import { BadRequestError } from '../../../errors';
 import { removeUndefinedValues } from '../../../lib';
 
-export const fromOutreachUserToUser = (record: OutreachRecord): User => {
+export const fromOutreachUserToUser = (record: OutreachUser): User => {
   const { id, attributes } = record;
   return {
     id: id.toString(),
-    firstName: (attributes.firstName as string) ?? null,
-    lastName: (attributes.lastName as string) ?? null,
-    email: (attributes.email as string) ?? null,
-    createdAt: new Date(attributes.createdAt as string),
-    updatedAt: new Date(attributes.updatedAt as string),
+    firstName: attributes.firstName ?? null,
+    lastName: attributes.lastName ?? null,
+    email: attributes.email ?? null,
+    createdAt: new Date(attributes.createdAt),
+    updatedAt: new Date(attributes.updatedAt),
+    isLocked: attributes.locked,
     isDeleted: false,
-    lastModifiedAt: new Date(attributes.updatedAt as string),
+    lastModifiedAt: new Date(attributes.updatedAt),
     rawData: record,
   };
 };
 
-export const fromOutreachSequenceToSequence = (record: OutreachRecord): Sequence => {
+export const fromOutreachSequenceToSequence = (record: OutreachSequence): Sequence => {
   const { id, attributes, relationships } = record;
   return {
     id: id.toString(),
-    name: (attributes.name as string) ?? null,
-    isEnabled: attributes.enabled as boolean,
-    numSteps: attributes.sequenceStepCount as number,
-    tags: attributes.tags as string[],
+    name: attributes.name ?? null,
+    isEnabled: attributes.enabled,
+    numSteps: attributes.sequenceStepCount,
+    tags: attributes.tags,
+    isArchived: attributes.locked,
+    shareType: attributes.shareType === 'private' ? 'private' : 'team',
     metrics: {
-      scheduleCount: (attributes.scheduleCount as number) ?? 0,
-      openCount: (attributes.openCount as number) ?? 0,
-      optOutCount: (attributes.optOutCount as number) ?? 0,
-      clickCount: (attributes.clickCount as number) ?? 0,
-      replyCount: (attributes.replyCount as number) ?? 0,
-      deliverCount: (attributes.deliverCount as number) ?? 0,
-      failureCount: (attributes.failureCount as number) ?? 0,
-      neutralReplyCount: (attributes.neutralReplyCount as number) ?? 0,
-      negativeReplyCount: (attributes.negativeReplyCount as number) ?? 0,
-      positiveReplyCount: (attributes.positiveReplyCount as number) ?? 0,
-      numRepliedProspects: (attributes.numRepliedProspects as number) ?? 0,
-      numContactedProspects: (attributes.numContactedProspects as number) ?? 0,
+      scheduleCount: attributes.scheduleCount ?? 0,
+      openCount: attributes.openCount ?? 0,
+      optOutCount: attributes.optOutCount ?? 0,
+      clickCount: attributes.clickCount ?? 0,
+      replyCount: attributes.replyCount ?? 0,
+      deliverCount: attributes.deliverCount ?? 0,
+      failureCount: attributes.failureCount ?? 0,
+      neutralReplyCount: attributes.neutralReplyCount ?? 0,
+      negativeReplyCount: attributes.negativeReplyCount ?? 0,
+      positiveReplyCount: attributes.positiveReplyCount ?? 0,
+      numRepliedProspects: attributes.numRepliedProspects ?? 0,
+      numContactedProspects: attributes.numContactedProspects ?? 0,
     },
-    createdAt: new Date(attributes.createdAt as string),
-    updatedAt: new Date(attributes.updatedAt as string),
+    createdAt: new Date(attributes.createdAt),
+    updatedAt: new Date(attributes.updatedAt),
     isDeleted: false,
-    lastModifiedAt: new Date(attributes.updatedAt as string),
+    lastModifiedAt: new Date(attributes.updatedAt),
     ownerId: relationships.owner?.data?.id?.toString() ?? null,
     rawData: record,
   };
 };
 
-export const fromOutreachMailboxToMailbox = (record: OutreachRecord): Mailbox => {
+export const fromOutreachMailboxToMailbox = (record: OutreachMailbox): Mailbox => {
   const { id, attributes, relationships } = record;
   return {
     id: id.toString(),
-    email: (attributes.email as string) ?? null,
-    createdAt: new Date(attributes.createdAt as string),
-    updatedAt: new Date(attributes.updatedAt as string),
+    email: attributes.email ?? null,
+    createdAt: new Date(attributes.createdAt),
+    updatedAt: new Date(attributes.updatedAt),
     isDeleted: false,
-    lastModifiedAt: new Date(attributes.updatedAt as string),
+    lastModifiedAt: new Date(attributes.updatedAt),
     userId: relationships.user?.data?.id?.toString() ?? null,
     rawData: record,
+    isDisabled: attributes.sendDisabled,
   };
 };
 
