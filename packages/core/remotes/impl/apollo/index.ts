@@ -35,7 +35,6 @@ import {
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
   fromApolloEmailerCampaignToSequence,
-  fromApolloSequenceToSequence,
   fromApolloUserToUser,
   toApolloAccountCreateParams,
   toApolloAccountUpdateParams,
@@ -284,7 +283,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.emailer_campaigns.map((result) => ({
-              record: fromApolloSequenceToSequence(result),
+              record: fromApolloEmailerCampaignToSequence(result as any),
               emittedAt,
             }))
           );
