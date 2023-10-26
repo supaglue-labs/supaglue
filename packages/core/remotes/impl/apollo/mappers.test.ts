@@ -346,6 +346,8 @@ describe('Conversion functions', () => {
         "id": "123456",
         "isDeleted": false,
         "isEnabled": true,
+        "shareType": "team",
+        "isArchived": false,
         "metrics": {
           "bounceRate": 0.05,
           "clickRate": 0.3,
