@@ -1344,11 +1344,11 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.#getRecord(id, '/api/v2/prospects', fromOutreachProspectToContact);
       case 'user':
-        return await this.#getRecord(id, '/api/v2/users', fromOutreachUserToUser);
+        return await this.#getRecord(id, '/api/v2/users', (r: any) => fromOutreachUserToUser(r));
       case 'sequence':
-        return await this.#getRecord(id, '/api/v2/sequences', fromOutreachSequenceToSequence);
+        return await this.#getRecord(id, '/api/v2/sequences', (r: any) => fromOutreachSequenceToSequence(r));
       case 'mailbox':
-        return await this.#getRecord(id, '/api/v2/mailboxes', fromOutreachMailboxToMailbox);
+        return await this.#getRecord(id, '/api/v2/mailboxes', (r: any) => fromOutreachMailboxToMailbox(r));
       case 'sequence_state':
         return await this.#getRecord(id, '/api/v2/sequenceStates', fromOutreachSequenceStateToSequenceState);
       case 'account':
@@ -1373,11 +1373,15 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return await this.#listRecords('/api/v2/prospects', fromOutreachProspectToContact, updatedAfter);
       case 'user':
-        return await this.#listRecords('/api/v2/users', fromOutreachUserToUser, updatedAfter);
+        return await this.#listRecords('/api/v2/users', (r: any) => fromOutreachUserToUser(r), updatedAfter);
       case 'sequence':
-        return await this.#listRecords('/api/v2/sequences', fromOutreachSequenceToSequence, updatedAfter);
+        return await this.#listRecords(
+          '/api/v2/sequences',
+          (r: any) => fromOutreachSequenceToSequence(r),
+          updatedAfter
+        );
       case 'mailbox':
-        return await this.#listRecords('/api/v2/mailboxes', fromOutreachMailboxToMailbox, updatedAfter);
+        return await this.#listRecords('/api/v2/mailboxes', (r: any) => fromOutreachMailboxToMailbox(r), updatedAfter);
       case 'sequence_state':
         return await this.#listRecords(
           '/api/v2/sequenceStates',
