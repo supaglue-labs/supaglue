@@ -105,7 +105,7 @@ const sidebars = {
         },
         {
           id: 'platform/objects/overview',
-          label: 'Objects',
+          label: 'Standard & Custom Objects',
           type: 'doc',
         },
       ],
