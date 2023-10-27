@@ -1042,11 +1042,12 @@ export interface operations {
          *   }
          * }
          */
-        "application/json": {
-          record?: components["schemas"]["create_sequence_state"];
+        "application/json": OneOf<[{
+          record: components["schemas"]["create_sequence_state"];
+        }, {
           /** @description Will use the batch endpoints when possible (e.g. Apollo) */
-          records?: (components["schemas"]["create_sequence_state"])[];
-        };
+          records: (components["schemas"]["create_sequence_state"])[];
+        }]>;
       };
     };
     responses: {

@@ -883,19 +883,34 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "record": {
-                    "$ref": "#/components/schemas/create_sequence_state"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "record": {
+                        "$ref": "#/components/schemas/create_sequence_state"
+                      }
+                    },
+                    "required": [
+                      "record"
+                    ]
                   },
-                  "records": {
-                    "type": "array",
-                    "description": "Will use the batch endpoints when possible (e.g. Apollo)",
-                    "items": {
-                      "$ref": "#/components/schemas/create_sequence_state"
-                    }
+                  {
+                    "type": "object",
+                    "properties": {
+                      "records": {
+                        "type": "array",
+                        "description": "Will use the batch endpoints when possible (e.g. Apollo)",
+                        "items": {
+                          "$ref": "#/components/schemas/create_sequence_state"
+                        }
+                      }
+                    },
+                    "required": [
+                      "records"
+                    ]
                   }
-                }
+                ]
               },
               "example": {
                 "record": {
