@@ -474,7 +474,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         'Batch create sequence states only works when all records are for the same sequence, mailbox and user'
       );
     }
-    if (!sequenceId || !mailboxId || !userId) {
+    if (!sequenceId) {
       return [];
     }
     const res = await this.#api.postEmailerCampaignAddContactIds(
