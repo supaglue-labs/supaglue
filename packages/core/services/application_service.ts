@@ -156,7 +156,7 @@ export class ApplicationService {
     return fromApplicationModel(updatedApplication);
   }
 
-  public async createTemporaryApiKey(applicationId: string, expirySecs = 30): Promise<string> {
+  public async createTemporaryApiKey(applicationId: string, expirySecs = 24 * 3600): Promise<string> {
     const apiKey = generateApiKey();
     const { hashed: hashedApiKey } = await cryptoHash(apiKey);
     const expiresAt = new Date(Date.now() + expirySecs * 1000);
