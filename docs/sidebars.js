@@ -294,10 +294,16 @@ const sidebars = {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       items: require('./docs/api/v2/mgmt/sidebar.js').map((item) => {
         // hide deprecated items. we hide it because removing it from the sidebar causes docusaurus build issues.
-        if (
-          ['Entities', 'EntityMappings', 'Schemas', 'SchemaMappings', 'Destinations', 'Providers'].includes(item.label)
-        ) {
+        if (['Entities', 'EntityMappings', 'Schemas', 'SchemaMappings', 'Destinations'].includes(item.label)) {
           item.className += ' hidden';
+        }
+
+        if (['Providers'].includes(item.label)) {
+          item.items.map((subItem) => {
+            if (['Create provider', 'Update provider', 'Delete provider'].includes(subItem.label)) {
+              item.className += ' hidden';
+            }
+          });
         }
 
         return item;
