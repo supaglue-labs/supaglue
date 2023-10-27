@@ -1,9 +1,5 @@
 # Common schema for Engagement
 
-:::info
-This is under construction.
-:::
-
 Supaglue supports the following Common Objects:
 
 ## Sequences
