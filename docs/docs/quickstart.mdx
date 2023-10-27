@@ -9,17 +9,7 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Quickstart
 
-This quickstart will show you how to integrate Supaglue with your application in approximately 10 minutes. By the end, you will have synced data from a sample customer's Hubspot to your Postgres database and queried it.
-
-<iframe
-  width="640"
-  height="356"
-  src="https://www.loom.com/embed/579b97dc576b4aa3bcd69b0cfa50d613?sid=2417ae3a-4fe1-43a4-b84d-8067216fabaf&hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true"
-  frameborder="0"
-  webkitallowfullscreen
-  mozallowfullscreen
-  allowfullscreen
-></iframe>
+This quickstart will show you how to integrate Supaglue with your application in approximately 10 minutes. By the end, you will have synced data from a sample customer's HubSpot to your Postgres database and queried it.
 
 ## 1. Create your Supaglue account
 
@@ -41,18 +31,12 @@ Navigate to the **Connectors -> Providers** tab and click Configure on HubSpot. 
 For convenience, we offer Supaglue-managed OAuth apps for certain providers if you don't have one yourself. We highly recommend using your own OAuth app for production.
 :::
 
-## 3. Configure destination
+## 3. Define a sync configuration
 
-Supaglue syncs data from providers to [**Destinations**](./category/destinations) of your choice. For convenience, we'll use Supaglue's managed destination in this quickstart.
-
-1. Navigate to the **Connectors -> Destinations** tab and click enable on "Supaglue".
-
-## 4. Define a sync configuration
-
-[**Sync Config**](./integration-patterns/managed-syncs#syncconfig) define which objects to sync from a Provider to a Destination, and how frequently.
+A [**sync configuration**](./integration-patterns/managed-syncs#syncconfig) defines which objects to sync from a Provider to a Destination, and how frequently.
 
 1. Go to the **Sync Configs** tab and click the "Add" button to add a new Sync Config.
-1. Select the Provider and Destination you configured earlier, then under "Common objects" select `contact`, and click "Save".
+1. Select the HubSpot provider you configured earlier, and Supaglue Managed Destination for destination. Under "Common objects" select `contact`, and click "Save".
 
 <BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/configuration/sync_configs/e8a88575-efdb-4560-ae94-3871e8e51b18">
 
@@ -60,14 +44,14 @@ Supaglue syncs data from providers to [**Destinations**](./category/destinations
 
 </BrowserWindow>
 
-## 5. Register a customer
+## 4. Register a customer
 
-A **Customer** is an end user in your application who connects their third-party SaaS provider to your application using Supaglue's [Managed Authentication](./platform/managed-auth).
+A **Customer** is an end user in your application who connects their 3rd-party SaaS provider to your application using Supaglue's [Managed Authentication](./platform/managed-auth).
 
 1. Navigate to the Customers page and click on the plus button to create a sample customer:
    - customer_id: `1234` (the primary key you use in your application that uniquely identifies this customer)
-   - name: `Jane Doe`
-   - email: `jane@acmecorp.com`
+   - name: `John Doe`
+   - email: `john@acmecorp.com`
 
 <BrowserWindow url="https://app.supaglue.io/applications/62605dc1-148e-4c53-a850-82e10f71ed23/customers">
 
@@ -75,7 +59,9 @@ A **Customer** is an end user in your application who connects their third-party
 
 </BrowserWindow>
 
-## 6. Create a connection
+## 5. Create a connection
+
+A **Connection** is a unique customer-provider pairing that enables you to read and write to a 3rd-party SaaS provider securely.
 
 1. Navigate to the Customer page and click the "Embed Link" button for the customer you just registered.
 1. Open a new tab in your browser and paste the URL into the URL bar. 
@@ -90,7 +76,7 @@ Typically, you would embed the Embedded Link in your application, so that your c
 <div className="grid grid-cols-2 gap-4 justify-items-center">
   <div>
     <ThemedImage
-      alt="Hubspot Example App"
+      alt="HubSpot Example App"
       width="100%"
       sources={{
         light: '/img/hubspot_app.png',
@@ -100,11 +86,11 @@ Typically, you would embed the Embedded Link in your application, so that your c
   </div>
 </div>
 
-## 7. Query your destination
+## 6. Query the unified API
 
 By default, managed syncs start executing as soon as new connections are created. Make a request to the [List accounts](api/v2/crm/list-accounts) Unified API endpoint to fetch Company records from your HubSpot account:
 
-1. Generate your [API key](api/introduction#api-authentication).
+1. Generate your [API key](api/introduction#api-authentication) when you can find under Settings -> API key.
 1. Replace `{API_KEY}` with yours and run the following curl.
 
 ```
@@ -114,3 +100,7 @@ curl -L -X GET 'https://api.supaglue.io/crm/v2/accounts?read_from_cache=true' \
 -H 'x-provider-name: hubspot' \
 -H 'x-api-key: {{API_KEY}}'
 ```
+
+## Next steps
+
+Congrats on making it through! In just a few minutes, you've setup a HubSpot connection with a test customer, synced some Contact records, and queried it via a unified CRM API. There are many more things you can do with Supaglue, read on or reach out to our team to learn more.
