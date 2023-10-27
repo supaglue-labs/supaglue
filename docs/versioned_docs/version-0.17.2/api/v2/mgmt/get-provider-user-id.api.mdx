@@ -1,0 +1,59 @@
+---
+id: get-provider-user-id
+title: "Get logged in User ID and details"
+description: "This endpoint returns the ID of the logged in (common schema) User and details."
+sidebar_label: "Get logged in User ID and details"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVltv2zYU/iuE9rAEsOVLlqQwhqHZunVBNzTIZcPQBA4tHUtsJVIlKSeuo/++c0hJli/dGqB7mx4Skzw89+87XAWqAM2tUPI8DiZBAvZCq4WIQd8Y0LjXC2IwkRYFyaDEdSoMAxkXSkjLNNhSS8NsCuz8FVNz9ytTSQIxE5IdRCrPlWQmSiHnh4yUMi5jFoPlIjPhrbyV13hlQ86Lob6cF6hbOaVzlWXqQciEHem4X3Btl6yofWVq9h4ii1fMhDQ+sSYKxp7YJeTKwlqG9kim33ys87uzRzK/ljNTKMvozh9H7O2DJJ3N52VeLSXPRWRoffap1MCulsZC7sPwMufSgsYgnUycY2q639OtxERbnphg8i74SUmJnmK+TXDXCwxEpRZ2iUer4LHPC9H/ALS6q/AUE8FzQOXGnaMngFV67Jukj1aU7i/wiErXCwTVLwWOacGVT3UwWQV2WdAdYzVmF09Aljn5MSLr8MjzIsPzUVX1Wv1N4qduXav+WIJe4kLDx1JowH6yuoQvsZT6LONObqZxnc7p0cnx1PAMjDPg87fhUnuv61pUGqtydE3EjWMFt+kz/KoorxpQszRoHM/HwyH920RCC5BIoXPSkgQvikxEDk+D94bEVrtmfCPiRcwios8Kb6Q03uk9edqG4H6wkQLc4pYpLRIhuQXD5hqbbqlKzZrEfEtwFS2GGqSEiJM5KfBws3yWAeMztSDoabfXgspDs0DnwqDCXPGHaQ3ofWHyOBbkOs8uOgH7GuxGhspYzC33npPZL/Ke/Fgbmn41l37B2A0a3mvV9MhBBHzOl2yG6WrV+hCwIjElNFPqQ1m4YPYT3QGEScgehE0bxjmkpl63eqc9gtPhaHQMR1F/fDoc9r8bjcb92fjFnJYnMHxxfDqEk2CnKs++TxdQGpvIvqQMYAKw3oRBgg5mzZEVNT+PLGGUl1gh1/u4ULhKg7vKfwhsvK/qEUOtT5CcBIOmrGaw6gC3GkRrDhxMW7ZpYiBS1IuG80qdERdYW5jJYID8GJqy4ElWQijUIE9yO1iMd1B0Vcuws4vzoOrw7BWVxkOyw7ZtD+HOGyCaa6m2kdlm2E17aIahFLUDp0mGI3ABGTWfG3E8isD4QeocqkjbXJHhhsEnwTAcnYYjGhXCOgL8nUueoLc4iulWrykHXav9a+Ikus2xGXArVpF52ebIV3QziRuH1XYo3+BHE02ruHQ1opn7J2SRw4nnj03PGJosaeHaI2R/qZJF3FEWAcs4GbyZu1st2BnRfuLfJ8a9Gzp94d4OzpUfuXFZYzeXv9Hm/f39rfyXfqilKLhCGYuGOzl7DbbDqw1IO++W7equ1kPg/xfSf/hC8hC08GgHRcaFK5/r3FXNKO/a+U81mmw+BjrNg6tdWkESSLEXSMtqNcOmutFZVdG2f9oQ2cTC0GREJpvzzGyPi24fHFzW741D9jnXHbPsPKYWnOA6CRwrLbgWZPDrG2/4TC67Nhunupmr7lC8prXnufHPge99pa6jxzedlztDbixs52znmUWZaifM65+v/TRKN2nbc3T9g+LYm4Eun3vz9Jec2Sv+PfEODoQfWnF/8tkL7Xjw0pQPmpJ/A1R8khc=
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get logged in User ID and details</h1>
+
+<MethodEndpoint method={"get"} path={"/customers/{customer_id}/connections/_provider_user_id"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+
+
+This endpoint returns the ID of the logged in (common schema) User and details.
+
+The common schema User ID maps to the following 3rd-party provider object IDs:
+
+| Provider  | Remote object ID  | 
+| --------- | ----------------- | 
+| Hubspot   | V3 Owner          | 
+| Dynamics  | Azure System User | 
+| Intercom  | Admin             |
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"provider_name","in":"query","required":true,"schema":{"type":"string","enum":["hubspot","ms_dynamics_365_sales","intercom"],"example":"hubspot"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-sg-minor-version","in":"header","schema":{"type":"string","enum":["1"],"example":1}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+UserId
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"user_id"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The ID of the logged in user that originates from your customer's third-party Provider. Refer to the table above for the Provider ID mapping."}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>raw_details</strong><span className={"openapi-schema__name"}> object</span></span></summary><div style={{"marginLeft":"1rem"}}><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
+
+The raw data from the your customer's third-party Provider.
+
+</div><SchemaItem name={"property name*"} required={false} schemaName={"any"} qualifierMessage={undefined} schema={{"type":"object","additionalProperties":true,"description":"The raw data from the your customer's third-party Provider."}} collapsible={false} discriminator={false}></SchemaItem></div></details></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>additional_raw_details</strong><span className={"openapi-schema__name"}> object</span></span></summary><div style={{"marginLeft":"1rem"}}><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
+
+For some third-party Providers, there may be additional data used to lookup the common schema User ID (e.g. with Hubspot)
+
+</div><SchemaItem name={"property name*"} required={false} schemaName={"any"} qualifierMessage={undefined} schema={{"type":"object","additionalProperties":true,"description":"For some third-party Providers, there may be additional data used to lookup the common schema User ID (e.g. with Hubspot)"}} collapsible={false} discriminator={false}></SchemaItem></div></details></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"user_id\": \"70115e3c-2700-4112-b28f-2706e08570e6\",\n  \"raw_details\": {\n    \"user_id\": \"70115e3c-2700-4112-b28f-2706e08570e6\",\n    \"user\": \"test@something.com\",\n    \"scopes\": [\n      \"contacts\",\n      \"automation\",\n      \"oauth\"\n    ]\n  }\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
