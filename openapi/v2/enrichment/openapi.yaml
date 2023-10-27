@@ -13,8 +13,6 @@ info:
 
     [View common schema for Enrichment](https://docs.supaglue.com/platform/common-schemas/enrichment)
 
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
-
     #### Base API URL
     ```
     https://api.supaglue.io/enrichment/v2

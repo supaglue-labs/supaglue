@@ -104,9 +104,8 @@ const sidebars = {
           type: 'doc',
         },
         {
-          // TODO: rename the url to standard-objects
           id: 'platform/objects/overview',
-          label: 'Standard Objects',
+          label: 'Objects',
           type: 'doc',
         },
       ],
@@ -322,9 +321,14 @@ const sidebars = {
       // @ts-ignore
       items: [
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        ...require('./docs/api/v2/crm/sidebar.js').filter(
-          (item) => !['AssociationSchemas', 'CustomObjectSchemas'].includes(item.label)
-        ),
+        ...require('./docs/api/v2/crm/sidebar.js')
+          .filter((item) => !['AssociationSchemas', 'CustomObjectSchemas'].includes(item.label))
+          .map((item) => {
+            if (['Passthrough'].includes(item.label)) {
+              item.className += ' hidden';
+            }
+            return item;
+          }),
         {
           type: 'category',
           label: 'Metadata',
@@ -341,7 +345,13 @@ const sidebars = {
       label: 'Engagement API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: require('./docs/api/v2/engagement/sidebar.js'),
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      items: require('./docs/api/v2/engagement/sidebar.js').map((item) => {
+        if (['Passthrough'].includes(item.label)) {
+          item.className += ' hidden';
+        }
+        return item;
+      }),
     },
     {
       type: 'category',
@@ -388,7 +398,13 @@ const sidebars = {
       label: 'Metadata API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: require('./docs/api/v2/metadata/sidebar.js'),
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      items: require('./docs/api/v2/metadata/sidebar.js').map((item) => {
+        if (['StandardObjects', 'CustomObjects'].includes(item.label)) {
+          item.className += ' hidden';
+        }
+        return item;
+      }),
     },
 
     // section

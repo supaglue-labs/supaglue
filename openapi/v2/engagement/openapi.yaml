@@ -12,8 +12,6 @@ info:
 
     [View common schema for Engagement](https://docs.supaglue.com/platform/common-schemas/engagement)
 
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
-
     #### Base API URL
 
     ```
