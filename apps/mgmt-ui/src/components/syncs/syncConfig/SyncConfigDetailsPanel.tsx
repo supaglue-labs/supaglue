@@ -239,7 +239,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                       className="w-full"
                       href={`/applications/${activeApplicationId}/connectors/destinations`}
                     >
-                      <i>Create Destination</i>
+                      <i>Add new Destination</i>
                     </Link>
                   ),
                 },
