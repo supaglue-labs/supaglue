@@ -42,12 +42,26 @@ export default function init(app: Router): void {
       req: Request<CreateSequenceStatePathParams, CreateSequenceStateResponse, CreateSequenceStateRequest>,
       res: Response<CreateSequenceStateResponse>
     ) => {
-      const id = await engagementCommonObjectService.create(
-        'sequence_state',
-        req.customerConnection,
-        camelcaseKeysSansCustomFields(req.body.record)
-      );
-      return res.status(201).send({ record: { id } });
+      const [id, ids] = await Promise.all([
+        req.body.record
+          ? engagementCommonObjectService.create(
+              'sequence_state',
+              req.customerConnection,
+              camelcaseKeysSansCustomFields(req.body.record)
+            )
+          : null,
+        req.body.records
+          ? engagementCommonObjectService.batchCreate(
+              'sequence_state',
+              req.customerConnection,
+              req.body.records.map(camelcaseKeysSansCustomFields)
+            )
+          : null,
+      ]);
+      return res.status(201).send({
+        ...(id ? { record: { id } } : {}),
+        ...(ids ? { records: ids.map((id) => ({ id })) } : {}),
+      });
     }
   );
 

@@ -1,6 +1,7 @@
 post:
   operationId: createSequenceState
-  summary: Create sequence state (aka adding contact to sequence)
+  summary: Create sequence state
+  description: Aaka adding contact to sequence
   tags:
     - Sequence States
   security:
@@ -15,8 +16,11 @@ post:
           properties:
             record:
               $ref: ../components/schemas/create_sequence_state.yaml
-          required:
-            - record
+            records: 
+              type: array
+              description: Will use the batch endpoints when possible (e.g. Apollo)
+              items:
+                $ref: ../components/schemas/create_sequence_state.yaml
         example:
           record:
             id: 355843a5-c536-4e82-b497-05160bfb7d78
@@ -38,6 +42,11 @@ post:
                 $ref: ../../../common/components/schemas/errors.yaml
               record:
                 $ref: ../../../common/components/schemas/created_model.yaml
+              records:
+                type: array
+                description: Created records, in order passed in
+                items: 
+                  $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
 parameters:

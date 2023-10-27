@@ -29,6 +29,11 @@ export interface EngagementRemoteClient extends RemoteClient {
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
   ): Promise<UpdateCommonObjectRecordResponse<T>>;
+
+  batchCreateCommonObjectRecord?<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: Array<EngagementCommonObjectTypeMap<T>['createParams']>
+  ): Promise<Array<CreateCommonObjectRecordResponse<T>>>;
 }
 
 export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClient implements EngagementRemoteClient {

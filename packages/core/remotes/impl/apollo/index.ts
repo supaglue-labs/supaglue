@@ -486,6 +486,13 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     };
   }
 
+  public async batchCreateCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    records: Array<EngagementCommonObjectTypeMap<T>['createParams']>
+  ): Promise<Array<CreateCommonObjectRecordResponse<T>>> {
+    return Promise.all(records.map((record) => this.createCommonObjectRecord(commonObjectType, record)));
+  }
+
   public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']

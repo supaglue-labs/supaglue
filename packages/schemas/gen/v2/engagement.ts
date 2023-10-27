@@ -153,7 +153,10 @@ export interface paths {
     };
   };
   "/sequence_states": {
-    /** Create sequence state (aka adding contact to sequence) */
+    /**
+     * Create sequence state 
+     * @description Aaka adding contact to sequence
+     */
     post: operations["createSequenceState"];
     parameters: {
       header: {
@@ -1009,7 +1012,10 @@ export interface operations {
       };
     };
   };
-  /** Create sequence state (aka adding contact to sequence) */
+  /**
+   * Create sequence state 
+   * @description Aaka adding contact to sequence
+   */
   createSequenceState: {
     parameters: {
       header: {
@@ -1033,7 +1039,9 @@ export interface operations {
          * }
          */
         "application/json": {
-          record: components["schemas"]["create_sequence_state"];
+          record?: components["schemas"]["create_sequence_state"];
+          /** @description Will use the batch endpoints when possible (e.g. Apollo) */
+          records?: (components["schemas"]["create_sequence_state"])[];
         };
       };
     };
@@ -1044,6 +1052,8 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
+            /** @description Created records, in order passed in */
+            records?: (components["schemas"]["created_record"])[];
             warnings?: components["schemas"]["warnings"];
           };
         };
