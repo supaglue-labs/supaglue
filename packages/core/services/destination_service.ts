@@ -9,6 +9,7 @@ import type {
   DestinationUnsafe,
   DestinationUnsafeAny,
   DestinationUpdateParamsAny,
+  PostgresConfigUnsafe,
 } from '@supaglue/types';
 import { SUPAGLUE_MANAGED_DESTINATION } from '@supaglue/utils';
 import fs from 'fs';
@@ -158,10 +159,10 @@ export class DestinationService {
       case 'postgres':
         {
           try {
-            const { sslMode, ...rest } = params.config;
+            const { sslMode: _, ...rest } = params.config;
             const pgClient = new Client({
               ...rest,
-              ssl: getSsl(sslMode),
+              ssl: getSsl(params.config as PostgresConfigUnsafe),
               password:
                 params.config.password ??
                 (existingDestination as DestinationUnsafe<'postgres'> | null)?.config.password,
