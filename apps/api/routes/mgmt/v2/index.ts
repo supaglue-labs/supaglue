@@ -8,6 +8,7 @@ import entity from './entity';
 import entityMapping from './entity_mapping';
 import fieldMapping from './field_mapping';
 import magicLink from './magic_link';
+import provider from './provider';
 import schema from './schema';
 import sync from './sync';
 import syncConfig from './sync_config';
@@ -21,6 +22,7 @@ export default function init(app: Router): void {
   v2Router.use(pinoAndSentryContextMiddleware);
 
   customer(v2Router);
+  provider(v2Router);
   schema(v2Router);
   syncConfig(v2Router);
   sync(v2Router);
