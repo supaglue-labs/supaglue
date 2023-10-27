@@ -644,10 +644,7 @@ export const getHubspotOptions = (
   ];
 };
 
-export const toHubspotCreatePropertyParams = (
-  objectName: string,
-  params: CreatePropertyParams
-): HubspotPropertyCreate => {
+export const toHubspotCreatePropertyParams = (params: CreatePropertyParams): HubspotPropertyCreate => {
   const { type, fieldType } = toHubspotTypeAndFieldType(params.type);
   return {
     name: params.name,
