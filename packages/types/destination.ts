@@ -78,13 +78,15 @@ export type PostgresConfigSafeOnly = {
   database: string;
   schema: string;
   user: string;
-  // TODO: support more options
-  sslMode?: 'disable' | 'allow' | 'prefer' | 'require';
+  sslMode?: 'disable' | 'no-verify' | 'prefer' | 'require' | 'verify-ca' | 'verify-full';
 };
 
-// TODO(670): encrypt
 export type PostgresConfigUnsafeOnly = {
   password: string;
+  serverCaCert?: string;
+  clientCert?: string;
+  clientKey?: string;
+  serverName?: string;
 };
 
 export type BigQueryConfigUnsafe = BigQueryConfigSafeOnly & BigQueryConfigUnsafeOnly;

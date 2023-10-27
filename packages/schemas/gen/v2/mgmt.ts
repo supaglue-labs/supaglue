@@ -569,7 +569,7 @@ export interface components {
        * @example disable 
        * @enum {string}
        */
-      ssl_mode?: "disable" | "allow" | "prefer" | "require";
+      ssl_mode?: "disable" | "no-verify" | "prefer" | "require" | "verify-ca" | "verify-full";
     };
     bigquery_config_safe: {
       /** @example my-gcp-project-id */
@@ -640,9 +640,17 @@ export interface components {
        * @example disable 
        * @enum {string}
        */
-      ssl_mode?: "disable" | "allow" | "prefer" | "require";
+      ssl_mode?: "disable" | "no-verify" | "prefer" | "require" | "verify-ca" | "verify-full";
       /** @example mysensitivepassword */
       password: string;
+      /** @example ---BEGIN CERTIFICATE----- */
+      server_ca_cert?: string;
+      /** @example ---BEGIN CERTIFICATE----- */
+      client_cert?: string;
+      /** @example ---BEGIN RSA PRIVATE KEY----- */
+      client_key?: string;
+      /** @example 1-dd8643d8-f1ce-420f-a867-66b78a4734be.us-central1.sql.goog */
+      server_name?: string;
     };
     bigquery_config_unsafe: {
       /** @example my-gcp-project-id */

@@ -19,13 +19,28 @@ properties:
     type: string
     enum:
       - disable
-      - allow
+      - no-verify
       - prefer
       - require
+      - verify-ca
+      - verify-full
     example: disable
   password:
     type: string
     example: mysensitivepassword
+  server_ca_cert:
+    type: string
+    example: ---BEGIN CERTIFICATE-----
+  client_cert:
+    type: string
+    example: ---BEGIN CERTIFICATE-----
+  client_key:
+    type: string
+    example: ---BEGIN RSA PRIVATE KEY-----
+  server_name:
+    type: string
+    example: 1-dd8643d8-f1ce-420f-a867-66b78a4734be.us-central1.sql.goog
+
 required:
   - host
   - port
