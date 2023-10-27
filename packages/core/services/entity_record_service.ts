@@ -13,6 +13,9 @@ import type { DestinationService } from './destination_service';
 import type { EntityService } from './entity_service';
 import type { SyncService } from './sync_service';
 
+/**
+ * @deprecated
+ */
 export class EntityRecordService {
   readonly #entityService: EntityService;
   readonly #connectionService: ConnectionService;

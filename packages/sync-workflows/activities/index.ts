@@ -7,6 +7,7 @@ import type {
 } from '@supaglue/core/services';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { EntityService } from '@supaglue/core/services/entity_service';
+import type { NotificationService } from '@supaglue/core/services/notification_service';
 import type { SyncRunService } from '@supaglue/core/services/sync_run_service';
 import type { SystemSettingsService } from '@supaglue/core/services/system_settings_service';
 import type { ApplicationService, SyncService } from '../services';
@@ -17,6 +18,7 @@ import { createGetSync } from './get_sync';
 import { createLogSyncFinish } from './log_sync_finish';
 import { createLogSyncStart } from './log_sync_start';
 import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
+import { createPauseSync } from './pause_sync';
 import { createSyncEntityRecords } from './sync_entity_records';
 import { createSyncObjectRecords } from './sync_object_records';
 import { createUpdateSyncState } from './update_sync_state';
@@ -33,6 +35,7 @@ export const createActivities = ({
   syncRunService,
   entityService,
   webhookService,
+  notificationService,
 }: {
   systemSettingsService: SystemSettingsService;
   connectionService: ConnectionService;
@@ -45,9 +48,11 @@ export const createActivities = ({
   syncRunService: SyncRunService;
   entityService: EntityService;
   webhookService: WebhookService;
+  notificationService: NotificationService;
 }) => {
   return {
     getSync: createGetSync(syncService),
+    pauseSync: createPauseSync(syncService, connectionService, notificationService, applicationService),
     doProcessSyncChanges: createDoProcessSyncChanges(syncService, systemSettingsService),
     updateSyncState: createUpdateSyncState(syncService),
     clearSyncArgsForNextRun: createClearSyncArgsForNextRun(syncService),

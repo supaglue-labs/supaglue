@@ -193,7 +193,7 @@ export function createSyncObjectRecords(
         numRecordsSynced: result.numRecords,
       };
     } catch (e: any) {
-      if (e.problemType === 'TERMINAL_TOO_MANY_REQUESTS_ERROR') {
+      if (e.problemType === 'SG_TERMINAL_TOO_MANY_REQUESTS_ERROR') {
         throw ApplicationFailure.nonRetryable(e.message);
       }
       throw e;

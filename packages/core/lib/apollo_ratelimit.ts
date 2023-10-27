@@ -1,7 +1,7 @@
 import retry from 'async-retry';
 import { isAxiosError } from 'axios';
 import { logger } from '.';
-import { TerminalTooManyRequestsError, TooManyRequestsError } from '../errors';
+import { SGTerminalTooManyRequestsError, TooManyRequestsError } from '../errors';
 
 const isAxiosRateLimited = (e: any): boolean => {
   return isAxiosError(e) && e.response?.status === 429;
@@ -29,7 +29,7 @@ export const retryWhenAxiosApolloRateLimited = async <Args extends any[], Return
       // throw TerminalTooManyRequestsError for run_object_sync to rethrow a temporal non retryable error
       if (isAxiosRateLimited(e) && isApolloDailyHourlyRateLimited(e)) {
         logger.warn({ errror: e }, `Encountered Apollo hourly or daily rate limiting.`);
-        bail(new TerminalTooManyRequestsError(`Encountered Apollo hourly or daily rate limiting.`));
+        bail(new SGTerminalTooManyRequestsError(`Encountered Apollo hourly or daily rate limiting.`));
         return null as Return;
       }
 

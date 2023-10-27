@@ -125,18 +125,38 @@ export class TooManyRequestsError extends HTTPError {
   }
 }
 
-// Throw this when you want run_object_sync to throw a non retryable temporal error
-export class TerminalTooManyRequestsError extends HTTPError {
-  code = 429;
-  problemType = 'TERMINAL_TOO_MANY_REQUESTS_ERROR';
+export class NotModifiedError extends HTTPError {
+  code = 304;
+  problemType = 'NOT_MODIFIED';
   constructor(message: string, cause?: Error) {
     super(message, cause);
   }
 }
 
-export class NotModifiedError extends HTTPError {
-  code = 304;
-  problemType = 'NOT_MODIFIED';
+//
+// Internal errors
+//
+
+export class SGSyncWorkerError extends SGError {
+  problemType = 'SG_SYNC_WORKER_ERROR';
+  cause?: Error;
+  constructor(message: string, cause?: Error) {
+    super(message);
+    this.cause = cause;
+  }
+}
+
+// Throw this when you want run_object_sync to throw a non retryable temporal error
+export class SGTerminalTooManyRequestsError extends SGSyncWorkerError {
+  problemType = 'SG_TERMINAL_TOO_MANY_REQUESTS_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
+
+// Throw this when you want run_object_sync to pause after the current execution
+export class SGConnectionNoLongerAuthenticatedError extends SGSyncWorkerError {
+  problemType = 'SG_CONNECTION_NO_LONGER_AUTHENTICATED_ERROR';
   constructor(message: string, cause?: Error) {
     super(message, cause);
   }

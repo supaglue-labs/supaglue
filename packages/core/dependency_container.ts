@@ -1,3 +1,4 @@
+import { SESv2Client } from '@aws-sdk/client-sesv2';
 import type { PrismaClient } from '@supaglue/db';
 import prisma from '@supaglue/db';
 import type { Pool } from 'pg';
@@ -21,6 +22,7 @@ import { DestinationService } from './services/destination_service';
 import { EntityRecordService } from './services/entity_record_service';
 import { EntityService } from './services/entity_service';
 import { MetadataService } from './services/metadata_service';
+import { NotificationService } from './services/notification_service';
 import { ObjectRecordService } from './services/object_record_service';
 import { SyncRunService } from './services/sync_run_service';
 import { SyncService } from './services/sync_service';
@@ -60,6 +62,7 @@ export type CoreDependencyContainer = {
   marketingAutomationCommonObjectService: MarketingAutomationCommonObjectService;
 
   metadataService: MetadataService;
+  notificationService: NotificationService;
   /**
    * @deprecated
    */
@@ -74,6 +77,14 @@ let coreDependencyContainer: CoreDependencyContainer | undefined = undefined;
 function createCoreDependencyContainer(): CoreDependencyContainer {
   const pgPool = getPgPool(process.env.SUPAGLUE_DATABASE_URL!);
   const systemSettingsService = new SystemSettingsService(prisma);
+
+  const sesClient = new SESv2Client({
+    region: 'us-west-2',
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    },
+  });
 
   // mgmt
   const applicationService = new ApplicationService(prisma);
@@ -112,6 +123,8 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const marketingAutomationCommonObjectService = new MarketingAutomationCommonObjectService(remoteService);
 
   const metadataService = new MetadataService(remoteService, connectionService);
+
+  const notificationService = new NotificationService(sesClient);
 
   const entityRecordService = new EntityRecordService(
     entityService,
@@ -154,6 +167,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
     entityRecordService,
     objectRecordService,
     associationService,
+    notificationService,
   };
 }
 
