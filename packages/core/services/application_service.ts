@@ -1,9 +1,10 @@
 import { NotFoundError, UnauthorizedError } from '@supaglue/core/errors';
-import { cryptoHash, generateApiKey } from '@supaglue/core/lib/crypt';
+import { cryptoHash, encrypt, generateApiKey } from '@supaglue/core/lib/crypt';
 import { fromApplicationModel } from '@supaglue/core/mappers/application';
 import type { PrismaClient } from '@supaglue/db';
 import { Prisma } from '@supaglue/db';
 import type { Application, ApplicationUpdateParams, ApplicationUpsertParams } from '@supaglue/types';
+import { SUPAGLUE_MANAGED_DESTINATION } from '@supaglue/utils';
 
 export class ApplicationService {
   #prisma: PrismaClient;
@@ -103,6 +104,23 @@ export class ApplicationService {
       update: {
         ...createParams,
       },
+    });
+    // Upsert Supaglue Managed Destination
+    await this.#prisma.destination.upsert({
+      where: {
+        applicationId_name: {
+          applicationId: upsertedApplication.id,
+          name: SUPAGLUE_MANAGED_DESTINATION,
+        },
+      },
+      create: {
+        applicationId: upsertedApplication.id,
+        name: SUPAGLUE_MANAGED_DESTINATION,
+        type: 'supaglue',
+        encryptedConfig: await encrypt(JSON.stringify({})),
+        version: 1,
+      },
+      update: {},
     });
     return fromApplicationModel(upsertedApplication);
   }
