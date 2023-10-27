@@ -54,6 +54,36 @@ export const apolloCreateEmailerCampaign = apolloEmailerCampaign.partial().pick(
   active: true,
 });
 
+export type ApolloEmailerCampaignAddContactIds = z.infer<typeof apolloEmailerCampaignAddContactIds>;
+export const apolloEmailerCampaignAddContactIds = z.object({
+  contact_ids: z.array(z.string()),
+  emailer_campaign_id: z.string(),
+  send_email_from_email_account_id: z.string(),
+  userId: z.string(),
+});
+
+export type ApolloEmailerCampaignAddContactIdsResponse = z.infer<typeof apolloEmailerCampaignAddContactIdsResponse>;
+export const apolloEmailerCampaignAddContactIdsResponse = z
+  .object({
+    contacts: z.array(
+      z
+        .object({
+          id: z.string(),
+          contact_campaign_statuses: z.array(
+            z
+              .object({
+                id: z.string(),
+                send_email_from_email_account_id: z.string(),
+                emailer_campaign_id: z.string(),
+              })
+              .passthrough()
+          ),
+        })
+        .passthrough()
+    ),
+  })
+  .passthrough();
+
 /** Aka SequenceStep */
 export type ApolloEmailerStep = z.infer<typeof apolloEmailerStep>;
 export const apolloEmailerStep = z.object({
@@ -178,6 +208,11 @@ export const apolloApi = defineApi({
     path: '/v1/emailer_campaigns',
     body: apolloCreateEmailerCampaign,
     response: apolloEmailerCampaignResponse,
+  },
+  'POST EmailerCampaignAddContactIds': {
+    path: '/v1/emailer_campaigns/:id/add_contact_ids',
+    body: apolloEmailerCampaignAddContactIds,
+    response: apolloEmailerCampaignAddContactIdsResponse,
   },
   'POST EmailerStep': {
     path: '/v1/emailer_steps',
