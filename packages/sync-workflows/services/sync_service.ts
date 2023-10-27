@@ -1,13 +1,13 @@
 import { logger } from '@supaglue/core/lib';
 import { fromSyncConfigModel } from '@supaglue/core/mappers';
 import { fromSyncModel } from '@supaglue/core/mappers/sync';
-import type { ConnectionService, SyncConfigService } from '@supaglue/core/services';
+import type { ConnectionService, SyncConfigService, WebhookService } from '@supaglue/core/services';
 import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supaglue/core/temporal';
 import type { PrismaClient } from '@supaglue/db';
 import { Prisma, SYNCS_TABLE, SYNC_CHANGES_TABLE } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import type { ConnectionSafeAny, SyncConfig } from '@supaglue/types';
-import type { Sync, SyncState } from '@supaglue/types/sync';
+import type { ObjectSync, Sync, SyncState } from '@supaglue/types/sync';
 import type { Client, IntervalSpec, ScheduleDescription, ScheduleOptionsAction } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
 import type { ApplicationService } from '.';
@@ -21,19 +21,22 @@ export class SyncService {
   #connectionService: ConnectionService;
   #syncConfigService: SyncConfigService;
   #applicationService: ApplicationService;
+  #webhookService: WebhookService;
 
   public constructor(
     prisma: PrismaClient,
     temporalClient: Client,
     connectionService: ConnectionService,
     syncConfigService: SyncConfigService,
-    applicationService: ApplicationService
+    applicationService: ApplicationService,
+    webhookService: WebhookService
   ) {
     this.#prisma = prisma;
     this.#temporalClient = temporalClient;
     this.#connectionService = connectionService;
     this.#syncConfigService = syncConfigService;
     this.#applicationService = applicationService;
+    this.#webhookService = webhookService;
   }
 
   public async getSyncById(id: string): Promise<Sync> {
@@ -43,6 +46,60 @@ export class SyncService {
       },
     });
     return fromSyncModel(model);
+  }
+
+  /**
+   * NOTE: duped with connection_and_sync_service in api package. @todo: consolidate it
+   */
+  public async pauseSync(sync: Sync): Promise<Sync> {
+    const pausedSync = (await this.#changeSyncPausedState(sync, true)) as ObjectSync; // NOTE: only support object syncs
+    const connection = await this.#connectionService.getSafeById(sync.connectionId);
+
+    await this.#webhookService.sendMessage(
+      'sync.paused',
+      {
+        connection_id: pausedSync.connectionId,
+        customer_id: connection.customerId,
+        provider_name: connection.providerName,
+        type: 'object',
+        object_type: pausedSync.objectType,
+        object: pausedSync.object,
+      },
+      connection.applicationId
+    );
+
+    return pausedSync;
+  }
+
+  /**
+   * NOTE: duped with connection_and_sync_service in api package. @todo: consolidate it
+   */
+  async #changeSyncPausedState(sync: Sync, pausedState: boolean): Promise<Sync> {
+    if (sync.paused === pausedState) {
+      return sync;
+    }
+
+    const newSync = await this.#prisma.$transaction(async (tx) => {
+      const [newSync] = await Promise.all([
+        tx.sync.update({
+          where: {
+            id: sync.id,
+          },
+          data: {
+            paused: pausedState,
+          },
+        }),
+        tx.syncChange.create({
+          data: {
+            syncId: sync.id,
+          },
+        }),
+      ]);
+
+      return newSync;
+    });
+
+    return fromSyncModel(newSync);
   }
 
   public async updateSyncState(id: string, state: SyncState): Promise<Sync> {

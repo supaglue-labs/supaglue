@@ -17,14 +17,13 @@ const { syncObjectRecords, syncEntityRecords } = proxyActivities<ReturnType<type
   },
 });
 
-const { getSync, updateSyncState, clearSyncArgsForNextRun, logSyncStart, logSyncFinish, getEntity } = proxyActivities<
-  ReturnType<typeof createActivities>
->({
-  startToCloseTimeout: '10 second',
-  retry: {
-    maximumAttempts: 3,
-  },
-});
+const { getSync, pauseSync, updateSyncState, clearSyncArgsForNextRun, logSyncStart, logSyncFinish, getEntity } =
+  proxyActivities<ReturnType<typeof createActivities>>({
+    startToCloseTimeout: '10 second',
+    retry: {
+      maximumAttempts: 3,
+    },
+  });
 
 const { maybeSendSyncFinishWebhook } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '6 minute',
@@ -63,6 +62,11 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
         : await doFullOnlySync(sync);
     await clearSyncArgsForNextRun({ syncId });
   } catch (err: any) {
+    // Process SG Sync Worker errors
+    if (err.cause?.type === 'SGConnectionNoLongerAuthenticatedError') {
+      await pauseSync({ connectionId, syncId });
+    }
+
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
 
     await logSyncFinish({

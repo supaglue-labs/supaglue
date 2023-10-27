@@ -242,6 +242,8 @@ components:
 x-webhooks: &x-webhooks
   sync.complete:
     $ref: ./webhooks/sync.complete.yaml
+  sync.paused:
+    $ref: ./webhooks/sync.paused.yaml
   connection.created:
     $ref: ./webhooks/connection.created.yaml
   connection.deleted:

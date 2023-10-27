@@ -66,6 +66,7 @@ import {
   NotModifiedError,
   RemoteProviderError,
   ServiceUnavailableError,
+  SGConnectionNoLongerAuthenticatedError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -1539,6 +1540,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public override handleErr(err: unknown): unknown {
     const error = err as any;
+
+    // map certain provider errors to sg sync worker errors
+    if (error.message === 'expired access/refresh token') {
+      return new SGConnectionNoLongerAuthenticatedError(error.message, error);
+    }
 
     // jsforce doesn't provide a stable jsonapi "title" so infer it from the message.
     // assumed format: "Some Title: Array of json details" or "Some Title"

@@ -5536,6 +5536,92 @@
         }
       }
     },
+    "sync.paused": {
+      "post": {
+        "summary": "Sync paused",
+        "description": "Notification after a sync is paused",
+        "operationId": "syncPaused",
+        "x-event-type": "sync.paused",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "sync.paused",
+                "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "provider_name": "salesforce",
+                "type": "object",
+                "object_type": "standard",
+                "object": "contact"
+              },
+              "schema": {
+                "type": "object",
+                "title": "Object Sync Paused",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "sync.paused"
+                    ],
+                    "example": "sync.paused"
+                  },
+                  "run_id": {
+                    "type": "string",
+                    "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "object"
+                    ]
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard",
+                      "custom"
+                    ]
+                  },
+                  "object": {
+                    "type": "string",
+                    "example": "contact"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "connection_id",
+                  "customer_id",
+                  "provider_name",
+                  "type",
+                  "object_type",
+                  "object"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
     "connection.created": {
       "post": {
         "summary": "Customer connection created",
@@ -6342,6 +6428,92 @@
                       "entity_name"
                     ]
                   }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Return a 200 status to indicate that the data was received successfully"
+          }
+        }
+      }
+    },
+    "sync.paused": {
+      "post": {
+        "summary": "Sync paused",
+        "description": "Notification after a sync is paused",
+        "operationId": "syncPaused",
+        "x-event-type": "sync.paused",
+        "tags": [
+          "Webhook Events"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "example": {
+                "webhook_event_type": "sync.paused",
+                "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+                "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+                "provider_name": "salesforce",
+                "type": "object",
+                "object_type": "standard",
+                "object": "contact"
+              },
+              "schema": {
+                "type": "object",
+                "title": "Object Sync Paused",
+                "properties": {
+                  "webhook_event_type": {
+                    "type": "string",
+                    "enum": [
+                      "sync.paused"
+                    ],
+                    "example": "sync.paused"
+                  },
+                  "run_id": {
+                    "type": "string",
+                    "example": "2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"
+                  },
+                  "connection_id": {
+                    "type": "string",
+                    "example": "e30cbb93-5b05-4186-b6de-1acc10013795"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "example": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"
+                  },
+                  "provider_name": {
+                    "$ref": "#/components/schemas/provider_name"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "object"
+                    ]
+                  },
+                  "object_type": {
+                    "type": "string",
+                    "enum": [
+                      "common",
+                      "standard",
+                      "custom"
+                    ]
+                  },
+                  "object": {
+                    "type": "string",
+                    "example": "contact"
+                  }
+                },
+                "required": [
+                  "webhook_event_type",
+                  "connection_id",
+                  "customer_id",
+                  "provider_name",
+                  "type",
+                  "object_type",
+                  "object"
                 ]
               }
             }

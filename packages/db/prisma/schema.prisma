@@ -18,21 +18,22 @@ model SystemSettings {
 }
 
 model Application {
-  id           String        @id @default(uuid())
-  name         String
-  config       Json
-  createdAt    DateTime      @default(now()) @map("created_at")
-  updatedAt    DateTime      @updatedAt @map("updated_at")
-  orgId        String        @map("org_id")
-  environment  String        @default("development")
+  id               String            @id @default(uuid())
+  email            String?
+  name             String
+  config           Json
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @updatedAt @map("updated_at")
+  orgId            String            @map("org_id")
+  environment      String            @default("development")
   // Miscellaneous notes for debugging (i.e. org name, etc)
-  notes        String?
-  customers    Customer[]
-  destinations Destination[]
-  providers    Provider[]
-  schemas      Schema[]
-  entities     Entity[]
-  magicLinks   MagicLink[]
+  notes            String?
+  customers        Customer[]
+  destinations     Destination[]
+  providers        Provider[]
+  schemas          Schema[]
+  entities         Entity[]
+  magicLinks       MagicLink[]
   temporaryApiKeys TemporaryApiKey[]
 
   @@unique([orgId, name])
@@ -262,11 +263,11 @@ model MagicLink {
 }
 
 model TemporaryApiKey {
-  id String @id @default(uuid())
-  applicationId String @map("application_id")
-  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
-  hashedApiKey String @map("hashed_api_key") @unique
-  expiresAt DateTime @map("expires_at")
+  id            String      @id @default(uuid())
+  applicationId String      @map("application_id")
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  hashedApiKey  String      @unique @map("hashed_api_key")
+  expiresAt     DateTime    @map("expires_at")
   createdAt     DateTime    @default(now()) @map("created_at")
 
   @@map("temporary_api_keys")

@@ -362,6 +362,13 @@ export interface webhooks {
      */
     post: operations["syncComplete"];
   };
+  "sync.paused": {
+    /**
+     * Sync paused 
+     * @description Notification after a sync is paused
+     */
+    post: operations["syncPaused"];
+  };
   "connection.created": {
     /**
      * Customer connection created 
@@ -2774,6 +2781,51 @@ export interface operations {
           entity_id: string;
           entity_name: string;
         }]>;
+      };
+    };
+    responses: {
+      /** @description Return a 200 status to indicate that the data was received successfully */
+      200: never;
+    };
+  };
+  /**
+   * Sync paused 
+   * @description Notification after a sync is paused
+   */
+  syncPaused: {
+    requestBody?: {
+      content: {
+        /**
+         * @example {
+         *   "webhook_event_type": "sync.paused",
+         *   "connection_id": "e30cbb93-5b05-4186-b6de-1acc10013795",
+         *   "customer_id": "7bfcc74d-c98b-49de-8e8f-3dc7a17273f6",
+         *   "provider_name": "salesforce",
+         *   "type": "object",
+         *   "object_type": "standard",
+         *   "object": "contact"
+         * }
+         */
+        "application/json": {
+          /**
+           * @example sync.paused 
+           * @enum {string}
+           */
+          webhook_event_type: "sync.paused";
+          /** @example 2fdbd03d-11f2-4e66-a5e6-2b731c71a12d */
+          run_id?: string;
+          /** @example e30cbb93-5b05-4186-b6de-1acc10013795 */
+          connection_id: string;
+          /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
+          customer_id: string;
+          provider_name: components["schemas"]["provider_name"];
+          /** @enum {string} */
+          type: "object";
+          /** @enum {string} */
+          object_type: "common" | "standard" | "custom";
+          /** @example contact */
+          object: string;
+        };
       };
     };
     responses: {
