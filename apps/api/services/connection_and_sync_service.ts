@@ -24,7 +24,7 @@ import type {
   ConnectionUpsertParamsAny,
   ImportedConnectionCredentials,
 } from '@supaglue/types/connection';
-import type { Sync } from '@supaglue/types/sync';
+import type { ObjectSync, Sync } from '@supaglue/types/sync';
 import { snakecaseKeys } from '@supaglue/utils';
 import type { Client } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleOverlapPolicy } from '@temporalio/client';
@@ -106,8 +106,27 @@ export class ConnectionAndSyncService {
     return fromSyncModel(newSync);
   }
 
+  /**
+   * NOTE: duped with sync_service in sync-worker package. @todo: consolidate it
+   */
   public async pauseSync(sync: Sync): Promise<Sync> {
-    return await this.#changeSyncPausedState(sync, true);
+    const pausedSync = (await this.#changeSyncPausedState(sync, true)) as ObjectSync; // NOTE: only support object syncs
+    const connection = await this.#connectionService.getSafeById(sync.connectionId);
+
+    await this.#webhookService.sendMessage(
+      'sync.paused',
+      {
+        connection_id: pausedSync.connectionId,
+        customer_id: connection.customerId,
+        provider_name: connection.providerName,
+        type: 'object',
+        object_type: pausedSync.objectType,
+        object: pausedSync.object,
+      },
+      connection.applicationId
+    );
+
+    return pausedSync;
   }
 
   public async resumeSync(sync: Sync): Promise<Sync> {

@@ -8,6 +8,7 @@ import type {
 } from '@supaglue/core/services';
 import { DestinationService } from '@supaglue/core/services/destination_service';
 import type { EntityService } from '@supaglue/core/services/entity_service';
+import type { NotificationService } from '@supaglue/core/services/notification_service';
 import type { SyncRunService } from '@supaglue/core/services/sync_run_service';
 import type { SystemSettingsService } from '@supaglue/core/services/system_settings_service';
 import type { PrismaClient } from '@supaglue/db';
@@ -29,6 +30,7 @@ type DependencyContainer = {
   destinationService: DestinationService;
   entityService: EntityService;
   webhookService: WebhookService;
+  notificationService: NotificationService;
 };
 
 // global
@@ -45,6 +47,7 @@ function createDependencyContainer(): DependencyContainer {
     syncRunService,
     entityService,
     webhookService,
+    notificationService,
   } = getCoreDependencyContainer();
 
   const TEMPORAL_ADDRESS =
@@ -70,7 +73,14 @@ function createDependencyContainer(): DependencyContainer {
   });
 
   const applicationService = new ApplicationService(prisma);
-  const syncService = new SyncService(prisma, temporalClient, connectionService, syncConfigService, applicationService);
+  const syncService = new SyncService(
+    prisma,
+    temporalClient,
+    connectionService,
+    syncConfigService,
+    applicationService,
+    webhookService
+  );
   const destinationService = new DestinationService(prisma);
 
   return {
@@ -87,6 +97,7 @@ function createDependencyContainer(): DependencyContainer {
     destinationService,
     entityService,
     webhookService,
+    notificationService,
   };
 }
 

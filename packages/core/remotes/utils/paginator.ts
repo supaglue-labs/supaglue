@@ -61,7 +61,7 @@ export async function paginator<T>(
         try {
           response = await pageFetcher(cursor);
         } catch (e: any) {
-          if (e.problemType === 'TERMINAL_TOO_MANY_REQUESTS_ERROR') {
+          if (e.problemType === 'SG_TERMINAL_TOO_MANY_REQUESTS_ERROR') {
             passThrough.emit('error', e);
             return;
           }
