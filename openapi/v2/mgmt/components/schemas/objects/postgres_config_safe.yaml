@@ -19,9 +19,11 @@ properties:
     type: string
     enum:
       - disable
-      - allow
+      - no-verify
       - prefer
       - require
+      - verify-ca
+      - verify-full
     example: disable
 required:
   - host
