@@ -19,7 +19,10 @@ get:
 patch:
   operationId: updateProperty
   summary: Update property (preview)
-  description: Update custom property (preview)
+  description: |
+    :::note
+    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+    :::
   tags:
     - Properties
   security:

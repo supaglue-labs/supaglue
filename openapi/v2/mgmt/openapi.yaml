@@ -13,8 +13,6 @@ info:
 
     Welcome to the Management API documentation. You can use this API to manage customer integrations and connections.
 
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
-
     #### Base API URL
 
     ```
