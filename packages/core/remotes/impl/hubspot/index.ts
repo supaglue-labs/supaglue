@@ -116,7 +116,6 @@ const HUBSPOT_RECORD_LIMIT = 100; // remote API limit
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
 export const DEFAULT_PROPERTY_GROUP = 'custom_properties';
-const DEFAULT_PROPERTY_GROUP_LABEL = 'Custom Properties';
 
 // TODO move this to lekko
 const FETCH_ASSOCIATIONS_APPLICATION_IDS = ['9773053e-a13f-4249-b641-301a51952708'];
@@ -729,7 +728,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    const objectTypeId = object;
+    const objectTypeId = await this.#getObjectTypeIdFromNameOrId(object);
     const propertiesToFetch = await this.listPropertiesForRawObjectName(objectTypeId);
     const propertyIds = propertiesToFetch.map(({ id }) => id);
 
@@ -1175,7 +1174,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     object: StandardOrCustomObject,
     data: ObjectRecordUpsertData
   ): Promise<string> {
-    const objectType = object.name;
+    let objectType = object.name;
+    if (object.type === 'custom') {
+      objectType = await this.#getObjectTypeIdFromNameOrId(object.name);
+    }
 
     const response = await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
@@ -1200,7 +1202,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     id: string,
     data: ObjectRecordUpsertData
   ): Promise<void> {
-    const objectType = object.name;
+    let objectType = object.name;
+    if (object.type === 'custom') {
+      objectType = await this.#getObjectTypeIdFromNameOrId(object.name);
+    }
 
     await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
@@ -1235,7 +1240,8 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public override async getProperty(objectName: string, propertyName: string): Promise<PropertyUnified> {
     const objectSchema = await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
-      return await this.#client.crm.schemas.coreApi.getById(objectName);
+      const objectTypeId = await this.#getObjectTypeIdFromNameOrId(objectName);
+      return await this.#client.crm.schemas.coreApi.getById(objectTypeId);
     });
     const found = objectSchema.properties.find((property) => property.name === propertyName);
     if (!found) {
@@ -1249,13 +1255,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       throw new BadRequestError('Cannot create properties on the user object');
     }
     const groupName = params.groupName ?? DEFAULT_PROPERTY_GROUP;
-    await this.#upsertPropertyGroup(objectName, groupName);
+    const objectTypeId = await this.#getObjectTypeIdFromNameOrId(objectName);
+    await this.#upsertPropertyGroup(objectTypeId, groupName);
     const created = await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
-      return await this.#client.crm.properties.coreApi.create(
-        objectName,
-        toHubspotCreatePropertyParams(objectName, params)
-      );
+      return await this.#client.crm.properties.coreApi.create(objectTypeId, toHubspotCreatePropertyParams(params));
     });
     return toPropertyUnified(created, new Set(params.isRequired ? [params.name] : []));
   }
@@ -1268,13 +1272,14 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     if (objectName === 'user') {
       throw new BadRequestError('Cannot create properties on the user object');
     }
+    const objectTypeId = await this.#getObjectTypeIdFromNameOrId(objectName);
     if (params.groupName) {
-      await this.#upsertPropertyGroup(objectName, params.groupName);
+      await this.#upsertPropertyGroup(objectTypeId, params.groupName);
     }
     await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       return await this.#client.crm.properties.coreApi.update(
-        objectName,
+        objectTypeId,
         propertyName,
         toHubspotUpdatePropertyParams(params)
       );
@@ -1282,11 +1287,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return await this.getProperty(objectName, propertyName);
   }
 
-  async #upsertPropertyGroup(objectName: string, groupName: string) {
+  async #upsertPropertyGroup(objectTypeId: string, groupName: string) {
     await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       try {
-        await this.#client.crm.properties.groupsApi.create(objectName, {
+        await this.#client.crm.properties.groupsApi.create(objectTypeId, {
           name: groupName,
           label: groupName,
         });
@@ -1949,9 +1954,36 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return response.results.map((object) => ({ id: object.id, name: object.name }));
   }
 
-  public override async getCustomObjectSchema(id: string): Promise<CustomObjectSchema> {
+  #isAlreadyObjectTypeId(nameOrId: string): boolean {
+    const pattern = /^\d+-\d+$/;
+    return pattern.test(nameOrId);
+  }
+
+  // In certain cases, Hubspot cannot determine the object type based on just the name for custom objects,
+  // so we need to get the ID.
+  async #getObjectTypeIdFromNameOrId(nameOrId: string): Promise<string> {
+    // Standard objects can be referred by name no problem
+    if (isStandardObjectType(nameOrId)) {
+      return nameOrId;
+    }
+    if (this.#isAlreadyObjectTypeId(nameOrId)) {
+      return nameOrId;
+    }
     await this.maybeRefreshAccessToken();
-    const response = await this.#client.crm.schemas.coreApi.getById(id);
+    const schemas = await this.#client.crm.schemas.coreApi.getAll();
+    const schemaId = schemas.results.find(
+      (schema) => schema.name === nameOrId || schema.objectTypeId === nameOrId
+    )?.objectTypeId;
+    if (!schemaId) {
+      throw new NotFoundError(`Could not find custom object schema with name or id ${nameOrId}`);
+    }
+    return schemaId;
+  }
+
+  public override async getCustomObjectSchema(name: string): Promise<CustomObjectSchema> {
+    await this.maybeRefreshAccessToken();
+    const schemaId = await this.#getObjectTypeIdFromNameOrId(name);
+    const response = await this.#client.crm.schemas.coreApi.getById(schemaId);
     return toCustomObject(response);
   }
 
@@ -2001,7 +2033,9 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
     // Only update fields that have changed; for example, if you pass in the same
     // labels as the existing object, hubspot will throw an error.
-    const existingObject = await this.getCustomObjectSchema(params.name);
+    const schemaId = await this.#getObjectTypeIdFromNameOrId(params.name);
+    const response = await this.#client.crm.schemas.coreApi.getById(schemaId);
+    const existingObject = toCustomObject(response);
 
     const labels =
       params.labels.singular === existingObject.labels.singular && params.labels.plural === existingObject.labels.plural
@@ -2009,7 +2043,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         : params.labels;
 
     // Update the main object
-    await this.#client.crm.schemas.coreApi.update(params.name, {
+    await this.#client.crm.schemas.coreApi.update(response.objectTypeId, {
       // ignoring name because you can't update that in hubspot
       labels,
       requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.id),
@@ -2037,13 +2071,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const fieldsToCreate = params.fields.filter((field) => !existingObject.fields.map((f) => f.id).includes(field.id));
 
     // Delete fields
-    await this.#client.crm.properties.batchApi.archive(params.name, {
+    await this.#client.crm.properties.batchApi.archive(response.objectTypeId, {
       inputs: fieldNamesToDelete.map((id) => ({ name: id })),
     });
 
     // Update fields
     for (const field of fieldsToUpdate) {
-      await this.#client.crm.properties.coreApi.update(params.name, field.id, {
+      await this.#client.crm.properties.coreApi.update(response.objectTypeId, field.id, {
         label: field.label,
         options: getHubspotOptions(field),
         ...toHubspotTypeAndFieldType(field.type),
@@ -2052,13 +2086,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
     // Create fields
     // TODO: We should not assume that there is only one group
-    const { results: groups } = await this.#client.crm.properties.groupsApi.getAll(params.name);
+    const { results: groups } = await this.#client.crm.properties.groupsApi.getAll(response.objectTypeId);
     const unarchivedGroups = groups.filter((group) => !group.archived);
     if (!unarchivedGroups.length || unarchivedGroups.length > 1) {
       throw new Error('Expected exactly one property group');
     }
 
-    await this.#client.crm.properties.batchApi.create(params.name, {
+    await this.#client.crm.properties.batchApi.create(response.objectTypeId, {
       inputs: fieldsToCreate.map((field) => ({
         name: field.id,
         label: field.label,
@@ -2074,6 +2108,8 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     targetObject: string
   ): Promise<SimpleAssociationSchema[]> {
     await this.maybeRefreshAccessToken();
+    sourceObject = await this.#getObjectTypeIdFromNameOrId(sourceObject);
+    targetObject = await this.#getObjectTypeIdFromNameOrId(targetObject);
     const response = await this.#client.crm.associations.v4.schema.definitionsApi.getAll(sourceObject, targetObject);
     return response.results.map((result) => ({
       id: result.typeId.toString(),
@@ -2088,6 +2124,8 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     label: string
   ): Promise<AssociationSchema> {
     await this.maybeRefreshAccessToken();
+    sourceObject = await this.#getObjectTypeIdFromNameOrId(sourceObject);
+    targetObject = await this.#getObjectTypeIdFromNameOrId(targetObject);
     await this.#client.crm.associations.v4.schema.definitionsApi.create(sourceObject, targetObject, {
       label: label,
       name: id,
@@ -2107,25 +2145,22 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public override async createAssociation(params: AssociationCreateParams): Promise<Association> {
     await this.maybeRefreshAccessToken();
-
-    await this.#client.crm.associations.v4.batchApi.create(
-      params.sourceRecord.objectName,
-      params.targetRecord.objectName,
-      {
-        inputs: [
-          {
-            _from: { id: params.sourceRecord.id },
-            to: { id: params.targetRecord.id },
-            types: [
-              {
-                associationCategory: 'USER_DEFINED', // TODO: does this work all the time?
-                associationTypeId: parseInt(params.associationSchemaId),
-              },
-            ],
-          },
-        ],
-      }
-    );
+    const sourceObjectTypeId = await this.#getObjectTypeIdFromNameOrId(params.sourceRecord.objectName);
+    const targetObjectTypeId = await this.#getObjectTypeIdFromNameOrId(params.targetRecord.objectName);
+    await this.#client.crm.associations.v4.batchApi.create(sourceObjectTypeId, targetObjectTypeId, {
+      inputs: [
+        {
+          _from: { id: params.sourceRecord.id },
+          to: { id: params.targetRecord.id },
+          types: [
+            {
+              associationCategory: 'USER_DEFINED', // TODO: does this work all the time?
+              associationTypeId: parseInt(params.associationSchemaId),
+            },
+          ],
+        },
+      ],
+    });
 
     return params;
   }
