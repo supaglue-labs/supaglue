@@ -3,10 +3,11 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import MuiSelect from '@mui/material/Select';
+import type { ReactNode } from 'react';
 
 export type SelectOption = {
   value: string;
-  displayValue?: string;
+  displayValue?: string | ReactNode;
 };
 
 export type SelectProps = {

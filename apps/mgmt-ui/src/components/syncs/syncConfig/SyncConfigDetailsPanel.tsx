@@ -49,7 +49,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
   const { addNotification } = useNotification();
   const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
-  const { destinations, isLoading: isLoadingDestinations } = useDestinations();
+  const { destinations = [], isLoading: isLoadingDestinations } = useDestinations();
   const { entities = [], isLoading: isLoadingEntities } = useEntities();
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -218,14 +218,32 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
             <Select
               name="Destination"
               disabled={isLoadingDestinations || !!syncConfig}
-              onChange={setDestinationId}
+              onChange={async (value) => {
+                if (value === 'create_new') {
+                  await router.push(`/applications/${activeApplicationId}/connectors/destinations`);
+                  return;
+                }
+                setDestinationId(value);
+              }}
               value={destinationId ?? ''}
-              options={
-                destinations?.map((destination) => ({
+              options={[
+                ...destinations.map((destination) => ({
                   value: destination.id,
                   displayValue: getDestinationName(destination),
-                })) ?? []
-              }
+                })),
+                {
+                  value: 'create_new',
+                  displayValue: (
+                    <Link
+                      color="inherit"
+                      className="w-full"
+                      href={`/applications/${activeApplicationId}/connectors/destinations`}
+                    >
+                      <i>Create Destination</i>
+                    </Link>
+                  ),
+                },
+              ]}
             />
           </Stack>
           <Stack className="gap-2">
