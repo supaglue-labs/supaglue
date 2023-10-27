@@ -1,0 +1,46 @@
+---
+id: submit-form
+title: "Submit form"
+description: "Submit form"
+sidebar_label: "Submit form"
+hide_title: true
+hide_table_of_contents: true
+api: eJy1V9tu4zYQ/RWCfUkA20rS7YtRFM22u4XRywa59ILESGiJtrgriSqHtGMY/vfOkJIsydptm25twJFGw5kzc+ai7LgupRFW6WKW8CkHt8iVfatNzkfcihXw6T2nW+DzEQcZO6PsFoU7/jwWpRp/kHQ33+NTI/90EuxrnaBo52+VkWjVGidHPNaFlYWlR6IsMxV7r9F70AXJIE5lLujKbkuJUPTivYwtwigNYbRKAj1dIpi3SmYJDOkmEmKjSrKMYsFydKWKFdNLtqRDrBC5ZFaztcicZGiMSRGn1UNVMJt6KYUvn0VeZpLcIDKVocFcfguuFCs8O4k1KS2VAfsLGsWnP0htVhKFmWhkv6N3vu8HUdlr8IM1pNfHT2C8KhNJYiQAxUHCTIqkjfAI2H4/ahFwXzlEktCQIusiu2ohIob6R1qJnneS0WXgv6bGf8gzlLqAkJ6LszP6003GrCDHvmiYWGhnm0yw2EhhZcKQTVcm/nKxbahkvqgByMxnK0OV/D19twhAJW3O8EJYthFQQ45qvCgSDJPgMksHQh9aKt2hijy/+PLVV5g1sMI6GEJyKI3Kw1FJVGeRW6us1wxOH8nZY80Hr/jpRnbjNWtYpTDIqJUG/GAoAr3P49iB1bk0Y0XFquhgikmQBu+O8jyAPN8eTJzzIxCU3vo5m30fcusKhVMo22LikWWFfQ0+g40i9vhWO8Na5PNRb1jtR60okPc1GjNjL3lJHCAyCZirWA4HUXtglYePgvHMHJJZCpseqf8zSL6AkFtkH5lLNc3+UoOvc7I65RE5g2hX+dxHj6E8KGZp1jXZzlDzp9aWMI0i3AiTZgooHeXCfJBUxWPhMP2h1dYXR51yU51hl1czvm9tmhuKJXRca980kaHkRxSMDmzVOn2euv7QDUMtWgQiy/SGJXItM+pv8LI4pmFLdeMBIWs0H64PC+7N/zYOCfhSkynKcYB7Njl/NTnjh069K6iyE/amMCpOc6x0DzRMNxH76ValpE4t0V9hS3QMfXRdHru7pJ+9L/DDZoU1OnExyR7w+5vMUNnvVspbjfDSKwDBYyc/1+XALptyOGUIx1EI/nbC/tCOxaJgDtBYqsJRtLrBeqjMK5OMcejYbdM6MCEM978quWEII8cdEdrAr/ghv/OTOlhKx6QdcVRmwhKtUTA1DqZgsJxPybHPyGsBvl7Y3fVPD8XT09ND8S/7ojrl3xewGXNRdIhsz9wOI00/WPlsCb3yNjynu6qhw0IHPDo9jJG6p7HjUup+1NrtFhjHncn2exJjxRv/hjfia2GUWFD9Yd8nCuga58ZSZCCPADVrlp9cV/PplFEFDwGtu7mgvvVvZniHl77Zm6m3n6Nq1dAvhvA5l8ZgLAFzf/k1QdE0fzHw/qL4JID+3upACErfBUfjW7Jz0Dh6LzqcuMTJWNpP6rZXytW7m1tUXlT/EuQ6oTNGbGht4e+UP+AXb7QP3k9QL9/hZCxWTqxIP9il0YjdknbHf5j11QVVxWAttfdCCIR+KaxB9a+pi3GxfNOohycfPdCsmaBNRMwR8F+au59M
+sidebar_class_name: "post api-method"
+info_path: api/v2/marketing-automation/unified-enrichment-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Submit form</h1>
+
+<MethodEndpoint method={"post"} path={"/forms/{form_id}/_submit"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/marketing-automation/unified-enrichment-api"}></SecuritySchemes>
+
+
+
+Submit form
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"form_id","in":"path","required":true,"schema":{"type":"string","example":"12345"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}}></ParamsItem></ul></div></details><MimeTabs className={"openapi-tabs__mime"}><TabItem label={"application/json"} value={"application/json-schema"}><details style={{}} className={"openapi-markdown__details mime"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-mime"}><h3 className={"openapi-markdown__details-summary-header-body"}>Body</h3><strong className={"openapi-schema__required"}>required</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>formFields</strong><span className={"openapi-schema__name"}> object</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span></span></summary><div style={{"marginLeft":"1rem"}}><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
+
+a mapping of field name to value for each field in the form
+
+</div><SchemaItem collapsible={false} name={"email"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"the email address of the lead","example":"me@supaglue.com"}}></SchemaItem><SchemaItem name={"property name*"} required={false} schemaName={"any"} qualifierMessage={undefined} schema={{"type":"object","description":"a mapping of field name to value for each field in the form","example":{"email":"me@supaglue.com","firstName":"George","lastName":"Xing"},"properties":{"email":{"type":"string","description":"the email address of the lead","example":"me@supaglue.com"}},"required":["email"],"additionalProperties":true}} collapsible={false} discriminator={false}></SchemaItem></div></details></SchemaItem></ul></details></TabItem></MimeTabs><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Information about the lead created or updated by the form submission
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"id"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The id of the lead that was created/updated as a result of submitting the form","example":12345}}></SchemaItem><SchemaItem collapsible={false} name={"status"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"updated"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"id\": 12345,\n  \"status\": \"updated\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
