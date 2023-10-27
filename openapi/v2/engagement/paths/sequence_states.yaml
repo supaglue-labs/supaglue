@@ -1,7 +1,10 @@
 post:
   operationId: createSequenceState
   summary: Create sequence state
-  description: Aaka adding contact to sequence
+  description: |
+    In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
+    and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
+    you must pas in the same sequenceId, userId and mailboxId for all the contacts for this to work)
   tags:
     - Sequence States
   security:
@@ -16,7 +19,7 @@ post:
           properties:
             record:
               $ref: ../components/schemas/create_sequence_state.yaml
-            records: 
+            records:
               type: array
               description: Will use the batch endpoints when possible (e.g. Apollo)
               items:
@@ -45,7 +48,7 @@ post:
               records:
                 type: array
                 description: Created records, in order passed in
-                items: 
+                items:
                   $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml

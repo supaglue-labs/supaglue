@@ -155,7 +155,9 @@ export interface paths {
   "/sequence_states": {
     /**
      * Create sequence state 
-     * @description Aaka adding contact to sequence
+     * @description In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
+     * and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
+     * you must pas in the same sequenceId, userId and mailboxId for all the contacts for this to work)
      */
     post: operations["createSequenceState"];
     parameters: {
@@ -1014,7 +1016,9 @@ export interface operations {
   };
   /**
    * Create sequence state 
-   * @description Aaka adding contact to sequence
+   * @description In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
+   * and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
+   * you must pas in the same sequenceId, userId and mailboxId for all the contacts for this to work)
    */
   createSequenceState: {
     parameters: {
