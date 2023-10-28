@@ -40,7 +40,6 @@ import {
   toApolloAccountUpdateParams,
   toApolloContactCreateParams,
   toApolloContactUpdateParams,
-  toApolloSequenceStateCreateParams,
 } from './mappers';
 
 const MAX_PAGE_SIZE = 100; // undocumented, but seems to be the max page size for Apollo
@@ -463,27 +462,71 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     return { id: r.emailer_step.id };
   }
 
+  async batchCreateSequenceState(
+    records: SequenceStateCreateParams[]
+  ): Promise<Array<CreateCommonObjectRecordResponse<'sequence_state'>>> {
+    const [sequenceId, ...otherSequenceIds] = Array.from(new Set(records.map((r) => r.sequenceId)));
+    const [mailboxId, ...otherMailboxIds] = Array.from(new Set(records.map((r) => r.mailboxId)));
+    const [userId, ...otherUserIds] = Array.from(new Set(records.map((r) => r.userId)));
+
+    if (otherSequenceIds.length || otherMailboxIds.length || otherUserIds.length) {
+      throw new Error(
+        'Batch create sequence states only works when all records are for the same sequence, mailbox and user'
+      );
+    }
+    if (!sequenceId) {
+      return [];
+    }
+    const res = await this.#api.postEmailerCampaignAddContactIds(
+      {
+        contact_ids: records.map((r) => r.contactId),
+        emailer_campaign_id: sequenceId,
+        send_email_from_email_account_id: mailboxId,
+        userId,
+      },
+      { params: { id: sequenceId } } // Duplicated in the body for some reason
+    );
+
+    // NOTE: This can happen if some of the contacts have been added to the sequence already
+    // as apollo's api do NOT return them as part of the response...
+    if (res.contacts.length !== records.length) {
+      throw new Error('Apollo could not add some contact(s) to the sequence.');
+    }
+    return res.contacts.map((contact) => {
+      // For whatever reason the campaignStatus id seems to be the same
+      // across multiple contacts... https://share.cleanshot.com/HKWJ85Ss
+      // but there also doesn't seem to be any other unique id we can use...
+      const campaignStatus = contact.contact_campaign_statuses.find(
+        (status: Record<string, any>) =>
+          status.send_email_from_email_account_id === mailboxId && status.emailer_campaign_id === sequenceId
+      );
+      return {
+        id: campaignStatus!.id.toString(),
+        record: fromApolloContactCampaignStatusToSequenceState(contact.id, campaignStatus as any),
+      };
+    });
+  }
+
   async createSequenceState(
     params: SequenceStateCreateParams
   ): Promise<CreateCommonObjectRecordResponse<'sequence_state'>> {
-    const response = await axios.post<{ contacts: Record<string, any>[]; emailer_campaign: Record<string, any> }>(
-      `${this.#baseURL}/v1/emailer_campaigns/${params.sequenceId}/add_contact_ids`,
-      { ...toApolloSequenceStateCreateParams(params), api_key: this.#apiKey },
-      {
-        headers: this.#headers,
-      }
-    );
-    if (response.data.contacts.length === 0) {
+    const res = await this.batchCreateSequenceState([params]);
+    if (res.length === 0) {
       throw new Error('Apollo could not add this contact to the sequence.');
     }
-    const campaignStatus = response.data.contacts[0].contact_campaign_statuses.find(
-      (status: Record<string, any>) =>
-        status.send_email_from_email_account_id === params.mailboxId && status.emailer_campaign_id === params.sequenceId
-    );
-    return {
-      id: campaignStatus.id.toString(),
-      record: fromApolloContactCampaignStatusToSequenceState(response.data.contacts[0].id, campaignStatus),
-    };
+    return res[0];
+  }
+
+  public async batchCreateCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    records: Array<EngagementCommonObjectTypeMap<T>['createParams']>
+  ): Promise<Array<CreateCommonObjectRecordResponse<T>>> {
+    if (commonObjectType === 'sequence_state') {
+      return this.batchCreateSequenceState(records as SequenceStateCreateParams[]) as Promise<
+        Array<CreateCommonObjectRecordResponse<T>>
+      >;
+    }
+    return Promise.all(records.map((record) => this.createCommonObjectRecord(commonObjectType, record)));
   }
 
   public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(

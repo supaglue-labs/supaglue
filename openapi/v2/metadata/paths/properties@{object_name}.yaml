@@ -1,10 +1,6 @@
 get:
   operationId: listPropertiesPreview
-  summary: List properties (preview)
-  description: |
-    :::note
-    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-    :::
+  summary: List properties
   tags:
     - Properties
   security:
@@ -24,12 +20,9 @@ get:
             required:
               - properties
 post:
-  operationId: createProperty 
+  operationId: createProperty
   summary: Create property
   description: |
-    :::note
-    This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-    :::
     Creates a custom property in the provider and registers it in Supaglue.
   tags:
     - Properties

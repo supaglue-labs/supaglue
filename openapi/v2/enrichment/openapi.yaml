@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.17.1
+  version: 0.17.3
   title: Unified Enrichment API
   contact:
     name: Supaglue
@@ -12,8 +12,6 @@ info:
     Welcome to the Unified API (Enrichment) documentation. You can use this API to write to third-party providers.
 
     [View common schema for Enrichment](https://docs.supaglue.com/platform/common-schemas/enrichment)
-
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
     #### Base API URL
     ```

@@ -30,7 +30,7 @@ export interface paths {
   };
   "/properties": {
     /**
-     * List properties 
+     * List properties (deprecated) 
      * @deprecated
      */
     get: operations["listPropertiesDeprecated"];
@@ -42,19 +42,11 @@ export interface paths {
     };
   };
   "/properties/{object_name}": {
-    /**
-     * List properties (preview) 
-     * @description :::note
-     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-     * :::
-     */
+    /** List properties */
     get: operations["listPropertiesPreview"];
     /**
      * Create property 
-     * @description :::note
-     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-     * :::
-     * Creates a custom property in the provider and registers it in Supaglue.
+     * @description Creates a custom property in the provider and registers it in Supaglue.
      */
     post: operations["createProperty"];
     parameters: {
@@ -98,7 +90,9 @@ export interface paths {
     get: operations["getProperty"];
     /**
      * Update property (preview) 
-     * @description Update custom property (preview)
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
      */
     patch: operations["updateProperty"];
     parameters: {
@@ -414,7 +408,7 @@ export interface operations {
     };
   };
   /**
-   * List properties 
+   * List properties (deprecated) 
    * @deprecated
    */
   listPropertiesDeprecated: {
@@ -439,12 +433,7 @@ export interface operations {
       };
     };
   };
-  /**
-   * List properties (preview) 
-   * @description :::note
-   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-   * :::
-   */
+  /** List properties */
   listPropertiesPreview: {
     parameters: {
       header: {
@@ -468,10 +457,7 @@ export interface operations {
   };
   /**
    * Create property 
-   * @description :::note
-   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-   * :::
-   * Creates a custom property in the provider and registers it in Supaglue.
+   * @description Creates a custom property in the provider and registers it in Supaglue.
    */
   createProperty: {
     parameters: {
@@ -570,7 +556,9 @@ export interface operations {
   };
   /**
    * Update property (preview) 
-   * @description Update custom property (preview)
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
    */
   updateProperty: {
     parameters: {

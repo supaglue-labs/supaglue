@@ -2,7 +2,7 @@
 # Other than the `webhooks` key, we should not use 3.1.0 features since the validation middleware doesn't support it yet
 openapi: 3.1.0
 info:
-  version: 0.17.1
+  version: 0.17.3
   title: Management API
   contact:
     name: Supaglue
@@ -12,8 +12,6 @@ info:
     #### Introduction
 
     Welcome to the Management API documentation. You can use this API to manage customer integrations and connections.
-
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
     #### Base API URL
 

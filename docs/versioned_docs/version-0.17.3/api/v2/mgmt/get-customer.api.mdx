@@ -1,0 +1,42 @@
+---
+id: get-customer
+title: "Get customer"
+description: "Get customer"
+sidebar_label: "Get customer"
+hide_title: true
+hide_table_of_contents: true
+api: eJydVW1r2zAQ/itC+7KBHXddadMwRrsyStkKo10Zow2tIiuxOltSJTlrCP7vu5NfZid9gSUQy9Jzd8/dPaesqTbCMi+1OkvphC6EPymd14WwNKKeLRydXNN2y9FpRJ3gpZV+BQdr+hgzI+PfAt+mFZxa4YxWToDdmu7u7OAjFY5baTAIhOj551p5oTximDG55IFIcu8QuKaOZ6JguPIrI8BUz+4F92BoLNL2sg7Ts72VaQ/vvJVqAXjxyAqT41Y65mL2YT6Px7ODebw3ZwfxbJyKeLx3uHu4O9/nbP+QVkCtYfmqw5UubdyiXVwq+VCKuEcpBg/gULFCvOzpfHWiC8PUipwpjiaQvMxftsEKMu6PihWvbUfwpFWFjXgopRUp9m+jQA2ZNsAwWeihlz44dxKj3Lan4LZCz8N2ngpP+L+WGmbBt0etoD7qrAcBIirRzjCf0T5Nb0sRbff8v0uOagQmmW50HchBzAlNOttk3WNWURS3XbbcSwvFp5n3xk2SBHQ+cqVhi7wUI6mTYlH4ZLlLN+tx2WDI8fczWvXm5RIzqwXbm5ouT9j5ChutUHqYpmCZYGko8TAehCGAIl4Tluf6D0nFUuQ4Hi7scS4crLKGUIXe5hoDY6K1j53R+4MRptJ2/pwptgC2ygerqNUZmjX82jw7GcFsae6OuhqhEKONIg4Ot6T0Bj6gfW91WnLcu4HvT5EDWGAumMSQGYGQJb6Eto/IL10SzhQpHRhk0gUMWBbBqtMpkXDvLOprzxGmUgL5KRFiuhFGDVQ+MxeqRq4uvuHm3d3djXpFDw0KkzPaeQjcq9nGrAyy74TgxaNPTM5kcBLqt26Ue90NkgPzycbYZhAPMev1DIhf2byqcBtmw4brOaJLZiWbYYdB3ql0uIbpmLPciS063eVM3140Q/qOoEaeotmKWKFclwx1MaGwDBofjH81BXijZaRRI45Bpsb3bLf+DwbjfPrlB2BZiUXpT1A9Ls0CvT/Jqz9adXj8raJn4B9RAjCbnzp4ffKsQTepNRorNIWb8y+sioqC
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get customer</h1>
+
+<MethodEndpoint method={"get"} path={"/customers/{customer_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+
+
+Get customer
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string","example":"your-customers-unique-application-id"}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Customer
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"your-customers-unique-application-id"}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"MyCompany Inc"}}></SchemaItem><SchemaItem collapsible={false} name={"email"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"contact@mycompany.com"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n  \"customer_id\": \"your-customers-unique-application-id\",\n  \"name\": \"MyCompany Inc\",\n  \"email\": \"contact@mycompany.com\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

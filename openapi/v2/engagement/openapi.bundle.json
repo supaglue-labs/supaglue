@@ -1,14 +1,14 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.17.1",
+    "version": "0.17.3",
     "title": "Unified Engagement API",
     "contact": {
       "name": "Supaglue",
       "email": "docs@supaglue.com",
       "url": "https://supaglue.com"
     },
-    "description": "#### Introduction\nWelcome to the Unified API (Engagement) documentation. You can use this API to write to multiple third-party providers within the Engagement category.\n\n[View common schema for Engagement](https://docs.supaglue.com/platform/common-schemas/engagement)\n\n[![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/engagement/v2\n```\n"
+    "description": "#### Introduction\nWelcome to the Unified API (Engagement) documentation. You can use this API to write to multiple third-party providers within the Engagement category.\n\n[View common schema for Engagement](https://docs.supaglue.com/platform/common-schemas/engagement)\n\n#### Base API URL\n\n```\nhttps://api.supaglue.io/engagement/v2\n```\n"
   },
   "servers": [
     {
@@ -867,7 +867,8 @@
     "/sequence_states": {
       "post": {
         "operationId": "createSequenceState",
-        "summary": "Create sequence state (aka adding contact to sequence)",
+        "summary": "Create sequence state(s)",
+        "description": "In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, \nand the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, \nyou must pass in the same sequenceId, userId and mailboxId for all the contacts for this to work)\n",
         "tags": [
           "Sequence States"
         ],
@@ -882,14 +883,33 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "record": {
-                    "$ref": "#/components/schemas/create_sequence_state"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "record": {
+                        "$ref": "#/components/schemas/create_sequence_state"
+                      }
+                    },
+                    "required": [
+                      "record"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "records": {
+                        "type": "array",
+                        "description": "Will use the batch endpoints when possible (e.g. Apollo)",
+                        "items": {
+                          "$ref": "#/components/schemas/create_sequence_state"
+                        }
+                      }
+                    },
+                    "required": [
+                      "records"
+                    ]
                   }
-                },
-                "required": [
-                  "record"
                 ]
               },
               "example": {
@@ -908,7 +928,7 @@
         },
         "responses": {
           "201": {
-            "description": "Sequence state created",
+            "description": "Sequence state(s) created",
             "content": {
               "application/json": {
                 "schema": {
@@ -919,6 +939,13 @@
                     },
                     "record": {
                       "$ref": "#/components/schemas/created_record"
+                    },
+                    "records": {
+                      "type": "array",
+                      "description": "Created records, in order passed in",
+                      "items": {
+                        "$ref": "#/components/schemas/created_record"
+                      }
                     },
                     "warnings": {
                       "$ref": "#/components/schemas/warnings"

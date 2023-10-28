@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.17.1
+  version: 0.17.3
   title: Unified CRM API
   contact:
     name: Supaglue
@@ -12,8 +12,6 @@ info:
     Welcome to the Unified API (CRM) documentation. You can use this API to write to multiple third-party providers within the CRM category.
 
     [View common schema for CRM](https://docs.supaglue.com/platform/common-schemas/crm)
-
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://www.postman.com/supaglue/workspace/supaglue-public/overview)
 
     #### Base API URL
     ```
