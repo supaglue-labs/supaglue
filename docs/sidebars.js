@@ -120,16 +120,36 @@ const sidebars = {
       label: 'Notification webhooks',
       type: 'doc',
     },
+    // section
+    {
+      type: 'html',
+      value: sidebarHeader('Common Schemas'),
+    },
+    {
+      id: 'platform/common-schemas/crm',
+      label: 'CRM schema',
+      type: 'doc',
+    },
+    {
+      id: 'platform/common-schemas/engagement',
+      label: 'Engagement schema',
+      type: 'doc',
+    },
+    {
+      id: 'platform/common-schemas/enrichment',
+      label: 'Enrichment schema',
+      type: 'doc',
+    },
+    {
+      id: 'platform/common-schemas/ticketing',
+      label: 'Ticketing schema',
+      type: 'doc',
+    },
 
     // section
     {
       type: 'html',
       value: sidebarHeader('Tutorials'),
-    },
-    {
-      id: 'use-cases/overview',
-      label: 'Overview',
-      type: 'doc',
     },
     {
       id: 'tutorials/search-across-data',
