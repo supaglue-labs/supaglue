@@ -474,7 +474,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         'Batch create sequence states only works when all records are for the same sequence, mailbox and user'
       );
     }
-    if (!sequenceId || !mailboxId || !userId) {
+    if (!sequenceId) {
       return [];
     }
     const res = await this.#api.postEmailerCampaignAddContactIds(
@@ -486,7 +486,16 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       },
       { params: { id: sequenceId } } // Duplicated in the body for some reason
     );
+
+    // NOTE: This can happen if some of the contacts have been added to the sequence already
+    // as apollo's api do NOT return them as part of the response...
+    if (res.contacts.length !== records.length) {
+      throw new Error('Apollo could not add some contact(s) to the sequence.');
+    }
     return res.contacts.map((contact) => {
+      // For whatever reason the campaignStatus id seems to be the same
+      // across multiple contacts... https://share.cleanshot.com/HKWJ85Ss
+      // but there also doesn't seem to be any other unique id we can use...
       const campaignStatus = contact.contact_campaign_statuses.find(
         (status: Record<string, any>) =>
           status.send_email_from_email_account_id === mailboxId && status.emailer_campaign_id === sequenceId

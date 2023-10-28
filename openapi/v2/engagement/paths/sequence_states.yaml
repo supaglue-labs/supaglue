@@ -1,10 +1,10 @@
 post:
   operationId: createSequenceState
-  summary: Create sequence state
+  summary: Create sequence state(s)
   description: |
     In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
     and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
-    you must pas in the same sequenceId, userId and mailboxId for all the contacts for this to work)
+    you must pass in the same sequenceId, userId and mailboxId for all the contacts for this to work)
   tags:
     - Sequence States
   security:
@@ -15,15 +15,22 @@ post:
     content:
       application/json:
         schema:
-          type: object
-          properties:
-            record:
-              $ref: ../components/schemas/create_sequence_state.yaml
-            records:
-              type: array
-              description: Will use the batch endpoints when possible (e.g. Apollo)
-              items:
-                $ref: ../components/schemas/create_sequence_state.yaml
+          oneOf:
+            - type: object
+              properties:
+                record:
+                  $ref: ../components/schemas/create_sequence_state.yaml
+              required:
+                - record
+            - type: object
+              properties:
+                records:
+                  type: array
+                  description: Will use the batch endpoints when possible (e.g. Apollo)
+                  items:
+                    $ref: ../components/schemas/create_sequence_state.yaml
+              required:
+                - records
         example:
           record:
             id: 355843a5-c536-4e82-b497-05160bfb7d78
@@ -35,7 +42,7 @@ post:
             updated_at: '2023-02-27T00:00:00Z'
   responses:
     '201':
-      description: Sequence state created
+      description: Sequence state(s) created
       content:
         application/json:
           schema:
