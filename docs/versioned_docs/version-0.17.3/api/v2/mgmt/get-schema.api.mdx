@@ -1,0 +1,46 @@
+---
+id: get-schema
+title: "Get schema"
+description: "Get schema"
+sidebar_label: "Get schema"
+hide_title: true
+hide_table_of_contents: true
+api: eJydVm1v2zYQ/isE96UDLDl2vPgFw7AO6Ipg61A0KYohDZwzebLY6a0k5cQw9N93R8mOHCcLsCRIaPJenjs+zzE7qbGyqMCjlgtvaxzIskIL3pTFJW3JNforlWIOciA9rJ1c3Mh2w8nbgXSoamv8lrZ38iGCykT/IH+6bejUoqvKwiF57eT47Iz/aHTKmooTUPhDbFUWHgvPFlBVmVEBwvCbY7OddK0drfy2QnIsV99QeXI8LaCyXII3bVqje17OW1OsyQsfIK8y3rqYzFcjnMyj8XQ8jiYXcB7BFKfR6EwB4HQGk/NENoM+quVrMfVM4eo8SaLZappEkwSm0WqmMZpN5uP5OLlQcDHnmAXk+N+R8m3Uld6EHiVm/X+akBjMtOt5grWwJUfjMXfPRTz2fx0oVGWWwTIx1vllMB88ueq/y9qKXhdFACXYNubqcjpDvXw91e+c46/nUlyn2EXdcjJVO1/maAWFdrG4To0T9APioy03RqONXIXKkIfugxHv4nUsDllEUlpxBRk6WijG2jCzv9fGcrtv2ubc8i5kWXm/BK0NA4JsGaIuuTIqot/nVVlmCMVJBVcdICfuU/QpYT+uREEhKL4o8P6FXrq436wEModPAXdseB0vSdgbH5resnDZUfBpRBLEiUI6eh9oexKMojQc6LgD79ELt58KFViK4dG6MGBabuyxhByGfSrwqewjajVwMjSe4+1sPNI/zTVJdaKiCeh5BIgqGpFQ9RjHs+nZiIASeMKRlt1IDNAo50IO2yRuuDugaiTPRbvZo65tRoap95VbDIc0ImNXV7DOaoxNOczXuR9uxqdM6GzE24+XsumN2jAyW1n2Bu6jsivzB2733V/0bLpmpQhE/ZN8lEaQlfClCLQQGjeY8RBwYU8pdLRKO0ANR0tKTsyFtjHO4tE05lL2F/0BClgT2sIHr3bMg/KPM+VQJ99KDoZbpUvlfj30SJU5nR038ejwhEI/0Je4LLwtda147yt9f8GMjJFr4SKOkQlKWfOHwN5Y0KwKUqsdOfDYYBvyzIPXoxwNPVrr9rWkuVJoQfUVGHK6mLMGKL+BC10Tnz/9yZt3d3dfi1f40FlxcVXpPCXu9exII0e1H2jg8cEPqwxMCBG6t+s4e9MJgyfA4lFLRLGUMvH5brciyJ9t1jS8/b1GG970gdyANbDiuyVia+N4rbsxcwLl8KbLN586af4omB3PQdzTt2CiboAZsZC0DOzuSb65JeOOwwyiPX9L9Kx8z/Pkn4gjCb9/d80Dq+Z29JXTyqRbcPRnUfUl1abn383gBfOf+epJk78czNuTFx0OCm2tuT/0vDT/Aon8SPg=
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get schema</h1>
+
+<MethodEndpoint method={"get"} path={"/schemas/{schema_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+:::caution deprecated
+
+This endpoint has been deprecated and may be removed in future versions of the API.
+
+:::
+
+Get schema
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"schema_id","in":"path","required":true,"schema":{"type":"string","example":"a821d59d-8b4c-4ad9-aeec-1292d2e28701"}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Schema
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"649b1e49-2722-46a3-a7e7-10caae78a43f"}}></SchemaItem><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"my-schema"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property openapi-schema__strikethrough"}>config</strong><span className={"openapi-schema__name"}> object</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span><span className={"openapi-schema__deprecated"}>deprecated</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>fields</strong><span className={"openapi-schema__name"}> object[]</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"apolla_first_name","description":"Your application field name."}}></SchemaItem><SchemaItem collapsible={false} name={"mapped_name"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"FirstName","description":"The field your customer maps. This is a Provider-specified field name. E.g. FirstName for Salesforce."}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem><SchemaItem collapsible={false} name={"allow_additional_field_mappings"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean","description":"Specifies whether your customer can add new application field names.","example":false}}></SchemaItem></div></details></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"id\": \"649b1e49-2722-46a3-a7e7-10caae78a43f\",\n  \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n  \"name\": \"my-schema\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
