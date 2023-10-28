@@ -1,0 +1,42 @@
+---
+id: connection-created
+title: "Customer connection created"
+description: "Notification of the creation of a connection for a customer"
+sidebar_label: "Customer connection created"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVktz2kgQ/itT2isCYQyOfdrE5YNrnwWVSm1tUnJr1MAESaOdBzZx6b9v9wgEcrA314WDZjT9/PrrHj1HOVppVO2UrqKb6Hft1FJJ4K3QS+HWKKTBbg9C6qpCGfZLbfiFt06XaKJBpGs0QfQ+J1tHyVu2gDlJPMW4xcrFbldjT2QoOxkHKxvd/B19wmyt9UbcsYaNvgwig/94tO6DznfRzTNrOzriJdR1sQ979NVyKs8RPkFZF8jLx9ZUGpynbzk/ZJMqTgEnicyy60k8zZJpfDl+N4uzWY7xGKQcJ8l4cnU9JaXa6K3KD0pTuMwzkLN4AtNZfAn5dfwOYBLjVXa1TJIMk4tL9kQeV9rsOBJTnlqpoOT4LBRoCWOJEadufUGpRouPt7d3i0XUDCIr11gC57fPSGdfKaHWFJXCKbSvZd/pWGdUtSIdrHzJsJ+BhaDvwDx33rzA7YzxTv2HIG1eYPqWwR+CuznF+43cQyGwWsEKS6YWb4yS6/2mBLNBRzopeEo38I1eVzrtrPexCvaccu3uINN8V+zXQ1r7zNaanff4UKsac6O2vP6GFXXxJrVYFBykTfMdmVXSppPZNA16LKbXFGeISEJNdGJd7R0VUa5pudLBMdS6KPTBX6GX7FtRpxmpWbdQFQJ3uyzomSk+nlmsLHYA6V606RE1WWifp1Rp7YmJPZxtAXLTR++Y+gHBPmrNsS1ex+/QL4Pobj7/Yx59aZp2kChDzCWBM93Rp3OfiydEelnFLhzy0Xqh8AmX0IQXScKP/rido/OmoiFKp8I6cN4Kp4Wqch5mSOMXXJjBOTgQj2CFQYlU9VxYLyVau/RFQYRqGDcahpbs8vB8jjbIk6U3bwfRFgr/Wg8T9CW6tQ5zb9sWpQa3pu0eIq4Smi2a1oM3BRfJudrejEZQq6H1NazIw1DpUbkq3Wh7QTr9lBd7GfH+z/vg1KL0RrndgqdZi9VTTNbikEFXWHrzCzLm++l4lGF2ciAIebiF+v7IjSAphhWI148ip+QKHo8BaggoBoxDQAQk3x/z401z9z+/Ro5ddO4OUdVSc2pc1RawZDi+Gk5Omu43qPZtGiAahHsXZOi6vY9DUbnvSlDMi1xL+3NHiHZ09BnTO2xe1u0n+on7yhmd+4DuZ/p/woKEkQvHFetHJsil500Yy0Pxl/ZCQiW85UZSNsiQZhm0uu8WwbNt1X63WAFVfvKJY4fsNYTyAWygiPg4/5VfPjw8fK7+g/x7KWLVv5FDNYI=
+sidebar_class_name: "event api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Customer connection created</h1>
+
+<MethodEndpoint method={"event"} path={"webhook"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+
+
+Notification of the creation of a connection for a customer
+
+## Request
+
+<MimeTabs className={"openapi-tabs__mime"}><TabItem label={"application/json"} value={"application/json-schema"}><details style={{}} className={"openapi-markdown__details mime"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-mime"}><h3 className={"openapi-markdown__details-summary-header-body"}>Body</h3></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"webhook_event_type"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`connection.created`]"} schema={{"type":"string","enum":["connection.created"],"example":"connection.created"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"e30cbb93-5b05-4186-b6de-1acc10013795"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"}}></SchemaItem><SchemaItem collapsible={false} name={"category"} required={true} schemaName={"category"} qualifierMessage={"**Possible values:** [`crm`, `engagement`, `enrichment`, `marketing_automation`, `no_category`]"} schema={{"type":"string","enum":["crm","engagement","enrichment","marketing_automation","no_category"],"example":"crm","title":"category"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_name"} required={true} schemaName={"provider_name"} qualifierMessage={"**Possible values:** [`hubspot`, `salesforce`, `pipedrive`, `zendesk_sell`, `ms_dynamics_365_sales`, `zoho_crm`, `capsule`, `outreach`, `gong`, `apollo`, `salesloft`, `intercom`, `linear`, `clearbit`, `6sense`, `marketo`, `salesforce_marketing_cloud_account_engagement`, `slack`]"} schema={{"type":"string","enum":["hubspot","salesforce","pipedrive","zendesk_sell","ms_dynamics_365_sales","zoho_crm","capsule","outreach","gong","apollo","salesloft","intercom","linear","clearbit","6sense","marketo","salesforce_marketing_cloud_account_engagement","slack"],"example":"hubspot","title":"provider_name"}}></SchemaItem><SchemaItem collapsible={false} name={"result"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`SUCCESS`, `ERROR`]"} schema={{"type":"string","enum":["SUCCESS","ERROR"]}}></SchemaItem></ul></details></TabItem></MimeTabs><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Return a 200 status to indicate that the data was received successfully
+
+</div><div></div></TabItem></ApiTabs></div></div>
+      
