@@ -154,7 +154,7 @@ export interface paths {
   };
   "/sequence_states": {
     /**
-     * Create sequence state 
+     * Create sequence state(s) 
      * @description In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
      * and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
      * you must pas in the same sequenceId, userId and mailboxId for all the contacts for this to work)
@@ -1015,7 +1015,7 @@ export interface operations {
     };
   };
   /**
-   * Create sequence state 
+   * Create sequence state(s) 
    * @description In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
    * and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
    * you must pas in the same sequenceId, userId and mailboxId for all the contacts for this to work)
@@ -1051,7 +1051,7 @@ export interface operations {
       };
     };
     responses: {
-      /** @description Sequence state created */
+      /** @description Sequence state(s) created */
       201: {
         content: {
           "application/json": {
