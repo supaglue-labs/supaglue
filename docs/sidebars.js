@@ -152,6 +152,11 @@ const sidebars = {
       type: 'doc',
     },
     {
+      id: 'tutorials/enroll-prospects-in-sequences',
+      label: 'Enroll prospects in sequences',
+      type: 'doc',
+    },
+    {
       label: 'Transformations',
       type: 'category',
       link: {

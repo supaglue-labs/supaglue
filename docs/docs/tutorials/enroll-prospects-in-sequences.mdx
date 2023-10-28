@@ -1,0 +1,134 @@
+import BrowserWindow from '@site/src/components/BrowserWindow';
+import ThemedImage from '@theme/ThemedImage';
+
+# Enroll prospects in sequences
+
+![code](https://img.shields.io/badge/Code%20Tutorial-0000a5)
+
+This tutorial will show you how to enroll prospects in sequences in sales engagement platforms (Outreach, Salesloft, Apollo) using Supaglue's unified engagement API.
+
+## Prerequisites
+
+This tutorial assumes you have successfully configured a sales engagement provider and created a  customer connection.
+
+## Setup syncs to your application
+
+The first thing you'll want to do is setup data syncs for Sequences and Sequence State objects. You can do this by setting up a SyncConfig in the Supaglue Management Portal.
+
+In this example, this sync configuration will sync [engagement common schema](/platform/common-schemas/engagement) records from your customers' Outreach to your Postgres destination every hour.
+
+<BrowserWindow url="https://app.supaglue.io/applications/62403dc1-148e-4c53-a850-82e10f71ed23/syncs/sync_configs/new">
+
+![image](/img/tutorial-sequences-config.png)
+
+</BrowserWindow>
+
+Below is an example of the schema for the `engagement_contacts` table:
+
+```sql
+postgres=> \d engagement_contacts
+                            Table "supaglue.engagement_contacts"
+          Column          |              Type              | Collation | Nullable | Default 
+--------------------------+--------------------------------+-----------+----------+---------
+ _supaglue_application_id | text                           |           | not null | 
+ _supaglue_provider_name  | text                           |           | not null | 
+ _supaglue_customer_id    | text                           |           | not null | 
+ _supaglue_emitted_at     | timestamp(3) without time zone |           | not null | 
+ id                       | text                           |           | not null | 
+ created_at               | timestamp(3) without time zone |           |          | 
+ updated_at               | timestamp(3) without time zone |           |          | 
+ is_deleted               | boolean                        |           | not null | 
+ last_modified_at         | timestamp(3) without time zone |           | not null | 
+ first_name               | text                           |           |          | 
+ last_name                | text                           |           |          | 
+ job_title                | text                           |           |          | 
+ address                  | jsonb                          |           |          | 
+ email_addresses          | jsonb                          |           | not null | 
+ phone_numbers            | jsonb                          |           | not null | 
+ owner_id                 | text                           |           |          | 
+ account_id               | text                           |           |          | 
+ open_count               | integer                        |           | not null | 
+ click_count              | integer                        |           | not null | 
+ reply_count              | integer                        |           | not null | 
+ bounced_count            | integer                        |           | not null | 
+ raw_data                 | jsonb                          |           |          | 
+ _supaglue_unified_data   | jsonb                          |           |          | 
+Indexes:
+    "engagement_contacts_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
+```
+
+## Create a new sequence
+
+You may want to create a new sequence with email templates. You can use the unified [Create Sequence API endpoint](/api/v2/engagement/create-sequence) to create a multi-step sequence and the sequence steps at the same time.
+
+Here's an example of how you can create a simple, 1-step email sequence in Outreach:
+
+```shell
+curl -L -X POST 'https://api.supaglue.io/engagement/v2/sequences' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-H 'x-customer-id: 001' \
+-H 'x-provider-name: outreach' \
+-H 'x-api-key: <API_KEY_VALUE>' \
+--data-raw '{
+  "record": {
+    "name": "my first sequence",
+    "type": "team",
+    "owner_id": "1234",
+    "steps": [
+      {
+        "name": "first email",
+        "template": {
+          "id": "1234"
+        },
+        "type": "auto_email",
+      }
+    ],
+  }
+}'
+```
+
+There are many optional parameters you can pass into this API endpoint, to configure the message body, the timing of the message, additional steps, step type, and much more.
+
+
+:::info
+For Postgres destinations, Supaglue will perform data invalidation on the write path. This means that any records created or updated in Outreach will be updated in your database immediately and made available for querying.
+
+Data invalidation enables the following product flow:
+1. User creates sequence.
+2. Display the newly created sequence to end user in your application
+3. User adds contacts to the sequence through your application.
+
+:::
+
+## Add prospects to sequence
+
+You can add prospects (Contacts) to the sequence you've just created or an existing sequence via the [Create Sequence States API](/api/v2/engagement/create-sequence-state). You can think of a Sequence State as a sequence membership record.
+
+```shell
+curl -L -X POST 'https://api.supaglue.io/engagement/v2/sequence_states' \
+-H 'Content-Type: application/json' \
+-H 'Accept: application/json' \
+-H 'x-customer-id: 001' \
+-H 'x-provider-name: outreach' \
+-H 'x-api-key: <API_KEY_VALUE>' \
+--data-raw '{
+  "record": {
+    "contact_id": "c590dc63-8e43-48a4-8154-1fbb00ac936b",
+    "mailbox_id": "39fd1fe0-094b-4a61-b47f-3e3ac033203d",
+    "sequence_id": "b854e510-1c40-4ef6-ade4-8eb35f49d331",
+    "user_id": "12345"
+  }
+}'
+```
+
+:::info
+
+When adding Contacts to Sequences, we recommend adding the following filter conditions in your application to mitigate permissions errors at run-time:
+
+* Users who are active: `user.is_locked` = `false`
+* Sequences that are active: `sequence.is_archived` = `false`
+* Mailboxes are are inactive: `mailbox.is_disabled` = `false`
+* Sequences for which the user cannot send: `sequence.share_type` = `team` OR (`sequence.shared_type` = `private` and `sequence.owner_id` = `sequence_state.user_id`
+
+:::
