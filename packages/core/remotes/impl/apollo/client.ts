@@ -58,8 +58,8 @@ export type ApolloEmailerCampaignAddContactIds = z.infer<typeof apolloEmailerCam
 export const apolloEmailerCampaignAddContactIds = z.object({
   contact_ids: z.array(z.string()),
   emailer_campaign_id: z.string(),
-  send_email_from_email_account_id: z.string(),
-  userId: z.string(),
+  send_email_from_email_account_id: z.string().nullish(),
+  userId: z.string().nullish(),
 });
 
 export type ApolloEmailerCampaignAddContactIdsResponse = z.infer<typeof apolloEmailerCampaignAddContactIdsResponse>;

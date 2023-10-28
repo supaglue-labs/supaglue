@@ -867,8 +867,8 @@
     "/sequence_states": {
       "post": {
         "operationId": "createSequenceState",
-        "summary": "Create sequence state",
-        "description": "In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, \nand the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, \nyou must pas in the same sequenceId, userId and mailboxId for all the contacts for this to work)\n",
+        "summary": "Create sequence state(s)",
+        "description": "In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, \nand the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, \nyou must pass in the same sequenceId, userId and mailboxId for all the contacts for this to work)\n",
         "tags": [
           "Sequence States"
         ],
@@ -883,19 +883,34 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "record": {
-                    "$ref": "#/components/schemas/create_sequence_state"
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "record": {
+                        "$ref": "#/components/schemas/create_sequence_state"
+                      }
+                    },
+                    "required": [
+                      "record"
+                    ]
                   },
-                  "records": {
-                    "type": "array",
-                    "description": "Will use the batch endpoints when possible (e.g. Apollo)",
-                    "items": {
-                      "$ref": "#/components/schemas/create_sequence_state"
-                    }
+                  {
+                    "type": "object",
+                    "properties": {
+                      "records": {
+                        "type": "array",
+                        "description": "Will use the batch endpoints when possible (e.g. Apollo)",
+                        "items": {
+                          "$ref": "#/components/schemas/create_sequence_state"
+                        }
+                      }
+                    },
+                    "required": [
+                      "records"
+                    ]
                   }
-                }
+                ]
               },
               "example": {
                 "record": {
@@ -913,7 +928,7 @@
         },
         "responses": {
           "201": {
-            "description": "Sequence state created",
+            "description": "Sequence state(s) created",
             "content": {
               "application/json": {
                 "schema": {
