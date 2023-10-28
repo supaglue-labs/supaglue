@@ -1,7 +1,7 @@
 import ThemedImage from '@theme/ThemedImage';
 import BrowserWindow from '@site/src/components/BrowserWindow';
 
-# Objects
+# Standard and Custom Objects
 
 ## Introduction
 
@@ -16,12 +16,12 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
   }}
 />
 
-## Standard object
+## Standard objects
 
 Supaglue Standard Objects are pre-defined objects in third-party providers, e.g. `Contacts`, `Accounts`, and `Leads` are pre-defined objects in Salesforce and are Standard Objects in Supaglue.
-Standard Objects have a 1-1 relationship between your application and Provider objects. For example, a `Contact` in Salesforce is a `salesforce_Contact` in your application, and a Hubspot `company` is a `hubspot_company` in your application.
+Standard Objects have a 1-1 relationship between your application and Provider objects. For example, a `Contact` in Salesforce is a `salesforce_Contact` in your application, and a HubSpot `company` is a `hubspot_company` in your application.
 
-You can use Standard Objects as part of [Managed Syncs](../../integration-patterns/managed-syncs).
+You can use access Standard Objects as part of [Managed Syncs](../../integration-patterns/managed-syncs), which can then be queried directly or accessed via the unified API.
 
 ### Configuration
 
@@ -37,7 +37,7 @@ The screenshot above shows a HubSpot Sync Config that specifies `product`, `cont
 
 ### Object names
 
-Since Standard Objects vary by Provider, you need to select the Standard Objects separately for each Provider. The casing of the Standard Objects is also provider-specific, e.g. Standard Objects for Salesforce are "PascalCase".
+Since Standard Objects vary by Provider, you need to configure the Standard Objects separately for each Provider. The casing of the Standard Objects is also provider-specific, e.g. Standard Objects for Salesforce are "PascalCase".
 
 ### Table names
 
@@ -63,15 +63,13 @@ Indexes:
     "salesforce_Contract_pkey" PRIMARY KEY, btree (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 ```
 
-Note there used to be a `_supaglue_mapped_data` jsonb column that has since been deprecated.
-
 :::info
 Please note that Supaglue metadata fields differ slightly between [Common Objects](../common-schemas/overview) and Objects.
 :::
 
-## Custom object
+## Custom objects
 
-Custom Objects are objects that are not pre-defined by third-party Providers. You or your customers may create them.
+Custom Objects are objects that are not pre-defined by third-party Providers. They are usually entities specific to an organization, and can be managed by you or your customer.
 
 For example, `ContactDailyMetric` and `ContactMonthlyMetric` are the only contact metric Standard Objects in Salesforce, but your customer may have defined a third Custom Object, `ContactBiannualMetric`.
 
@@ -121,4 +119,5 @@ Indexes:
 
 :::info
 Please note that Supaglue metadata fields differ slightly between [Common Objects](../common-schemas/overview) and Objects.
+:::
 :::
