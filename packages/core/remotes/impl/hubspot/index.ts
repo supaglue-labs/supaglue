@@ -63,7 +63,7 @@ import type { SubmitFormData, SubmitFormResult } from '@supaglue/types/marketing
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
-import axios from 'axios';
+import axios, { isAxiosError } from 'axios';
 import { Readable } from 'stream';
 import {
   BadRequestError,
@@ -1230,7 +1230,8 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public override async listPropertiesUnified(objectName: string): Promise<PropertyUnified[]> {
     const objectSchema = await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
-      return await this.#client.crm.schemas.coreApi.getById(objectName);
+      const objectTypeId = await this.#getObjectTypeIdFromNameOrId(objectName);
+      return await this.#client.crm.schemas.coreApi.getById(objectTypeId);
     });
     return objectSchema.properties.map((property) =>
       toPropertyUnified(property, new Set(objectSchema.requiredProperties))
@@ -2300,23 +2301,31 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       throw err;
     }
 
-    const error = err as any;
-    switch (error.code) {
+    let error = err as any;
+    let message = error.body?.message;
+    let { code } = error;
+    if (isAxiosError(err)) {
+      message = err.response?.data.message;
+      code = err.response?.status;
+      error = err.response?.data;
+    }
+
+    switch (code) {
       case 400:
-        if (error.body?.message === 'one or more associations are not valid') {
-          return new BadRequestError(error.body?.message, error);
+        if (message === 'one or more associations are not valid') {
+          return new BadRequestError(message, error);
         }
-        return new InternalServerError(error.body?.message, error);
+        return new InternalServerError(message, error);
       case 401:
-        return new UnauthorizedError(error.body?.message, error);
+        return new UnauthorizedError(message, error);
       case 403:
-        return new ForbiddenError(error.body?.message, error);
+        return new ForbiddenError(message, error);
       case 404:
-        return new NotFoundError(error.body?.message, error);
+        return new NotFoundError(message, error);
       case 409:
-        return new ConflictError(error.body?.message, error);
+        return new ConflictError(message, error);
       case 429:
-        return new TooManyRequestsError(error.body?.message, error);
+        return new TooManyRequestsError(message, error);
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       case 402:
@@ -2365,7 +2374,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       case 449:
       case 450:
       case 451:
-        return new RemoteProviderError(error.body?.message, error);
+        return new RemoteProviderError(message, error);
       default:
         return error;
     }
