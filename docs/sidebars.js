@@ -300,7 +300,7 @@ const sidebars = {
         if (['Providers'].includes(item.label)) {
           item.items.map((subItem) => {
             if (['Create provider', 'Update provider', 'Delete provider'].includes(subItem.label)) {
-              item.className += ' hidden';
+              subItem.className = (subItem.className || '') + ' hidden';
             }
           });
         }
