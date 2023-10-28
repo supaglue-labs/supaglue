@@ -1148,7 +1148,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     id: string,
     fields: string[]
   ): Promise<ObjectRecordWithMetadata> {
-    const objectType = object.name;
+    let objectType = object.name;
+    if (object.type === 'custom') {
+      objectType = await this.#getObjectTypeIdFromNameOrId(object.name);
+    }
 
     const response = await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
