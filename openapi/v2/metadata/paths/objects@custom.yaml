@@ -18,4 +18,4 @@ get:
               $ref: ../components/schemas/objects/simple_custom_object.yaml
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml
