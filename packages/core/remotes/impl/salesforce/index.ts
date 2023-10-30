@@ -1542,7 +1542,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const error = err as any;
 
     // map certain provider errors to sg sync worker errors
-    if (error.message === 'expired access/refresh token') {
+    if (['expired access/refresh token', 'inactive user'].includes(error.message)) {
       return new SGConnectionNoLongerAuthenticatedError(error.message, error);
     }
 
