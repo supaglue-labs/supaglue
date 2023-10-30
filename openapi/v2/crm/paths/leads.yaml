@@ -70,4 +70,4 @@ get:
               - records
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

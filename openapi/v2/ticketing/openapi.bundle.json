@@ -74,7 +74,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -114,7 +114,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "account_id",
@@ -184,7 +184,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -224,7 +224,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "collection_id",
@@ -294,7 +294,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "parent_id",
@@ -364,7 +364,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -404,7 +404,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "user_id",
@@ -474,7 +474,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -514,7 +514,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "contact_id",
@@ -584,7 +584,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -639,7 +639,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "team_id",
@@ -813,7 +813,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -905,7 +905,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "ticket_id",
@@ -1065,7 +1065,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -1105,7 +1105,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "comment_id",
@@ -1195,14 +1195,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "name": "x-provider-name",
-          "in": "header",
-          "schema": {
-            "type": "string",
-            "example": "salesforce"
-          },
-          "description": "The provider name",
-          "required": true
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -1242,7 +1235,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "tag_id",
@@ -1396,7 +1389,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -1465,7 +1458,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1tags/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         },
         {
           "name": "attachment_id",
