@@ -39,6 +39,11 @@ describe('contact', () => {
       );
       expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'contact',
+      });
 
       // TODO get not supported for apollo
       if (providerName === 'apollo') {

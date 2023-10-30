@@ -4,6 +4,62 @@ const { Pool } = require('pg');
 const { parse } = require('pg-connection-string');
 const { TestEnvironment } = require('jest-environment-node');
 
+const toHubspotPluralObjectName = {
+  contact: 'contacts',
+  account: 'companies',
+  opportunity: 'deals',
+};
+
+const toPipedriveObjectName = {
+  contact: 'persons',
+  account: 'organizations',
+  lead: 'leads',
+  opportunity: 'deals',
+  user: 'users',
+};
+
+const toOutreachObjectName = {
+  contact: 'prospects',
+  account: 'accounts',
+};
+
+const toSalesloftObjectName = {
+  contact: 'people',
+  account: 'accounts',
+};
+
+const getDeletePassthroughRequest = (id, objectName, providerName) => {
+  switch (providerName) {
+    case 'salesforce':
+      return {
+        method: 'DELETE',
+        path: `/services/data/v57.0/sobjects/${objectName}/${id}`,
+      };
+    case 'hubspot':
+      return {
+        method: 'DELETE',
+        path: `/crm/v3/objects/${toHubspotPluralObjectName[objectName]}/${id}`,
+      };
+    case 'pipedrive':
+      return {
+        method: 'DELETE',
+        path: `/v1/${toPipedriveObjectName[objectName]}/${id}`,
+      };
+    case 'outreach':
+      return {
+        method: 'DELETE',
+        path: `/api/v2/${toOutreachObjectName(objectName)}/${id}`,
+      };
+    case 'salesloft':
+      return {
+        method: 'DELETE',
+        path: `/v2/${toSalesloftObjectName(objectName)}/${id}`,
+      };
+    default:
+      throw new Error('Unsupported provider');
+  }
+};
+
 class IntegrationEnvironment extends TestEnvironment {
   async setup() {
     await super.setup();
@@ -20,15 +76,27 @@ class IntegrationEnvironment extends TestEnvironment {
         'x-api-key': process.env.API_KEY,
       },
     });
-    this.addedObjects = [];
+    this.global.addedObjects = [];
   }
 
   async teardown() {
     // Clean up added objects
-    if (this.global.addedObjects.length) {
-      console.log(`addedObjects: `, this.global.addedObjects);
-      // for (const obj of this.global.addedObjects) {
-      // }
+    if (this.global.addedObjects?.length) {
+      for (const obj of this.global.addedObjects) {
+        // Apollo has no delete API
+        if (obj.providerName === 'apollo') {
+          continue;
+        }
+        await this.global.apiClient.post(
+          '/actions/v2/passthrough',
+          getDeletePassthroughRequest(obj.id, obj.objectName, obj.providerName),
+          {
+            headers: {
+              'x-provider-name': obj.providerName,
+            },
+          }
+        );
+      }
     }
     await this.global.db?.end();
     await super.teardown();
