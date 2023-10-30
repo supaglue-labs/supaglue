@@ -94,6 +94,11 @@ describe('contact', () => {
       );
       expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'contact',
+      });
 
       const updateResponse = await apiClient.patch<UpdateContactResponse>(
         `/engagement/v2/contacts/${response.data.record?.id}`,

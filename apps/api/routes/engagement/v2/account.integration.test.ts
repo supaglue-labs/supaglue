@@ -70,6 +70,11 @@ describe('account', () => {
       );
       expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'account',
+      });
 
       const updateResponse = await apiClient.patch<UpdateAccountResponse>(
         `/engagement/v2/accounts/${response.data.record?.id}`,

@@ -48,12 +48,12 @@ const getDeletePassthroughRequest = (id, objectName, providerName) => {
     case 'outreach':
       return {
         method: 'DELETE',
-        path: `/api/v2/${toOutreachObjectName(objectName)}/${id}`,
+        path: `/api/v2/${toOutreachObjectName[objectName]}/${id}`,
       };
     case 'salesloft':
       return {
         method: 'DELETE',
-        path: `/v2/${toSalesloftObjectName(objectName)}/${id}`,
+        path: `/v2/${toSalesloftObjectName[objectName]}/${id}`,
       };
     default:
       throw new Error('Unsupported provider');
