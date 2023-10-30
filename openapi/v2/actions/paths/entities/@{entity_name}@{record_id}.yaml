@@ -45,7 +45,7 @@ patch:
                 $ref: ../../../../common/components/schemas/warnings.yaml
 parameters:
   - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../../components/parameters/header/x-provider-name.yaml
+  - $ref: ../..../../common/components/parameters/header/x-provider-name.yaml
   - name: entity_name
     in: path
     required: true

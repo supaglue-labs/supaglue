@@ -68,7 +68,7 @@ get:
             $ref: ../../components/schemas/objects/custom_object_record.yaml
 parameters:
   - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../../components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../../common/components/parameters/header/x-provider-name.yaml
   - $ref: ../../components/parameters/path/object_name.yaml
   - name: record_id
     in: path
