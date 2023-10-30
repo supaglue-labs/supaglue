@@ -1945,7 +1945,7 @@
         "schema": {
           "type": "string",
           "format": "date-time",
-          "example": "2023-02-23T00:00:00.000Z"
+          "example": "2023-02-23T00:00:00Z"
         },
         "description": "If provided, will only return objects created after this datetime"
       },
@@ -1955,7 +1955,7 @@
         "schema": {
           "type": "string",
           "format": "date-time",
-          "example": "2023-02-23T00:00:00.000Z"
+          "example": "2023-02-23T00:00:00Z"
         },
         "description": "If provided, will only return objects created before this datetime"
       },
@@ -1965,7 +1965,7 @@
         "schema": {
           "type": "string",
           "format": "date-time",
-          "example": "2023-02-23T00:00:00.000Z"
+          "example": "2023-02-23T00:00:00Z"
         },
         "description": "If provided, will only return objects modified after this datetime"
       },
@@ -1975,7 +1975,7 @@
         "schema": {
           "type": "string",
           "format": "date-time",
-          "example": "2023-02-23T00:00:00.000Z"
+          "example": "2023-02-23T00:00:00Z"
         },
         "description": "If provided, will only return objects modified before this datetime"
       },

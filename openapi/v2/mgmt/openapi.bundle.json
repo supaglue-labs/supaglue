@@ -480,7 +480,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "parameters": [],
@@ -543,7 +543,7 @@
         ],
         "security": [
           {
-            "ApiKeyAuth": []
+            "x-api-key": []
           }
         ],
         "responses": {
@@ -3987,12 +3987,12 @@
               },
               "start_timestamp": {
                 "type": "string",
-                "example": "2023-02-22T19:55:17.559Z"
+                "example": "2023-02-22T19:55:17.559537Z"
               },
               "end_timestamp": {
                 "type": "string",
                 "nullable": true,
-                "example": "2023-02-22T20:55:17.559Z"
+                "example": "2023-02-22T20:55:17.559537Z"
               },
               "application_id": {
                 "type": "string",
@@ -4066,12 +4066,12 @@
               },
               "start_timestamp": {
                 "type": "string",
-                "example": "2023-02-22T19:55:17.559Z"
+                "example": "2023-02-22T19:55:17.559537Z"
               },
               "end_timestamp": {
                 "type": "string",
                 "nullable": true,
-                "example": "2023-02-22T20:55:17.559Z"
+                "example": "2023-02-22T20:55:17.559537Z"
               },
               "application_id": {
                 "type": "string",

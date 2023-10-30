@@ -1125,9 +1125,9 @@ export interface components {
       object_type: "common" | "standard" | "custom";
       object: string;
       error_message: string | null;
-      /** @example 2023-02-22T19:55:17.559Z */
+      /** @example 2023-02-22T19:55:17.559537Z */
       start_timestamp: string;
-      /** @example 2023-02-22T20:55:17.559Z */
+      /** @example 2023-02-22T20:55:17.559537Z */
       end_timestamp: string | null;
       /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
       application_id: string;
@@ -1149,9 +1149,9 @@ export interface components {
       /** @deprecated */
       entity_id: string;
       error_message: string | null;
-      /** @example 2023-02-22T19:55:17.559Z */
+      /** @example 2023-02-22T19:55:17.559537Z */
       start_timestamp: string;
-      /** @example 2023-02-22T20:55:17.559Z */
+      /** @example 2023-02-22T20:55:17.559537Z */
       end_timestamp: string | null;
       /** @example 974125fa-ffb6-47fc-b12f-44c566fc5da1 */
       application_id: string;
