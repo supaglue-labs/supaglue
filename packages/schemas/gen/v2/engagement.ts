@@ -472,11 +472,44 @@ export interface components {
        * 
        * See below for how these types are mapped:
        * 
-       * | Provider  | auto_email | manual_email | call  | task        | linkedin_send_message |
-       * | --------- | ---------- | ------------ | ----- | ----------- | --------------------- |
-       * | Apollo    | auto_email | manual_email | call  | action_item | linkedin_send_message |
-       * | Outreach  | auto_email | manual_email | call  | task        | linkedin_send_message |
-       * | Salesloft | Email      | Email        | Phone | Other       | (Not supported)       |
+       * <table>
+       *   <thead>
+       *       <tr>
+       *           <th>Provider</th>
+       *           <th>auto_email</th>
+       *           <th>manual_email</th>
+       *           <th>call</th>
+       *           <th>task</th>
+       *           <th>linkedin_send_message</th>
+       *       </tr>
+       *   </thead>
+       *   <tbody>
+       *       <tr>
+       *           <td>Apollo</td>
+       *           <td>auto_email</td>
+       *           <td>manual_email</td>
+       *           <td>call</td>
+       *           <td>action_item</td>
+       *           <td>linkedin_send_message</td>
+       *       </tr>
+       *       <tr>
+       *           <td>Outreach</td>
+       *           <td>auto_email</td>
+       *           <td>manual_email</td>
+       *           <td>call</td>
+       *           <td>task</td>
+       *           <td>linkedin_send_message</td>
+       *       </tr>
+       *       <tr>
+       *           <td>Salesloft</td>
+       *           <td>Email</td>
+       *           <td>Email</td>
+       *           <td>Phone</td>
+       *           <td>Other</td>
+       *           <td>(Not supported)</td>
+       *       </tr>
+       *   </tbody>
+       * </table>
        *  
        * @enum {string}
        */
