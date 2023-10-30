@@ -19,13 +19,35 @@ describe('lead', () => {
   // lead create / update / upsert not supported for hubspot
   describe.each(['salesforce', 'pipedrive'])('%s', (providerName) => {
     let testLead: CreateLeadRequest['record'];
+    let createdLeads: string[] = [];
     beforeEach(() => {
+      createdLeads = [];
       testLead = {
         first_name: Math.random().toString(36).substring(7),
         last_name: Math.random().toString(36).substring(7),
         company: Math.random().toString(36).substring(7),
         title: Math.random().toString(36).substring(7),
       };
+    });
+
+    afterEach(async () => {
+      if (providerName === 'salesforce') {
+        console.log(`deleting leads: `, createdLeads);
+        await Promise.all(
+          createdLeads.map(async (leadId) => {
+            await apiClient.post(
+              '/actions/v2/passthrough',
+              {
+                method: 'DELETE',
+                path: '/services/data/v57.0/sobjects/Lead/' + leadId,
+              },
+              {
+                headers: { 'x-provider-name': 'salesforce' },
+              }
+            );
+          })
+        );
+      }
     });
 
     test(`POST /`, async () => {
@@ -53,6 +75,7 @@ describe('lead', () => {
       );
       expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
+      createdLeads.push(response.data.record?.id as string);
 
       const getResponse = await apiClient.get<GetLeadResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
         headers: { 'x-provider-name': providerName },
@@ -104,6 +127,7 @@ describe('lead', () => {
       );
       expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
+      createdLeads.push(response.data.record?.id as string);
 
       const updateResponse = await apiClient.patch<UpdateLeadResponse>(
         `/crm/v2/leads/${response.data.record?.id}`,
@@ -160,6 +184,7 @@ describe('lead', () => {
 
         expect(response.status).toEqual(200);
         expect(response.data.record?.id).toBeTruthy();
+        createdLeads.push(response.data.record?.id as string);
 
         const getResponse = await apiClient.get<GetLeadResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
           headers: { 'x-provider-name': providerName },

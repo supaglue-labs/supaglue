@@ -20,9 +20,16 @@ class IntegrationEnvironment extends TestEnvironment {
         'x-api-key': process.env.API_KEY,
       },
     });
+    this.addedObjects = [];
   }
 
   async teardown() {
+    // Clean up added objects
+    if (this.global.addedObjects.length) {
+      console.log(`addedObjects: `, this.global.addedObjects);
+      for (const obj of this.global.addedObjects) {
+      }
+    }
     await this.global.db?.end();
     await super.teardown();
   }
