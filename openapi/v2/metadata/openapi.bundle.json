@@ -52,14 +52,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "name": "x-provider-name",
-          "in": "header",
-          "schema": {
-            "type": "string",
-            "example": "salesforce"
-          },
-          "description": "The provider name",
-          "required": true
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },
@@ -97,7 +90,7 @@
           "$ref": "#/components/parameters/x-customer-id"
         },
         {
-          "$ref": "#/paths/~1objects~1custom/parameters/1"
+          "$ref": "#/components/parameters/x-provider-name"
         }
       ]
     },

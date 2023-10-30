@@ -17,4 +17,4 @@ get:
               $ref: ../components/schemas/objects/standard_object.yaml
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

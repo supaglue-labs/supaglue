@@ -14,8 +14,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        /** @description The provider name */
-        "x-provider-name": string;
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -25,6 +24,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -378,8 +378,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        /** @description The provider name */
-        "x-provider-name": string;
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -396,6 +395,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
