@@ -20,7 +20,7 @@ post:
             $ref: ../components/schemas/submit_form_response.yaml
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml
   - name: form_id
     in: path
     required: true

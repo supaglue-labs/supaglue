@@ -22,7 +22,7 @@ get:
             $ref: ../components/schemas/objects/attachment.yaml
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml
   - name: attachment_id
     in: path
     required: true

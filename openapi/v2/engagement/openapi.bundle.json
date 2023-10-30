@@ -2012,7 +2012,7 @@
         "in": "header",
         "schema": {
           "type": "string",
-          "example": "outreach"
+          "example": "salesforce"
         },
         "description": "The provider name",
         "required": true

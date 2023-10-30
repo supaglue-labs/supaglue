@@ -18,6 +18,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -34,6 +35,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         account_id: string;
@@ -53,6 +55,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -69,6 +72,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         collection_id: string;
@@ -88,6 +92,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         parent_id: string;
@@ -107,6 +112,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -123,6 +129,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         user_id: string;
@@ -142,6 +149,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -158,6 +166,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         contact_id: string;
@@ -177,6 +186,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -193,6 +203,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         team_id: string;
@@ -217,6 +228,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -238,6 +250,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         ticket_id: string;
@@ -262,6 +275,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -278,6 +292,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         comment_id: string;
@@ -297,8 +312,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        /** @description The provider name */
-        "x-provider-name": string;
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -315,6 +329,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         tag_id: string;
@@ -339,6 +354,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -355,6 +371,7 @@ export interface paths {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         attachment_id: string;
@@ -562,6 +579,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -591,6 +609,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         account_id: string;
@@ -622,6 +641,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -651,6 +671,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         collection_id: string;
@@ -682,6 +703,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         parent_id: string;
@@ -716,6 +738,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -745,6 +768,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         user_id: string;
@@ -776,6 +800,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -805,6 +830,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         contact_id: string;
@@ -836,6 +862,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -865,6 +892,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         team_id: string;
@@ -901,6 +929,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -923,6 +952,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     requestBody: {
@@ -982,6 +1012,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         comment_id: string;
@@ -1004,6 +1035,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         ticket_id: string;
@@ -1045,6 +1077,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -1067,6 +1100,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     requestBody: {
@@ -1119,8 +1153,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
-        /** @description The provider name */
-        "x-provider-name": string;
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -1157,6 +1190,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         tag_id: string;
@@ -1188,6 +1222,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     responses: {
@@ -1210,6 +1245,7 @@ export interface operations {
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
     requestBody: {
@@ -1258,6 +1294,7 @@ export interface operations {
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
         attachment_id: string;
