@@ -1700,7 +1700,7 @@
               "task",
               "linkedin_send_message"
             ],
-            "description": "The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.\n"
+            "description": "The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.\n\nSee below for how these types are mapped:\n\n| Provider  | auto_email | manual_email | call  | task        | linkedin_send_message |\n| --------- | ---------- | ------------ | ----- | ----------- | --------------------- |\n| Apollo    | auto_email | manual_email | call  | action_item | linkedin_send_message |\n| Outreach  | auto_email | manual_email | call  | task        | linkedin_send_message |\n| Salesloft | Email      | Email        | Phone | Other       | (Not supported)       |\n"
           },
           "task_note": {
             "type": "string",

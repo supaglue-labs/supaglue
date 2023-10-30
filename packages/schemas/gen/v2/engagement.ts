@@ -469,6 +469,14 @@ export interface components {
       order?: number;
       /**
        * @description The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.
+       * 
+       * See below for how these types are mapped:
+       * 
+       * | Provider  | auto_email | manual_email | call  | task        | linkedin_send_message |
+       * | --------- | ---------- | ------------ | ----- | ----------- | --------------------- |
+       * | Apollo    | auto_email | manual_email | call  | action_item | linkedin_send_message |
+       * | Outreach  | auto_email | manual_email | call  | task        | linkedin_send_message |
+       * | Salesloft | Email      | Email        | Phone | Other       | (Not supported)       |
        *  
        * @enum {string}
        */
