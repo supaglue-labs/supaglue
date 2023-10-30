@@ -152,29 +152,72 @@ const sidebars = {
       value: sidebarHeader('Tutorials'),
     },
     {
-      id: 'tutorials/search-across-data',
-      label: 'Search across data',
-      type: 'doc',
+      label: 'CRM',
+      type: 'category',
+      link: {
+        title: 'CRM',
+        description: 'CRM',
+        type: 'generated-index',
+      },
+      items: [
+        {
+          id: 'tutorials/read-write-contacts',
+          label: 'Read/write contacts',
+          type: 'doc',
+        },
+        {
+          id: 'tutorials/custom-fields',
+          label: 'Create/write to custom fields',
+          type: 'doc',
+        },
+      ],
     },
     {
-      id: 'tutorials/read-write-contacts',
-      label: 'Read/write contacts',
-      type: 'doc',
+      label: 'Sales Engagement',
+      type: 'category',
+      link: {
+        title: 'Sales Engagement',
+        description: 'Sales Engagement',
+        type: 'generated-index',
+      },
+      items: [
+        {
+          id: 'tutorials/enroll-prospects-in-sequences',
+          label: 'Enroll prospects in sequences',
+          type: 'doc',
+        },
+      ],
     },
     {
-      id: 'tutorials/build-integration-card',
-      label: 'Build an integration card',
-      type: 'doc',
-    },
-    {
-      id: 'tutorials/build-settings-page',
-      label: 'Build a settings page',
-      type: 'doc',
-    },
-    {
-      id: 'tutorials/enroll-prospects-in-sequences',
-      label: 'Enroll prospects in sequences',
-      type: 'doc',
+      label: 'Platform',
+      type: 'category',
+      link: {
+        title: 'Platform',
+        description: 'Platform',
+        type: 'generated-index',
+      },
+      items: [
+        {
+          id: 'tutorials/search-across-data',
+          label: 'Search across data',
+          type: 'doc',
+        },
+        {
+          id: 'tutorials/build-integration-card',
+          label: 'Build an integration card',
+          type: 'doc',
+        },
+        {
+          id: 'tutorials/build-settings-page',
+          label: 'Build a settings page',
+          type: 'doc',
+        },
+        {
+          id: 'tutorials/listen-for-webhooks',
+          label: 'Consume notification webhooks',
+          type: 'doc',
+        },
+      ],
     },
     {
       label: 'Transformations',
@@ -198,7 +241,7 @@ const sidebars = {
         {
           id: 'tutorials/transformations/common-schema',
           type: 'doc',
-          label: 'Common schema',
+          label: 'Build a common schema',
         },
         {
           id: 'tutorials/transformations/association-bridge-table',
@@ -211,11 +254,6 @@ const sidebars = {
           label: 'Object and field mapping',
         },
       ],
-    },
-    {
-      id: 'tutorials/listen-for-webhooks',
-      label: 'Consume notification webhooks',
-      type: 'doc',
     },
 
     // section
@@ -425,7 +463,7 @@ const sidebars = {
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       items: require('./docs/api/v2/metadata/sidebar.js').map((item) => {
-        if (['StandardObjects', 'CustomObjects'].includes(item.label)) {
+        if (['CustomObjects'].includes(item.label)) {
           item.className += ' hidden';
         }
         return item;
