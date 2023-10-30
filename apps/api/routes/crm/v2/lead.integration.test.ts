@@ -42,6 +42,11 @@ describe('lead', () => {
         expect(contactResponse.status).toEqual(201);
         expect(contactResponse.data.record?.id).toBeTruthy();
         convertedContactId = contactResponse.data.record?.id;
+        addedObjects.push({
+          id: contactResponse.data.record?.id as string,
+          providerName,
+          objectName: 'contact',
+        });
       }
 
       const response = await apiClient.post<CreateLeadResponse>(
@@ -53,6 +58,11 @@ describe('lead', () => {
       );
       expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'lead',
+      });
 
       const getResponse = await apiClient.get<GetLeadResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
         headers: { 'x-provider-name': providerName },
@@ -93,6 +103,11 @@ describe('lead', () => {
         expect(contactResponse.status).toEqual(201);
         expect(contactResponse.data.record?.id).toBeTruthy();
         convertedContactId = contactResponse.data.record?.id;
+        addedObjects.push({
+          id: contactResponse.data.record?.id as string,
+          providerName,
+          objectName: 'contact',
+        });
       }
 
       const response = await apiClient.post<CreateLeadResponse>(
@@ -104,6 +119,11 @@ describe('lead', () => {
       );
       expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'lead',
+      });
 
       const updateResponse = await apiClient.patch<UpdateLeadResponse>(
         `/crm/v2/leads/${response.data.record?.id}`,
@@ -160,6 +180,11 @@ describe('lead', () => {
 
         expect(response.status).toEqual(200);
         expect(response.data.record?.id).toBeTruthy();
+        addedObjects.push({
+          id: response.data.record?.id as string,
+          providerName,
+          objectName: 'lead',
+        });
 
         const getResponse = await apiClient.get<GetLeadResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
           headers: { 'x-provider-name': providerName },

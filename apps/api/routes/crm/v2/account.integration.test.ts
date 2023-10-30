@@ -39,6 +39,11 @@ describe('account', () => {
       );
       expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'account',
+      });
 
       const getResponse = await apiClient.get<GetAccountResponse>(`/crm/v2/accounts/${response.data.record?.id}`, {
         headers: { 'x-provider-name': providerName },
@@ -115,6 +120,11 @@ describe('account', () => {
 
         expect(response.status).toEqual(200);
         expect(response.data.record?.id).toBeTruthy();
+        addedObjects.push({
+          id: response.data.record?.id as string,
+          providerName,
+          objectName: 'account',
+        });
 
         const getResponse = await apiClient.get<GetAccountResponse>(`/crm/v2/accounts/${response.data.record?.id}`, {
           headers: { 'x-provider-name': providerName },
