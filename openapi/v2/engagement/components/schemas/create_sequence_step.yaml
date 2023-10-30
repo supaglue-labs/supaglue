@@ -62,6 +62,15 @@ properties:
     enum: [auto_email, manual_email, call, task, linkedin_send_message]
     description: |
       The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.
+
+      See below for how these types are mapped:
+
+      | Provider  | auto_email | manual_email | call  | task        | linkedin_send_message |
+      | --------- | ---------- | ------------ | ----- | ----------- | --------------------- |
+      | Apollo    | auto_email | manual_email | call  | action_item | linkedin_send_message |
+      | Outreach  | auto_email | manual_email | call  | task        | linkedin_send_message |
+      | Salesloft | Email      | Email        | Phone | Other       | (Not supported)       |
+
   task_note:
     type: string
     description: An optional note to be attached to this step.
