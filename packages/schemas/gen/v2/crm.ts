@@ -2766,7 +2766,6 @@ export interface operations {
           "application/json": {
             pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["list_membership"])[];
-            /** @description Metadata about the remote provider list view. */
             metadata: components["schemas"]["list_metadata"];
           };
         };

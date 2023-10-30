@@ -5,7 +5,7 @@ get:
   tags:
     - EntityMappings
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   parameters: []
   responses:
     '200':

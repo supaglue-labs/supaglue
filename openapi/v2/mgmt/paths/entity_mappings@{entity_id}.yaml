@@ -26,7 +26,7 @@ delete:
   tags:
     - EntityMappings
   security:
-    - ApiKeyAuth: []
+    - x-api-key: []
   responses:
     204:
       description: Entity Mapping

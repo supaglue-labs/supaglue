@@ -1,14 +1,14 @@
 get:
-  operationId: getTicket
-  summary: Get ticket
+  operationId: getComment
+  summary: Get comment
   description: |
     :::note
     This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
     :::
 
-    Returns an Ticket object with the given id.
+    Returns a Comment object with the given id.
   tags:
-    - Tickets
+    - Comments
   security:
     - x-api-key: []
   parameters:

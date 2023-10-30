@@ -281,14 +281,14 @@ export interface paths {
   };
   "/comments/{comment_id}": {
     /**
-     * Get ticket 
+     * Get comment 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
      * 
-     * Returns an Ticket object with the given id.
+     * Returns a Comment object with the given id.
      */
-    get: operations["getTicket"];
+    get: operations["getComment"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1015,14 +1015,14 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        comment_id: string;
+        ticket_id: string;
       };
     };
     responses: {
-      /** @description CommentData */
+      /** @description TicketData */
       200: {
         content: {
-          "application/json": components["schemas"]["comment"];
+          "application/json": components["schemas"]["ticket"];
         };
       };
     };
@@ -1132,6 +1132,36 @@ export interface operations {
             record?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["record"];
             warnings?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["warnings"];
           };
+        };
+      };
+    };
+  };
+  /**
+   * Get comment 
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * 
+   * Returns a Comment object with the given id.
+   */
+  getComment: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        comment_id: string;
+      };
+    };
+    responses: {
+      /** @description CommentData */
+      200: {
+        content: {
+          "application/json": components["schemas"]["comment"];
         };
       };
     };

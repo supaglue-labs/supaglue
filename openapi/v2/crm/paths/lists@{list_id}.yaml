@@ -32,7 +32,6 @@ get:
                 items:
                   $ref: ../components/schemas/objects/list_membership.yaml
               metadata:
-                description: Metadata about the remote provider list view.
                 $ref: ../components/schemas/objects/list_metadata.yaml
             required:
               - pagination

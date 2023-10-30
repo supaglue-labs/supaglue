@@ -1071,11 +1071,11 @@
     },
     "/comments/{comment_id}": {
       "get": {
-        "operationId": "getTicket",
-        "summary": "Get ticket",
-        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns an Ticket object with the given id.\n",
+        "operationId": "getComment",
+        "summary": "Get comment",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nReturns a Comment object with the given id.\n",
         "tags": [
-          "Tickets"
+          "Comments"
         ],
         "security": [
           {
@@ -1958,7 +1958,7 @@
         "schema": {
           "type": "string",
           "format": "date-time",
-          "example": "2023-02-23T00:00:00.000Z"
+          "example": "2023-02-23T00:00:00Z"
         },
         "description": "If provided, will only return objects modified after this datetime"
       },
@@ -1968,7 +1968,7 @@
         "schema": {
           "type": "string",
           "format": "date-time",
-          "example": "2023-02-23T00:00:00.000Z"
+          "example": "2023-02-23T00:00:00Z"
         },
         "description": "If provided, will only return objects modified before this datetime"
       },
@@ -1978,7 +1978,7 @@
         "schema": {
           "type": "string",
           "format": "date-time",
-          "example": "2023-02-23T00:00:00.000Z"
+          "example": "2023-02-23T00:00:00Z"
         },
         "description": "If provided, will only return objects created after this datetime"
       },
@@ -1988,7 +1988,7 @@
         "schema": {
           "type": "string",
           "format": "date-time",
-          "example": "2023-02-23T00:00:00.000Z"
+          "example": "2023-02-23T00:00:00Z"
         },
         "description": "If provided, will only return objects created before this datetime"
       },

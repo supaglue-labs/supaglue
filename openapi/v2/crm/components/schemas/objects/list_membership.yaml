@@ -1,9 +1,5 @@
 oneOf:
-  - title: contact
-    $ref: ./contact.yaml
-  - title: account
-    $ref: ./account.yaml
-  - title: lead
-    $ref: ./lead.yaml
-  - title: opportunity
-    $ref: ./opportunity.yaml
+  - $ref: ./contact.yaml
+  - $ref: ./account.yaml
+  - $ref: ./lead.yaml
+  - $ref: ./opportunity.yaml
