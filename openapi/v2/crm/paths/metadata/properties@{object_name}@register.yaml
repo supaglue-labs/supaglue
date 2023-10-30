@@ -17,17 +17,17 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/register_property.yaml
+          $ref: ../../components/schemas/register_property.yaml
   responses:
     '200':
       description: Register a property
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/property_unified.yaml
+            $ref: ../../components/schemas/objects/property_unified.yaml
 parameters:
-  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../../common/components/parameters/header/x-provider-name.yaml
   - name: object_name
     in: path
     required: true
