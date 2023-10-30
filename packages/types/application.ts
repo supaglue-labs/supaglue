@@ -4,7 +4,7 @@ type BaseApplication = {
   name: string;
   environment: string;
   config: ApplicationConfig;
-  email?: string;
+  email: string | null;
 };
 
 export type Application = BaseApplication & {
