@@ -1,6 +1,9 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { toSnakecasedKeysSequenceState } from '@supaglue/core/mappers/engagement';
 import type {
+  BatchCreateSequenceStatePathParams,
+  BatchCreateSequenceStateRequest,
+  BatchCreateSequenceStateResponse,
   CreateSequenceStatePathParams,
   CreateSequenceStateRequest,
   CreateSequenceStateResponse,
@@ -42,13 +45,27 @@ export default function init(app: Router): void {
       req: Request<CreateSequenceStatePathParams, CreateSequenceStateResponse, CreateSequenceStateRequest>,
       res: Response<CreateSequenceStateResponse>
     ) => {
-      const responseBody = req.body.record
-        ? await engagementCommonObjectService
-            .create('sequence_state', req.customerConnection, camelcaseKeysSansCustomFields(req.body.record))
-            .then((id) => ({ record: { id } }))
-        : await engagementCommonObjectService
-            .batchCreate('sequence_state', req.customerConnection, req.body.records.map(camelcaseKeysSansCustomFields))
-            .then((ids) => ({ records: ids.map((id) => ({ id })) }));
+      const responseBody = await engagementCommonObjectService
+        .create('sequence_state', req.customerConnection, camelcaseKeysSansCustomFields(req.body.record))
+        .then((id) => ({ record: { id } }));
+
+      return res.status(201).send(responseBody);
+    }
+  );
+
+  router.post(
+    '/_batch',
+    async (
+      req: Request<
+        BatchCreateSequenceStatePathParams,
+        BatchCreateSequenceStateResponse,
+        BatchCreateSequenceStateRequest
+      >,
+      res: Response<BatchCreateSequenceStateResponse>
+    ) => {
+      const responseBody = await engagementCommonObjectService
+        .batchCreate('sequence_state', req.customerConnection, req.body.records.map(camelcaseKeysSansCustomFields))
+        .then((ids) => ({ records: ids.map((id) => ({ id })) }));
 
       return res.status(201).send(responseBody);
     }
