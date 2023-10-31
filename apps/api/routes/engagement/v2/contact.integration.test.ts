@@ -82,7 +82,7 @@ describe('contact', () => {
       expect(dbContact.rows[0].last_name).toEqual(testContact.last_name);
       expect(dbContact.rows[0].job_title).toEqual(testContact.job_title);
       expect(dbContact.rows[0].email_addresses).toEqual(expectedEmailAddresses);
-    }, 120000);
+    }, 120_000);
 
     test('PATCH /', async () => {
       const response = await apiClient.post<CreateContactResponse>(
@@ -152,6 +152,6 @@ describe('contact', () => {
       expect(dbContact.rows[0].last_name).toEqual('contact');
       expect(dbContact.rows[0].job_title).toEqual(testContact.job_title);
       expect(dbContact.rows[0].email_addresses).toEqual(expectedEmailAddresses);
-    }, 120000);
+    }, 120_000);
   });
 });

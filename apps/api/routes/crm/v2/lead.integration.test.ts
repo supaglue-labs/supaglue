@@ -162,7 +162,7 @@ describe('lead', () => {
         expect(dbLead.rows[0].company).toEqual(testLead.company);
       }
       expect(dbLead.rows[0].title).toEqual('new title');
-    }, 120000);
+    }, 120_000);
 
     testIf(
       // not supported for pipedrive
@@ -231,7 +231,7 @@ describe('lead', () => {
         expect(dbLead2.rows[0].company).toEqual(testLead.company);
         expect(dbLead2.rows[0].title).toEqual(testLead.title);
       },
-      120000
+      120_000
     );
   });
 });
