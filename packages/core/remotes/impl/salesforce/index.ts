@@ -67,7 +67,6 @@ import {
   RemoteProviderError,
   ServiceUnavailableError,
   SGConnectionNoLongerAuthenticatedError,
-  SGUnmappedEntityError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -1545,10 +1544,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     // map certain provider errors to sg sync worker errors
     if (['expired access/refresh token', 'inactive user'].includes(error.message)) {
       return new SGConnectionNoLongerAuthenticatedError(error.message, error);
-    }
-
-    if (error.message.startsWith('No entity mapping found for entity')) {
-      return new SGUnmappedEntityError(error.message, error);
     }
 
     // jsforce doesn't provide a stable jsonapi "title" so infer it from the message.
