@@ -2,6 +2,7 @@
 import ApplicationMenu from '@/components/ApplicationMenu';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
+import { entitiesEnabled, schemasEnabled } from '@/utils/schema';
 import { Biotech, FindInPage, MenuBook } from '@mui/icons-material';
 import HomeIcon from '@mui/icons-material/Home';
 import HubIcon from '@mui/icons-material/Hub';
@@ -117,8 +118,8 @@ export default function Navigator(props: DrawerProps & SupaglueProps) {
   ];
 
   if (
-    !lekko.schemasWhitelistConfig.applicationIds.includes(applicationId) &&
-    !lekko.entitiesWhitelistConfig.applicationIds.includes(applicationId)
+    !schemasEnabled(lekko.schemasWhitelistConfig.applicationIds, applicationId) &&
+    !entitiesEnabled(lekko.entitiesWhitelistConfig.applicationIds, applicationId)
   ) {
     categories[0].children = categories[0].children.filter((category) => category.id !== 'Data Model');
   }

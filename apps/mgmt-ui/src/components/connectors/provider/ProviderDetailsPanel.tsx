@@ -9,6 +9,7 @@ import { useSchemas } from '@/hooks/useSchemas';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getStandardObjectOptions, PROVIDER_CARDS_INFO } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
+import { schemasEnabled } from '@/utils/schema';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
@@ -281,7 +282,7 @@ export default function ProviderDetailsPanel({
             )}
           </Stack>
         )}
-        {supportsObjectToSchema && lekko.schemasWhitelistConfig.applicationIds.includes(activeApplicationId) && (
+        {supportsObjectToSchema && schemasEnabled(lekko.schemasWhitelistConfig.applicationIds, activeApplicationId) && (
           <Stack className="gap-2">
             <Typography variant="subtitle1">Object to Schema Mapping</Typography>
             <SchemaToObjectMapping

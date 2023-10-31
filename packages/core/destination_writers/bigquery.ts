@@ -36,7 +36,7 @@ import { keysOfSnakecasedSequenceWithTenant } from '../keys/engagement/sequence'
 import { keysOfSnakecasedSequenceStateWithTenant } from '../keys/engagement/sequence_state';
 import { keysOfSnakecasedSequenceStepWithTenant } from '../keys/engagement/sequence_step';
 import { keysOfSnakecasedEngagementUserWithTenant } from '../keys/engagement/user';
-import { logger, omit, SCHEMAS_OR_ENTITIES_APPLICATION_IDS } from '../lib';
+import { logger, omit, schemasAndEntitiesEnabled } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter, toTransformedPropertiesWithAdditionalFields } from './base';
 import { getSnakecasedKeysMapper, shouldDeleteRecords } from './util';
@@ -310,7 +310,7 @@ WHEN MATCHED THEN UPDATE SET ${columnsToUpdate.map((col) => `${col} = temp.${col
     const tempTable = `_temp_${providerName}_${table}`;
     const qualifiedTempTable = `${dataset}.${tempTable}`;
     // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
-    const isSchemasOrEntitiesApplication = SCHEMAS_OR_ENTITIES_APPLICATION_IDS.includes(applicationId);
+    const isSchemasOrEntitiesApplication = schemasAndEntitiesEnabled(applicationId);
 
     const client = await this.#getClient();
 
