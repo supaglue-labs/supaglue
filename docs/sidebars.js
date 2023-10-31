@@ -347,7 +347,10 @@ const sidebars = {
       items: [
         // eslint-disable-next-line @typescript-eslint/no-var-requires
         ...require('./docs/api/v2/crm/sidebar.js')
-          .filter((item) => !['AssociationSchemas', 'CustomObjectSchemas'].includes(item.label))
+          .filter(
+            (item) =>
+              !['AssociationSchemas', 'CustomObjectSchemas', 'StandardObjectSchemas', 'Properties'].includes(item.label)
+          )
           .map((item) => {
             if (['Passthrough'].includes(item.label)) {
               item.className += ' hidden';
@@ -360,7 +363,7 @@ const sidebars = {
           items:
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             require('./docs/api/v2/crm/sidebar.js').filter((item) =>
-              ['AssociationSchemas', 'CustomObjectSchemas'].includes(item.label)
+              ['AssociationSchemas', 'CustomObjectSchemas', 'StandardObjectSchemas', 'Properties'].includes(item.label)
             ),
         },
       ],
