@@ -328,7 +328,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return intersection(allPropertyIds, union(['Id', 'IsDeleted', 'SystemModstamp'], fieldsToFetch.fields));
   }
 
-  public override async listStandardObjects(): Promise<string[]> {
+  public override async listStandardObjectSchemas(): Promise<string[]> {
     return SALESFORCE_OBJECTS as unknown as string[];
   }
 

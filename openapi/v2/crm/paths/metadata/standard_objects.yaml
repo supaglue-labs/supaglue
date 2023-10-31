@@ -1,0 +1,31 @@
+get:
+  operationId: listStandardObjectSchemas
+  summary: List standard object schemas
+  tags:
+    - StandardObjectSchemas
+  security:
+    - x-api-key: []
+  description: |
+    List standard object schemas
+
+    Support:
+
+    | Provider    | Supported |
+    | ----------- | --------- |
+    | Hubspot     | Yes       |
+    | Salesforce  | Yes       | 
+    | Pipedrive   | No        |
+    | MS Dynamics | No        |
+  parameters: []
+  responses:
+    200:
+      description: An array containing the names of Standard Objects
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+parameters:
+  - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../../common/components/parameters/header/x-provider-name.yaml

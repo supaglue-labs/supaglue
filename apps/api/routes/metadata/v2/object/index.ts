@@ -24,7 +24,7 @@ export default function init(app: Router): void {
       req: Request<ListStandardObjectsPathParams, ListStandardObjectsResponse, ListStandardObjectsRequest>,
       res: Response<ListStandardObjectsResponse>
     ) => {
-      const standardObjects = await metadataService.listStandardObjects(req.customerConnection.id);
+      const standardObjects = await metadataService.listStandardObjectSchemas(req.customerConnection.id);
       return res.status(200).send(standardObjects.map((name) => ({ name })));
     }
   );
