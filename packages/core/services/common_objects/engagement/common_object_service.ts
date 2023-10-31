@@ -40,12 +40,11 @@ export class EngagementCommonObjectService {
 
     const end = remoteDuration.startTimer({ operation: 'create', remote_name: providerName });
 
-    const resArray = await (remoteClient.batchCreateCommonObjectRecord
-      ? remoteClient.batchCreateCommonObjectRecord(type, records)
-      : Promise.all(records.map((params) => remoteClient.createCommonObjectRecord(type, params))));
+    const resArray = await remoteClient.batchCreateCommonObjectRecord(type, records);
 
     end();
 
+    // TODO: We should implement cache invalidation in batch as well.
     await Promise.all(
       resArray.map(async (res) => {
         const shouldCacheInvalidate = await this.#shouldPerformCacheInvalidation(connection, type);

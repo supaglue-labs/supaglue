@@ -868,7 +868,7 @@
       "post": {
         "operationId": "createSequenceState",
         "summary": "Create sequence state(s)",
-        "description": "In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, \nand the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, \nyou must pass in the same sequenceId, userId and mailboxId for all the contacts for this to work)\n",
+        "description": "In other words, adding a contact to sequence. \n",
         "tags": [
           "Sequence States"
         ],
@@ -883,33 +883,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "record": {
-                        "$ref": "#/components/schemas/create_sequence_state"
-                      }
-                    },
-                    "required": [
-                      "record"
-                    ]
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "records": {
-                        "type": "array",
-                        "description": "Will use the batch endpoints when possible (e.g. Apollo)",
-                        "items": {
-                          "$ref": "#/components/schemas/create_sequence_state"
-                        }
-                      }
-                    },
-                    "required": [
-                      "records"
-                    ]
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_sequence_state"
                   }
+                },
+                "required": [
+                  "record"
                 ]
               },
               "example": {
@@ -928,7 +909,7 @@
         },
         "responses": {
           "201": {
-            "description": "Sequence state(s) created",
+            "description": "Sequence state created",
             "content": {
               "application/json": {
                 "schema": {
@@ -939,6 +920,72 @@
                     },
                     "record": {
                       "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/sequence_states/_batch": {
+      "post": {
+        "operationId": "batchCreateSequenceState",
+        "summary": "Batch create sequence states",
+        "description": "Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.\n\nSupport:\n\n| Provider  | Supported |\n| --------- | --------- |\n| Apollo    | Yes       |\n| Outreach  | No        |\n| Salesloft | No        |\n",
+        "tags": [
+          "Sequence States"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "records": {
+                    "type": "array",
+                    "description": "Will use the batch endpoints when possible (e.g. Apollo)",
+                    "items": {
+                      "$ref": "#/components/schemas/create_sequence_state"
+                    }
+                  }
+                },
+                "required": [
+                  "records"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sequence states created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
                     },
                     "records": {
                       "type": "array",

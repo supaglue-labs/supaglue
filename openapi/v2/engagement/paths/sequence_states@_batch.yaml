@@ -1,0 +1,52 @@
+post:
+  operationId: batchCreateSequenceState
+  summary: Batch create sequence states
+  description: |
+    Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.
+
+    Support:
+
+    | Provider  | Supported |
+    | --------- | --------- |
+    | Apollo    | Yes       |
+    | Outreach  | No        |
+    | Salesloft | No        |
+  tags:
+    - Sequence States
+  security:
+    - x-api-key: []
+  parameters: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            records:
+              type: array
+              description: Will use the batch endpoints when possible (e.g. Apollo)
+              items:
+                $ref: ../components/schemas/create_sequence_state.yaml
+          required:
+            - records
+  responses:
+    '201':
+      description: Sequence states created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
+              records:
+                type: array
+                description: Created records, in order passed in
+                items:
+                  $ref: ../../../common/components/schemas/created_model.yaml
+              warnings:
+                $ref: ../../../common/components/schemas/warnings.yaml
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

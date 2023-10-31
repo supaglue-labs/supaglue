@@ -155,11 +155,30 @@ export interface paths {
   "/sequence_states": {
     /**
      * Create sequence state(s) 
-     * @description In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
-     * and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
-     * you must pass in the same sequenceId, userId and mailboxId for all the contacts for this to work)
+     * @description In other words, adding a contact to sequence.
      */
     post: operations["createSequenceState"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/sequence_states/_batch": {
+    /**
+     * Batch create sequence states 
+     * @description Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.
+     * 
+     * Support:
+     * 
+     * | Provider  | Supported |
+     * | --------- | --------- |
+     * | Apollo    | Yes       |
+     * | Outreach  | No        |
+     * | Salesloft | No        |
+     */
+    post: operations["batchCreateSequenceState"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1057,9 +1076,7 @@ export interface operations {
   };
   /**
    * Create sequence state(s) 
-   * @description In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
-   * and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
-   * you must pass in the same sequenceId, userId and mailboxId for all the contacts for this to work)
+   * @description In other words, adding a contact to sequence.
    */
   createSequenceState: {
     parameters: {
@@ -1083,21 +1100,57 @@ export interface operations {
          *   }
          * }
          */
-        "application/json": OneOf<[{
+        "application/json": {
           record: components["schemas"]["create_sequence_state"];
-        }, {
-          /** @description Will use the batch endpoints when possible (e.g. Apollo) */
-          records: (components["schemas"]["create_sequence_state"])[];
-        }]>;
+        };
       };
     };
     responses: {
-      /** @description Sequence state(s) created */
+      /** @description Sequence state created */
       201: {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Batch create sequence states 
+   * @description Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.
+   * 
+   * Support:
+   * 
+   * | Provider  | Supported |
+   * | --------- | --------- |
+   * | Apollo    | Yes       |
+   * | Outreach  | No        |
+   * | Salesloft | No        |
+   */
+  batchCreateSequenceState: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description Will use the batch endpoints when possible (e.g. Apollo) */
+          records: (components["schemas"]["create_sequence_state"])[];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence states created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
             /** @description Created records, in order passed in */
             records?: (components["schemas"]["created_record"])[];
             warnings?: components["schemas"]["warnings"];
