@@ -506,6 +506,93 @@ export interface paths {
       };
     };
   };
+  "/metadata/standard_objects": {
+    /**
+     * List standard object schemas 
+     * @description List standard object schemas
+     * 
+     * Support:
+     * 
+     * | Provider    | Supported |
+     * | ----------- | --------- |
+     * | Hubspot     | Yes       |
+     * | Salesforce  | Yes       | 
+     * | Pipedrive   | No        |
+     * | MS Dynamics | No        |
+     */
+    get: operations["listStandardObjectSchemas"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/metadata/properties/{object_name}": {
+    /** List properties */
+    get: operations["listPropertiesPreview"];
+    /**
+     * Create property 
+     * @description Creates a custom property in the provider and registers it in Supaglue.
+     */
+    post: operations["createProperty"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+  };
+  "/metadata/properties/{object_name}/{property_name}": {
+    /**
+     * Get property (preview) 
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     */
+    get: operations["getProperty"];
+    /**
+     * Update property (preview) 
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     */
+    patch: operations["updateProperty"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: string;
+        property_name: string;
+      };
+    };
+  };
+  "/metadata/properties/{object_name}/register": {
+    /**
+     * Register Property (preview) 
+     * @description :::note
+     * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     * Registers a custom property in Supaglue.
+     * This may be useful for custom properties that were already created in the Customer's provider.
+     * E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.
+     */
+    post: operations["registerProperty"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+  };
   "/metadata/custom_objects/{object_name}": {
     /**
      * Get custom object schema details 
@@ -851,6 +938,198 @@ export interface components {
        */
       last_modified_at: Date;
     };
+    property_unified: {
+      /**
+       * @description The machine name of the property as it appears in the third-party Provider. 
+       * @example FirstName
+       */
+      id: string;
+      /** @description Only applicable for custom properties. This represents the unique identifier that can be used to refer to this property across all customers. */
+      custom_name?: string;
+      /**
+       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @example First Name
+       */
+      label: string;
+      /** @description A description of the field. */
+      description?: string;
+      /**
+       * @description Whether or not this field is required. Must be false for Salesforce boolean fields. 
+       * @example false
+       */
+      is_required?: boolean;
+      /** @description The default value for the property. Only supported for Salesforce. */
+      default_value?: string | number | boolean;
+      /**
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @example supaglue
+       */
+      group_name?: string;
+      type: components["schemas"]["property_type"];
+      /** @description Only applicable in Salesforce. If not given, will default to 18. */
+      precision?: number;
+      /** @description Only applicable in Salesforce. If not given, will default to 0. */
+      scale?: number;
+      /** @description The list of options for a picklist/multipicklist field. */
+      options?: (components["schemas"]["picklist_option"])[];
+      /**
+       * @description The raw details of the property as provided by the third-party Provider, if available. 
+       * @example {}
+       */
+      raw_details?: {
+        [key: string]: unknown;
+      };
+    };
+    create_property: {
+      /**
+       * @description The unique identifier to be used to refer to this property across all customers. Supaglue will use this to appropriately map to the provider field ID.
+       *  
+       * @example ticketId
+       */
+      name: string;
+      /**
+       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @example First Name
+       */
+      label: string;
+      /** @description A description of the field. */
+      description?: string;
+      /**
+       * @description Defaults to false. 
+       * @example false
+       */
+      is_required?: boolean;
+      /**
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. If not specified, Supaglue will create the field in the 'custom_properties' group. 
+       * @example supaglue
+       */
+      group_name?: string;
+      type: components["schemas"]["property_type"];
+      /** @description Only applicable in Salesforce. If not given, will default to 18. */
+      precision?: number;
+      /** @description Only applicable in Salesforce. If not given, will default to 0. */
+      scale?: number;
+      /** @description The list of options for a picklist/multipicklist field. */
+      options?: (components["schemas"]["picklist_option"])[];
+    };
+    register_property: {
+      /**
+       * @description The machine name of the property as it appears in the third-party Provider. 
+       * @example 1234523
+       */
+      id: string;
+      /**
+       * @description The unique identifier to be used to refer to this property across all customers. Supaglue will use this to appropriately map to the provider field ID.
+       *  
+       * @example ticketId
+       */
+      name: string;
+    };
+    update_property: {
+      /**
+       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @example First Name
+       */
+      label?: string;
+      /** @description A description of the field. */
+      description?: string;
+      /**
+       * @description Defaults to false. 
+       * @example false
+       */
+      is_required?: boolean;
+      /**
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @example supaglue
+       */
+      group_name?: string;
+      type?: components["schemas"]["property_type"];
+      /** @description Only applicable in Salesforce. If not given, will default to 18. */
+      precision?: number;
+      /** @description Only applicable in Salesforce. If not given, will default to 0. */
+      scale?: number;
+      /** @description The list of options for a picklist/multipicklist field. */
+      options?: (components["schemas"]["picklist_option"])[];
+    };
+    /**
+     * @description Type of the field.
+     * 
+     * Support:
+     * 
+     * <table>
+     *   <thead>
+     *     <tr>
+     *     <th>Field</th>
+     *     <th>Hubspot (type-fieldType)</th>
+     *     <th>Salesforce</th>
+     *     <th>Pipedrive</th>
+     *     </tr>
+     *   </thead>
+     *   <tbody>
+     *     <tr>
+     *      <td>text</td>
+     *       <td>string-text</td>
+     *       <td>Text</td>
+     *       <td>varchar_auto</td>
+     *     </tr>
+     *     <tr>
+     *       <td>textarea</td>
+     *       <td>string-textarea</td>
+     *       <td>Textarea</td>
+     *       <td>text</td>
+     *     </tr>
+     *     <tr>
+     *       <td>number</td>
+     *       <td>number-number</td>
+     *       <td>Int/Double (depending on scale)</td>
+     *       <td>double</td>
+     *     </tr>
+     *     <tr>
+     *       <td>picklist</td>
+     *       <td>enumeration-select</td>
+     *       <td>Picklist</td>
+     *       <td>enum</td>
+     *     </tr>
+     *     <tr>
+     *       <td>multipicklist</td>
+     *       <td>enumeration-checkbox</td>
+     *       <td>Multipicklist</td>
+     *       <td>set</td>
+     *     </tr>
+     *     <tr>
+     *       <td>date</td>
+     *       <td>date-date</td>
+     *       <td>Date</td>
+     *       <td>date</td>
+     *     </tr>
+     *     <tr>
+     *       <td>datetime</td>
+     *       <td>datetime-date</td>
+     *       <td>Datetime</td>
+     *       <td>date</td>
+     *     </tr>
+     *     <tr>
+     *     <td>boolean</td>
+     *       <td>bool-booleancheckbox</td>
+     *       <td>Checkbox</td>
+     *       <td>enum</td>
+     *     </tr>
+     *   </tbody>
+     *   </table>
+     *  
+     * @enum {string}
+     */
+    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "other";
+    picklist_option: {
+      /** @example Option 1 */
+      label: string;
+      /** @example option_1 */
+      value: string;
+      /** @description A description of this option. */
+      description?: string;
+      /** @description Defaults to false. */
+      hidden?: boolean;
+    };
     list_metadata: {
       /**
        * @description The provider-specific unique identifier for this list. 
@@ -958,16 +1237,7 @@ export interface components {
       /** @description Only applicable in Salesforce. If not given, will default to 0. */
       scale?: number;
       /** @description The list of options for a picklist/multipicklist field. */
-      options?: ({
-          /** @example Option 1 */
-          label: string;
-          /** @example option_1 */
-          value: string;
-          /** @description A description of this option. */
-          description?: string;
-          /** @description Defaults to false. */
-          hidden?: boolean;
-        })[];
+      options?: (components["schemas"]["picklist_option"])[];
       /**
        * @description The raw details of the property as provided by the third-party Provider, if available. 
        * @example {}
@@ -1218,75 +1488,6 @@ export interface components {
       id: string;
       custom_object_id: string;
     };
-    /**
-     * @description Type of the field.
-     * 
-     * Support:
-     * 
-     * <table>
-     *   <thead>
-     *     <tr>
-     *     <th>Field</th>
-     *     <th>Hubspot (type-fieldType)</th>
-     *     <th>Salesforce</th>
-     *     <th>Pipedrive</th>
-     *     </tr>
-     *   </thead>
-     *   <tbody>
-     *     <tr>
-     *      <td>text</td>
-     *       <td>string-text</td>
-     *       <td>Text</td>
-     *       <td>varchar_auto</td>
-     *     </tr>
-     *     <tr>
-     *       <td>textarea</td>
-     *       <td>string-textarea</td>
-     *       <td>Textarea</td>
-     *       <td>text</td>
-     *     </tr>
-     *     <tr>
-     *       <td>number</td>
-     *       <td>number-number</td>
-     *       <td>Int/Double (depending on scale)</td>
-     *       <td>double</td>
-     *     </tr>
-     *     <tr>
-     *       <td>picklist</td>
-     *       <td>enumeration-select</td>
-     *       <td>Picklist</td>
-     *       <td>enum</td>
-     *     </tr>
-     *     <tr>
-     *       <td>multipicklist</td>
-     *       <td>enumeration-checkbox</td>
-     *       <td>Multipicklist</td>
-     *       <td>set</td>
-     *     </tr>
-     *     <tr>
-     *       <td>date</td>
-     *       <td>date-date</td>
-     *       <td>Date</td>
-     *       <td>date</td>
-     *     </tr>
-     *     <tr>
-     *       <td>datetime</td>
-     *       <td>datetime-date</td>
-     *       <td>Datetime</td>
-     *       <td>date</td>
-     *     </tr>
-     *     <tr>
-     *     <td>boolean</td>
-     *       <td>bool-booleancheckbox</td>
-     *       <td>Checkbox</td>
-     *       <td>enum</td>
-     *     </tr>
-     *   </tbody>
-     *   </table>
-     *  
-     * @enum {string}
-     */
-    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "other";
   };
   responses: never;
   parameters: {
@@ -2632,6 +2833,175 @@ export interface operations {
             };
             warnings?: components["schemas"]["warnings"];
           };
+        };
+      };
+    };
+  };
+  /**
+   * List standard object schemas 
+   * @description List standard object schemas
+   * 
+   * Support:
+   * 
+   * | Provider    | Supported |
+   * | ----------- | --------- |
+   * | Hubspot     | Yes       |
+   * | Salesforce  | Yes       | 
+   * | Pipedrive   | No        |
+   * | MS Dynamics | No        |
+   */
+  listStandardObjectSchemas: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description An array containing the names of Standard Objects */
+      200: {
+        content: {
+          "application/json": (string)[];
+        };
+      };
+    };
+  };
+  /** List properties */
+  listPropertiesPreview: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+    responses: {
+      /** @description List properties */
+      200: {
+        content: {
+          "application/json": {
+            properties: (components["schemas"]["property_unified"])[];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Create property 
+   * @description Creates a custom property in the provider and registers it in Supaglue.
+   */
+  createProperty: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["create_property"];
+      };
+    };
+    responses: {
+      /** @description Create a property */
+      200: {
+        content: {
+          "application/json": components["schemas"]["property_unified"];
+        };
+      };
+    };
+  };
+  /**
+   * Get property (preview) 
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   */
+  getProperty: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: string;
+        property_name: string;
+      };
+    };
+    responses: {
+      /** @description Get property */
+      200: {
+        content: {
+          "application/json": components["schemas"]["property_unified"];
+        };
+      };
+    };
+  };
+  /**
+   * Update property (preview) 
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   */
+  updateProperty: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: string;
+        property_name: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["update_property"];
+      };
+    };
+    responses: {
+      /** @description Create a property */
+      200: {
+        content: {
+          "application/json": components["schemas"]["property_unified"];
+        };
+      };
+    };
+  };
+  /**
+   * Register Property (preview) 
+   * @description :::note
+   * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   * Registers a custom property in Supaglue.
+   * This may be useful for custom properties that were already created in the Customer's provider.
+   * E.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.
+   */
+  registerProperty: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        object_name: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["register_property"];
+      };
+    };
+    responses: {
+      /** @description Register a property */
+      200: {
+        content: {
+          "application/json": components["schemas"]["property_unified"];
         };
       };
     };

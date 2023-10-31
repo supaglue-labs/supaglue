@@ -16,7 +16,7 @@ get:
               properties:
                 type: array
                 items:
-                  $ref: ../components/schemas/objects/property_unified.yaml
+                  $ref: ../../components/schemas/objects/property_unified.yaml
             required:
               - properties
 post:
@@ -33,17 +33,17 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/create_property.yaml
+          $ref: ../../components/schemas/create_property.yaml
   responses:
     '200':
       description: Create a property
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/property_unified.yaml
+            $ref: ../../components/schemas/objects/property_unified.yaml
 parameters:
-  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
-  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml
+  - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../../common/components/parameters/header/x-provider-name.yaml
   - name: object_name
     in: path
     required: true

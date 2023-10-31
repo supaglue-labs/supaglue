@@ -1948,7 +1948,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return await super.sendPassthroughRequest(request);
   }
 
-  public override async listStandardObjects(): Promise<string[]> {
+  public override async listStandardObjectSchemas(): Promise<string[]> {
     return HUBSPOT_STANDARD_OBJECT_TYPES as unknown as string[];
   }
 
