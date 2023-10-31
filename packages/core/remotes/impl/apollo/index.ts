@@ -402,7 +402,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     for (const [i, step] of (params.steps ?? []).entries()) {
       await this.createSequenceStep({ ...step, sequenceId: res.emailer_campaign.id, order: i + 1 });
     }
-    return { id: res.emailer_campaign.id };
+    return { id: res.emailer_campaign.id, record: fromApolloEmailerCampaignToSequence(res.emailer_campaign) };
   }
 
   async createSequenceStep(
