@@ -5,7 +5,7 @@ import ThemedImage from '@theme/ThemedImage';
 
 ![code](https://img.shields.io/badge/Platform%20Tutorial-0000a5)
 
-This tutorial will go through how create a custom field on a Hubspot Contact object and write to it from your application using the Supaglue API.
+This tutorial will go through how create a custom field on a Hubspot Contact object upon your customer connecting their Hubspot instance to your application, and then write to it from your application using the Supaglue API.
 
 ## Prerequisites
 

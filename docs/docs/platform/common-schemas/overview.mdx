@@ -54,8 +54,7 @@ Supaglue lands three categories of data in your Destination:
 
 1. **Supaglue metadata fields**: These specify the application, customer, provider, and timestamps associated with the managed sync.
 2. **Unified data (common schema fields)**: This is the unified common object data model and stored in the `_supaglue_unified_data` column. You can hoisted to top-level table columns using generated columns in `postgres` or (materialized) views in `BigQuery`.
-3. **Provider-specific raw data**: The raw third-party Provider data. We pass these through as-is. This is stored in the `raw_data` (will be renamed to `_supaglue_raw_data` in the next release.) column (`jsonb`). If the unified data doesn't contain the fields you need, you can use the raw data to access the provider-specific fields directly, or hoist them using generated columsn or views just like you would for `_supaglue_unified_data`. 
-
+3. **Provider-specific raw data**: The raw third-party Provider data. We pass these through as-is. This is stored in the `raw_data` (will be renamed to `_supaglue_raw_data` in the next release.) column (`jsonb`). If the unified data doesn't contain the fields you need, you can use the raw data to access the provider-specific fields directly, or hoist them using generated columsn or views just like you would for `_supaglue_unified_data`.
 
 Below is an example schema for the `crm_accounts` table:
 
@@ -84,3 +83,10 @@ Please note that Supaglue metadata fields differ slightly between Common Objects
 ## Writing
 
 Use Supaglue's [Unified APIs](../../integration-patterns/unified-api) to write to Common Objects.
+
+## Common schema definitions
+
+- [CRM](/platform/common-schemas/crm)
+- [Engagement](/platform/common-schemas/engagement)
+- [enrichment](/platform/common-schemas/enrichment)
+- [ticketing](/platform/common-schemas/ticketing)
