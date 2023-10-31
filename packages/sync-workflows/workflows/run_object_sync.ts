@@ -63,7 +63,10 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
     await clearSyncArgsForNextRun({ syncId });
   } catch (err: any) {
     // Process SG Sync Worker errors
-    if (err.cause?.type === 'SGConnectionNoLongerAuthenticatedError') {
+    if (
+      err.cause?.type === 'SGConnectionNoLongerAuthenticatedError' ||
+      err.cause?.type === 'SG_UNMAPPED_ENTITY_ERROR'
+    ) {
       await pauseSync({ connectionId, syncId });
     }
 

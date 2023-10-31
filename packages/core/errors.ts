@@ -161,3 +161,10 @@ export class SGConnectionNoLongerAuthenticatedError extends SGSyncWorkerError {
     super(message, cause);
   }
 }
+
+export class SGUnmappedEntityError extends SGSyncWorkerError {
+  problemType = 'SG_UNMAPPED_ENTITY_ERROR';
+  constructor(message: string, cause?: Error) {
+    super(message, cause);
+  }
+}
