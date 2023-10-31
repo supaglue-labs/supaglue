@@ -67,20 +67,6 @@ type SalesloftPaginatedRecords = {
   data: Record<string, any>[];
 };
 
-type SalesloftPaginatedRecordsWithCount = {
-  metadata: {
-    paging: {
-      per_page: number;
-      current_page: number;
-      next_page: number | null;
-      prev_page: number | null;
-      total_pages: number;
-      total_count: number;
-    };
-  };
-  data: Record<string, any>[];
-};
-
 class SalesloftClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
   #headers: Record<string, string>;
@@ -189,7 +175,10 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
                 ...getUpdatedAfterPathParam(updatedAfter),
                 page: next ? parseInt(next) : undefined,
               }
-            : DEFAULT_LIST_PARAMS,
+            : {
+                ...DEFAULT_LIST_PARAMS,
+                page: next ? parseInt(next) : undefined,
+              },
           headers: this.#headers,
         });
         return response.data;
