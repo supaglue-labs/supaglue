@@ -1,0 +1,42 @@
+---
+id: sync-paused
+title: "Sync paused"
+description: "Notification after a sync is paused"
+sidebar_label: "Sync paused"
+hide_title: true
+hide_table_of_contents: true
+api: eJzFVltv2zYU/iuE9mrZlq9JnrYCfQi2dUWCohjWQqHII5u1JKq8OHED//eeQ8my5VyWPc0GbIo81+8751CPkQQrjKqd0lV0FX3QTuVKcHpkPHdgGGd2VwmmLKu5tyCjQaRrMEHkWqIOHX88HD3EsIXKxW5XQ3s27PQcX9no6p/oM2RrrTfsPYna6OsgMvDdg3XvtNxFV4+R0JXDI1ryui7agEbfLAX5GMEDL+sCaHnfmEqD1/RZr2isAkEGUkXxwnQssuxyGs+z8TyeJReLOFtIiBMuRDIeJ9Pl5ZzUvHW6BNMoLbNciOVMxuLyIotnlyh/ARd5PJViyZPlZDnNF6hUG71VEpUqXoZIeAE210YApd9Ep7NvGA7BGBZd0I5XkhvZHeAe4cBxtR9EVqyh5JTyuRmnHGER/RU22C2x1fGBASFZToF9Ca3OoHVGVSvUgcqXRNMpjMhRh3rvAEMzvkH2GUudyiSXmRxPZZwk+SSewWIR8zks4km2nCZimfBkEmydkfWayTfxuD8j8jWDb+J4/4TklwFc+8zWmjjq1UGtapBGbWn9AyrswE1qoSjwsbSp3KFZJWw6XczToEdieq1TYUqqS15bX5Cu9s4AF2tcrnRwzGtdFPrgr9A5+VbYS0Zo0i1UBdyQkQL/M0XHCwuVJXMlNxtwuhdt2mxiWqkotJcpYqs91g5UK76CkpoU5QsuNv0SOaZ+KM8+avtDO7yMXlvgX/dnnfKyBiZZ4oQYnPZSw/6JlddroOu4fTOUlMEaR9PPdM55sfYr7bxM2nz7uQyOSe4bjwgashGadTIe019/QN+A8wZHM8NThmk6b5nTTFWShiQwt+YOf4BJ7ji755YZEIC1Jpn1QoC1uS+KXcgPHnDIWrRLQ/kx2gDO3v4AH0RbXvgnLY9Ml+DWOkzTbVMDNXdrfGxxIg7AbME0pr0pqCacq+3VaMRrNbS+5is0PVR6VK5KN9pOUKef620rw377eB2cWhDeKLe7pVnYgPQQo7U4hN7Riju/48YgaofwUYaagQIBjrw88YduGEoRnhzb6J5JTK6g+Rkw5gG+AG4ICBGkC+nmeHW9/0/30mFsvm02/r/32Ek7v3qJdR343BWmqlwTNlQWDeLjYbIczk6GxJ+8asdKwHjQqaNaG8qhKqhtS66osKQW9teuoppR1y+53uH+nPhf8MOuK2e09AHgL/j9DAUKAzFPlPcjY+jS00N4MRmyv7VnglcMqUVpfFciGdQsgxY7cMBoFq+adyfLcEaxI6l2SF5DKO+4DTXGPt38QZt3d3dfqn/pnlYKy/InSXVS/w==
+sidebar_class_name: "event api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Sync paused</h1>
+
+<MethodEndpoint method={"event"} path={"webhook"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+
+
+Notification after a sync is paused
+
+## Request
+
+<MimeTabs className={"openapi-tabs__mime"}><TabItem label={"application/json"} value={"application/json-schema"}><details style={{}} className={"openapi-markdown__details mime"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-mime"}><h3 className={"openapi-markdown__details-summary-header-body"}>Body</h3></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"webhook_event_type"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`sync.paused`]"} schema={{"type":"string","enum":["sync.paused"],"example":"sync.paused"}}></SchemaItem><SchemaItem collapsible={false} name={"run_id"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"2fdbd03d-11f2-4e66-a5e6-2b731c71a12d"}}></SchemaItem><SchemaItem collapsible={false} name={"connection_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"e30cbb93-5b05-4186-b6de-1acc10013795"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_name"} required={true} schemaName={"provider_name"} qualifierMessage={"**Possible values:** [`hubspot`, `salesforce`, `pipedrive`, `zendesk_sell`, `ms_dynamics_365_sales`, `zoho_crm`, `capsule`, `outreach`, `gong`, `apollo`, `salesloft`, `intercom`, `linear`, `clearbit`, `6sense`, `marketo`, `salesforce_marketing_cloud_account_engagement`, `slack`]"} schema={{"type":"string","enum":["hubspot","salesforce","pipedrive","zendesk_sell","ms_dynamics_365_sales","zoho_crm","capsule","outreach","gong","apollo","salesloft","intercom","linear","clearbit","6sense","marketo","salesforce_marketing_cloud_account_engagement","slack"],"example":"hubspot","title":"provider_name"}}></SchemaItem><SchemaItem collapsible={false} name={"type"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`object`]"} schema={{"type":"string","enum":["object"]}}></SchemaItem><SchemaItem collapsible={false} name={"object_type"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`common`, `standard`, `custom`]"} schema={{"type":"string","enum":["common","standard","custom"]}}></SchemaItem><SchemaItem collapsible={false} name={"object"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"contact"}}></SchemaItem></ul></details></TabItem></MimeTabs><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Return a 200 status to indicate that the data was received successfully
+
+</div><div></div></TabItem></ApiTabs></div></div>
+      
