@@ -1,0 +1,65 @@
+import ThemedImage from '@theme/ThemedImage';
+
+# Unified API
+
+Unified API helps you read and write to multiple providers within a single category through a single set of endpoints. The unified API applies the Common Schema mappings, and it's the fastest way to integrate multiple providers at the same time.
+
+<ThemedImage
+  alt="unified-api"
+  width="65%"
+  sources={{
+    light: '/img/unified-api.png',
+    dark: '/img/unified-api.png',
+  }}
+/>
+
+**Unified API**: You can connect to multiple third-party providers with a single API for the following categories:
+
+- [`crm`](../api/v2/crm/unified-crm-api) ([common schema](../platform/common-schemas/crm))
+- [`engagement`](../api/v2/engagement/unified-engagement-api) ([common schema](../platform/common-schemas/engagement))
+- [`enrichment`](../api/v2/enrichment/unified-enrichment-api) ([common schema](../platform/common-schemas/enrichment))
+- [`ticketing`](../api/v2/ticketing/unified-ticketing-api-preview) ([common schema](../platform/common-schemas/ticketing))
+
+## Errors
+
+Supaglue returns the following error codes and problem types:
+
+### 3XX
+
+#### 304 NOT_MODIFIED
+
+### 4XX
+
+#### 400 BAD_REQUEST_ERROR
+
+#### 401 UNAUTHORIZED_ERROR
+
+#### 403 FORBIDDEN_ERROR
+
+#### 404 NOT_FOUND_ERROR
+
+#### 409 CONFLICT_ERROR
+
+#### 422 UNPROCESSABLE_ENTITY_ERROR
+
+#### 429 TOO_MANY_REQUESTS_ERROR
+
+#### 499 REMOTE_PROVIDER_ERROR
+
+Supaglue returns a custom HTTP status code 499 as a catch-all to pass back remote Provider error messages.
+
+### 5XX
+
+#### 500 INTERNAL_SERVER_ERROR
+
+Supaglue returns a 500 `INTERNAL_SERVER_ERROR` as a catch-all for Supaglue-related errors.
+
+#### 500 CACHE_INVALIDATION_ERROR
+
+Supaglue returns a `CACHE_INVALIDATION_ERROR` for writes when it cannot refresh the value in your Destination after writing to a Provider.
+
+#### 502 BAD_GATEWAY_ERROR
+
+#### 503 SERVICE_UNAVAILABLE_ERROR
+
+#### 504 GATEWAY_TIMEOUT_ERROR
