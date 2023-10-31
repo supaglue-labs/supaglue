@@ -17,7 +17,7 @@ This tutorial assumes you have gone through Supaglue's [Quickstart](../quickstar
 
 ## Create a custom field
 
-Use Supaglue's [Metadata (Create Property) API](https://docs.supaglue.com/api/v2/crm/create-property) to define a custom property on the HubSpot Contact object.
+Use Supaglue's [Metadata (Create Property) API](https://docs.supaglue.com/api/v2/crm/create-property) to define a custom property on the Hubspot Contact object.
 
 The curl will look like the following:
 
