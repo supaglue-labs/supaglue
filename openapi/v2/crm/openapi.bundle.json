@@ -2359,6 +2359,279 @@
         }
       ]
     },
+    "/metadata/standard_objects": {
+      "get": {
+        "operationId": "listStandardObjectSchemas",
+        "summary": "List standard object schemas",
+        "tags": [
+          "StandardObjectSchemas"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "description": "List standard object schemas\n\nSupport:\n\n| Provider    | Supported |\n| ----------- | --------- |\n| Hubspot     | Yes       |\n| Salesforce  | Yes       | \n| Pipedrive   | No        |\n| MS Dynamics | No        |\n",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "An array containing the names of Standard Objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/metadata/properties/{object_name}": {
+      "get": {
+        "operationId": "listPropertiesPreview",
+        "summary": "List properties",
+        "tags": [
+          "Properties"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List properties",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "properties": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/property_unified"
+                      }
+                    }
+                  },
+                  "required": [
+                    "properties"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createProperty",
+        "summary": "Create property",
+        "description": "Creates a custom property in the provider and registers it in Supaglue.\n",
+        "tags": [
+          "Properties"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/create_property"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a property",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/property_unified"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "object_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "contact"
+          }
+        }
+      ]
+    },
+    "/metadata/properties/{object_name}/{property_name}": {
+      "get": {
+        "operationId": "getProperty",
+        "summary": "Get property (preview)",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n",
+        "tags": [
+          "Properties"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get property",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/property_unified"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateProperty",
+        "summary": "Update property (preview)",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n",
+        "tags": [
+          "Properties"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/update_property"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Create a property",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/property_unified"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "object_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "description": "The name of the object.",
+            "example": "contact"
+          }
+        },
+        {
+          "name": "property_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "description": "The name of the property.",
+            "example": "contact"
+          }
+        }
+      ]
+    },
+    "/metadata/properties/{object_name}/register": {
+      "post": {
+        "operationId": "registerProperty",
+        "summary": "Register Property (preview)",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\nRegisters a custom property in Supaglue.\nThis may be useful for custom properties that were already created in the Customer's provider.\nE.g. a custom field has some machine ID for a particular customer that you want to map to `my_custom_field`.\n",
+        "tags": [
+          "Properties"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/register_property"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Register a property",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/property_unified"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "object_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "description": "The name of the object.",
+            "example": "contact"
+          }
+        }
+      ]
+    },
     "/metadata/custom_objects/{object_name}": {
       "get": {
         "operationId": "getCustomObjectSchema",
@@ -2769,6 +3042,10 @@
       "description": "A `Custom Object Schema` is an object schema defined by the user."
     },
     {
+      "name": "StandardObjectSchemas",
+      "description": "A `Standard Object Schema` is an object schema of a standard object type supported by the provider."
+    },
+    {
       "name": "CustomObjects",
       "description": "A `Custom Object` is an instance of a `Custom Object Schema`."
     },
@@ -2779,6 +3056,10 @@
     {
       "name": "Association",
       "description": "An `Association` is an instance of a relationship between two entities."
+    },
+    {
+      "name": "Properties",
+      "description": "A `Property` is a field in a Provider Object."
     },
     {
       "name": "Passthrough",
@@ -3375,6 +3656,235 @@
           "last_modified_at"
         ]
       },
+      "property_unified": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The machine name of the property as it appears in the third-party Provider.",
+            "example": "FirstName"
+          },
+          "custom_name": {
+            "type": "string",
+            "description": "Only applicable for custom properties. This represents the unique identifier that can be used to refer to this property across all customers."
+          },
+          "label": {
+            "type": "string",
+            "description": "The human-readable name of the property as provided by the third-party Provider.",
+            "example": "First Name"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of the field."
+          },
+          "is_required": {
+            "type": "boolean",
+            "description": "Whether or not this field is required. Must be false for Salesforce boolean fields.",
+            "example": false
+          },
+          "default_value": {
+            "description": "The default value for the property. Only supported for Salesforce.",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ]
+          },
+          "group_name": {
+            "type": "string",
+            "example": "supaglue",
+            "description": "Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't."
+          },
+          "type": {
+            "$ref": "#/components/schemas/property_type"
+          },
+          "precision": {
+            "type": "number",
+            "description": "Only applicable in Salesforce. If not given, will default to 18."
+          },
+          "scale": {
+            "type": "number",
+            "description": "Only applicable in Salesforce. If not given, will default to 0."
+          },
+          "options": {
+            "type": "array",
+            "description": "The list of options for a picklist/multipicklist field.",
+            "items": {
+              "$ref": "#/components/schemas/picklist_option"
+            }
+          },
+          "raw_details": {
+            "type": "object",
+            "description": "The raw details of the property as provided by the third-party Provider, if available.",
+            "additionalProperties": true,
+            "example": {}
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "type"
+        ]
+      },
+      "create_property": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The unique identifier to be used to refer to this property across all customers. Supaglue will use this to appropriately map to the provider field ID.\n",
+            "example": "ticketId"
+          },
+          "label": {
+            "type": "string",
+            "description": "The human-readable name of the property as provided by the third-party Provider.",
+            "example": "First Name"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of the field."
+          },
+          "is_required": {
+            "type": "boolean",
+            "description": "Defaults to false.",
+            "example": false
+          },
+          "group_name": {
+            "type": "string",
+            "example": "supaglue",
+            "description": "Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. If not specified, Supaglue will create the field in the 'custom_properties' group."
+          },
+          "type": {
+            "$ref": "#/components/schemas/property_type"
+          },
+          "precision": {
+            "type": "number",
+            "description": "Only applicable in Salesforce. If not given, will default to 18."
+          },
+          "scale": {
+            "type": "number",
+            "description": "Only applicable in Salesforce. If not given, will default to 0."
+          },
+          "options": {
+            "type": "array",
+            "description": "The list of options for a picklist/multipicklist field.",
+            "items": {
+              "$ref": "#/components/schemas/picklist_option"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "label",
+          "type"
+        ]
+      },
+      "register_property": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The machine name of the property as it appears in the third-party Provider.",
+            "example": 1234523
+          },
+          "name": {
+            "type": "string",
+            "description": "The unique identifier to be used to refer to this property across all customers. Supaglue will use this to appropriately map to the provider field ID.\n",
+            "example": "ticketId"
+          }
+        },
+        "required": [
+          "name",
+          "id"
+        ]
+      },
+      "update_property": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The human-readable name of the property as provided by the third-party Provider.",
+            "example": "First Name"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of the field."
+          },
+          "is_required": {
+            "type": "boolean",
+            "description": "Defaults to false.",
+            "example": false
+          },
+          "group_name": {
+            "type": "string",
+            "example": "supaglue",
+            "description": "Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't."
+          },
+          "type": {
+            "$ref": "#/components/schemas/property_type"
+          },
+          "precision": {
+            "type": "number",
+            "description": "Only applicable in Salesforce. If not given, will default to 18."
+          },
+          "scale": {
+            "type": "number",
+            "description": "Only applicable in Salesforce. If not given, will default to 0."
+          },
+          "options": {
+            "type": "array",
+            "description": "The list of options for a picklist/multipicklist field.",
+            "items": {
+              "$ref": "#/components/schemas/picklist_option"
+            }
+          }
+        }
+      },
+      "property_type": {
+        "type": "string",
+        "enum": [
+          "text",
+          "textarea",
+          "number",
+          "picklist",
+          "multipicklist",
+          "date",
+          "datetime",
+          "boolean",
+          "other"
+        ],
+        "description": "Type of the field.\n\nSupport:\n\n<table>\n  <thead>\n    <tr>\n    <th>Field</th>\n    <th>Hubspot (type-fieldType)</th>\n    <th>Salesforce</th>\n    <th>Pipedrive</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n     <td>text</td>\n      <td>string-text</td>\n      <td>Text</td>\n      <td>varchar_auto</td>\n    </tr>\n    <tr>\n      <td>textarea</td>\n      <td>string-textarea</td>\n      <td>Textarea</td>\n      <td>text</td>\n    </tr>\n    <tr>\n      <td>number</td>\n      <td>number-number</td>\n      <td>Int/Double (depending on scale)</td>\n      <td>double</td>\n    </tr>\n    <tr>\n      <td>picklist</td>\n      <td>enumeration-select</td>\n      <td>Picklist</td>\n      <td>enum</td>\n    </tr>\n    <tr>\n      <td>multipicklist</td>\n      <td>enumeration-checkbox</td>\n      <td>Multipicklist</td>\n      <td>set</td>\n    </tr>\n    <tr>\n      <td>date</td>\n      <td>date-date</td>\n      <td>Date</td>\n      <td>date</td>\n    </tr>\n    <tr>\n      <td>datetime</td>\n      <td>datetime-date</td>\n      <td>Datetime</td>\n      <td>date</td>\n    </tr>\n    <tr>\n    <td>boolean</td>\n      <td>bool-booleancheckbox</td>\n      <td>Checkbox</td>\n      <td>enum</td>\n    </tr>\n  </tbody>\n  </table>\n"
+      },
+      "picklist_option": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "example": "Option 1"
+          },
+          "value": {
+            "type": "string",
+            "example": "option_1"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of this option."
+          },
+          "hidden": {
+            "type": "boolean",
+            "description": "Defaults to false."
+          }
+        },
+        "required": [
+          "label",
+          "value"
+        ]
+      },
       "list_metadata": {
         "type": "object",
         "properties": {
@@ -3596,29 +4106,7 @@
             "type": "array",
             "description": "The list of options for a picklist/multipicklist field.",
             "items": {
-              "type": "object",
-              "properties": {
-                "label": {
-                  "type": "string",
-                  "example": "Option 1"
-                },
-                "value": {
-                  "type": "string",
-                  "example": "option_1"
-                },
-                "description": {
-                  "type": "string",
-                  "description": "A description of this option."
-                },
-                "hidden": {
-                  "type": "boolean",
-                  "description": "Defaults to false."
-                }
-              },
-              "required": [
-                "label",
-                "value"
-              ]
+              "$ref": "#/components/schemas/picklist_option"
             }
           },
           "raw_details": {
@@ -4212,21 +4700,6 @@
           "id",
           "custom_object_id"
         ]
-      },
-      "property_type": {
-        "type": "string",
-        "enum": [
-          "text",
-          "textarea",
-          "number",
-          "picklist",
-          "multipicklist",
-          "date",
-          "datetime",
-          "boolean",
-          "other"
-        ],
-        "description": "Type of the field.\n\nSupport:\n\n<table>\n  <thead>\n    <tr>\n    <th>Field</th>\n    <th>Hubspot (type-fieldType)</th>\n    <th>Salesforce</th>\n    <th>Pipedrive</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n     <td>text</td>\n      <td>string-text</td>\n      <td>Text</td>\n      <td>varchar_auto</td>\n    </tr>\n    <tr>\n      <td>textarea</td>\n      <td>string-textarea</td>\n      <td>Textarea</td>\n      <td>text</td>\n    </tr>\n    <tr>\n      <td>number</td>\n      <td>number-number</td>\n      <td>Int/Double (depending on scale)</td>\n      <td>double</td>\n    </tr>\n    <tr>\n      <td>picklist</td>\n      <td>enumeration-select</td>\n      <td>Picklist</td>\n      <td>enum</td>\n    </tr>\n    <tr>\n      <td>multipicklist</td>\n      <td>enumeration-checkbox</td>\n      <td>Multipicklist</td>\n      <td>set</td>\n    </tr>\n    <tr>\n      <td>date</td>\n      <td>date-date</td>\n      <td>Date</td>\n      <td>date</td>\n    </tr>\n    <tr>\n      <td>datetime</td>\n      <td>datetime-date</td>\n      <td>Datetime</td>\n      <td>date</td>\n    </tr>\n    <tr>\n    <td>boolean</td>\n      <td>bool-booleancheckbox</td>\n      <td>Checkbox</td>\n      <td>enum</td>\n    </tr>\n  </tbody>\n  </table>\n"
       }
     },
     "parameters": {

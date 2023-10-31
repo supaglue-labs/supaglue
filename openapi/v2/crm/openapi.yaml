@@ -68,6 +68,14 @@ paths:
     $ref: paths/metadata/associations.yaml
   '/metadata/custom_objects':
     $ref: paths/metadata/custom_objects.yaml
+  '/metadata/standard_objects':
+    $ref: paths/metadata/standard_objects.yaml
+  '/metadata/properties/{object_name}':
+    $ref: paths/metadata/properties@{object_name}.yaml
+  '/metadata/properties/{object_name}/{property_name}':
+    $ref: paths/metadata/properties@{object_name}@{property_name}.yaml
+  '/metadata/properties/{object_name}/register':
+    $ref: paths/metadata/properties@{object_name}@register.yaml
   '/metadata/custom_objects/{object_name}':
     $ref: paths/metadata/custom_objects@{object_name}.yaml
   '/lists':
@@ -91,12 +99,16 @@ tags:
     description: The `List` Object represents a collection of CRM records.
   - name: CustomObjectSchemas
     description: A `Custom Object Schema` is an object schema defined by the user.
+  - name: StandardObjectSchemas
+    description: A `Standard Object Schema` is an object schema of a standard object type supported by the provider.
   - name: CustomObjects
     description: A `Custom Object` is an instance of a `Custom Object Schema`.
   - name: AssociationSchemas
     description: An `Association Schema` is an object describing an association between two entities.
   - name: Association
     description: An `Association` is an instance of a relationship between two entities.
+  - name: Properties
+    description: A `Property` is a field in a Provider Object.
   - name: Passthrough
     description: Passthrough operations to underlying providers.
 components:
@@ -120,6 +132,18 @@ components:
       $ref: ./components/schemas/objects/opportunity.yaml
     user:
       $ref: ./components/schemas/objects/user.yaml
+    property_unified:
+      $ref: ./components/schemas/objects/property_unified.yaml
+    create_property:
+      $ref: ./components/schemas/create_property.yaml
+    register_property:
+      $ref: ./components/schemas/register_property.yaml
+    update_property:
+      $ref: ./components/schemas/update_property.yaml
+    property_type:
+      $ref: ../../common/components/schemas/property_type.yaml
+    picklist_option:
+      $ref: ../../common/components/schemas/picklist_option.yaml
     list_metadata:
       $ref: ./components/schemas/objects/list_metadata.yaml
     list_membership:
@@ -178,8 +202,6 @@ components:
       $ref: ./components/schemas/update_custom_object_schema.yaml
     created_custom_object_record:
       $ref: ./components/schemas/created_custom_object_record.yaml
-    property_type:
-      $ref: ../../common/components/schemas/property_type.yaml
   parameters:
     include_deleted_data:
       $ref: ../../common/components/parameters/query/include_deleted_data.yaml

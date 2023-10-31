@@ -18,11 +18,11 @@ export class MetadataService {
     this.#connectionService = connectionService;
   }
 
-  public async listStandardObjects(connectionId: string): Promise<string[]> {
+  public async listStandardObjectSchemas(connectionId: string): Promise<string[]> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
 
     const end = remoteDuration.startTimer({ operation: 'list' });
-    const result = await remoteClient.listStandardObjects();
+    const result = await remoteClient.listStandardObjectSchemas();
     end();
 
     return result;

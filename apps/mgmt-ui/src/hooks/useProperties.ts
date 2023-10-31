@@ -1,4 +1,4 @@
-import type { ListPropertiesResponse } from '@supaglue/schemas/v2/metadata';
+import type { ListPropertiesResponse } from '@supaglue/schemas/v2/crm';
 import type { ObjectType } from '@supaglue/types/sync';
 import { useSWRWithApplication } from './useSWRWithApplication';
 

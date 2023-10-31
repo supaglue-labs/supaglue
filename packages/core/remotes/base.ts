@@ -42,7 +42,7 @@ export interface RemoteClient {
   getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecordWithMetadata>;
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
-  listStandardObjects(): Promise<string[]>;
+  listStandardObjectSchemas(): Promise<string[]>;
   listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]>;
   getCustomObjectSchema(id: string): Promise<CustomObjectSchema>;
   createCustomObjectSchema(params: CustomObjectSchemaCreateParams): Promise<string>;
@@ -143,7 +143,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new NotImplementedError();
   }
 
-  public async listStandardObjects(): Promise<string[]> {
+  public async listStandardObjectSchemas(): Promise<string[]> {
     throw new NotImplementedError();
   }
   public async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {

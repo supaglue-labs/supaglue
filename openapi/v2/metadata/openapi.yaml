@@ -30,12 +30,6 @@ paths:
     $ref: paths/objects@standard.yaml
   '/properties':
     $ref: paths/properties.yaml
-  '/properties/{object_name}':
-    $ref: paths/properties@{object_name}.yaml
-  '/properties/{object_name}/register':
-    $ref: paths/properties@{object_name}@register.yaml
-  '/properties/{object_name}/{property_name}':
-    $ref: paths/properties@{object_name}@{property_name}.yaml
 tags:
   - name: StandardObjects
     description: A `Standard Object` is an object that is available by default in the provider.
@@ -48,16 +42,6 @@ components:
   schemas:
     property_deprecated:
       $ref: ./components/schemas/objects/property_deprecated.yaml
-    property_unified:
-      $ref: ./components/schemas/objects/property_unified.yaml
-    property_type:
-      $ref: ../../common/components/schemas/property_type.yaml
-    picklist_option:
-      $ref: ../../common/components/schemas/picklist_option.yaml
-    create_property:
-      $ref: ./components/schemas/create_property.yaml
-    update_property:
-      $ref: ./components/schemas/update_property.yaml
     standard_object:
       $ref: ./components/schemas/objects/standard_object.yaml
     simple_custom_object:
