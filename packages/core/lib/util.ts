@@ -1,4 +1,5 @@
 import type { AxiosProxyConfig } from 'axios';
+import { SCHEMAS_OR_ENTITIES_APPLICATION_IDS } from './constants';
 
 export const removeValues = (obj: Record<string, any>, fn: (k: string, v: any) => boolean) => {
   Object.keys(obj).forEach((key) => (fn(key, obj[key]) ? delete obj[key] : {}));
@@ -70,4 +71,8 @@ export function parseProxyConfig(str: string | null | undefined) {
       },
     } satisfies AxiosProxyConfig;
   }
+}
+
+export function schemasAndEntitiesEnabled(applicationId: string) {
+  return process.env.NODE_ENV === 'development' || SCHEMAS_OR_ENTITIES_APPLICATION_IDS.includes(applicationId);
 }
