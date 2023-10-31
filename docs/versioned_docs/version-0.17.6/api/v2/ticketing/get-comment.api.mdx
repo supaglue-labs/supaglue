@@ -1,0 +1,47 @@
+---
+id: get-comment
+title: "Get comment"
+description: ":::note"
+sidebar_label: "Get comment"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVm1v2zYQ/iuc9iUGIr/bsY2iW9cWRdB9KNJkxWAbCUWdbbYSqZKUHcPwf9+dXmw5doIsHYatH1KZPN499/DuOW48nYDhTmp1GXojbw7urY5jUM4790KwwsiENnFrNBop7WCirhfSshlwlxpg+KlVtGZ8yWXEgwhXFPtkYClhxZxmFiIQjonUOh2DIWumU8PeKwcmMdICSyKu6mz8VivH0TS107MYnTk9csDjX22a8HmUQl3ouMZm2rBYU2CFn3GGvD5RCG6iJuoKEJSyjLMiC6aDrxR/Jd2CuQWwuVyCYjLEM5ih43PrjcZeYW296blnQaRGujWub7x7nyfS/wb0a7rF3YQbHgNit9m+wh/IjVQiSkO4NXx1G3LH0bUkzr6nYNb4w4oFxNwbbTy3TuhAoHUEnCDAPY+TCNecSWH7kPQvC0DUhpgsYjCMwSgGXoFDtyGbGR1nuXVMyBCfW7PE6KUMwdS97fkO5L1f3oIvwxLhAjjanYJonZFqXkXoxeu9i5Z3BPYaMZT77PIdYuJ4nUoiC1ghiEc5OZNgM7A7Q6yXNVUET5JIiuxCMaiB76k0EJa8VLIok/OzlZfkYXkEFstHwOkkygisiPAoGJHXze2ez4S7xdGJ56FqtnsDEYi+32+2m3630+T+oDsAn/MZFwEPZ12OeKkIDdhEKwuWHLabTfrvMIuioN/ltSiwtail0azCcuOrJdvNMbi8afAgEoHy4GQeKbXI8JMptC54r9tqd/324GLmd4fd0B/2e+B3RC/odJpiyPsDolzkvf60szCEzixo9f1gAIHfHXRCf9ASXT+4GLSazUGrP2v1yFmgw/UpTyqNMkUq72DvGbtKoSREEVWiJS1xMM9V0LIAWKgV/ML+1CnjaGMXOo1C1CVgn0storgLF0e3/2LwV8HrMj5+ZhCcFN/gJI2Px58FA9HrBX2/JYKB3w26wh/O6OfFsN1td1r91jAk39Leoj4vuYNn6Na2WvLjvFKKm9mhPHA5pWUXVZoIS3tLflBdF7qYRVSC1FAjr1FY2cZm33Rb6ncwy1KNUxORFDiX2FGjgcpd3w0PqRs5DKSnsWwfTbeSWfbm06W3rYyBz9Qcef1XhsGOEFz5CJTkTp5Km4fCdBgPwzC0ImHHa9Yo6bCEiLrNZmtCgM2FMgNE94EDjwJTtrmPZr11Ue95eyZvFOlryK7LTOkwOyvGcc07aLwCcJk4XSmNXWo8LezB2MW9Q2oPNo8k9L//UvgZ/7FL5YwOU0Eb9Hj4AhEeBMJCvJdkZhTuGK1hf4qU6i93mDWq4CrrUEf5kj26WGHxFL6kCf3DuWzrFHD8B6VO5Yyp5iKcod4Fm56VhNOV1Kv5NZALR3k18vN+ft7uq7yWhfhpfJWqjGltXczV3qVJVT3BNUW9EaTOYTZ2Oa/tLVarVT3Jj2Uhy/iNlTbfbMIF7Jb8JA1wrjQ0VmdWaxQ8Y/k3brMaZjdXv0/U3d3dRD2nQQtTKq4CQqVmP4Bj4vQzdbMfdv+DOnzBizWXHQf3jkpAZgxlzbkppHJcCqpF81HlhYKitkAqyWKzCfBabky03dJy/kwlBQ2lJUpQfmc8svAEuT/8Mn0kl0xeTz2ol5xUauRl6rzkRubj7W+BPrsqhlSNPRa/1HW1rsYscVXo3E7pDZCr+4tR/JNP5ifofPj033N5/gPAHz6TnwTw8NV+ACE3eoNDL3GVvaPHKl397n3w4f012vKUir46j/PhW3zQzZy80uqgzsPTXwJz0vwVSRhO+tc783zn0QO7uV8WNBXMdvsXcBlWMw==
+sidebar_class_name: "get api-method"
+info_path: api/v2/ticketing/unified-ticketing-api-preview
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get comment</h1>
+
+<MethodEndpoint method={"get"} path={"/comments/{comment_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/ticketing/unified-ticketing-api-preview"}></SecuritySchemes>
+
+
+
+:::note
+This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+:::
+
+Returns a Comment object with the given id.
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"comment_id","in":"path","required":true,"schema":{"type":"string","example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean","example":true},"description":"Whether to include raw data fetched from the 3rd party provider."}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string","example":"my-customer-1"},"description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string","example":"salesforce"},"description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+CommentData
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"user"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"17a54124-287f-494d-965e-3c5b330c9a68"}}></SchemaItem><SchemaItem collapsible={false} name={"contact"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"dde3fb16-b8eb-483d-81c4-b78100816f15"}}></SchemaItem><SchemaItem collapsible={false} name={"body"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"When will these integrations be done? You all should use Supaglue."}}></SchemaItem><SchemaItem collapsible={false} name={"html_body"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"When will these integrations be done? You all should use <b>Supaglue<b>."}}></SchemaItem><SchemaItem collapsible={false} name={"ticket"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"fb8c55b6-1cb8-4b4c-9fb6-17924231619d"}}></SchemaItem><SchemaItem collapsible={false} name={"is_private"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean","example":true}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"user\": \"17a54124-287f-494d-965e-3c5b330c9a68\",\n  \"contact\": \"dde3fb16-b8eb-483d-81c4-b78100816f15\",\n  \"body\": \"When will these integrations be done? You all should use Supaglue.\",\n  \"html_body\": \"When will these integrations be done? You all should use <b>Supaglue<b>.\",\n  \"ticket\": \"fb8c55b6-1cb8-4b4c-9fb6-17924231619d\",\n  \"is_private\": true\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
