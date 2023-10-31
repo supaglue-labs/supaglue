@@ -5148,28 +5148,6 @@
                   "type",
                   "dataset"
                 ]
-              },
-              {
-                "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\nConfig specific to MongoDB destination\n",
-                "type": "object",
-                "title": "MongoDB (Preview)",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "mongodb"
-                    ]
-                  },
-                  "collection": {
-                    "type": "string",
-                    "description": "The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used.",
-                    "example": "customer_1_schema"
-                  }
-                },
-                "required": [
-                  "type",
-                  "collection"
-                ]
               }
             ]
           },
@@ -5210,26 +5188,6 @@
                   "required": [
                     "object",
                     "table"
-                  ]
-                },
-                {
-                  "type": "object",
-                  "title": "MongoDB (Preview)",
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "description": "The Provider object name (case sensitive)",
-                      "example": "Contact"
-                    },
-                    "collection": {
-                      "type": "string",
-                      "description": "The collection to write the object to. If specified, this will override the default collection used by Supaglue.",
-                      "example": "MyContacts"
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "collection"
                   ]
                 }
               ]
@@ -5272,26 +5230,6 @@
                   "required": [
                     "object",
                     "table"
-                  ]
-                },
-                {
-                  "type": "object",
-                  "title": "MongoDB (Preview)",
-                  "properties": {
-                    "object": {
-                      "type": "string",
-                      "description": "The Provider object name (case sensitive)",
-                      "example": "Contact__c"
-                    },
-                    "collection": {
-                      "type": "string",
-                      "description": "The collection to write the object to. If specified, this will override the default table used by Supaglue.",
-                      "example": "MyContacts"
-                    }
-                  },
-                  "required": [
-                    "object",
-                    "collection"
                   ]
                 }
               ]

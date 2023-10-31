@@ -1521,14 +1521,6 @@ export interface components {
          * @example customer_1_dataset
          */
         dataset: string;
-      }, {
-        /** @enum {string} */
-        type: "mongodb";
-        /**
-         * @description The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used. 
-         * @example customer_1_schema
-         */
-        collection: string;
       }]>;
       /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       standard_objects?: (OneOf<[{
@@ -1548,17 +1540,6 @@ export interface components {
            * @example my_contacts
            */
           table: string;
-        }, {
-          /**
-           * @description The Provider object name (case sensitive) 
-           * @example Contact
-           */
-          object: string;
-          /**
-           * @description The collection to write the object to. If specified, this will override the default collection used by Supaglue. 
-           * @example MyContacts
-           */
-          collection: string;
         }]>)[];
       /** @description (Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       custom_objects?: (OneOf<[{
@@ -1578,17 +1559,6 @@ export interface components {
            * @example my_contacts
            */
           table: string;
-        }, {
-          /**
-           * @description The Provider object name (case sensitive) 
-           * @example Contact__c
-           */
-          object: string;
-          /**
-           * @description The collection to write the object to. If specified, this will override the default table used by Supaglue. 
-           * @example MyContacts
-           */
-          collection: string;
         }]>)[];
     };
   };

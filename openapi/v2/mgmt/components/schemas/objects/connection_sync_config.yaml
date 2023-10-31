@@ -31,25 +31,6 @@ properties:
         required:
           - type
           - dataset
-      - description: |
-          :::note
-          This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
-          :::
-
-          Config specific to MongoDB destination
-        type: object
-        title: MongoDB (Preview)
-        properties:
-          type:
-            type: string
-            enum: [mongodb]
-          collection:
-            type: string
-            description: The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used.
-            example: customer_1_schema
-        required:
-          - type
-          - collection
   standard_objects:
     description: A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig.
     type: array
@@ -78,20 +59,6 @@ properties:
           required:
             - object
             - table
-        - type: object
-          title: MongoDB (Preview)
-          properties:
-            object:
-              type: string
-              description: The Provider object name (case sensitive)
-              example: Contact
-            collection:
-              type: string
-              description: The collection to write the object to. If specified, this will override the default collection used by Supaglue.
-              example: MyContacts
-          required:
-            - object
-            - collection
   custom_objects:
     description: |
       (Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig.
@@ -121,17 +88,3 @@ properties:
           required:
             - object
             - table
-        - type: object
-          title: MongoDB (Preview)
-          properties:
-            object:
-              type: string
-              description: The Provider object name (case sensitive)
-              example: Contact__c
-            collection:
-              type: string
-              description: The collection to write the object to. If specified, this will override the default table used by Supaglue.
-              example: MyContacts
-          required:
-            - object
-            - collection
