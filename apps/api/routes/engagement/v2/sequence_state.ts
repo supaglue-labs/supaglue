@@ -45,11 +45,13 @@ export default function init(app: Router): void {
       req: Request<CreateSequenceStatePathParams, CreateSequenceStateResponse, CreateSequenceStateRequest>,
       res: Response<CreateSequenceStateResponse>
     ) => {
-      const responseBody = await engagementCommonObjectService
-        .create('sequence_state', req.customerConnection, camelcaseKeysSansCustomFields(req.body.record))
-        .then((id) => ({ record: { id } }));
+      const id = await engagementCommonObjectService.create(
+        'sequence_state',
+        req.customerConnection,
+        camelcaseKeysSansCustomFields(req.body.record)
+      );
 
-      return res.status(201).send(responseBody);
+      return res.status(201).send({ record: { id } });
     }
   );
 
@@ -63,11 +65,13 @@ export default function init(app: Router): void {
       >,
       res: Response<BatchCreateSequenceStateResponse>
     ) => {
-      const responseBody = await engagementCommonObjectService
-        .batchCreate('sequence_state', req.customerConnection, req.body.records.map(camelcaseKeysSansCustomFields))
-        .then((ids) => ({ records: ids.map((id) => ({ id })) }));
+      const ids = await engagementCommonObjectService.batchCreate(
+        'sequence_state',
+        req.customerConnection,
+        req.body.records.map(camelcaseKeysSansCustomFields)
+      );
 
-      return res.status(201).send(responseBody);
+      return res.status(201).send({ records: ids.map((id) => ({ id })) });
     }
   );
 
