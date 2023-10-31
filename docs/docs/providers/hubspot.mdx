@@ -5,6 +5,8 @@ sidebar_custom_props:
 description: ''
 ---
 
+import OAuthScopesSelector from '@site/src/components/OAuthScopesSelector';
+
 # HubSpot
 
 ## Overview
@@ -71,13 +73,13 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-To connect to your customers' HubSpot instances, you'll need to update the redirect URL to point to Supaglue and fetch the API access credentials in your [HubSpot developer account](https://developers.hubspot.com).
+To connect to your customers' HubSpot instances, you'll need to update the redirect URL to point to Supaglue and fetch the API access credentials in your HubSpot developer account.
 
 ### Add Redirect URL to your HubSpot app
 
 Supaglue provides a redirect URL to send information to your app. To add the redirect URL to your HubSpot app:
 
-1. Log in to your HubSpot developer account: <https://app.hubspot.com/developer>
+1. Log in to your HubSpot developer account.
 1. Navigate to your Public Application under "Apps" and go to the "Auth" tab.
 
    <BrowserWindow url="app.hubspot.com/developer/12345678/application/123456">
@@ -88,53 +90,23 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
 1. Under "Redirect URLs", paste Supaglue's redirect URL:
 
-   <Tabs>
-   <TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
-
    ```
    https://api.supaglue.io/oauth/callback
    ```
 
-   </TabItem>
-   <TabItem value="localhost" label="Localhost">
+## Generate scopes
 
-   ```
-   http://localhost:8080/oauth/callback
-   ```
+1. Check the permissions below that your application needs, to generate the HubSpot scopes you will request from your customer.
 
-   </TabItem>
-   </Tabs>
-
-1. Check the following scopes under "Scopes":
-
-   Required for CRM reads (common objects):
-
-   - `crm.objects.owners.read`
-   - `crm.objects.companies.read`
-   - `crm.lists.read`
-   - `crm.objects.deals.read`
-   - `crm.objects.contacts.read`
-   - `crm.objects.custom.read` (required for custom objects)
-   - `crm.schemas.custom.read` (required for custom objects)
-
-   Required for CRM writes (common objects):
-
-   - `crm.objects.contacts.write`
-   - `crm.objects.companies.write`
-   - `crm.objects.deals.write`
-   - `crm.lists.write`
-   - `crm.objects.custom.write`
-   - `crm.schemas.custom.write`
-
-   Required for Forms:
-
-   - `forms`
-
-   :::info
-   Supaglue requires a set of minimum scopes to support reads and writes to common object records.
-   :::
+   <OAuthScopesSelector />
 
 1. Click Save to update your changes.
+
+:::info
+
+Creating custom objects via the HubSpot API is restricted to OAuth apps that are part of HubSpot's pilot program. If you have this use case, you'll need to [request access](https://developers.hubspot.com/docs/api/custom-objects-schema-pilot) to this scope.
+
+:::
 
 ### Fetch HubSpot Public App credentials
 
