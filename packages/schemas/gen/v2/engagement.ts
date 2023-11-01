@@ -154,7 +154,7 @@ export interface paths {
   };
   "/sequence_states": {
     /**
-     * Create sequence state(s) 
+     * Create sequence state 
      * @description In other words, adding a contact to sequence.
      */
     post: operations["createSequenceState"];
@@ -1075,7 +1075,7 @@ export interface operations {
     };
   };
   /**
-   * Create sequence state(s) 
+   * Create sequence state 
    * @description In other words, adding a contact to sequence.
    */
   createSequenceState: {
