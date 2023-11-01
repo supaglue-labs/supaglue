@@ -32,4 +32,4 @@ parameters:
     required: true
     schema:
       type: string
-      example: your-customers-unique-application-id
+    example: your-customers-unique-application-id

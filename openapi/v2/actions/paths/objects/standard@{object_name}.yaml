@@ -17,10 +17,10 @@ post:
               $ref: ../../components/schemas/create_update_standard_object_record.yaml
           required:
             - data
-          example:
-            data:
-              Name: Acme Corp
-              Description: We create the best embedded integration platforms.
+        example:
+          data:
+            Name: Acme Corp
+            Description: We create the best embedded integration platforms.
   responses:
     '201':
       description: Standard ObjectRecord created

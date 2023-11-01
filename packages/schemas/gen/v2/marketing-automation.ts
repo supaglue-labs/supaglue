@@ -14,6 +14,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 12345 */
         form_id: string;
       };
     };
@@ -43,6 +44,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 12345 */
         form_id: string;
       };
     };
@@ -101,11 +103,20 @@ export interface components {
   };
   responses: never;
   parameters: {
-    /** @description The customer ID that uniquely identifies the customer in your application */
+    /**
+     * @description The customer ID that uniquely identifies the customer in your application 
+     * @example my-customer-1
+     */
     "x-customer-id": string;
-    /** @description The provider name */
+    /**
+     * @description The provider name 
+     * @example salesforce
+     */
     "x-provider-name": string;
-    /** @description Whether to include raw data fetched from the 3rd party provider. */
+    /**
+     * @description Whether to include raw data fetched from the 3rd party provider. 
+     * @example true
+     */
     include_raw_data?: boolean;
   };
   requestBodies: never;
@@ -125,6 +136,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 12345 */
         form_id: string;
       };
     };
@@ -192,6 +204,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 12345 */
         form_id: string;
       };
     };

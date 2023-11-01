@@ -7,6 +7,6 @@ schema:
     - account
     - opportunity
     - lead
-  example: contact
+example: contact
 description: The Supaglue common object type to fetch a list for.
 required: true
