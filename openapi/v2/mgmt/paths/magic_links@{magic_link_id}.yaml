@@ -14,4 +14,4 @@ parameters:
     required: true
     schema:
       type: string
-      example: 6bf954f9-dba3-4c34-9275-3830dccb0030
+    example: 6bf954f9-dba3-4c34-9275-3830dccb0030

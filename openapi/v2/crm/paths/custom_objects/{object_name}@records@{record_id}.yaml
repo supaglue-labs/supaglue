@@ -76,4 +76,4 @@ parameters:
     description: The ID of the record to retrieve or update
     schema:
       type: string
-      example: 82de27cb-6f8c-4278-b783-82d1d916eddc
+    example: 82de27cb-6f8c-4278-b783-82d1d916eddc

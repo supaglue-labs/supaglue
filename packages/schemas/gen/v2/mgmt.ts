@@ -26,6 +26,7 @@ export interface paths {
     delete: operations["deleteCustomer"];
     parameters: {
       path: {
+        /** @example your-customers-unique-application-id */
         customer_id: string;
       };
     };
@@ -64,6 +65,7 @@ export interface paths {
     delete: operations["deleteMagicLink"];
     parameters: {
       path: {
+        /** @example 6bf954f9-dba3-4c34-9275-3830dccb0030 */
         magic_link_id: string;
       };
     };
@@ -124,6 +126,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         entity_id: string;
       };
     };
@@ -159,6 +162,7 @@ export interface paths {
     delete: operations["deleteSchema"];
     parameters: {
       path: {
+        /** @example a821d59d-8b4c-4ad9-aeec-1292d2e28701 */
         schema_id: string;
       };
     };
@@ -238,6 +242,7 @@ export interface paths {
     delete: operations["deleteSyncConfig"];
     parameters: {
       path: {
+        /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
       };
     };
@@ -1564,17 +1569,35 @@ export interface components {
   };
   responses: never;
   parameters: {
-    /** @description The pagination cursor value */
+    /**
+     * @description The pagination cursor value 
+     * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+     */
     cursor?: string;
-    /** @description Number of results to return per page. (Max: 1000) */
+    /**
+     * @description Number of results to return per page. (Max: 1000) 
+     * @example 123
+     */
     page_size?: string;
-    /** @description The customer ID that uniquely identifies the customer in your application */
+    /**
+     * @description The customer ID that uniquely identifies the customer in your application 
+     * @example 1bae5050-b8ff-472e-8b9f-01f29a81d1ee
+     */
     customer_id?: string;
-    /** @description The provider name */
+    /**
+     * @description The provider name 
+     * @example salesforce
+     */
     provider_name?: string;
-    /** @description The provider name */
+    /**
+     * @description The provider name 
+     * @example salesforce
+     */
     "x-provider-name": string;
-    /** @description The customer ID that uniquely identifies the customer in your application */
+    /**
+     * @description The customer ID that uniquely identifies the customer in your application 
+     * @example my-customer-1
+     */
     "x-customer-id": string;
   };
   requestBodies: never;
@@ -1620,6 +1643,7 @@ export interface operations {
   getCustomer: {
     parameters: {
       path: {
+        /** @example your-customers-unique-application-id */
         customer_id: string;
       };
     };
@@ -1636,6 +1660,7 @@ export interface operations {
   deleteCustomer: {
     parameters: {
       path: {
+        /** @example your-customers-unique-application-id */
         customer_id: string;
       };
     };
@@ -1749,6 +1774,7 @@ export interface operations {
   deleteMagicLink: {
     parameters: {
       path: {
+        /** @example 6bf954f9-dba3-4c34-9275-3830dccb0030 */
         magic_link_id: string;
       };
     };
@@ -1833,6 +1859,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         entity_id: string;
       };
     };
@@ -1857,6 +1884,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         entity_id: string;
       };
     };
@@ -1906,6 +1934,7 @@ export interface operations {
   getSchema: {
     parameters: {
       path: {
+        /** @example a821d59d-8b4c-4ad9-aeec-1292d2e28701 */
         schema_id: string;
       };
     };
@@ -1925,6 +1954,7 @@ export interface operations {
   updateSchema: {
     parameters: {
       path: {
+        /** @example a821d59d-8b4c-4ad9-aeec-1292d2e28701 */
         schema_id: string;
       };
     };
@@ -1949,6 +1979,7 @@ export interface operations {
   deleteSchema: {
     parameters: {
       path: {
+        /** @example a821d59d-8b4c-4ad9-aeec-1292d2e28701 */
         schema_id: string;
       };
     };
@@ -2174,6 +2205,7 @@ export interface operations {
   getSyncConfig: {
     parameters: {
       path: {
+        /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
       };
     };
@@ -2190,6 +2222,7 @@ export interface operations {
   updateSyncConfig: {
     parameters: {
       path: {
+        /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
       };
     };
@@ -2211,6 +2244,7 @@ export interface operations {
   deleteSyncConfig: {
     parameters: {
       path: {
+        /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
       };
     };
@@ -2465,21 +2499,40 @@ export interface operations {
   getSyncs: {
     parameters: {
       query?: {
-        /** @description The pagination cursor value */
+        /**
+         * @description The pagination cursor value 
+         * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+         */
         cursor?: string;
-        /** @description Number of results to return per page */
+        /**
+         * @description Number of results to return per page 
+         * @example 100
+         */
         page_size?: string;
-        /** @description The customer ID that uniquely identifies the customer in your application */
+        /**
+         * @description The customer ID that uniquely identifies the customer in your application 
+         * @example my-customer-1
+         */
         customer_id?: string;
-        /** @description The provider name */
+        /**
+         * @description The provider name 
+         * @example salesforce
+         */
         provider_name?: string;
-        /** @description The object type to filter by */
+        /**
+         * @description The object type to filter by 
+         * @example standard
+         */
         object_type?: "common" | "standard" | "custom";
-        /** @description The object to filter by */
+        /**
+         * @description The object to filter by 
+         * @example contact
+         */
         object?: string;
         /**
          * @deprecated 
-         * @description The entity id to filter by
+         * @description The entity id to filter by 
+         * @example e74b5a4f-f252-4a6c-940c-f35873498543
          */
         entity_id?: string;
       };
@@ -2646,27 +2699,53 @@ export interface operations {
   getSyncRuns: {
     parameters: {
       query?: {
-        /** @description The pagination cursor value */
+        /**
+         * @description The pagination cursor value 
+         * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+         */
         cursor?: string;
-        /** @description Number of results to return per page */
+        /**
+         * @description Number of results to return per page 
+         * @example 100
+         */
         page_size?: string;
-        /** @description The customer ID that uniquely identifies the customer in your application */
+        /**
+         * @description The customer ID that uniquely identifies the customer in your application 
+         * @example my-customer-1
+         */
         customer_id?: string;
-        /** @description The provider name */
+        /**
+         * @description The provider name 
+         * @example salesforce
+         */
         provider_name?: string;
+        /** @example standard */
         object_type?: "common" | "standard" | "custom";
-        /** @description The object to filter by */
+        /**
+         * @description The object to filter by 
+         * @example account
+         */
         object?: string;
         /**
          * @deprecated 
-         * @description The entity id to filter by
+         * @description The entity id to filter by 
+         * @example e74b5a4f-f252-4a6c-940c-f35873498543
          */
         entity_id?: string;
-        /** @description The status to filter by (case-insensitive) */
+        /**
+         * @description The status to filter by (case-insensitive) 
+         * @example SUCCESS
+         */
         status?: string;
-        /** @description The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp. */
+        /**
+         * @description The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp. 
+         * @example >2021-01-06T03:24:53.434326Z
+         */
         start_timestamp?: string;
-        /** @description The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp. */
+        /**
+         * @description The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp. 
+         * @example >2021-01-06T03:24:53.434326Z
+         */
         end_timestamp?: string;
       };
     };

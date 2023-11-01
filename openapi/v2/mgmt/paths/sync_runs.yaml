@@ -12,25 +12,25 @@ get:
       in: query
       schema:
         type: string
-        example: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+      example: cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
       description: The pagination cursor value
     - name: page_size
       in: query
       schema:
         type: string
-        example: '100'
+      example: '100'
       description: Number of results to return per page
     - name: customer_id
       in: query
       schema:
         type: string
-        example: my-customer-1
+      example: my-customer-1
       description: The customer ID that uniquely identifies the customer in your application
     - name: provider_name
       in: query
       schema:
         type: string
-        example: salesforce
+      example: salesforce
       description: The provider name
     - name: object_type
       in: query
@@ -40,37 +40,37 @@ get:
           - common
           - standard
           - custom
-        example: standard
+      example: standard
     - name: object
       in: query
       schema:
         type: string
-        example: account
+      example: account
       description: The object to filter by
     - name: entity_id
       deprecated: true
       in: query
       schema:
         type: string
-        example: e74b5a4f-f252-4a6c-940c-f35873498543
+      example: e74b5a4f-f252-4a6c-940c-f35873498543
       description: The entity id to filter by
     - name: status
       in: query
       schema:
         type: string
-        example: SUCCESS
+      example: SUCCESS
       description: The status to filter by (case-insensitive)
     - name: start_timestamp
       in: query
       schema:
         type: string
-        example: '>2021-01-06T03:24:53.434326Z'
+      example: '>2021-01-06T03:24:53.434326Z'
       description: The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp.
     - name: end_timestamp
       in: query
       schema:
         type: string
-        example: '>2021-01-06T03:24:53.434326Z'
+      example: '>2021-01-06T03:24:53.434326Z'
       description: The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp.
   responses:
     '200':
