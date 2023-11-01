@@ -22,4 +22,4 @@ parameters:
     required: true
     schema:
       type: string
-      example: ffb62704-addd-454e-bb86-ed0799703dc6
+    example: ffb62704-addd-454e-bb86-ed0799703dc6

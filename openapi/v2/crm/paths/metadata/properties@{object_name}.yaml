@@ -49,4 +49,4 @@ parameters:
     required: true
     schema:
       type: string
-      example: contact
+    example: contact

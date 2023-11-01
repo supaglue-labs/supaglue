@@ -51,4 +51,4 @@ parameters:
     required: true
     schema:
       type: string
-      example: d583ec72-55d4-4f35-9668-f6c759674cc1
+    example: d583ec72-55d4-4f35-9668-f6c759674cc1

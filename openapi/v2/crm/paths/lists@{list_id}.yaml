@@ -45,4 +45,4 @@ parameters:
     required: true
     schema:
       type: string
-      example: 220e715a-0cbc-4d2d-8420-cd729f12f094
+    example: 220e715a-0cbc-4d2d-8420-cd729f12f094

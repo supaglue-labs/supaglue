@@ -2,6 +2,6 @@ name: x-provider-name
 in: header
 schema:
   type: string
-  example: salesforce
+example: salesforce
 description: The provider name
 required: true
