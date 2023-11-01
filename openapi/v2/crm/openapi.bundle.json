@@ -4738,7 +4738,7 @@
           "format": "date-time"
         },
         "example": "2023-02-23T00:00:00Z",
-        "description": "If provided, will only return objects created after this datetime"
+        "description": "If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format."
       },
       "created_before": {
         "name": "created_before",
@@ -4748,7 +4748,7 @@
           "format": "date-time"
         },
         "example": "2023-02-23T00:00:00Z",
-        "description": "If provided, will only return objects created before this datetime"
+        "description": "If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format."
       },
       "modified_after": {
         "name": "modified_after",
@@ -4757,7 +4757,7 @@
           "type": "string",
           "format": "date-time"
         },
-        "description": "If provided, will only return objects modified after this datetime",
+        "description": "If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format.",
         "example": "2023-02-23T00:00:00Z"
       },
       "modified_before": {
@@ -4768,7 +4768,7 @@
           "format": "date-time"
         },
         "example": "2023-02-23T00:00:00Z",
-        "description": "If provided, will only return objects modified before this datetime"
+        "description": "If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format."
       },
       "cursor": {
         "name": "cursor",
