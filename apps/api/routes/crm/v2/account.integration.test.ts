@@ -92,6 +92,11 @@ describe('account', () => {
 
       expect(updateResponse.status).toEqual(200);
 
+      // Pipedrive does not have read after write guarantees, so we need to wait
+      if (providerName === 'pipedrive') {
+        await new Promise((resolve) => setTimeout(resolve, 12000));
+      }
+
       const getResponse = await apiClient.get<GetAccountResponse>(`/crm/v2/accounts/${response.data.record?.id}`, {
         headers: { 'x-provider-name': providerName },
       });
