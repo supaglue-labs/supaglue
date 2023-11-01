@@ -44,11 +44,14 @@ export type RunObjectSyncArgs = {
   context: Record<string, unknown>;
 };
 
-function shouldPauseSync(err: any): boolean {
-  return (
-    err.cause?.type === 'SGConnectionNoLongerAuthenticatedError' ||
-    err.cause?.failure?.message.startsWith('No entity mapping found for entity')
-  );
+// Returns pause reason if sync should be paused
+function getPauseReasonIfShouldPause(err: any): string | undefined {
+  if (err.cause?.type === 'SGConnectionNoLongerAuthenticatedError') {
+    return `Connection no longer authenticated: ${err.cause.message}`;
+  }
+  if (err.cause?.failure?.message.startsWith('No entity mapping found for entity')) {
+    return err.cause.failure.message;
+  }
 }
 
 export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
@@ -69,8 +72,9 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
     await clearSyncArgsForNextRun({ syncId });
   } catch (err: any) {
     // Process SG Sync Worker errors
-    if (shouldPauseSync(err)) {
-      await pauseSync({ connectionId, syncId });
+    const pauseReason = getPauseReasonIfShouldPause(err);
+    if (pauseReason) {
+      await pauseSync({ connectionId, syncId, pauseReason });
     }
 
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);
