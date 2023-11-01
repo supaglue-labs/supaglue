@@ -52,6 +52,9 @@ function getPauseReasonIfShouldPause(err: any): string | undefined {
   if (err.cause?.failure?.message.startsWith('No entity mapping found for entity')) {
     return err.cause.failure.message;
   }
+  if (err.cause?.failure?.message.startsWith('Additional field mappings are not allowed')) {
+    return `Customer attempted to add additional field mappings for entity where additional field mappings are not allowed`;
+  }
 }
 
 export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
