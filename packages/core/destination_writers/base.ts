@@ -53,7 +53,8 @@ export interface DestinationWriter {
     object: string,
     stream: Readable,
     heartbeat: () => void,
-    diffAndDeleteRecords: boolean
+    diffAndDeleteRecords: boolean,
+    objectType: 'standard' | 'custom'
   ): Promise<WriteObjectRecordsResult>;
 
   /**
@@ -147,7 +148,8 @@ export abstract class BaseDestinationWriter implements DestinationWriter {
     object: string,
     stream: Readable,
     heartbeat: () => void,
-    diffAndDeleteRecords: boolean
+    diffAndDeleteRecords: boolean,
+    objectType: 'standard' | 'custom'
   ): Promise<WriteObjectRecordsResult>;
 
   abstract writeEntityRecords(

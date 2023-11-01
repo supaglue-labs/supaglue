@@ -128,7 +128,8 @@ export function createSyncObjectRecords(
               object,
               toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
               heartbeat,
-              /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
+              /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName),
+              'standard'
             );
           }
           break;
@@ -145,7 +146,8 @@ export function createSyncObjectRecords(
               object,
               toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
               heartbeat,
-              /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
+              /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName),
+              'custom'
             );
           }
           break;

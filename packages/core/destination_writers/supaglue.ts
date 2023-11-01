@@ -22,7 +22,8 @@ import {
 } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
-import { PostgresDestinationWriterImpl } from './postgres_impl';
+import type { ObjectType } from './postgres_impl';
+import { kCustomObject, PostgresDestinationWriterImpl } from './postgres_impl';
 
 async function createPartitionIfNotExists(
   client: PoolClient,
@@ -150,7 +151,8 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     object: string,
     inputStream: Readable,
     heartbeat: () => void,
-    diffAndDeleteRecords: boolean
+    diffAndDeleteRecords: boolean,
+    objectType: ObjectType
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -159,7 +161,8 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
       inputStream,
       heartbeat,
       logger.child({ connectionId, providerName, customerId, object }),
-      diffAndDeleteRecords
+      diffAndDeleteRecords,
+      objectType
     );
   }
 
@@ -168,7 +171,12 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     objectName: string,
     record: FullObjectRecord
   ): Promise<void> {
-    return await this.#upsertRecord(connection, getObjectTableName(connection.providerName, objectName), record);
+    return await this.#upsertRecord(
+      connection,
+      getObjectTableName(connection.providerName, objectName),
+      record,
+      'standard'
+    );
   }
 
   public override async upsertCustomObjectRecord(
@@ -176,10 +184,20 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     objectName: string,
     record: FullObjectRecord
   ): Promise<void> {
-    return await this.#upsertRecord(connection, getObjectTableName(connection.providerName, objectName), record);
+    return await this.#upsertRecord(
+      connection,
+      getObjectTableName(connection.providerName, objectName),
+      record,
+      'custom'
+    );
   }
 
-  async #upsertRecord(connection: ConnectionSafeAny, table: string, record: FullObjectRecord): Promise<void> {
+  async #upsertRecord(
+    connection: ConnectionSafeAny,
+    table: string,
+    record: FullObjectRecord,
+    objectType: ObjectType
+  ): Promise<void> {
     const schema = getSchemaName(connection.applicationId);
     const client = await this.#getClient();
 
@@ -189,7 +207,9 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
       schema,
       table,
       record,
-      async () => await this.#setupStandardOrCustomObjectTable(client, schema, table, connection.customerId)
+      async () =>
+        await this.#setupStandardOrCustomObjectTable(client, schema, table, connection.customerId, false, objectType),
+      objectType
     );
   }
 
@@ -213,19 +233,35 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
   async #setupStandardOrCustomObjectTable(
     client: PoolClient,
     schema: string,
-    table: string,
+    objectName: string,
     customerId: string,
-    alsoCreateTempTable = false
+    alsoCreateTempTable = false,
+    objectType: ObjectType
   ) {
+    const includeObjectName = objectType === 'custom';
+    const table = includeObjectName ? kCustomObject : objectName;
+
     await client.query(getSchemaSetupSql(schema));
-    await client.query(getTableSetupSql(table, schema));
+    await client.query(getTableSetupSql(table, schema, false, includeObjectName));
+    if (includeObjectName) {
+      await Promise.all(
+        getViewSetupSqls({
+          schema,
+          tableName: kCustomObject,
+          objectName: objectName,
+          viewName: objectName,
+        }).map((q) => client.query(q))
+      );
+    }
+
     await createPartitionIfNotExists(client, schema, table, customerId, '_supaglue_last_modified_at');
+
     if (alsoCreateTempTable) {
       const tempTable = `temp_${table}`;
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
-      await client.query(getTableSetupSql(table, schema, /* temp */ true));
+      await client.query(getTableSetupSql(table, schema, /* temp */ true, includeObjectName));
       await client.query(
         `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_id ASC, _supaglue_last_modified_at DESC)`
       );
@@ -238,7 +274,8 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger,
-    diffAndDeleteRecords: boolean
+    diffAndDeleteRecords: boolean,
+    objectType: ObjectType
   ): Promise<WriteObjectRecordsResult> {
     const schema = getSchemaName(connection.applicationId);
     const client = await this.#getClient();
@@ -258,9 +295,11 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
           schema,
           table,
           connection.customerId,
-          /* alsoCreateTempTable */ true
+          /* alsoCreateTempTable */ true,
+          objectType
         );
-      }
+      },
+      objectType
     );
   }
 }
@@ -269,7 +308,7 @@ const getSchemaSetupSql = (schema: string) => {
   return `CREATE SCHEMA IF NOT EXISTS ${schema};`;
 };
 
-const getTableSetupSql = (baseTableName: string, schema: string, temp?: boolean) => {
+const getTableSetupSql = (baseTableName: string, schema: string, temp?: boolean, includeObjectName?: boolean) => {
   const tableName = temp ? `temp_${baseTableName}` : baseTableName;
 
   return `-- CreateTable
@@ -283,12 +322,34 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `${tableName}` : 
   "_supaglue_is_deleted" BOOLEAN NOT NULL,
   "_supaglue_raw_data" JSONB NOT NULL,
   "_supaglue_mapped_data" JSONB NOT NULL
-
+  ${includeObjectName ? `, "_supaglue_object_name" TEXT NOT NULL` : ''}
   ${
     temp
       ? ''
-      : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "_supaglue_id")'
+      : `, PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "_supaglue_id"${
+          includeObjectName ? `, "_supaglue_object_name"` : ''
+        })`
   }
     
 )${temp ? ';' : ' PARTITION BY LIST ( _supaglue_customer_id );'}`;
+};
+
+const getViewSetupSqls = ({
+  schema,
+  tableName,
+  viewName,
+  objectName,
+}: {
+  schema: string;
+  tableName: string;
+  viewName: string;
+  objectName: string;
+}) => {
+  return [
+    `CREATE INDEX IF NOT EXISTS "idx_${tableName}_supaglue_object_name"
+      ON "${schema}"."${tableName}" (_supaglue_object_name);`,
+    `CREATE OR REPLACE VIEW "${schema}"."${viewName}" AS (
+      SELECT * FROM "${schema}"."${tableName}" where _supaglue_object_name = '${objectName}'
+    );`,
+  ];
 };

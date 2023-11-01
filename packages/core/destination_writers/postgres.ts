@@ -21,7 +21,8 @@ import type { Readable } from 'stream';
 import { getCommonObjectSchemaSetupSql, getSsl, logger } from '../lib';
 import type { WriteCommonObjectRecordsResult, WriteEntityRecordsResult, WriteObjectRecordsResult } from './base';
 import { BaseDestinationWriter } from './base';
-import { PostgresDestinationWriterImpl } from './postgres_impl';
+import type { ObjectType } from './postgres_impl';
+import { kCustomObject, PostgresDestinationWriterImpl } from './postgres_impl';
 
 export class PostgresDestinationWriter extends BaseDestinationWriter {
   readonly #destination: DestinationUnsafe<'postgres'>;
@@ -157,7 +158,8 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     object: string,
     inputStream: Readable,
     heartbeat: () => void,
-    diffAndDeleteRecords: boolean
+    diffAndDeleteRecords: boolean,
+    objectType: 'standard' | 'custom'
   ): Promise<WriteObjectRecordsResult> {
     const { id: connectionId, providerName, customerId } = connection;
     return await this.#writeRecords(
@@ -166,7 +168,8 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       inputStream,
       heartbeat,
       logger.child({ connectionId, providerName, customerId, object }),
-      diffAndDeleteRecords
+      diffAndDeleteRecords,
+      objectType
     );
   }
 
@@ -175,7 +178,12 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     objectName: string,
     record: FullObjectRecord
   ): Promise<void> {
-    return await this.#upsertRecord(connection, getObjectTableName(connection.providerName, objectName), record);
+    return await this.#upsertRecord(
+      connection,
+      getObjectTableName(connection.providerName, objectName),
+      record,
+      'standard'
+    );
   }
 
   public override async upsertCustomObjectRecord(
@@ -183,7 +191,12 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     objectName: string,
     record: FullObjectRecord
   ): Promise<void> {
-    return await this.#upsertRecord(connection, getObjectTableName(connection.providerName, objectName), record);
+    return await this.#upsertRecord(
+      connection,
+      getObjectTableName(connection.providerName, objectName),
+      record,
+      'custom'
+    );
   }
 
   public override async writeEntityRecords(
@@ -200,7 +213,8 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       inputStream,
       heartbeat,
       logger.child({ connectionId, providerName, customerId, entityName }),
-      diffAndDeleteRecords
+      diffAndDeleteRecords,
+      'standard'
     );
   }
 
@@ -209,31 +223,51 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     entityName: string,
     record: FullEntityRecord
   ): Promise<void> {
-    return await this.#upsertRecord(connection, getEntityTableName(entityName), record);
+    return await this.#upsertRecord(connection, getEntityTableName(entityName), record, 'standard');
   }
 
   async #setupObjectOrEntityTable(
     client: PoolClient,
-    table: string,
+    objectName: string,
     schema: string,
-    alsoCreateTempTable = false
+    alsoCreateTempTable = false,
+    objectType: ObjectType = 'standard'
   ): Promise<void> {
+    const includeObjectName = objectType === 'custom';
+    const table = includeObjectName ? kCustomObject : objectName;
     // Create tables if necessary
     // TODO: We should only need to do this once at the beginning
-    await client.query(getObjectOrEntitySchemaSetupSql(table, schema));
+    await client.query(getObjectOrEntitySchemaSetupSql(table, schema, /*temp*/ false, includeObjectName));
+    if (includeObjectName) {
+      await Promise.all(
+        getViewSetupSqls({
+          schema,
+          tableName: kCustomObject,
+          objectName: objectName,
+          viewName: objectName,
+        }).map((q) => client.query(q))
+      );
+    }
+
     if (alsoCreateTempTable) {
       const tempTable = `"temp_${table}"`;
       // Create a temporary table
       // TODO: In the future, we may want to create a permanent table with background reaper so that we can resume in the case of failure during the COPY stage.
       await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
-      await client.query(getObjectOrEntitySchemaSetupSql(table, schema, /* temp */ true));
+      await client.query(getObjectOrEntitySchemaSetupSql(table, schema, /* temp */ true, includeObjectName));
       await client.query(
         `CREATE INDEX IF NOT EXISTS pk_idx ON ${tempTable} (_supaglue_id ASC, _supaglue_last_modified_at DESC)`
       );
     }
   }
 
-  async #upsertRecord(connection: ConnectionSafeAny, table: string, record: BaseFullRecord): Promise<void> {
+  /** Upsert is used for cache invalidation only */
+  async #upsertRecord(
+    connection: ConnectionSafeAny,
+    table: string,
+    record: BaseFullRecord,
+    objectType: ObjectType
+  ): Promise<void> {
     const schema = this.#getSchema(connection.connectionSyncConfig);
     const client = await this.#getClient();
     await this.#writerImpl.upsertRecordImpl(
@@ -242,7 +276,9 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       schema,
       table,
       record,
-      async () => await this.#setupObjectOrEntityTable(client, table, schema)
+      async () =>
+        await this.#setupObjectOrEntityTable(client, table, schema, /* alsoCreateTempTable */ false, objectType),
+      objectType
     );
   }
 
@@ -252,7 +288,8 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger,
-    diffAndDeleteRecords: boolean
+    diffAndDeleteRecords: boolean,
+    objectType: ObjectType
   ): Promise<WriteObjectRecordsResult> {
     const schema = this.#getSchema(connection.connectionSyncConfig);
     const client = await this.#getClient();
@@ -266,8 +303,9 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       childLogger,
       diffAndDeleteRecords,
       async () => {
-        await this.#setupObjectOrEntityTable(client, table, schema, /* alsoCreateTempTable */ true);
-      }
+        await this.#setupObjectOrEntityTable(client, table, schema, /* alsoCreateTempTable */ true, objectType);
+      },
+      objectType
     );
   }
 }
@@ -311,7 +349,12 @@ const tableNamesByCommonObjectType: {
   },
 };
 
-const getObjectOrEntitySchemaSetupSql = (baseTableName: string, schema: string, temp?: boolean) => {
+const getObjectOrEntitySchemaSetupSql = (
+  baseTableName: string,
+  schema: string,
+  temp?: boolean,
+  includeObjectName?: boolean
+) => {
   const tableName = temp ? `temp_${baseTableName}` : baseTableName;
 
   return `-- CreateTable
@@ -325,11 +368,33 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `${tableName}` : 
   "_supaglue_is_deleted" BOOLEAN NOT NULL,
   "_supaglue_raw_data" JSONB NOT NULL,
   "_supaglue_mapped_data" JSONB NOT NULL
-
+  ${includeObjectName ? `, "_supaglue_object_name" TEXT NOT NULL` : ''}
   ${
     temp
       ? ''
-      : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "_supaglue_id")'
+      : `, PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "_supaglue_id"${
+          includeObjectName ? `, "_supaglue_object_name"` : ''
+        })`
   }
 );`;
+};
+
+const getViewSetupSqls = ({
+  schema,
+  tableName,
+  viewName,
+  objectName,
+}: {
+  schema: string;
+  tableName: string;
+  viewName: string;
+  objectName: string;
+}) => {
+  return [
+    `CREATE INDEX IF NOT EXISTS "idx_${tableName}_supaglue_object_name"
+      ON "${schema}"."${tableName}" (_supaglue_object_name);`,
+    `CREATE OR REPLACE VIEW "${schema}"."${viewName}" AS (
+      SELECT * FROM "${schema}"."${tableName}" where _supaglue_object_name = '${objectName}'
+    );`,
+  ];
 };
