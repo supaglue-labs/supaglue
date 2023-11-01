@@ -1,6 +1,6 @@
 post:
   operationId: createSequenceState
-  summary: Create sequence state(s)
+  summary: Create sequence state
   description: |
     In other words, adding a contact to sequence. 
   tags:
