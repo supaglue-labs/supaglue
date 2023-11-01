@@ -13,12 +13,10 @@ import type {
 } from '@supaglue/types';
 import { SUPAGLUE_MANAGED_DESTINATION } from '@supaglue/utils';
 import fs from 'fs';
-import { MongoClient, ServerApiVersion } from 'mongodb';
 import path from 'path';
 import { Client } from 'pg';
 import type { DestinationWriter } from '../destination_writers/base';
 import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
-import { MongoDBDestinationWriter } from '../destination_writers/mongodb';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { SupaglueDestinationWriter } from '../destination_writers/supaglue';
 import { BadRequestError } from '../errors';
@@ -215,31 +213,6 @@ export class DestinationService {
           }
         }
         break;
-      case 'mongodb':
-        {
-          const { config } = params;
-          const password =
-            config.password ?? (existingDestination as DestinationUnsafe<'mongodb'> | null)?.config.password ?? ''; // TODO: shouldn't do empty string
-          const uri = `mongodb+srv://${config.user}:${encodeURIComponent(password)}@${config.host}`;
-          // TODO also support non-Atlas MongoDB connections, multiple hosts, X.509 auth, etc.
-          const mongoClient = new MongoClient(uri, {
-            appName: `supaglue-${version}`,
-            serverApi: {
-              version: ServerApiVersion.v1,
-              strict: true,
-              deprecationErrors: true,
-            },
-          });
-          try {
-            await mongoClient.db('admin').command({ ping: 1 });
-            success = true;
-          } catch (err: any) {
-            ({ message } = err);
-          } finally {
-            await mongoClient.close();
-          }
-        }
-        break;
       default:
         throw new BadRequestError(`unknown destination type`);
     }
@@ -311,8 +284,6 @@ export class DestinationService {
         return new PostgresDestinationWriter(destination);
       case 'bigquery':
         return new BigQueryDestinationWriter(destination);
-      case 'mongodb':
-        return new MongoDBDestinationWriter(destination);
       case 'supaglue':
         return new SupaglueDestinationWriter();
       default:
@@ -344,14 +315,6 @@ function mergeDestinationConfig(
           ...params.config.credentials,
           privateKey: params.config.credentials.privateKey ?? existingDestination.config.credentials.privateKey,
         },
-      };
-    case 'mongodb':
-      if (params.type !== 'mongodb') {
-        throw new BadRequestError('cannot change destination type');
-      }
-      return {
-        ...params.config,
-        password: params.config.password ?? existingDestination.config.password,
       };
     case 'supaglue':
       throw new BadRequestError('cannot update supaglue managed destination');
