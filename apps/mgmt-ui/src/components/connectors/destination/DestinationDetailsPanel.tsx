@@ -1,9 +1,8 @@
 import BigQueryDestinationDetailsPanel from './BigQueryDestinationDetailsPanel';
-import MongoDBDestinationDetailsPanel from './MongoDBDestinationDetailsPanel';
 import PostgresDestinationDetailsPanel from './PostgresDestinationDetailsPanel';
 
 export type DestinationDetailsPanelProps = {
-  type: 'postgres' | 'bigquery' | 'mongodb';
+  type: 'postgres' | 'bigquery';
   isLoading: boolean;
 };
 
@@ -13,8 +12,6 @@ export default function DestinationDetailsPanel({ type, isLoading }: Destination
       return <PostgresDestinationDetailsPanel isLoading={isLoading} />;
     case 'bigquery':
       return <BigQueryDestinationDetailsPanel isLoading={isLoading} />;
-    case 'mongodb':
-      return <MongoDBDestinationDetailsPanel isLoading={isLoading} />;
     default:
       return null;
   }

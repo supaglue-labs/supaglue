@@ -547,24 +547,6 @@ export interface components {
        * @example 1
        */
       version: number;
-    }, {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
-      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-      application_id: string;
-      /** @example My Mongo Destination */
-      name: string;
-      /**
-       * @example mongodb 
-       * @enum {string}
-       */
-      type: "mongodb";
-      config: components["schemas"]["mongodb_config_safe"];
-      /**
-       * @description A monotonically increasing version number of the destination configuration 
-       * @example 1
-       */
-      version: number;
     }]>;
     postgres_config_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -593,14 +575,6 @@ export interface components {
         client_email: string;
       };
     };
-    mongodb_config_safe: {
-      /** @example my-cluster.z31wcmj.mongodb.net */
-      host: string;
-      /** @example my-cluster */
-      database: string;
-      /** @example myuser */
-      user: string;
-    };
     postgres_config_at_least_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
       host: string;
@@ -626,16 +600,6 @@ export interface components {
         /** @example -----BEGIN PRIVATE KEY-----\nMII... */
         private_key: string;
       };
-    };
-    mongodb_config_at_least_safe: {
-      /** @example my-cluster.z31wcmj.mongodb.net */
-      host: string;
-      /** @example my-cluster */
-      database: string;
-      /** @example myuser */
-      user: string;
-      /** @example mysensitivepassword */
-      password?: string;
     };
     postgres_config_unsafe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -675,16 +639,6 @@ export interface components {
         /** @example -----BEGIN PRIVATE KEY-----\nMII... */
         private_key: string;
       };
-    };
-    mongodb_config_unsafe: {
-      /** @example my-cluster.z31wcmj.mongodb.net */
-      host: string;
-      /** @example my-cluster */
-      database: string;
-      /** @example myuser */
-      user: string;
-      /** @example mysensitivepassword */
-      password: string;
     };
     /** @deprecated */
     schema: {
@@ -1264,15 +1218,6 @@ export interface components {
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_unsafe"];
-    }, {
-      /** @example My MongoDB Destination */
-      name: string;
-      /**
-       * @example mongodb 
-       * @enum {string}
-       */
-      type: "mongodb";
-      config: components["schemas"]["mongodb_config_unsafe"];
     }]>;
     /**
      * @example {
@@ -1308,17 +1253,6 @@ export interface components {
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_at_least_safe"];
-      /** @example number */
-      version: number;
-    }, {
-      /** @example My MongoDB Destination */
-      name: string;
-      /**
-       * @example mongodb 
-       * @enum {string}
-       */
-      type: "mongodb";
-      config: components["schemas"]["mongodb_config_at_least_safe"];
       /** @example number */
       version: number;
     }]>;
@@ -1382,14 +1316,6 @@ export interface components {
          * @example customer_1_dataset
          */
         dataset: string;
-      }, {
-        /** @enum {string} */
-        type: "mongodb";
-        /**
-         * @description The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used. 
-         * @example customer_1_schema
-         */
-        collection: string;
       }]>;
       /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       standard_objects?: (OneOf<[{
@@ -1409,17 +1335,6 @@ export interface components {
            * @example my_contacts
            */
           table: string;
-        }, {
-          /**
-           * @description The Provider object name (case sensitive) 
-           * @example Contact
-           */
-          object: string;
-          /**
-           * @description The collection to write the object to. If specified, this will override the default collection used by Supaglue. 
-           * @example MyContacts
-           */
-          collection: string;
         }]>)[];
       /** @description (Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       custom_objects?: (OneOf<[{
@@ -1439,17 +1354,6 @@ export interface components {
            * @example my_contacts
            */
           table: string;
-        }, {
-          /**
-           * @description The Provider object name (case sensitive) 
-           * @example Contact__c
-           */
-          object: string;
-          /**
-           * @description The collection to write the object to. If specified, this will override the default table used by Supaglue. 
-           * @example MyContacts
-           */
-          collection: string;
         }]>)[];
     };
     standard_object: {
