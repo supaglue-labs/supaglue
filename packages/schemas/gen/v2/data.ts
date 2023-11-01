@@ -403,23 +403,50 @@ export interface components {
   };
   responses: never;
   parameters: {
-    /** @description The customer ID that uniquely identifies the customer in your application */
+    /**
+     * @description The customer ID that uniquely identifies the customer in your application 
+     * @example my-customer-1
+     */
     "x-customer-id": string;
-    /** @description The provider name */
+    /**
+     * @description The provider name 
+     * @example salesforce
+     */
     "x-provider-name": string;
-    /** @description If provided, will only return objects modified after this datetime */
+    /**
+     * @description If provided, will only return objects modified after this datetime 
+     * @example 2023-02-23T00:00:00Z
+     */
     modified_after?: Date;
-    /** @description If provided, will only return objects modified before this datetime */
+    /**
+     * @description If provided, will only return objects modified before this datetime 
+     * @example 2023-02-23T00:00:00Z
+     */
     modified_before?: Date;
-    /** @description If provided, will only return objects created after this datetime */
+    /**
+     * @description If provided, will only return objects created after this datetime 
+     * @example 2023-02-23T00:00:00Z
+     */
     created_after?: Date;
-    /** @description If provided, will only return objects created before this datetime */
+    /**
+     * @description If provided, will only return objects created before this datetime 
+     * @example 2023-02-23T00:00:00Z
+     */
     created_before?: Date;
-    /** @description Whether to include data that was deleted in providers. */
+    /**
+     * @description Whether to include data that was deleted in providers. 
+     * @example true
+     */
     include_deleted_data?: boolean;
-    /** @description Number of results to return per page. (Max: 1000) */
+    /**
+     * @description Number of results to return per page. (Max: 1000) 
+     * @example 123
+     */
     page_size?: string;
-    /** @description The pagination cursor value */
+    /**
+     * @description The pagination cursor value 
+     * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+     */
     cursor?: string;
   };
   requestBodies: never;

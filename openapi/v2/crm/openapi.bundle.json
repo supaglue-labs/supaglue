@@ -788,9 +788,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -1216,9 +1216,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "82de27cb-6f8c-4278-b783-82d1d916eddc"
-          }
+            "type": "string"
+          },
+          "example": "82de27cb-6f8c-4278-b783-82d1d916eddc"
         }
       ]
     },
@@ -1464,9 +1464,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "c9f58083-a370-47b5-ad02-99160ea20372"
-          }
+            "type": "string"
+          },
+          "example": "c9f58083-a370-47b5-ad02-99160ea20372"
         }
       ]
     },
@@ -1579,9 +1579,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -1803,9 +1803,9 @@
           "required": true,
           "description": "The ID of the record to retrieve or update",
           "schema": {
-            "type": "string",
-            "example": "82de27cb-6f8c-4278-b783-82d1d916eddc"
-          }
+            "type": "string"
+          },
+          "example": "82de27cb-6f8c-4278-b783-82d1d916eddc"
         }
       ]
     },
@@ -2027,9 +2027,9 @@
           "required": true,
           "description": "The ID of the record to retrieve or update",
           "schema": {
-            "type": "string",
-            "example": "82de27cb-6f8c-4278-b783-82d1d916eddc"
-          }
+            "type": "string"
+          },
+          "example": "82de27cb-6f8c-4278-b783-82d1d916eddc"
         }
       ]
     },
@@ -2481,9 +2481,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "contact"
-          }
+            "type": "string"
+          },
+          "example": "contact"
         }
       ]
     },
@@ -2561,9 +2561,9 @@
           "required": true,
           "schema": {
             "type": "string",
-            "description": "The name of the object.",
-            "example": "contact"
-          }
+            "description": "The name of the object."
+          },
+          "example": "contact"
         },
         {
           "name": "property_name",
@@ -2571,9 +2571,9 @@
           "required": true,
           "schema": {
             "type": "string",
-            "description": "The name of the property.",
-            "example": "contact"
-          }
+            "description": "The name of the property."
+          },
+          "example": "email"
         }
       ]
     },
@@ -2626,9 +2626,9 @@
           "required": true,
           "schema": {
             "type": "string",
-            "description": "The name of the object.",
-            "example": "contact"
-          }
+            "description": "The name of the object."
+          },
+          "example": "contact"
         }
       ]
     },
@@ -2849,9 +2849,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "220e715a-0cbc-4d2d-8420-cd729f12f094"
-          }
+            "type": "string"
+          },
+          "example": "220e715a-0cbc-4d2d-8420-cd729f12f094"
         }
       ]
     },
@@ -4707,27 +4707,27 @@
         "name": "include_deleted_data",
         "in": "query",
         "schema": {
-          "type": "boolean",
-          "example": true
+          "type": "boolean"
         },
+        "example": true,
         "description": "Whether to include data that was deleted in providers."
       },
       "include_raw_data": {
         "name": "include_raw_data",
         "in": "query",
         "schema": {
-          "type": "boolean",
-          "example": true
+          "type": "boolean"
         },
-        "description": "Whether to include raw data fetched from the 3rd party provider."
+        "description": "Whether to include raw data fetched from the 3rd party provider.",
+        "example": true
       },
       "read_from_cache": {
         "name": "read_from_cache",
         "in": "query",
         "schema": {
-          "type": "boolean",
-          "example": true
+          "type": "boolean"
         },
+        "example": true,
         "description": "Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. \n\n\n**NOTE**: `read_from_cache=true` requires you to have the object synced to the Supaglue Managed Destination.\n"
       },
       "created_after": {
@@ -4735,9 +4735,9 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
+        "example": "2023-02-23T00:00:00Z",
         "description": "If provided, will only return objects created after this datetime"
       },
       "created_before": {
@@ -4745,9 +4745,9 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
+        "example": "2023-02-23T00:00:00Z",
         "description": "If provided, will only return objects created before this datetime"
       },
       "modified_after": {
@@ -4755,55 +4755,55 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects modified after this datetime"
+        "description": "If provided, will only return objects modified after this datetime",
+        "example": "2023-02-23T00:00:00Z"
       },
       "modified_before": {
         "name": "modified_before",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
+        "example": "2023-02-23T00:00:00Z",
         "description": "If provided, will only return objects modified before this datetime"
       },
       "cursor": {
         "name": "cursor",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+          "type": "string"
         },
+        "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw",
         "description": "The pagination cursor value"
       },
       "remote_provider_page_size": {
         "name": "page_size",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "100"
+          "type": "string"
         },
+        "example": 100,
         "description": "Number of results to return per page. (Max: 100)"
       },
       "page_size": {
         "name": "page_size",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "123"
+          "type": "string"
         },
+        "example": 123,
         "description": "Number of results to return per page. (Max: 1000)"
       },
       "x-customer-id": {
         "name": "x-customer-id",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "my-customer-1"
+          "type": "string"
         },
+        "example": "my-customer-1",
         "description": "The customer ID that uniquely identifies the customer in your application",
         "required": true
       },
@@ -4811,9 +4811,9 @@
         "name": "x-provider-name",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "salesforce"
+          "type": "string"
         },
+        "example": "salesforce",
         "description": "The provider name",
         "required": true
       },
@@ -4827,9 +4827,9 @@
             "account",
             "opportunity",
             "lead"
-          ],
-          "example": "contact"
+          ]
         },
+        "example": "contact",
         "description": "The Supaglue common object type to fetch a list for.",
         "required": true
       },
@@ -4837,9 +4837,9 @@
         "name": "object_name",
         "in": "path",
         "schema": {
-          "type": "string",
-          "example": "MyCustomObject__c"
+          "type": "string"
         },
+        "example": "MyCustomObject__c",
         "description": "The unique name of the custom object. For Salesforce, this should end with __c. For Hubspot, this will typically be the singular form of the object.",
         "required": true
       }

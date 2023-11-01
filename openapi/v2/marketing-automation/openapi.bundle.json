@@ -96,9 +96,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "12345"
-          }
+            "type": "string"
+          },
+          "example": 12345
         }
       ]
     },
@@ -201,9 +201,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "12345"
-          }
+            "type": "string"
+          },
+          "example": 12345
         }
       ]
     }
@@ -339,9 +339,9 @@
         "name": "x-customer-id",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "my-customer-1"
+          "type": "string"
         },
+        "example": "my-customer-1",
         "description": "The customer ID that uniquely identifies the customer in your application",
         "required": true
       },
@@ -349,9 +349,9 @@
         "name": "x-provider-name",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "salesforce"
+          "type": "string"
         },
+        "example": "salesforce",
         "description": "The provider name",
         "required": true
       },
@@ -359,10 +359,10 @@
         "name": "include_raw_data",
         "in": "query",
         "schema": {
-          "type": "boolean",
-          "example": true
+          "type": "boolean"
         },
-        "description": "Whether to include raw data fetched from the 3rd party provider."
+        "description": "Whether to include raw data fetched from the 3rd party provider.",
+        "example": true
       }
     }
   }

@@ -137,9 +137,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "your-customers-unique-application-id"
-          }
+            "type": "string"
+          },
+          "example": "your-customers-unique-application-id"
         }
       ]
     },
@@ -379,9 +379,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "6bf954f9-dba3-4c34-9275-3830dccb0030"
-          }
+            "type": "string"
+          },
+          "example": "6bf954f9-dba3-4c34-9275-3830dccb0030"
         }
       ]
     },
@@ -564,9 +564,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -725,9 +725,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "a821d59d-8b4c-4ad9-aeec-1292d2e28701"
-          }
+            "type": "string"
+          },
+          "example": "a821d59d-8b4c-4ad9-aeec-1292d2e28701"
         }
       ]
     },
@@ -1196,9 +1196,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "d583ec72-55d4-4f35-9668-f6c759674cc1"
-          }
+            "type": "string"
+          },
+          "example": "d583ec72-55d4-4f35-9668-f6c759674cc1"
         }
       ]
     },
@@ -1671,36 +1671,36 @@
             "name": "cursor",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+              "type": "string"
             },
+            "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw",
             "description": "The pagination cursor value"
           },
           {
             "name": "page_size",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "100"
+              "type": "string"
             },
+            "example": "100",
             "description": "Number of results to return per page"
           },
           {
             "name": "customer_id",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "my-customer-1"
+              "type": "string"
             },
+            "example": "my-customer-1",
             "description": "The customer ID that uniquely identifies the customer in your application"
           },
           {
             "name": "provider_name",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "salesforce"
+              "type": "string"
             },
+            "example": "salesforce",
             "description": "The provider name"
           },
           {
@@ -1712,18 +1712,18 @@
                 "common",
                 "standard",
                 "custom"
-              ],
-              "example": "standard"
+              ]
             },
+            "example": "standard",
             "description": "The object type to filter by"
           },
           {
             "name": "object",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "contact"
+              "type": "string"
             },
+            "example": "contact",
             "description": "The object to filter by"
           },
           {
@@ -1731,9 +1731,9 @@
             "deprecated": true,
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "e74b5a4f-f252-4a6c-940c-f35873498543"
+              "type": "string"
             },
+            "example": "e74b5a4f-f252-4a6c-940c-f35873498543",
             "description": "The entity id to filter by"
           }
         ],
@@ -2102,36 +2102,36 @@
             "name": "cursor",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+              "type": "string"
             },
+            "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw",
             "description": "The pagination cursor value"
           },
           {
             "name": "page_size",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "100"
+              "type": "string"
             },
+            "example": "100",
             "description": "Number of results to return per page"
           },
           {
             "name": "customer_id",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "my-customer-1"
+              "type": "string"
             },
+            "example": "my-customer-1",
             "description": "The customer ID that uniquely identifies the customer in your application"
           },
           {
             "name": "provider_name",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "salesforce"
+              "type": "string"
             },
+            "example": "salesforce",
             "description": "The provider name"
           },
           {
@@ -2143,17 +2143,17 @@
                 "common",
                 "standard",
                 "custom"
-              ],
-              "example": "standard"
-            }
+              ]
+            },
+            "example": "standard"
           },
           {
             "name": "object",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "account"
+              "type": "string"
             },
+            "example": "account",
             "description": "The object to filter by"
           },
           {
@@ -2161,36 +2161,36 @@
             "deprecated": true,
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "e74b5a4f-f252-4a6c-940c-f35873498543"
+              "type": "string"
             },
+            "example": "e74b5a4f-f252-4a6c-940c-f35873498543",
             "description": "The entity id to filter by"
           },
           {
             "name": "status",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": "SUCCESS"
+              "type": "string"
             },
+            "example": "SUCCESS",
             "description": "The status to filter by (case-insensitive)"
           },
           {
             "name": "start_timestamp",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": ">2021-01-06T03:24:53.434326Z"
+              "type": "string"
             },
+            "example": ">2021-01-06T03:24:53.434326Z",
             "description": "The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp."
           },
           {
             "name": "end_timestamp",
             "in": "query",
             "schema": {
-              "type": "string",
-              "example": ">2021-01-06T03:24:53.434326Z"
+              "type": "string"
             },
+            "example": ">2021-01-06T03:24:53.434326Z",
             "description": "The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp."
           }
         ],
@@ -5243,45 +5243,45 @@
         "name": "cursor",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+          "type": "string"
         },
+        "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw",
         "description": "The pagination cursor value"
       },
       "page_size": {
         "name": "page_size",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "123"
+          "type": "string"
         },
+        "example": 123,
         "description": "Number of results to return per page. (Max: 1000)"
       },
       "customer_id": {
         "name": "customer_id",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "1bae5050-b8ff-472e-8b9f-01f29a81d1ee"
+          "type": "string"
         },
+        "example": "1bae5050-b8ff-472e-8b9f-01f29a81d1ee",
         "description": "The customer ID that uniquely identifies the customer in your application"
       },
       "provider_name": {
         "name": "provider_name",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "salesforce"
+          "type": "string"
         },
+        "example": "salesforce",
         "description": "The provider name"
       },
       "x-provider-name": {
         "name": "x-provider-name",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "salesforce"
+          "type": "string"
         },
+        "example": "salesforce",
         "description": "The provider name",
         "required": true
       },
@@ -5289,9 +5289,9 @@
         "name": "x-customer-id",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "my-customer-1"
+          "type": "string"
         },
+        "example": "my-customer-1",
         "description": "The customer ID that uniquely identifies the customer in your application",
         "required": true
       }

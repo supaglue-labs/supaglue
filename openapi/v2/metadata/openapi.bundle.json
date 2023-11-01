@@ -319,9 +319,9 @@
         "name": "x-customer-id",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "my-customer-1"
+          "type": "string"
         },
+        "example": "my-customer-1",
         "description": "The customer ID that uniquely identifies the customer in your application",
         "required": true
       },
@@ -329,9 +329,9 @@
         "name": "x-provider-name",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "salesforce"
+          "type": "string"
         },
+        "example": "salesforce",
         "description": "The provider name",
         "required": true
       }

@@ -351,9 +351,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -575,9 +575,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -623,9 +623,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -671,9 +671,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -784,9 +784,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -858,9 +858,9 @@
           "required": true,
           "description": "The ID of the sequence.",
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -1055,9 +1055,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "ffb62704-addd-454e-bb86-ed0799703dc6"
-          }
+            "type": "string"
+          },
+          "example": "ffb62704-addd-454e-bb86-ed0799703dc6"
         }
       ]
     }
@@ -1972,28 +1972,28 @@
         "name": "include_deleted_data",
         "in": "query",
         "schema": {
-          "type": "boolean",
-          "example": true
+          "type": "boolean"
         },
+        "example": true,
         "description": "Whether to include data that was deleted in providers."
       },
       "include_raw_data": {
         "name": "include_raw_data",
         "in": "query",
         "schema": {
-          "type": "boolean",
-          "example": true
+          "type": "boolean"
         },
-        "description": "Whether to include raw data fetched from the 3rd party provider."
+        "description": "Whether to include raw data fetched from the 3rd party provider.",
+        "example": true
       },
       "created_after": {
         "name": "created_after",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
+        "example": "2023-02-23T00:00:00Z",
         "description": "If provided, will only return objects created after this datetime"
       },
       "created_before": {
@@ -2001,9 +2001,9 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
+        "example": "2023-02-23T00:00:00Z",
         "description": "If provided, will only return objects created before this datetime"
       },
       "modified_after": {
@@ -2011,46 +2011,46 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects modified after this datetime"
+        "description": "If provided, will only return objects modified after this datetime",
+        "example": "2023-02-23T00:00:00Z"
       },
       "modified_before": {
         "name": "modified_before",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
+        "example": "2023-02-23T00:00:00Z",
         "description": "If provided, will only return objects modified before this datetime"
       },
       "cursor": {
         "name": "cursor",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+          "type": "string"
         },
+        "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw",
         "description": "The pagination cursor value"
       },
       "page_size": {
         "name": "page_size",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "123"
+          "type": "string"
         },
+        "example": 123,
         "description": "Number of results to return per page. (Max: 1000)"
       },
       "x-customer-id": {
         "name": "x-customer-id",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "my-customer-1"
+          "type": "string"
         },
+        "example": "my-customer-1",
         "description": "The customer ID that uniquely identifies the customer in your application",
         "required": true
       },
@@ -2058,9 +2058,9 @@
         "name": "x-provider-name",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "salesforce"
+          "type": "string"
         },
+        "example": "salesforce",
         "description": "The provider name",
         "required": true
       }

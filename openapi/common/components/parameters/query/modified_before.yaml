@@ -3,5 +3,5 @@ in: query
 schema:
   type: string
   format: date-time
-  example: 2023-02-23T00:00:00Z
+example: 2023-02-23T00:00:00Z
 description: If provided, will only return objects modified before this datetime

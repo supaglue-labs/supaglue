@@ -30,4 +30,4 @@ parameters:
     required: true
     schema:
       type: string
-      example: 0258cbc6-6020-430a-848e-aafacbadf4ae
+    example: 0258cbc6-6020-430a-848e-aafacbadf4ae

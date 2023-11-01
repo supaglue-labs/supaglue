@@ -68,4 +68,4 @@ parameters:
     required: true
     schema:
       type: string
-      example: c9f58083-a370-47b5-ad02-99160ea20372
+    example: c9f58083-a370-47b5-ad02-99160ea20372
