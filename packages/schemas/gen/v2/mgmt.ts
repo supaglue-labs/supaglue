@@ -2874,6 +2874,7 @@ export interface operations {
           object_type: "common" | "standard" | "custom";
           /** @example contact */
           object: string;
+          pause_reason?: string;
         };
       };
     };

@@ -5538,6 +5538,9 @@
                   "object": {
                     "type": "string",
                     "example": "contact"
+                  },
+                  "pause_reason": {
+                    "type": "string"
                   }
                 },
                 "required": [
@@ -6442,6 +6445,9 @@
                   "object": {
                     "type": "string",
                     "example": "contact"
+                  },
+                  "pause_reason": {
+                    "type": "string"
                   }
                 },
                 "required": [

@@ -109,7 +109,7 @@ export class ConnectionAndSyncService {
   /**
    * NOTE: duped with sync_service in sync-worker package. @todo: consolidate it
    */
-  public async pauseSync(sync: Sync): Promise<Sync> {
+  public async pauseSync(sync: Sync, pauseReason?: string): Promise<Sync> {
     const pausedSync = (await this.#changeSyncPausedState(sync, true)) as ObjectSync; // NOTE: only support object syncs
     const connection = await this.#connectionService.getSafeById(sync.connectionId);
 
@@ -122,6 +122,7 @@ export class ConnectionAndSyncService {
         type: 'object',
         object_type: pausedSync.objectType,
         object: pausedSync.object,
+        pause_reason: pauseReason,
       },
       connection.applicationId
     );
