@@ -5,7 +5,13 @@
  * @jest-environment ./integration-test-environment
  */
 
-import type { CreateCustomObjectSchemaRequest, CreateCustomObjectSchemaResponse } from '@supaglue/schemas/v2/crm';
+import type {
+  CreateCustomObjectSchemaRequest,
+  CreateCustomObjectSchemaResponse,
+  GetCustomObjectSchemaResponse,
+  ListCustomObjectSchemasResponse,
+  UpdateCustomObjectSchemaPathParams,
+} from '@supaglue/schemas/v2/crm';
 
 describe('custom_objects', () => {
   let testCustomObject: CreateCustomObjectSchemaRequest['object'];
