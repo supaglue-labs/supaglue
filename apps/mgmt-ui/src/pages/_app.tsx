@@ -31,8 +31,8 @@ if (typeof window !== 'undefined') {
     api_host: process.env.FRONTEND_URL
       ? `${process.env.FRONTEND_URL}/ingest`
       : window.location.port === '3000'
-        ? `http://${window.location.hostname}:3000/ingest`
-        : `https://${window.location.hostname}/ingest`,
+      ? `http://${window.location.hostname}:3000/ingest`
+      : `https://${window.location.hostname}/ingest`,
   });
 }
 
@@ -184,18 +184,20 @@ theme = {
 
 const drawerWidth = 256;
 
-const EVALUATIONS = [{
-  namespaceName: 'mgmt-ui',
-  configName: 'entities_whitelist',
-  evaluationType: EvaluationType.JSON,
-  context: new ClientContext()
-},
-{
-  namespaceName: 'mgmt-ui',
-  configName: 'schemas_whitelist',
-  evaluationType: EvaluationType.JSON,
-  context: new ClientContext()
-}]
+const EVALUATIONS = [
+  {
+    namespaceName: 'mgmt-ui',
+    configName: 'entities_whitelist',
+    evaluationType: EvaluationType.JSON,
+    context: new ClientContext(),
+  },
+  {
+    namespaceName: 'mgmt-ui',
+    configName: 'schemas_whitelist',
+    evaluationType: EvaluationType.JSON,
+    context: new ClientContext(),
+  },
+];
 
 export default function App({ Component, pageProps: { session, signedIn, ...pageProps } }: AppProps) {
   const router = useRouter();
@@ -219,10 +221,14 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
     return (
       <PostHogProvider client={posthog}>
         <SessionProvider session={session}>
-          <LekkoConfigProvider configRequests={EVALUATIONS} settings={{
-            apiKey: 'key-goes-here', repositoryName: "supaglue-test",
-            repositoryOwner: "lekkodev"
-          }}>
+          <LekkoConfigProvider
+            configRequests={EVALUATIONS}
+            settings={{
+              apiKey: 'key-goes-here',
+              repositoryName: 'supaglue-test',
+              repositoryOwner: 'lekkodev',
+            }}
+          >
             <StyledEngineProvider injectFirst>
               <ThemeProvider theme={theme}>
                 <NotificationManager>
@@ -234,7 +240,7 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
             </StyledEngineProvider>
           </LekkoConfigProvider>
         </SessionProvider>
-      </PostHogProvider >
+      </PostHogProvider>
     );
   }
 

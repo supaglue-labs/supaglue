@@ -402,9 +402,11 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                     <TextField
                       {...params}
                       label="Custom objects"
-                      helperText={`Custom objects in ${selectedProvider?.name
-                        }. (Note: names are case-sensitive. Press enter or comma to add multiple fields. ${selectedProvider?.name === 'salesforce' ? 'For Salesforce, these should all end with __c.' : ''
-                        })`}
+                      helperText={`Custom objects in ${
+                        selectedProvider?.name
+                      }. (Note: names are case-sensitive. Press enter or comma to add multiple fields. ${
+                        selectedProvider?.name === 'salesforce' ? 'For Salesforce, these should all end with __c.' : ''
+                      })`}
                     />
                   )}
                   onChange={(event: any, value: string[]) => {

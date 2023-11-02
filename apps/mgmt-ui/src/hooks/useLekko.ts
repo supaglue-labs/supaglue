@@ -1,4 +1,4 @@
-import { ClientContext, EvaluationType, useLekkoConfig } from "@lekko/react-sdk";
+import { ClientContext, EvaluationType, useLekkoConfig } from '@lekko/react-sdk';
 
 //
 // Lekkodefaults

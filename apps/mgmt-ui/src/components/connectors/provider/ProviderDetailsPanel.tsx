@@ -136,17 +136,17 @@ export default function ProviderDetailsPanel({
         ...provider,
         config: isOauthProvider(provider)
           ? {
-            ...provider.config,
-            providerAppId: '', // TODO: add input field for this
-            oauth: {
-              ...provider.config.oauth,
-              credentials: {
-                oauthClientId: clientId,
-                oauthClientSecret: clientSecret,
+              ...provider.config,
+              providerAppId: '', // TODO: add input field for this
+              oauth: {
+                ...provider.config.oauth,
+                credentials: {
+                  oauthClientId: clientId,
+                  oauthClientSecret: clientSecret,
+                },
+                oauthScopes: oauthScopes.split(','),
               },
-              oauthScopes: oauthScopes.split(','),
-            },
-          }
+            }
           : undefined,
         objects: {
           common: commonObjects,
@@ -167,16 +167,16 @@ export default function ProviderDetailsPanel({
       name: providerName,
       config: isOauth
         ? {
-          providerAppId: '', // TODO: add input field for this
-          useManagedOauth,
-          oauth: {
-            credentials: {
-              oauthClientId: clientId,
-              oauthClientSecret: clientSecret,
+            providerAppId: '', // TODO: add input field for this
+            useManagedOauth,
+            oauth: {
+              credentials: {
+                oauthClientId: clientId,
+                oauthClientSecret: clientSecret,
+              },
+              oauthScopes: oauthScopes.split(','),
             },
-            oauthScopes: oauthScopes.split(','),
-          },
-        }
+          }
         : undefined,
       objects: {
         common: commonObjects,

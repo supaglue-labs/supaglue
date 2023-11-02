@@ -10,8 +10,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import SchemaIcon from '@mui/icons-material/Schema';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SyncIcon from '@mui/icons-material/Sync';
-import { useLekkoConfig, EvaluationType, ClientContext } from '@lekko/react-sdk';
 
+import { useLekko } from '@/hooks/useLekko';
 import type { DrawerProps } from '@mui/material';
 import {
   Box,
@@ -25,7 +25,6 @@ import {
   ListItemText,
 } from '@mui/material';
 import NextLink from 'next/link';
-import { useLekko } from '@/hooks/useLekko';
 
 type Category = {
   id: string;
@@ -51,72 +50,72 @@ export default function Navigator(props: DrawerProps & SupaglueProps) {
     id: string;
     children: Category[];
   }[] = [
-      {
-        id: 'Manage',
-        children: [
-          {
-            id: 'Getting Started',
-            to: `/applications/${applicationId}`,
-            icon: <HomeIcon />,
-            active: false,
-          },
-          {
-            id: 'Customers',
-            to: `/applications/${applicationId}/customers`,
-            icon: <PeopleIcon />,
-            active: false,
-          },
-          {
-            id: 'Connectors',
-            to: `/applications/${applicationId}/connectors/providers`,
-            icon: <HubIcon />,
-            active: false,
-          },
+    {
+      id: 'Manage',
+      children: [
+        {
+          id: 'Getting Started',
+          to: `/applications/${applicationId}`,
+          icon: <HomeIcon />,
+          active: false,
+        },
+        {
+          id: 'Customers',
+          to: `/applications/${applicationId}/customers`,
+          icon: <PeopleIcon />,
+          active: false,
+        },
+        {
+          id: 'Connectors',
+          to: `/applications/${applicationId}/connectors/providers`,
+          icon: <HubIcon />,
+          active: false,
+        },
 
-          {
-            id: 'Syncs',
-            to: `/applications/${applicationId}/syncs/syncs`,
-            icon: <SyncIcon />,
-            active: false,
-          },
-          {
-            id: 'Data Model',
-            to: `/applications/${applicationId}/data_model/entities`,
-            icon: <SchemaIcon />,
-            active: false,
-          },
-          {
-            id: 'Logs',
-            to: `/applications/${applicationId}/logs`,
-            icon: <FindInPage />,
-            active: false,
-          },
-          {
-            id: 'Settings',
-            to: `/applications/${applicationId}/settings/api_keys`,
-            icon: <SettingsIcon />,
-            active: false,
-          },
-        ],
-      },
-      {
-        id: 'Learn',
-        children: [
-          {
-            id: 'API Explorer',
-            to: 'https://docs.supaglue.com/api/introduction',
-            icon: <Biotech />,
-            active: false,
-          },
-          {
-            id: 'Documentation',
-            to: 'https://docs.supaglue.com',
-            icon: <MenuBook />,
-            active: false,
-          },
-        ],
-      },
-    ];
+        {
+          id: 'Syncs',
+          to: `/applications/${applicationId}/syncs/syncs`,
+          icon: <SyncIcon />,
+          active: false,
+        },
+        {
+          id: 'Data Model',
+          to: `/applications/${applicationId}/data_model/entities`,
+          icon: <SchemaIcon />,
+          active: false,
+        },
+        {
+          id: 'Logs',
+          to: `/applications/${applicationId}/logs`,
+          icon: <FindInPage />,
+          active: false,
+        },
+        {
+          id: 'Settings',
+          to: `/applications/${applicationId}/settings/api_keys`,
+          icon: <SettingsIcon />,
+          active: false,
+        },
+      ],
+    },
+    {
+      id: 'Learn',
+      children: [
+        {
+          id: 'API Explorer',
+          to: 'https://docs.supaglue.com/api/introduction',
+          icon: <Biotech />,
+          active: false,
+        },
+        {
+          id: 'Documentation',
+          to: 'https://docs.supaglue.com',
+          icon: <MenuBook />,
+          active: false,
+        },
+      ],
+    },
+  ];
 
   if (
     !schemasEnabled(lekko.schemasWhitelistConfig.applicationIds, applicationId) &&
