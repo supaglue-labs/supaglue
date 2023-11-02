@@ -22,6 +22,14 @@ import type {
   SnakecasedKeysCrmOpportunity,
   SnakecasedKeysCrmUser,
 } from '@supaglue/types/crm';
+import type {
+  SnakecasedKeysEngagementAccount,
+  SnakecasedKeysEngagementContact,
+  SnakecasedKeysEngagementUser,
+  SnakecasedKeysMailbox,
+  SnakecasedKeysSequence,
+  SnakecasedKeysSequenceState,
+} from '@supaglue/types/engagement';
 import type { ObjectType } from '@supaglue/types/sync';
 import type { Pool, PoolClient } from 'pg';
 
@@ -132,6 +140,132 @@ export class ManagedDataService {
       customerId,
       objectName,
       'standard',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+  }
+
+  public async getEngagementAccountRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SnakecasedKeysEngagementAccount>> {
+    return await this.#getRecords<SnakecasedKeysEngagementAccount>(
+      applicationId,
+      'engagement',
+      providerName,
+      customerId,
+      'account',
+      'common',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+  }
+
+  public async getEngagementContactRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SnakecasedKeysEngagementContact>> {
+    return await this.#getRecords<SnakecasedKeysEngagementContact>(
+      applicationId,
+      'engagement',
+      providerName,
+      customerId,
+      'contact',
+      'common',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+  }
+
+  public async getEngagementMailboxRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SnakecasedKeysMailbox>> {
+    return await this.#getRecords<SnakecasedKeysMailbox>(
+      applicationId,
+      'engagement',
+      providerName,
+      customerId,
+      'mailbox',
+      'common',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+  }
+
+  public async getEngagementSequenceRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SnakecasedKeysSequence>> {
+    return await this.#getRecords<SnakecasedKeysSequence>(
+      applicationId,
+      'engagement',
+      providerName,
+      customerId,
+      'sequence',
+      'common',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+  }
+
+  public async getEngagementSequenceStateRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SnakecasedKeysSequenceState>> {
+    return await this.#getRecords<SnakecasedKeysSequenceState>(
+      applicationId,
+      'engagement',
+      providerName,
+      customerId,
+      'sequence_state',
+      'common',
+      cursorStr,
+      modifiedAfter,
+      pageSize
+    );
+  }
+
+  public async getEngagementUserRecords(
+    applicationId: string,
+    providerName: ProviderName,
+    customerId: string,
+    cursorStr?: string,
+    modifiedAfter?: string,
+    pageSize = DEFAULT_PAGE_SIZE
+  ): Promise<PaginatedSupaglueRecords<SnakecasedKeysEngagementUser>> {
+    return await this.#getRecords<SnakecasedKeysEngagementUser>(
+      applicationId,
+      'engagement',
+      providerName,
+      customerId,
+      'user',
+      'common',
       cursorStr,
       modifiedAfter,
       pageSize

@@ -2,7 +2,7 @@ post:
   operationId: createSequenceState
   summary: Create sequence state
   description: |
-    In other words, adding a contact to sequence. 
+    In other words, adding a sequencestate to sequence. 
   tags:
     - Sequence States
   security:
@@ -24,7 +24,7 @@ post:
             id: 355843a5-c536-4e82-b497-05160bfb7d78
             state: active
             mailbox_id: a7e860b5-cb8b-400b-812d-921fa526140c
-            contact_id: 6bdcebc2-f886-4de3-88ed-0b9eb420f7b1
+            sequencestate_id: 6bdcebc2-f886-4de3-88ed-0b9eb420f7b1
             sequence_id: 45e07817-fd59-4ec8-a727-066d2db27c9b
             created_at: '2023-02-27T00:00:00Z'
             updated_at: '2023-02-27T00:00:00Z'
@@ -42,6 +42,36 @@ post:
                 $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
+get:
+  operationId: listSequenceStates
+  summary: List sequence states
+  tags:
+    - SequenceStates
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+    - $ref: ../../../common/components/parameters/query/read_from_cache.yaml
+    - $ref: ../../../common/components/parameters/query/modified_after.yaml
+    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+  responses:
+    200:
+      description: Paginated Sequence States
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/sequence_state.yaml
+            required:
+              - pagination
+              - records
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

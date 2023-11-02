@@ -35,8 +35,12 @@ paths:
     $ref: paths/contacts.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
+  '/users':
+    $ref: paths/users.yaml
   '/users/{user_id}':
     $ref: paths/users@{user_id}.yaml
+  '/mailboxes':
+    $ref: paths/mailboxes.yaml
   '/mailboxes/{mailbox_id}':
     $ref: paths/mailboxes@{mailbox_id}.yaml
   '/sequences':
@@ -126,6 +130,8 @@ components:
       $ref: ../../common/components/parameters/query/cursor.yaml
     page_size:
       $ref: ../../common/components/parameters/query/page_size.yaml
+    read_from_cache:
+      $ref: ../../common/components/parameters/query/read_from_cache.yaml
     x-customer-id:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml
     x-provider-name:

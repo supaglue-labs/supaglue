@@ -25,6 +25,8 @@ export interface paths {
     };
   };
   "/accounts": {
+    /** List accounts */
+    get: operations["listAccounts"];
     /** Create account */
     post: operations["createAccount"];
     parameters: {
@@ -60,6 +62,8 @@ export interface paths {
     };
   };
   "/contacts": {
+    /** List contacts */
+    get: operations["listContacts"];
     /**
      * Create contact 
      * @description Some providers do not support `primary` phone number type, in which case we will default to `mobile`. If both `primary` and `mobile` phone numbers are specified and only a single mobile number is possible, then `mobile` will be used and `primary` will be dropped.
@@ -88,6 +92,16 @@ export interface paths {
       };
     };
   };
+  "/users": {
+    /** List users */
+    get: operations["listUsers"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/users/{user_id}": {
     /** Get user */
     get: operations["getUser"];
@@ -99,6 +113,16 @@ export interface paths {
       path: {
         /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         user_id: string;
+      };
+    };
+  };
+  "/mailboxes": {
+    /** List mailboxes */
+    get: operations["listMailboxes"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -117,6 +141,8 @@ export interface paths {
     };
   };
   "/sequences": {
+    /** List sequences */
+    get: operations["listSequences"];
     /**
      * Create sequence 
      * @description Note this uses an undocumented private api endpoint for Apollo and should be considered to be in alpha state
@@ -161,9 +187,11 @@ export interface paths {
     };
   };
   "/sequence_states": {
+    /** List sequence states */
+    get: operations["listSequenceStates"];
     /**
      * Create sequence state 
-     * @description In other words, adding a contact to sequence.
+     * @description In other words, adding a sequencestate to sequence.
      */
     post: operations["createSequenceState"];
     parameters: {
@@ -681,6 +709,15 @@ export interface components {
      */
     page_size?: string;
     /**
+     * @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. 
+     * 
+     * 
+     * **NOTE**: `read_from_cache=true` requires you to have the object synced to the Supaglue Managed Destination.
+     *  
+     * @example true
+     */
+    read_from_cache?: boolean;
+    /**
      * @description The customer ID that uniquely identifies the customer in your application 
      * @example my-customer-1
      */
@@ -762,6 +799,33 @@ export interface operations {
               })[] | {
               [key: string]: unknown;
             };
+          };
+        };
+      };
+    };
+  };
+  /** List accounts */
+  listAccounts: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Accounts */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["account"])[];
           };
         };
       };
@@ -864,6 +928,33 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** List contacts */
+  listContacts: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Contacts */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["contact"])[];
           };
         };
       };
@@ -985,6 +1076,33 @@ export interface operations {
       };
     };
   };
+  /** List users */
+  listUsers: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Users */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["user"])[];
+          };
+        };
+      };
+    };
+  };
   /** Get user */
   getUser: {
     parameters: {
@@ -1009,6 +1127,33 @@ export interface operations {
       };
     };
   };
+  /** List mailboxes */
+  listMailboxes: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Mailboxes */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["mailbox"])[];
+          };
+        };
+      };
+    };
+  };
   /** Get mailbox */
   getMailbox: {
     parameters: {
@@ -1029,6 +1174,33 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["mailbox"];
+        };
+      };
+    };
+  };
+  /** List sequences */
+  listSequences: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Sequences */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["sequence"])[];
+          };
         };
       };
     };
@@ -1123,9 +1295,36 @@ export interface operations {
       };
     };
   };
+  /** List sequence states */
+  listSequenceStates: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        modified_after?: components["parameters"]["modified_after"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    responses: {
+      /** @description Paginated Sequence States */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["sequence_state"])[];
+          };
+        };
+      };
+    };
+  };
   /**
    * Create sequence state 
-   * @description In other words, adding a contact to sequence.
+   * @description In other words, adding a sequencestate to sequence.
    */
   createSequenceState: {
     parameters: {
@@ -1142,7 +1341,7 @@ export interface operations {
          *     "id": "355843a5-c536-4e82-b497-05160bfb7d78",
          *     "state": "active",
          *     "mailbox_id": "a7e860b5-cb8b-400b-812d-921fa526140c",
-         *     "contact_id": "6bdcebc2-f886-4de3-88ed-0b9eb420f7b1",
+         *     "sequencestate_id": "6bdcebc2-f886-4de3-88ed-0b9eb420f7b1",
          *     "sequence_id": "45e07817-fd59-4ec8-a727-066d2db27c9b",
          *     "created_at": "2023-02-27T00:00:00Z",
          *     "updated_at": "2023-02-27T00:00:00Z"
