@@ -19,3 +19,11 @@ export function getSchemasWhitelistConfig() {
     context: new ClientContext(),
   };
 }
+
+export const defaultSchemasWhitelistConfig = {
+  applicationIds: [],
+};
+
+export const defaultEntitiesWhitelistConfig = {
+  applicationIds: [],
+};

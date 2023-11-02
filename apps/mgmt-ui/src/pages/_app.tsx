@@ -2,9 +2,14 @@ import { SupaglueHead } from '@/components/SupaglueHead';
 import { NotificationManager } from '@/context/notification';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
-import { getEntitiesWhitelistConfig, getSchemasWhitelistConfig } from '@/utils/lekko';
+import {
+  defaultEntitiesWhitelistConfig,
+  defaultSchemasWhitelistConfig,
+  getEntitiesWhitelistConfig,
+  getSchemasWhitelistConfig,
+} from '@/utils/lekko';
 import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut, useUser } from '@clerk/nextjs';
-import { LekkoConfigProvider } from '@lekko/react-sdk';
+import { LekkoConfigMockProvider, LekkoConfigProvider } from '@lekko/react-sdk';
 import { Box, CssBaseline, StyledEngineProvider, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { LicenseInfo } from '@mui/x-license-pro';
@@ -204,6 +209,16 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
   // Otherwise, use no-op provider.
   const OptionalLekkoConfigProvider = ({ children }: { children: ReactNode }) => {
     const lekkoAPIKey = process.env.NEXT_PUBLIC_LEKKO_CLIENT_API_KEY;
+    const defaultConfigs = [
+      {
+        config: getEntitiesWhitelistConfig(),
+        result: defaultEntitiesWhitelistConfig,
+      },
+      {
+        config: getSchemasWhitelistConfig(),
+        result: defaultSchemasWhitelistConfig,
+      },
+    ];
     if (lekkoAPIKey) {
       return (
         <LekkoConfigProvider
@@ -213,14 +228,21 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
             repositoryName: 'dynamic-config',
             repositoryOwner: 'supaglue-labs',
           }}
+          defaultConfigs={defaultConfigs}
         >
           {children}
         </LekkoConfigProvider>
       );
     }
-
-    // TODO: Replace with no-op provider
-    return <>{children}</>;
+    // If no API key is provided, use a no-op provider to not make actual calls to Lekko
+    return (
+      <LekkoConfigMockProvider
+        settings={{ repositoryName: 'dynamic-config', repositoryOwner: 'supaglue-labs' }}
+        defaultConfigs={defaultConfigs}
+      >
+        {children}
+      </LekkoConfigMockProvider>
+    );
   };
 
   if (!IS_CLOUD) {
