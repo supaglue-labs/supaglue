@@ -9,7 +9,13 @@ export class NotificationService {
   }
 
   // @todo: generate this for more emails
-  public async sendSyncPausedEmail(customerId: string, providerName: string, object: string, to: string) {
+  public async sendSyncPausedEmail(
+    customerId: string,
+    providerName: string,
+    object: string,
+    to: string,
+    pauseReason?: string
+  ) {
     const command = new SendEmailCommand({
       FromEmailAddress: 'team+notifications@supaglue.com',
       Destination: {
@@ -22,15 +28,19 @@ export class NotificationService {
           },
           Body: {
             Text: {
-              Data: `Sync for customer ${customerId} using ${providerName} with object ${object} was paused due to ongoing failures.`,
+              Data: `Sync for customer ${customerId} using ${providerName} with object ${object} was paused due to ${
+                pauseReason ?? 'ongoing failures'
+              }.`,
             },
             Html: {
-              Data: `Sync for customer ${customerId} using ${providerName} with object ${object} was paused due to ongoing failures.`,
+              Data: `Sync for customer ${customerId} using ${providerName} with object ${object} was paused due to ${
+                pauseReason ?? 'ongoing failures'
+              }.`,
             },
           },
         },
       },
     });
-    const response = await this.#sesClient.send(command); // @todo: handle error
+    await this.#sesClient.send(command); // @todo: handle error
   }
 }

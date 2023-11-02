@@ -49,6 +49,8 @@ post:
             object:
               type: string
               example: contact
+            pause_reason:
+              type: string
           required:
             - webhook_event_type
             - connection_id

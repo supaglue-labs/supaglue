@@ -8,6 +8,7 @@ import type { SyncService } from '../services/sync_service';
 export type PauseSyncArgs = {
   syncId: string;
   connectionId: string;
+  pauseReason?: string;
 };
 
 export type PauseSyncResult = {
@@ -21,9 +22,9 @@ export function createPauseSync(
   applicationService: ApplicationService
 ) {
   // NOTE: only support object sync
-  return async function pauseSync({ connectionId, syncId }: PauseSyncArgs): Promise<PauseSyncResult> {
+  return async function pauseSync({ connectionId, syncId, pauseReason }: PauseSyncArgs): Promise<PauseSyncResult> {
     const syncToPause = (await syncService.getSyncById(syncId)) as ObjectSync; // NOTE: not handling EntitySync
-    const pausedSync = (await syncService.pauseSync(syncToPause)) as ObjectSync; // NOTE: not handling EntitySync
+    const pausedSync = (await syncService.pauseSync(syncToPause, pauseReason)) as ObjectSync; // NOTE: not handling EntitySync
     const connection = await connectionService.getSafeById(connectionId);
     const application = await applicationService.getById(connection.applicationId);
 
@@ -33,7 +34,8 @@ export function createPauseSync(
           connection.customerId,
           connection.providerName,
           pausedSync.object,
-          application.email
+          application.email,
+          pauseReason
         );
       } catch (err) {
         logger.error({ err }, 'unable to send notification email');

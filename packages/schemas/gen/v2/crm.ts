@@ -109,6 +109,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         contact_id: string;
       };
     };
@@ -171,6 +172,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 82de27cb-6f8c-4278-b783-82d1d916eddc */
         lead_id: string;
       };
     };
@@ -198,6 +200,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example c9f58083-a370-47b5-ad02-99160ea20372 */
         opportunity_id: string;
       };
     };
@@ -230,6 +233,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         user_id: string;
       };
     };
@@ -310,7 +314,10 @@ export interface paths {
       };
       path: {
         object_name: components["parameters"]["object_name"];
-        /** @description The ID of the record to retrieve or update */
+        /**
+         * @description The ID of the record to retrieve or update 
+         * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
+         */
         record_id: string;
       };
     };
@@ -391,7 +398,10 @@ export interface paths {
       };
       path: {
         object_name: components["parameters"]["object_name"];
-        /** @description The ID of the record to retrieve or update */
+        /**
+         * @description The ID of the record to retrieve or update 
+         * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
+         */
         record_id: string;
       };
     };
@@ -542,6 +552,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example contact */
         object_name: string;
       };
     };
@@ -567,7 +578,9 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example contact */
         object_name: string;
+        /** @example email */
         property_name: string;
       };
     };
@@ -589,6 +602,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example contact */
         object_name: string;
       };
     };
@@ -659,6 +673,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 220e715a-0cbc-4d2d-8420-cd729f12f094 */
         list_id: string;
       };
     };
@@ -1491,38 +1506,79 @@ export interface components {
   };
   responses: never;
   parameters: {
-    /** @description Whether to include data that was deleted in providers. */
+    /**
+     * @description Whether to include data that was deleted in providers. 
+     * @example true
+     */
     include_deleted_data?: boolean;
-    /** @description Whether to include raw data fetched from the 3rd party provider. */
+    /**
+     * @description Whether to include raw data fetched from the 3rd party provider. 
+     * @example true
+     */
     include_raw_data?: boolean;
     /**
      * @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. 
      * 
      * 
      * **NOTE**: `read_from_cache=true` requires you to have the object synced to the Supaglue Managed Destination.
+     *  
+     * @example true
      */
     read_from_cache?: boolean;
-    /** @description If provided, will only return objects created after this datetime */
+    /**
+     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format. 
+     * @example 2023-02-23T00:00:00Z
+     */
     created_after?: Date;
-    /** @description If provided, will only return objects created before this datetime */
+    /**
+     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format. 
+     * @example 2023-02-23T00:00:00Z
+     */
     created_before?: Date;
-    /** @description If provided, will only return objects modified after this datetime */
+    /**
+     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format. 
+     * @example 2023-02-23T00:00:00Z
+     */
     modified_after?: Date;
-    /** @description If provided, will only return objects modified before this datetime */
+    /**
+     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format. 
+     * @example 2023-02-23T00:00:00Z
+     */
     modified_before?: Date;
-    /** @description The pagination cursor value */
+    /**
+     * @description The pagination cursor value 
+     * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+     */
     cursor?: string;
-    /** @description Number of results to return per page. (Max: 100) */
+    /**
+     * @description Number of results to return per page. (Max: 100) 
+     * @example 100
+     */
     remote_provider_page_size?: string;
-    /** @description Number of results to return per page. (Max: 1000) */
+    /**
+     * @description Number of results to return per page. (Max: 1000) 
+     * @example 123
+     */
     page_size?: string;
-    /** @description The customer ID that uniquely identifies the customer in your application */
+    /**
+     * @description The customer ID that uniquely identifies the customer in your application 
+     * @example my-customer-1
+     */
     "x-customer-id": string;
-    /** @description The provider name */
+    /**
+     * @description The provider name 
+     * @example salesforce
+     */
     "x-provider-name": string;
-    /** @description The Supaglue common object type to fetch a list for. */
+    /**
+     * @description The Supaglue common object type to fetch a list for. 
+     * @example contact
+     */
     object_type: "contact" | "account" | "opportunity" | "lead";
-    /** @description The unique name of the custom object. For Salesforce, this should end with __c. For Hubspot, this will typically be the singular form of the object. */
+    /**
+     * @description The unique name of the custom object. For Salesforce, this should end with __c. For Hubspot, this will typically be the singular form of the object. 
+     * @example MyCustomObject__c
+     */
     object_name: string;
   };
   requestBodies: never;
@@ -1854,6 +1910,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         contact_id: string;
       };
     };
@@ -1874,6 +1931,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         contact_id: string;
       };
     };
@@ -2068,6 +2126,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 82de27cb-6f8c-4278-b783-82d1d916eddc */
         lead_id: string;
       };
     };
@@ -2088,6 +2147,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 82de27cb-6f8c-4278-b783-82d1d916eddc */
         lead_id: string;
       };
     };
@@ -2188,6 +2248,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example c9f58083-a370-47b5-ad02-99160ea20372 */
         opportunity_id: string;
       };
     };
@@ -2208,6 +2269,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example c9f58083-a370-47b5-ad02-99160ea20372 */
         opportunity_id: string;
       };
     };
@@ -2277,6 +2339,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         user_id: string;
       };
     };
@@ -2395,7 +2458,10 @@ export interface operations {
       };
       path: {
         object_name: components["parameters"]["object_name"];
-        /** @description The ID of the record to retrieve or update */
+        /**
+         * @description The ID of the record to retrieve or update 
+         * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
+         */
         record_id: string;
       };
     };
@@ -2429,7 +2495,10 @@ export interface operations {
       };
       path: {
         object_name: components["parameters"]["object_name"];
-        /** @description The ID of the record to retrieve or update */
+        /**
+         * @description The ID of the record to retrieve or update 
+         * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
+         */
         record_id: string;
       };
     };
@@ -2559,7 +2628,10 @@ export interface operations {
       };
       path: {
         object_name: components["parameters"]["object_name"];
-        /** @description The ID of the record to retrieve or update */
+        /**
+         * @description The ID of the record to retrieve or update 
+         * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
+         */
         record_id: string;
       };
     };
@@ -2593,7 +2665,10 @@ export interface operations {
       };
       path: {
         object_name: components["parameters"]["object_name"];
-        /** @description The ID of the record to retrieve or update */
+        /**
+         * @description The ID of the record to retrieve or update 
+         * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
+         */
         record_id: string;
       };
     };
@@ -2874,6 +2949,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example contact */
         object_name: string;
       };
     };
@@ -2899,6 +2975,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example contact */
         object_name: string;
       };
     };
@@ -2929,7 +3006,9 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example contact */
         object_name: string;
+        /** @example email */
         property_name: string;
       };
     };
@@ -2955,7 +3034,9 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example contact */
         object_name: string;
+        /** @example email */
         property_name: string;
       };
     };
@@ -2989,6 +3070,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example contact */
         object_name: string;
       };
     };
@@ -3126,6 +3208,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 220e715a-0cbc-4d2d-8420-cd729f12f094 */
         list_id: string;
       };
     };

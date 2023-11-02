@@ -42,9 +42,9 @@ post:
           required:
             - path
             - method
-          example:
-            path: /crm/v3/schemas
-            method: GET
+        example:
+          path: /crm/v3/schemas
+          method: GET
   responses:
     '200':
       description: Passthrough response

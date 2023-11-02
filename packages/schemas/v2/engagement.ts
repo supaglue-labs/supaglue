@@ -98,13 +98,18 @@ export type GetSequenceStateResponse =
   operations['getSequenceState']['responses'][keyof operations['getSequenceState']['responses']]['content']['application/json'];
 
 export type CreateSequenceStatePathParams = never;
-// TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript
-// export type CreateSequenceStateQueryParams = Required<operations['createSequenceState']>['parameters']['query'];
-export type CreateSequenceStateQueryParams = any;
+export type CreateSequenceStateQueryParams = never;
 export type CreateSequenceStateRequest =
   operations['createSequenceState']['requestBody']['content']['application/json'];
 export type CreateSequenceStateResponse =
   operations['createSequenceState']['responses'][keyof operations['createSequenceState']['responses']]['content']['application/json'];
+
+export type BatchCreateSequenceStatePathParams = never;
+export type BatchCreateSequenceStateQueryParams = never;
+export type BatchCreateSequenceStateRequest =
+  operations['batchCreateSequenceState']['requestBody']['content']['application/json'];
+export type BatchCreateSequenceStateResponse =
+  operations['batchCreateSequenceState']['responses'][keyof operations['batchCreateSequenceState']['responses']]['content']['application/json'];
 
 export type CreateSequenceStepPathParams = paths[`/sequences/{sequence_id}/sequence_steps`]['parameters']['path'];
 // TODO - this should be generated from the openapi spec , but it's not getting generated due to a bug in openapi-typescript

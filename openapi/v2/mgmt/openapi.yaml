@@ -2,7 +2,7 @@
 # Other than the `webhooks` key, we should not use 3.1.0 features since the validation middleware doesn't support it yet
 openapi: 3.1.0
 info:
-  version: 0.17.5
+  version: 0.17.6
   title: Management API
   contact:
     name: Supaglue
@@ -127,20 +127,14 @@ components:
       $ref: ./components/schemas/objects/postgres_config_safe.yaml
     bigquery_config_safe:
       $ref: ./components/schemas/objects/bigquery_config_safe.yaml
-    mongodb_config_safe:
-      $ref: ./components/schemas/objects/mongodb_config_safe.yaml
     postgres_config_at_least_safe:
       $ref: ./components/schemas/objects/postgres_config_at_least_safe.yaml
     bigquery_config_at_least_safe:
       $ref: ./components/schemas/objects/bigquery_config_at_least_safe.yaml
-    mongodb_config_at_least_safe:
-      $ref: ./components/schemas/objects/mongodb_config_at_least_safe.yaml
     postgres_config_unsafe:
       $ref: ./components/schemas/objects/postgres_config_unsafe.yaml
     bigquery_config_unsafe:
       $ref: ./components/schemas/objects/bigquery_config_unsafe.yaml
-    mongodb_config_unsafe:
-      $ref: ./components/schemas/objects/mongodb_config_unsafe.yaml
     schema:
       $ref: ./components/schemas/objects/schema.yaml
     schema_config:

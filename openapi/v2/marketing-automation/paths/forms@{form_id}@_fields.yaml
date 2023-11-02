@@ -28,4 +28,4 @@ parameters:
     required: true
     schema:
       type: string
-      example: '12345'
+    example: 12345

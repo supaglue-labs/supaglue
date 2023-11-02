@@ -12,6 +12,7 @@ import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getDestinationName } from '@/utils/destination';
 import { getStandardObjectOptions } from '@/utils/provider';
+import { entitiesEnabled } from '@/utils/schema';
 import { Autocomplete, Breadcrumbs, Button, Chip, FormHelperText, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import type { CommonObjectType, ProviderCategory, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
@@ -411,7 +412,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                   }}
                 />
               </Stack>
-              {lekko.entitiesWhitelistConfig.applicationIds.includes(activeApplicationId) && (
+              {entitiesEnabled(lekko.entitiesWhitelistConfig.applicationIds, activeApplicationId) && (
                 <Stack className="gap-2">
                   <Typography variant="subtitle1">Entities</Typography>
                   <Autocomplete

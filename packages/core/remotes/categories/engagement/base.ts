@@ -1,5 +1,6 @@
 import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
 import type { Readable } from 'stream';
+import { NotImplementedError } from '../../../errors';
 import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
@@ -30,7 +31,7 @@ export interface EngagementRemoteClient extends RemoteClient {
     params: EngagementCommonObjectTypeMap<T>['updateParams']
   ): Promise<UpdateCommonObjectRecordResponse<T>>;
 
-  batchCreateCommonObjectRecord?<T extends EngagementCommonObjectType>(
+  batchCreateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: Array<EngagementCommonObjectTypeMap<T>['createParams']>
   ): Promise<Array<CreateCommonObjectRecordResponse<T>>>;
@@ -50,24 +51,31 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async getCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
   ): Promise<CreateCommonObjectRecordResponse<T>> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
   public async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
   ): Promise<UpdateCommonObjectRecordResponse<T>> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
+  }
+
+  batchCreateCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: Array<EngagementCommonObjectTypeMap<T>['createParams']>
+  ): Promise<Array<CreateCommonObjectRecordResponse<T>>> {
+    throw new NotImplementedError();
   }
 }

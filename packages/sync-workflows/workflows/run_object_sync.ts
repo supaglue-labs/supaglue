@@ -11,9 +11,8 @@ const { syncObjectRecords, syncEntityRecords } = proxyActivities<ReturnType<type
   startToCloseTimeout: '120 minute',
   heartbeatTimeout: '5 minute',
   retry: {
-    // if we can't complete syncing all records within 2 hours, wait until the next sync
-    // instead of trying again and consuming api quota
-    maximumAttempts: 1,
+    // We need to retry at least once because the activity might fail during a deploy
+    maximumAttempts: 3,
   },
 });
 
@@ -45,6 +44,19 @@ export type RunObjectSyncArgs = {
   context: Record<string, unknown>;
 };
 
+// Returns pause reason if sync should be paused
+function getPauseReasonIfShouldPause(err: any): string | undefined {
+  if (err.cause?.type === 'SGConnectionNoLongerAuthenticatedError') {
+    return `Connection no longer authenticated: ${err.cause.message}`;
+  }
+  if (err.cause?.failure?.message.startsWith('No entity mapping found for entity')) {
+    return err.cause.failure.message;
+  }
+  if (err.cause?.failure?.message.startsWith('Additional field mappings are not allowed')) {
+    return `Customer attempted to add additional field mappings for entity where additional field mappings are not allowed`;
+  }
+}
+
 export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
   const { sync, runId } = await getSync({ syncId });
 
@@ -63,8 +75,9 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
     await clearSyncArgsForNextRun({ syncId });
   } catch (err: any) {
     // Process SG Sync Worker errors
-    if (err.cause?.type === 'SGConnectionNoLongerAuthenticatedError') {
-      await pauseSync({ connectionId, syncId });
+    const pauseReason = getPauseReasonIfShouldPause(err);
+    if (pauseReason) {
+      await pauseSync({ connectionId, syncId, pauseReason });
     }
 
     const { message: errorMessage, stack: errorStack } = getErrorMessageStack(err);

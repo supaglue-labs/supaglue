@@ -2,5 +2,5 @@ name: customer_id
 in: query
 schema:
   type: string
-  example: 1bae5050-b8ff-472e-8b9f-01f29a81d1ee
+example: 1bae5050-b8ff-472e-8b9f-01f29a81d1ee
 description: The customer ID that uniquely identifies the customer in your application

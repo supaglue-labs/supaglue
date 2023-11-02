@@ -368,6 +368,22 @@ const sidebars = {
           });
         }
 
+        if (['Webhook Events'].includes(item.label)) {
+          item.items.map((subItem) => {
+            if (
+              [
+                'Entity mapping created',
+                'Entity mapping updated',
+                'Entity mapping deleted',
+                'Object field mapping created',
+                'Object field mapping updated',
+              ].includes(subItem.label)
+            ) {
+              subItem.className = (subItem.className || '') + ' hidden';
+            }
+          });
+        }
+
         return item;
       }),
     },

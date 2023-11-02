@@ -146,7 +146,7 @@ export default function init(app: Router) {
           )
         : await syncService.getByConnectionIdAndEntity(req.customerConnection.id, req.body.entity_id);
 
-      const updated = await connectionAndSyncService.pauseSync(sync);
+      const updated = await connectionAndSyncService.pauseSync(sync, 'Manually paused by user');
       const baseRet = {
         id: updated.id,
         connection_id: updated.connectionId,

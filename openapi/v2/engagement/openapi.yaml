@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.17.5
+  version: 0.17.6
   title: Unified Engagement API
   contact:
     name: Supaglue
@@ -47,6 +47,8 @@ paths:
     $ref: paths/sequences@{sequence_id}@sequence_steps.yaml
   '/sequence_states':
     $ref: paths/sequence_states.yaml
+  '/sequence_states/_batch':
+    $ref: paths/sequence_states@_batch.yaml
   '/sequence_states/{sequence_state_id}':
     $ref: paths/sequence_states@{sequence_state_id}.yaml
 tags:

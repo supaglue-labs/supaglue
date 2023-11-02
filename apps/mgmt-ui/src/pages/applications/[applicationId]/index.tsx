@@ -1,13 +1,12 @@
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { buildClerkProps, getAuth } from '@clerk/nextjs/server';
-import { ClientContext, initAPIClient } from '@lekko/node-server-sdk';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { type GetServerSideProps } from 'next';
 import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { useState } from 'react';
-import { API_HOST, IS_CLOUD, LEKKO_API_KEY, SVIX_API_TOKEN } from '../../api';
+import { API_HOST, IS_CLOUD, SVIX_API_TOKEN } from '../../api';
 
 //
 // Lekkodefaults
@@ -77,38 +76,49 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
   }
 
   // Lekko defaults
-  let homeCtaButtonConfig: HomeCtaButton = {
+  const homeCtaButtonConfig: HomeCtaButton = {
     buttonMessage: 'Quickstart Guide',
     buttonLink: 'https://docs.supaglue.io/docs/quickstart',
   };
 
-  let entitiesWhitelistConfig: EntitiesWhitelist = {
-    applicationIds: [],
+  const entitiesWhitelistConfig: EntitiesWhitelist = {
+    applicationIds: ['aba75b64-19ca-47c6-bb48-196911d8a18b', '82ff8465-2a09-499b-94c1-6d386502d14a'],
   };
 
-  let schemasWhitelistConfig: SchemasWhitelist = {
-    applicationIds: [],
+  const schemasWhitelistConfig: SchemasWhitelist = {
+    applicationIds: [
+      '7a695ded-b46d-406b-bd19-6e571880be74',
+      'adbb1d52-273a-447c-891f-d3e299e45ddc',
+      '39a890de-8dc7-4bdb-9007-e9a856a6b2e0',
+      '02572019-cc02-4aa2-a16a-986cff3bf8b4',
+      'fa90be4e-5315-4e12-9e2c-72cce4c1b083',
+      'd5d45112-d700-42fc-a5d0-cc7bf879f8fb',
+      '39e3fe2a-2403-498b-b4be-316a3c3f1bfe',
+      'aba75b64-19ca-47c6-bb48-196911d8a18b',
+      '82ff8465-2a09-499b-94c1-6d386502d14a',
+    ],
   };
 
-  if (LEKKO_API_KEY) {
-    const client = await initAPIClient({
-      apiKey: LEKKO_API_KEY,
-      repositoryOwner: 'supaglue-labs',
-      repositoryName: 'dynamic-config',
-    });
+  // NOTE: disable for now due to perf in critical page load path
+  // if (LEKKO_API_KEY) {
+  //   const client = await initAPIClient({
+  //     apiKey: LEKKO_API_KEY,
+  //     repositoryOwner: 'supaglue-labs',
+  //     repositoryName: 'dynamic-config',
+  //   });
 
-    homeCtaButtonConfig = (await client.getJSONFeature('mgmt-ui', 'home_cta', new ClientContext())) as HomeCtaButton;
-    entitiesWhitelistConfig = (await client.getJSONFeature(
-      'mgmt-ui',
-      'entities_whitelist',
-      new ClientContext()
-    )) as EntitiesWhitelist;
-    schemasWhitelistConfig = (await client.getJSONFeature(
-      'mgmt-ui',
-      'schemas_whitelist',
-      new ClientContext()
-    )) as SchemasWhitelist;
-  }
+  //   homeCtaButtonConfig = (await client.getJSONFeature('mgmt-ui', 'home_cta', new ClientContext())) as HomeCtaButton;
+  //   entitiesWhitelistConfig = (await client.getJSONFeature(
+  //     'mgmt-ui',
+  //     'entities_whitelist',
+  //     new ClientContext()
+  //   )) as EntitiesWhitelist;
+  //   schemasWhitelistConfig = (await client.getJSONFeature(
+  //     'mgmt-ui',
+  //     'schemas_whitelist',
+  //     new ClientContext()
+  //   )) as SchemasWhitelist;
+  // }
 
   const CLERK_ACCOUNT_URL =
     API_HOST === 'https://api.supaglue.io'

@@ -914,9 +914,9 @@
         "name": "x-customer-id",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "my-customer-1"
+          "type": "string"
         },
+        "example": "my-customer-1",
         "description": "The customer ID that uniquely identifies the customer in your application",
         "required": true
       },
@@ -924,9 +924,9 @@
         "name": "x-provider-name",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "salesforce"
+          "type": "string"
         },
+        "example": "salesforce",
         "description": "The provider name",
         "required": true
       },
@@ -935,66 +935,66 @@
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects modified after this datetime"
+        "description": "If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format.",
+        "example": "2023-02-23T00:00:00Z"
       },
       "modified_before": {
         "name": "modified_before",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects modified before this datetime"
+        "example": "2023-02-23T00:00:00Z",
+        "description": "If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format."
       },
       "created_after": {
         "name": "created_after",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects created after this datetime"
+        "example": "2023-02-23T00:00:00Z",
+        "description": "If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format."
       },
       "created_before": {
         "name": "created_before",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects created before this datetime"
+        "example": "2023-02-23T00:00:00Z",
+        "description": "If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format."
       },
       "include_deleted_data": {
         "name": "include_deleted_data",
         "in": "query",
         "schema": {
-          "type": "boolean",
-          "example": true
+          "type": "boolean"
         },
+        "example": true,
         "description": "Whether to include data that was deleted in providers."
       },
       "page_size": {
         "name": "page_size",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "123"
+          "type": "string"
         },
+        "example": 123,
         "description": "Number of results to return per page. (Max: 1000)"
       },
       "cursor": {
         "name": "cursor",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+          "type": "string"
         },
+        "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw",
         "description": "The pagination cursor value"
       }
     }

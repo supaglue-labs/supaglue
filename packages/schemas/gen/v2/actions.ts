@@ -62,9 +62,15 @@ export interface components {
   };
   responses: never;
   parameters: {
-    /** @description The customer ID that uniquely identifies the customer in your application */
+    /**
+     * @description The customer ID that uniquely identifies the customer in your application 
+     * @example my-customer-1
+     */
     "x-customer-id": string;
-    /** @description The provider name */
+    /**
+     * @description The provider name 
+     * @example salesforce
+     */
     "x-provider-name": string;
   };
   requestBodies: never;
@@ -89,6 +95,12 @@ export interface operations {
     };
     requestBody: {
       content: {
+        /**
+         * @example {
+         *   "path": "/crm/v3/schemas",
+         *   "method": "GET"
+         * }
+         */
         "application/json": {
           /** @description The path to send the request to (do not pass the domain) */
           path: string;

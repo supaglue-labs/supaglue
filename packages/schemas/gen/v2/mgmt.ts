@@ -26,6 +26,7 @@ export interface paths {
     delete: operations["deleteCustomer"];
     parameters: {
       path: {
+        /** @example your-customers-unique-application-id */
         customer_id: string;
       };
     };
@@ -64,6 +65,7 @@ export interface paths {
     delete: operations["deleteMagicLink"];
     parameters: {
       path: {
+        /** @example 6bf954f9-dba3-4c34-9275-3830dccb0030 */
         magic_link_id: string;
       };
     };
@@ -124,6 +126,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         entity_id: string;
       };
     };
@@ -159,6 +162,7 @@ export interface paths {
     delete: operations["deleteSchema"];
     parameters: {
       path: {
+        /** @example a821d59d-8b4c-4ad9-aeec-1292d2e28701 */
         schema_id: string;
       };
     };
@@ -238,6 +242,7 @@ export interface paths {
     delete: operations["deleteSyncConfig"];
     parameters: {
       path: {
+        /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
       };
     };
@@ -542,24 +547,6 @@ export interface components {
        * @example 1
        */
       version: number;
-    }, {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
-      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-      application_id: string;
-      /** @example My Mongo Destination */
-      name: string;
-      /**
-       * @example mongodb 
-       * @enum {string}
-       */
-      type: "mongodb";
-      config: components["schemas"]["mongodb_config_safe"];
-      /**
-       * @description A monotonically increasing version number of the destination configuration 
-       * @example 1
-       */
-      version: number;
     }]>;
     postgres_config_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -588,14 +575,6 @@ export interface components {
         client_email: string;
       };
     };
-    mongodb_config_safe: {
-      /** @example my-cluster.z31wcmj.mongodb.net */
-      host: string;
-      /** @example my-cluster */
-      database: string;
-      /** @example myuser */
-      user: string;
-    };
     postgres_config_at_least_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
       host: string;
@@ -621,16 +600,6 @@ export interface components {
         /** @example -----BEGIN PRIVATE KEY-----\nMII... */
         private_key: string;
       };
-    };
-    mongodb_config_at_least_safe: {
-      /** @example my-cluster.z31wcmj.mongodb.net */
-      host: string;
-      /** @example my-cluster */
-      database: string;
-      /** @example myuser */
-      user: string;
-      /** @example mysensitivepassword */
-      password?: string;
     };
     postgres_config_unsafe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -670,16 +639,6 @@ export interface components {
         /** @example -----BEGIN PRIVATE KEY-----\nMII... */
         private_key: string;
       };
-    };
-    mongodb_config_unsafe: {
-      /** @example my-cluster.z31wcmj.mongodb.net */
-      host: string;
-      /** @example my-cluster */
-      database: string;
-      /** @example myuser */
-      user: string;
-      /** @example mysensitivepassword */
-      password: string;
     };
     /** @deprecated */
     schema: {
@@ -1259,15 +1218,6 @@ export interface components {
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_unsafe"];
-    }, {
-      /** @example My MongoDB Destination */
-      name: string;
-      /**
-       * @example mongodb 
-       * @enum {string}
-       */
-      type: "mongodb";
-      config: components["schemas"]["mongodb_config_unsafe"];
     }]>;
     /**
      * @example {
@@ -1303,17 +1253,6 @@ export interface components {
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_at_least_safe"];
-      /** @example number */
-      version: number;
-    }, {
-      /** @example My MongoDB Destination */
-      name: string;
-      /**
-       * @example mongodb 
-       * @enum {string}
-       */
-      type: "mongodb";
-      config: components["schemas"]["mongodb_config_at_least_safe"];
       /** @example number */
       version: number;
     }]>;
@@ -1377,14 +1316,6 @@ export interface components {
          * @example customer_1_dataset
          */
         dataset: string;
-      }, {
-        /** @enum {string} */
-        type: "mongodb";
-        /**
-         * @description The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used. 
-         * @example customer_1_schema
-         */
-        collection: string;
       }]>;
       /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       standard_objects?: (OneOf<[{
@@ -1404,17 +1335,6 @@ export interface components {
            * @example my_contacts
            */
           table: string;
-        }, {
-          /**
-           * @description The Provider object name (case sensitive) 
-           * @example Contact
-           */
-          object: string;
-          /**
-           * @description The collection to write the object to. If specified, this will override the default collection used by Supaglue. 
-           * @example MyContacts
-           */
-          collection: string;
         }]>)[];
       /** @description (Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       custom_objects?: (OneOf<[{
@@ -1434,17 +1354,6 @@ export interface components {
            * @example my_contacts
            */
           table: string;
-        }, {
-          /**
-           * @description The Provider object name (case sensitive) 
-           * @example Contact__c
-           */
-          object: string;
-          /**
-           * @description The collection to write the object to. If specified, this will override the default table used by Supaglue. 
-           * @example MyContacts
-           */
-          collection: string;
         }]>)[];
     };
     standard_object: {
@@ -1521,14 +1430,6 @@ export interface components {
          * @example customer_1_dataset
          */
         dataset: string;
-      }, {
-        /** @enum {string} */
-        type: "mongodb";
-        /**
-         * @description The collection you'd like to sync to. This collection must already exist. Supaglue will not create it. If not specified, the schema specified in the MongoDB Destination will be used. 
-         * @example customer_1_schema
-         */
-        collection: string;
       }]>;
       /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       standard_objects?: (OneOf<[{
@@ -1548,17 +1449,6 @@ export interface components {
            * @example my_contacts
            */
           table: string;
-        }, {
-          /**
-           * @description The Provider object name (case sensitive) 
-           * @example Contact
-           */
-          object: string;
-          /**
-           * @description The collection to write the object to. If specified, this will override the default collection used by Supaglue. 
-           * @example MyContacts
-           */
-          collection: string;
         }]>)[];
       /** @description (Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       custom_objects?: (OneOf<[{
@@ -1578,33 +1468,40 @@ export interface components {
            * @example my_contacts
            */
           table: string;
-        }, {
-          /**
-           * @description The Provider object name (case sensitive) 
-           * @example Contact__c
-           */
-          object: string;
-          /**
-           * @description The collection to write the object to. If specified, this will override the default table used by Supaglue. 
-           * @example MyContacts
-           */
-          collection: string;
         }]>)[];
     };
   };
   responses: never;
   parameters: {
-    /** @description The pagination cursor value */
+    /**
+     * @description The pagination cursor value 
+     * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+     */
     cursor?: string;
-    /** @description Number of results to return per page. (Max: 1000) */
+    /**
+     * @description Number of results to return per page. (Max: 1000) 
+     * @example 123
+     */
     page_size?: string;
-    /** @description The customer ID that uniquely identifies the customer in your application */
+    /**
+     * @description The customer ID that uniquely identifies the customer in your application 
+     * @example 1bae5050-b8ff-472e-8b9f-01f29a81d1ee
+     */
     customer_id?: string;
-    /** @description The provider name */
+    /**
+     * @description The provider name 
+     * @example salesforce
+     */
     provider_name?: string;
-    /** @description The provider name */
+    /**
+     * @description The provider name 
+     * @example salesforce
+     */
     "x-provider-name": string;
-    /** @description The customer ID that uniquely identifies the customer in your application */
+    /**
+     * @description The customer ID that uniquely identifies the customer in your application 
+     * @example my-customer-1
+     */
     "x-customer-id": string;
   };
   requestBodies: never;
@@ -1650,6 +1547,7 @@ export interface operations {
   getCustomer: {
     parameters: {
       path: {
+        /** @example your-customers-unique-application-id */
         customer_id: string;
       };
     };
@@ -1666,6 +1564,7 @@ export interface operations {
   deleteCustomer: {
     parameters: {
       path: {
+        /** @example your-customers-unique-application-id */
         customer_id: string;
       };
     };
@@ -1779,6 +1678,7 @@ export interface operations {
   deleteMagicLink: {
     parameters: {
       path: {
+        /** @example 6bf954f9-dba3-4c34-9275-3830dccb0030 */
         magic_link_id: string;
       };
     };
@@ -1863,6 +1763,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         entity_id: string;
       };
     };
@@ -1887,6 +1788,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         entity_id: string;
       };
     };
@@ -1936,6 +1838,7 @@ export interface operations {
   getSchema: {
     parameters: {
       path: {
+        /** @example a821d59d-8b4c-4ad9-aeec-1292d2e28701 */
         schema_id: string;
       };
     };
@@ -1955,6 +1858,7 @@ export interface operations {
   updateSchema: {
     parameters: {
       path: {
+        /** @example a821d59d-8b4c-4ad9-aeec-1292d2e28701 */
         schema_id: string;
       };
     };
@@ -1979,6 +1883,7 @@ export interface operations {
   deleteSchema: {
     parameters: {
       path: {
+        /** @example a821d59d-8b4c-4ad9-aeec-1292d2e28701 */
         schema_id: string;
       };
     };
@@ -2204,6 +2109,7 @@ export interface operations {
   getSyncConfig: {
     parameters: {
       path: {
+        /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
       };
     };
@@ -2220,6 +2126,7 @@ export interface operations {
   updateSyncConfig: {
     parameters: {
       path: {
+        /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
       };
     };
@@ -2241,6 +2148,7 @@ export interface operations {
   deleteSyncConfig: {
     parameters: {
       path: {
+        /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
       };
     };
@@ -2495,21 +2403,40 @@ export interface operations {
   getSyncs: {
     parameters: {
       query?: {
-        /** @description The pagination cursor value */
+        /**
+         * @description The pagination cursor value 
+         * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+         */
         cursor?: string;
-        /** @description Number of results to return per page */
+        /**
+         * @description Number of results to return per page 
+         * @example 100
+         */
         page_size?: string;
-        /** @description The customer ID that uniquely identifies the customer in your application */
+        /**
+         * @description The customer ID that uniquely identifies the customer in your application 
+         * @example my-customer-1
+         */
         customer_id?: string;
-        /** @description The provider name */
+        /**
+         * @description The provider name 
+         * @example salesforce
+         */
         provider_name?: string;
-        /** @description The object type to filter by */
+        /**
+         * @description The object type to filter by 
+         * @example standard
+         */
         object_type?: "common" | "standard" | "custom";
-        /** @description The object to filter by */
+        /**
+         * @description The object to filter by 
+         * @example contact
+         */
         object?: string;
         /**
          * @deprecated 
-         * @description The entity id to filter by
+         * @description The entity id to filter by 
+         * @example e74b5a4f-f252-4a6c-940c-f35873498543
          */
         entity_id?: string;
       };
@@ -2676,27 +2603,53 @@ export interface operations {
   getSyncRuns: {
     parameters: {
       query?: {
-        /** @description The pagination cursor value */
+        /**
+         * @description The pagination cursor value 
+         * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+         */
         cursor?: string;
-        /** @description Number of results to return per page */
+        /**
+         * @description Number of results to return per page 
+         * @example 100
+         */
         page_size?: string;
-        /** @description The customer ID that uniquely identifies the customer in your application */
+        /**
+         * @description The customer ID that uniquely identifies the customer in your application 
+         * @example my-customer-1
+         */
         customer_id?: string;
-        /** @description The provider name */
+        /**
+         * @description The provider name 
+         * @example salesforce
+         */
         provider_name?: string;
+        /** @example standard */
         object_type?: "common" | "standard" | "custom";
-        /** @description The object to filter by */
+        /**
+         * @description The object to filter by 
+         * @example account
+         */
         object?: string;
         /**
          * @deprecated 
-         * @description The entity id to filter by
+         * @description The entity id to filter by 
+         * @example e74b5a4f-f252-4a6c-940c-f35873498543
          */
         entity_id?: string;
-        /** @description The status to filter by (case-insensitive) */
+        /**
+         * @description The status to filter by (case-insensitive) 
+         * @example SUCCESS
+         */
         status?: string;
-        /** @description The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp. */
+        /**
+         * @description The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp. 
+         * @example >2021-01-06T03:24:53.434326Z
+         */
         start_timestamp?: string;
-        /** @description The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp. */
+        /**
+         * @description The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp. 
+         * @example >2021-01-06T03:24:53.434326Z
+         */
         end_timestamp?: string;
       };
     };
@@ -2825,6 +2778,7 @@ export interface operations {
           object_type: "common" | "standard" | "custom";
           /** @example contact */
           object: string;
+          pause_reason?: string;
         };
       };
     };

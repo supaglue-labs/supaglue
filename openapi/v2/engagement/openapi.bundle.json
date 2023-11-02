@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.17.5",
+    "version": "0.17.6",
     "title": "Unified Engagement API",
     "contact": {
       "name": "Supaglue",
@@ -351,9 +351,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -575,9 +575,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -623,9 +623,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -671,9 +671,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -784,9 +784,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
@@ -858,17 +858,17 @@
           "required": true,
           "description": "The ID of the sequence.",
           "schema": {
-            "type": "string",
-            "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
-          }
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
         }
       ]
     },
     "/sequence_states": {
       "post": {
         "operationId": "createSequenceState",
-        "summary": "Create sequence state(s)",
-        "description": "In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, \nand the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, \nyou must pass in the same sequenceId, userId and mailboxId for all the contacts for this to work)\n",
+        "summary": "Create sequence state",
+        "description": "In other words, adding a contact to sequence. \n",
         "tags": [
           "Sequence States"
         ],
@@ -883,33 +883,14 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "record": {
-                        "$ref": "#/components/schemas/create_sequence_state"
-                      }
-                    },
-                    "required": [
-                      "record"
-                    ]
-                  },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "records": {
-                        "type": "array",
-                        "description": "Will use the batch endpoints when possible (e.g. Apollo)",
-                        "items": {
-                          "$ref": "#/components/schemas/create_sequence_state"
-                        }
-                      }
-                    },
-                    "required": [
-                      "records"
-                    ]
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/create_sequence_state"
                   }
+                },
+                "required": [
+                  "record"
                 ]
               },
               "example": {
@@ -928,7 +909,7 @@
         },
         "responses": {
           "201": {
-            "description": "Sequence state(s) created",
+            "description": "Sequence state created",
             "content": {
               "application/json": {
                 "schema": {
@@ -939,6 +920,72 @@
                     },
                     "record": {
                       "$ref": "#/components/schemas/created_record"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/sequence_states/_batch": {
+      "post": {
+        "operationId": "batchCreateSequenceState",
+        "summary": "Batch create sequence states",
+        "description": "Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.\n\nSupport:\n\n| Provider  | Supported |\n| --------- | --------- |\n| Apollo    | Yes       |\n| Outreach  | No        |\n| Salesloft | No        |\n",
+        "tags": [
+          "Sequence States"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "records": {
+                    "type": "array",
+                    "description": "Will use the batch endpoints when possible (e.g. Apollo)",
+                    "items": {
+                      "$ref": "#/components/schemas/create_sequence_state"
+                    }
+                  }
+                },
+                "required": [
+                  "records"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sequence states created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
                     },
                     "records": {
                       "type": "array",
@@ -1008,9 +1055,9 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
-            "example": "ffb62704-addd-454e-bb86-ed0799703dc6"
-          }
+            "type": "string"
+          },
+          "example": "ffb62704-addd-454e-bb86-ed0799703dc6"
         }
       ]
     }
@@ -1925,85 +1972,85 @@
         "name": "include_deleted_data",
         "in": "query",
         "schema": {
-          "type": "boolean",
-          "example": true
+          "type": "boolean"
         },
+        "example": true,
         "description": "Whether to include data that was deleted in providers."
       },
       "include_raw_data": {
         "name": "include_raw_data",
         "in": "query",
         "schema": {
-          "type": "boolean",
-          "example": true
+          "type": "boolean"
         },
-        "description": "Whether to include raw data fetched from the 3rd party provider."
+        "description": "Whether to include raw data fetched from the 3rd party provider.",
+        "example": true
       },
       "created_after": {
         "name": "created_after",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects created after this datetime"
+        "example": "2023-02-23T00:00:00Z",
+        "description": "If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format."
       },
       "created_before": {
         "name": "created_before",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects created before this datetime"
+        "example": "2023-02-23T00:00:00Z",
+        "description": "If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format."
       },
       "modified_after": {
         "name": "modified_after",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects modified after this datetime"
+        "description": "If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format.",
+        "example": "2023-02-23T00:00:00Z"
       },
       "modified_before": {
         "name": "modified_before",
         "in": "query",
         "schema": {
           "type": "string",
-          "format": "date-time",
-          "example": "2023-02-23T00:00:00Z"
+          "format": "date-time"
         },
-        "description": "If provided, will only return objects modified before this datetime"
+        "example": "2023-02-23T00:00:00Z",
+        "description": "If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format."
       },
       "cursor": {
         "name": "cursor",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw"
+          "type": "string"
         },
+        "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw",
         "description": "The pagination cursor value"
       },
       "page_size": {
         "name": "page_size",
         "in": "query",
         "schema": {
-          "type": "string",
-          "example": "123"
+          "type": "string"
         },
+        "example": 123,
         "description": "Number of results to return per page. (Max: 1000)"
       },
       "x-customer-id": {
         "name": "x-customer-id",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "my-customer-1"
+          "type": "string"
         },
+        "example": "my-customer-1",
         "description": "The customer ID that uniquely identifies the customer in your application",
         "required": true
       },
@@ -2011,9 +2058,9 @@
         "name": "x-provider-name",
         "in": "header",
         "schema": {
-          "type": "string",
-          "example": "salesforce"
+          "type": "string"
         },
+        "example": "salesforce",
         "description": "The provider name",
         "required": true
       }

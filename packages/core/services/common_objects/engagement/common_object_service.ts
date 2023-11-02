@@ -40,12 +40,11 @@ export class EngagementCommonObjectService {
 
     const end = remoteDuration.startTimer({ operation: 'create', remote_name: providerName });
 
-    const resArray = await (remoteClient.batchCreateCommonObjectRecord
-      ? remoteClient.batchCreateCommonObjectRecord(type, records)
-      : Promise.all(records.map((params) => remoteClient.createCommonObjectRecord(type, params))));
+    const resArray = await remoteClient.batchCreateCommonObjectRecord(type, records);
 
     end();
 
+    // TODO: We should implement cache invalidation in batch as well.
     await Promise.all(
       resArray.map(async (res) => {
         const shouldCacheInvalidate = await this.#shouldPerformCacheInvalidation(connection, type);
@@ -75,10 +74,32 @@ export class EngagementCommonObjectService {
     connection: ConnectionSafeAny,
     params: EngagementCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
-    const res = await this.batchCreate(type, connection, [params]);
+    const [remoteClient, providerName] = await this.#remoteService.getEngagementRemoteClient(connection.id);
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return res[0]!;
+    const end = remoteDuration.startTimer({ operation: 'create', remote_name: providerName });
+
+    const res = await remoteClient.createCommonObjectRecord(type, params);
+
+    end();
+
+    const shouldCacheInvalidate = await this.#shouldPerformCacheInvalidation(connection, type);
+    if (!shouldCacheInvalidate) {
+      return res.id;
+    }
+
+    // If the associated provider has a destination, do cache invalidation
+    const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
+    if (writer) {
+      // TODO: we should move this logic into each individual provider instead of checking apollo here
+      const record =
+        connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
+      if (record) {
+        const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });
+        await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, record);
+        end();
+      }
+    }
+    return res.id;
   }
 
   public async update<T extends EngagementCommonObjectType>(

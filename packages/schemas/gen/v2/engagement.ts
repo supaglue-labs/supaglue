@@ -54,6 +54,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         account_id: string;
       };
     };
@@ -82,6 +83,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         contact_id: string;
       };
     };
@@ -95,6 +97,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         user_id: string;
       };
     };
@@ -108,6 +111,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         mailbox_id: string;
       };
     };
@@ -134,6 +138,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         sequence_id: string;
       };
     };
@@ -147,19 +152,41 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        /** @description The ID of the sequence. */
+        /**
+         * @description The ID of the sequence. 
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
         sequence_id: string;
       };
     };
   };
   "/sequence_states": {
     /**
-     * Create sequence state(s) 
-     * @description In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
-     * and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
-     * you must pass in the same sequenceId, userId and mailboxId for all the contacts for this to work)
+     * Create sequence state 
+     * @description In other words, adding a contact to sequence.
      */
     post: operations["createSequenceState"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/sequence_states/_batch": {
+    /**
+     * Batch create sequence states 
+     * @description Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.
+     * 
+     * Support:
+     * 
+     * | Provider  | Supported |
+     * | --------- | --------- |
+     * | Apollo    | Yes       |
+     * | Outreach  | No        |
+     * | Salesloft | No        |
+     */
+    post: operations["batchCreateSequenceState"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -176,6 +203,7 @@ export interface paths {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example ffb62704-addd-454e-bb86-ed0799703dc6 */
         sequence_state_id: string;
       };
     };
@@ -612,25 +640,55 @@ export interface components {
   };
   responses: never;
   parameters: {
-    /** @description Whether to include data that was deleted in providers. */
+    /**
+     * @description Whether to include data that was deleted in providers. 
+     * @example true
+     */
     include_deleted_data?: boolean;
-    /** @description Whether to include raw data fetched from the 3rd party provider. */
+    /**
+     * @description Whether to include raw data fetched from the 3rd party provider. 
+     * @example true
+     */
     include_raw_data?: boolean;
-    /** @description If provided, will only return objects created after this datetime */
+    /**
+     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format. 
+     * @example 2023-02-23T00:00:00Z
+     */
     created_after?: Date;
-    /** @description If provided, will only return objects created before this datetime */
+    /**
+     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format. 
+     * @example 2023-02-23T00:00:00Z
+     */
     created_before?: Date;
-    /** @description If provided, will only return objects modified after this datetime */
+    /**
+     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format. 
+     * @example 2023-02-23T00:00:00Z
+     */
     modified_after?: Date;
-    /** @description If provided, will only return objects modified before this datetime */
+    /**
+     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format. 
+     * @example 2023-02-23T00:00:00Z
+     */
     modified_before?: Date;
-    /** @description The pagination cursor value */
+    /**
+     * @description The pagination cursor value 
+     * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
+     */
     cursor?: string;
-    /** @description Number of results to return per page. (Max: 1000) */
+    /**
+     * @description Number of results to return per page. (Max: 1000) 
+     * @example 123
+     */
     page_size?: string;
-    /** @description The customer ID that uniquely identifies the customer in your application */
+    /**
+     * @description The customer ID that uniquely identifies the customer in your application 
+     * @example my-customer-1
+     */
     "x-customer-id": string;
-    /** @description The provider name */
+    /**
+     * @description The provider name 
+     * @example salesforce
+     */
     "x-provider-name": string;
   };
   requestBodies: never;
@@ -767,6 +825,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         account_id: string;
       };
     };
@@ -787,6 +846,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         account_id: string;
       };
     };
@@ -881,6 +941,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         contact_id: string;
       };
     };
@@ -901,6 +962,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         contact_id: string;
       };
     };
@@ -934,6 +996,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         user_id: string;
       };
     };
@@ -957,6 +1020,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         mailbox_id: string;
       };
     };
@@ -1011,6 +1075,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example 0258cbc6-6020-430a-848e-aafacbadf4ae */
         sequence_id: string;
       };
     };
@@ -1031,7 +1096,10 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
-        /** @description The ID of the sequence. */
+        /**
+         * @description The ID of the sequence. 
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
         sequence_id: string;
       };
     };
@@ -1056,10 +1124,8 @@ export interface operations {
     };
   };
   /**
-   * Create sequence state(s) 
-   * @description In other words, adding contact to sequence. Use the `record` property if you are adding a single contact, 
-   * and the `records` property if you are trying to add multiple contacts to a sequence at the same time (if you do, 
-   * you must pass in the same sequenceId, userId and mailboxId for all the contacts for this to work)
+   * Create sequence state 
+   * @description In other words, adding a contact to sequence.
    */
   createSequenceState: {
     parameters: {
@@ -1083,21 +1149,57 @@ export interface operations {
          *   }
          * }
          */
-        "application/json": OneOf<[{
+        "application/json": {
           record: components["schemas"]["create_sequence_state"];
-        }, {
-          /** @description Will use the batch endpoints when possible (e.g. Apollo) */
-          records: (components["schemas"]["create_sequence_state"])[];
-        }]>;
+        };
       };
     };
     responses: {
-      /** @description Sequence state(s) created */
+      /** @description Sequence state created */
       201: {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Batch create sequence states 
+   * @description Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.
+   * 
+   * Support:
+   * 
+   * | Provider  | Supported |
+   * | --------- | --------- |
+   * | Apollo    | Yes       |
+   * | Outreach  | No        |
+   * | Salesloft | No        |
+   */
+  batchCreateSequenceState: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description Will use the batch endpoints when possible (e.g. Apollo) */
+          records: (components["schemas"]["create_sequence_state"])[];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence states created */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
             /** @description Created records, in order passed in */
             records?: (components["schemas"]["created_record"])[];
             warnings?: components["schemas"]["warnings"];
@@ -1117,6 +1219,7 @@ export interface operations {
         "x-provider-name": components["parameters"]["x-provider-name"];
       };
       path: {
+        /** @example ffb62704-addd-454e-bb86-ed0799703dc6 */
         sequence_state_id: string;
       };
     };

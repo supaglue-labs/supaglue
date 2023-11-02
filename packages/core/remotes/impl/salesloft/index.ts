@@ -67,20 +67,6 @@ type SalesloftPaginatedRecords = {
   data: Record<string, any>[];
 };
 
-type SalesloftPaginatedRecordsWithCount = {
-  metadata: {
-    paging: {
-      per_page: number;
-      current_page: number;
-      next_page: number | null;
-      prev_page: number | null;
-      total_pages: number;
-      total_count: number;
-    };
-  };
-  data: Record<string, any>[];
-};
-
 class SalesloftClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
   #headers: Record<string, string>;
@@ -171,9 +157,16 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     return mapper(response.data.data);
   }
 
-  #getListRecordsFetcher(endpoint: string, updatedAfter?: Date): (next?: string) => Promise<SalesloftPaginatedRecords> {
+  #getListRecordsFetcher(
+    endpoint: string,
+    updatedAfter?: Date,
+    heartbeat?: () => void
+  ): (next?: string) => Promise<SalesloftPaginatedRecords> {
     return async (next?: string) => {
       return await retryWhenAxiosRateLimited(async () => {
+        if (heartbeat) {
+          heartbeat();
+        }
         await this.maybeRefreshAccessToken();
         const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
           params: updatedAfter
@@ -182,7 +175,10 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
                 ...getUpdatedAfterPathParam(updatedAfter),
                 page: next ? parseInt(next) : undefined,
               }
-            : DEFAULT_LIST_PARAMS,
+            : {
+                ...DEFAULT_LIST_PARAMS,
+                page: next ? parseInt(next) : undefined,
+              },
           headers: this.#headers,
         });
         return response.data;
@@ -200,8 +196,8 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     return response.data.metadata.paging?.total_count || 0;
   }
 
-  async #getCadenceStepCounts(): Promise<Record<string, number>> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/steps`);
+  async #getCadenceStepCounts(heartbeat?: () => void): Promise<Record<string, number>> {
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}/v2/steps`, undefined, heartbeat);
     const stream = await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -227,21 +223,23 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     return stepCountMapping;
   }
 
-  private async listSequences(updatedAfter?: Date): Promise<Readable> {
-    const stepCounts = await this.#getCadenceStepCounts();
+  private async listSequences(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+    const stepCounts = await this.#getCadenceStepCounts(heartbeat);
     return await this.#listRecords(
       '/v2/cadences',
       (data: any) => fromSalesloftCadenceToSequence(data, stepCounts[data.id?.toString()] ?? 0),
-      updatedAfter
+      updatedAfter,
+      heartbeat
     );
   }
 
   async #listRecords<T>(
     path: string,
     mapper: (data: Record<string, any>) => T,
-    updatedAfter?: Date
+    updatedAfter?: Date,
+    heartbeat?: () => void
   ): Promise<Readable> {
-    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}${path}`, updatedAfter);
+    const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}${path}`, updatedAfter, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -261,24 +259,26 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
 
   public override async listCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
-    updatedAfter?: Date
+    updatedAfter?: Date,
+    heartbeat?: () => void
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.#listRecords(`/v2/people`, fromSalesloftPersonToContact, updatedAfter);
+        return await this.#listRecords(`/v2/people`, fromSalesloftPersonToContact, updatedAfter, heartbeat);
       case 'user':
-        return await this.#listRecords(`/v2/users`, (r: any) => fromSalesloftUserToUser(r), updatedAfter);
+        return await this.#listRecords(`/v2/users`, (r: any) => fromSalesloftUserToUser(r), updatedAfter, heartbeat);
       case 'account':
-        return await this.#listRecords(`/v2/accounts`, fromSalesloftAccountToAccount, updatedAfter);
+        return await this.#listRecords(`/v2/accounts`, fromSalesloftAccountToAccount, updatedAfter, heartbeat);
       case 'sequence':
-        return await this.listSequences(updatedAfter);
+        return await this.listSequences(updatedAfter, heartbeat);
       case 'mailbox':
         return Readable.from([]);
       case 'sequence_state':
         return await this.#listRecords(
           '/v2/cadence_memberships',
           fromSalesloftCadenceMembershipToSequenceState,
-          updatedAfter
+          updatedAfter,
+          heartbeat
         );
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported for salesloft`);

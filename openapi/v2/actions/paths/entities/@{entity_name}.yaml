@@ -17,10 +17,10 @@ post:
               $ref: ../../components/schemas/create_update_entity_record.yaml
           required:
             - data
-          example:
-            data:
-              name: John Doe
-              email: 'johndoe@gmail.com'
+        example:
+          data:
+            name: John Doe
+            email: 'johndoe@gmail.com'
   responses:
     '201':
       description: EntityRecord created

@@ -603,7 +603,7 @@ export class ConnectionService {
     const mergedEntityMapping = mergeEntityMappings(providerEntityMapping, connectionEntityMapping);
 
     if (!mergedEntityMapping) {
-      throw new BadRequestError(`No entity mapping found for entity ${entityId}`);
+      throw new BadRequestError(`No entity mapping found for entity ${entityId}.`);
     }
 
     if (!mergedEntityMapping.object) {
