@@ -414,22 +414,22 @@ export interface components {
      */
     "x-provider-name": string;
     /**
-     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format. 
+     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
      * @example 2023-02-23T00:00:00Z
      */
     modified_after?: Date;
     /**
-     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format. 
+     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
      * @example 2023-02-23T00:00:00Z
      */
     modified_before?: Date;
     /**
-     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format. 
+     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
      * @example 2023-02-23T00:00:00Z
      */
     created_after?: Date;
     /**
-     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format. 
+     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
      * @example 2023-02-23T00:00:00Z
      */
     created_before?: Date;
