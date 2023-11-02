@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.17.6",
+    "version": "0.18.0",
     "title": "Unified Ticketing API (Preview)",
     "contact": {
       "name": "Supaglue",
