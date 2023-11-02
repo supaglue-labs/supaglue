@@ -340,14 +340,12 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
         return value;
       });
-
+      const maybeObjectNameColumn = objectType === 'custom' ? ', _supaglue_object_name' : '';
       await client.query(
         `INSERT INTO ${qualifiedTable} (${columnsStr})
 VALUES
   (${columnPlaceholderValuesStr})
-ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id${
-          objectType === 'custom' ? ', _supaglue_object_name' : ''
-        })
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id${maybeObjectNameColumn})
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         values
       );
@@ -375,6 +373,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
     const dedupedTempTable = `"deduped_temp_${table}"`;
+
     // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
     const isSchemasOrEntitiesApplication = schemasAndEntitiesEnabled(applicationId);
 
@@ -493,7 +492,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       // Copy from deduped temp table
       const columnsToUpdateStr = columnsToUpdate.join(',');
       const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
-
+      const maybeObjectNameColumn = objectType === 'custom' ? ', _supaglue_object_name' : '';
       // Paginate
       const batchSize = 10000;
       for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
@@ -504,12 +503,10 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
-SELECT DISTINCT ON (_supaglue_id${objectType === 'custom' ? ', _supaglue_object_name' : ''}) ${columns.join(
+SELECT DISTINCT ON (_supaglue_id${maybeObjectNameColumn}) ${columns.join(
           ','
         )} FROM ${dedupedTempTable} OFFSET ${offset} limit ${batchSize}
-ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id${
-          objectType === 'custom' ? ', _supaglue_object_name' : ''
-        })
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id${maybeObjectNameColumn})
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
         heartbeat();
