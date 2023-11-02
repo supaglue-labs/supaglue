@@ -19,11 +19,6 @@ export type SchemasWhitelist = {
 
 export function useLekko() {
   // Lekko defaults
-  let homeCtaButtonConfig: HomeCtaButton = {
-    buttonMessage: 'Quickstart Guide',
-    buttonLink: 'https://docs.supaglue.io/docs/quickstart',
-  };
-
   let entitiesWhitelistConfig: EntitiesWhitelist = {
     applicationIds: [],
   };
@@ -32,12 +27,6 @@ export function useLekko() {
     applicationIds: [],
   };
   return {
-    homeCtaButtonConfig: useLekkoConfig({
-      namespaceName: 'mgmt-ui',
-      configName: 'entities_whitelist',
-      evaluationType: EvaluationType.JSON,
-      context: new ClientContext(),
-    }) as EntitiesWhitelist,
     entitiesWhitelistConfig: useLekkoConfig({
       namespaceName: 'mgmt-ui',
       configName: 'entities_whitelist',
