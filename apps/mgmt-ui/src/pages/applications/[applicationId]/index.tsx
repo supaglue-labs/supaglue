@@ -1,30 +1,12 @@
 import Header from '@/layout/Header';
 import { authOptions } from '@/pages/api/auth/[...nextauth]';
 import { buildClerkProps, getAuth } from '@clerk/nextjs/server';
-import { ClientContext, initAPIClient } from '@lekko/node-server-sdk';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { type GetServerSideProps } from 'next';
 import type { Session } from 'next-auth';
 import { getServerSession } from 'next-auth/next';
 import { useState } from 'react';
-import { API_HOST, IS_CLOUD, LEKKO_API_KEY, SVIX_API_TOKEN } from '../../api';
-
-//
-// Lekkodefaults
-//
-
-type HomeCtaButton = {
-  buttonMessage: string;
-  buttonLink: string;
-};
-
-type EntitiesWhitelist = {
-  applicationIds: string[];
-};
-
-type SchemasWhitelist = {
-  applicationIds: string[];
-};
+import { API_HOST, IS_CLOUD, SVIX_API_TOKEN } from '../../api';
 
 //
 // server side props
@@ -43,11 +25,6 @@ export type PublicEnvProps = {
   CLERK_ACCOUNT_URL: string;
   CLERK_ORGANIZATION_URL: string;
   SVIX_API_TOKEN?: string;
-  lekko: {
-    homeCtaButtonConfig: HomeCtaButton;
-    entitiesWhitelistConfig: EntitiesWhitelist;
-    schemasWhitelistConfig: SchemasWhitelist;
-  };
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res, resolvedUrl }) => {
@@ -75,41 +52,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
       };
     }
   }
-
-  // Lekko defaults
-  let homeCtaButtonConfig: HomeCtaButton = {
-    buttonMessage: 'Quickstart Guide',
-    buttonLink: 'https://docs.supaglue.io/docs/quickstart',
-  };
-
-  let entitiesWhitelistConfig: EntitiesWhitelist = {
-    applicationIds: [],
-  };
-
-  let schemasWhitelistConfig: SchemasWhitelist = {
-    applicationIds: [],
-  };
-
-  /*  if (LEKKO_API_KEY) {
-      const client = await initAPIClient({
-        apiKey: LEKKO_API_KEY,
-        repositoryOwner: 'supaglue-labs',
-        repositoryName: 'dynamic-config',
-      });
-  
-      homeCtaButtonConfig = (await client.getJSONFeature('mgmt-ui', 'home_cta', new ClientContext())) as HomeCtaButton;
-      entitiesWhitelistConfig = (await client.getJSONFeature(
-        'mgmt-ui',
-        'entities_whitelist',
-        new ClientContext()
-      )) as EntitiesWhitelist;
-      schemasWhitelistConfig = (await client.getJSONFeature(
-        'mgmt-ui',
-        'schemas_whitelist',
-        new ClientContext()
-      )) as SchemasWhitelist;
-    }*/
-
   const CLERK_ACCOUNT_URL =
     API_HOST === 'https://api.supaglue.io'
       ? 'https://accounts.supaglue.io/user'
@@ -130,7 +72,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
       CLERK_ACCOUNT_URL,
       CLERK_ORGANIZATION_URL,
       SVIX_API_TOKEN,
-      lekko: { homeCtaButtonConfig, entitiesWhitelistConfig, schemasWhitelistConfig },
     },
   };
 };

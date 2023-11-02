@@ -4,6 +4,7 @@ import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import { useLekko } from '@/hooks/useLekko';
 import { useProviders } from '@/hooks/useProviders';
 import { useSchemas } from '@/hooks/useSchemas';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
@@ -55,8 +56,8 @@ export default function ProviderDetailsPanel({
   providerName,
   category,
   isLoading,
-  lekko,
 }: ProviderDetailsPanelProps & SupaglueProps) {
+  const lekko = useLekko();
   const shouldAllowManagedOauth = [
     'salesforce',
     'salesforce_marketing_cloud_account_engagement',
@@ -135,17 +136,17 @@ export default function ProviderDetailsPanel({
         ...provider,
         config: isOauthProvider(provider)
           ? {
-              ...provider.config,
-              providerAppId: '', // TODO: add input field for this
-              oauth: {
-                ...provider.config.oauth,
-                credentials: {
-                  oauthClientId: clientId,
-                  oauthClientSecret: clientSecret,
-                },
-                oauthScopes: oauthScopes.split(','),
+            ...provider.config,
+            providerAppId: '', // TODO: add input field for this
+            oauth: {
+              ...provider.config.oauth,
+              credentials: {
+                oauthClientId: clientId,
+                oauthClientSecret: clientSecret,
               },
-            }
+              oauthScopes: oauthScopes.split(','),
+            },
+          }
           : undefined,
         objects: {
           common: commonObjects,
@@ -166,16 +167,16 @@ export default function ProviderDetailsPanel({
       name: providerName,
       config: isOauth
         ? {
-            providerAppId: '', // TODO: add input field for this
-            useManagedOauth,
-            oauth: {
-              credentials: {
-                oauthClientId: clientId,
-                oauthClientSecret: clientSecret,
-              },
-              oauthScopes: oauthScopes.split(','),
+          providerAppId: '', // TODO: add input field for this
+          useManagedOauth,
+          oauth: {
+            credentials: {
+              oauthClientId: clientId,
+              oauthClientSecret: clientSecret,
             },
-          }
+            oauthScopes: oauthScopes.split(','),
+          },
+        }
         : undefined,
       objects: {
         common: commonObjects,

@@ -56,7 +56,6 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res, resolve
   });
 
   if (!result.ok) {
-    console.log(result);
     throw new Error('Errored while fetching applications');
   }
 

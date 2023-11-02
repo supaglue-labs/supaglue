@@ -25,6 +25,7 @@ import {
   ListItemText,
 } from '@mui/material';
 import NextLink from 'next/link';
+import { useLekko } from '@/hooks/useLekko';
 
 type Category = {
   id: string;
@@ -42,33 +43,10 @@ const item = {
   },
 };
 
-type EntitiesWhitelist = {
-  applicationIds: string[];
-};
-
-type SchemasWhitelist = {
-  applicationIds: string[];
-};
-
 export default function Navigator(props: DrawerProps & SupaglueProps) {
   const { ...other } = props;
-  const lekko = {
-    entitiesWhitelistConfig: useLekkoConfig({
-      namespaceName: 'mgmt-ui',
-      configName: 'entities_whitelist',
-      evaluationType: EvaluationType.JSON,
-      context: new ClientContext(),
-    }) as EntitiesWhitelist,
-    schemasWhitelistConfig: useLekkoConfig({
-      namespaceName: 'mgmt-ui',
-      configName: 'schemas_whitelist',
-      evaluationType: EvaluationType.JSON,
-      context: new ClientContext(),
-    }) as SchemasWhitelist,
-  };
-
   const applicationId = useActiveApplicationId();
-
+  const lekko = useLekko();
   const categories: {
     id: string;
     children: Category[];

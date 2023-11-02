@@ -7,6 +7,7 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useEntities } from '@/hooks/useEntities';
+import { useLekko } from '@/hooks/useLekko';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
@@ -45,9 +46,10 @@ type SyncConfigDetailsPanelImplProps = {
   syncConfigId?: string;
 };
 
-function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPanelImplProps & SupaglueProps) {
+function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImplProps & SupaglueProps) {
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
+  const lekko = useLekko();
   const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations = [], isLoading: isLoadingDestinations } = useDestinations();
@@ -400,11 +402,9 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                     <TextField
                       {...params}
                       label="Custom objects"
-                      helperText={`Custom objects in ${
-                        selectedProvider?.name
-                      }. (Note: names are case-sensitive. Press enter or comma to add multiple fields. ${
-                        selectedProvider?.name === 'salesforce' ? 'For Salesforce, these should all end with __c.' : ''
-                      })`}
+                      helperText={`Custom objects in ${selectedProvider?.name
+                        }. (Note: names are case-sensitive. Press enter or comma to add multiple fields. ${selectedProvider?.name === 'salesforce' ? 'For Salesforce, these should all end with __c.' : ''
+                        })`}
                     />
                   )}
                   onChange={(event: any, value: string[]) => {
