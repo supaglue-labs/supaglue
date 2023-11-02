@@ -3,6 +3,7 @@ import { NotificationManager } from '@/context/notification';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
 import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut, useUser } from '@clerk/nextjs';
+import { ClientContext, EvaluationType, LekkoConfigProvider } from '@lekko/react-sdk';
 import { Box, CssBaseline, StyledEngineProvider, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { LicenseInfo } from '@mui/x-license-pro';
@@ -30,8 +31,8 @@ if (typeof window !== 'undefined') {
     api_host: process.env.FRONTEND_URL
       ? `${process.env.FRONTEND_URL}/ingest`
       : window.location.port === '3000'
-      ? `http://${window.location.hostname}:3000/ingest`
-      : `https://${window.location.hostname}/ingest`,
+        ? `http://${window.location.hostname}:3000/ingest`
+        : `https://${window.location.hostname}/ingest`,
   });
 }
 
@@ -183,6 +184,19 @@ theme = {
 
 const drawerWidth = 256;
 
+const EVALUATIONS = [{
+  namespaceName: 'mgmt-ui',
+  configName: 'entities_whitelist',
+  evaluationType: EvaluationType.JSON,
+  context: new ClientContext()
+},
+{
+  namespaceName: 'mgmt-ui',
+  configName: 'schemas_whitelist',
+  evaluationType: EvaluationType.JSON,
+  context: new ClientContext()
+}]
+
 export default function App({ Component, pageProps: { session, signedIn, ...pageProps } }: AppProps) {
   const router = useRouter();
   const { pathname } = useRouter();
@@ -205,17 +219,22 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
     return (
       <PostHogProvider client={posthog}>
         <SessionProvider session={session}>
-          <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
-              <NotificationManager>
-                <InnerApp signedIn={signedIn} {...pageProps}>
-                  <Component {...pageProps} />
-                </InnerApp>
-              </NotificationManager>
-            </ThemeProvider>
-          </StyledEngineProvider>
+          <LekkoConfigProvider configRequests={EVALUATIONS} settings={{
+            apiKey: 'key-goes-here', repositoryName: "supaglue-test",
+            repositoryOwner: "lekkodev"
+          }}>
+            <StyledEngineProvider injectFirst>
+              <ThemeProvider theme={theme}>
+                <NotificationManager>
+                  <InnerApp signedIn={signedIn} {...pageProps}>
+                    <Component {...pageProps} />
+                  </InnerApp>
+                </NotificationManager>
+              </ThemeProvider>
+            </StyledEngineProvider>
+          </LekkoConfigProvider>
         </SessionProvider>
-      </PostHogProvider>
+      </PostHogProvider >
     );
   }
 
