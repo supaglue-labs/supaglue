@@ -5,13 +5,7 @@
  * @jest-environment ./integration-test-environment
  */
 
-import type {
-  CreateCustomObjectSchemaRequest,
-  CreateCustomObjectSchemaResponse,
-  GetCustomObjectSchemaResponse,
-  ListCustomObjectSchemasResponse,
-  UpdateCustomObjectSchemaPathParams,
-} from '@supaglue/schemas/v2/crm';
+import type { CreateCustomObjectSchemaRequest, CreateCustomObjectSchemaResponse } from '@supaglue/schemas/v2/crm';
 
 describe('custom_objects', () => {
   let testCustomObject: CreateCustomObjectSchemaRequest['object'];
@@ -228,74 +222,108 @@ describe('custom_objects', () => {
         expect(getResponse.data.fields).toContainEqual(expect.objectContaining(field));
       });
     }, 120_000);
-
-    test(`Put BadRequest /`, async () => {
-      if (providerName === 'salesforce') {
-        return;
-      }
-      const fullObjectName = testCustomObject.name;
-      const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
-        '/crm/v2/metadata/custom_objects',
-        { object: testCustomObject },
-        {
-          headers: { 'x-provider-name': providerName },
-        }
-      );
-      expect(response.status).toEqual(201);
-      expect(response.data.object?.name).toEqual(fullObjectName);
-      addedObjects.push({
-        id: response.data.object?.name as string,
-        providerName,
-        objectName: 'custom_object',
-      });
-
-      // sleep for 30 seconds to allow hubspot to update indexes
-      if (providerName === 'hubspot') {
-        await new Promise((resolve) => setTimeout(resolve, 30_000));
-      }
-
-      const updatedCustomObject = {
-        ...testCustomObject,
-        labels: {
-          singular: `${testCustomObject.name}Updated`,
-          plural: `${testCustomObject.name}Updateds`,
-        },
-        fields: [
-          {
-            label: 'My Name Field',
-            id: 'name',
-            is_required: true,
-            type: 'text',
-          },
-          {
-            label: 'My Description Field',
-            id: 'description__c',
-            is_required: false,
-            type: 'textarea',
-          },
-        ],
-      };
-
-      // Deleting fields is not allowed in hubspot
-      const updateResponse = await apiClient.put<UpdateCustomObjectSchemaPathParams>(
-        `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
-        {
-          object: updatedCustomObject,
-        },
-        {
-          headers: { 'x-provider-name': providerName },
-        }
-      );
-      expect(updateResponse.status).toEqual(400);
-      expect(updateResponse.data).toEqual({
-        errors: [
-          {
-            title:
-              'Cannot delete fields from custom object schema in hubspot. Fields to delete: bool__c, double__c, int__c',
-            problem_type: 'BAD_REQUEST_ERROR',
-          },
-        ],
-      });
-    }, 120_000);
   });
+
+  test(`Hubspot BadRequest /`, async () => {
+    const providerName = 'hubspot';
+    const fullObjectName = testCustomObject.name;
+    const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
+      '/crm/v2/metadata/custom_objects',
+      { object: testCustomObject },
+      {
+        headers: { 'x-provider-name': 'hubspot' },
+      }
+    );
+    expect(response.status).toEqual(201);
+    expect(response.data.object?.name).toEqual(fullObjectName);
+    addedObjects.push({
+      id: response.data.object?.name as string,
+      providerName,
+      objectName: 'custom_object',
+    });
+
+    // sleep for 30 seconds to allow hubspot to update indexes
+    await new Promise((resolve) => setTimeout(resolve, 30_000));
+
+    const updatedCustomObject = {
+      ...testCustomObject,
+      labels: {
+        singular: `${testCustomObject.name}Updated`,
+        plural: `${testCustomObject.name}Updateds`,
+      },
+      fields: [
+        {
+          label: 'My Name Field',
+          id: 'name',
+          is_required: true,
+          type: 'text',
+        },
+        {
+          label: 'My Description Field',
+          id: 'description__c',
+          is_required: false,
+          type: 'textarea',
+        },
+      ],
+    };
+
+    // Deleting fields is not allowed in hubspot
+    const updateResponse = await apiClient.put<UpdateCustomObjectSchemaPathParams>(
+      `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
+      {
+        object: updatedCustomObject,
+      },
+      {
+        headers: { 'x-provider-name': providerName },
+      }
+    );
+    expect(updateResponse.status).toEqual(400);
+    expect(updateResponse.data).toEqual({
+      errors: [
+        {
+          title:
+            'Cannot delete fields from custom object schema in hubspot. Fields to delete: bool__c, double__c, int__c',
+          problem_type: 'BAD_REQUEST_ERROR',
+        },
+      ],
+    });
+  }, 120_000);
+
+  test(`Salesforce BadRequest /`, async () => {
+    const providerName = 'salesforce';
+    const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
+      '/crm/v2/metadata/custom_objects',
+      {
+        object: {
+          ...testCustomObject,
+          fields: [
+            {
+              label: 'My Name Field',
+              id: 'name',
+              is_required: true,
+              type: 'text',
+            },
+            {
+              label: 'My Description Field',
+              id: 'description', // This will fail due to lack of `__c`
+              is_required: true,
+              type: 'textarea',
+            },
+          ],
+        },
+      },
+      {
+        headers: { 'x-provider-name': providerName },
+      }
+    );
+    expect(response.status).toEqual(400);
+    expect(response.data).toEqual({
+      errors: [
+        {
+          title: 'Custom object field key names must end with __c',
+          problem_type: 'BAD_REQUEST_ERROR',
+        },
+      ],
+    });
+  }, 120_000);
 });
