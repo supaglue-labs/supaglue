@@ -2,7 +2,7 @@ import ThemedImage from '@theme/ThemedImage';
 
 # Pagination
 
-Supaglue provides a `_supaglue_last_modified_at` timestamp field on the tables it syncs, representing the last time a record was modified in the upstream provider. Use this field as a [high-water mark](<https://en.wikipedia.org/wiki/Watermark_(data_synchronization)>) to sync from Supaglue-managed tables into tables you manage.
+Supaglue provides a `_supaglue_last_modified_at` timestamp field on the tables it syncs, or `last_modified_at` when you use the Unified or Data Listing API, representing the last time a record was modified in the upstream provider. Use this field as a [high-water mark](<https://en.wikipedia.org/wiki/Watermark_(data_synchronization)>) to sync from Supaglue-managed tables into tables you manage.
 
 A Supaglue Sync runs on a per-[Object](../../platform/objects/overview), [Provider](../../integration-patterns/managed-syncs#provider), and Customer basis. Therefore, you should keep track of high-water marks for each combination of Customer-Provider-Object.
 
@@ -80,3 +80,7 @@ function updateHighWatermark(webhookEvent) {
   });
 }
 ```
+
+:::info
+Please note the example above is a basic implementation of pagination. In a production setting you will want to batch writes/updates for efficiency.
+:::
