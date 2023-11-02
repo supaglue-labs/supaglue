@@ -78,7 +78,7 @@ describe('sequence', () => {
       addedObjects.push({
         id: response.data.record?.id as string,
         providerName,
-        objectName: 'account',
+        objectName: 'sequence',
       });
       const getResponse = await apiClient.get<GetSequenceResponse>(
         `/engagement/v2/sequences/${response.data.record?.id}`,
