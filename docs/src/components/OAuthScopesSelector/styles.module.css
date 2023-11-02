@@ -1,0 +1,39 @@
+.scopes-picker {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+  }
+  
+  .search-box input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .category-section {
+    margin-bottom: 20px;
+  }
+  
+  .permissions-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin-bottom: 10px;
+  }
+  
+  .scope-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+    margin-bottom: 5px;
+  }
+  
+  .scope-name {
+    flex: 1;
+  }
+  
+  textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+  }
+  

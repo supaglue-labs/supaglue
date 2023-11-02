@@ -68,18 +68,9 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
 1. Under Callback URL, paste Supaglue's redirect URL:
 
-<Tabs>
-<TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
-
-`https://api.supaglue.io/oauth/callback`
-
-</TabItem>
-<TabItem value="localhost" label="Localhost">
-
-`http://localhost:8080/oauth/callback`
-
-</TabItem>
-</Tabs>
+  ```
+  https://api.supaglue.io/oauth/callback
+  ```
 
 1. Enable the following scopes: `id`, `api`, `refresh_token`
 
@@ -89,10 +80,6 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
    </BrowserWindow>
 
-:::info
-Supaglue requires a set of minimum scopes to support reads and writes to common object records.
-:::
-
 1. Press the Save button at the bottom of the page.
 
 ### Fetch Salesforce Connected App credentials
@@ -100,3 +87,7 @@ Supaglue requires a set of minimum scopes to support reads and writes to common 
 1. Navigate to Manage Connected Apps > API (Enable OAuth Settings) > Manage Consumer Details on your Salesforce App page.
 
 1. Copy the Consumer Key, Consumer Secret, and scopes (comma-separated), and paste them into the Salesforce configuration form in the management portal.
+
+  ```
+  id,api,refresh_token
+  ```

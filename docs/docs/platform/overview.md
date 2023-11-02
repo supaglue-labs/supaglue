@@ -19,21 +19,14 @@ Underlying everything on the Supaglue platform is **[Managed Authentication](./m
 
 ## Reads & writes
 
-Once authenticated we provide Managed Syncs for **reading** data from Providers and syncing it to Destinations. Managed Syncs operate on [Objects](./objects/overview) and [Common Objects](./common-schemas/overview).
+For **reading** and **writing** data, Supaglue provides [Unified APIs](../integration-patterns/unified-api) which provide a single API interface across multiple providers.
 
-For **reading** and **writing** data, we have [Unified APIs](../integration-patterns/unified-api) which provide a single API interface across multiple providers.
+For convenience, Supaglue also offers managed Syncs for **reading** data from Providers and syncing it to destinations such as Postgres and analytical data warehouses like BigQuery. Managed Syncs operate on [Standard and Custom Objects](./objects/overview) as well as [Common Objects](./common-schemas/overview).
 
 ## Passthrough APIs
 
-The platform features above help accelerate development time for integrations and aim at covering 80% of the most frequently occurring use cases, but they don't cover them all. For the remaining 20%, we expose **[Passthrough APIs](./passthrough)** that allow you to call the underlying Provider's native APIs.
+The platform features above help accelerate development time for integrations and aim at covering 80% of the most common use cases. For the remaining 20%, we expose **[Passthrough APIs](./passthrough)** that allow you to call the underlying Provider's native APIs.
 
 ## Notification webhooks
 
-Supaglue [notification webhooks](./notification-webhooks) are HTTP requests that Supaglue sends to your API endpoint to notify you of important events like syncs completing, errors occurring, and more.
-
-Your integration can listen for these webhooks to do the following:
-
-- Alert on sync errors
-- Transform synced data for your application
-- Cleanup old data after a customer deletes their account or disconnects their integration
-- Backfill data after a customer changes configuration settings
+Supaglue [notification webhooks](./notification-webhooks) are HTTP requests that we send to your API endpoint to notify you of important events like completed syncs, new connections, errors, and more.

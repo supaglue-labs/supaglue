@@ -162,12 +162,12 @@ const sidebars = {
       items: [
         {
           id: 'tutorials/read-write-contacts',
-          label: 'Read/write contacts',
+          label: 'Read & write contacts',
           type: 'doc',
         },
         {
           id: 'tutorials/custom-fields',
-          label: 'Create/write to custom fields',
+          label: 'Create & write to custom fields',
           type: 'doc',
         },
       ],
@@ -444,17 +444,31 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: 'Marketing Automation API',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/marketing-automation/sidebar.js'),
+    },
+    {
+      type: 'category',
       label: 'Ticketing API (Preview)',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/ticketing/sidebar.js'),
     },
+
+    // {
+    //   type: 'html',
+    //   value: sidebarHeader('Metadata API'),
+    // },
     {
       type: 'category',
-      label: 'Marketing Automation API',
+      label: 'Metadata API',
+      className: 'hidden',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      items: require('./docs/api/v2/marketing-automation/sidebar.js'),
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      items: require('./docs/api/v2/metadata/sidebar.js')
     },
 
     // section
@@ -468,25 +482,6 @@ const sidebars = {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/data/sidebar.js'),
-    },
-
-    // section
-    {
-      type: 'html',
-      value: sidebarHeader('Metadata API'),
-    },
-    {
-      type: 'category',
-      label: 'Metadata API',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      items: require('./docs/api/v2/metadata/sidebar.js').map((item) => {
-        if (['CustomObjects'].includes(item.label)) {
-          item.className += ' hidden';
-        }
-        return item;
-      }),
     },
 
     // section

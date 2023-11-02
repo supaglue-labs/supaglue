@@ -9,17 +9,15 @@ import ThemedImage from '@theme/ThemedImage';
 
 Supaglue supports three types of APIs:
 
-1. **Unified API**: Write to and read from multiple third-party providers with a single API within a category for [`crm`](v2/crm/unified-crm-api), [`engagement`](v2/engagement/unified-engagement-api), [`enrichment`](v2/enrichment/unified-enrichment-api), [`ticketing`](v2/ticketing/unified-ticketing-api-preview).
-1. [**Metadata API**](v2/metadata/metadata-api): Operate on metadata across multiple third-party providers.
+1. **Unified API**: Write to and read from multiple third-party providers with a single API within a category for [`crm`](v2/crm/unified-crm-api), [`engagement`](v2/engagement/unified-engagement-api), [`enrichment`](v2/enrichment/unified-enrichment-api), [`ticketing`](v2/ticketing/unified-ticketing-api-preview). The unified APIs support common objects, custom objects, and metadata operations.
 1. [**Passthrough**](v2/actions/send-passthrough-request): Call underlying native third-party provider APIs using credentials managed by Supaglue.
-
-Use the [**Supaglue Management API**](v2/mgmt/management-api) to configure all aspects of your integrations.
+1. [**Supaglue Management API**](v2/mgmt/management-api): configure all aspects of your integrations.
 
 ## API authentication
 
-Your requests to the Supaglue API must contain an API key. You can generate an API key in the Management Portal on the Configuration -> API Key page.
+Your requests to the Supaglue API must contain an API key. You can generate an API key in the Management Portal on the Settings -> API Key page.
 
-<BrowserWindow url="https://app.supaglue.io/applications/1dad4014-c295-422b-b384-1379396defd1/configuration/api_keys">
+<BrowserWindow url="https://app.supaglue.io/applications/1dad4014-c295-422b-b384-1379396defd1/settings/api_keys">
 
 ![configuration-api-key](/img/configuration-api-key.png)
 
@@ -39,3 +37,24 @@ Pass in the API key in requests to the Supaglue API as a header:
 curl http://api.supaglue.io/crm/v2/contacts \
    -H 'x-api-key: ...'
 ```
+
+## Error codes
+
+Supaglue returns the following error codes and problem types:
+
+| Status Code | Error Type                          | Description                                                                                                       |
+|-------------|-------------------------------------|-------------------------------------------------------------------------------------------------------------------|
+| 304         | NOT_MODIFIED                        |                                                                                                                   |
+| 400         | BAD_REQUEST_ERROR                   |                                                                                                                   |
+| 401         | UNAUTHORIZED_ERROR                  |                                                                                                                   |
+| 403         | FORBIDDEN_ERROR                     |                                                                                                                   |
+| 404         | NOT_FOUND_ERROR                     |                                                                                                                   |
+| 409         | CONFLICT_ERROR                      |                                                                                                                   |
+| 422         | UNPROCESSABLE_ENTITY_ERROR          |                                                                                                                   |
+| 429         | TOO_MANY_REQUESTS_ERROR             |                                                                                                                   |
+| 499         | REMOTE_PROVIDER_ERROR               | Supaglue returns a custom HTTP status code 499 as a catch-all to pass back remote Provider error messages.        |
+| 500         | INTERNAL_SERVER_ERROR               | Supaglue returns a 500 `INTERNAL_SERVER_ERROR` as a catch-all for Supaglue-related errors.                       |
+| 500         | CACHE_INVALIDATION_ERROR            | Supaglue returns a `CACHE_INVALIDATION_ERROR` for writes when it cannot refresh the value in your Destination after writing to a Provider. |
+| 502         | BAD_GATEWAY_ERROR                   |                                                                                                                   |
+| 503         | SERVICE_UNAVAILABLE_ERROR           |                                                                                                                   |
+| 504         | GATEWAY_TIMEOUT_ERROR               |                                                                                                                   |

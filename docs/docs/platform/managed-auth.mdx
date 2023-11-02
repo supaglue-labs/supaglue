@@ -23,15 +23,15 @@ We securely store third-party Provider credentials, unify your authentication in
 
 We support three kinds of authentication methods for your customers to authenticate with third-party providers:
 
-1. [Oauth 2.0](#oauth-20)
-2. [API key](#api-key)
-3. [Access key](#access-key)
+1. OAuth 2.0
+2. API key
+3. Access key
 
 Your authentication method depends on the third-party provider you want to connect to. For example, Salesforce requires Oauth 2.0 authentication, while Apollo requires API key authentication.
 
-### Oauth 2.0 (`oauth2`)
+### OAuth 2.0 (`oauth2`)
 
-Supaglue supports third-party providers that use [OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749) for authentication.
+Supaglue supports 3rd-party providers that use [OAuth 2.0](https://www.rfc-editor.org/rfc/rfc6749) for authentication.
 
 Supaglue supports third-party providers that use OAuth 2.0 [Authorization Code Flow](https://datatracker.ietf.org/doc/html/rfc6749#section-4.1) (aka Authorization Code Grant). This means that your customers will be redirected to the third-party provider's login page to authenticate themselves. Once authenticated, the third-party provider will redirect your customer to Supaglue with an authorization code. Supaglue will then exchange the authorization code for an access token and refresh token.
 
