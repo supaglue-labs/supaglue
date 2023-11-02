@@ -428,17 +428,17 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Ticketing API (Preview)',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      items: require('./docs/api/v2/ticketing/sidebar.js'),
-    },
-    {
-      type: 'category',
       label: 'Marketing Automation API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/marketing-automation/sidebar.js'),
+    },
+    {
+      type: 'category',
+      label: 'Ticketing API (Preview)',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      items: require('./docs/api/v2/ticketing/sidebar.js'),
     },
 
     // section
@@ -452,25 +452,6 @@ const sidebars = {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/data/sidebar.js'),
-    },
-
-    // section
-    {
-      type: 'html',
-      value: sidebarHeader('Metadata API'),
-    },
-    {
-      type: 'category',
-      label: 'Metadata API',
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      items: require('./docs/api/v2/metadata/sidebar.js').map((item) => {
-        if (['CustomObjects'].includes(item.label)) {
-          item.className += ' hidden';
-        }
-        return item;
-      }),
     },
 
     // section
