@@ -308,7 +308,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "_supaglue_unified_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
-);`,
+)${partition ? ' PARTITION BY LIST ( _supaglue_customer_id );' : ';'}`,
     mailbox: (schema: string, temp = false, partition = false) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
       temp ? 'temp_engagement_mailboxes' : `"${schema}".engagement_mailboxes`
@@ -375,7 +375,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
   "_supaglue_unified_data" JSONB
 
   ${temp ? '' : ', PRIMARY KEY ("_supaglue_application_id", "_supaglue_provider_name", "_supaglue_customer_id", "id")'}
-);`,
+)${partition ? ' PARTITION BY LIST ( _supaglue_customer_id );' : ';'}`,
     sequence_step: (schema: string, temp = false, partition = false) => `-- CreateTable
 CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${
       temp ? 'temp_engagement_sequence_steps' : `"${schema}".engagement_sequence_steps`
