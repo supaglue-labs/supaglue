@@ -40,6 +40,9 @@ import {
   stripNullCharsFromString,
 } from './util';
 
+export const kCustomObject = 'custom_objects';
+export type ObjectType = 'standard' | 'custom';
+
 export class PostgresDestinationWriterImpl {
   async upsertCommonObjectRecordImpl<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
     client: PoolClient,
@@ -281,10 +284,12 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     client: PoolClient,
     { providerName, customerId, applicationId }: ConnectionSafeAny,
     schema: string,
-    table: string,
+    objectName: string,
     record: BaseFullRecord,
-    setup: () => Promise<void>
+    setup: () => Promise<void>,
+    objectType: 'standard' | 'custom'
   ): Promise<void> {
+    const table = objectType === 'standard' ? objectName : kCustomObject;
     const qualifiedTable = `"${schema}".${table}`;
     const childLogger = logger.child({ providerName, customerId });
     // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
@@ -293,7 +298,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
     try {
       await setup();
 
-      const mappedRecord: Record<string, string | boolean | object> = {
+      const mappedRecord: Record<string, string | boolean | object | null> = {
         _supaglue_application_id: applicationId,
         _supaglue_provider_name: providerName,
         _supaglue_customer_id: customerId,
@@ -305,6 +310,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         _supaglue_mapped_data: isSchemasOrEntitiesApplication
           ? toTransformedPropertiesWithAdditionalFields(record.mappedProperties)
           : {},
+        ...(objectType === 'custom' ? { _supaglue_object_name: objectName } : {}),
       };
       const columns = Object.keys(mappedRecord);
       const columnsToUpdate = columns.filter(
@@ -312,7 +318,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
           c !== '_supaglue_application_id' &&
           c !== '_supaglue_provider_name' &&
           c !== '_supaglue_customer_id' &&
-          c !== '_supaglue_id'
+          c !== '_supaglue_id' &&
+          c !== '_supaglue_object_name'
       );
 
       const columnsStr = columns.join(',');
@@ -333,17 +340,17 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
         return value;
       });
-
+      const maybeObjectNameColumn = objectType === 'custom' ? ', _supaglue_object_name' : '';
       await client.query(
         `INSERT INTO ${qualifiedTable} (${columnsStr})
 VALUES
   (${columnPlaceholderValuesStr})
-ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id)
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id${maybeObjectNameColumn})
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         values
       );
     } catch (err) {
-      childLogger.error({ err }, 'Error upserting common object record');
+      childLogger.error({ err }, 'Error upserting record');
       throw err;
     } finally {
       client.release();
@@ -354,16 +361,19 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     client: PoolClient,
     { providerName, customerId, applicationId }: ConnectionSafeAny,
     schema: string,
-    table: string,
+    objectName: string,
     inputStream: Readable,
     heartbeat: () => void,
     childLogger: pino.Logger,
     diffAndDeleteRecords: boolean,
-    setup: () => Promise<void>
+    setup: () => Promise<void>,
+    objectType: 'standard' | 'custom'
   ): Promise<WriteObjectRecordsResult> {
+    const table = objectType === 'standard' ? objectName : kCustomObject;
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
     const dedupedTempTable = `"deduped_temp_${table}"`;
+
     // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
     const isSchemasOrEntitiesApplication = schemasAndEntitiesEnabled(applicationId);
 
@@ -382,13 +392,15 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         '_supaglue_raw_data',
         // This is used to support entities + schemas. We should write empty object otherwise (e.g. for managed destinations).
         '_supaglue_mapped_data',
+        ...(objectType === 'custom' ? ['_supaglue_object_name'] : []),
       ];
       const columnsToUpdate = columns.filter(
         (c) =>
           c !== '_supaglue_application_id' &&
           c !== '_supaglue_provider_name' &&
           c !== '_supaglue_customer_id' &&
-          c !== '_supaglue_id'
+          c !== '_supaglue_id' &&
+          c !== '_supaglue_object_name'
       );
 
       // Output
@@ -431,6 +443,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 _supaglue_mapped_data: isSchemasOrEntitiesApplication
                   ? toTransformedPropertiesWithAdditionalFields(record.mappedProperties)
                   : {},
+                _supaglue_object_name: objectName,
               };
 
               ++tempTableRowCount;
@@ -479,7 +492,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       // Copy from deduped temp table
       const columnsToUpdateStr = columnsToUpdate.join(',');
       const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
-
+      const maybeObjectNameColumn = objectType === 'custom' ? ', _supaglue_object_name' : '';
       // Paginate
       const batchSize = 10000;
       for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
@@ -490,8 +503,10 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
-SELECT DISTINCT ON (_supaglue_id) ${columns.join(',')} FROM ${dedupedTempTable} OFFSET ${offset} limit ${batchSize}
-ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id)
+SELECT DISTINCT ON (_supaglue_id${maybeObjectNameColumn}) ${columns.join(
+          ','
+        )} FROM ${dedupedTempTable} OFFSET ${offset} limit ${batchSize}
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id${maybeObjectNameColumn})
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
         heartbeat();
@@ -499,6 +514,8 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
 
       childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
+      // TODO: Watch for sql-injection attack around custom object name.... we should probably use a better
+      // sql library so we are not templating raw SQL strings
       if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
         childLogger.info('Marking rows as deleted [IN PROGRESS]');
         await client.query(`
@@ -508,10 +525,12 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
             destination._supaglue_application_id = '${applicationId}' AND
             destination._supaglue_provider_name = '${providerName}' AND
             destination._supaglue_customer_id = '${customerId}'
+            ${objectType === 'custom' ? `AND destination._supaglue_object_name = '${objectName}'` : ''}
           AND NOT EXISTS (
               SELECT 1
               FROM ${dedupedTempTable} AS temp
               WHERE temp._supaglue_id = destination._supaglue_id
+              
           );
         `);
         childLogger.info('Marking rows as deleted [COMPLETED]');
