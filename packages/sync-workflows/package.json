@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/sync-workflows",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
     "@supaglue/core": "workspace:*",
