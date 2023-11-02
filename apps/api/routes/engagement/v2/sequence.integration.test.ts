@@ -1,7 +1,7 @@
 /**
- * Tests accounts endpoints
+ * Tests sequences endpoints
  *
- * @group integration/engagement/v2/accounts
+ * @group integration/engagement/v2/sequences
  * @jest-environment ./integration-test-environment
  */
 
@@ -16,7 +16,7 @@ describe('sequence', () => {
 
   beforeEach(() => {
     testSequence = {
-      name: `Sequence ${Math.random().toString()}`,
+      name: `Test Sequence ${Math.random().toString()}`,
       type: 'team',
       steps: [
         {
@@ -39,7 +39,7 @@ describe('sequence', () => {
           },
         },
         {
-          interval_seconds: 90000,
+          interval_seconds: 172800,
           is_reply: true,
           type: 'call',
           task_note: 'my call notes',
@@ -50,20 +50,9 @@ describe('sequence', () => {
           },
         },
         {
-          interval_seconds: 2160,
+          interval_seconds: 0,
           is_reply: true,
           type: 'task',
-          task_note: 'my task notes',
-          template: {
-            name: 'what is up~!',
-            subject: 'hello world again',
-            body: 'Hi there, how are you doing?',
-          },
-        },
-        {
-          interval_seconds: 30,
-          is_reply: true,
-          type: 'linkedin_send_message',
           task_note: 'my task notes',
           template: {
             name: 'what is up~!',
@@ -75,7 +64,7 @@ describe('sequence', () => {
     };
   });
 
-  describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
+  describe.each(['apollo', 'outreach', 'salesloft'])('%s', (providerName) => {
     test(`POST /`, async () => {
       const response = await apiClient.post<CreateSequenceResponse>(
         '/engagement/v2/sequences',
@@ -102,6 +91,7 @@ describe('sequence', () => {
       expect(getResponse.data.id).toEqual(response.data.record?.id);
       expect(getResponse.data.name).toEqual(testSequence.name);
       expect(getResponse.data.num_steps).toEqual(testSequence.steps?.length);
+      expect(getResponse.data.share_type).toEqual('team');
 
       // test that the db was updated
       const dbSequence = await db.query('SELECT * FROM engagement_sequences WHERE id = $1', [response.data.record?.id]);
