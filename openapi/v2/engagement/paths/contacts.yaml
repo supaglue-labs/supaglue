@@ -52,6 +52,37 @@ post:
                 $ref: ../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
+get:
+  operationId: listContacts
+  summary: List contacts
+  tags:
+    - Contacts
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+    - $ref: ../../../common/components/parameters/query/read_from_cache.yaml
+    - $ref: ../../../common/components/parameters/query/modified_after.yaml
+    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+  responses:
+    200:
+      description: Paginated Contacts
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/contact.yaml
+            required:
+              - pagination
+              - records
+
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../common/components/parameters/header/x-provider-name.yaml
