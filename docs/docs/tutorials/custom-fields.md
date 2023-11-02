@@ -89,6 +89,7 @@ curl -L -X POST 'https://api.supaglue.io/crm/v2/contacts/_upsert' \
   "record": {
     "first_name": "John",
     "last_name": "Doe",
+    "email": "john.doe@example.com",
     "custom_fields": {
         "total_website_visits_7d": 52
     }
