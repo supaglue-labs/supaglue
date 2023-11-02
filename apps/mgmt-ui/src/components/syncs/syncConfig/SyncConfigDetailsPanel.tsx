@@ -7,7 +7,7 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useEntities } from '@/hooks/useEntities';
-import { useLekko } from '@/hooks/useLekko';
+import { useEntitiesWhitelistConfig } from '@/hooks/useLekko';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
@@ -49,7 +49,7 @@ type SyncConfigDetailsPanelImplProps = {
 function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImplProps & SupaglueProps) {
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
-  const lekko = useLekko();
+  const entitiesWhitelistConfig = useEntitiesWhitelistConfig();
   const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations = [], isLoading: isLoadingDestinations } = useDestinations();
@@ -414,7 +414,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   }}
                 />
               </Stack>
-              {entitiesEnabled(lekko.entitiesWhitelistConfig.applicationIds, activeApplicationId) && (
+              {entitiesEnabled(entitiesWhitelistConfig.applicationIds, activeApplicationId) && (
                 <Stack className="gap-2">
                   <Typography variant="subtitle1">Entities</Typography>
                   <Autocomplete

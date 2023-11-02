@@ -2,8 +2,9 @@ import { SupaglueHead } from '@/components/SupaglueHead';
 import { NotificationManager } from '@/context/notification';
 import Navigator from '@/layout/Navigator';
 import '@/styles/globals.css';
+import { getEntitiesWhitelistConfig, getSchemasWhitelistConfig } from '@/utils/lekko';
 import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut, useUser } from '@clerk/nextjs';
-import { ClientContext, EvaluationType, LekkoConfigProvider } from '@lekko/react-sdk';
+import { LekkoConfigProvider } from '@lekko/react-sdk';
 import { Box, CssBaseline, StyledEngineProvider, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { LicenseInfo } from '@mui/x-license-pro';
@@ -184,21 +185,6 @@ theme = {
 
 const drawerWidth = 256;
 
-const EVALUATIONS = [
-  {
-    namespaceName: 'mgmt-ui',
-    configName: 'entities_whitelist',
-    evaluationType: EvaluationType.JSON,
-    context: new ClientContext(),
-  },
-  {
-    namespaceName: 'mgmt-ui',
-    configName: 'schemas_whitelist',
-    evaluationType: EvaluationType.JSON,
-    context: new ClientContext(),
-  },
-];
-
 export default function App({ Component, pageProps: { session, signedIn, ...pageProps } }: AppProps) {
   const router = useRouter();
   const { pathname } = useRouter();
@@ -214,6 +200,29 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
     };
   }, []);
 
+  // If Lekko client API key is present, use real provider to fetch configs.
+  // Otherwise, use no-op provider.
+  const OptionalLekkoConfigProvider = ({ children }: { children: ReactNode }) => {
+    const lekkoAPIKey = process.env.NEXT_PUBLIC_LEKKO_CLIENT_API_KEY;
+    if (lekkoAPIKey) {
+      return (
+        <LekkoConfigProvider
+          configRequests={[getEntitiesWhitelistConfig(), getSchemasWhitelistConfig()]}
+          settings={{
+            apiKey: process.env.NEXT_PUBLIC_LEKKO_CLIENT_API_KEY,
+            repositoryName: 'dynamic-config',
+            repositoryOwner: 'supaglue-labs',
+          }}
+        >
+          {children}
+        </LekkoConfigProvider>
+      );
+    }
+
+    // TODO: Replace with no-op provider
+    return <>{children}</>;
+  };
+
   if (!IS_CLOUD) {
     if (!signedIn && !isPublicPage) {
       return null;
@@ -221,14 +230,7 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
     return (
       <PostHogProvider client={posthog}>
         <SessionProvider session={session}>
-          <LekkoConfigProvider
-            configRequests={EVALUATIONS}
-            settings={{
-              apiKey: 'key-goes-here',
-              repositoryName: 'supaglue-test',
-              repositoryOwner: 'lekkodev',
-            }}
-          >
+          <OptionalLekkoConfigProvider>
             <StyledEngineProvider injectFirst>
               <ThemeProvider theme={theme}>
                 <NotificationManager>
@@ -238,7 +240,7 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
                 </NotificationManager>
               </ThemeProvider>
             </StyledEngineProvider>
-          </LekkoConfigProvider>
+          </OptionalLekkoConfigProvider>
         </SessionProvider>
       </PostHogProvider>
     );
@@ -248,26 +250,28 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
     <PostHogProvider client={posthog}>
       <ClerkProvider {...pageProps}>
         <PosthogClerkUserIdentifier>
-          <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
-              <NotificationManager>
-                <InnerApp signedIn={signedIn} {...pageProps}>
-                  {isPublicPage ? (
-                    <Component {...pageProps} />
-                  ) : (
-                    <>
-                      <SignedIn>
-                        <Component {...pageProps} />
-                      </SignedIn>
-                      <SignedOut>
-                        <RedirectToSignIn />
-                      </SignedOut>
-                    </>
-                  )}
-                </InnerApp>
-              </NotificationManager>
-            </ThemeProvider>
-          </StyledEngineProvider>
+          <OptionalLekkoConfigProvider>
+            <StyledEngineProvider injectFirst>
+              <ThemeProvider theme={theme}>
+                <NotificationManager>
+                  <InnerApp signedIn={signedIn} {...pageProps}>
+                    {isPublicPage ? (
+                      <Component {...pageProps} />
+                    ) : (
+                      <>
+                        <SignedIn>
+                          <Component {...pageProps} />
+                        </SignedIn>
+                        <SignedOut>
+                          <RedirectToSignIn />
+                        </SignedOut>
+                      </>
+                    )}
+                  </InnerApp>
+                </NotificationManager>
+              </ThemeProvider>
+            </StyledEngineProvider>
+          </OptionalLekkoConfigProvider>
         </PosthogClerkUserIdentifier>
       </ClerkProvider>
     </PostHogProvider>

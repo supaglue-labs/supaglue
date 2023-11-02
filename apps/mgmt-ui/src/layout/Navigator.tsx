@@ -11,7 +11,7 @@ import SchemaIcon from '@mui/icons-material/Schema';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SyncIcon from '@mui/icons-material/Sync';
 
-import { useLekko } from '@/hooks/useLekko';
+import { useEntitiesWhitelistConfig, useSchemasWhitelistConfig } from '@/hooks/useLekko';
 import type { DrawerProps } from '@mui/material';
 import {
   Box,
@@ -45,7 +45,8 @@ const item = {
 export default function Navigator(props: DrawerProps & SupaglueProps) {
   const { ...other } = props;
   const applicationId = useActiveApplicationId();
-  const lekko = useLekko();
+  const schemasWhitelistConfig = useSchemasWhitelistConfig();
+  const entitiesWhitelistConfig = useEntitiesWhitelistConfig();
   const categories: {
     id: string;
     children: Category[];
@@ -118,8 +119,8 @@ export default function Navigator(props: DrawerProps & SupaglueProps) {
   ];
 
   if (
-    !schemasEnabled(lekko.schemasWhitelistConfig.applicationIds, applicationId) &&
-    !entitiesEnabled(lekko.entitiesWhitelistConfig.applicationIds, applicationId)
+    !schemasEnabled(schemasWhitelistConfig.applicationIds, applicationId) &&
+    !entitiesEnabled(entitiesWhitelistConfig.applicationIds, applicationId)
   ) {
     categories[0].children = categories[0].children.filter((category) => category.id !== 'Data Model');
   }

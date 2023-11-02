@@ -4,7 +4,7 @@ import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
-import { useLekko } from '@/hooks/useLekko';
+import { useSchemasWhitelistConfig } from '@/hooks/useLekko';
 import { useProviders } from '@/hooks/useProviders';
 import { useSchemas } from '@/hooks/useSchemas';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
@@ -57,7 +57,7 @@ export default function ProviderDetailsPanel({
   category,
   isLoading,
 }: ProviderDetailsPanelProps & SupaglueProps) {
-  const lekko = useLekko();
+  const schemasWhitelistConfig = useSchemasWhitelistConfig();
   const shouldAllowManagedOauth = [
     'salesforce',
     'salesforce_marketing_cloud_account_engagement',
@@ -283,7 +283,7 @@ export default function ProviderDetailsPanel({
             )}
           </Stack>
         )}
-        {supportsObjectToSchema && schemasEnabled(lekko.schemasWhitelistConfig.applicationIds, activeApplicationId) && (
+        {supportsObjectToSchema && schemasEnabled(schemasWhitelistConfig.applicationIds, activeApplicationId) && (
           <Stack className="gap-2">
             <Typography variant="subtitle1">Object to Schema Mapping</Typography>
             <SchemaToObjectMapping
