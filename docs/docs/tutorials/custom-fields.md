@@ -74,6 +74,14 @@ And return a response that looks like:
 }
 ```
 
+:::info
+
+The best time to programmatically create a custom field in a customer's CRM is immediately after the connection is created, so that the custom field can be used in all subsequent writes.
+
+We recommend creating the custom field as part of a webhook handler when receiving the `connection.created` webhook event from Supaglue. See [consuming notifications webhooks](/tutorials/listen-for-webhooks) for more details.
+
+:::
+
 ## Write to the custom field
 
 Use Supaglue's CRM ([Upsert Contact](https://docs.supaglue.com/api/v2/crm/upsert-contact)) API to create or update a Contact with a value for the custom field we just created above. The curl will look like:

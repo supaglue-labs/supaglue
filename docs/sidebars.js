@@ -162,12 +162,12 @@ const sidebars = {
       items: [
         {
           id: 'tutorials/read-write-contacts',
-          label: 'Read/write contacts',
+          label: 'Read & write contacts',
           type: 'doc',
         },
         {
           id: 'tutorials/custom-fields',
-          label: 'Create/write to custom fields',
+          label: 'Create & write to custom fields',
           type: 'doc',
         },
       ],
