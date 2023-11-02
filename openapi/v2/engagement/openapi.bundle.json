@@ -1168,7 +1168,7 @@
       "post": {
         "operationId": "createSequenceState",
         "summary": "Create sequence state",
-        "description": "In other words, adding a sequencestate to sequence. \n",
+        "description": "In other words, adding a sequencestate to sequence.\n",
         "tags": [
           "Sequence States"
         ],
@@ -1235,7 +1235,7 @@
         "operationId": "listSequenceStates",
         "summary": "List sequence states",
         "tags": [
-          "SequenceStates"
+          "Sequence States"
         ],
         "security": [
           {

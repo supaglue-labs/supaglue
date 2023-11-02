@@ -2,7 +2,7 @@ post:
   operationId: createSequenceState
   summary: Create sequence state
   description: |
-    In other words, adding a sequencestate to sequence. 
+    In other words, adding a sequencestate to sequence.
   tags:
     - Sequence States
   security:
@@ -46,7 +46,7 @@ get:
   operationId: listSequenceStates
   summary: List sequence states
   tags:
-    - SequenceStates
+    - Sequence States
   security:
     - x-api-key: []
   parameters:
