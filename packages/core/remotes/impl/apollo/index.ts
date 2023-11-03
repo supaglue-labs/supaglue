@@ -17,7 +17,7 @@ import type {
 } from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
-import { BadRequestError, InternalServerError } from '../../../errors';
+import { BadRequestError, InternalServerError, NotFoundError } from '../../../errors';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import { parseProxyConfig } from '../../../lib/util';
 import type { ConnectorAuthConfig } from '../../base';
@@ -496,7 +496,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
           contact = await this.#api.getContact({ params: { id: record.contactId } }).then((r) => r.contact);
         }
         if (!contact) {
-          throw new BadRequestError(`Unable to find contact ${record.contactId} in Apollo`);
+          throw new NotFoundError(`Unable to find contact ${record.contactId} in Apollo`);
         }
 
         // For whatever reason the campaignStatus id seems to be the same
