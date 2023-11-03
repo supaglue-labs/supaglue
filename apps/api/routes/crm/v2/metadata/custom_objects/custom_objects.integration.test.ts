@@ -136,7 +136,7 @@ describe('custom_objects', () => {
 
       // sleep for 12 seconds to allow hubspot to update indexes
       if (providerName === 'hubspot') {
-        await new Promise((resolve) => setTimeout(resolve, 30_000));
+        await new Promise((resolve) => setTimeout(resolve, 12_000));
       }
 
       const updatedCustomObject = {
@@ -200,9 +200,9 @@ describe('custom_objects', () => {
       );
       expect(updateResponse.status).toEqual(204);
 
-      // sleep for 30 seconds to allow hubspot to update indexes
+      // sleep for 60 seconds to allow hubspot to update indexes
       if (providerName === 'hubspot') {
-        await new Promise((resolve) => setTimeout(resolve, 30_000));
+        await new Promise((resolve) => setTimeout(resolve, 60_000));
       }
 
       const getResponse = await apiClient.get<GetCustomObjectSchemaResponse>(
