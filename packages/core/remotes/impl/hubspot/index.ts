@@ -2041,18 +2041,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const response = await this.#client.crm.schemas.coreApi.getById(schemaId);
     const existingObject = toCustomObject(response);
 
-    const labels =
-      params.labels.singular === existingObject.labels.singular && params.labels.plural === existingObject.labels.plural
-        ? undefined
-        : params.labels;
-
-    // Update the main object
-    await this.#client.crm.schemas.coreApi.update(response.objectTypeId, {
-      // ignoring name because you can't update that in hubspot
-      labels,
-      requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.id),
-    });
-
     // Figure out which fields to create/update/delete
     const fieldNamesToDelete = existingObject.fields
       .map((field) => field.id)
@@ -2060,6 +2048,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       .filter((id) => {
         return !params.fields.map((field) => field.id).includes(id);
       });
+    if (fieldNamesToDelete.length) {
+      throw new BadRequestError(
+        `Cannot delete fields from custom object schema in hubspot. Fields to delete: ${fieldNamesToDelete.join(', ')}`
+      );
+    }
     const fieldsToUpdate = params.fields.filter((field) => {
       const existingField = existingObject.fields.find((f) => f.id === field.id);
       if (!existingField) {
@@ -2073,11 +2066,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       );
     });
     const fieldsToCreate = params.fields.filter((field) => !existingObject.fields.map((f) => f.id).includes(field.id));
-
-    // Delete fields
-    await this.#client.crm.properties.batchApi.archive(response.objectTypeId, {
-      inputs: fieldNamesToDelete.map((id) => ({ name: id })),
-    });
 
     // Update fields
     for (const field of fieldsToUpdate) {
@@ -2104,6 +2092,18 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         ...toHubspotTypeAndFieldType(field.type),
         groupName: unarchivedGroups[0].name, // TODO
       })),
+    });
+
+    const labels =
+      params.labels.singular === existingObject.labels.singular && params.labels.plural === existingObject.labels.plural
+        ? undefined
+        : params.labels;
+
+    // Update the main object
+    await this.#client.crm.schemas.coreApi.update(response.objectTypeId, {
+      // ignoring name because you can't update that in hubspot
+      labels,
+      requiredProperties: params.fields.filter((field) => field.isRequired).map((field) => field.id),
     });
   }
 

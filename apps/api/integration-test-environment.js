@@ -31,11 +31,23 @@ const toSalesloftObjectName = {
 const getDeletePassthroughRequest = (id, objectName, providerName) => {
   switch (providerName) {
     case 'salesforce':
+      if (objectName === 'custom_object') {
+        return {
+          method: 'DELETE',
+          path: `/services/data/v57.0/tooling/sobjects/CustomObject/${id}`,
+        };
+      }
       return {
         method: 'DELETE',
         path: `/services/data/v57.0/sobjects/${objectName}/${id}`,
       };
     case 'hubspot':
+      if (objectName === 'custom_object') {
+        return {
+          method: 'DELETE',
+          path: `/crm/v3/schemas/${id}`,
+        };
+      }
       return {
         method: 'DELETE',
         path: `/crm/v3/objects/${toHubspotPluralObjectName[objectName]}/${id}`,
