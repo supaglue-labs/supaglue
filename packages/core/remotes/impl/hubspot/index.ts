@@ -2315,7 +2315,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
     switch (code) {
       case 400:
-        if (message === 'one or more associations are not valid') {
+        if (
+          message === 'one or more associations are not valid' ||
+          message.includes('Some required properties were not set')
+        ) {
           return new BadRequestError(message, error);
         }
         return new InternalServerError(message, error);
