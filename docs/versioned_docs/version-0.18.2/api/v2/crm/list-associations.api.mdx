@@ -1,0 +1,52 @@
+---
+id: list-associations
+title: "List associations for a record and target object"
+description: "Get a list of associations"
+sidebar_label: "List associations for a record and target object"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdV1tv2zYU/iuE9pIAlu0kbuwaw7BsHbqg7RAkzYYiMRJaOrbZSaRKUnYEx/9955CWLSuKN7Tpy/SQhDz323eYZaAy0NwKJc/jYBgkwtgzY1Qk3J0JWoHlUxMMb4Kd61ErMBDlWtgCacvgIeSZCP8GOo1WSI3BRFpkxI1q34JlnJFypiaMVzTdylt5lWeZ0nZIfz+yC63mIgbN8HtkaxrE7JGI4fZjlZMn/p6PTaYs85KfwDD/OeIVT8BMlI6ggXghMoi1mIOT/EOxKvHDFXtTSJ6KyNSJmJ6Ma56CBW1cIpAPMGCjcrR0pyFSOr4TMTIKSsSXHHSBBxPNIOXBcBnYInMCVgs5DVatQMOXXGjAalidw6pV16nGnyGyL6HQcj0F+4IKH8IoN1aloMNtyDPgWM39GuGBp1lCd2mx1XEU1Pvo4wxYSWbnb5idcctyKdDppGDYNdKKicDa2iqjkKzA3DGeZYmIXN8Fe6PI1i0YupuvisNs2q0xiNICW1uoOTOiG+xlacCQoeNul37t6qnNaaSkxfiJrxJo57Mh5uVTrzdlR18QA6zwptBunlhTYeRac+oIYSE1TQpqbklMuLFc4qTRsMvqvLMx2AWAZHahmJ8O037iQ0XgzvtNI9SU8N2ZeMLRlHrKODlGLeLlfBvR2atbO4a+JkpOsZkUubitbaTSjMuiYn875w0ubAV7r05PTnmvGw76cBL2+t1+OO6dROHJ6wlEk9d8MOmNSevuYH5zVF7dv0clLUdzW/v/MSoeH3d7/UEv5P2jcdjrdXk46A2Ow+gkfsXHp72jo+4kWO3gxs0zJW5IaIM39bLXE4bTY4X1vm3NoAv+awWI1zNF6w6FHITbGR46fHegDOh5Ceu5TggCrM3MsNPBXdc2ecanSQ5toTqRTjvz4yd1uVqzsLOL82BVWZlXFLBv9cri3A5cJt4BTdwGkEqeOhTVJu/inCEXVpbxJFELFsMci42DZdxdFIHx0OgcWpG2iSLDFKfX0W0fDdoEvGUGryUhasx+vfzgxFqbRhluELMMlNoi5YJSFavI/LzJEU4M0naTuENc1WP5AT92Lq1WcR7RHT0O/oIEmYGCoShK1yjuA/TvkKHVPEUQdDVss08qZxECUG5QZiaM40ThBRbBaUkR6gR2MVF1HOIut8UGmw1bCLyXzhaFj4gKU6WLNvly86eABUN3UkQ138EM8Z4YRwdljJSFdjXQTpZwi2xpx0uGXtJQCx2SWhf3L9y4GrHry/e38v7+/lbub701E6UxU8amXFaq856eXdXedn7yEg+4jEuEaEb05Xa1/J8fcuvhs/BgqUrCZdO17HKNEDuo5d7AM0w23S+XYyzZtU5WK7r2byjCjVgYPk4I8iY8MbAnsweXa3Q8ZM8541CiCSHnnIZvGAT0ivl+Jjft8b3t1R+mW3sjOmhBBt1/Gq0SC7862S/5pNwTUv1p/O0pbHpG7nWg/qrdccEzneGKyKoZf/KSpAps1ufb3z4iL89pOKrby6+q9R9UmZIki4ru6lrz5uknOdPI/iMBIu7FnzbsnvKswGZLem5KxgjX/z8G/RMz
+sidebar_class_name: "get api-method"
+info_path: api/v2/crm/unified-crm-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>List associations for a record and target object</h1>
+
+<MethodEndpoint method={"get"} path={"/associations"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/crm/unified-crm-api"}></SecuritySchemes>
+
+
+
+Get a list of associations
+
+Support:
+
+| Provider    | Supported |
+| ----------- | --------- |
+| Hubspot     | Yes       |
+| Salesforce  | Yes       |
+| Pipedrive   | No        |
+| MS Dynamics | No        |
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"source_record_id","in":"query","schema":{"type":"string"},"required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"source_object","in":"query","schema":{"type":"string"},"required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"target_object","in":"query","schema":{"type":"string"},"required":true}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Associations
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>results</strong><span className={"openapi-schema__name"}> object[]</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"association_schema_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"source_object"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The name of the object that the source record belongs to.","example":"company"}}></SchemaItem><SchemaItem collapsible={false} name={"source_record_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"45636a40-87e3-4707-b43c-39fecf9a8f4b"}}></SchemaItem><SchemaItem collapsible={false} name={"target_object"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The name of the object that the target record belongs to.","example":"contact"}}></SchemaItem><SchemaItem collapsible={false} name={"target_record_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"ad204784-a71b-440a-8482-c3d5ab64110f"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"results\": [\n    {\n      \"association_schema_id\": \"string\",\n      \"source_object\": \"company\",\n      \"source_record_id\": \"45636a40-87e3-4707-b43c-39fecf9a8f4b\",\n      \"target_object\": \"contact\",\n      \"target_record_id\": \"ad204784-a71b-440a-8482-c3d5ab64110f\"\n    }\n  ]\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

@@ -1,0 +1,42 @@
+---
+id: delete-connection
+title: "Delete connection"
+description: "Delete connection"
+sidebar_label: "Delete connection"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VNtu00AQ/ZXV8gJSarcVD8hCiEL7UFEk1FIh1EZka0/iFfauu5fQyNp/Z2btOHYTxAMSiZTYO7czZ85sy3UDRjip1WXBM15ABQ4+aqUgp0M+406sLM/u+O7Q8vmMW8i9kW6DppY/HYlGHv0EepsHtBqwDToCRrb89Pg1/RVgcyObmDbjZ4pB3bgNe9DFhknLDDhvFBRMK2Z9noO1S1+xiAhDEh7C7FmO84iW5WO4jTCixlNjIzKFL+iZe+t0DeaHLNBHUnAjXMkJ6aOXBrB5ZzxgX3kJtSC8btNQqHVGqhVV32UbCv5LPqQJgZZ6x3uEj1kynm4B27QdYQ/prjRZxjgCp6GY9bZzbypMVDrX2CxNcT6J9Y1YVR4SqdN6Vbt0fcqfU3rT+7CzL5c8jOZ8Q3108xxNe+gKTz7hwWxL0c6np6cEUYDZq4dlGHoxp5moKv0L572GikRp41nUAXNlDyhQtqWmwtRol+M4OXmTnJBUpauo+GehxArRKhejZjQwJ3JHYT2+bZ9oxPFIoqrQuX0/cJTrGm1TEifGPTW+wA+7VM7owseh3OP3G1ToDNQLNTFFxrCkp5e4gAn7rj3LhWLeYkCJO0E+GFnHKLYVApPKwarbWsuEKkYbYBOqGqF8EDayxm6vr+hwsVjcq7/oofei5hptHRYecXZo3SYUDGpw8OTSphIyZooktr2074ZdtBieTRdz1Ec0TvYMxVgiJkrRtg/Y3K2pQqDjRw8mXj0zvhZGigdSAa5AIS0944ItRWVhDy3JAtlHwC+v+7V9xUhHh7rYCl2RpNeCtJNxfIx7MLlg6Kb4n6UnLIV5GN0r5xdXF18v0FV4In+8rt1u9g/E1sEq4z3uytEvdXjQ/S3pDS+Cd4N7Z/ljwHAtdN7U7zyE8BszdkF7
+sidebar_class_name: "delete api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Delete connection</h1>
+
+<MethodEndpoint method={"delete"} path={"/customers/{customer_id}/connections/{connection_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+
+
+Delete connection
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"connection_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"204"} value={"204"}><div>
+
+An empty body is returned on successful deletion.
+
+</div><div></div></TabItem></ApiTabs></div></div>
+      

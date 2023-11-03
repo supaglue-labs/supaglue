@@ -1,0 +1,42 @@
+---
+id: get-customers
+title: "List customers"
+description: "Get a list of customers"
+sidebar_label: "List customers"
+hide_title: true
+hide_table_of_contents: true
+api: eJyFVG1P2zAQ/iuW9zVpoUNQqmmCoQmhgTSNoWkCBK5zbcwS29hOR1Tlv+8uSVu3E5BKjXMvz709viU3FpwIyuiLjE/4HMJZ5YMpwXme8CDmnk9u+UZ2n3APsnIq1KhY8pdUWJX+Afq6b1CbgZdOWUJEvHMITLBC+cDMjMkI2oG3RntA/CUf7e3Ra9s3TkQaHUAHMhLWFkq2KQ+fPFkuuZc5lIJOobaAvsI5UaOfClD6SG6mTyADKqyjwoPq4keYDyqL7H1wSs/RHl5EaQsSZWMJ04+zWTqeHs3Sg5k4SqfjDNLxwfHoeDQ7lOLwmDeYcp/+u4C1qVy6bk1aafVcQRqllCICAmpRwttIV/WZKa3QNbvQklywKap424c6K2Q4KWvZ+Q7wzZuGJvRcKQcZEWCnQX0yqwDbxSIJggotuFcU5WGlRVh6El5CyE3PNxqGCDl+DGN+eHALOhHJKodF8DwE6yfDIRJu4Csr5kUFA2WG5bwMw8WI73Lvurdhp98veBMR95rY0g0+ou+GO1Z9g3pV4ySyQT4RcA4iw2J242EYhlYsGCaKwvxlGSygIJr5ViYleDzlfUINoc0MBaZCO4y9wf54sM83HbwSWswxWx1ar2Q1L3Lr81vVuR4HctRIf7LuEQ002WnilrLZLeUDPsih4ExWSZLd4e8XFGgMVAsVsZ0Zw5AVfbQcGbDfpmJSaFZ5dMiVb23Qs2y91puAKbzX824BeSZ0xrA+DW1MP6CobSpfhG+7xm5+XJLw8fHxTr/Dh96KirPGBwwc9eySNlJMt636l5t988YG6+kS4CUMbSFUG6rt8rJn9C2X8eLMMQ0SLpdTrOfGFU1DYrztrl2fCV8Ip8SUBo/LNFkRja5AS1F+ihyydGMWggY++X8ZEs/Xt+v860+0FRXlEtO743J/IPSVStcRdsz7Ljz9N8kr5p9oPnhxPq/NO82rDutr1FlT/+5xO/wDZJM+pA==
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>List customers</h1>
+
+<MethodEndpoint method={"get"} path={"/customers"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+
+
+Get a list of customers
+
+## Request
+
+<div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Customers
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"your-customers-unique-application-id"}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"MyCompany Inc"}}></SchemaItem><SchemaItem collapsible={false} name={"email"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"contact@mycompany.com"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"[\n  {\n    \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n    \"customer_id\": \"your-customers-unique-application-id\",\n    \"name\": \"MyCompany Inc\",\n    \"email\": \"contact@mycompany.com\"\n  }\n]"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

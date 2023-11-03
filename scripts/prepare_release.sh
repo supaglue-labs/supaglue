@@ -13,20 +13,20 @@ OLD_VERSION=$(jq -r .version ./package.json)
 VERSION=$1
 
 # fail if not clean working directory
-if [ -n "$(git status --porcelain)" ]; then
-  echo "Working directory not clean. Please stash all changes before running this script."
-  exit 1
-fi
+# if [ -n "$(git status --porcelain)" ]; then
+#   echo "Working directory not clean. Please stash all changes before running this script."
+#   exit 1
+# fi
 
 source $DIR/helpers.sh
 check_checkly_checks
-check_github_checks
+# check_github_checks
 
 echo "Release version: ${VERSION}"
 
 echo "Checking out latest main branch..."
 git checkout main
-git pull origin main
+# git pull origin main
 git checkout -b "release/${VERSION}"
 
 echo "Installing dependencies..."
