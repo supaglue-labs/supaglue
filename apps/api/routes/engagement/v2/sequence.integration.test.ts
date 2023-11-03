@@ -144,24 +144,34 @@ describe('sequence', () => {
         objectName: 'contact',
       });
 
-      const stateResponse = await apiClient.post<CreateSequenceStateResponse>(
-        '/engagement/v2/sequence_states',
-        {
-          record: {
-            contact_id: contactRes.data.record!.id,
-            sequence_id: response.data.record!.id,
-            mailbox_id:
-              providerName === 'outreach'
-                ? OUTREACH_MAILBOX_ID
-                : providerName === 'apollo'
-                ? APOLLO_MAILBOX_ID
-                : undefined,
-          } satisfies CreateSequenceStateRequest['record'],
-        },
-        { headers: { 'x-provider-name': providerName } }
-      );
+      const addContactToSequence = () =>
+        apiClient.post<CreateSequenceStateResponse>(
+          '/engagement/v2/sequence_states',
+          {
+            record: {
+              contact_id: contactRes.data.record!.id,
+              sequence_id: response.data.record!.id,
+              mailbox_id:
+                providerName === 'outreach'
+                  ? OUTREACH_MAILBOX_ID
+                  : providerName === 'apollo'
+                  ? APOLLO_MAILBOX_ID
+                  : undefined,
+            } satisfies CreateSequenceStateRequest['record'],
+          },
+          { headers: { 'x-provider-name': providerName } }
+        );
+
+      const stateResponse = await addContactToSequence();
       expect(stateResponse.status).toEqual(201);
       expect(stateResponse.data.record?.id).toBeTruthy();
+
+      if (providerName === 'apollo') {
+        // Ensure that apollo can add a contact who is already in sequence without throwing error
+        const stateResponse2 = await addContactToSequence();
+        expect(stateResponse2.status).toEqual(201);
+        expect(stateResponse2.data.record?.id).toBeTruthy();
+      }
 
       addedObjects.push({
         id: stateResponse.data.record?.id as string,
