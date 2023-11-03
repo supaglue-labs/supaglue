@@ -156,6 +156,7 @@ export class ConnectionAndSyncService {
         providerId: provider.id,
         status,
         credentials: await encrypt(JSON.stringify(params.credentials)),
+        instanceUrl: params.instanceUrl,
       },
       update: {
         category: params.category,
@@ -164,6 +165,7 @@ export class ConnectionAndSyncService {
         providerId: provider.id,
         status,
         credentials: await encrypt(JSON.stringify(params.credentials)),
+        instanceUrl: params.instanceUrl,
       },
       where: {
         customerId_providerId: {
