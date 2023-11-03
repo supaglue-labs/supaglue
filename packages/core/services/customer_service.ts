@@ -21,7 +21,7 @@ export class CustomerService {
       },
     });
     if (!customer) {
-      throw new NotFoundError(`Can't find customer with externalId: ${externalId}`);
+      throw new NotFoundError(`Can't find customer with applicationId ${applicationId} and externalId ${externalId}`);
     }
     return fromCustomerModel(customer);
   }

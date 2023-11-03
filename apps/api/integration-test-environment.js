@@ -81,6 +81,7 @@ class IntegrationEnvironment extends TestEnvironment {
       this.global.db = new Pool(parse(process.env.TESTING_DATABASE_URL));
     }
 
+    // @note: this should be unifiedApiClient and we should create a separate mgmtApiClient since they use different headers
     this.global.apiClient = axios.create({
       baseURL: process.env.API_URL ?? 'http://localhost:8080',
       timeout: 120000,
