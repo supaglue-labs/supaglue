@@ -21,11 +21,13 @@ const toPipedriveObjectName = {
 const toOutreachObjectName = {
   contact: 'prospects',
   account: 'accounts',
+  sequence: 'sequences',
 };
 
 const toSalesloftObjectName = {
   contact: 'people',
   account: 'accounts',
+  sequence: 'cadences',
 };
 
 const getDeletePassthroughRequest = (id, objectName, providerName) => {

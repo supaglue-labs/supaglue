@@ -246,7 +246,10 @@ describe('Salesloft mapper tests', () => {
           "step_groups": [
             {
               "automated": true,
-              "automated_settings": undefined,
+              "automated_settings": {
+                "delay_time": 0,
+                "send_type": "after_time_delay",
+              },
               "day": 2,
               "due_immediately": false,
               "reference_id": 1,
@@ -267,7 +270,10 @@ describe('Salesloft mapper tests', () => {
             },
             {
               "automated": true,
-              "automated_settings": undefined,
+              "automated_settings": {
+                "delay_time": 0,
+                "send_type": "after_time_delay",
+              },
               "day": 4,
               "due_immediately": false,
               "reference_id": 2,
