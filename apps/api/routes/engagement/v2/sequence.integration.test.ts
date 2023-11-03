@@ -90,7 +90,7 @@ describe('sequence', () => {
     testSequence = getTestSequence();
   });
 
-  test.skip(`Error body`, async () => {
+  test(`Error body`, async () => {
     testSequence.steps[0].interval_seconds = 123;
     const response = await apiClient.post<CreateSequenceResponse>(
       '/engagement/v2/sequences',
