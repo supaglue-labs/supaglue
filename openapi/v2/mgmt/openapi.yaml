@@ -2,7 +2,7 @@
 # Other than the `webhooks` key, we should not use 3.1.0 features since the validation middleware doesn't support it yet
 openapi: 3.1.0
 info:
-  version: 0.18.1
+  version: 0.18.2
   title: Management API
   contact:
     name: Supaglue
