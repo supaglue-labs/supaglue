@@ -79,10 +79,6 @@ function getTestSequence() {
   } satisfies CreateSequenceRequest['record'];
 }
 
-/** Required for sequence state creation. Hard coding as a result */
-const OUTREACH_MAILBOX_ID = '3';
-const APOLLO_MAILBOX_ID = '651c4cb3520e8800a3808e8a';
-
 describe('sequence', () => {
   let testSequence: ReturnType<typeof getTestSequence>;
 
@@ -144,24 +140,52 @@ describe('sequence', () => {
         objectName: 'contact',
       });
 
-      const addContactToSequence = () =>
-        apiClient.post<CreateSequenceStateResponse>(
+      /** Required for sequence state creation. Hard coding as a result */
+      const getMailboxId = async () => {
+        if (providerName === 'apollo') {
+          const res = await apiClient.post<{ body: { email_accounts: Array<{ id: string; active: boolean }> } }>(
+            '/actions/v2/passthrough',
+            { path: '/v1/email_accounts', method: 'GET' },
+            { headers: { 'x-provider-name': providerName } }
+          );
+          const id = res.data.body.email_accounts.find((e) => e.active)?.id;
+          if (!id) {
+            throw new Error('Unable to find an active mailbox inside Apollo for integration test');
+          }
+          return id;
+        }
+        if (providerName === 'outreach') {
+          const res = await apiClient.post<{
+            body: { data: Array<{ id: number; attributes: { sendDisabled: boolean } }> };
+          }>(
+            '/actions/v2/passthrough',
+            { path: '/api/v2/mailboxes', method: 'GET' },
+            { headers: { 'x-provider-name': providerName } }
+          );
+          const id = res.data.body.data.find((e) => !e.attributes.sendDisabled)?.id;
+          if (!id) {
+            throw new Error('Unable to find an active mailbox inside Outreach for integration test');
+          }
+          return `${id}`;
+        }
+        return undefined;
+      };
+
+      const mailboxId = await getMailboxId();
+
+      const addContactToSequence = async () => {
+        return apiClient.post<CreateSequenceStateResponse>(
           '/engagement/v2/sequence_states',
           {
             record: {
               contact_id: contactRes.data.record!.id,
               sequence_id: response.data.record!.id,
-              mailbox_id:
-                providerName === 'outreach'
-                  ? OUTREACH_MAILBOX_ID
-                  : providerName === 'apollo'
-                  ? APOLLO_MAILBOX_ID
-                  : undefined,
+              mailbox_id: mailboxId,
             } satisfies CreateSequenceStateRequest['record'],
           },
           { headers: { 'x-provider-name': providerName } }
         );
-
+      };
       const stateResponse = await addContactToSequence();
       expect(stateResponse.status).toEqual(201);
       expect(stateResponse.data.record?.id).toBeTruthy();
