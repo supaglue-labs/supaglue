@@ -17,7 +17,7 @@ import type {
 } from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
-import { BadRequestError } from '../../../errors';
+import { BadRequestError, InternalServerError } from '../../../errors';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import { parseProxyConfig } from '../../../lib/util';
 import type { ConnectorAuthConfig } from '../../base';
@@ -409,7 +409,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     params: SequenceStepCreateParams
   ): Promise<CreateCommonObjectRecordResponse<'sequence_step'>> {
     if (!params.sequenceId) {
-      throw new Error('Sequence ID is required');
+      throw new BadRequestError('Sequence ID is required');
     }
     const intOnly = (n: number | null | undefined) => (Number.isInteger(n) ? (n as number) : null);
     const divide = (n: number | null, by: number) => (n != null ? n / by : null);
@@ -470,7 +470,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     const [userId, ...otherUserIds] = Array.from(new Set(records.map((r) => r.userId)));
 
     if (otherSequenceIds.length || otherMailboxIds.length || otherUserIds.length) {
-      throw new Error(
+      throw new BadRequestError(
         'Batch create sequence states only works when all records are for the same sequence, mailbox and user'
       );
     }
@@ -496,7 +496,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
           contact = await this.#api.getContact({ params: { id: record.contactId } }).then((r) => r.contact);
         }
         if (!contact) {
-          throw new Error(`Unable to find contact ${record.contactId} in Apollo`);
+          throw new BadRequestError(`Unable to find contact ${record.contactId} in Apollo`);
         }
 
         // For whatever reason the campaignStatus id seems to be the same
@@ -508,7 +508,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         );
         // Should we issue warnings instead?
         if (!campaignStatus) {
-          throw new Error(`Unable to add contact ${record.contactId} to sequence`);
+          throw new InternalServerError(`Unable to add contact ${record.contactId} to sequence`);
         }
         return {
           id: campaignStatus.id.toString(),
