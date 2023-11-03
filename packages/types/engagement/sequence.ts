@@ -13,7 +13,7 @@ type CoreSequence = {
   metrics: Record<string, number | null | undefined>;
   ownerId: string | null;
   shareType: 'team' | 'private';
-  isArchived: boolean | null | undefined;
+  isArchived: boolean | undefined;
 };
 
 export type Sequence = BaseEngagementModel & CoreSequence;

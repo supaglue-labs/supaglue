@@ -62,27 +62,25 @@ export const apolloEmailerCampaignAddContactIds = z.object({
   userId: z.string().nullish(),
 });
 
-export type ApolloEmailerCampaignAddContactIdsResponse = z.infer<typeof apolloEmailerCampaignAddContactIdsResponse>;
-export const apolloEmailerCampaignAddContactIdsResponse = z
+export type ApolloContact = z.infer<typeof apolloContact>;
+export const apolloContact = z
   .object({
-    contacts: z.array(
+    id: z.string(),
+    emailer_campaign_ids: z.array(z.string()).optional(),
+    contact_campaign_statuses: z.array(
       z
         .object({
           id: z.string(),
-          contact_campaign_statuses: z.array(
-            z
-              .object({
-                id: z.string(),
-                send_email_from_email_account_id: z.string(),
-                emailer_campaign_id: z.string(),
-              })
-              .passthrough()
-          ),
+          send_email_from_email_account_id: z.string(),
+          emailer_campaign_id: z.string(),
         })
         .passthrough()
     ),
   })
   .passthrough();
+
+export type ApolloEmailerCampaignAddContactIdsResponse = z.infer<typeof apolloEmailerCampaignAddContactIdsResponse>;
+export const apolloEmailerCampaignAddContactIdsResponse = z.object({ contacts: z.array(apolloContact) }).passthrough();
 
 /** Aka SequenceStep */
 export type ApolloEmailerStep = z.infer<typeof apolloEmailerStep>;
@@ -232,6 +230,10 @@ export const apolloApi = defineApi({
     path: '/v1/emailer_touches/:id',
     body: apolloEmailerTouchUpdate,
     response: z.object({ emailer_touch: apolloEmailerTouch }),
+  },
+  'GET Contact': {
+    path: '/v1/contacts/:id',
+    response: z.object({ contact: apolloContact }),
   },
 });
 

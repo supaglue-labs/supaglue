@@ -1945,8 +1945,7 @@
           },
           "is_archived": {
             "type": "boolean",
-            "nullable": true,
-            "description": "When archived, cannot add contact to sequence or send mail. This is null when provider does not have such concept (e.g. apollo)"
+            "description": "When archived, cannot add contact to sequence or send mail."
           },
           "share_type": {
             "type": "string",

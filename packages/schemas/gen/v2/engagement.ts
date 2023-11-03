@@ -469,8 +469,8 @@ export interface components {
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
-      /** @description When archived, cannot add contact to sequence or send mail. This is null when provider does not have such concept (e.g. apollo) */
-      is_archived?: boolean | null;
+      /** @description When archived, cannot add contact to sequence or send mail. */
+      is_archived?: boolean;
       /**
        * @description The share type of the sequence. If `team` will share with the whole team. `private` will only share with the owner. 
        * @enum {string}

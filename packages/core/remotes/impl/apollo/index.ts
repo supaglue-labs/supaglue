@@ -17,7 +17,7 @@ import type {
 } from '@supaglue/types/engagement';
 import axios from 'axios';
 import { Readable } from 'stream';
-import { BadRequestError } from '../../../errors';
+import { BadRequestError, InternalServerError, NotFoundError } from '../../../errors';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import { parseProxyConfig } from '../../../lib/util';
 import type { ConnectorAuthConfig } from '../../base';
@@ -119,11 +119,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
-      case 'contact':
       case 'sequence':
         return this.#api
           .getEmailerCampaign({ params: { id } })
           .then(({ emailer_campaign: c }) => fromApolloEmailerCampaignToSequence(c));
+      case 'contact':
       case 'user':
       case 'mailbox':
       case 'sequence_state':
@@ -409,7 +409,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     params: SequenceStepCreateParams
   ): Promise<CreateCommonObjectRecordResponse<'sequence_step'>> {
     if (!params.sequenceId) {
-      throw new Error('Sequence ID is required');
+      throw new BadRequestError('Sequence ID is required');
     }
     const intOnly = (n: number | null | undefined) => (Number.isInteger(n) ? (n as number) : null);
     const divide = (n: number | null, by: number) => (n != null ? n / by : null);
@@ -470,7 +470,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     const [userId, ...otherUserIds] = Array.from(new Set(records.map((r) => r.userId)));
 
     if (otherSequenceIds.length || otherMailboxIds.length || otherUserIds.length) {
-      throw new Error(
+      throw new BadRequestError(
         'Batch create sequence states only works when all records are for the same sequence, mailbox and user'
       );
     }
@@ -487,33 +487,41 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       { params: { id: sequenceId } } // Duplicated in the body for some reason
     );
 
-    // NOTE: This can happen if some of the contacts have been added to the sequence already
-    // as apollo's api do NOT return them as part of the response...
-    if (res.contacts.length !== records.length) {
-      throw new Error('Apollo could not add some contact(s) to the sequence.');
-    }
-    return res.contacts.map((contact) => {
-      // For whatever reason the campaignStatus id seems to be the same
-      // across multiple contacts... https://share.cleanshot.com/HKWJ85Ss
-      // but there also doesn't seem to be any other unique id we can use...
-      const campaignStatus = contact.contact_campaign_statuses.find(
-        (status: Record<string, any>) =>
-          status.send_email_from_email_account_id === mailboxId && status.emailer_campaign_id === sequenceId
-      );
-      return {
-        id: campaignStatus!.id.toString(),
-        record: fromApolloContactCampaignStatusToSequenceState(contact.id, campaignStatus as any),
-      };
-    });
+    return await Promise.all(
+      records.map(async (record) => {
+        let contact = res.contacts.find((c) => c.id === record.contactId);
+        if (!contact) {
+          // Handle situation where contact have already been added to the sequence. However still accounting for
+          // other errors where contact could not be added to sequence
+          contact = await this.#api.getContact({ params: { id: record.contactId } }).then((r) => r.contact);
+        }
+        if (!contact) {
+          throw new NotFoundError(`Unable to find contact ${record.contactId} in Apollo`);
+        }
+
+        // For whatever reason the campaignStatus id seems to be the same
+        // across multiple contacts... https://share.cleanshot.com/HKWJ85Ss
+        // but there also doesn't seem to be any other unique id we can use...
+        const campaignStatus = contact.contact_campaign_statuses.find(
+          (status: Record<string, any>) =>
+            status.send_email_from_email_account_id === mailboxId && status.emailer_campaign_id === sequenceId
+        );
+        // Should we issue warnings instead?
+        if (!campaignStatus) {
+          throw new InternalServerError(`Unable to add contact ${record.contactId} to sequence`);
+        }
+        return {
+          id: campaignStatus.id.toString(),
+          record: fromApolloContactCampaignStatusToSequenceState(contact.id, campaignStatus as any),
+        };
+      })
+    );
   }
 
   async createSequenceState(
     params: SequenceStateCreateParams
   ): Promise<CreateCommonObjectRecordResponse<'sequence_state'>> {
     const res = await this.batchCreateSequenceState([params]);
-    if (res.length === 0) {
-      throw new Error('Apollo could not add this contact to the sequence.');
-    }
     return res[0];
   }
 
