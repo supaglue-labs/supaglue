@@ -7,6 +7,7 @@ import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useProviders } from '@/hooks/useProviders';
 import { useSchemas } from '@/hooks/useSchemas';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
+import type { SchemasWhitelist } from '@/utils/lekko';
 import { getStandardObjectOptions, PROVIDER_CARDS_INFO } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
 import { schemasEnabled } from '@/utils/schema';
@@ -45,6 +46,7 @@ export type ProviderDetailsPanelProps = {
   category: ProviderCategory;
   providerName: ProviderName;
   isLoading: boolean;
+  schemasWhitelistConfig: SchemasWhitelist;
 };
 
 function isOauthProvider(provider: Provider | undefined): provider is OauthProvider {
@@ -55,7 +57,7 @@ export default function ProviderDetailsPanel({
   providerName,
   category,
   isLoading,
-  lekko,
+  schemasWhitelistConfig,
 }: ProviderDetailsPanelProps & SupaglueProps) {
   const shouldAllowManagedOauth = [
     'salesforce',
@@ -282,7 +284,7 @@ export default function ProviderDetailsPanel({
             )}
           </Stack>
         )}
-        {supportsObjectToSchema && schemasEnabled(lekko.schemasWhitelistConfig.applicationIds, activeApplicationId) && (
+        {supportsObjectToSchema && schemasEnabled(schemasWhitelistConfig.applicationIds, activeApplicationId) && (
           <Stack className="gap-2">
             <Typography variant="subtitle1">Object to Schema Mapping</Typography>
             <SchemaToObjectMapping

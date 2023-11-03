@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import ApplicationMenu from '@/components/ApplicationMenu';
+import Spinner from '@/components/Spinner';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
+import { useLekkoConfigs } from '@/hooks/useLekkoConfigs';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { entitiesEnabled, schemasEnabled } from '@/utils/schema';
 import { Biotech, FindInPage, MenuBook } from '@mui/icons-material';
@@ -45,6 +47,7 @@ export default function Navigator(props: DrawerProps & SupaglueProps) {
   const { lekko, ...other } = props;
 
   const applicationId = useActiveApplicationId();
+  const { entitiesWhitelistConfig, schemasWhitelistConfig, isLoading: isLoadingLekkoConfigs } = useLekkoConfigs();
 
   const categories: {
     id: string;
@@ -118,8 +121,8 @@ export default function Navigator(props: DrawerProps & SupaglueProps) {
   ];
 
   if (
-    !schemasEnabled(lekko.schemasWhitelistConfig.applicationIds, applicationId) &&
-    !entitiesEnabled(lekko.entitiesWhitelistConfig.applicationIds, applicationId)
+    !schemasEnabled(schemasWhitelistConfig.applicationIds, applicationId) &&
+    !entitiesEnabled(entitiesWhitelistConfig.applicationIds, applicationId)
   ) {
     categories[0].children = categories[0].children.filter((category) => category.id !== 'Data Model');
   }
@@ -130,21 +133,27 @@ export default function Navigator(props: DrawerProps & SupaglueProps) {
         <ListItem sx={{ px: 0, pb: 1, fontSize: 22, color: '#fff' }}>
           <ApplicationMenu />
         </ListItem>
-        {categories.map(({ id, children }) => (
-          <Box key={id} sx={{ bgcolor: '#101F33', py: 2 }}>
-            {children.map(({ id: childId, icon, active, to }) => (
-              <ListItem disablePadding key={childId}>
-                <MUILink href={to} component={NextLink} sx={{ width: '100%', textDecoration: 'none' }}>
-                  <ListItemButton selected={active} sx={item}>
-                    <ListItemIcon>{icon}</ListItemIcon>
-                    <ListItemText>{childId}</ListItemText>
-                  </ListItemButton>
-                </MUILink>
-              </ListItem>
-            ))}
-            <Divider sx={{ mt: 2 }} />
-          </Box>
-        ))}
+        {isLoadingLekkoConfigs ? (
+          <div className="flex w-full h-48 justify-center items-center">
+            <Spinner />
+          </div>
+        ) : (
+          categories.map(({ id, children }) => (
+            <Box key={id} sx={{ bgcolor: '#101F33', py: 2 }}>
+              {children.map(({ id: childId, icon, active, to }) => (
+                <ListItem disablePadding key={childId}>
+                  <MUILink href={to} component={NextLink} sx={{ width: '100%', textDecoration: 'none' }}>
+                    <ListItemButton selected={active} sx={item}>
+                      <ListItemIcon>{icon}</ListItemIcon>
+                      <ListItemText>{childId}</ListItemText>
+                    </ListItemButton>
+                  </MUILink>
+                </ListItem>
+              ))}
+              <Divider sx={{ mt: 2 }} />
+            </Box>
+          ))
+        )}
       </List>
     </Drawer>
   );

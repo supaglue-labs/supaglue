@@ -2487,18 +2487,104 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@buf/lekkodev_sdk.bufbuild_connect-es@npm:^0.9.1-20230419225956-a6850760931c.1":
-  version: 0.9.1-20230810202034-1c821065b9a0.1
-  resolution: "@buf/lekkodev_sdk.bufbuild_connect-es@npm:0.9.1-20230810202034-1c821065b9a0.1"
+"@buf/googleapis_googleapis.bufbuild_connect-es@npm:0.12.0-20230329151039-5ae7f88519b0.1":
+  version: 0.12.0-20230329151039-5ae7f88519b0.1
+  resolution: "@buf/googleapis_googleapis.bufbuild_connect-es@npm:0.12.0-20230329151039-5ae7f88519b0.1"
   dependencies:
-    "@buf/lekkodev_sdk.bufbuild_es": 1.2.1-20230810202034-1c821065b9a0.1
+    "@buf/googleapis_googleapis.bufbuild_es": 1.2.1-20230329151039-5ae7f88519b0.1
   peerDependencies:
-    "@bufbuild/connect": ^0.9.1
-  checksum: 1f40bb7ed170e72b2d8fdb54719e448456af0085d738e15e75b648f1d64cba98130391c5902f0512f9fefe6c1f2c678f50a803e00535f06e12ed9ff7e126a59e
+    "@bufbuild/connect": ^0.12.0
+  checksum: 6b6819d2e94c6071ff82656cc3c88b20b94a14849e47ae4766f83ddcc6419699437e33c5fa3685d2633ba58b780e3c99d45b05dfc0a61cfedd99f7ffad1e78e5
   languageName: node
   linkType: hard
 
-"@buf/lekkodev_sdk.bufbuild_es@npm:1.2.1-20230810202034-1c821065b9a0.1, @buf/lekkodev_sdk.bufbuild_es@npm:^1.2.1-20230620172853-31a82baf7ccf.1":
+"@buf/googleapis_googleapis.bufbuild_es@npm:1.2.1-20230329151039-5ae7f88519b0.1":
+  version: 1.2.1-20230329151039-5ae7f88519b0.1
+  resolution: "@buf/googleapis_googleapis.bufbuild_es@npm:1.2.1-20230329151039-5ae7f88519b0.1"
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.2.1
+  checksum: 60af8ddbc0817b51d9d814bc9d017747639a74ba9aa81fc85fd04cdea8a0ee2bf13f0763c5e0cc057e6ca6c07e9cbe3fdb83b7a29284a9bc01310ae14a22041e
+  languageName: node
+  linkType: hard
+
+"@buf/googleapis_googleapis.bufbuild_es@npm:1.3.0-20230329151039-5ae7f88519b0.1":
+  version: 1.3.0-20230329151039-5ae7f88519b0.1
+  resolution: "@buf/googleapis_googleapis.bufbuild_es@npm:1.3.0-20230329151039-5ae7f88519b0.1"
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.3.0
+  checksum: 7b9b8f86499123a274be44eff357edff6d41564ecc014cf804c676090691d1ac9b334a0ffd64f0725f6ddba563ff0bddbced208e99e2ccacc6ca2b0a04aa5924
+  languageName: node
+  linkType: hard
+
+"@buf/lekkodev_cli.bufbuild_connect-es@npm:^0.12.0-20230725173132-dd46c8444719.1":
+  version: 0.12.0-20231020174450-b459caf2cd68.1
+  resolution: "@buf/lekkodev_cli.bufbuild_connect-es@npm:0.12.0-20231020174450-b459caf2cd68.1"
+  dependencies:
+    "@buf/googleapis_googleapis.bufbuild_connect-es": 0.12.0-20230329151039-5ae7f88519b0.1
+    "@buf/lekkodev_cli.bufbuild_es": 1.2.1-20231020174450-b459caf2cd68.1
+    "@buf/lekkodev_sdk.bufbuild_connect-es": 0.12.0-20230419180142-0694c10ef23c.1
+  peerDependencies:
+    "@bufbuild/connect": ^0.12.0
+  checksum: cc565720ddfd8bf2e9a758c01dc8996142e9af16926d38e3bb609df8c234b183ffa89d3cf1c500a74d2562757f452a00a3bb652533ce08c4d7b5875c621dcb31
+  languageName: node
+  linkType: hard
+
+"@buf/lekkodev_cli.bufbuild_es@npm:1.2.1-20231020174450-b459caf2cd68.1":
+  version: 1.2.1-20231020174450-b459caf2cd68.1
+  resolution: "@buf/lekkodev_cli.bufbuild_es@npm:1.2.1-20231020174450-b459caf2cd68.1"
+  dependencies:
+    "@buf/googleapis_googleapis.bufbuild_es": 1.2.1-20230329151039-5ae7f88519b0.1
+    "@buf/lekkodev_sdk.bufbuild_es": 1.2.1-20230419180142-0694c10ef23c.1
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.2.1
+  checksum: 5f88bf45570b03480ea73f4816294590cf1aac5335b39cb3f4f558ea3adc43d2c7e5146eb9eea8a179f334d39126a07ae7a1494640492ab6bad62a7885b17445
+  languageName: node
+  linkType: hard
+
+"@buf/lekkodev_cli.bufbuild_es@npm:^1.3.0-20230725173132-dd46c8444719.1":
+  version: 1.3.0-20231020174450-b459caf2cd68.1
+  resolution: "@buf/lekkodev_cli.bufbuild_es@npm:1.3.0-20231020174450-b459caf2cd68.1"
+  dependencies:
+    "@buf/googleapis_googleapis.bufbuild_es": 1.3.0-20230329151039-5ae7f88519b0.1
+    "@buf/lekkodev_sdk.bufbuild_es": 1.3.0-20230419180142-0694c10ef23c.1
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.3.0
+  checksum: 351630f77f48bb9a9ef144ac65f0876dab701071155fb6d9c0a269ecbc93dce324090ba0de7e6cf14512ed211d34b3f88eed5a203e466bb4627e5090db85c72b
+  languageName: node
+  linkType: hard
+
+"@buf/lekkodev_sdk.bufbuild_connect-es@npm:0.12.0-20230419180142-0694c10ef23c.1":
+  version: 0.12.0-20230419180142-0694c10ef23c.1
+  resolution: "@buf/lekkodev_sdk.bufbuild_connect-es@npm:0.12.0-20230419180142-0694c10ef23c.1"
+  dependencies:
+    "@buf/lekkodev_sdk.bufbuild_es": 1.2.1-20230419180142-0694c10ef23c.1
+  peerDependencies:
+    "@bufbuild/connect": ^0.12.0
+  checksum: b43b38d5e480a35190454a948ac17de17807d17951a54363f9d8bb40fef2170b95fb60e00255de1d9104a4822eed287520524c44372d07bd1834af866a177894
+  languageName: node
+  linkType: hard
+
+"@buf/lekkodev_sdk.bufbuild_connect-es@npm:^0.12.0-20230810202034-1c821065b9a0.1":
+  version: 0.12.0-20230810202034-1c821065b9a0.1
+  resolution: "@buf/lekkodev_sdk.bufbuild_connect-es@npm:0.12.0-20230810202034-1c821065b9a0.1"
+  dependencies:
+    "@buf/lekkodev_sdk.bufbuild_es": 1.2.1-20230810202034-1c821065b9a0.1
+  peerDependencies:
+    "@bufbuild/connect": ^0.12.0
+  checksum: 2ec6149bea38087ac1081f39ccfabec35a3229a65bb0df02893349606efd01b776eaea3fde0f89f2272f99f8b3bee74281d23797033704f14a41b77aa1a1df1b
+  languageName: node
+  linkType: hard
+
+"@buf/lekkodev_sdk.bufbuild_es@npm:1.2.1-20230419180142-0694c10ef23c.1":
+  version: 1.2.1-20230419180142-0694c10ef23c.1
+  resolution: "@buf/lekkodev_sdk.bufbuild_es@npm:1.2.1-20230419180142-0694c10ef23c.1"
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.2.1
+  checksum: 23a560a22650145d9735eba03052ced7c34b23ae0a4c51a9388cff3d4a8eedd7312a505af648958e986840c541460f2457d4079e67e94d50087187853c8003f2
+  languageName: node
+  linkType: hard
+
+"@buf/lekkodev_sdk.bufbuild_es@npm:1.2.1-20230810202034-1c821065b9a0.1":
   version: 1.2.1-20230810202034-1c821065b9a0.1
   resolution: "@buf/lekkodev_sdk.bufbuild_es@npm:1.2.1-20230810202034-1c821065b9a0.1"
   peerDependencies:
@@ -2507,44 +2593,53 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@bufbuild/connect-node@npm:^0.8.5":
-  version: 0.8.6
-  resolution: "@bufbuild/connect-node@npm:0.8.6"
+"@buf/lekkodev_sdk.bufbuild_es@npm:1.3.0-20230419180142-0694c10ef23c.1":
+  version: 1.3.0-20230419180142-0694c10ef23c.1
+  resolution: "@buf/lekkodev_sdk.bufbuild_es@npm:1.3.0-20230419180142-0694c10ef23c.1"
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.3.0
+  checksum: 670c019c4e17951a71cd14ede7f23ebb5452ed4573b4adcd277e7fa442f1fbea9d277fdd3a1e8cfc03694b55ea9c63e0ebf9075a11260689711e544bc61a3064
+  languageName: node
+  linkType: hard
+
+"@buf/lekkodev_sdk.bufbuild_es@npm:^1.3.0-20230810202034-1c821065b9a0.1":
+  version: 1.3.0-20230810202034-1c821065b9a0.1
+  resolution: "@buf/lekkodev_sdk.bufbuild_es@npm:1.3.0-20230810202034-1c821065b9a0.1"
+  peerDependencies:
+    "@bufbuild/protobuf": ^1.3.0
+  checksum: 503427c2adcc3051d9f5c3ba05da480fde8213f311f4ad61754d09d53936ac228775c298be18c73210e2a8ee8ce796caf422f52576460baf4543098ec2f79270
+  languageName: node
+  linkType: hard
+
+"@bufbuild/connect-node@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "@bufbuild/connect-node@npm:0.12.0"
   dependencies:
-    "@bufbuild/connect": 0.8.6
+    "@bufbuild/connect": 0.12.0
     headers-polyfill: ^3.1.2
   peerDependencies:
-    "@bufbuild/protobuf": ^1.2.0
-  checksum: 0aa5a66caa39385c64b4250fc5bad486a6838966355d798a197ec9dac8ed1c232702190e7ae1f4514021366598457baf2ad548d9074a22b3319cbf4e15074453
+    "@bufbuild/protobuf": ^1.2.1
+  checksum: 03f476fc20671a71becb48567347caa478ee20aa7a42ed0875a535270572bc416f29f1eded2093aeeb2f1d27e708f4654e6103886c2eb4213412adc0ebf0889b
   languageName: node
   linkType: hard
 
-"@bufbuild/connect-web@npm:^0.9.1":
-  version: 0.9.1
-  resolution: "@bufbuild/connect-web@npm:0.9.1"
+"@bufbuild/connect-web@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "@bufbuild/connect-web@npm:0.12.0"
   dependencies:
-    "@bufbuild/connect": 0.9.1
+    "@bufbuild/connect": 0.12.0
   peerDependencies:
-    "@bufbuild/protobuf": ^1.2.0
-  checksum: 4146488043fadd5d6199ca782c44681a93f9f16dcb2dbd18103c78f3c0d9d18e8c574a889f679f043621800f79eb586a97e8d9500efe80e9fe4f27b74e0dfa29
+    "@bufbuild/protobuf": ^1.2.1
+  checksum: 7e436f227d8170846e2f0ee888fba93b2a2ab10384490920dbd1a9e6a3b7cd0817e0e517af0d5e9129b8b33808bd8625ad302bd53a5edfc9d68b293f75258572
   languageName: node
   linkType: hard
 
-"@bufbuild/connect@npm:0.8.6":
-  version: 0.8.6
-  resolution: "@bufbuild/connect@npm:0.8.6"
+"@bufbuild/connect@npm:0.12.0, @bufbuild/connect@npm:^0.12.0":
+  version: 0.12.0
+  resolution: "@bufbuild/connect@npm:0.12.0"
   peerDependencies:
-    "@bufbuild/protobuf": ^1.2.0
-  checksum: cd5808d3f6e69a4936f74d8bac8d86115e485d6ccaea669e3215ed36abde494af795668b74f9b3557d801dd0b1816902c0ce97c5c598f45879ab6dc32dc3d4ca
-  languageName: node
-  linkType: hard
-
-"@bufbuild/connect@npm:0.9.1, @bufbuild/connect@npm:^0.9.1":
-  version: 0.9.1
-  resolution: "@bufbuild/connect@npm:0.9.1"
-  peerDependencies:
-    "@bufbuild/protobuf": ^1.2.0
-  checksum: 1a7f73b4a53fc33beedb3f5641214408497eeb956d2c55e7717a2dc13ed24b94394d242805bff2c785662d31d78a141bdc30c65141a1ab1cf391ff81cc139ef5
+    "@bufbuild/protobuf": ^1.2.1
+  checksum: 7ddb9972c52113de3775a942d6948a6763ae9631ca09c03cb1b736a59c4bfafefd419597323a3f1f500a5c6cca85a70afbdd1a839649b87a56f49b362aa7497a
   languageName: node
   linkType: hard
 
@@ -4743,19 +4838,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lekko/node-server-sdk@npm:^0.0.9":
-  version: 0.0.9
-  resolution: "@lekko/node-server-sdk@npm:0.0.9"
+"@lekko/node-server-sdk@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@lekko/node-server-sdk@npm:0.2.0"
   dependencies:
-    "@buf/lekkodev_sdk.bufbuild_connect-es": ^0.9.1-20230419225956-a6850760931c.1
-    "@buf/lekkodev_sdk.bufbuild_es": ^1.2.1-20230620172853-31a82baf7ccf.1
-    "@bufbuild/connect": ^0.9.1
-    "@bufbuild/connect-node": ^0.8.5
-    "@bufbuild/connect-web": ^0.9.1
+    "@buf/lekkodev_cli.bufbuild_connect-es": ^0.12.0-20230725173132-dd46c8444719.1
+    "@buf/lekkodev_cli.bufbuild_es": ^1.3.0-20230725173132-dd46c8444719.1
+    "@buf/lekkodev_sdk.bufbuild_connect-es": ^0.12.0-20230810202034-1c821065b9a0.1
+    "@buf/lekkodev_sdk.bufbuild_es": ^1.3.0-20230810202034-1c821065b9a0.1
+    "@bufbuild/connect": ^0.12.0
+    "@bufbuild/connect-node": ^0.12.0
+    "@bufbuild/connect-web": ^0.12.0
     "@bufbuild/protobuf": ^1.2.0
+    "@types/js-yaml": ^4.0.5
     browser-or-node: ^2.1.1
     esbuild: ^0.17.17
-  checksum: 762f379a4a926720ada5141cff8c7c7d0ed12a03c4b84d1d923d175e360304a4e8623596b1251d3fbe5690c282f8d60c814c836ab654292aa3f1e3d1fc870950
+    exponential-backoff: ^3.1.1
+    isomorphic-git: ^1.24.5
+    js-yaml: ^4.1.0
+    memfs: ^4.2.1
+    node-watch: ^0.7.4
+    set-interval-async: ^3.0.3
+    unionfs: ^4.5.1
+  checksum: f68e17f9420b4dce17cf849d42f531f7eedfa9e4a97420bf9be070fdd6eb2ef0f6186eae5717a14ea7a2cc25aa31a48443f7a614dc9ddfe614efc666c2e6ed4c
   languageName: node
   linkType: hard
 
@@ -8070,6 +8175,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/js-yaml@npm:^4.0.5":
+  version: 4.0.8
+  resolution: "@types/js-yaml@npm:4.0.8"
+  checksum: a5a77a5a1eac7e7fb667156c251c2b947ca4ddfdda570726369dd50bd5b2b1d0da2d0fb4273d1b10aa1782406d7b3da8923d957df4fb89dbfa1db06f43297de2
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:*, @types/json-schema@npm:^7.0.11, @types/json-schema@npm:^7.0.4, @types/json-schema@npm:^7.0.5, @types/json-schema@npm:^7.0.6, @types/json-schema@npm:^7.0.8, @types/json-schema@npm:^7.0.9":
   version: 7.0.12
   resolution: "@types/json-schema@npm:7.0.12"
@@ -9511,6 +9623,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"async-lock@npm:^1.1.0":
+  version: 1.4.0
+  resolution: "async-lock@npm:1.4.0"
+  checksum: a71ef9e50dc448a8e8dd6482494210d7b6f556d4815612b1fed5662216cd756c2c8fb9c2153a9a66ea90b36ba7fb18aa568d11813aadc23feb4c5b0b188df614
+  languageName: node
+  linkType: hard
+
 "async-retry@npm:^1.3.3":
   version: 1.3.3
   resolution: "async-retry@npm:1.3.3"
@@ -10609,6 +10728,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clean-git-ref@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "clean-git-ref@npm:2.0.1"
+  checksum: b25f585ed47040ea5d699d40a2bb84d1f35afd651f3fcc05fb077224358ffd3d7509fc9edbfc4570f1fc732c987e03ac7d8ec31524ac503ac35c53cb1f5e3bf9
+  languageName: node
+  linkType: hard
+
 "clean-stack@npm:^2.0.0":
   version: 2.2.0
   resolution: "clean-stack@npm:2.2.0"
@@ -11272,6 +11398,15 @@ __metadata:
     parse-json: ^5.0.0
     path-type: ^4.0.0
   checksum: ff4cdf89ac1ae52e7520816622c21a9e04380d04b82d653f5139ec581aa4f7f29e096d46770bc76c4a63c225367e88a1dfa233ea791669a35101f5f9b972c7d1
+  languageName: node
+  linkType: hard
+
+"crc-32@npm:^1.2.0":
+  version: 1.2.2
+  resolution: "crc-32@npm:1.2.2"
+  bin:
+    crc32: bin/crc32.njs
+  checksum: ad2d0ad0cbd465b75dcaeeff0600f8195b686816ab5f3ba4c6e052a07f728c3e70df2e3ca9fd3d4484dc4ba70586e161ca5a2334ec8bf5a41bf022a6103ff243
   languageName: node
   linkType: hard
 
@@ -12003,6 +12138,13 @@ __metadata:
   version: 29.6.3
   resolution: "diff-sequences@npm:29.6.3"
   checksum: f4914158e1f2276343d98ff5b31fc004e7304f5470bf0f1adb2ac6955d85a531a6458d33e87667f98f6ae52ebd3891bb47d420bb48a5bd8b7a27ee25b20e33aa
+  languageName: node
+  linkType: hard
+
+"diff3@npm:0.0.3":
+  version: 0.0.3
+  resolution: "diff3@npm:0.0.3"
+  checksum: 28d883f1057b9873dfcb38cd2750337e6b32bf184bb1c0fb3292efeb83c597f1ce9b8f508bdd0d623a58b9ca1c917b1f297b90cb7fce3a62b26b0dde496f70e6
   languageName: node
   linkType: hard
 
@@ -13258,6 +13400,13 @@ __metadata:
     jest-message-util: ^29.7.0
     jest-util: ^29.7.0
   checksum: 9257f10288e149b81254a0fda8ffe8d54a7061cd61d7515779998b012579d2b8c22354b0eb901daf0145f347403da582f75f359f4810c007182ad3fb318b5c0c
+  languageName: node
+  linkType: hard
+
+"exponential-backoff@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "exponential-backoff@npm:3.1.1"
+  checksum: 3d21519a4f8207c99f7457287291316306255a328770d320b401114ec8481986e4e467e854cb9914dd965e0a1ca810a23ccb559c642c88f4c7f55c55778a9b48
   languageName: node
   linkType: hard
 
@@ -15092,6 +15241,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hyperdyperid@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "hyperdyperid@npm:1.2.0"
+  checksum: 210029d1c86926f09109f6317d143f8b056fc38e8dd11b0c3e3205fc6c6ff8429fb55b4b9c2bce065462719ed9d34366eced387aaa0035d93eb76b306a8547ef
+  languageName: node
+  linkType: hard
+
 "iconv-lite@npm:0.4.24, iconv-lite@npm:^0.4.24":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
@@ -15147,7 +15303,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ignore@npm:^5.2.0":
+"ignore@npm:^5.1.4, ignore@npm:^5.2.0":
   version: 5.2.4
   resolution: "ignore@npm:5.2.4"
   checksum: 3d4c309c6006e2621659311783eaea7ebcd41fe4ca1d78c91c473157ad6666a57a2df790fe0d07a12300d9aac2888204d7be8d59f9aaf665b1c7fcdb432517ef
@@ -15914,6 +16070,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"isomorphic-git@npm:^1.24.5":
+  version: 1.25.0
+  resolution: "isomorphic-git@npm:1.25.0"
+  dependencies:
+    async-lock: ^1.1.0
+    clean-git-ref: ^2.0.1
+    crc-32: ^1.2.0
+    diff3: 0.0.3
+    ignore: ^5.1.4
+    minimisted: ^2.0.0
+    pako: ^1.0.10
+    pify: ^4.0.1
+    readable-stream: ^3.4.0
+    sha.js: ^2.4.9
+    simple-get: ^4.0.1
+  bin:
+    isogit: cli.cjs
+  checksum: d7f97cc3a7c7deb45077e3308c72aadd20a4a2ecf1c4ba929edb4e658356453bfe10daa38dcb5a34de0432e0a98ad91cfc540e62a8604aec9fd07ab5e7197299
+  languageName: node
+  linkType: hard
+
 "isomorphic-unfetch@npm:^3.1.0":
   version: 3.1.0
   resolution: "isomorphic-unfetch@npm:3.1.0"
@@ -16615,6 +16792,29 @@ __metadata:
   version: 3.0.1
   resolution: "json-buffer@npm:3.0.1"
   checksum: 9026b03edc2847eefa2e37646c579300a1f3a4586cfb62bf857832b60c852042d0d6ae55d1afb8926163fa54c2b01d83ae24705f34990348bdac6273a29d4581
+  languageName: node
+  linkType: hard
+
+"json-joy@npm:^9.2.0":
+  version: 9.8.0
+  resolution: "json-joy@npm:9.8.0"
+  dependencies:
+    arg: ^5.0.2
+    hyperdyperid: ^1.2.0
+  peerDependencies:
+    quill-delta: ^5
+    rxjs: 7
+    tslib: 2
+  bin:
+    jj: bin/jj.js
+    json-pack: bin/json-pack.js
+    json-pack-test: bin/json-pack-test.js
+    json-patch: bin/json-patch.js
+    json-patch-test: bin/json-patch-test.js
+    json-pointer: bin/json-pointer.js
+    json-pointer-test: bin/json-pointer-test.js
+    json-unpack: bin/json-unpack.js
+  checksum: e37deb929a8b0104f2140b39d17b3481f1a1cf76fb80d37404da7fa1fd2f8c874a24b5155b9f545cc53375f14112924b9e8d7ef4c9dbf2033b20e0f47b3e93da
   languageName: node
   linkType: hard
 
@@ -17487,6 +17687,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"memfs@npm:^4.2.1":
+  version: 4.6.0
+  resolution: "memfs@npm:4.6.0"
+  dependencies:
+    json-joy: ^9.2.0
+    thingies: ^1.11.1
+  peerDependencies:
+    tslib: 2
+  checksum: b32a35bee9f96dc011605f3bb39e74e6d2a5de51c952a77bb38a0dfabd3381c40ae382d27f385aa290edee8081597fb1a3b41a07bb3f775fd55312dc30ac1d9d
+  languageName: node
+  linkType: hard
+
 "meow@npm:^8.0.0":
   version: 8.1.2
   resolution: "meow@npm:8.1.2"
@@ -17541,7 +17753,7 @@ __metadata:
     "@clerk/nextjs": ^4.23.1
     "@emotion/react": ^11.10.6
     "@emotion/styled": ^11.10.6
-    "@lekko/node-server-sdk": ^0.0.9
+    "@lekko/node-server-sdk": ^0.2.0
     "@mui/icons-material": ^5.11.11
     "@mui/material": ^5.11.12
     "@mui/x-data-grid": ^6.0.0
@@ -17996,6 +18208,15 @@ __metadata:
   version: 1.2.8
   resolution: "minimist@npm:1.2.8"
   checksum: 75a6d645fb122dad29c06a7597bddea977258957ed88d7a6df59b5cd3fe4a527e253e9bbf2e783e4b73657f9098b96a5fe96ab8a113655d4109108577ecf85b0
+  languageName: node
+  linkType: hard
+
+"minimisted@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "minimisted@npm:2.0.1"
+  dependencies:
+    minimist: ^1.2.5
+  checksum: 6bc3df14558481c96764cfd6bf77a59f5838dec715c38c1e338193c1e56f536ba792ccbae84ff6632d13a7dd37ac888141c091d23733229b8d100148eec930aa
   languageName: node
   linkType: hard
 
@@ -18527,6 +18748,13 @@ __metadata:
   version: 2.0.10
   resolution: "node-releases@npm:2.0.10"
   checksum: d784ecde25696a15d449c4433077f5cce620ed30a1656c4abf31282bfc691a70d9618bae6868d247a67914d1be5cc4fde22f65a05f4398cdfb92e0fc83cadfbc
+  languageName: node
+  linkType: hard
+
+"node-watch@npm:^0.7.4":
+  version: 0.7.4
+  resolution: "node-watch@npm:0.7.4"
+  checksum: effca2aa3575afdc8caae2a422d5738ecf8322962f051574c5dd3c1a399b4bf188c3ad3cb32890fc5e530604f0f037bc0160ec94b37f8d3ae4b76006a98f9df3
   languageName: node
   linkType: hard
 
@@ -19143,7 +19371,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pako@npm:~1.0.5":
+"pako@npm:^1.0.10, pako@npm:~1.0.5":
   version: 1.0.11
   resolution: "pako@npm:1.0.11"
   checksum: 1be2bfa1f807608c7538afa15d6f25baa523c30ec870a3228a89579e474a4d992f4293859524e46d5d87fd30fa17c5edf34dbef0671251d9749820b488660b16
@@ -19522,6 +19750,13 @@ __metadata:
   version: 2.3.0
   resolution: "pify@npm:2.3.0"
   checksum: 9503aaeaf4577acc58642ad1d25c45c6d90288596238fb68f82811c08104c800e5a7870398e9f015d82b44ecbcbef3dc3d4251a1cbb582f6e5959fe09884b2ba
+  languageName: node
+  linkType: hard
+
+"pify@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "pify@npm:4.0.1"
+  checksum: 9c4e34278cb09987685fa5ef81499c82546c033713518f6441778fbec623fc708777fe8ac633097c72d88470d5963094076c7305cafc7ad340aae27cfacd856b
   languageName: node
   linkType: hard
 
@@ -22222,6 +22457,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"set-interval-async@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "set-interval-async@npm:3.0.3"
+  checksum: ce0f86fbb29feb5ce3bdb4a445584c5c8ad66c9532fb7ed20472998d7cce94dbf50c81bf58c1b5e6c20d646adc5f5d276f1525e22eecaef0ed6bd58a0c0abcf0
+  languageName: node
+  linkType: hard
+
 "setimmediate@npm:^1.0.4, setimmediate@npm:^1.0.5":
   version: 1.0.5
   resolution: "setimmediate@npm:1.0.5"
@@ -22243,7 +22485,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sha.js@npm:^2.4.0, sha.js@npm:^2.4.8":
+"sha.js@npm:^2.4.0, sha.js@npm:^2.4.8, sha.js@npm:^2.4.9":
   version: 2.4.11
   resolution: "sha.js@npm:2.4.11"
   dependencies:
@@ -23583,6 +23825,15 @@ __metadata:
   dependencies:
     any-promise: ^1.0.0
   checksum: 84e1b804bfec49f3531215f17b4a6e50fd4397b5f7c1bccc427b9c656e1ecfb13ea79d899930184f78bc2f57285c54d9a50a590c8868f4f0cef5c1d9f898b05e
+  languageName: node
+  linkType: hard
+
+"thingies@npm:^1.11.1":
+  version: 1.12.0
+  resolution: "thingies@npm:1.12.0"
+  peerDependencies:
+    tslib: ^2
+  checksum: 04b75d264e1880676fb9f400b2c0e069abdd00de1fa006d9daee527ad6d899828169fd46bb17e7cabf2802b7dbd64053106e29e7a7aa271659f5b41b3a11657f
   languageName: node
   linkType: hard
 
