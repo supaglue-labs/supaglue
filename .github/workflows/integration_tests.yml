@@ -3,6 +3,10 @@ name: Integration Tests
 on:
   workflow_call:
     inputs:
+      release-ref:
+        description: Tag or SHA
+        required: true
+        type: string
       api-url:
         description: The URL of the API to test against
         required: true
@@ -42,6 +46,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.release-ref }}
 
       - name: Setup Node.js environment
         uses: actions/setup-node@v3

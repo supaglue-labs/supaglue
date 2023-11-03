@@ -54,6 +54,7 @@ jobs:
       api-url: https://api.staging.supaglue.io
       customer-id: customer1
       environment: Staging
+      release-ref: ${{ github.head_ref }}
     secrets:
       TESTING_API_KEY: ${{ secrets.STAGING_TESTING_API_KEY }}
       SLACK_WEBHOOK_URL: ${{ secrets.ALERTS_SLACK_WEBHOOK_URL }}

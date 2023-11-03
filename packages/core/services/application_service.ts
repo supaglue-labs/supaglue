@@ -61,7 +61,7 @@ export class ApplicationService {
     }
     const { hashed: hashedApiKey } = await cryptoHash(apiKey);
 
-    const application = await this.#prisma.application.findMany({
+    const applications = await this.#prisma.application.findMany({
       where: {
         config: {
           path: ['apiKey'],
@@ -70,15 +70,15 @@ export class ApplicationService {
       },
     });
 
-    if (!application || application.length === 0) {
+    if (!applications || applications.length === 0) {
       throw new UnauthorizedError(`Can't find application by api key`);
     }
 
-    if (application.length > 1) {
+    if (applications.length > 1) {
       throw new Error(`Found more than one application with the same api key`);
     }
 
-    return fromApplicationModel(application[0]);
+    return fromApplicationModel(applications[0]);
   }
 
   // TODO: paginate
