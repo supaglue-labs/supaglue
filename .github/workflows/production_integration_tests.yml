@@ -19,7 +19,7 @@ jobs:
       customer-id: customer1
       page-on-failure: true
       environment: Production
-      release-ref: ${GITHUB_REF#refs/*/}
+      release-ref: echo "${GITHUB_REF#refs/*/}"
     secrets:
       TESTING_API_KEY: ${{ secrets.PRODUCTION_TESTING_API_KEY }}
       SLACK_WEBHOOK_URL: ${{ secrets.ALERTS_SLACK_WEBHOOK_URL }}
