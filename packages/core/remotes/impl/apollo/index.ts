@@ -119,11 +119,11 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
-      case 'contact':
       case 'sequence':
         return this.#api
           .getEmailerCampaign({ params: { id } })
           .then(({ emailer_campaign: c }) => fromApolloEmailerCampaignToSequence(c));
+      case 'contact':
       case 'user':
       case 'mailbox':
       case 'sequence_state':
