@@ -55,8 +55,9 @@ export default function init(app: Router): void {
       res: Response<GetProviderUserIdResponse>
     ) => {
       const providerName = req.query.provider_name;
+      const externalCustomerId = req.params.customer_id;
       const connection = await connectionService.getSafeByExternalCustomerIdProviderNameAndApplicationId(
-        req.params.customer_id,
+        externalCustomerId,
         providerName,
         req.supaglueApplication.id
       );
@@ -89,9 +90,10 @@ export default function init(app: Router): void {
       req: Request<CreateConnectionPathParams, CreateConnectionResponse, CreateConnectionRequest>,
       res: Response<CreateConnectionResponse>
     ) => {
+      const externalCustomerId = req.params.customer_id;
       const connection = await connectionAndSyncService.createManually(
         req.supaglueApplication.id,
-        req.params.customer_id,
+        externalCustomerId,
         camelcaseKeys(req.body)
       );
       return res.status(200).send(snakecaseKeys(connection));
@@ -122,12 +124,10 @@ export default function init(app: Router): void {
       req: Request<DeleteConnectionPathParams, DeleteConnectionResponse, DeleteConnectionRequest>,
       res: Response<DeleteConnectionResponse>
     ) => {
+      const externalCustomerId = req.params.customer_id;
+      const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
       // TODO: revoke token from provider?
-      await connectionAndSyncService.delete(
-        req.params.connection_id,
-        req.supaglueApplication.id,
-        req.params.customer_id
-      );
+      await connectionAndSyncService.delete(req.params.connection_id, req.supaglueApplication.id, customerId);
       return res.status(204).end();
     }
   );
