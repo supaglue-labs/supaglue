@@ -531,7 +531,7 @@ export class ConnectionAndSyncService {
     }
   }
 
-  public async delete(id: string, applicationId: string, customerId: string): Promise<void> {
+  public async delete(id: string, applicationId: string, externalCustomerId: string): Promise<void> {
     let errored = false;
     const connection = await this.#prisma.connection.findFirst({
       where: {
@@ -539,7 +539,7 @@ export class ConnectionAndSyncService {
         provider: {
           applicationId,
         },
-        customerId,
+        customerId: getCustomerIdPk(applicationId, externalCustomerId),
       },
       include: {
         syncs: {

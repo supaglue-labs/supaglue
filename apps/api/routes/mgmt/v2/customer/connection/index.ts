@@ -123,11 +123,8 @@ export default function init(app: Router): void {
       res: Response<DeleteConnectionResponse>
     ) => {
       // TODO: revoke token from provider?
-      await connectionAndSyncService.delete(
-        req.params.connection_id,
-        req.supaglueApplication.id,
-        req.params.customer_id
-      );
+      const externalCustomerId = req.params.customer_id;
+      await connectionAndSyncService.delete(req.params.connection_id, req.supaglueApplication.id, externalCustomerId);
       return res.status(204).end();
     }
   );
