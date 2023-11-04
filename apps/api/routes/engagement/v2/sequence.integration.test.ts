@@ -88,13 +88,18 @@ describe('sequence', () => {
 
   test(`Error body`, async () => {
     testSequence.steps[0].interval_seconds = 123;
-    const response = await apiClient.post<CreateSequenceResponse>(
-      '/engagement/v2/sequences',
-      { record: testSequence },
-      { headers: { 'x-provider-name': 'salesloft' } }
+
+    const res = await supaglueClient.engagement.POST('/sequences', {
+      body: { record: testSequence },
+      // TODO: Make it so that x-customer-id can be omitted if it was passed into the client at creation time.
+      params: { header: { 'x-provider-name': 'salesloft', 'x-customer-id': process.env.CUSTOMER_ID! } },
+    });
+
+    expect(res.response.status).toEqual(400);
+    // Our API spec is wrong and should specify 400 return code with ability to have errors
+    expect((res.error as typeof res.data)?.errors?.[0].title).toMatch(
+      'Salesloft only supports intervals in whole days'
     );
-    expect(response.status).toEqual(400);
-    expect(response.data.errors?.[0].title).toMatch('Salesloft only supports intervals in whole days');
   });
 
   describe.each(['outreach', 'salesloft', 'apollo'])('%s', (providerName) => {
