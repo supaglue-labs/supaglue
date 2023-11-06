@@ -54,6 +54,7 @@ import type {
   CustomObjectSchemaCreateParams,
   CustomObjectSchemaUpdateParams,
   SimpleCustomObjectSchema,
+  SimpleCustomObjectSchemaDeprecated,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
@@ -1952,10 +1953,22 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return HUBSPOT_STANDARD_OBJECT_TYPES as unknown as string[];
   }
 
-  public override async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
+  public override async listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.getAll();
     return response.results.map((object) => ({ id: object.id, name: object.name }));
+  }
+
+  public override async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
+    await this.maybeRefreshAccessToken();
+    const response = await this.#client.crm.schemas.coreApi.getAll();
+    return response.results.map((object) => ({
+      name: object.name,
+      labels: {
+        singular: object.labels.singular ?? '',
+        plural: object.labels.plural ?? '',
+      },
+    }));
   }
 
   #isAlreadyObjectTypeId(nameOrId: string): boolean {

@@ -19,13 +19,13 @@ get:
   parameters: []
   responses:
     200:
-      description: An array containing the names of Custom Objects
+      description: An array containing the names and labels of Custom Objects
       content:
         application/json:
           schema:
             type: array
             items:
-              type: string
+              $ref: ../../components/schemas/objects/simple_custom_object_schema.yaml
 post:
   operationId: createCustomObjectSchema
   summary: Create custom object schema

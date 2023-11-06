@@ -48,6 +48,7 @@ import type {
   CustomObjectSchemaCreateParams,
   CustomObjectSchemaUpdateParams,
   SimpleCustomObjectSchema,
+  SimpleCustomObjectSchemaDeprecated,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
@@ -332,11 +333,26 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return SALESFORCE_OBJECTS as unknown as string[];
   }
 
-  public override async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
+  public override async listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]> {
     const metadata = await this.#client.describeGlobal();
     // this returns standard objects and external objects too,
     // so we need to filter them out
     return metadata.sobjects.filter(({ custom }) => custom).map(({ name }) => ({ id: name, name }));
+  }
+
+  public override async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
+    const metadata = await this.#client.describeGlobal();
+    // this returns standard objects and external objects too,
+    // so we need to filter them out
+    return metadata.sobjects
+      .filter(({ custom }) => custom)
+      .map(({ name, label, labelPlural }) => ({
+        name,
+        labels: {
+          singular: label,
+          plural: labelPlural,
+        },
+      }));
   }
 
   public override async listStandardObjectRecords(

@@ -17,6 +17,7 @@ import type {
   CustomObjectSchemaCreateParams,
   CustomObjectSchemaUpdateParams,
   SimpleCustomObjectSchema,
+  SimpleCustomObjectSchemaDeprecated,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
@@ -43,6 +44,7 @@ export interface RemoteClient {
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
   listStandardObjectSchemas(): Promise<string[]>;
+  listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]>;
   listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]>;
   getCustomObjectSchema(id: string): Promise<CustomObjectSchema>;
   createCustomObjectSchema(params: CustomObjectSchemaCreateParams): Promise<string>;
@@ -144,6 +146,9 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   }
 
   public async listStandardObjectSchemas(): Promise<string[]> {
+    throw new NotImplementedError();
+  }
+  public async listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]> {
     throw new NotImplementedError();
   }
   public async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {

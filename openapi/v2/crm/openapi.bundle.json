@@ -2273,13 +2273,13 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": "An array containing the names of Custom Objects",
+            "description": "An array containing the names and labels of Custom Objects",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "$ref": "#/components/schemas/simple_custom_object_schema"
                   }
                 }
               }
@@ -4178,16 +4178,34 @@
           }
         }
       },
-      "simple_custom_object": {
+      "simple_custom_object_schema": {
         "type": "object",
         "properties": {
           "name": {
             "type": "string",
             "example": "ticket"
+          },
+          "labels": {
+            "type": "object",
+            "properties": {
+              "singular": {
+                "type": "string",
+                "example": "Ticket"
+              },
+              "plural": {
+                "type": "string",
+                "example": "Tickets"
+              }
+            },
+            "required": [
+              "singular",
+              "plural"
+            ]
           }
         },
         "required": [
-          "name"
+          "name",
+          "label"
         ]
       },
       "association": {

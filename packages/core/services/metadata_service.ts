@@ -4,6 +4,7 @@ import type {
   CustomObjectSchemaCreateParams,
   CustomObjectSchemaUpdateParams,
   SimpleCustomObjectSchema,
+  SimpleCustomObjectSchemaDeprecated,
 } from '@supaglue/types/custom_object';
 import type { ConnectionService } from '.';
 import { remoteDuration } from '../lib/metrics';
@@ -23,6 +24,16 @@ export class MetadataService {
 
     const end = remoteDuration.startTimer({ operation: 'list' });
     const result = await remoteClient.listStandardObjectSchemas();
+    end();
+
+    return result;
+  }
+
+  public async listCustomObjectSchemasDeprecated(connectionId: string): Promise<SimpleCustomObjectSchemaDeprecated[]> {
+    const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
+
+    const end = remoteDuration.startTimer({ operation: 'list' });
+    const result = await remoteClient.listCustomObjectSchemasDeprecated();
     end();
 
     return result;
