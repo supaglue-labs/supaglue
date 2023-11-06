@@ -17,8 +17,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (LEKKO_API_KEY) {
         const lekkoClient = await initAPIClient({
           apiKey: LEKKO_API_KEY,
-          repositoryName: 'supaglue-test',
-          repositoryOwner: 'lekkodev',
+          repositoryName: 'dynamic-config',
+          repositoryOwner: 'supaglue-labs',
         });
 
         try {
