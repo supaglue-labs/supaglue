@@ -2151,6 +2151,17 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     await this.maybeRefreshAccessToken();
     const sourceObjectTypeId = await this.#getObjectTypeIdFromNameOrId(params.sourceRecord.objectName);
     const targetObjectTypeId = await this.#getObjectTypeIdFromNameOrId(params.targetRecord.objectName);
+    const response = await this.#client.crm.associations.v4.schema.definitionsApi.getAll(
+      sourceObjectTypeId,
+      targetObjectTypeId
+    );
+    const associationSchema = response.results.find(
+      (result) => result.typeId.toString() === params.associationSchemaId
+    );
+    if (!associationSchema) {
+      throw new NotFoundError(`Could not find association schema with id ${params.associationSchemaId}`);
+    }
+    const associationCategory = associationSchema.category;
     await this.#client.crm.associations.v4.batchApi.create(sourceObjectTypeId, targetObjectTypeId, {
       inputs: [
         {
@@ -2158,7 +2169,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           to: { id: params.targetRecord.id },
           types: [
             {
-              associationCategory: 'USER_DEFINED', // TODO: does this work all the time?
+              associationCategory,
               associationTypeId: parseInt(params.associationSchemaId),
             },
           ],
