@@ -180,7 +180,7 @@ export class ConnectionAndSyncService {
 
   public async createManually(
     applicationId: string,
-    customerId: string,
+    externalCustomerId: string,
     importedCredentials: ImportedConnectionCredentials
   ): Promise<ConnectionSafeAny> {
     // TODO: Delegate this logic to each remote to implement instead
@@ -197,7 +197,7 @@ export class ConnectionAndSyncService {
           providerName: importedCredentials.providerName,
           providerId: provider.id,
           category: 'engagement',
-          customerId,
+          customerId: externalCustomerId,
           credentials: {
             type: importedCredentials.type,
             apiKey: importedCredentials.apiKey,
@@ -212,7 +212,7 @@ export class ConnectionAndSyncService {
           providerName: importedCredentials.providerName,
           providerId: provider.id,
           category: 'enrichment',
-          customerId,
+          customerId: externalCustomerId,
           credentials: {
             type: importedCredentials.type,
             apiKey: importedCredentials.apiKey,
@@ -227,7 +227,7 @@ export class ConnectionAndSyncService {
           providerName: importedCredentials.providerName,
           providerId: provider.id,
           category: 'enrichment',
-          customerId,
+          customerId: externalCustomerId,
           credentials: {
             type: importedCredentials.type,
             apiKey: importedCredentials.apiKey,
@@ -242,7 +242,7 @@ export class ConnectionAndSyncService {
           providerName: importedCredentials.providerName,
           providerId: provider.id,
           category: 'no_category',
-          customerId,
+          customerId: externalCustomerId,
           credentials: {
             type: importedCredentials.type,
             accessKey: importedCredentials.accessKey,
@@ -259,7 +259,7 @@ export class ConnectionAndSyncService {
           providerName: importedCredentials.providerName,
           providerId: provider.id,
           category: 'crm',
-          customerId,
+          customerId: externalCustomerId,
           credentials: {
             type: importedCredentials.type,
             refreshToken: importedCredentials.refreshToken,
@@ -300,7 +300,7 @@ export class ConnectionAndSyncService {
           providerName: importedCredentials.providerName,
           providerId: provider.id,
           category: 'crm',
-          customerId,
+          customerId: externalCustomerId,
           credentials: {
             type: importedCredentials.type,
             refreshToken: newRefreshToken,
@@ -317,7 +317,7 @@ export class ConnectionAndSyncService {
           providerName: importedCredentials.providerName,
           providerId: provider.id,
           category: 'marketing_automation',
-          customerId,
+          customerId: externalCustomerId,
           credentials: {
             type: importedCredentials.type,
             instanceUrl: importedCredentials.instanceUrl,
@@ -335,7 +335,7 @@ export class ConnectionAndSyncService {
           providerName: importedCredentials.providerName,
           providerId: provider.id,
           category: 'marketing_automation',
-          customerId,
+          customerId: externalCustomerId,
           credentials: {
             type: importedCredentials.type,
             refreshToken: importedCredentials.refreshToken,
@@ -531,7 +531,7 @@ export class ConnectionAndSyncService {
     }
   }
 
-  public async delete(id: string, applicationId: string, customerId: string): Promise<void> {
+  public async delete(id: string, applicationId: string, externalCustomerId: string): Promise<void> {
     let errored = false;
     const connection = await this.#prisma.connection.findFirst({
       where: {
@@ -539,7 +539,7 @@ export class ConnectionAndSyncService {
         provider: {
           applicationId,
         },
-        customerId,
+        customerId: getCustomerIdPk(applicationId, externalCustomerId),
       },
       include: {
         syncs: {
