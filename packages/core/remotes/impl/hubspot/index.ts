@@ -1600,21 +1600,26 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public async updateOpportunity(params: OpportunityUpdateParams): Promise<string> {
+    let { id } = params;
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     await this.maybeRefreshAccessToken();
-    const deal = await this.#client.crm.deals.basicApi.update(params.id, {
-      properties: toHubspotOpportunityUpdateParams(params, pipelineStageMapping),
-    });
+    const propertiesToUpdate = toHubspotOpportunityUpdateParams(params, pipelineStageMapping);
+    if (Object.keys(propertiesToUpdate).length) {
+      const deal = await this.#client.crm.deals.basicApi.update(params.id, {
+        properties: propertiesToUpdate,
+      });
+      ({ id } = deal);
+    }
     if (params.accountId && parseInt(params.accountId)) {
       await this.#client.crm.associations.v4.basicApi.create(
         'deal',
-        parseInt(deal.id),
+        parseInt(id),
         'company',
         parseInt(params.accountId),
         [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: OPPORTUNITY_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
       );
     }
-    return deal.id;
+    return id;
   }
 
   public async listContacts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
@@ -1803,20 +1808,25 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   }
 
   public async updateContact(params: ContactUpdateParams): Promise<string> {
+    let { id } = params;
     await this.maybeRefreshAccessToken();
-    const contact = await this.#client.crm.contacts.basicApi.update(params.id, {
-      properties: toHubspotContactUpdateParams(params),
-    });
+    const hubspotUpdateParams = toHubspotContactUpdateParams(params);
+    if (Object.keys(hubspotUpdateParams).length) {
+      const contact = await this.#client.crm.contacts.basicApi.update(params.id, {
+        properties: toHubspotContactUpdateParams(params),
+      });
+      ({ id } = contact);
+    }
     if (params.accountId && parseInt(params.accountId)) {
       await this.#client.crm.associations.v4.basicApi.create(
         'contact',
-        parseInt(contact.id),
+        parseInt(id),
         'company',
         parseInt(params.accountId),
         [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: CONTACT_TO_PRIMARY_COMPANY_ASSOCIATION_ID }]
       );
     }
-    return contact.id;
+    return id;
   }
 
   public async listLeads(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
