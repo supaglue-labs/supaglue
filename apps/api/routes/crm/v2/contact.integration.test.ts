@@ -6,6 +6,7 @@
  */
 
 import type {
+  CreateAccountResponse,
   CreateContactRequest,
   CreateContactResponse,
   GetContactResponse,
@@ -117,6 +118,67 @@ describe('contact', () => {
       expect(dbContact.rows[0].last_name).toEqual('contact');
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(dbContact.rows[0].addresses).toEqual(testContact.record.addresses);
+    }, 120000);
+
+    test('PATCH association only /', async () => {
+      const response = await apiClient.post<CreateContactResponse>(
+        '/crm/v2/contacts',
+        { record: testContact },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(response.status).toEqual(201);
+      expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'contact',
+      });
+
+      const accountResponse = await apiClient.post<CreateAccountResponse>(
+        '/crm/v2/accounts',
+        { record: testContact },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(accountResponse.status).toEqual(201);
+      expect(accountResponse.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: accountResponse.data.record?.id as string,
+        providerName,
+        objectName: 'account',
+      });
+
+      const updateResponse = await apiClient.patch<UpdateContactResponse>(
+        `/crm/v2/contacts/${response.data.record?.id}`,
+        {
+          record: {
+            accountId: accountResponse.data.record?.id as string,
+          },
+        },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+
+      expect(updateResponse.status).toEqual(200);
+
+      // Pipedrive does not have read after write guarantees, so we need to wait
+      if (providerName === 'pipedrive') {
+        await new Promise((resolve) => setTimeout(resolve, 12000));
+      }
+
+      const getResponse = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
+        headers: { 'x-provider-name': providerName },
+      });
+      expect(getResponse.data.id).toEqual(response.data.record?.id);
+      expect(getResponse.data.account_id).toEqual(accountResponse.data.record?.id);
+
+      // test that the db was updated
+      const dbContact = await db.query(`SELECT * FROM crm_contacts WHERE id = $1`, [response.data.record?.id]);
+      expect(dbContact.rows[0].account_id).toEqual(accountResponse.data.record?.id);
     }, 120000);
 
     test(`POST /_upsert`, async () => {
