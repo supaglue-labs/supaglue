@@ -59,7 +59,6 @@ export const logger: Logger = wrapLogger(
       base: undefined, // don't log hostname and pid,
       redact: [
         'err.config.headers.Authorization', // axios errors
-        'context.passthroughRequest.body',
       ],
     },
     pino.multistream(streams)

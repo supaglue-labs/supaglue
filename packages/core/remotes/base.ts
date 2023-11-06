@@ -1,3 +1,4 @@
+import axios from '@supaglue/core/remotes/sg_axios';
 import type {
   CreatePropertyParams,
   ObjectRecordUpsertData,
@@ -20,7 +21,6 @@ import type {
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
-import axios from 'axios';
 import { EventEmitter } from 'events';
 import type { Readable } from 'stream';
 import { NotImplementedError } from '../errors';

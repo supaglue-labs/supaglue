@@ -1,6 +1,6 @@
+import axios from '@supaglue/core/remotes/sg_axios';
 import type { ConnectionUnsafe, EngagementOauthProvider, ListedObjectRecord, Provider } from '@supaglue/types';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
-import axios from 'axios';
 import { Readable } from 'stream';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';

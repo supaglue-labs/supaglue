@@ -1,3 +1,4 @@
+import axios from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   Provider,
@@ -15,7 +16,6 @@ import type {
   SequenceStateCreateParams,
   SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
-import axios from 'axios';
 import { Readable } from 'stream';
 import { BadRequestError, InternalServerError, NotFoundError } from '../../../errors';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';

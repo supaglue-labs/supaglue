@@ -1,6 +1,6 @@
+import axios from '@supaglue/core/remotes/sg_axios';
 import type { WebhookConfig, WebhookPayload } from '@supaglue/types';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
-import axios from 'axios';
 import { logger } from './logger';
 
 export type WebhookPayloadType = 'CONNECTION_SUCCESS' | 'CONNECTION_ERROR' | 'SYNC_SUCCESS' | 'SYNC_ERROR';
