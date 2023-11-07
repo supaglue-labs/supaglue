@@ -1396,12 +1396,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       /* propertiesWithHistory */ undefined,
       associations.length ? associations : undefined
     );
+    const flattenedAssociations = flattenAssociations(company.associations, associatedCustomObjectSchemas);
     return {
       ...fromHubSpotCompanyToAccount({
         ...company,
-        associations: flattenAssociations(company.associations, associatedCustomObjectSchemas),
+        associations: flattenedAssociations,
       } as unknown as RecordWithFlattenedAssociations),
-      rawData: { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: company.associations },
+      rawData: { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: flattenedAssociations },
     };
   }
 
@@ -1551,6 +1552,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       /* propertiesWithHistory */ undefined,
       associations.length ? associations : undefined
     );
+    const flattenedAssociations = flattenAssociations(deal.associations, associatedCustomObjectSchemas);
     return {
       ...fromHubSpotDealToOpportunity(
         {
@@ -1559,7 +1561,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         } as unknown as RecordWithFlattenedAssociations,
         pipelineStageMapping
       ),
-      rawData: { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: deal.associations },
+      rawData: { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: flattenedAssociations },
     };
   }
 
@@ -1688,12 +1690,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       /* propertiesWithHistory */ undefined,
       associations.length ? associations : undefined
     );
+    const flattenedAssociations = flattenAssociations(contact.associations, associatedCustomObjectSchemas);
     return {
       ...fromHubSpotContactToContact({
         ...contact,
-        associations: flattenAssociations(contact.associations, associatedCustomObjectSchemas),
+        associations: flattenedAssociations,
       } as unknown as RecordWithFlattenedAssociations),
-      rawData: { ...toMappedProperties(contact.properties, fieldMappingConfig), _associations: contact.associations },
+      rawData: { ...toMappedProperties(contact.properties, fieldMappingConfig), _associations: flattenedAssociations },
     };
   }
 
