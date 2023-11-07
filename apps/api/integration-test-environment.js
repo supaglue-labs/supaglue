@@ -3,14 +3,6 @@ const axios = require('axios');
 const { Pool } = require('pg');
 const { parse } = require('pg-connection-string');
 const { TestEnvironment } = require('jest-environment-node');
-const { createSupaglueClient } = require('@supaglue/schemas');
-const { ProxyAgent, setGlobalDispatcher } = require('undici');
-
-// global-agent and undici are used for proxying http requests for debugging purposes
-require('global-agent/bootstrap');
-if (process.env['GLOBAL_AGENT_HTTP_PROXY']) {
-  setGlobalDispatcher(new ProxyAgent(process.env['GLOBAL_AGENT_HTTP_PROXY']));
-}
 
 const toHubspotPluralObjectName = {
   contact: 'contacts',
@@ -103,14 +95,6 @@ class IntegrationEnvironment extends TestEnvironment {
         'x-api-key': process.env.API_KEY,
       },
     });
-
-    this.global.supaglueClient = createSupaglueClient({
-      apiUrl: process.env.API_URL ?? 'http://localhost:8080/api',
-      // TODO: How do we add timeout
-      apiKey: process.env.API_KEY,
-      customerId: process.env.CUSTOMER_ID,
-    });
-
     this.global.addedObjects = [];
   }
 

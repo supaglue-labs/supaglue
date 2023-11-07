@@ -1,4 +1,3 @@
-import type { SupaglueClient } from '@supaglue/schemas';
 import type { AxiosInstance } from 'axios';
 import type { Pool } from 'pg';
 
@@ -11,8 +10,6 @@ export type AddedObject = {
 declare global {
   // eslint-disable-next-line no-var
   var apiClient: AxiosInstance;
-  // eslint-disable-next-line no-var
-  var supaglueClient: SupaglueClient;
   // eslint-disable-next-line no-var
   var testIf: (condition: boolean, ...args: Parameters<typeof test>) => void;
 
