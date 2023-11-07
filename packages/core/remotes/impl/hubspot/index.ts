@@ -2220,6 +2220,20 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       },
     });
 
+    const v3Response = await axios.post(
+      `https://api.hubapi.com/crm/v3/lists/search`,
+      {
+        count: pageSize,
+        offset: cursor?.id,
+        // additioan properties?
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${this.#config.accessToken}`,
+        },
+      }
+    );
+
     // Map response to ListMetadata interface
     return {
       records: response.data.lists.map((record: any) => ({
