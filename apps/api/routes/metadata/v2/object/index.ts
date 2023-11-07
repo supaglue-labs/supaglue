@@ -29,6 +29,9 @@ export default function init(app: Router): void {
     }
   );
 
+  /**
+   * @deprecated
+   */
   objectRouter.get(
     '/custom',
     async (

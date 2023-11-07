@@ -29,6 +29,9 @@ export class MetadataService {
     return result;
   }
 
+  /**
+   * @deprecated
+   */
   public async listCustomObjectSchemasDeprecated(connectionId: string): Promise<SimpleCustomObjectSchemaDeprecated[]> {
     const remoteClient = await this.#remoteService.getRemoteClient(connectionId);
 

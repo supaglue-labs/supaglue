@@ -44,6 +44,9 @@ export interface RemoteClient {
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
   listStandardObjectSchemas(): Promise<string[]>;
+  /**
+   * @deprecated
+   */
   listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]>;
   listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]>;
   getCustomObjectSchema(id: string): Promise<CustomObjectSchema>;
@@ -148,6 +151,9 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   public async listStandardObjectSchemas(): Promise<string[]> {
     throw new NotImplementedError();
   }
+  /**
+   * @deprecated
+   */
   public async listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]> {
     throw new NotImplementedError();
   }

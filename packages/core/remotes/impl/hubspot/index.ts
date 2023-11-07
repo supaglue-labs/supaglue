@@ -1953,6 +1953,9 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return HUBSPOT_STANDARD_OBJECT_TYPES as unknown as string[];
   }
 
+  /**
+   * @deprecated
+   */
   public override async listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]> {
     await this.maybeRefreshAccessToken();
     const response = await this.#client.crm.schemas.coreApi.getAll();

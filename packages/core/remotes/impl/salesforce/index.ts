@@ -333,6 +333,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return SALESFORCE_OBJECTS as unknown as string[];
   }
 
+  /**
+   * @deprecated
+   */
   public override async listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]> {
     const metadata = await this.#client.describeGlobal();
     // this returns standard objects and external objects too,
