@@ -893,29 +893,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         ...response.data,
         results: response.data.results.map(({ associations, ...rest }) => ({
           ...rest,
-          associations: Object.entries(associations ?? {}).reduce((acc, [associatedObjectTypeKey, { results }]) => {
-            const dedupedIds = [...new Set(results.map(({ id }) => id))];
-            // If associatedObjectType is for a standard object, it will be pluralized, and we should use the singular form
-            if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectTypeKey)) {
-              if (!(associatedObjectTypeKey in hubspotStandardObjectPluralizedToType)) {
-                throw new Error(`Couldn't find matching standard object type for ${associatedObjectTypeKey}`);
-              }
-              const standardObjectType = hubspotStandardObjectPluralizedToType[associatedObjectTypeKey];
-              acc[standardObjectType] = dedupedIds;
-              return acc;
-            }
-
-            // If associatedObjectType is for a custom object, it will be the fullyQualifiedName,
-            // and we want to use the objectTypeId for consistency
-            const matchingCustomObjectSchema = associatedCustomObjectSchemas.find(
-              (schema) => schema.fullyQualifiedName === associatedObjectTypeKey
-            );
-            if (!matchingCustomObjectSchema) {
-              throw new Error(`Couldn't find matching custom object schema for ${associatedObjectTypeKey}`);
-            }
-            acc[matchingCustomObjectSchema.objectTypeId] = dedupedIds;
-            return acc;
-          }, {} as Record<string, string[]>),
+          associations: flattenAssociations(associations, associatedCustomObjectSchemas),
         })),
       };
     });
@@ -1418,7 +1396,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       associations.length ? associations : undefined
     );
     return {
-      ...fromHubSpotCompanyToAccount(company as unknown as RecordWithFlattenedAssociations),
+      ...fromHubSpotCompanyToAccount({
+        ...company,
+        associations: flattenAssociations(company.associations, associatedCustomObjectSchemas),
+      } as unknown as RecordWithFlattenedAssociations),
       rawData: { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: company.associations },
     };
   }
@@ -1570,7 +1551,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       associations.length ? associations : undefined
     );
     return {
-      ...fromHubSpotDealToOpportunity(deal as unknown as RecordWithFlattenedAssociations, pipelineStageMapping),
+      ...fromHubSpotDealToOpportunity(
+        {
+          ...deal,
+          associations: flattenAssociations(deal.associations, associatedCustomObjectSchemas),
+        } as unknown as RecordWithFlattenedAssociations,
+        pipelineStageMapping
+      ),
       rawData: { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: deal.associations },
     };
   }
@@ -1689,6 +1676,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact');
+
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
@@ -1700,7 +1688,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       associations.length ? associations : undefined
     );
     return {
-      ...fromHubSpotContactToContact(contact as unknown as RecordWithFlattenedAssociations),
+      ...fromHubSpotContactToContact({
+        ...contact,
+        associations: flattenAssociations(contact.associations, associatedCustomObjectSchemas),
+      } as unknown as RecordWithFlattenedAssociations),
       rawData: { ...toMappedProperties(contact.properties, fieldMappingConfig), _associations: contact.associations },
     };
   }
@@ -1810,8 +1801,8 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public async updateContact(params: ContactUpdateParams): Promise<string> {
     let { id } = params;
     await this.maybeRefreshAccessToken();
-    const hubspotUpdateParams = toHubspotContactUpdateParams(params);
-    if (Object.keys(hubspotUpdateParams).length) {
+    const propertiesToUpdate = toHubspotContactUpdateParams(params);
+    if (Object.keys(propertiesToUpdate).length) {
       const contact = await this.#client.crm.contacts.basicApi.update(params.id, {
         properties: toHubspotContactUpdateParams(params),
       });
@@ -2533,4 +2524,40 @@ function getMetadataFromRecord(record: HubSpotAPIV3GetRecordResponse): ObjectMet
     // We don't support getting archived records, so we don't need to check for archivedAt
     lastModifiedAt: new Date(record.updatedAt),
   };
+}
+
+function flattenAssociations(
+  associations:
+    | Record<
+        string,
+        {
+          results: HubSpotAPIV3ListResponseAssociationResult[];
+        }
+      >
+    | undefined,
+  associatedCustomObjectSchemas: HubSpotCustomSchema[]
+): Record<string, string[]> {
+  return Object.entries(associations ?? {}).reduce((acc, [associatedObjectTypeKey, { results }]) => {
+    const dedupedIds = [...new Set(results.map(({ id }) => id))];
+    // If associatedObjectType is for a standard object, it will be pluralized, and we should use the singular form
+    if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectTypeKey)) {
+      if (!(associatedObjectTypeKey in hubspotStandardObjectPluralizedToType)) {
+        throw new Error(`Couldn't find matching standard object type for ${associatedObjectTypeKey}`);
+      }
+      const standardObjectType = hubspotStandardObjectPluralizedToType[associatedObjectTypeKey];
+      acc[standardObjectType] = dedupedIds;
+      return acc;
+    }
+
+    // If associatedObjectType is for a custom object, it will be the fullyQualifiedName,
+    // and we want to use the objectTypeId for consistency
+    const matchingCustomObjectSchema = associatedCustomObjectSchemas.find(
+      (schema) => schema.fullyQualifiedName === associatedObjectTypeKey
+    );
+    if (!matchingCustomObjectSchema) {
+      throw new Error(`Couldn't find matching custom object schema for ${associatedObjectTypeKey}`);
+    }
+    acc[matchingCustomObjectSchema.objectTypeId] = dedupedIds;
+    return acc;
+  }, {} as Record<string, string[]>);
 }

@@ -136,9 +136,23 @@ describe('contact', () => {
         objectName: 'contact',
       });
 
+      const testAccount = {
+        addresses: [
+          {
+            street_1: '123 Main St',
+            street_2: 'Suite 101',
+            city: 'Austin',
+            country: 'US',
+            postal_code: '78701',
+            state: 'TX',
+            address_type: 'primary',
+          },
+        ],
+        name: 'test account',
+      };
       const accountResponse = await apiClient.post<CreateAccountResponse>(
         '/crm/v2/accounts',
-        { record: testContact },
+        { record: testAccount },
         {
           headers: { 'x-provider-name': providerName },
         }
