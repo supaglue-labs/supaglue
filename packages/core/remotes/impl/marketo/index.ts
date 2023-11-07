@@ -1,3 +1,4 @@
+import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   MarketoOauthConnectionCredentialsDecrypted,
@@ -8,7 +9,6 @@ import type {
 import type { FormField } from '@supaglue/types/marketing_automation/form_field';
 import type { FormMetadata } from '@supaglue/types/marketing_automation/form_metadata';
 import type { SubmitFormData, SubmitFormResult } from '@supaglue/types/marketing_automation/submit_form';
-import axios, { AxiosError } from 'axios';
 import simpleOauth2 from 'simple-oauth2';
 import {
   BadGatewayError,

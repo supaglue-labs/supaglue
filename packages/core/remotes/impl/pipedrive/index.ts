@@ -1,3 +1,4 @@
+import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   CRMProvider,
@@ -26,7 +27,6 @@ import type {
   User,
 } from '@supaglue/types/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
-import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
 import {
   BadRequestError,

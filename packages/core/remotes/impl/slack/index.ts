@@ -1,5 +1,5 @@
+import axios from '@supaglue/core/remotes/sg_axios';
 import type { ConnectionUnsafe, EngagementOauthProvider, Provider } from '@supaglue/types';
-import axios from 'axios';
 import { REFRESH_TOKEN_THRESHOLD_MS } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractNoCategoryRemoteClient } from '../../categories/no_category/base';

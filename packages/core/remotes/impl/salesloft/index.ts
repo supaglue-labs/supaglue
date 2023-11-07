@@ -1,3 +1,4 @@
+import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   EngagementOauthProvider,
@@ -19,7 +20,6 @@ import type {
   SequenceStepCreateParams,
   User,
 } from '@supaglue/types/engagement';
-import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
 import { BadRequestError, InternalServerError, RemoteProviderError } from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';

@@ -4,6 +4,7 @@ import type {
   CollectionResponsePublicOwnerForwardPaging,
   CollectionResponsePublicOwnerForwardPaging as HubspotPaginatedOwners,
 } from '@hubspot/api-client/lib/codegen/crm/owners';
+import axios, { isAxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   CreatePropertyParams,
@@ -64,7 +65,6 @@ import type { SubmitFormData, SubmitFormResult } from '@supaglue/types/marketing
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import { HUBSPOT_STANDARD_OBJECT_TYPES } from '@supaglue/utils';
 import retry from 'async-retry';
-import axios, { isAxiosError } from 'axios';
 import { Readable } from 'stream';
 import {
   BadRequestError,

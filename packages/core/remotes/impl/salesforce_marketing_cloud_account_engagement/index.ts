@@ -2,6 +2,7 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
+import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   MarketingAutomationProvider,
@@ -10,7 +11,6 @@ import type {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type { SubmitFormData, SubmitFormResult } from '@supaglue/types/marketing_automation/submit_form';
-import axios, { AxiosError } from 'axios';
 import simpleOauth2 from 'simple-oauth2';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractMarketingAutomationRemoteClient } from '../../categories/marketing_automation/base';

@@ -1,3 +1,4 @@
+import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   EngagementOauthProvider,
@@ -20,7 +21,6 @@ import type {
   SequenceTemplateCreateParams,
   SequenceTemplateId,
 } from '@supaglue/types/engagement';
-import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
 import z from 'zod';
 import {

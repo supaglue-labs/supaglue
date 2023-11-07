@@ -1,3 +1,4 @@
+import axios from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   ListedObjectRecord,
@@ -8,7 +9,6 @@ import type {
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
-import axios from 'axios';
 import { Readable } from 'stream';
 import { BadRequestError } from '../../../errors';
 import { retryWhenAxiosRateLimited } from '../../../lib';
