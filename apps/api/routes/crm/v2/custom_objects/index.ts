@@ -113,7 +113,7 @@ export default function init(app: Router): void {
         req.params.record_id,
         req.body.record
       );
-      return res.status(201).send({ record: { id: req.params.record_id } });
+      return res.status(200).send({ record: { id: req.params.record_id } });
     }
   );
 

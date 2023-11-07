@@ -8,6 +8,7 @@ const toHubspotPluralObjectName = {
   contact: 'contacts',
   account: 'companies',
   opportunity: 'deals',
+  PermanentCustomObject: 'PermanentCustomObject',
 };
 
 const toPipedriveObjectName = {
@@ -38,6 +39,9 @@ const getDeletePassthroughRequest = (id, objectName, providerName) => {
           method: 'DELETE',
           path: `/services/data/v57.0/tooling/sobjects/CustomObject/${id}`,
         };
+      }
+      if (objectName === 'PermanentCustomObject') {
+        objectName = `PermanentCustomObject__c`;
       }
       return {
         method: 'DELETE',

@@ -1,5 +1,5 @@
 /**
- * Tests accounts endpoints
+ * Tests custom object schema endpoints
  *
  * @group integration/crm/v2/metadata/custom_objects
  * @jest-environment ./integration-test-environment
