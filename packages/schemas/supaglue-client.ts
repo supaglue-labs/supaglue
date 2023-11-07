@@ -17,10 +17,6 @@ interface SupaglueOptions {
   apiUrl?: string;
   /** x-api-key header */
   apiKey: string;
-  /** x-customer-id header */
-  customerId?: string;
-  /** x-provider-name header */
-  providerName?: string;
 }
 
 export type SupaglueClient = ReturnType<typeof createSupaglueClient>;
@@ -28,11 +24,7 @@ export function createSupaglueClient({ apiUrl = 'https://api.supaglue.io', ...op
   const getOptions = (segment: string) =>
     ({
       baseUrl: new URL(segment, apiUrl).toString(),
-      headers: {
-        ['x-api-key']: options.apiKey,
-        ...(options.customerId ? { ['x-customer-id']: options.customerId } : {}),
-        ...(options.providerName ? { ['x-provider-name']: options.providerName } : {}),
-      },
+      headers: { ['x-api-key']: options.apiKey },
     } satisfies Parameters<typeof createClient>[0]);
 
   return {
@@ -41,7 +33,7 @@ export function createSupaglueClient({ apiUrl = 'https://api.supaglue.io', ...op
     data: createClient<data>(getOptions('data/v2')),
     engagement: createClient<engagement>(getOptions('engagement/v2')),
     enrichment: createClient<enrichment>(getOptions('enrichment/v2')),
-    ['marketing-automation']: createClient<marketingAutomation>(getOptions('marketing/v2-automation')),
+    marketingAutomation: createClient<marketingAutomation>(getOptions('marketing-automation/v2')),
     metadata: createClient<metadata>(getOptions('metadata/v2')),
     ticketing: createClient<ticketing>(getOptions('ticketing/v2')),
     // TODO: Mgmt uses different headers, we should fix that
