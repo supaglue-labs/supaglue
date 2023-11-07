@@ -29,7 +29,7 @@ describe('account', () => {
   };
 
   describe.each(['salesforce', 'hubspot', 'pipedrive'])('%s', (providerName) => {
-    test(`POST /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/crm/v2/accounts',
         { record: testAccount },
@@ -62,7 +62,7 @@ describe('account', () => {
       // expect(dbAccount.rows[0].addresses).toEqual(testAccount.record.addresses);
     }, 120000);
 
-    test('PATCH /', async () => {
+    test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/crm/v2/accounts',
         { record: testAccount },
@@ -115,7 +115,7 @@ describe('account', () => {
     testIf(
       // not supported for pipedrive
       providerName !== 'pipedrive',
-      `POST /_upsert`,
+      `Test upserting twice only creates 1 record and cache invalidates`,
       async () => {
         const website = `https://example${Math.random()}.com/`;
         const domain = website.replace('https://', '').replace('http://', '').replace('/', '');

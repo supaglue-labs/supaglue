@@ -23,7 +23,7 @@ describe('account', () => {
   });
 
   describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
-    test(`POST /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/engagement/v2/accounts',
         { record: testAccount },
@@ -60,7 +60,7 @@ describe('account', () => {
       expect(dbAccount.rows[0].domain).toEqual(testAccount.domain);
     }, 120000);
 
-    test('PATCH /', async () => {
+    test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/engagement/v2/accounts',
         { record: testAccount },

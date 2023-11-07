@@ -66,7 +66,7 @@ describe('custom_objects', () => {
   });
 
   describe.each(['hubspot', 'salesforce'])('%s', (providerName) => {
-    test(`Post /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const fullObjectName = providerName === 'salesforce' ? `${testCustomObject.name}__c` : testCustomObject.name;
       const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
         '/crm/v2/metadata/custom_objects',
