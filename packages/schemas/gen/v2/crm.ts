@@ -1295,9 +1295,15 @@ export interface components {
         [key: string]: unknown;
       };
     };
-    simple_custom_object: {
+    simple_custom_object_schema: {
       /** @example ticket */
       name: string;
+      labels?: {
+        /** @example Ticket */
+        singular: string;
+        /** @example Tickets */
+        plural: string;
+      };
     };
     /** @description An instance of an association between two records. */
     association: {
@@ -2862,10 +2868,10 @@ export interface operations {
       };
     };
     responses: {
-      /** @description An array containing the names of Custom Objects */
+      /** @description An array containing the names and labels of Custom Objects */
       200: {
         content: {
-          "application/json": (string)[];
+          "application/json": (components["schemas"]["simple_custom_object_schema"])[];
         };
       };
     };

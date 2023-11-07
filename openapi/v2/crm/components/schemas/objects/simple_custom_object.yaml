@@ -1,7 +1,0 @@
-type: object
-properties:
-  name:
-    type: string
-    example: ticket
-required:
-  - name
