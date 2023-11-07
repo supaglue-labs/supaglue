@@ -82,9 +82,8 @@ describe('custom_objects_records', () => {
     };
   });
 
-  // describe.each(['hubspot'])('%s', (providerName) => {
   describe.each(['hubspot', 'salesforce'])('%s', (providerName) => {
-    test(`Post /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const fullObjectName = providerName === 'hubspot' ? 'PermanentCustomObject' : 'PermanentCustomObject__c';
       const response = await apiClient.post<CreateCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records`,
@@ -135,7 +134,7 @@ describe('custom_objects_records', () => {
       expect(rawData.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
     }, 120_000);
 
-    test(`Patch /`, async () => {
+    test(`Test that POST followed by PATCH followed by GET has correct data and cache invalidates`, async () => {
       const fullObjectName = providerName === 'hubspot' ? 'PermanentCustomObject' : 'PermanentCustomObject__c';
       const response = await apiClient.post<CreateCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records`,
@@ -210,7 +209,7 @@ describe('custom_objects_records', () => {
       expect(rawData.bool__c?.toString()).toEqual(updatedCustomObjectRecord.bool__c?.toString());
     }, 120_000);
 
-    test(`Post BadRequest /`, async () => {
+    test(`Test that Bad Requests have useful errors`, async () => {
       const response = await apiClient.post<CreateCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${PERMANENT_CUSTOM_OBJECT_NAME}/records`,
         // This will fail because description__c is required
