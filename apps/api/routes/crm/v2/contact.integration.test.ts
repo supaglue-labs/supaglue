@@ -6,6 +6,7 @@
  */
 
 import type {
+  CreateAccountResponse,
   CreateContactRequest,
   CreateContactResponse,
   GetContactResponse,
@@ -32,7 +33,7 @@ describe('contact', () => {
   };
 
   describe.each(['salesforce', 'hubspot', 'pipedrive'])('%s', (providerName) => {
-    test(`POST /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateContactResponse>(
         '/crm/v2/contacts',
         { record: testContact },
@@ -66,7 +67,7 @@ describe('contact', () => {
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
     }, 120000);
 
-    test('PATCH /', async () => {
+    test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
       const response = await apiClient.post<CreateContactResponse>(
         '/crm/v2/contacts',
         { record: testContact },
@@ -119,7 +120,82 @@ describe('contact', () => {
       // expect(dbContact.rows[0].addresses).toEqual(testContact.record.addresses);
     }, 120000);
 
-    test(`POST /_upsert`, async () => {
+    test('PATCH association only /', async () => {
+      const response = await apiClient.post<CreateContactResponse>(
+        '/crm/v2/contacts',
+        { record: testContact },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(response.status).toEqual(201);
+      expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'contact',
+      });
+
+      const testAccount = {
+        addresses: [
+          {
+            street_1: '123 Main St',
+            street_2: 'Suite 101',
+            city: 'Austin',
+            country: 'US',
+            postal_code: '78701',
+            state: 'TX',
+            address_type: 'primary',
+          },
+        ],
+        name: 'test account',
+      };
+      const accountResponse = await apiClient.post<CreateAccountResponse>(
+        '/crm/v2/accounts',
+        { record: testAccount },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(accountResponse.status).toEqual(201);
+      expect(accountResponse.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: accountResponse.data.record?.id as string,
+        providerName,
+        objectName: 'account',
+      });
+
+      const updateResponse = await apiClient.patch<UpdateContactResponse>(
+        `/crm/v2/contacts/${response.data.record?.id}`,
+        {
+          record: {
+            accountId: accountResponse.data.record?.id as string,
+          },
+        },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+
+      expect(updateResponse.status).toEqual(200);
+
+      // Pipedrive does not have read after write guarantees, so we need to wait
+      if (providerName === 'pipedrive') {
+        await new Promise((resolve) => setTimeout(resolve, 30_000));
+      }
+
+      const getResponse = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
+        headers: { 'x-provider-name': providerName },
+      });
+      expect(getResponse.data.id).toEqual(response.data.record?.id);
+      expect(getResponse.data.account_id).toEqual(accountResponse.data.record?.id);
+
+      // test that the db was updated
+      const dbContact = await db.query(`SELECT * FROM crm_contacts WHERE id = $1`, [response.data.record?.id]);
+      expect(dbContact.rows[0].account_id).toEqual(accountResponse.data.record?.id);
+    }, 120000);
+
+    test(`Test upserting twice only creates 1 record and cache invalidates`, async () => {
       const email = `me@example${Math.random()}.com`;
       const testContactUpsert: UpsertContactRequest = {
         upsert_on: { key: 'email', values: [email] },

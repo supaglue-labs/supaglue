@@ -28,7 +28,7 @@ describe('lead', () => {
       };
     });
 
-    test(`POST /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       // pipedrive needs a contact to convert to a lead first
       let convertedContactId = undefined;
       if (providerName === 'pipedrive') {
@@ -89,7 +89,7 @@ describe('lead', () => {
       expect(dbLead.rows[0].title).toEqual(testLead.title);
     }, 120000);
 
-    test('PATCH /', async () => {
+    test('PATCH then GET /', async () => {
       // pipedrive needs a contact to convert to a lead first
       let convertedContactId = undefined;
       if (providerName === 'pipedrive') {
@@ -172,7 +172,7 @@ describe('lead', () => {
     testIf(
       // not supported for pipedrive
       !['pipedrive'].includes(providerName),
-      `POST /_upsert`,
+      `Test upserting twice only creates 1 record and cache invalidates`,
       async () => {
         const email = `me@example${Math.random()}.com`;
         const testLeadUpsert: UpsertLeadRequest = {

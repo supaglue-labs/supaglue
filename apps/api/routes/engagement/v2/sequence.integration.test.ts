@@ -98,7 +98,7 @@ describe('sequence', () => {
   });
 
   describe.each(['outreach', 'salesloft', 'apollo'])('%s', (providerName) => {
-    test(`POST /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateSequenceResponse>(
         '/engagement/v2/sequences',
         { record: testSequence },
