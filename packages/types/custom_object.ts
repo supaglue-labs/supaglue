@@ -1,8 +1,16 @@
 import type { PropertyUnified } from './property';
 
-export type SimpleCustomObjectSchema = {
+export type SimpleCustomObjectSchemaDeprecated = {
   id: string;
   name: string;
+};
+
+export type SimpleCustomObjectSchema = {
+  name: string;
+  labels: {
+    singular: string;
+    plural: string;
+  };
 };
 
 export type CustomObjectSchema = {

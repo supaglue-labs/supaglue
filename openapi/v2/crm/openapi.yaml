@@ -158,8 +158,8 @@ components:
       $ref: ./components/schemas/objects/custom_object_record.yaml
     standard_object_record:
       $ref: ./components/schemas/objects/standard_object_record.yaml
-    simple_custom_object:
-      $ref: ./components/schemas/objects/simple_custom_object.yaml
+    simple_custom_object_schema:
+      $ref: ./components/schemas/objects/simple_custom_object_schema.yaml
     association:
       $ref: ./components/schemas/objects/association.yaml
     association_schema:
