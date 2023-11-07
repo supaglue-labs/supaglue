@@ -114,7 +114,7 @@ describe('custom_objects', () => {
         headers: { 'x-provider-name': providerName },
       });
       expect(listResponse.status).toEqual(200);
-      expect(listResponse.data).toContain(fullObjectName);
+      expect(listResponse.data).toContainEqual(expect.objectContaining({ name: fullObjectName }));
     }, 120_000);
 
     test(`Put /`, async () => {
