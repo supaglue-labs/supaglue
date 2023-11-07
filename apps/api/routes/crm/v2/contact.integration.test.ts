@@ -33,7 +33,7 @@ describe('contact', () => {
   };
 
   describe.each(['salesforce', 'hubspot', 'pipedrive'])('%s', (providerName) => {
-    test(`POST /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateContactResponse>(
         '/crm/v2/contacts',
         { record: testContact },
@@ -67,7 +67,7 @@ describe('contact', () => {
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
     }, 120000);
 
-    test('PATCH /', async () => {
+    test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
       const response = await apiClient.post<CreateContactResponse>(
         '/crm/v2/contacts',
         { record: testContact },
@@ -195,7 +195,7 @@ describe('contact', () => {
       expect(dbContact.rows[0].account_id).toEqual(accountResponse.data.record?.id);
     }, 120000);
 
-    test(`POST /_upsert`, async () => {
+    test(`Test upserting twice only creates 1 record and cache invalidates`, async () => {
       const email = `me@example${Math.random()}.com`;
       const testContactUpsert: UpsertContactRequest = {
         upsert_on: { key: 'email', values: [email] },

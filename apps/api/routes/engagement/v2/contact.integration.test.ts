@@ -29,7 +29,7 @@ describe('contact', () => {
   });
 
   describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
-    test(`POST /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateContactResponse>(
         '/engagement/v2/contacts',
         { record: testContact },
@@ -84,7 +84,7 @@ describe('contact', () => {
       expect(dbContact.rows[0].email_addresses).toEqual(expectedEmailAddresses);
     }, 120000);
 
-    test('PATCH /', async () => {
+    test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
       const response = await apiClient.post<CreateContactResponse>(
         '/engagement/v2/contacts',
         { record: testContact },
