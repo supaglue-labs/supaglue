@@ -80,6 +80,7 @@ async function run() {
         },
       },
     },
+    shutdownSignals: [], // we want to handle shutdown ourselves,
   });
 
   const connection = await NativeConnection.connect({
@@ -122,6 +123,8 @@ async function run() {
 
   process.on('SIGINT', handle);
   process.on('SIGTERM', handle);
+  process.on('SIGQUIT', handle);
+  process.on('SIGUSR2', handle);
 
   await worker.run();
 }
