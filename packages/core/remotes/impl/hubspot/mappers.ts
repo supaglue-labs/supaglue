@@ -127,9 +127,6 @@ export const fromHubSpotContactToContact_v2 = (hubspotSimplePublicObject: Record
   if (associations?.company?.length) {
     accountId = associations.company[0] ?? null;
   }
-  if (associations?.companies?.length) {
-    accountId = associations.companies[0] ?? null;
-  }
 
   const phoneNumbers = [
     properties.phone
@@ -218,9 +215,6 @@ export const fromHubSpotContactToContact = ({
   if (associations?.company?.length) {
     accountId = associations.company[0] ?? null;
   }
-  if (associations?.companies?.length) {
-    accountId = associations.companies[0] ?? null;
-  }
 
   const phoneNumbers = [
     properties.phone
@@ -290,9 +284,6 @@ export const fromHubSpotDealToOpportunity = (
   let accountId = null;
   if (associations?.company?.length) {
     accountId = associations.company[0] ?? null;
-  }
-  if (associations?.companies?.length) {
-    accountId = associations.companies[0] ?? null;
   }
 
   let pipeline = properties.pipeline ?? null;
