@@ -60,7 +60,7 @@ describe('account', () => {
       expect(dbAccount.rows[0].name).toEqual(testAccount.name);
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(dbAccount.rows[0].addresses).toEqual(testAccount.record.addresses);
-    }, 120000);
+    }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
       const response = await apiClient.post<CreateAccountResponse>(
@@ -110,7 +110,7 @@ describe('account', () => {
       expect(dbAccount.rows[0].name).toEqual('updated account');
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(dbAccount.rows[0].addresses).toEqual(testAccount.record.addresses);
-    }, 120000);
+    }, 120_000);
 
     testIf(
       // not supported for pipedrive
@@ -154,9 +154,9 @@ describe('account', () => {
         expect(dbAccount.rows[0].website).toEqual(website);
         expect(dbAccount.rows[0].name).toEqual(testAccount.name);
 
-        // sleep for 12 seconds to allow hubspot to update indexes
+        // sleep for 30 seconds to allow hubspot to update indexes
         if (providerName === 'hubspot') {
-          await new Promise((resolve) => setTimeout(resolve, 12000));
+          await new Promise((resolve) => setTimeout(resolve, 30_000));
         }
 
         const testAccountUpsert2 = {
@@ -188,7 +188,7 @@ describe('account', () => {
         // expect(dbAccount2.rows[0].addresses).toEqual(testAccount.addresses);
         expect(dbAccount2.rows[0].website).toEqual(website);
       },
-      120000
+      120_000
     );
   });
 });
