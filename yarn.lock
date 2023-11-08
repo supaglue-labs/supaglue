@@ -7292,7 +7292,7 @@ __metadata:
   resolution: "@supaglue/schemas@workspace:packages/schemas"
   dependencies:
     openapi-fetch: 0.8.1
-    openapi-typescript: ^6.3.4
+    openapi-typescript: ^6.7.0
     tsx: ^3.12.3
   languageName: unknown
   linkType: soft
@@ -10232,7 +10232,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"busboy@npm:1.6.0, busboy@npm:^1.0.0, busboy@npm:^1.6.0":
+"busboy@npm:1.6.0, busboy@npm:^1.0.0":
   version: 1.6.0
   resolution: "busboy@npm:1.6.0"
   dependencies:
@@ -13446,7 +13446,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.12, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.0":
+"fast-glob@npm:^3.2.11, fast-glob@npm:^3.2.12, fast-glob@npm:^3.2.9":
   version: 3.3.0
   resolution: "fast-glob@npm:3.3.0"
   dependencies:
@@ -13456,6 +13456,19 @@ __metadata:
     merge2: ^1.3.0
     micromatch: ^4.0.4
   checksum: 20df62be28eb5426fe8e40e0d05601a63b1daceb7c3d87534afcad91bdcf1e4b1743cf2d5247d6e225b120b46df0b9053a032b2691ba34ee121e033acd81f547
+  languageName: node
+  linkType: hard
+
+"fast-glob@npm:^3.3.1":
+  version: 3.3.2
+  resolution: "fast-glob@npm:3.3.2"
+  dependencies:
+    "@nodelib/fs.stat": ^2.0.2
+    "@nodelib/fs.walk": ^1.2.3
+    glob-parent: ^5.1.2
+    merge2: ^1.3.0
+    micromatch: ^4.0.4
+  checksum: 900e4979f4dbc3313840078419245621259f349950411ca2fa445a2f9a1a6d98c3b5e7e0660c5ccd563aa61abe133a21765c6c0dec8e57da1ba71d8000b05ec1
   languageName: node
   linkType: hard
 
@@ -19017,19 +19030,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openapi-typescript@npm:^6.3.4":
-  version: 6.3.4
-  resolution: "openapi-typescript@npm:6.3.4"
+"openapi-typescript@npm:^6.7.0":
+  version: 6.7.0
+  resolution: "openapi-typescript@npm:6.7.0"
   dependencies:
     ansi-colors: ^4.1.3
-    fast-glob: ^3.3.0
+    fast-glob: ^3.3.1
     js-yaml: ^4.1.0
     supports-color: ^9.4.0
-    undici: ^5.22.1
+    undici: ^5.23.0
     yargs-parser: ^21.1.1
   bin:
     openapi-typescript: bin/cli.js
-  checksum: f4ad831487aab3e6600e45dd1b531431ae3c4a78017f6caf27cc369d3239c99b2d086a6756702cefc97f86876e06a5293e9f995c7b0a094ae4ea9b1fd411bc18
+  checksum: 90835dba4b9d531516d921efee7dc25d816171708cc7e2c61d6ef3c7aa46509976713bbb929da27c99d412903b62ca873802dc1aff693af93df822efc879d756
   languageName: node
   linkType: hard
 
@@ -24359,21 +24372,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:5.27.2":
+"undici@npm:5.27.2, undici@npm:^5.23.0":
   version: 5.27.2
   resolution: "undici@npm:5.27.2"
   dependencies:
     "@fastify/busboy": ^2.0.0
   checksum: 22bbdd763798700979986546d70072b67223189353d2a811efa9c6e44476161a0d1781ffe24115221f69a1b344b95d5926bd39a6eb760a2cd8804781cec0c5eb
-  languageName: node
-  linkType: hard
-
-"undici@npm:^5.22.1":
-  version: 5.22.1
-  resolution: "undici@npm:5.22.1"
-  dependencies:
-    busboy: ^1.6.0
-  checksum: 048a3365f622be44fb319316cedfaa241c59cf7f3368ae7667a12323447e1822e8cc3d00f6956c852d1478a6fde1cbbe753f49e05f2fdaed229693e716ebaf35
   languageName: node
   linkType: hard
 

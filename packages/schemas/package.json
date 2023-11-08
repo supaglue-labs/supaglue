@@ -8,7 +8,7 @@
     "openapi-fetch": "0.8.1"
   },
   "devDependencies": {
-    "openapi-typescript": "^6.3.4",
+    "openapi-typescript": "^6.7.0",
     "tsx": "^3.12.3"
   }
 }
