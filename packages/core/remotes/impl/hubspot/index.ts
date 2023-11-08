@@ -1,4 +1,5 @@
 import { Client } from '@hubspot/api-client';
+import type { BatchResponseLabelsBetweenObjectPairWithErrors } from '@hubspot/api-client/lib/codegen/crm/associations/v4/models/BatchResponseLabelsBetweenObjectPairWithErrors';
 import type { FilterGroup } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import type {
   CollectionResponsePublicOwnerForwardPaging,
@@ -2191,20 +2192,31 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       throw new NotFoundError(`Could not find association schema with id ${params.associationSchemaId}`);
     }
     const associationCategory = associationSchema.category;
-    await this.#client.crm.associations.v4.batchApi.create(sourceObjectTypeId, targetObjectTypeId, {
-      inputs: [
-        {
-          _from: { id: params.sourceRecord.id },
-          to: { id: params.targetRecord.id },
-          types: [
-            {
-              associationCategory,
-              associationTypeId: parseInt(params.associationSchemaId),
-            },
-          ],
-        },
-      ],
-    });
+    const createResponse = await this.#client.crm.associations.v4.batchApi.create(
+      sourceObjectTypeId,
+      targetObjectTypeId,
+      {
+        inputs: [
+          {
+            _from: { id: params.sourceRecord.id },
+            to: { id: params.targetRecord.id },
+            types: [
+              {
+                associationCategory,
+                associationTypeId: parseInt(params.associationSchemaId),
+              },
+            ],
+          },
+        ],
+      }
+    );
+    if ((createResponse as BatchResponseLabelsBetweenObjectPairWithErrors).errors?.length) {
+      throw new InternalServerError(
+        `Error creating association: ${
+          (createResponse as BatchResponseLabelsBetweenObjectPairWithErrors).errors?.[0].message ?? 'Unknown Error'
+        }`
+      );
+    }
 
     return params;
   }
