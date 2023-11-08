@@ -10,6 +10,7 @@ import type {
   CreateCustomObjectSchemaResponse,
   GetCustomObjectSchemaResponse,
   ListCustomObjectSchemasResponse,
+  UpdateCustomObjectSchemaPathParams,
 } from '@supaglue/schemas/v2/crm';
 
 describe('custom_objects', () => {
@@ -64,8 +65,8 @@ describe('custom_objects', () => {
     };
   });
 
-  // describe.each(['hubspot', 'salesforce'])('%s', (providerName) => {
-  describe.each(['salesforce'])('%s', (providerName) => {
+  // TODO: Re-enable salesforce once we figure out how to clean up custom objects
+  describe.each(['hubspot'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const fullObjectName = providerName === 'salesforce' ? `${testCustomObject.name}__c` : testCustomObject.name;
       const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
@@ -117,219 +118,219 @@ describe('custom_objects', () => {
       expect(listResponse.data).toContainEqual(expect.objectContaining({ name: fullObjectName }));
     }, 120_000);
 
-    // test(`Test updating a custom object`, async () => {
-    //   const fullObjectName = providerName === 'salesforce' ? `${testCustomObject.name}__c` : testCustomObject.name;
-    //   const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
-    //     '/crm/v2/metadata/custom_objects',
-    //     { object: testCustomObject },
-    //     {
-    //       headers: { 'x-provider-name': providerName },
-    //     }
-    //   );
-    //   expect(response.status).toEqual(201);
-    //   expect(response.data.object?.name).toEqual(fullObjectName);
-    //   addedObjects.push({
-    //     id: testCustomObject.name,
-    //     providerName,
-    //     objectName: 'custom_object',
-    //   });
+    test(`Test updating a custom object`, async () => {
+      const fullObjectName = providerName === 'salesforce' ? `${testCustomObject.name}__c` : testCustomObject.name;
+      const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
+        '/crm/v2/metadata/custom_objects',
+        { object: testCustomObject },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(response.status).toEqual(201);
+      expect(response.data.object?.name).toEqual(fullObjectName);
+      addedObjects.push({
+        id: testCustomObject.name,
+        providerName,
+        objectName: 'custom_object',
+      });
 
-    //   // sleep for 12 seconds to allow hubspot to update indexes
-    //   if (providerName === 'hubspot') {
-    //     await new Promise((resolve) => setTimeout(resolve, 12_000));
-    //   }
+      // sleep for 12 seconds to allow hubspot to update indexes
+      if (providerName === 'hubspot') {
+        await new Promise((resolve) => setTimeout(resolve, 12_000));
+      }
 
-    //   const updatedCustomObject = {
-    //     ...testCustomObject,
-    //     labels: {
-    //       singular: `${testCustomObject.name}Updated`,
-    //       plural: `${testCustomObject.name}Updateds`,
-    //     },
-    //     fields: [
-    //       {
-    //         label: 'My Name Field',
-    //         id: 'name',
-    //         is_required: true,
-    //         type: 'text',
-    //       },
-    //       {
-    //         label: 'My Description Field',
-    //         id: 'description__c',
-    //         is_required: false,
-    //         type: 'textarea',
-    //       },
-    //       {
-    //         label: 'My Int Field',
-    //         id: 'int__c',
-    //         is_required: false,
-    //         type: 'number',
-    //         precision: 18,
-    //         scale: 0,
-    //       },
-    //       {
-    //         label: 'My Double Field',
-    //         id: 'double__c',
-    //         is_required: false,
-    //         type: 'number',
-    //         precision: 18,
-    //         scale: 3,
-    //       },
-    //       {
-    //         label: 'My boolean Field',
-    //         id: 'bool__c',
-    //         is_required: false,
-    //         type: 'boolean',
-    //       },
-    //       {
-    //         label: 'Another Text Field',
-    //         id: 'text__c',
-    //         is_required: true,
-    //         type: 'text',
-    //       },
-    //     ],
-    //   };
+      const updatedCustomObject = {
+        ...testCustomObject,
+        labels: {
+          singular: `${testCustomObject.name}Updated`,
+          plural: `${testCustomObject.name}Updateds`,
+        },
+        fields: [
+          {
+            label: 'My Name Field',
+            id: 'name',
+            is_required: true,
+            type: 'text',
+          },
+          {
+            label: 'My Description Field',
+            id: 'description__c',
+            is_required: false,
+            type: 'textarea',
+          },
+          {
+            label: 'My Int Field',
+            id: 'int__c',
+            is_required: false,
+            type: 'number',
+            precision: 18,
+            scale: 0,
+          },
+          {
+            label: 'My Double Field',
+            id: 'double__c',
+            is_required: false,
+            type: 'number',
+            precision: 18,
+            scale: 3,
+          },
+          {
+            label: 'My boolean Field',
+            id: 'bool__c',
+            is_required: false,
+            type: 'boolean',
+          },
+          {
+            label: 'Another Text Field',
+            id: 'text__c',
+            is_required: true,
+            type: 'text',
+          },
+        ],
+      };
 
-    //   const updateResponse = await apiClient.put<UpdateCustomObjectSchemaPathParams>(
-    //     `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
-    //     {
-    //       object: updatedCustomObject,
-    //     },
-    //     {
-    //       headers: { 'x-provider-name': providerName },
-    //     }
-    //   );
-    //   expect(updateResponse.status).toEqual(204);
+      const updateResponse = await apiClient.put<UpdateCustomObjectSchemaPathParams>(
+        `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
+        {
+          object: updatedCustomObject,
+        },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(updateResponse.status).toEqual(204);
 
-    //   // sleep for 60 seconds to allow hubspot to update indexes
-    //   if (providerName === 'hubspot') {
-    //     await new Promise((resolve) => setTimeout(resolve, 60_000));
-    //   }
+      // sleep for 60 seconds to allow hubspot to update indexes
+      if (providerName === 'hubspot') {
+        await new Promise((resolve) => setTimeout(resolve, 60_000));
+      }
 
-    //   const getResponse = await apiClient.get<GetCustomObjectSchemaResponse>(
-    //     `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
-    //     {
-    //       headers: { 'x-provider-name': providerName },
-    //     }
-    //   );
-    //   expect(getResponse.status).toEqual(200);
-    //   expect(getResponse.data.name).toEqual(fullObjectName);
-    //   expect(getResponse.data.labels).toEqual({
-    //     singular: `${testCustomObject.name}Updated`,
-    //     plural: `${testCustomObject.name}Updateds`,
-    //   });
-    //   updatedCustomObject.fields.forEach((field) => {
-    //     if (providerName === 'salesforce' && field.id === 'name') {
-    //       field.id = 'Name';
-    //     }
-    //     if (providerName === 'hubspot') {
-    //       delete field.precision;
-    //       delete field.scale;
-    //     }
-    //     expect(getResponse.data.fields).toContainEqual(expect.objectContaining(field));
-    //   });
-    // }, 120_000);
+      const getResponse = await apiClient.get<GetCustomObjectSchemaResponse>(
+        `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(getResponse.status).toEqual(200);
+      expect(getResponse.data.name).toEqual(fullObjectName);
+      expect(getResponse.data.labels).toEqual({
+        singular: `${testCustomObject.name}Updated`,
+        plural: `${testCustomObject.name}Updateds`,
+      });
+      updatedCustomObject.fields.forEach((field) => {
+        if (providerName === 'salesforce' && field.id === 'name') {
+          field.id = 'Name';
+        }
+        if (providerName === 'hubspot') {
+          delete field.precision;
+          delete field.scale;
+        }
+        expect(getResponse.data.fields).toContainEqual(expect.objectContaining(field));
+      });
+    }, 120_000);
   });
 
-  // test(`Hubspot BadRequest /`, async () => {
-  //   const providerName = 'hubspot';
-  //   const fullObjectName = testCustomObject.name;
-  //   const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
-  //     '/crm/v2/metadata/custom_objects',
-  //     { object: testCustomObject },
-  //     {
-  //       headers: { 'x-provider-name': 'hubspot' },
-  //     }
-  //   );
-  //   expect(response.status).toEqual(201);
-  //   expect(response.data.object?.name).toEqual(fullObjectName);
-  //   addedObjects.push({
-  //     id: testCustomObject.name,
-  //     providerName,
-  //     objectName: 'custom_object',
-  //   });
+  test(`Hubspot BadRequest /`, async () => {
+    const providerName = 'hubspot';
+    const fullObjectName = testCustomObject.name;
+    const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
+      '/crm/v2/metadata/custom_objects',
+      { object: testCustomObject },
+      {
+        headers: { 'x-provider-name': 'hubspot' },
+      }
+    );
+    expect(response.status).toEqual(201);
+    expect(response.data.object?.name).toEqual(fullObjectName);
+    addedObjects.push({
+      id: testCustomObject.name,
+      providerName,
+      objectName: 'custom_object',
+    });
 
-  //   // sleep for 30 seconds to allow hubspot to update indexes
-  //   await new Promise((resolve) => setTimeout(resolve, 30_000));
+    // sleep for 30 seconds to allow hubspot to update indexes
+    await new Promise((resolve) => setTimeout(resolve, 30_000));
 
-  //   const updatedCustomObject = {
-  //     ...testCustomObject,
-  //     labels: {
-  //       singular: `${testCustomObject.name}Updated`,
-  //       plural: `${testCustomObject.name}Updateds`,
-  //     },
-  //     fields: [
-  //       {
-  //         label: 'My Name Field',
-  //         id: 'name',
-  //         is_required: true,
-  //         type: 'text',
-  //       },
-  //       {
-  //         label: 'My Description Field',
-  //         id: 'description__c',
-  //         is_required: false,
-  //         type: 'textarea',
-  //       },
-  //     ],
-  //   };
+    const updatedCustomObject = {
+      ...testCustomObject,
+      labels: {
+        singular: `${testCustomObject.name}Updated`,
+        plural: `${testCustomObject.name}Updateds`,
+      },
+      fields: [
+        {
+          label: 'My Name Field',
+          id: 'name',
+          is_required: true,
+          type: 'text',
+        },
+        {
+          label: 'My Description Field',
+          id: 'description__c',
+          is_required: false,
+          type: 'textarea',
+        },
+      ],
+    };
 
-  //   // Deleting fields is not allowed in hubspot
-  //   const updateResponse = await apiClient.put<UpdateCustomObjectSchemaPathParams>(
-  //     `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
-  //     {
-  //       object: updatedCustomObject,
-  //     },
-  //     {
-  //       headers: { 'x-provider-name': providerName },
-  //     }
-  //   );
-  //   expect(updateResponse.status).toEqual(400);
-  //   expect(updateResponse.data).toEqual({
-  //     errors: [
-  //       {
-  //         title:
-  //           'Cannot delete fields from custom object schema in hubspot. Fields to delete: bool__c, double__c, int__c',
-  //         problem_type: 'BAD_REQUEST_ERROR',
-  //       },
-  //     ],
-  //   });
-  // }, 120_000);
+    // Deleting fields is not allowed in hubspot
+    const updateResponse = await apiClient.put<UpdateCustomObjectSchemaPathParams>(
+      `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
+      {
+        object: updatedCustomObject,
+      },
+      {
+        headers: { 'x-provider-name': providerName },
+      }
+    );
+    expect(updateResponse.status).toEqual(400);
+    expect(updateResponse.data).toEqual({
+      errors: [
+        {
+          title:
+            'Cannot delete fields from custom object schema in hubspot. Fields to delete: bool__c, double__c, int__c',
+          problem_type: 'BAD_REQUEST_ERROR',
+        },
+      ],
+    });
+  }, 120_000);
 
-  // test(`Salesforce BadRequest /`, async () => {
-  //   const providerName = 'salesforce';
-  //   const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
-  //     '/crm/v2/metadata/custom_objects',
-  //     {
-  //       object: {
-  //         ...testCustomObject,
-  //         fields: [
-  //           {
-  //             label: 'My Name Field',
-  //             id: 'name',
-  //             is_required: true,
-  //             type: 'text',
-  //           },
-  //           {
-  //             label: 'My Description Field',
-  //             id: 'description', // This will fail due to lack of `__c`
-  //             is_required: true,
-  //             type: 'textarea',
-  //           },
-  //         ],
-  //       },
-  //     },
-  //     {
-  //       headers: { 'x-provider-name': providerName },
-  //     }
-  //   );
-  //   expect(response.status).toEqual(400);
-  //   expect(response.data).toEqual({
-  //     errors: [
-  //       {
-  //         title: 'Custom object field key names must end with __c',
-  //         problem_type: 'BAD_REQUEST_ERROR',
-  //       },
-  //     ],
-  //   });
-  // }, 120_000);
+  test(`Salesforce BadRequest /`, async () => {
+    const providerName = 'salesforce';
+    const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
+      '/crm/v2/metadata/custom_objects',
+      {
+        object: {
+          ...testCustomObject,
+          fields: [
+            {
+              label: 'My Name Field',
+              id: 'name',
+              is_required: true,
+              type: 'text',
+            },
+            {
+              label: 'My Description Field',
+              id: 'description', // This will fail due to lack of `__c`
+              is_required: true,
+              type: 'textarea',
+            },
+          ],
+        },
+      },
+      {
+        headers: { 'x-provider-name': providerName },
+      }
+    );
+    expect(response.status).toEqual(400);
+    expect(response.data).toEqual({
+      errors: [
+        {
+          title: 'Custom object field key names must end with __c',
+          problem_type: 'BAD_REQUEST_ERROR',
+        },
+      ],
+    });
+  }, 120_000);
 });
