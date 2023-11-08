@@ -65,7 +65,8 @@ describe('custom_objects', () => {
     };
   });
 
-  describe.each(['hubspot', 'salesforce'])('%s', (providerName) => {
+  // TODO: Re-enable salesforce once we figure out how to clean up custom objects
+  describe.each(['hubspot'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const fullObjectName = providerName === 'salesforce' ? `${testCustomObject.name}__c` : testCustomObject.name;
       const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
@@ -78,7 +79,7 @@ describe('custom_objects', () => {
       expect(response.status).toEqual(201);
       expect(response.data.object?.name).toEqual(fullObjectName);
       addedObjects.push({
-        id: response.data.object?.name as string,
+        id: testCustomObject.name,
         providerName,
         objectName: 'custom_object',
       });
@@ -117,7 +118,7 @@ describe('custom_objects', () => {
       expect(listResponse.data).toContainEqual(expect.objectContaining({ name: fullObjectName }));
     }, 120_000);
 
-    test(`Put /`, async () => {
+    test(`Test updating a custom object`, async () => {
       const fullObjectName = providerName === 'salesforce' ? `${testCustomObject.name}__c` : testCustomObject.name;
       const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
         '/crm/v2/metadata/custom_objects',
@@ -129,7 +130,7 @@ describe('custom_objects', () => {
       expect(response.status).toEqual(201);
       expect(response.data.object?.name).toEqual(fullObjectName);
       addedObjects.push({
-        id: response.data.object?.name as string,
+        id: testCustomObject.name,
         providerName,
         objectName: 'custom_object',
       });
@@ -243,7 +244,7 @@ describe('custom_objects', () => {
     expect(response.status).toEqual(201);
     expect(response.data.object?.name).toEqual(fullObjectName);
     addedObjects.push({
-      id: response.data.object?.name as string,
+      id: testCustomObject.name,
       providerName,
       objectName: 'custom_object',
     });
