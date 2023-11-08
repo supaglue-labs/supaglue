@@ -2225,55 +2225,57 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     objectType: Exclude<CRMCommonObjectType, 'user'>,
     paginationParams: PaginationParams
   ): Promise<PaginatedSupaglueRecords<ListMetadata>> {
-    if (objectType !== 'contact') {
+    if (objectType !== 'contact' && objectType !== 'account') {
       throw new BadRequestError(`Listing ${objectType} lists is not supported in HubSpot`);
     }
 
-    await this.maybeRefreshAccessToken();
-
     const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
-    const pageSize = paginationParams.page_size ?? HUBSPOT_RECORD_LIMIT;
+    const pageSize =
+      paginationParams.page_size === undefined ? HUBSPOT_RECORD_LIMIT : parseInt(paginationParams.page_size);
 
-    const response = await axios.get(`https://api.hubapi.com/contacts/v1/lists`, {
-      headers: {
-        Authorization: `Bearer ${this.#config.accessToken}`,
-      },
-      params: {
-        count: pageSize,
-        offset: cursor?.id,
-      },
-    });
+    let hubspotLists: any[] = [];
 
-    const v3Response = await axios.post(
-      `https://api.hubapi.com/crm/v3/lists/search`,
-      {
-        count: pageSize,
-        offset: cursor?.id,
-        // additioan properties?
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${this.#config.accessToken}`,
+    let offset = cursor?.id;
+    let hasMore = true;
+
+    while (hubspotLists.length < pageSize && hasMore) {
+      await this.maybeRefreshAccessToken();
+      const v3Response = await axios.post(
+        `https://api.hubapi.com/crm/v3/lists/search`,
+        {
+          count: pageSize,
+          offset,
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${this.#config.accessToken}`,
+          },
+        }
+      );
+      const objectTypeId = objectType === 'contact' ? '0-1' : '0-2';
+      hubspotLists = [
+        ...hubspotLists,
+        ...v3Response.data.lists.filter((list: any) => list.objectTypeId === objectTypeId),
+      ];
+      ({ offset, hasMore } = v3Response.data);
+    }
 
-    // Map response to ListMetadata interface
     return {
-      records: response.data.lists.map((record: any) => ({
+      records: hubspotLists.map((record: any) => ({
         name: record.name,
         label: record.name,
         id: record.listId.toString(),
-        objectType: objectType,
+        objectType,
         rawData: record,
       })),
       pagination: {
-        next: response.data['has-more']
-          ? encodeCursor({
-              id: response.data.offset,
-              reverse: false,
-            })
-          : null,
+        next:
+          hasMore && offset
+            ? encodeCursor({
+                id: offset,
+                reverse: false,
+              })
+            : null,
         previous: null,
         total_count: -1,
       },
