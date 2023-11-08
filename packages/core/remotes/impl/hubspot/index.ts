@@ -2603,6 +2603,6 @@ function flattenAssociations(
   }, {} as Record<string, string[]>);
 }
 
-function doFetchAllAssociations(applicationId: string): boolean {
+function shouldFetchAllAssociations(applicationId: string): boolean {
   return process.env.NODE_ENV === 'development' || FETCH_ASSOCIATIONS_APPLICATION_IDS.includes(applicationId);
 }
