@@ -1,4 +1,5 @@
 import { Client } from '@hubspot/api-client';
+import type { BatchResponseLabelsBetweenObjectPairWithErrors } from '@hubspot/api-client/lib/codegen/crm/associations/v4/models/BatchResponseLabelsBetweenObjectPairWithErrors';
 import type { FilterGroup } from '@hubspot/api-client/lib/codegen/crm/contacts';
 import type {
   CollectionResponsePublicOwnerForwardPaging,
@@ -119,7 +120,16 @@ const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 export const DEFAULT_PROPERTY_GROUP = 'custom_properties';
 
 // TODO move this to lekko
-const FETCH_ASSOCIATIONS_APPLICATION_IDS = ['9773053e-a13f-4249-b641-301a51952708'];
+// Fetching all associations is expensive and can exhaust rate limits quickly, so we only do it for
+// a certain set of customers.
+const FETCH_ASSOCIATIONS_APPLICATION_IDS = [
+  '9773053e-a13f-4249-b641-301a51952708',
+  'aba75b64-19ca-47c6-bb48-196911d8a18b',
+  '82ff8465-2a09-499b-94c1-6d386502d14a',
+  '8939a758-efa4-46e0-803f-370ae67ef5bf',
+  '431cd6f6-0e99-4fb4-a4a7-df4a30a52ec7',
+  '563d7da6-800d-4393-8023-06543520d855',
+];
 
 const hubspotStandardObjectTypeToPlural: Record<HubSpotStandardObjectType, string> = {
   company: 'companies',
@@ -712,7 +722,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     standardObjectTypes: string[];
     customObjectSchemas: HubSpotCustomSchema[];
   }> {
-    if (FETCH_ASSOCIATIONS_APPLICATION_IDS.includes(this.#config.applicationId)) {
+    if (shouldFetchAllAssociations(this.#config.applicationId)) {
       return await this.#getAssociatedObjectTypesForObjectType(fromObjectTypeId);
     } else {
       return {
@@ -1396,12 +1406,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       /* propertiesWithHistory */ undefined,
       associations.length ? associations : undefined
     );
+    const flattenedAssociations = flattenAssociations(company.associations, associatedCustomObjectSchemas);
     return {
       ...fromHubSpotCompanyToAccount({
         ...company,
-        associations: flattenAssociations(company.associations, associatedCustomObjectSchemas),
+        associations: flattenedAssociations,
       } as unknown as RecordWithFlattenedAssociations),
-      rawData: { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: company.associations },
+      rawData: { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: flattenedAssociations },
     };
   }
 
@@ -1551,6 +1562,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       /* propertiesWithHistory */ undefined,
       associations.length ? associations : undefined
     );
+    const flattenedAssociations = flattenAssociations(deal.associations, associatedCustomObjectSchemas);
     return {
       ...fromHubSpotDealToOpportunity(
         {
@@ -1559,7 +1571,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         } as unknown as RecordWithFlattenedAssociations,
         pipelineStageMapping
       ),
-      rawData: { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: deal.associations },
+      rawData: { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: flattenedAssociations },
     };
   }
 
@@ -1688,12 +1700,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       /* propertiesWithHistory */ undefined,
       associations.length ? associations : undefined
     );
+    const flattenedAssociations = flattenAssociations(contact.associations, associatedCustomObjectSchemas);
     return {
       ...fromHubSpotContactToContact({
         ...contact,
-        associations: flattenAssociations(contact.associations, associatedCustomObjectSchemas),
+        associations: flattenedAssociations,
       } as unknown as RecordWithFlattenedAssociations),
-      rawData: { ...toMappedProperties(contact.properties, fieldMappingConfig), _associations: contact.associations },
+      rawData: { ...toMappedProperties(contact.properties, fieldMappingConfig), _associations: flattenedAssociations },
     };
   }
 
@@ -2179,20 +2192,31 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       throw new NotFoundError(`Could not find association schema with id ${params.associationSchemaId}`);
     }
     const associationCategory = associationSchema.category;
-    await this.#client.crm.associations.v4.batchApi.create(sourceObjectTypeId, targetObjectTypeId, {
-      inputs: [
-        {
-          _from: { id: params.sourceRecord.id },
-          to: { id: params.targetRecord.id },
-          types: [
-            {
-              associationCategory,
-              associationTypeId: parseInt(params.associationSchemaId),
-            },
-          ],
-        },
-      ],
-    });
+    const createResponse = await this.#client.crm.associations.v4.batchApi.create(
+      sourceObjectTypeId,
+      targetObjectTypeId,
+      {
+        inputs: [
+          {
+            _from: { id: params.sourceRecord.id },
+            to: { id: params.targetRecord.id },
+            types: [
+              {
+                associationCategory,
+                associationTypeId: parseInt(params.associationSchemaId),
+              },
+            ],
+          },
+        ],
+      }
+    );
+    if ((createResponse as BatchResponseLabelsBetweenObjectPairWithErrors).errors?.length) {
+      throw new InternalServerError(
+        `Error creating association: ${
+          (createResponse as BatchResponseLabelsBetweenObjectPairWithErrors).errors?.[0].message ?? 'Unknown Error'
+        }`
+      );
+    }
 
     return params;
   }
@@ -2582,15 +2606,17 @@ function flattenAssociations(
       return acc;
     }
 
-    // If associatedObjectType is for a custom object, it will be the fullyQualifiedName,
-    // and we want to use the objectTypeId for consistency
     const matchingCustomObjectSchema = associatedCustomObjectSchemas.find(
       (schema) => schema.fullyQualifiedName === associatedObjectTypeKey
     );
     if (!matchingCustomObjectSchema) {
       throw new Error(`Couldn't find matching custom object schema for ${associatedObjectTypeKey}`);
     }
-    acc[matchingCustomObjectSchema.objectTypeId] = dedupedIds;
+    acc[matchingCustomObjectSchema.name] = dedupedIds;
     return acc;
   }, {} as Record<string, string[]>);
+}
+
+function shouldFetchAllAssociations(applicationId: string): boolean {
+  return process.env.NODE_ENV === 'development' || FETCH_ASSOCIATIONS_APPLICATION_IDS.includes(applicationId);
 }

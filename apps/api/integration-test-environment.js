@@ -106,6 +106,23 @@ class IntegrationEnvironment extends TestEnvironment {
         if (obj.providerName === 'apollo') {
           continue;
         }
+        // TODO: Bring this back once we solve custom object delete permission issue
+        // if (obj.objectName === 'custom_object' && obj.providerName === 'salesforce') {
+        //   // First get ID based on DeveloperName
+        //   const response = await this.global.apiClient.post(
+        //     '/actions/v2/passthrough',
+        //     {
+        //       path: `/services/data/v57.0/tooling/query?q=SELECT Id,DeveloperName FROM CustomObject WHERE DeveloperName='${obj.id}'`,
+        //       method: 'GET',
+        //     },
+        //     {
+        //       headers: {
+        //         'x-provider-name': obj.providerName,
+        //       },
+        //     }
+        //   );
+        //   obj.id = response.data.body.records[0].Id;
+        // }
         await this.global.apiClient.post(
           '/actions/v2/passthrough',
           getDeletePassthroughRequest(obj.id, obj.objectName, obj.providerName),
