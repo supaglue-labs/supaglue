@@ -8,18 +8,19 @@ import {
   getEntitiesWhitelistConfig,
   getSchemasWhitelistConfig,
 } from '@/utils/lekko';
+import { lekkoHydrater } from '@/utils/lekkoClient';
 import { ClerkProvider, RedirectToSignIn, SignedIn, SignedOut, useUser } from '@clerk/nextjs';
+import type { DehydratedState } from '@lekko/react-sdk';
 import { LekkoConfigMockProvider, LekkoConfigProvider } from '@lekko/react-sdk';
 import { Box, CssBaseline, StyledEngineProvider, useMediaQuery } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { LicenseInfo } from '@mui/x-license-pro';
-import { SessionProvider } from 'next-auth/react';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import posthog from 'posthog-js';
 import { PostHogProvider, usePostHog } from 'posthog-js/react';
 import type { ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { IS_CLOUD, MUI_LICENSE_KEY } from './api';
 import type { SupaglueProps } from './applications/[applicationId]';
 
@@ -190,7 +191,11 @@ theme = {
 
 const drawerWidth = 256;
 
-export default function App({ Component, pageProps: { session, signedIn, ...pageProps } }: AppProps) {
+export default function App({
+  Component,
+  dehydratedState,
+  pageProps: { session, signedIn, ...pageProps },
+}: AppProps & { dehydratedState: DehydratedState }) {
   const router = useRouter();
   const { pathname } = useRouter();
   const isPublicPage = publicPages.includes(pathname);
@@ -222,13 +227,14 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
     if (lekkoAPIKey) {
       return (
         <LekkoConfigProvider
-          configRequests={[getEntitiesWhitelistConfig(), getSchemasWhitelistConfig()]}
+          //configRequests={[getEntitiesWhitelistConfig(), getSchemasWhitelistConfig()]}
           settings={{
             apiKey: process.env.NEXT_PUBLIC_LEKKO_CLIENT_API_KEY,
-            repositoryName: 'dynamic-config',
-            repositoryOwner: 'supaglue-labs',
+            repositoryName: 'supaglue-test',
+            repositoryOwner: 'lekkodev',
           }}
-          defaultConfigs={defaultConfigs}
+          //defaultConfigs={defaultConfigs}
+          dehydratedState={dehydratedState}
         >
           {children}
         </LekkoConfigProvider>
@@ -237,7 +243,7 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
     // If no API key is provided, use a no-op provider to not make actual calls to Lekko
     return (
       <LekkoConfigMockProvider
-        settings={{ repositoryName: 'dynamic-config', repositoryOwner: 'supaglue-labs' }}
+        settings={{ repositoryName: 'supaglue-test', repositoryOwner: 'lekkodev' }}
         defaultConfigs={defaultConfigs}
       >
         {children}
@@ -251,19 +257,17 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
     }
     return (
       <PostHogProvider client={posthog}>
-        <SessionProvider session={session}>
-          <OptionalLekkoConfigProvider>
-            <StyledEngineProvider injectFirst>
-              <ThemeProvider theme={theme}>
-                <NotificationManager>
-                  <InnerApp signedIn={signedIn} {...pageProps}>
-                    <Component {...pageProps} />
-                  </InnerApp>
-                </NotificationManager>
-              </ThemeProvider>
-            </StyledEngineProvider>
-          </OptionalLekkoConfigProvider>
-        </SessionProvider>
+        <StyledEngineProvider injectFirst>
+          <ThemeProvider theme={theme}>
+            <Suspense>
+              <OptionalLekkoConfigProvider>
+                <InnerApp signedIn={signedIn} {...pageProps}>
+                  <Component {...pageProps} />
+                </InnerApp>
+              </OptionalLekkoConfigProvider>
+            </Suspense>
+          </ThemeProvider>
+        </StyledEngineProvider>
       </PostHogProvider>
     );
   }
@@ -272,10 +276,10 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
     <PostHogProvider client={posthog}>
       <ClerkProvider {...pageProps}>
         <PosthogClerkUserIdentifier>
-          <OptionalLekkoConfigProvider>
-            <StyledEngineProvider injectFirst>
-              <ThemeProvider theme={theme}>
-                <NotificationManager>
+          <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme}>
+              <NotificationManager>
+                <OptionalLekkoConfigProvider>
                   <InnerApp signedIn={signedIn} {...pageProps}>
                     {isPublicPage ? (
                       <Component {...pageProps} />
@@ -290,10 +294,10 @@ export default function App({ Component, pageProps: { session, signedIn, ...page
                       </>
                     )}
                   </InnerApp>
-                </NotificationManager>
-              </ThemeProvider>
-            </StyledEngineProvider>
-          </OptionalLekkoConfigProvider>
+                </OptionalLekkoConfigProvider>
+              </NotificationManager>
+            </ThemeProvider>
+          </StyledEngineProvider>
         </PosthogClerkUserIdentifier>
       </ClerkProvider>
     </PostHogProvider>
@@ -355,3 +359,10 @@ function InnerApp(props: { signedIn: boolean; children: ReactNode } & SupagluePr
     </Box>
   );
 }
+
+App.getInitialProps = async () => {
+  const dehydratedState = await lekkoHydrater.getDehydratedState();
+  return {
+    dehydratedState,
+  };
+};
