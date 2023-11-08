@@ -722,7 +722,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     standardObjectTypes: string[];
     customObjectSchemas: HubSpotCustomSchema[];
   }> {
-    if (doFetchAllAssociations(this.#config.applicationId)) {
+    if (shouldFetchAllAssociations(this.#config.applicationId)) {
       return await this.#getAssociatedObjectTypesForObjectType(fromObjectTypeId);
     } else {
       return {
