@@ -3225,7 +3225,6 @@ export interface operations {
           "application/json": {
             pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["list_membership"])[];
-            metadata: components["schemas"]["list_metadata"];
           };
         };
       };

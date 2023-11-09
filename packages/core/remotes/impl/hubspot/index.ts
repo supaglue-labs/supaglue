@@ -97,7 +97,6 @@ import { toMappedProperties } from '../../utils/properties';
 import {
   fromHubSpotCompanyToAccount,
   fromHubSpotContactToContact,
-  fromHubSpotContactToContact_v2,
   fromHubSpotDealToOpportunity,
   fromHubspotOwnerToUser,
   getHubspotOptions,
@@ -2288,8 +2287,8 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     listId: string,
     paginationParams: PaginationParams,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
-    if (objectType !== 'contact') {
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>>> {
+    if (objectType !== 'contact' && objectType !== 'account') {
       throw new BadRequestError(`Listing ${objectType} lists is not supported in HubSpot`);
     }
 
@@ -2297,67 +2296,79 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
     const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
     const pageSize = paginationParams.page_size ?? HUBSPOT_RECORD_LIMIT;
-    const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
+    const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch(
+      objectType === 'contact' ? 'contact' : 'company',
+      fieldMappingConfig
+    );
 
-    const [membershipResponse, metadataResponse] = await Promise.all([
-      axios.get(`https://api.hubapi.com/contacts/v1/lists/${listId}/contacts/all`, {
+    const [v3MembershipResponse] = await Promise.all([
+      axios.get(`https://api.hubapi.com/crm/v3/lists/${listId}/memberships`, {
         headers: {
           Authorization: `Bearer ${this.#config.accessToken}`,
         },
         params: {
-          property: 'hs_object_id',
-          count: pageSize,
-          vidOffset: cursor?.id,
-        },
-      }),
-      axios.get(`https://api.hubapi.com/contacts/v1/lists/${listId}`, {
-        headers: {
-          Authorization: `Bearer ${this.#config.accessToken}`,
+          after: cursor?.id,
+          limit: pageSize,
         },
       }),
     ]);
 
     // Make a Hubspot V3 Contact batch call using the record id (hs_object_id) from the V1 call so we can use our existing CRM Contact common schema
     // https://developers.hubspot.com/docs/api/crm/contacts#retrieve-contacts
-    const batchResponseSimplePublicObject = await this.#client.crm.contacts.batchApi.read({
-      properties: propertiesToFetch,
-      propertiesWithHistory: [],
-      inputs: membershipResponse.data.contacts.map((contact: any) => ({
-        id: contact.properties.hs_object_id.value,
-      })),
-    });
+    const batchResponseSimplePublicObject =
+      objectType === 'contact'
+        ? await this.#client.crm.contacts.batchApi.read({
+            properties: propertiesToFetch,
+            propertiesWithHistory: [],
+            inputs: v3MembershipResponse.data.results.map((id: string) => ({
+              id,
+            })),
+          })
+        : await this.#client.crm.companies.batchApi.read({
+            properties: propertiesToFetch,
+            propertiesWithHistory: [],
+            inputs: v3MembershipResponse.data.results.map((id: string) => ({
+              id,
+            })),
+          });
 
-    const commonObjectContactRecords: ListCRMCommonObjectTypeMap<T>[] = batchResponseSimplePublicObject.results.map(
-      (result) => {
-        return {
-          ...fromHubSpotContactToContact_v2({
-            id: result.id,
-            properties: result.properties,
-            createdAt: result.createdAt.toISOString(),
-            updatedAt: result.updatedAt.toISOString(),
-            archived: false,
-            // NOTE: we don't support full associations here, unlike in CRM List Contacts
-          }),
-          rawData: toMappedProperties(result, fieldMappingConfig),
-        };
-      }
-    ) as ListCRMCommonObjectTypeMap<T>[]; // TODO: figure out types
+    const commonObjectContactRecords: ListCRMCommonObjectTypeMap<T>[] =
+      objectType === 'contact'
+        ? (batchResponseSimplePublicObject.results.map((result) => {
+            return {
+              ...fromHubSpotContactToContact({
+                id: result.id,
+                properties: result.properties,
+                createdAt: result.createdAt.toISOString(),
+                updatedAt: result.updatedAt.toISOString(),
+                archived: false,
+                // NOTE: we don't support full associations here, unlike in CRM List Contacts
+              }),
+              rawData: toMappedProperties(result, fieldMappingConfig),
+            };
+          }) as ListCRMCommonObjectTypeMap<T>[])
+        : (batchResponseSimplePublicObject.results.map((result) => {
+            return {
+              ...fromHubSpotCompanyToAccount({
+                id: result.id,
+                properties: result.properties,
+                createdAt: result.createdAt.toISOString(),
+                updatedAt: result.updatedAt.toISOString(),
+                archived: false,
+                // NOTE: we don't support full associations here, unlike in CRM List Contacts
+              }),
+              rawData: toMappedProperties(result, fieldMappingConfig),
+            };
+          }) as ListCRMCommonObjectTypeMap<T>[]);
 
     // Map response to ListMetadata interface
     return {
-      metadata: {
-        name: metadataResponse.data.name,
-        label: metadataResponse.data.name,
-        id: metadataResponse.data.listId.toString(),
-        objectType: objectType,
-        rawData: metadataResponse.data,
-      },
       records: commonObjectContactRecords,
       pagination: {
-        total_count: metadataResponse.data.metaData.size,
-        next: membershipResponse.data['has-more']
+        total_count: -1,
+        next: v3MembershipResponse.data.paging?.next?.after
           ? encodeCursor({
-              id: membershipResponse.data['vid-offset'],
+              id: v3MembershipResponse.data.paging.next.after,
               reverse: false,
             })
           : null,

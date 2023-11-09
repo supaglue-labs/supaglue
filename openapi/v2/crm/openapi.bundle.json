@@ -2821,15 +2821,11 @@
                       "items": {
                         "$ref": "#/components/schemas/list_membership"
                       }
-                    },
-                    "metadata": {
-                      "$ref": "#/components/schemas/list_metadata"
                     }
                   },
                   "required": [
                     "pagination",
-                    "records",
-                    "metadata"
+                    "records"
                   ]
                 }
               }

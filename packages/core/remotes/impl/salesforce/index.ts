@@ -1474,7 +1474,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     listId: string,
     paginationParams: PaginationParams,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>>> {
     const salesforceObjectType = capitalizeString(objectType);
     const propertiesToFetch = await this.getCommonPropertiesToFetch(objectType, fieldMappingConfig);
 
@@ -1489,20 +1489,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       pageSize = parseInt(paginationParams.page_size, 10);
     }
 
-    const [
-      response,
-      { totalSize: totalCount },
-      {
-        records: [listMetadata],
-      },
-    ] = await Promise.all([
+    const [response, { totalSize: totalCount }] = await Promise.all([
       this.#client.query(
         `SELECT ${propertiesToFetch.join(', ')} FROM ${salesforceObjectType} ${
           cursor?.id ? `WHERE Id > '${cursor.id}'` : ''
         } ORDER BY Id ${pageSize ? `LIMIT ${pageSize}` : ''}`
       ),
       this.#client.query(`SELECT COUNT() FROM ${salesforceObjectType}`),
-      this.#client.query(`SELECT FIELDS(STANDARD) FROM ListView WHERE Id = '${listId}'`),
     ]);
 
     let commonObjectRecords: ListCRMCommonObjectTypeMap<T>[] = [];
@@ -1537,13 +1530,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const hasMore = response.records.length === pageSize;
     return {
       records: commonObjectRecords,
-      metadata: {
-        name: listMetadata.DeveloperName,
-        label: listMetadata.Name,
-        id: listMetadata.Id,
-        objectType,
-        rawData: listMetadata,
-      },
       pagination: {
         total_count: totalCount,
         next: hasMore
