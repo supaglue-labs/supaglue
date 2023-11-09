@@ -1,4 +1,5 @@
 import { TabPanel } from '@/components/TabPanel';
+import { useLekkoConfigs } from '@/hooks/useLekkoConfigs';
 import { useProviders } from '@/hooks/useProviders';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { PROVIDER_CARDS_INFO } from '@/utils/provider';
@@ -11,10 +12,13 @@ export default function ProviderTabPanelContainer(props: SupaglueProps) {
   const router = useRouter();
   const { tab = [] } = router.query;
   const [_, category, providerName] = Array.isArray(tab) ? tab : [tab];
-  const { providers: existingProviders = [], isLoading } = useProviders();
+  const { providers: existingProviders = [], isLoading: isLoadingProviders } = useProviders();
+  const { schemasWhitelistConfig, isLoading: isLoadingLekkoConfigs } = useLekkoConfigs();
 
   const isListPage = tab.length === 1;
   const isDetailPage = tab.length === 3;
+
+  const isLoading = isLoadingProviders || isLoadingLekkoConfigs;
 
   return (
     <TabPanel value={0} index={0} className="w-full">
@@ -31,6 +35,7 @@ export default function ProviderTabPanelContainer(props: SupaglueProps) {
           isLoading={isLoading}
           category={category as ProviderCategory}
           providerName={providerName as ProviderName}
+          schemasWhitelistConfig={schemasWhitelistConfig}
           {...props}
         />
       )}
