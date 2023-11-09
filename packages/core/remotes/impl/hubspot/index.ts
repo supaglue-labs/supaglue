@@ -2252,6 +2252,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           },
         }
       );
+      // 0-1 and 0-2 are the internal IDs in HubSpot for contact and company respectively
       const objectTypeId = objectType === 'contact' ? '0-1' : '0-2';
       hubspotLists = [
         ...hubspotLists,
