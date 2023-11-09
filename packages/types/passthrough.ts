@@ -9,6 +9,6 @@ export type SendPassthroughRequestRequest = {
 export type SendPassthroughRequestResponse = {
   url: string;
   status: number;
-  headers: Record<string, string | undefined>;
+  headers: Record<string, string>;
   body?: string | number | boolean | Record<string, unknown> | Record<string, unknown>[];
 };
