@@ -7,7 +7,7 @@
 export interface paths {
   "/salesforce/contacts": {
     /**
-     * List contacts 
+     * List contacts
      * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
      */
     get: operations["listSalesforceContacts"];
@@ -19,7 +19,7 @@ export interface paths {
   };
   "/salesforce/accounts": {
     /**
-     * List accounts 
+     * List accounts
      * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
      */
     get: operations["listSalesforceAccounts"];
@@ -31,7 +31,7 @@ export interface paths {
   };
   "/hubspot/contacts": {
     /**
-     * List contacts 
+     * List contacts
      * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
      */
     get: operations["listHubspotContacts"];
@@ -43,7 +43,7 @@ export interface paths {
   };
   "/hubspot/companies": {
     /**
-     * List companies 
+     * List companies
      * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
      */
     get: operations["listHubspotCompanies"];
@@ -75,8 +75,8 @@ export interface components {
       /** @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). */
       IsDeleted: boolean;
       /**
-       * Format: date-time 
-       * @description The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record. 
+       * Format: date-time
+       * @description The date of the last activity on a contact. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of a contact's record.
        * @example 2022-02-27T00:00:00Z
        */
       LastActivityDate: Date | null;
@@ -105,14 +105,14 @@ export interface components {
       /** @description The contact's title. */
       Title: string | null;
       /**
-       * Format: date-time 
-       * @description The date and time when this contact was created. 
+       * Format: date-time
+       * @description The date and time when this contact was created.
        * @example 2022-02-27T00:00:00Z
        */
       CreatedDate: Date;
       /**
-       * Format: date-time 
-       * @description The date and time when this contact was last modified. 
+       * Format: date-time
+       * @description The date and time when this contact was last modified.
        * @example 2022-02-27T00:00:00Z
        */
       SystemModstamp: Date;
@@ -153,8 +153,8 @@ export interface components {
       /** @description The type of industry in which the account operates. */
       Industry: string | null;
       /**
-       * Format: date-time 
-       * @description The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record. 
+       * Format: date-time
+       * @description The date of the last activity on an account. The LastActivityDate is set to whichever is more recent -- the LastActivityDate of a related task or event or the LastModifiedDate of an account's record.
        * @example 2022-02-27T00:00:00Z
        */
       LastActivityDate: Date | null;
@@ -169,14 +169,14 @@ export interface components {
       /** @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). */
       IsDeleted: boolean;
       /**
-       * Format: date-time 
-       * @description The date and time when this contact was created. 
+       * Format: date-time
+       * @description The date and time when this contact was created.
        * @example 2022-02-27T00:00:00Z
        */
       CreatedDate: Date;
       /**
-       * Format: date-time 
-       * @description The date and time when this contact was last modified. 
+       * Format: date-time
+       * @description The date and time when this contact was last modified.
        * @example 2022-02-27T00:00:00Z
        */
       SystemModstamp: Date;
@@ -187,91 +187,91 @@ export interface components {
     };
     hubspot_contact: {
       /**
-       * @description the unique identifier for the contact. This field is set automatically and cannot be edited. This can be used when updating contacts through importing or through API. 
+       * @description the unique identifier for the contact. This field is set automatically and cannot be edited. This can be used when updating contacts through importing or through API.
        * @example 501
        */
       id: string;
       /**
-       * @description the contact's primary email address. 
+       * @description the contact's primary email address.
        * @example team@supaglue.com
        */
       email: string | null;
       /** @example 101 */
       associatedcompanyid: string | null;
       /**
-       * @description the contact's first name. 
+       * @description the contact's first name.
        * @example Jane
        */
       firstname: string | null;
       /**
-       * @description the contact's primary phone number. The phone number is validated and formatted automatically by HubSpot based on the country code. You can select to turn off automatic formatting on a contact record, either when editing the Phone number property, or adding a phone number to call. 
+       * @description the contact's primary phone number. The phone number is validated and formatted automatically by HubSpot based on the country code. You can select to turn off automatic formatting on a contact record, either when editing the Phone number property, or adding a phone number to call.
        * @example (650) 450-8812
        */
       phone: string | null;
       /**
-       * @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false). 
+       * @description Indicates whether the object has been moved to the Recycle Bin (true) or not (false).
        * @example false
        */
       is_deleted: boolean;
       /**
-       * @description the contact's last name. 
+       * @description the contact's last name.
        * @example Doe
        */
       lastname: string | null;
       /**
-       * @description the contact's city of residence. 
+       * @description the contact's city of residence.
        * @example Palo Alto
        */
       city: string | null;
       /**
-       * @description the contact's country of residence. This might be set via import, form, or integration. 
+       * @description the contact's country of residence. This might be set via import, form, or integration.
        * @example United States
        */
       country: string | null;
       /**
-       * @description the contact's zip code. 
+       * @description the contact's zip code.
        * @example 94303
        */
       zip: string | null;
       /**
-       * @description the contact's state of residence. 
+       * @description the contact's state of residence.
        * @example CA
        */
       state: string | null;
       /**
-       * @description the contact's street address, including apartment or unit #. 
+       * @description the contact's street address, including apartment or unit #.
        * @example 4 Giro's Passage
        */
       address: string | null;
       /**
-       * @description the contact's mobile phone number. The phone number is validated and formatted automatically by HubSpot based on the country code. You can select to turn off automatic formatting on a contact record, either when editing the Mobile phone number property, or adding a phone number to call. 
+       * @description the contact's mobile phone number. The phone number is validated and formatted automatically by HubSpot based on the country code. You can select to turn off automatic formatting on a contact record, either when editing the Mobile phone number property, or adding a phone number to call.
        * @example (650) 450-8811
        */
       mobilephone: string | null;
       /**
-       * @description the owner of the contact. This can be any HubSpot user or Salesforce integration user and can be set manually or via Workflows. You can assign additional users to the contact record by creating a custom HubSpot user field type property. 
+       * @description the owner of the contact. This can be any HubSpot user or Salesforce integration user and can be set manually or via Workflows. You can assign additional users to the contact record by creating a custom HubSpot user field type property.
        * @example 1450461
        */
       hubspot_owner_id: string | null;
       /**
-       * @description the contact's primary fax number. 
+       * @description the contact's primary fax number.
        * @example (650) 450-8810
        */
       fax: string | null;
       /**
-       * @description the contact's job title. 
+       * @description the contact's job title.
        * @example CEO
        */
       jobtitle: string | null;
       /**
-       * Format: date-time 
-       * @description the date that the contact was created in your HubSpot account. 
+       * Format: date-time
+       * @description the date that the contact was created in your HubSpot account.
        * @example 2023-08-01T20:58:17.725Z
        */
       createdate: Date;
       /**
-       * Format: date-time 
-       * @description the last date and time a note, call, tracked and logged sales email, meeting, LinkedIn/SMS/WhatsApp message, task, or chat was logged on the contact record. This is set automatically by HubSpot based on the most recent date/time set for an activity. For example, if a user logs a call and indicates that it occurred the day before, the Last activity date property will show yesterday's date. 
+       * Format: date-time
+       * @description the last date and time a note, call, tracked and logged sales email, meeting, LinkedIn/SMS/WhatsApp message, task, or chat was logged on the contact record. This is set automatically by HubSpot based on the most recent date/time set for an activity. For example, if a user logs a call and indicates that it occurred the day before, the Last activity date property will show yesterday's date.
        * @example 2023-08-01T20:58:17.725Z
        */
       notes_last_updated: Date;
@@ -282,86 +282,86 @@ export interface components {
     };
     hubspot_company: {
       /**
-       * @description the unique identifier for the company. This field is set automatically and cannot be edited. This can be used when updating companies through importing or through API. 
+       * @description the unique identifier for the company. This field is set automatically and cannot be edited. This can be used when updating companies through importing or through API.
        * @example 101
        */
       id: string;
       /**
-       * @description a short statement about the company's mission and goals. 
+       * @description a short statement about the company's mission and goals.
        * @example Open-source developer platform for customer-facing integrations
        */
       description: string | null;
       /**
-       * @description the city where the company is located. 
+       * @description the city where the company is located.
        * @example San Francisco
        */
       city: string | null;
       /**
-       * @description the country where the company is located. 
+       * @description the country where the company is located.
        * @example United States
        */
       country: string | null;
       /**
-       * @description postal or zip code for the company. 
+       * @description postal or zip code for the company.
        * @example 94025
        */
       zip: string | null;
       /**
-       * @description the state or region where the company is located. 
+       * @description the state or region where the company is located.
        * @example CA
        */
       state: string | null;
       /**
-       * @description the street address of the company. 
+       * @description the street address of the company.
        * @example 525 Brannan St
        */
       address: string | null;
       /**
-       * @description the company's primary phone number. 
+       * @description the company's primary phone number.
        * @example (650) 450-8810
        */
       phone: string | null;
       /**
-       * @description the type of business the company performs. By default, this property has approximately 150 pre-defined options to select from. These options cannot be deleted, as they are used by HubSpot Insights, but you can add new custom options to meet your needs. 
+       * @description the type of business the company performs. By default, this property has approximately 150 pre-defined options to select from. These options cannot be deleted, as they are used by HubSpot Insights, but you can add new custom options to meet your needs.
        * @example COMPUTER SOFTWARE
        */
       industry: string | null;
       /**
-       * @description the name of the company. 
+       * @description the name of the company.
        * @example Supaglue
        */
       name: string | null;
       /**
-       * @description total number of people who work for the company. 
+       * @description total number of people who work for the company.
        * @example 3000
        */
       numberofemployees: string | null;
       /**
-       * @description the HubSpot user that the company is assigned to. You can assign additional users to a company record by creating a custom HubSpot user property. 
+       * @description the HubSpot user that the company is assigned to. You can assign additional users to a company record by creating a custom HubSpot user property.
        * @example 101
        */
       hubspot_owner_id: string | null;
       /**
-       * @description the company's website domain. HubSpot Insights uses this domain to provide you with basic information about the company. Every property marked with an asterisk (*) can be populated automatically by HubSpot Insights once the domain name is populated. 
+       * @description the company's website domain. HubSpot Insights uses this domain to provide you with basic information about the company. Every property marked with an asterisk (*) can be populated automatically by HubSpot Insights once the domain name is populated.
        * @example uos.com.sg
        */
       domain: string | null;
       /**
-       * @description the company's web address. Filling in this property will also fill in Company domain name. 
+       * @description the company's web address. Filling in this property will also fill in Company domain name.
        * @example http://www.uos.com.sg
        */
       website: string | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
-       * @description the date the company was added to your account. 
+       * Format: date-time
+       * @description the date the company was added to your account.
        * @example 2023-08-01T20:58:17.725Z
        */
       createdate: Date;
       /**
-       * Format: date-time 
-       * @description the last date and time a note, call, tracked and logged sales email, meeting, LinkedIn/SMS/WhatsApp message, task, or chat was logged on the company record. This is set automatically by HubSpot based on the most recent date/time set for an activity. For example, if a user logs a call and indicates that it occurred the day before, the Last activity date property will show yesterday's date. 
+       * Format: date-time
+       * @description the last date and time a note, call, tracked and logged sales email, meeting, LinkedIn/SMS/WhatsApp message, task, or chat was logged on the company record. This is set automatically by HubSpot based on the most recent date/time set for an activity. For example, if a user logs a call and indicates that it occurred the day before, the Last activity date property will show yesterday's date.
        * @example 2023-08-01T20:58:17.725Z
        */
       notes_last_updated: Date;
@@ -378,73 +378,73 @@ export interface components {
       /** @example 100 */
       total_count?: number;
     };
-    errors: ({
+    errors: {
         /**
-         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
+         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider.
          * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
          */
         detail?: string;
         /**
-         * @description The Supaglue error code associated with the error. 
+         * @description The Supaglue error code associated with the error.
          * @example MISSING_REQUIRED_FIELD
          */
         problem_type?: string;
         /**
-         * @description A brief description of the error. The schema and type of message will vary by Provider. 
+         * @description A brief description of the error. The schema and type of message will vary by Provider.
          * @example Property values were not valid
          */
         title?: string;
-      })[];
-    warnings: ({
+      }[];
+    warnings: {
         detail?: string;
         problem_type?: string;
         title?: string;
-      })[];
+      }[];
   };
   responses: never;
   parameters: {
     /**
-     * @description The customer ID that uniquely identifies the customer in your application 
+     * @description The customer ID that uniquely identifies the customer in your application
      * @example my-customer-1
      */
     "x-customer-id": string;
     /**
-     * @description The provider name 
+     * @description The provider name
      * @example salesforce
      */
     "x-provider-name": string;
     /**
-     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     modified_after?: Date;
     /**
-     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     modified_before?: Date;
     /**
-     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     created_after?: Date;
     /**
-     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     created_before?: Date;
     /**
-     * @description Whether to include data that was deleted in providers. 
+     * @description Whether to include data that was deleted in providers.
      * @example true
      */
     include_deleted_data?: boolean;
     /**
-     * @description Number of results to return per page. (Max: 1000) 
+     * @description Number of results to return per page. (Max: 1000)
      * @example 123
      */
     page_size?: string;
     /**
-     * @description The pagination cursor value 
+     * @description The pagination cursor value
      * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
      */
     cursor?: string;
@@ -454,12 +454,14 @@ export interface components {
   pathItems: never;
 }
 
+export type $defs = Record<string, never>;
+
 export type external = Record<string, never>;
 
 export interface operations {
 
   /**
-   * List contacts 
+   * List contacts
    * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
    */
   listSalesforceContacts: {
@@ -479,14 +481,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["salesforce_contact"])[];
+            records: components["schemas"]["salesforce_contact"][];
           };
         };
       };
     };
   };
   /**
-   * List accounts 
+   * List accounts
    * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
    */
   listSalesforceAccounts: {
@@ -506,14 +508,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["salesforce_account"])[];
+            records: components["schemas"]["salesforce_account"][];
           };
         };
       };
     };
   };
   /**
-   * List contacts 
+   * List contacts
    * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
    */
   listHubspotContacts: {
@@ -533,14 +535,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["hubspot_contact"])[];
+            records: components["schemas"]["hubspot_contact"][];
           };
         };
       };
     };
   };
   /**
-   * List companies 
+   * List companies
    * @description **NOTE**: To use the Data Listing API you need to use the Supaglue Managed Destination and select [Standard Objects](https://docs.supaglue.com/next/platform/objects/overview#configuration) to be synced.
    */
   listHubspotCompanies: {
@@ -560,7 +562,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["hubspot_company"])[];
+            records: components["schemas"]["hubspot_company"][];
           };
         };
       };
