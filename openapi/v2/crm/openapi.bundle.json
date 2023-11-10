@@ -2769,7 +2769,7 @@
       "get": {
         "operationId": "listListMemberships",
         "summary": "List list memberships",
-        "description": "Support:\n\n| Provider   | Object                                      | Common Schema support | Notes                                 |\n| ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |\n| Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |\n| Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |\n",
+        "description": "Support:\n\n| Provider   | Object                                      | Common Schema support | Notes                                 |\n| ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |\n| Hubspot    | `contact`, `account`                        | Yes                   | Raw data response from V3 API         |\n| Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |\n",
         "tags": [
           "Lists"
         ],
@@ -4668,7 +4668,7 @@
           ]
         },
         "example": "contact",
-        "description": "The Supaglue common object type to fetch a list for.",
+        "description": "The Supaglue common object type to fetch a list for.\n\nSupport:\n\n<table>\n  <thead>\n    <tr>\n    <th>Provider</th>\n    <th>Object Type</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Salesforce</td>\n      <td>countact, account, opportunity, lead</td>\n    </tr>\n    <tr>\n      <td>Hubspot</td>\n      <td>contact, account</td>\n    </tr>\n  </tbody>\n  </table>\n",
         "required": true
       },
       "object_name": {

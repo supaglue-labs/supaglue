@@ -658,7 +658,7 @@ export interface paths {
      *
      * | Provider   | Object                                      | Common Schema support | Notes                                 |
      * | ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |
-     * | Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |
+     * | Hubspot    | `contact`, `account`                        | Yes                   | Raw data response from V3 API         |
      * | Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |
      */
     get: operations["listListMemberships"];
@@ -1559,6 +1559,28 @@ export interface components {
     "x-provider-name": string;
     /**
      * @description The Supaglue common object type to fetch a list for.
+     *
+     * Support:
+     *
+     * <table>
+     *   <thead>
+     *     <tr>
+     *     <th>Provider</th>
+     *     <th>Object Type</th>
+     *     </tr>
+     *   </thead>
+     *   <tbody>
+     *     <tr>
+     *       <td>Salesforce</td>
+     *       <td>countact, account, opportunity, lead</td>
+     *     </tr>
+     *     <tr>
+     *       <td>Hubspot</td>
+     *       <td>contact, account</td>
+     *     </tr>
+     *   </tbody>
+     *   </table>
+     *
      * @example contact
      */
     object_type: "contact" | "account" | "opportunity" | "lead";
@@ -3172,7 +3194,7 @@ export interface operations {
    *
    * | Provider   | Object                                      | Common Schema support | Notes                                 |
    * | ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |
-   * | Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |
+   * | Hubspot    | `contact`, `account`                        | Yes                   | Raw data response from V3 API         |
    * | Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |
    */
   listListMemberships: {
