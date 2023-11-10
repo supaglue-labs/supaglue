@@ -190,4 +190,24 @@ const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpd
   if (entityDuplicates.length > 0) {
     throw new BadRequestError(`Duplicate entities found: ${entityDuplicates.join(', ')}`);
   }
+
+  // Validate that `fullSyncEveryNIncrementals` >= 1
+  if (
+    params.config.defaultConfig.fullSyncEveryNIncrementals &&
+    params.config.defaultConfig.fullSyncEveryNIncrementals < 1
+  ) {
+    throw new BadRequestError('fullSyncEveryNIncrementals must be greater than 0');
+  }
+  [
+    ...(params.config.commonObjects ?? []),
+    ...(params.config.customObjects ?? []),
+    ...(params.config.standardObjects ?? []),
+  ].forEach((objectConfig) => {
+    if (
+      objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals &&
+      objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals < 1
+    ) {
+      throw new BadRequestError('fullSyncEveryNIncrementals must be greater than 0');
+    }
+  });
 };
