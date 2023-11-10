@@ -25,8 +25,6 @@ servers:
   - url: 'https://api.supaglue.io/engagement/v2'
     description: Supaglue API
 paths:
-  '/passthrough':
-    $ref: paths/passthrough.yaml
   '/accounts':
     $ref: paths/accounts.yaml
   '/accounts/{account_id}':
@@ -68,8 +66,6 @@ tags:
     description: The `Mailbox` Common Object is used to represent email mailbox, used within the application for sending and syncing emails
   - name: Accounts
     description: The `Account` Common Object represents a "company" or "account" in Engagements.
-  - name: Passthrough
-    description: Passthrough operations to underlying providers.
 components:
   securitySchemes:
     x-api-key:

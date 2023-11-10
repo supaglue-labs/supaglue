@@ -1,12 +1,5 @@
 import type { operations, paths } from '../gen/v2/engagement';
 
-export type SendPassthroughRequestPathParams = never;
-export type SendPassthroughRequestQueryParams = Required<operations['getUser']>['parameters']['query'];
-export type SendPassthroughRequestRequest =
-  operations['sendPassthroughRequest']['requestBody']['content']['application/json'];
-export type SendPassthroughRequestResponse =
-  operations['sendPassthroughRequest']['responses'][keyof operations['sendPassthroughRequest']['responses']]['content']['application/json'];
-
 export type CreateAccountPathParams = never;
 export type CreateAccountQueryParams = never;
 export type CreateAccountRequest = operations['createAccount']['requestBody']['content']['application/json'];
