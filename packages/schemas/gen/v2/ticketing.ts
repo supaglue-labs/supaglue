@@ -394,6 +394,39 @@ export type webhooks = Record<string, never>;
 
 export interface components {
   schemas: {
+    pagination: {
+      /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
+      next: string | null;
+      /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
+      previous: string | null;
+      /** @example 100 */
+      total_count?: number;
+    };
+    errors: ({
+        /**
+         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
+         * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
+         */
+        detail?: string;
+        /**
+         * @description The Supaglue error code associated with the error. 
+         * @example MISSING_REQUIRED_FIELD
+         */
+        problem_type?: string;
+        /**
+         * @description A brief description of the error. The schema and type of message will vary by Provider. 
+         * @example Property values were not valid
+         */
+        title?: string;
+      })[];
+    warnings: ({
+        detail?: string;
+        problem_type?: string;
+        title?: string;
+      })[];
+    created_record: {
+      id: string;
+    };
     account: {
       /** @example Waystar Royco */
       name: string | null;
@@ -539,6 +572,24 @@ export interface components {
       /** @example Ticketing API */
       name: string;
     };
+    team: {
+      /** @example Platform */
+      name: string | null;
+      /** @example Platform and Integrations Team */
+      decription?: string | null;
+    };
+    attachment: {
+      /** @example Screenshot.png */
+      file_name: string;
+      /** @example 0958cbc6-6040-430a-848e-aafacbadf4ae */
+      ticket: string;
+      /** @example http://alturl.com/p749b */
+      file_url: string;
+      /** @example jpeg */
+      content_type: string;
+      /** @example 28b54125-287f-494d-965e-3c5b330c9a68 */
+      uploaded_by: string;
+    };
   };
   responses: never;
   parameters: {
@@ -627,7 +678,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: paths["/tags"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["pagination"];
+            pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["account"])[];
           };
         };
@@ -690,7 +741,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: paths["/tags"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["pagination"];
+            pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["collection"])[];
           };
         };
@@ -757,7 +808,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: paths["/tags"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["pagination"];
+            pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["user"])[];
           };
         };
@@ -789,7 +840,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: paths["/tags"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["pagination"];
+            pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["user"])[];
           };
         };
@@ -852,7 +903,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: paths["/tags"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["pagination"];
+            pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["contact"])[];
           };
         };
@@ -915,8 +966,8 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: paths["/tags"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["pagination"];
-            records: (paths["/teams/%7Bteam_id%7D"]["get"]["responses"]["200"]["content"]["application/json"]["schema"])[];
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["team"])[];
           };
         };
       };
@@ -948,12 +999,7 @@ export interface operations {
       /** @description TeamData */
       200: {
         content: {
-          "application/json": {
-            /** @example Platform */
-            name: string | null;
-            /** @example Platform and Integrations Team */
-            decription?: string | null;
-          };
+          "application/json": components["schemas"]["team"];
         };
       };
     };
@@ -983,7 +1029,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: paths["/tags"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["pagination"];
+            pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["ticket"])[];
           };
         };
@@ -1013,31 +1059,9 @@ export interface operations {
       201: {
         content: {
           "application/json": {
-            errors?: ({
-                /**
-                 * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
-                 * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
-                 */
-                detail?: string;
-                /**
-                 * @description The Supaglue error code associated with the error. 
-                 * @example MISSING_REQUIRED_FIELD
-                 */
-                problem_type?: string;
-                /**
-                 * @description A brief description of the error. The schema and type of message will vary by Provider. 
-                 * @example Property values were not valid
-                 */
-                title?: string;
-              })[];
-            record?: {
-              id: string;
-            };
-            warnings?: ({
-                detail?: string;
-                problem_type?: string;
-                title?: string;
-              })[];
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
           };
         };
       };
@@ -1101,8 +1125,8 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            errors?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["errors"];
-            warnings?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["warnings"];
+            errors?: components["schemas"]["errors"];
+            warnings?: components["schemas"]["warnings"];
           };
         };
       };
@@ -1133,7 +1157,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: paths["/tags"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["pagination"];
+            pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["comment"])[];
           };
         };
@@ -1176,9 +1200,9 @@ export interface operations {
       201: {
         content: {
           "application/json": {
-            errors?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["errors"];
-            record?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["record"];
-            warnings?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["warnings"];
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
           };
         };
       };
@@ -1240,14 +1264,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: {
-              /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
-              next: string | null;
-              /** @example eyJpZCI6IjBjZDhmYmZkLWU5NmQtNDEwZC05ZjQxLWIwMjU1YjdmNGI4NyIsInJldmVyc2UiOnRydWV9 */
-              previous: string | null;
-              /** @example 100 */
-              total_count?: number;
-            };
+            pagination: components["schemas"]["pagination"];
             records: (components["schemas"]["tag"])[];
           };
         };
@@ -1310,8 +1327,8 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            pagination: paths["/tags"]["get"]["responses"]["200"]["content"]["application/json"]["schema"]["pagination"];
-            records: (paths["/attachments/%7Battachment_id%7D"]["get"]["responses"]["200"]["content"]["application/json"]["schema"])[];
+            pagination: components["schemas"]["pagination"];
+            records: (components["schemas"]["attachment"])[];
           };
         };
       };
@@ -1351,9 +1368,9 @@ export interface operations {
       201: {
         content: {
           "application/json": {
-            errors?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["errors"];
-            record?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["record"];
-            warnings?: paths["/tickets"]["post"]["responses"]["201"]["content"]["application/json"]["schema"]["warnings"];
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
           };
         };
       };
@@ -1385,18 +1402,7 @@ export interface operations {
       /** @description attachmentData */
       200: {
         content: {
-          "application/json": {
-            /** @example Screenshot.png */
-            file_name: string;
-            /** @example 0958cbc6-6040-430a-848e-aafacbadf4ae */
-            ticket: string;
-            /** @example http://alturl.com/p749b */
-            file_url: string;
-            /** @example jpeg */
-            content_type: string;
-            /** @example 28b54125-287f-494d-965e-3c5b330c9a68 */
-            uploaded_by: string;
-          };
+          "application/json": components["schemas"]["attachment"];
         };
       };
     };
