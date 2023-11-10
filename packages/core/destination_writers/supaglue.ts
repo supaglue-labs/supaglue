@@ -333,7 +333,7 @@ CREATE ${temp ? 'TEMP TABLE' : 'TABLE'} IF NOT EXISTS ${temp ? `${tableName}` : 
           includeObjectName ? `, "_supaglue_object_name"` : ''
         })`
   }
-    
+
 )${temp ? ';' : ' PARTITION BY LIST ( _supaglue_customer_id );'}`;
 };
 
