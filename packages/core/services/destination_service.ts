@@ -165,10 +165,10 @@ export class DestinationService {
                 params.config.password ??
                 (existingDestination as DestinationUnsafe<'postgres'> | null)?.config.password,
               connectionTimeoutMillis: 1500,
-              statement_timeout: 1500,
             });
             await pgClient.connect();
 
+            await pgClient.query(`SET statement_timeout to 1500`);
             const schemaResult = await pgClient.query(
               `SELECT schema_name FROM information_schema.schemata WHERE schema_name = '${params.config.schema}'`
             ); // Use existence of schema as a proxy for appropriate grants

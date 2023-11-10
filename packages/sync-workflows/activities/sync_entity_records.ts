@@ -110,25 +110,31 @@ export function createSyncEntityRecords(
       throw ApplicationFailure.nonRetryable(`No destination found for id ${syncConfig.destinationId}`);
     }
 
-    const result = await writeObjects(writer);
+    const heartbeating = setInterval(heartbeat, 10_000);
 
-    logEvent({
-      distinctId: distinctId ?? application.orgId,
-      eventName: 'Partially Completed Sync',
-      syncId: syncId,
-      providerName: connection.providerName,
-      entityId,
-      applicationId: application.id,
-      applicationEnv: application.environment,
-    });
+    try {
+      const result = await writeObjects(writer);
 
-    return {
-      syncId: syncId,
-      connectionId,
-      entityId,
-      maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : null,
-      numRecordsSynced: result.numRecords,
-    };
+      logEvent({
+        distinctId: distinctId ?? application.orgId,
+        eventName: 'Partially Completed Sync',
+        syncId: syncId,
+        providerName: connection.providerName,
+        entityId,
+        applicationId: application.id,
+        applicationEnv: application.environment,
+      });
+
+      return {
+        syncId: syncId,
+        connectionId,
+        entityId,
+        maxLastModifiedAtMs: result.maxLastModifiedAt ? result.maxLastModifiedAt.getTime() : null,
+        numRecordsSynced: result.numRecords,
+      };
+    } finally {
+      clearInterval(heartbeating);
+    }
   };
 }
 

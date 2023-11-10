@@ -113,6 +113,8 @@ async function run() {
         return config;
       },
     },
+    // more resource efficient, will be the default in 1.9.0. See https://typescript.temporal.io/api/interfaces/worker.WorkerOptions#reusev8context
+    reuseV8Context: true,
   });
 
   const handle = () => {

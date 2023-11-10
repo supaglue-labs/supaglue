@@ -195,10 +195,11 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 maxLastModifiedAt = lastModifiedAt;
               }
 
-              const dedupeKey = `${applicationId}__${providerName}__${customerId}__${record.id}`;
+              const dedupeKey = `${applicationId}__${providerName}__${customerId}__${unifiedData.id}`;
               const existingLastModifiedAt = dedupeMap.get(dedupeKey);
 
-              if (existingLastModifiedAt && existingLastModifiedAt > lastModifiedAt) {
+              // Some providers have the same lastModifiedAt for multiple records
+              if (existingLastModifiedAt && existingLastModifiedAt >= lastModifiedAt) {
                 // skip this record, it's older than the existing one
                 return callback(null);
               }
@@ -439,10 +440,11 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 maxLastModifiedAt = lastModifiedAt;
               }
 
-              const dedupeKey = `${applicationId}__${providerName}__${customerId}__${record.id}`;
+              const dedupeKey = `${applicationId}__${providerName}__${customerId}__${record.id}__${objectName}`;
               const existingLastModifiedAt = dedupeMap.get(dedupeKey);
 
-              if (existingLastModifiedAt && existingLastModifiedAt > lastModifiedAt) {
+              // Some providers have the same lastModifiedAt for multiple records
+              if (existingLastModifiedAt && existingLastModifiedAt >= lastModifiedAt) {
                 // skip this record, it's older than the existing one
                 return callback(null);
               }
