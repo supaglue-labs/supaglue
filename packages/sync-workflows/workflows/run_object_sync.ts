@@ -1,7 +1,7 @@
 import type { ProviderCategory } from '@supaglue/types/common';
 import { ActivityFailure, ApplicationFailure, proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
-import type { FullOnlySync, FullThenIncrementalSync } from '@supaglue/types/sync';
+import type { FullThenIncrementalSync, Sync } from '@supaglue/types/sync';
 import type { createActivities } from '../activities/index';
 
 // TODO: Rename this to `runSync` when we have time. It will be a backwards incompatible change.
@@ -16,13 +16,21 @@ const { syncObjectRecords, syncEntityRecords } = proxyActivities<ReturnType<type
   },
 });
 
-const { getSync, pauseSync, updateSyncState, clearSyncArgsForNextRun, logSyncStart, logSyncFinish, getEntity } =
-  proxyActivities<ReturnType<typeof createActivities>>({
-    startToCloseTimeout: '10 second',
-    retry: {
-      maximumAttempts: 3,
-    },
-  });
+const {
+  getSync,
+  pauseSync,
+  updateSyncState,
+  clearSyncArgsForNextRun,
+  logSyncStart,
+  logSyncFinish,
+  getEntity,
+  getSyncStrategy,
+} = proxyActivities<ReturnType<typeof createActivities>>({
+  startToCloseTimeout: '10 second',
+  retry: {
+    maximumAttempts: 3,
+  },
+});
 
 const { maybeSendSyncFinishWebhook } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '6 minute',
@@ -60,7 +68,7 @@ function getPauseReasonIfShouldPause(err: any): string | undefined {
 export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
   const { sync, runId } = await getSync({ syncId });
 
-  const strategy = getSyncStrategy(sync);
+  const strategy = await getSyncStrategy({ sync });
 
   // Record that sync has started
   await logSyncStart({
@@ -72,9 +80,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
   let numRecordsSynced: number | undefined;
   try {
     numRecordsSynced =
-      sync.strategyType === 'full then incremental'
-        ? await doFullThenIncrementalSync(sync)
-        : await doFullOnlySync(sync);
+      strategy === 'full' ? await doFullSync(sync) : await doIncrementalSync(sync as FullThenIncrementalSync);
     await clearSyncArgsForNextRun({ syncId });
   } catch (err: any) {
     // Process SG Sync Worker errors
@@ -165,7 +171,7 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
   }
 }
 
-async function doFullOnlySync(sync: FullOnlySync): Promise<number> {
+async function doFullSync(sync: Sync): Promise<number> {
   await updateSyncState({
     syncId: sync.id,
     state: {
@@ -174,7 +180,9 @@ async function doFullOnlySync(sync: FullOnlySync): Promise<number> {
     },
   });
 
-  const { numRecordsSynced } =
+  const isFullOnlySync = sync.strategyType === 'full only';
+
+  const { maxLastModifiedAtMs: newMaxLastModifiedAtMs, numRecordsSynced } =
     sync.type === 'object'
       ? await syncObjectRecords({
           syncId: sync.id,
@@ -193,122 +201,54 @@ async function doFullOnlySync(sync: FullOnlySync): Promise<number> {
     state: {
       phase: 'full',
       status: 'done',
+      maxLastModifiedAtMs: isFullOnlySync ? undefined : newMaxLastModifiedAtMs ?? 0,
     },
   });
 
   return numRecordsSynced;
 }
 
-function getSyncStrategy(sync: FullOnlySync | FullThenIncrementalSync): 'full' | 'incremental' {
-  if (sync.strategyType === 'full only') {
-    return 'full';
-  }
+async function doIncrementalSync(sync: FullThenIncrementalSync): Promise<number> {
+  await updateSyncState({
+    syncId: sync.id,
+    state: {
+      phase: 'incremental',
+      status: 'in progress',
+      maxLastModifiedAtMs: sync.state.phase === 'created' ? undefined : sync.state.maxLastModifiedAtMs,
+    },
+  });
 
-  // Short-circuit normal state transitions if we're forcing a full refresh sync
-  if (sync.argsForNextRun?.performFullRefresh) {
-    return 'full';
-  }
+  const { maxLastModifiedAtMs: returnedMaxLastModifiedAtMs, numRecordsSynced } =
+    sync.type === 'object'
+      ? await syncObjectRecords({
+          syncId: sync.id,
+          connectionId: sync.connectionId,
+          objectType: sync.objectType,
+          object: sync.object,
+          updatedAfterMs: sync.state.phase === 'created' ? undefined : sync.state.maxLastModifiedAtMs,
+        })
+      : await syncEntityRecords({
+          syncId: sync.id,
+          connectionId: sync.connectionId,
+          entityId: sync.entityId,
+          updatedAfterMs: sync.state.phase === 'created' ? undefined : sync.state.maxLastModifiedAtMs,
+        });
 
-  // Sync state transitions
-  switch (sync.state.phase) {
-    case 'created':
-      return 'full';
-    case 'full':
-      switch (sync.state.status) {
-        case 'in progress':
-          return 'full';
-        case 'done':
-          return 'incremental';
-      }
-      break;
-    case 'incremental':
-      return 'incremental';
-  }
-}
+  const newMaxLastModifiedAtMs = Math.max(
+    returnedMaxLastModifiedAtMs ?? 0,
+    sync.state.phase === 'created' ? 0 : sync.state.maxLastModifiedAtMs ?? 0
+  );
 
-async function doFullThenIncrementalSync(sync: FullThenIncrementalSync): Promise<number> {
-  async function doFullStage(): Promise<number> {
-    await updateSyncState({
-      syncId: sync.id,
-      state: {
-        phase: 'full',
-        status: 'in progress',
-      },
-    });
+  await updateSyncState({
+    syncId: sync.id,
+    state: {
+      phase: 'incremental',
+      status: 'done',
+      maxLastModifiedAtMs: newMaxLastModifiedAtMs,
+    },
+  });
 
-    const { maxLastModifiedAtMs: newMaxLastModifiedAtMs, numRecordsSynced } =
-      sync.type === 'object'
-        ? await syncObjectRecords({
-            syncId: sync.id,
-            connectionId: sync.connectionId,
-            objectType: sync.objectType,
-            object: sync.object,
-          })
-        : await syncEntityRecords({
-            syncId: sync.id,
-            connectionId: sync.connectionId,
-            entityId: sync.entityId,
-          });
-
-    await updateSyncState({
-      syncId: sync.id,
-      state: {
-        phase: 'full',
-        status: 'done',
-        maxLastModifiedAtMs: newMaxLastModifiedAtMs ?? 0,
-      },
-    });
-
-    return numRecordsSynced;
-  }
-
-  async function doIncrementalPhase(): Promise<number> {
-    await updateSyncState({
-      syncId: sync.id,
-      state: {
-        phase: 'incremental',
-        status: 'in progress',
-        maxLastModifiedAtMs: sync.state.phase === 'created' ? undefined : sync.state.maxLastModifiedAtMs,
-      },
-    });
-
-    const { maxLastModifiedAtMs: returnedMaxLastModifiedAtMs, numRecordsSynced } =
-      sync.type === 'object'
-        ? await syncObjectRecords({
-            syncId: sync.id,
-            connectionId: sync.connectionId,
-            objectType: sync.objectType,
-            object: sync.object,
-            updatedAfterMs: sync.state.phase === 'created' ? undefined : sync.state.maxLastModifiedAtMs,
-          })
-        : await syncEntityRecords({
-            syncId: sync.id,
-            connectionId: sync.connectionId,
-            entityId: sync.entityId,
-            updatedAfterMs: sync.state.phase === 'created' ? undefined : sync.state.maxLastModifiedAtMs,
-          });
-
-    const newMaxLastModifiedAtMs = Math.max(
-      returnedMaxLastModifiedAtMs ?? 0,
-      sync.state.phase === 'created' ? 0 : sync.state.maxLastModifiedAtMs ?? 0
-    );
-
-    await updateSyncState({
-      syncId: sync.id,
-      state: {
-        phase: 'incremental',
-        status: 'done',
-        maxLastModifiedAtMs: newMaxLastModifiedAtMs,
-      },
-    });
-
-    return numRecordsSynced;
-  }
-
-  if (getSyncStrategy(sync) === 'full') {
-    return await doFullStage();
-  }
-  return await doIncrementalPhase();
+  return numRecordsSynced;
 }
 
 const getErrorMessageStack = (err: Error): { message: string; stack: string } => {

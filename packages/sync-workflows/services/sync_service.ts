@@ -536,6 +536,18 @@ WHERE s.connection_id = '${connection.id}'`);
       const syncType = fromSyncModel(sync);
       const strategyConfig = this.#getSyncStrategyConfig(syncConfig, syncType);
 
+      await this.#prisma.sync.update({
+        where: {
+          id: sync.id,
+        },
+        data: {
+          strategy: {
+            type: strategyConfig.strategy ?? 'full then incremental',
+            fullSyncEveryNIncrementals: strategyConfig.fullSyncEveryNIncrementals,
+          },
+        },
+      });
+
       await this.upsertTemporalSync(syncType, connection, strategyConfig.periodMs ?? FIFTEEN_MINUTES_MS);
     }
 

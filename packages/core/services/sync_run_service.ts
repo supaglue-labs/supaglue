@@ -1,6 +1,7 @@
 import type { SyncRunModelExpanded } from '@supaglue/core/types/sync_run';
 import type { PrismaClient } from '@supaglue/db';
 import type { PaginatedResult } from '@supaglue/types/common';
+import type { Sync } from '@supaglue/types/sync';
 import type {
   SyncRun,
   SyncRunFilter,
@@ -74,6 +75,7 @@ export class SyncRunService {
       id: args.runId,
       syncId: args.syncId,
       createParams: {
+        strategy: args.strategy,
         status: 'IN_PROGRESS' as const,
         errorMessage: null,
         startTimestamp: new Date(),
@@ -104,6 +106,28 @@ export class SyncRunService {
         numRecordsSynced,
       },
     });
+  }
+
+  public async lastNRunsAreAllIncremental(sync: Sync, limit: number): Promise<boolean> {
+    const models = await this.#prisma.syncRun.findMany({
+      where: {
+        syncId: sync.id,
+        status: 'SUCCESS',
+      },
+      select: {
+        status: true,
+        strategy: true,
+      },
+      orderBy: {
+        startTimestamp: 'desc',
+      },
+      take: limit,
+    });
+
+    if (models.length < limit) {
+      return false;
+    }
+    return models.every(({ strategy }) => strategy === 'incremental');
   }
 
   public async list(args: SyncRunFilter): Promise<PaginatedResult<SyncRunWithObjectOrEntity>> {

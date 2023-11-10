@@ -10,6 +10,7 @@ export type SyncRun = {
   startTimestamp: Date;
   endTimestamp: Date | null;
   applicationId: string;
+  strategy?: 'full' | 'incremental';
   // External Id
   customerId: string;
   providerName: string;
