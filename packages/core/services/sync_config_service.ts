@@ -168,7 +168,7 @@ export class SyncConfigService {
   }
 }
 
-const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
+export const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
   // Check that there are no duplicates among objects
   const commonObjects = params.config.commonObjects?.map((object) => object.object) ?? [];
   const allObjects = [...(params.config.standardObjects?.map((object) => object.object) ?? [])];
@@ -193,7 +193,7 @@ const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpd
 
   // Validate that `fullSyncEveryNIncrementals` >= 1
   if (
-    params.config.defaultConfig.fullSyncEveryNIncrementals &&
+    params.config.defaultConfig.fullSyncEveryNIncrementals !== undefined &&
     params.config.defaultConfig.fullSyncEveryNIncrementals < 1
   ) {
     throw new BadRequestError('fullSyncEveryNIncrementals must be greater than 0');
@@ -204,7 +204,7 @@ const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpd
     ...(params.config.standardObjects ?? []),
   ].forEach((objectConfig) => {
     if (
-      objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals &&
+      objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals !== undefined &&
       objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals < 1
     ) {
       throw new BadRequestError('fullSyncEveryNIncrementals must be greater than 0');
