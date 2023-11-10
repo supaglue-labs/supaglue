@@ -22,6 +22,7 @@ export type RemoteSequenceTypes = {
   object: Sequence;
   createParams: SequenceCreateParams;
   updateParams: never;
+  searchParams: never;
 };
 
 export type SequenceCreateParams = {

@@ -16,4 +16,5 @@ export type RemoteMailboxTypes = {
   object: Mailbox;
   createParams: never;
   updateParams: never;
+  searchParams: never;
 };
