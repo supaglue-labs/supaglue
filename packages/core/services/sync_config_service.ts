@@ -168,7 +168,7 @@ export class SyncConfigService {
   }
 }
 
-const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
+export const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
   // Check that there are no duplicates among objects
   const commonObjects = params.config.commonObjects?.map((object) => object.object) ?? [];
   const allObjects = [...(params.config.standardObjects?.map((object) => object.object) ?? [])];
@@ -190,4 +190,39 @@ const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpd
   if (entityDuplicates.length > 0) {
     throw new BadRequestError(`Duplicate entities found: ${entityDuplicates.join(', ')}`);
   }
+
+  // Validate that `fullSyncEveryNIncrementals` >= 1
+  if (params.config.defaultConfig.strategy === 'full only' && params.config.defaultConfig.fullSyncEveryNIncrementals) {
+    throw new BadRequestError('fullSyncEveryNIncrementals cannot be set for full syncs');
+  }
+  [
+    ...(params.config.commonObjects ?? []),
+    ...(params.config.customObjects ?? []),
+    ...(params.config.standardObjects ?? []),
+  ].forEach((objectConfig) => {
+    if (
+      objectConfig.syncStrategyOverride?.strategy === 'full only' &&
+      objectConfig.syncStrategyOverride.fullSyncEveryNIncrementals
+    ) {
+      throw new BadRequestError('fullSyncEveryNIncrementals cannot be set for full syncs');
+    }
+  });
+  if (
+    params.config.defaultConfig.fullSyncEveryNIncrementals !== undefined &&
+    params.config.defaultConfig.fullSyncEveryNIncrementals < 1
+  ) {
+    throw new BadRequestError('fullSyncEveryNIncrementals must be greater than 0');
+  }
+  [
+    ...(params.config.commonObjects ?? []),
+    ...(params.config.customObjects ?? []),
+    ...(params.config.standardObjects ?? []),
+  ].forEach((objectConfig) => {
+    if (
+      objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals !== undefined &&
+      objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals < 1
+    ) {
+      throw new BadRequestError('fullSyncEveryNIncrementals must be greater than 0');
+    }
+  });
 };

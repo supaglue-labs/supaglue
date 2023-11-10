@@ -55,6 +55,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const { entities = [], isLoading: isLoadingEntities } = useEntities();
   const { entitiesWhitelistConfig, isLoading: isLoadingLekkoConfigs } = useLekkoConfigs();
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
+  const [fullSyncEveryNIncrementals, setFullSyncEveryNIncrementals] = useState<number | undefined>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [providerId, setProviderId] = useState<string | undefined>();
   const [destinationId, setDestinationId] = useState<string | undefined>();
@@ -80,6 +81,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
         ? syncConfig?.config?.defaultConfig?.periodMs / 1000
         : ONE_HOUR_SECONDS
     );
+    setFullSyncEveryNIncrementals(syncConfig?.config?.defaultConfig?.fullSyncEveryNIncrementals ?? undefined);
     setAutoStartOnConnection(syncConfig?.config?.defaultConfig?.autoStartOnConnection ?? true);
     setStrategy(syncConfig?.config?.defaultConfig?.strategy ?? 'full then incremental');
     setCommonObjects(syncConfig?.config?.commonObjects?.map((o) => o.object) ?? []);
@@ -120,6 +122,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
             ...syncConfig.config.defaultConfig,
             periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
             strategy,
+            fullSyncEveryNIncrementals: fullSyncEveryNIncrementals ?? undefined,
             autoStartOnConnection,
           },
           commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
@@ -290,6 +293,26 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
               For Incremental: we will use this strategy when available for the provider and object otherwise we will
               use full sync. Please refer to provider docs for more details.
             </FormHelperText>
+            {strategy === 'full then incremental' && (
+              <>
+                <Typography variant="subtitle1">Run Full Sync every N incremental Syncs</Typography>
+                <TextField
+                  value={fullSyncEveryNIncrementals}
+                  size="small"
+                  label="Run Full Sync every N incremental Syncs"
+                  variant="outlined"
+                  type="number"
+                  helperText="All values < 1 will be taken to mean 'never'"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    let value: number | undefined = parseInt(event.target.value, 10);
+                    if (Number.isNaN(value) || value < 1) {
+                      value = undefined;
+                    }
+                    setFullSyncEveryNIncrementals(value);
+                  }}
+                />
+              </>
+            )}
           </Stack>
           <Stack className="gap-2">
             <SwitchWithLabel

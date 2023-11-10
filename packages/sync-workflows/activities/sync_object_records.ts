@@ -173,6 +173,8 @@ export function createSyncObjectRecords(
       throw ApplicationFailure.nonRetryable(`No destination found for id ${syncConfig.destinationId}`);
     }
 
+    const heartbeating = setInterval(heartbeat, 10_000);
+
     try {
       const result = await writeObjects(writer);
 
@@ -199,6 +201,8 @@ export function createSyncObjectRecords(
         throw ApplicationFailure.nonRetryable(e.message);
       }
       throw e;
+    } finally {
+      clearInterval(heartbeating);
     }
   };
 }

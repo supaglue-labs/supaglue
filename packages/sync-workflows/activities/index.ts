@@ -15,6 +15,7 @@ import { createClearSyncArgsForNextRun } from './clear_sync_args_for_next_run';
 import { createDoProcessSyncChanges } from './do_process_sync_changes';
 import { createGetEntity } from './get_entity';
 import { createGetSync } from './get_sync';
+import { createGetSyncStrategy } from './get_sync_strategy';
 import { createLogSyncFinish } from './log_sync_finish';
 import { createLogSyncStart } from './log_sync_start';
 import { createMaybeSendSyncFinishWebhook } from './maybe_send_sync_finish_webhook';
@@ -56,6 +57,7 @@ export const createActivities = ({
     doProcessSyncChanges: createDoProcessSyncChanges(syncService, systemSettingsService),
     updateSyncState: createUpdateSyncState(syncService),
     clearSyncArgsForNextRun: createClearSyncArgsForNextRun(syncService),
+    getSyncStrategy: createGetSyncStrategy(syncRunService),
     syncObjectRecords: createSyncObjectRecords(
       connectionService,
       remoteService,

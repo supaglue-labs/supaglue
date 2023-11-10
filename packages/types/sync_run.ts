@@ -10,6 +10,7 @@ export type SyncRun = {
   startTimestamp: Date;
   endTimestamp: Date | null;
   applicationId: string;
+  strategy?: 'full' | 'incremental';
   // External Id
   customerId: string;
   providerName: string;
@@ -37,6 +38,7 @@ export type SyncRunUpsertParams = {
   startTimestamp: Date;
   endTimestamp: Date | null;
   numRecordsSynced: number | null;
+  strategy?: 'incremental' | 'full';
 };
 
 export type SyncRunFilter = {

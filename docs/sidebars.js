@@ -400,17 +400,10 @@ const sidebars = {
       // @ts-ignore
       items: [
         // eslint-disable-next-line @typescript-eslint/no-var-requires
-        ...require('./docs/api/v2/crm/sidebar.js')
-          .filter(
-            (item) =>
-              !['AssociationSchemas', 'CustomObjectSchemas', 'StandardObjectSchemas', 'Properties'].includes(item.label)
-          )
-          .map((item) => {
-            if (['Passthrough'].includes(item.label)) {
-              item.className += ' hidden';
-            }
-            return item;
-          }),
+        ...require('./docs/api/v2/crm/sidebar.js').filter(
+          (item) =>
+            !['AssociationSchemas', 'CustomObjectSchemas', 'StandardObjectSchemas', 'Properties'].includes(item.label)
+        ),
         {
           type: 'category',
           label: 'Metadata',
@@ -427,13 +420,7 @@ const sidebars = {
       label: 'Engagement API',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      items: require('./docs/api/v2/engagement/sidebar.js').map((item) => {
-        if (['Passthrough'].includes(item.label)) {
-          item.className += ' hidden';
-        }
-        return item;
-      }),
+      items: require('./docs/api/v2/engagement/sidebar.js'),
     },
     {
       type: 'category',
@@ -468,7 +455,7 @@ const sidebars = {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      items: require('./docs/api/v2/metadata/sidebar.js')
+      items: require('./docs/api/v2/metadata/sidebar.js'),
     },
 
     // section

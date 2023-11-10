@@ -1,6 +1,7 @@
 import type { SyncRunModelExpanded } from '@supaglue/core/types/sync_run';
 import type { PrismaClient } from '@supaglue/db';
 import type { PaginatedResult } from '@supaglue/types/common';
+import type { Sync } from '@supaglue/types/sync';
 import type {
   SyncRun,
   SyncRunFilter,
@@ -69,11 +70,12 @@ export class SyncRunService {
     return fromSyncRunModelAndSync(model);
   }
 
-  public async logStart(args: { syncId: string; runId: string }): Promise<string> {
+  public async logStart(args: { syncId: string; runId: string; strategy: 'full' | 'incremental' }): Promise<string> {
     await this.#upsert({
       id: args.runId,
       syncId: args.syncId,
       createParams: {
+        strategy: args.strategy,
         status: 'IN_PROGRESS' as const,
         errorMessage: null,
         startTimestamp: new Date(),
@@ -104,6 +106,28 @@ export class SyncRunService {
         numRecordsSynced,
       },
     });
+  }
+
+  public async lastNRunsAreAllIncremental(sync: Sync, limit: number): Promise<boolean> {
+    const models = await this.#prisma.syncRun.findMany({
+      where: {
+        syncId: sync.id,
+        status: 'SUCCESS',
+      },
+      select: {
+        status: true,
+        strategy: true,
+      },
+      orderBy: {
+        startTimestamp: 'desc',
+      },
+      take: limit,
+    });
+
+    if (models.length < limit) {
+      return false;
+    }
+    return models.every(({ strategy }) => strategy === 'incremental');
   }
 
   public async list(args: SyncRunFilter): Promise<PaginatedResult<SyncRunWithObjectOrEntity>> {

@@ -1,28 +1,7 @@
 type: object
 properties:
   default_config:
-    type: object
-    description: Configuration options for "how" to sync.
-    properties:
-      period_ms:
-        type: integer
-        minimum: 60000
-        example: 60000
-        description: The period (in milliseconds) to run the sync.
-      strategy:
-        type: string
-        enum:
-          - full then incremental
-          - full only
-        description: \"full then incremental\" will run a full sync on the first run, then incremental syncs. \"full only\" will run a full sync on every run.
-      auto_start_on_connection:
-        type: boolean
-        description: |
-          If true, the sync will start automatically when the connection is created.
-          Default: true
-    required:
-      - period_ms
-      - strategy
+    $ref: ./sync_strategy_config.yaml
   common_objects:
     description: A list of Supaglue objects to be synced.
     type: array
@@ -33,6 +12,8 @@ properties:
           type: string
           description: The Supaglue object name
           example: contact
+        sync_strategy_override:
+          $ref: ./sync_strategy_config.yaml
       required:
         - object
   standard_objects:
@@ -45,6 +26,8 @@ properties:
           type: string
           description: The Provider object name (case sensitive)
           example: Contact
+        sync_strategy_override:
+          $ref: ./sync_strategy_config.yaml
       required:
         - object
   custom_objects:
@@ -57,6 +40,8 @@ properties:
           type: string
           description: The custom object name (case sensitive). For Salesforce, this should end with `__c`.
           example: MyCustomObject__c
+        sync_strategy_override:
+          $ref: ./sync_strategy_config.yaml
       required:
         - object
   entities:

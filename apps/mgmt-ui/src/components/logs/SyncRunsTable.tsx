@@ -124,6 +124,13 @@ export default function SyncRunsTable(props: SyncRunsTableProps) {
       filterable: false,
     },
     {
+      field: 'strategy',
+      headerName: 'Strategy',
+      width: 160,
+      sortable: false,
+      filterable: true,
+    },
+    {
       field: 'errorMessage',
       headerName: 'Error Message',
       width: 240,

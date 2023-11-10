@@ -9,7 +9,6 @@ import leads from './lead';
 import lists from './list';
 import metadata from './metadata';
 import opportunities from './opportunity';
-import passthrough from './passthrough';
 import standardObjects from './standard_objects';
 import users from './user';
 
@@ -29,8 +28,6 @@ export default function init(app: Router): void {
   customObjects(v2Router);
   standardObjects(v2Router);
   associations(v2Router);
-
-  passthrough(v2Router);
 
   v2Router.use(openApiErrorHandlerMiddleware);
 

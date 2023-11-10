@@ -844,24 +844,7 @@ export interface components {
       config: components["schemas"]["sync_config_data"];
     };
     sync_config_data: {
-      /** @description Configuration options for "how" to sync. */
-      default_config: {
-        /**
-         * @description The period (in milliseconds) to run the sync.
-         * @example 60000
-         */
-        period_ms: number;
-        /**
-         * @description \"full then incremental\" will run a full sync on the first run, then incremental syncs. \"full only\" will run a full sync on every run.
-         * @enum {string}
-         */
-        strategy: "full then incremental" | "full only";
-        /**
-         * @description If true, the sync will start automatically when the connection is created.
-         * Default: true
-         */
-        auto_start_on_connection?: boolean;
-      };
+      default_config: components["schemas"]["sync_strategy_config"];
       /** @description A list of Supaglue objects to be synced. */
       common_objects?: {
           /**
@@ -869,6 +852,7 @@ export interface components {
            * @example contact
            */
           object: string;
+          sync_strategy_override?: components["schemas"]["sync_strategy_config"];
         }[];
       /** @description A list of case-sensitive Provider objects to be synced. */
       standard_objects?: {
@@ -877,6 +861,7 @@ export interface components {
            * @example Contact
            */
           object: string;
+          sync_strategy_override?: components["schemas"]["sync_strategy_config"];
         }[];
       /** @description A list of case-sensitive custom objects to be synced. Only supported for Salesforce and Hubspot. */
       custom_objects?: {
@@ -885,12 +870,33 @@ export interface components {
            * @example MyCustomObject__c
            */
           object: string;
+          sync_strategy_override?: components["schemas"]["sync_strategy_config"];
         }[];
       /** @deprecated */
       entities?: {
           /** @example 3a82409f-c98f-4d25-bbd8-3335de3f12cc */
           entity_id: string;
         }[];
+    };
+    /** @description Configuration options for "how" to sync. */
+    sync_strategy_config: {
+      /**
+       * @description The period (in milliseconds) to run the sync.
+       * @example 60000
+       */
+      period_ms: number;
+      /**
+       * @description \"full then incremental\" will run a full sync on the first run, then incremental syncs. \"full only\" will run a full sync on every run.
+       * @enum {string}
+       */
+      strategy: "full then incremental" | "full only";
+      /**
+       * @description If true, the sync will start automatically when the connection is created.
+       * Default: true
+       */
+      auto_start_on_connection?: boolean;
+      /** @description If set, Supaglue will run a full sync after N consecutive incremental syncs. */
+      full_sync_every_n_incrementals?: number;
     };
     /** @description An object that stores Oauth2/API key/access key related credentials. */
     create_provider_config: {
