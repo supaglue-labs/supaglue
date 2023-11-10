@@ -9,6 +9,7 @@ import type {
   CreateContactRequest,
   CreateContactResponse,
   GetContactResponse,
+  SearchContactsResponse,
   UpdateContactResponse,
 } from '@supaglue/schemas/v2/engagement';
 
@@ -152,6 +153,43 @@ describe('contact', () => {
       expect(dbContact.rows[0].last_name).toEqual('contact');
       expect(dbContact.rows[0].job_title).toEqual(testContact.job_title);
       expect(dbContact.rows[0].email_addresses).toEqual(expectedEmailAddresses);
+    }, 120_000);
+
+    test(`Test that POST followed by SEARCH has correct data`, async () => {
+      const response = await apiClient.post<CreateContactResponse>(
+        '/engagement/v2/contacts',
+        { record: testContact },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(response.status).toEqual(201);
+      expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'contact',
+      });
+
+      // TODO get not supported for apollo
+      if (providerName === 'apollo') {
+        return;
+      }
+      const searchResponse = await apiClient.post<SearchContactsResponse>(
+        `/engagement/v2/contacts/_search`,
+        {
+          filter: {
+            key: 'email',
+            value: testContact.email_addresses?.[0].email_address,
+          },
+        },
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(searchResponse.status).toEqual(200);
+      expect(searchResponse.data.records.length).toEqual(1);
+      expect(searchResponse.data.records[0].id).toEqual(response.data.record?.id);
     }, 120_000);
   });
 });

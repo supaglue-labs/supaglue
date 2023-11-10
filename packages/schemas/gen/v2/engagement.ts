@@ -62,6 +62,19 @@ export interface paths {
       };
     };
   };
+  "/contacts/_search": {
+    /**
+     * Search contacts
+     * @description Search contacts by email. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+     */
+    post: operations["searchContacts"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/contacts/{contact_id}": {
     /** Get contact */
     get: operations["getContact"];
@@ -937,6 +950,52 @@ export interface operations {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Search contacts
+   * @description Search contacts by email. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+   */
+  searchContacts: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          filter: {
+            /**
+             * @description The key to search on. Only `email` is supported for all providers.
+             * @enum {string}
+             */
+            key: "email";
+            /**
+             * @description The value to search on.
+             * @example hello@example.com
+             */
+            value: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Paginated Contacts */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: components["schemas"]["contact"][];
           };
         };
       };

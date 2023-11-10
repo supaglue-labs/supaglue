@@ -11,6 +11,7 @@ import type {
   AccountCreateParams,
   Contact,
   ContactCreateParams,
+  ContactSearchParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
   Sequence,
@@ -22,7 +23,7 @@ import type {
 } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
 import { BadRequestError, InternalServerError, RemoteProviderError } from '../../../errors';
-import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import { PaginatedSupaglueRecords, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
@@ -381,6 +382,46 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       headers: this.#headers,
     });
     return response.data.data.id.toString();
+  }
+
+  public override async searchCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.#searchContacts(params);
+      case 'user':
+      case 'mailbox':
+      case 'sequence_state':
+      case 'sequence':
+      case 'account':
+        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/people`, {
+        params: {
+          ...DEFAULT_LIST_PARAMS,
+          email_addresses: [params.filter.value],
+        },
+        headers: this.getAuthHeadersForPassthroughRequest(),
+      });
+      const records = response.data.data.map(fromSalesloftPersonToContact);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: null,
+          next: null,
+        },
+      };
+    });
   }
 
   public override handleErr(err: unknown): unknown {

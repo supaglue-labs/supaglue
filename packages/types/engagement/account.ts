@@ -26,4 +26,5 @@ export type RemoteAccountTypes = {
   object: Account;
   createParams: AccountCreateParams;
   updateParams: AccountUpdateParams;
+  searchParams: never;
 };

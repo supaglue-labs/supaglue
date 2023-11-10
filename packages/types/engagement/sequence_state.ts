@@ -29,4 +29,5 @@ export type RemoteSequenceStateTypes = {
   object: SequenceState;
   createParams: SequenceStateCreateParams;
   updateParams: never;
+  searchParams: never;
 };
