@@ -4,11 +4,6 @@
  */
 
 
-/** OneOf type helpers */
-type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
-type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
-type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
-
 export interface paths {
   "/accounts": {
     /** List accounts */
@@ -675,20 +670,6 @@ export interface paths {
       path: {
         /** @example 220e715a-0cbc-4d2d-8420-cd729f12f094 */
         list_id: string;
-      };
-    };
-  };
-  "/passthrough": {
-    /**
-     * Send passthrough request
-     * @deprecated
-     * @description Send request directly to a provider
-     */
-    post: operations["sendPassthroughRequest"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -3227,73 +3208,6 @@ export interface operations {
           "application/json": {
             pagination: components["schemas"]["pagination"];
             records: components["schemas"]["list_membership"][];
-          };
-        };
-      };
-    };
-  };
-  /**
-   * Send passthrough request
-   * @deprecated
-   * @description Send request directly to a provider
-   */
-  sendPassthroughRequest: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** @description The path to send the request to (do not pass the domain) */
-          path: string;
-          /**
-           * @example GET
-           * @enum {string}
-           */
-          method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-          /** @description Headers to pass to downstream */
-          headers?: {
-            [key: string]: string;
-          };
-          /** @description Query parameters to pass to downstream */
-          query?: {
-            [key: string]: string;
-          };
-          /** @description Body to pass to downstream (can be string or JSON object) */
-          body?: OneOf<[string, {
-            [key: string]: unknown;
-          }]>;
-        };
-      };
-    };
-    responses: {
-      /** @description Passthrough response */
-      200: {
-        content: {
-          "application/json": {
-            /**
-             * @description The full URL the request was went to
-             * @example https://customcrm.com/api/cars
-             */
-            url: string;
-            /**
-             * @description Status code from the downstream
-             * @example 200
-             */
-            status: number;
-            /** @description The response headers from the downstream */
-            headers: {
-              [key: string]: string;
-            };
-            /** @description The body from the downstream */
-            body?: string | number | boolean | {
-                [key: string]: unknown;
-              }[] | {
-              [key: string]: unknown;
-            };
           };
         };
       };

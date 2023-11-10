@@ -138,13 +138,6 @@ export type ListUsersRequest = never;
 export type ListUsersResponse =
   operations['listUsers']['responses'][keyof operations['listUsers']['responses']]['content']['application/json'];
 
-export type SendPassthroughRequestPathParams = never;
-export type SendPassthroughRequestQueryParams = never;
-export type SendPassthroughRequestRequest =
-  operations['sendPassthroughRequest']['requestBody']['content']['application/json'];
-export type SendPassthroughRequestResponse =
-  operations['sendPassthroughRequest']['responses'][keyof operations['sendPassthroughRequest']['responses']]['content']['application/json'];
-
 export type ListListsPathParams = never;
 export type ListListsQueryParams = Required<operations['listLists']>['parameters']['query'];
 export type ListListsRequest = never;

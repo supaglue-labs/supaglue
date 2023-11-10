@@ -195,7 +195,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 maxLastModifiedAt = lastModifiedAt;
               }
 
-              const dedupeKey = `${applicationId}__${providerName}__${customerId}__${record.id}`;
+              const dedupeKey = `${applicationId}__${providerName}__${customerId}__${unifiedData.id}`;
               const existingLastModifiedAt = dedupeMap.get(dedupeKey);
 
               if (existingLastModifiedAt && existingLastModifiedAt > lastModifiedAt) {
@@ -439,7 +439,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
                 maxLastModifiedAt = lastModifiedAt;
               }
 
-              const dedupeKey = `${applicationId}__${providerName}__${customerId}__${record.id}`;
+              const dedupeKey = `${applicationId}__${providerName}__${customerId}__${record.id}__${objectName}`;
               const existingLastModifiedAt = dedupeMap.get(dedupeKey);
 
               if (existingLastModifiedAt && existingLastModifiedAt > lastModifiedAt) {
