@@ -82,8 +82,6 @@ paths:
     $ref: paths/lists.yaml
   '/lists/{list_id}':
     $ref: paths/lists@{list_id}.yaml
-  '/passthrough':
-    $ref: paths/passthrough.yaml
 tags:
   - name: Accounts
     description: The `Account` Common Object represents a "company" in CRMs.
@@ -109,8 +107,6 @@ tags:
     description: An `Association` is an instance of a relationship between two entities.
   - name: Properties
     description: A `Property` is a field in a Provider Object.
-  - name: Passthrough
-    description: Passthrough operations to underlying providers.
 components:
   securitySchemes:
     x-api-key:
