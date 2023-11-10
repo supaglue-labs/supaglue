@@ -70,7 +70,7 @@ export default function init(app: Router): void {
 
       switch (objectType) {
         case 'contact': {
-          const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
+          const { records, pagination } = await crmCommonObjectService.listListMembership(
             objectType,
             listId,
             req.customerConnection,
@@ -87,18 +87,11 @@ export default function init(app: Router): void {
           // TODO: add mappers
           return res.status(200).send({
             pagination,
-            metadata: {
-              object_type: metadata.objectType,
-              raw_data: metadata.rawData,
-              id: metadata.id,
-              name: metadata.name,
-              label: metadata.label,
-            },
             records: snakecasedRecords,
           });
         }
         case 'account': {
-          const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
+          const { records, pagination } = await crmCommonObjectService.listListMembership(
             objectType,
             listId,
             req.customerConnection,
@@ -115,18 +108,11 @@ export default function init(app: Router): void {
           // TODO: add mappers
           return res.status(200).send({
             pagination,
-            metadata: {
-              object_type: metadata.objectType,
-              raw_data: metadata.rawData,
-              id: metadata.id,
-              name: metadata.name,
-              label: metadata.label,
-            },
             records: snakecasedRecords,
           });
         }
         case 'lead': {
-          const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
+          const { records, pagination } = await crmCommonObjectService.listListMembership(
             objectType,
             listId,
             req.customerConnection,
@@ -141,18 +127,11 @@ export default function init(app: Router): void {
           // TODO: add mappers
           return res.status(200).send({
             pagination,
-            metadata: {
-              object_type: metadata.objectType,
-              raw_data: metadata.rawData,
-              id: metadata.id,
-              name: metadata.name,
-              label: metadata.label,
-            },
             records: snakecasedRecords,
           });
         }
         case 'opportunity': {
-          const { records, pagination, metadata } = await crmCommonObjectService.listListMembership(
+          const { records, pagination } = await crmCommonObjectService.listListMembership(
             objectType,
             listId,
             req.customerConnection,
@@ -169,13 +148,6 @@ export default function init(app: Router): void {
           // TODO: add mappers
           return res.status(200).send({
             pagination,
-            metadata: {
-              object_type: metadata.objectType,
-              raw_data: metadata.rawData,
-              id: metadata.id,
-              name: metadata.name,
-              label: metadata.label,
-            },
             records: snakecasedRecords,
           });
         }

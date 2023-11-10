@@ -12,7 +12,7 @@ type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A
 export interface paths {
   "/passthrough": {
     /**
-     * Send passthrough request 
+     * Send passthrough request
      * @description Send request directly to a provider
      */
     post: operations["sendPassthroughRequest"];
@@ -37,38 +37,38 @@ export interface components {
       /** @example 100 */
       total_count?: number;
     };
-    errors: ({
+    errors: {
         /**
-         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
+         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider.
          * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
          */
         detail?: string;
         /**
-         * @description The Supaglue error code associated with the error. 
+         * @description The Supaglue error code associated with the error.
          * @example MISSING_REQUIRED_FIELD
          */
         problem_type?: string;
         /**
-         * @description A brief description of the error. The schema and type of message will vary by Provider. 
+         * @description A brief description of the error. The schema and type of message will vary by Provider.
          * @example Property values were not valid
          */
         title?: string;
-      })[];
-    warnings: ({
+      }[];
+    warnings: {
         detail?: string;
         problem_type?: string;
         title?: string;
-      })[];
+      }[];
   };
   responses: never;
   parameters: {
     /**
-     * @description The customer ID that uniquely identifies the customer in your application 
+     * @description The customer ID that uniquely identifies the customer in your application
      * @example my-customer-1
      */
     "x-customer-id": string;
     /**
-     * @description The provider name 
+     * @description The provider name
      * @example salesforce
      */
     "x-provider-name": string;
@@ -78,12 +78,14 @@ export interface components {
   pathItems: never;
 }
 
+export type $defs = Record<string, never>;
+
 export type external = Record<string, never>;
 
 export interface operations {
 
   /**
-   * Send passthrough request 
+   * Send passthrough request
    * @description Send request directly to a provider
    */
   sendPassthroughRequest: {
@@ -105,17 +107,17 @@ export interface operations {
           /** @description The path to send the request to (do not pass the domain) */
           path: string;
           /**
-           * @example GET 
+           * @example GET
            * @enum {string}
            */
           method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
           /** @description Headers to pass to downstream */
           headers?: {
-            [key: string]: string | undefined;
+            [key: string]: string;
           };
           /** @description Query parameters to pass to downstream */
           query?: {
-            [key: string]: string | undefined;
+            [key: string]: string;
           };
           /** @description Body to pass to downstream (can be string or JSON object) */
           body?: OneOf<[string, {
@@ -130,23 +132,23 @@ export interface operations {
         content: {
           "application/json": {
             /**
-             * @description The full URL the request was went to 
+             * @description The full URL the request was went to
              * @example https://customcrm.com/api/cars
              */
             url: string;
             /**
-             * @description Status code from the downstream 
+             * @description Status code from the downstream
              * @example 200
              */
             status: number;
             /** @description The response headers from the downstream */
             headers: {
-              [key: string]: string | undefined;
+              [key: string]: string;
             };
             /** @description The body from the downstream */
-            body?: string | number | boolean | ({
+            body?: string | number | boolean | {
                 [key: string]: unknown;
-              })[] | {
+              }[] | {
               [key: string]: unknown;
             };
           };
