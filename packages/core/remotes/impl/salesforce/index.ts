@@ -1304,7 +1304,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   ): Promise<PaginatedSupaglueRecords<Contact>> {
     const propertiesToFetch = await this.getCommonPropertiesToFetch('contact', fieldMappingConfig);
     const soql = `SELECT ${propertiesToFetch.join(',')}
-    FROM Contact WHERE Email = '${params.filter.value}'`;
+    FROM Contact WHERE Email = '${params.filter.email}'`;
     const response = await this.#client.query(soql);
     const records = response.records.map((record) => ({
       ...fromSalesforceContactToContact(record),
@@ -1389,7 +1389,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   ): Promise<PaginatedSupaglueRecords<Lead>> {
     const propertiesToFetch = await this.getCommonPropertiesToFetch('lead', fieldMappingConfig);
     const soql = `SELECT ${propertiesToFetch.join(',')}
-    FROM Lead WHERE Email = '${params.filter.value}'`;
+    FROM Lead WHERE Email = '${params.filter.email}'`;
     const response = await this.#client.query(soql);
     const records = response.records.map((record) => ({
       ...fromSalesforceLeadToLead(record),

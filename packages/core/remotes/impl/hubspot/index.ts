@@ -1749,14 +1749,14 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         {
           filters: [
             {
-              value: params.filter.value,
-              propertyName: params.filter.key,
+              value: params.filter.email,
+              propertyName: 'email',
               operator: 'EQ',
             },
           ],
         },
       ],
-      [{ propertyName: params.filter.key, direction: 'ASCENDING' }],
+      [{ propertyName: 'email', direction: 'ASCENDING' }],
       params.pageSize ?? DEFAULT_PAGE_SIZE
       // We ignore cursor for now
       // TODO: Implement search cursor
