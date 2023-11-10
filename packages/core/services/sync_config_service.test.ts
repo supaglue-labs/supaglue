@@ -110,4 +110,40 @@ describe('validateSyncConfigParams', () => {
       'fullSyncEveryNIncrementals must be greater than 0'
     );
   });
+
+  it('should throw an error if fullSyncEveryNIncrementals us set for full only syncs', () => {
+    const invalidSyncConfig: SyncConfigCreateParams = {
+      ...validSyncConfig,
+      config: {
+        ...validSyncConfig.config,
+        defaultConfig: {
+          ...validSyncConfig.config.defaultConfig,
+          strategy: 'full only',
+          fullSyncEveryNIncrementals: 5,
+        },
+      },
+    };
+
+    expect(() => validateSyncConfigParams(invalidSyncConfig)).toThrow(
+      'fullSyncEveryNIncrementals cannot be set for full syncs'
+    );
+  });
+
+  it('should throw an error if fullSyncEveryNIncrementals in objects is less than 1', () => {
+    const invalidSyncConfig: SyncConfigCreateParams = {
+      ...validSyncConfig,
+      config: {
+        ...validSyncConfig.config,
+        commonObjects: [
+          {
+            object: 'contact',
+            syncStrategyOverride: { strategy: 'full only', periodMs: 60000, fullSyncEveryNIncrementals: 5 },
+          }, // Invalid
+        ],
+      },
+    };
+    expect(() => validateSyncConfigParams(invalidSyncConfig)).toThrow(
+      'fullSyncEveryNIncrementals cannot be set for full syncs'
+    );
+  });
 });
