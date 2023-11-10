@@ -5,6 +5,7 @@
  * @jest-environment ./integration-test-environment
  */
 
+import { capitalizeString } from '@supaglue/core/remotes/utils/string';
 import type {
   CreateContactRequest,
   CreateContactResponse,
@@ -46,10 +47,6 @@ describe('contact', () => {
         objectName: 'contact',
       });
 
-      // TODO get not supported for apollo
-      if (providerName === 'apollo') {
-        return;
-      }
       const getResponse = await apiClient.get<GetContactResponse>(
         `/engagement/v2/contacts/${response.data.record?.id}`,
         {
@@ -72,8 +69,13 @@ describe('contact', () => {
 
       expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record?.id);
-      expect(getResponse.data.first_name).toEqual(testContact.first_name);
-      expect(getResponse.data.last_name).toEqual(testContact.last_name);
+      if (providerName === 'apollo') {
+        expect(getResponse.data.first_name).toEqual(capitalizeString(testContact.first_name as string));
+        expect(getResponse.data.last_name).toEqual(capitalizeString(testContact.last_name as string));
+      } else {
+        expect(getResponse.data.first_name).toEqual(testContact.first_name);
+        expect(getResponse.data.last_name).toEqual(testContact.last_name);
+      }
       expect(getResponse.data.job_title).toEqual(testContact.job_title);
       expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
 
@@ -116,10 +118,6 @@ describe('contact', () => {
 
       expect(updateResponse.status).toEqual(200);
 
-      // TODO get not supported for apollo
-      if (providerName === 'apollo') {
-        return;
-      }
       const getResponse = await apiClient.get<GetContactResponse>(
         `/engagement/v2/contacts/${response.data.record?.id}`,
         {
@@ -170,6 +168,10 @@ describe('contact', () => {
         providerName,
         objectName: 'contact',
       });
+
+      if (providerName === 'apollo') {
+        await new Promise((resolve) => setTimeout(resolve, 10_000));
+      }
 
       const searchResponse = await apiClient.post<SearchContactsResponse>(
         `/engagement/v2/contacts/_search`,

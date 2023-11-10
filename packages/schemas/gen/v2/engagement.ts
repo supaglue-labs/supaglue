@@ -203,7 +203,14 @@ export interface paths {
   "/sequence_states/_search": {
     /**
      * Search sequence states
-     * @description Search contacts by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+     * @description Search sequence states by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+     * Support:
+     *
+     * | Provider  | Search By               |
+     * | --------- | ----------------------- |
+     * | Apollo    | contact_id only         |
+     * | Salesloft | contact_id, sequence_id |
+     * | Outreach  | contact_id, sequence_id |
      */
     post: operations["searchSequenceStates"];
     parameters: {
@@ -1356,7 +1363,14 @@ export interface operations {
   };
   /**
    * Search sequence states
-   * @description Search contacts by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+   * @description Search sequence states by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+   * Support:
+   *
+   * | Provider  | Search By               |
+   * | --------- | ----------------------- |
+   * | Apollo    | contact_id only         |
+   * | Salesloft | contact_id, sequence_id |
+   * | Outreach  | contact_id, sequence_id |
    */
   searchSequenceStates: {
     parameters: {

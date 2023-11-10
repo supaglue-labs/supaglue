@@ -1233,7 +1233,7 @@
       "post": {
         "operationId": "searchSequenceStates",
         "summary": "Search sequence states",
-        "description": "Search contacts by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.\n",
+        "description": "Search sequence states by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.\nSupport:\n\n| Provider  | Search By               |\n| --------- | ----------------------- |\n| Apollo    | contact_id only         |\n| Salesloft | contact_id, sequence_id |\n| Outreach  | contact_id, sequence_id |\n",
         "tags": [
           "Sequence States"
         ],

@@ -15,7 +15,9 @@ import type {
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
   SequenceCreateParams,
+  SequenceState,
   SequenceStateCreateParams,
+  SequenceStateSearchParams,
   SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
@@ -127,6 +129,8 @@ class ApolloClient extends AbstractEngagementRemoteClient {
           .getEmailerCampaign({ params: { id } })
           .then(({ emailer_campaign: c }) => fromApolloEmailerCampaignToSequence(c));
       case 'contact':
+        return await this.#getContact(id);
+      case 'account':
       case 'user':
       case 'mailbox':
       case 'sequence_state':
@@ -136,6 +140,19 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     }
   }
 
+  async #getContact(id: string): Promise<Contact> {
+    return await retryWhenAxiosApolloRateLimited(async () => {
+      // This uses a private API.
+      const response = await axios.get<{ contact: Record<string, unknown> }>(`${this.#baseURL}/v1/contacts/${id}`, {
+        headers: this.#headers,
+        params: {
+          api_key: this.#apiKey,
+        },
+      });
+      return fromApolloContactToContact(response.data.contact);
+    });
+  }
+
   public override async searchCommonObjectRecords<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['searchParams']
@@ -143,9 +160,10 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     switch (commonObjectType) {
       case 'contact':
         return await this.#searchContacts(params as ContactSearchParams);
+      case 'sequence_state':
+        return await this.#searchSequenceStates(params as SequenceStateSearchParams);
       case 'user':
       case 'mailbox':
-      case 'sequence_state':
       case 'sequence':
       case 'account':
         throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
@@ -167,6 +185,36 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         }
       );
       const records = response.data.contacts.map(fromApolloContactToContact);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: null,
+          next: null,
+        },
+      };
+    });
+  }
+
+  async #searchSequenceStates(params: SequenceStateSearchParams): Promise<PaginatedSupaglueRecords<SequenceState>> {
+    if (!params.filter.contactId) {
+      throw new BadRequestError('Contact ID is required for searching sequence states in Apollo');
+    }
+    if (params.filter.sequenceId) {
+      throw new BadRequestError('Sequence ID is not supported for searching sequence states in Apollo');
+    }
+    return await retryWhenAxiosApolloRateLimited(async () => {
+      // This uses a private API.
+      const response = await axios.get<{ contact: Record<string, unknown> }>(
+        `${this.#baseURL}/v1/contacts/${params.filter.contactId}`,
+        {
+          headers: this.#headers,
+          params: {
+            api_key: this.#apiKey,
+          },
+        }
+      );
+      const records = fromApolloContactToSequenceStates(response.data.contact);
       return {
         records,
         pagination: {
