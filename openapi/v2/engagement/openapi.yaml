@@ -33,6 +33,8 @@ paths:
     $ref: paths/accounts@{account_id}.yaml
   '/contacts':
     $ref: paths/contacts.yaml
+  '/contacts/_search':
+    $ref: paths/contacts@search.yaml
   '/contacts/{contact_id}':
     $ref: paths/contacts@{contact_id}.yaml
   '/users':
