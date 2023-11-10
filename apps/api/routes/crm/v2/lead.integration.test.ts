@@ -10,6 +10,7 @@ import type {
   CreateLeadRequest,
   CreateLeadResponse,
   GetLeadResponse,
+  SearchLeadsResponse,
   UpdateLeadResponse,
   UpsertLeadRequest,
   UpsertLeadResponse,
@@ -168,6 +169,45 @@ describe('lead', () => {
       }
       expect(dbLead.rows[0].title).toEqual('new title');
     }, 120_000);
+
+    // Search only supported for salesforce
+    testIf(
+      ['salesforce'].includes(providerName),
+      `Test that POST followed by SEARCH has correct data`,
+      async () => {
+        const email = `me+${Math.random()}@example.com`;
+        const response = await apiClient.post<CreateLeadResponse>(
+          '/crm/v2/leads',
+          { record: { ...testLead, email_addresses: [{ email_address: email, email_address_type: 'primary' }] } },
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
+        expect(response.status).toEqual(201);
+        expect(response.data.record?.id).toBeTruthy();
+        addedObjects.push({
+          id: response.data.record?.id as string,
+          providerName,
+          objectName: 'lead',
+        });
+
+        const searchResponse = await apiClient.post<SearchLeadsResponse>(
+          `/crm/v2/leads/_search`,
+          {
+            filter: {
+              email,
+            },
+          },
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
+        expect(searchResponse.status).toEqual(200);
+        expect(searchResponse.data.records.length).toEqual(1);
+        expect(searchResponse.data.records[0].id).toEqual(response.data.record?.id);
+      },
+      120_000
+    );
 
     testIf(
       // not supported for pipedrive

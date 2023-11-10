@@ -171,16 +171,11 @@ describe('contact', () => {
         objectName: 'contact',
       });
 
-      // TODO get not supported for apollo
-      if (providerName === 'apollo') {
-        return;
-      }
       const searchResponse = await apiClient.post<SearchContactsResponse>(
         `/engagement/v2/contacts/_search`,
         {
           filter: {
-            key: 'email',
-            value: testContact.email_addresses?.[0].email_address,
+            email: testContact.email_addresses?.[0].email_address,
           },
         },
         {

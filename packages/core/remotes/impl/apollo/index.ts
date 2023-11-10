@@ -160,7 +160,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         `${this.#baseURL}/v1/contacts/search`,
         {
           api_key: this.#apiKey,
-          q_keywords: params.filter.value,
+          q_keywords: params.filter.email,
         },
         {
           headers: this.#headers,

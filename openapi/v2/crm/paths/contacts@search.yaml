@@ -29,17 +29,12 @@ post:
             filter:
               type: object
               properties:
-                key:
+                email:
                   type: string
-                  enum: [email]
-                  description: The key to search on. Only `email` is supported for all providers.
-                value:
-                  type: string
-                  description: The value to search on.
+                  description: The email to search on.
                   example: hello@example.com
               required:
-                - key
-                - value
+                - email          
           required:
             - filter
   responses:
