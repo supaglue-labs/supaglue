@@ -1,0 +1,42 @@
+---
+id: get-magic-links
+title: "List magic links"
+description: "Get a list of magic links"
+sidebar_label: "List magic links"
+hide_title: true
+hide_table_of_contents: true
+api: eJyNVmtv2zYU/SuE9tWyFdnxIxiGZcBQBEuxYkkxbG0gU9SVzUYiVZJy4hr+77uXkm2pTpY6gc3Hfd9zSO4CXYHhTmp1kwVXwQrce76S4laqRxsMAsdXNrj6FPhF1qw+DAILojbSbXFrFzyHvJLhI9DsYY+7GVhhZEVG0eQ7cIyzQlrHdM5Kb6hozRuwlVYW0McuiKOIfvraXceDQGjlQDkS41VVSOEjH32xJLsLrFhDyWnkthWgNjeGb1FPOihtZ12nX0A43KgM5e9kE4HMOjLWGalWKAPPvKwKWgIRR/NJNA+zNF6Ek1l0GabjBYSTbDyOZlE6gXwa7LE8jrvavmSrn9xSwdOSacOWmJitS8iWPX+4TeY6qSZvhZjNBaTjPA/n6SwPJzmfhek8g3A+WcSLOJ8KPl2QTVFbp0swbxost+FBNrwgTSzZRmY/oDmdzXKRCx6KfI7VGs9nIb/A0exCzOeXKUxnqegZVLyEF02quiQQrusU4UJts7wAm2sjgHooK8iM3ND4Gygs8WNioShwWtok26JZKWwynl4mXo/E9FonwpQEKV7ZuiBdXTsDXKxxuNLeMa90UeiDv0Ln5FsiBI3QpIswBm7ISIG/qaTtqQUENPnm5hGc7kWbNIuYViIKXWcJF0LXyiWgVnwFJWEb5QsuHolmp1qeUnfS+ZV+1bCMtSneRtz9GjoUZB//uh32erZ2rrJXoxFCbtj6HGKuIyIeF86OLuLx5NKD3ICrjUp+yC36YU4zA5k0SDwa8xzLyBzGg7YVLqIkk5bx2q21kd8gez2yckvfbVytbjc0eK7Qj024eyk07ERJO0HGHYROltBzFEfxOIziMB7fR9GV///3LKFrtWU3d3+yxpaDjB2NscYRkyrzpMXh0xqUT7VT+jbGYbD3tfxa4ywjlCOtjifIGff7xO2T8Xsm9erQ4KPXtYcTmHxcCcWF4dAH4QvYh/ZKINPcrXEyOklSdBbMBoz114AHQqdNcmjriq+KGoZSj8pV6Uab+KyQd60Mu/5wE+w7V8sdneXNsdy5YE4neyX/ADram0OjI0MMpUCAYyXOG/fhhqGURyBy+4llsIGCLgHr14QAa32vfEB7spZrckyJNjai4cViGHW4+J6rlr1eq7mnkC6k1sZ3yJO6UnJJpcq0sL8ea9ScKP0i9jb336fyE37YjXJGZ7WnwGf8+xsKFAbKhZLoR8bQZU0Tj6ch+0fXTHDFaosKayQfyaBm6bXYAWqMjrxV80pAgqqsQ1k7JK8+lN+49VWjU4UWl8vlZ/UGHlopfw1o69Bxp2a39GboPxh6Fdid3gP/+8poIePg2Y2qgkvVOS4bXH8KurhGFK4xGFre7VLM6qMp9nta/lqD8c+cQbDhRvKU2o+PnsEBbkQED9TgGpFUEXM2nNp+df5gIbQfWfbu93tie03RdEHeILodkPXDltp2bHfR37in7/3gFfGfqUtIn1+O4s3OqwpHMjXSVMEHPCX+A67cd4g=
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>List magic links</h1>
+
+<MethodEndpoint method={"get"} path={"/magic_links"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+
+
+Get a list of magic links
+
+## Request
+
+<div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Magic Links
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"ec208408-db29-4705-b39e-4d33070b4ef6"}}></SchemaItem><SchemaItem collapsible={false} name={"status"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"`new` or `consumed`","example":"new"}}></SchemaItem><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"my-customer-1"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"677fcfca-cf89-4387-a189-71c885be67bc"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_name"} required={true} schemaName={"provider_name"} qualifierMessage={"**Possible values:** [`hubspot`, `salesforce`, `pipedrive`, `zendesk_sell`, `ms_dynamics_365_sales`, `zoho_crm`, `capsule`, `outreach`, `gong`, `apollo`, `salesloft`, `intercom`, `linear`, `clearbit`, `6sense`, `marketo`, `salesforce_marketing_cloud_account_engagement`, `slack`]"} schema={{"type":"string","enum":["hubspot","salesforce","pipedrive","zendesk_sell","ms_dynamics_365_sales","zoho_crm","capsule","outreach","gong","apollo","salesloft","intercom","linear","clearbit","6sense","marketo","salesforce_marketing_cloud_account_engagement","slack"],"example":"hubspot","title":"provider_name"}}></SchemaItem><SchemaItem collapsible={false} name={"url"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The magic link URL.","example":"https://app.hubspot.com/contacts/123456"}}></SchemaItem><SchemaItem collapsible={false} name={"return_url"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"URL to redirect to after the connection is authorized.","example":"https://app.myapp.com/connections/123456"}}></SchemaItem><SchemaItem collapsible={false} name={"expires_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","format":"date-time","example":"2023-02-23T00:00:00Z","description":"Any ISO formatted date-time string indicating when the magic link expires."}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"[\n  {\n    \"id\": \"ec208408-db29-4705-b39e-4d33070b4ef6\",\n    \"status\": \"new\",\n    \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n    \"customer_id\": \"my-customer-1\",\n    \"provider_id\": \"677fcfca-cf89-4387-a189-71c885be67bc\",\n    \"provider_name\": \"hubspot\",\n    \"url\": \"https://app.hubspot.com/contacts/123456\",\n    \"return_url\": \"https://app.myapp.com/connections/123456\",\n    \"expires_at\": \"2023-02-23T00:00:00Z\"\n  }\n]"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
