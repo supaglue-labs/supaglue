@@ -21,22 +21,17 @@ post:
             filter:
               type: object
               properties:
-                key:
+                contact_id:
                   type: string
-                  enum: [email]
-                  description: The key to search on. Only `email` is supported for all providers.
-                value:
+                  description: The ID of the contact to filter on.
+                sequence_id:
                   type: string
-                  description: The value to search on.
-                  example: hello@example.com
-              required:
-                - key
-                - value
+                  description: The ID of the sequence to filter on.
           required:
             - filter
   responses:
     200:
-      description: Paginated Contacts
+      description: Paginated Sequence States
       content:
         application/json:
           schema:
@@ -47,7 +42,7 @@ post:
               records:
                 type: array
                 items:
-                  $ref: ../components/schemas/objects/contact.yaml
+                  $ref: ../components/schemas/objects/sequence_state.yaml
             required:
               - pagination
               - records

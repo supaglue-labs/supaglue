@@ -20,8 +20,8 @@ import type {
 } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
 import { BadRequestError, InternalServerError, NotFoundError } from '../../../errors';
+import type { PaginatedSupaglueRecords } from '../../../lib';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
-import { PaginatedSupaglueRecords } from '../../../lib/pagination';
 import { parseProxyConfig } from '../../../lib/util';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
@@ -142,7 +142,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.#searchContacts(params);
+        return await this.#searchContacts(params as ContactSearchParams);
       case 'user':
       case 'mailbox':
       case 'sequence_state':

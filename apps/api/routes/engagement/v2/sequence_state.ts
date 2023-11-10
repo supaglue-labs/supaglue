@@ -16,8 +16,12 @@ import type {
   ListSequenceStatesQueryParams,
   ListSequenceStatesRequest,
   ListSequenceStatesResponse,
+  SearchSequenceStatesPathParams,
+  SearchSequenceStatesQueryParams,
+  SearchSequenceStatesRequest,
+  SearchSequenceStatesResponse,
 } from '@supaglue/schemas/v2/engagement';
-import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
+import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
@@ -99,6 +103,38 @@ export default function init(app: Router): void {
       );
 
       return res.status(201).send({ record: { id } });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<
+        SearchSequenceStatesPathParams,
+        SearchSequenceStatesResponse,
+        SearchSequenceStatesRequest,
+        SearchSequenceStatesQueryParams
+      >,
+      res: Response<SearchSequenceStatesResponse>
+    ) => {
+      const { pagination, records } = await engagementCommonObjectService.search(
+        'sequence_state',
+        req.customerConnection,
+        {
+          filter: camelcaseKeys(req.body.filter),
+          cursor: req.query?.cursor,
+          pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+        }
+      );
+      return res.status(200).send({
+        pagination,
+        records: records.map((record) => {
+          const snakecased = toSnakecasedKeysSequenceState(record);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { raw_data, ...rest } = snakecased;
+          return req.query?.include_raw_data?.toString() === 'true' ? snakecased : rest;
+        }),
+      });
     }
   );
 

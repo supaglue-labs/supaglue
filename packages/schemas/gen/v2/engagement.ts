@@ -200,6 +200,19 @@ export interface paths {
       };
     };
   };
+  "/sequence_states/_search": {
+    /**
+     * Search sequence states
+     * @description Search contacts by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+     */
+    post: operations["searchSequenceStates"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/sequence_states/_batch": {
     /**
      * Batch create sequence states
@@ -1336,6 +1349,46 @@ export interface operations {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Search sequence states
+   * @description Search contacts by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+   */
+  searchSequenceStates: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          filter: {
+            /** @description The ID of the contact to filter on. */
+            contact_id?: string;
+            /** @description The ID of the sequence to filter on. */
+            sequence_id?: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Paginated Sequence States */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: components["schemas"]["sequence_state"][];
           };
         };
       };

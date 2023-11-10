@@ -1,5 +1,5 @@
 import type { SnakecasedKeys } from '../snakecased_keys';
-import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
+import type { BaseEngagementModel, BaseSearchParams, SnakecasedEngagementTenantFields } from './base';
 
 export type SnakecasedKeysSequenceState = SnakecasedKeys<SequenceState>;
 export type SnakecasedKeysSequenceStateWithTenant = SnakecasedKeysSequenceState & SnakecasedEngagementTenantFields;
@@ -25,9 +25,16 @@ export type SequenceStateCreateParams = {
   userId?: string;
 };
 
+export type SequenceStateSearchParams = BaseSearchParams & {
+  filter: {
+    contactId?: string;
+    sequenceId?: string;
+  };
+};
+
 export type RemoteSequenceStateTypes = {
   object: SequenceState;
   createParams: SequenceStateCreateParams;
   updateParams: never;
-  searchParams: never;
+  searchParams: SequenceStateSearchParams;
 };

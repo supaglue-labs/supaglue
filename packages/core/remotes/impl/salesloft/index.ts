@@ -18,12 +18,14 @@ import type {
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
+  SequenceStateSearchParams,
   SequenceStepCreateParams,
   User,
 } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
 import { BadRequestError, InternalServerError, RemoteProviderError } from '../../../errors';
-import { PaginatedSupaglueRecords, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import type { PaginatedSupaglueRecords } from '../../../lib';
+import { decodeCursor, encodeCursor, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
@@ -390,13 +392,14 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.#searchContacts(params);
+        return await this.#searchContacts(params as ContactSearchParams);
+      case 'sequence_state':
+        return await this.#searchSequenceStates(params as SequenceStateSearchParams);
       case 'user':
       case 'mailbox':
-      case 'sequence_state':
       case 'sequence':
       case 'account':
-        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
+        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Salesloft`);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
@@ -419,6 +422,37 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
           total_count: records.length,
           previous: null,
           next: null,
+        },
+      };
+    });
+  }
+
+  async #searchSequenceStates(params: SequenceStateSearchParams): Promise<PaginatedSupaglueRecords<SequenceState>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const page = cursor?.id as number | undefined;
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/cadence_memberships`, {
+        params: {
+          ...DEFAULT_LIST_PARAMS,
+          per_page: params.pageSize,
+          page,
+          person_id: params.filter.contactId,
+          cadence_id: params.filter.sequenceId,
+        },
+        headers: this.getAuthHeadersForPassthroughRequest(),
+      });
+      const records = response.data.data.map(fromSalesloftCadenceMembershipToSequenceState);
+      return {
+        records,
+        pagination: {
+          total_count: -1,
+          previous: response.data.metadata.paging?.prev_page
+            ? encodeCursor({ id: response.data.metadata.paging.prev_page, reverse: true })
+            : null,
+          next: response.data.metadata.paging?.next_page
+            ? encodeCursor({ id: response.data.metadata.paging.next_page, reverse: false })
+            : null,
         },
       };
     });

@@ -18,7 +18,9 @@ import type {
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
   SequenceCreateParams,
+  SequenceState,
   SequenceStateCreateParams,
+  SequenceStateSearchParams,
   SequenceStepCreateParams,
   SequenceTemplateCreateParams,
   SequenceTemplateId,
@@ -36,7 +38,8 @@ import {
   UnauthorizedError,
   UnprocessableEntityError,
 } from '../../../errors';
-import { PaginatedSupaglueRecords, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import type { PaginatedSupaglueRecords } from '../../../lib';
+import { decodeCursor, encodeCursor, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
@@ -1644,13 +1647,14 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.#searchContacts(params);
+        return await this.#searchContacts(params as ContactSearchParams);
+      case 'sequence_state':
+        return await this.#searchSequenceStates(params as SequenceStateSearchParams);
       case 'user':
       case 'mailbox':
-      case 'sequence_state':
       case 'sequence':
       case 'account':
-        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
+        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Outreach`);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
@@ -1673,6 +1677,38 @@ class OutreachClient extends AbstractEngagementRemoteClient {
           total_count: records.length,
           previous: null,
           next: null,
+        },
+      };
+    });
+  }
+
+  async #searchSequenceStates(params: SequenceStateSearchParams): Promise<PaginatedSupaglueRecords<SequenceState>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const link = cursor?.id as string;
+    const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
+    if (params.filter.contactId) {
+      listParams['filter[prospect][id]'] = params.filter.contactId;
+    }
+    if (params.filter.sequenceId) {
+      listParams['filter[sequence][id]'] = params.filter.sequenceId;
+    }
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = link
+        ? await axios.get<OutreachPaginatedRecords>(link, {
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          })
+        : await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/sequenceStates`, {
+            params: listParams,
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          });
+      const records = response.data.data.map(fromOutreachSequenceStateToSequenceState);
+      return {
+        records,
+        pagination: {
+          total_count: response.data.meta.count,
+          previous: response.data.links?.prev ? encodeCursor({ id: response.data.links?.prev, reverse: true }) : null,
+          next: response.data.links?.next ? encodeCursor({ id: response.data.links?.next, reverse: false }) : null,
         },
       };
     });

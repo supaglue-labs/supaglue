@@ -115,6 +115,13 @@ export type ListSequenceStatesRequest = never;
 export type ListSequenceStatesResponse =
   operations['listSequenceStates']['responses'][keyof operations['listSequenceStates']['responses']]['content']['application/json'];
 
+export type SearchSequenceStatesPathParams = never;
+export type SearchSequenceStatesQueryParams = Required<operations['searchSequenceStates']>['parameters']['query'];
+export type SearchSequenceStatesRequest =
+  operations['searchSequenceStates']['requestBody']['content']['application/json'];
+export type SearchSequenceStatesResponse =
+  operations['searchSequenceStates']['responses'][keyof operations['searchSequenceStates']['responses']]['content']['application/json'];
+
 export type BatchCreateSequenceStatePathParams = never;
 export type BatchCreateSequenceStateQueryParams = never;
 export type BatchCreateSequenceStateRequest =
