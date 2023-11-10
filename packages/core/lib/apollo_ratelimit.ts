@@ -50,6 +50,7 @@ export const retryWhenAxiosApolloRateLimited = async <Args extends any[], Return
     factor: 2,
     // create some jitter so concurrent apollo syncs can make progress
     randomize: true,
-    minTimeout: 2000,
+    minTimeout: 2_000,
+    maxTimeout: 60_000,
   });
 };

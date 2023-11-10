@@ -107,7 +107,7 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     alsoCreateTempTable = false
   ) {
     // Set statement timeout for this session's sync operation to 2 hours
-    await client.query(`set statement_timeout to 3600000`);
+    await client.query(`set statement_timeout to 7200000`);
 
     // Create tables if necessary
     // TODO: We should only need to do this once at the beginning

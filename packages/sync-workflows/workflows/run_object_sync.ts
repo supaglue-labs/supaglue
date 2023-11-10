@@ -9,7 +9,7 @@ import type { createActivities } from '../activities/index';
 
 const { syncObjectRecords, syncEntityRecords } = proxyActivities<ReturnType<typeof createActivities>>({
   startToCloseTimeout: '120 minute',
-  heartbeatTimeout: '5 minute',
+  heartbeatTimeout: '20 second',
   retry: {
     // We need to retry at least once because the activity might fail during a deploy
     maximumAttempts: 3,
