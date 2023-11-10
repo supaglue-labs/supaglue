@@ -8,7 +8,9 @@ import type {
 import type {
   AccountCreateParams,
   AccountUpdateParams,
+  Contact,
   ContactCreateParams,
+  ContactSearchParams,
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
@@ -19,6 +21,7 @@ import type {
 import { Readable } from 'stream';
 import { BadRequestError, InternalServerError, NotFoundError } from '../../../errors';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
+import { PaginatedSupaglueRecords } from '../../../lib/pagination';
 import { parseProxyConfig } from '../../../lib/util';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
@@ -131,6 +134,48 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
+  }
+
+  public override async searchCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.#searchContacts(params);
+      case 'user':
+      case 'mailbox':
+      case 'sequence_state':
+      case 'sequence':
+      case 'account':
+        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
+    return await retryWhenAxiosApolloRateLimited(async () => {
+      const response = await axios.post<ApolloPaginatedContacts>(
+        `${this.#baseURL}/v1/contacts/search`,
+        {
+          api_key: this.#apiKey,
+          q_keywords: params.filter.value,
+        },
+        {
+          headers: this.#headers,
+        }
+      );
+      const records = response.data.contacts.map(fromApolloContactToContact);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: null,
+          next: null,
+        },
+      };
+    });
   }
 
   async #getAccountPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedAccounts> {

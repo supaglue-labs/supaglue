@@ -11,7 +11,9 @@ import type {
 import type {
   AccountCreateParams,
   AccountUpdateParams,
+  Contact,
   ContactCreateParams,
+  ContactSearchParams,
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
@@ -34,7 +36,7 @@ import {
   UnauthorizedError,
   UnprocessableEntityError,
 } from '../../../errors';
-import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import { PaginatedSupaglueRecords, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
@@ -1634,6 +1636,46 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       }
     );
     return response.data.data.id.toString();
+  }
+
+  public override async searchCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.#searchContacts(params);
+      case 'user':
+      case 'mailbox':
+      case 'sequence_state':
+      case 'sequence':
+      case 'account':
+        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/prospects`, {
+        params: {
+          ...DEFAULT_LIST_PARAMS,
+          'filter[emails]': params.filter.value,
+        },
+        headers: this.getAuthHeadersForPassthroughRequest(),
+      });
+      const records = response.data.data.map(fromOutreachProspectToContact);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: null,
+          next: null,
+        },
+      };
+    });
   }
 
   public override async sendPassthroughRequest(

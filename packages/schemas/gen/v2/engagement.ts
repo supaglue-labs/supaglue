@@ -1046,11 +1046,6 @@ export interface operations {
         include_raw_data?: components["parameters"]["include_raw_data"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
-        /**
-         * @description Whether to include sequence membership information.
-         * @example true
-         */
-        include_sequence_states?: boolean;
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
