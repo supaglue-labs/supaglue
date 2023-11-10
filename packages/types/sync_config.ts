@@ -26,6 +26,8 @@ export type SyncConfigData = {
 export type SyncStrategyConfig = {
   periodMs: number;
   strategy: SyncStrategyType;
+  // Only applicable if strategy is set to incremental. If set, it will perform a full sync after N consecutive incremental syncs.
+  fullSyncEveryNIncrementals?: number;
   // default: true
   autoStartOnConnection?: boolean;
 };

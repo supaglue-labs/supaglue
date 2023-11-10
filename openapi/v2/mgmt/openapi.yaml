@@ -165,6 +165,8 @@ components:
       $ref: ./components/schemas/objects/sync_config.yaml
     sync_config_data:
       $ref: ./components/schemas/objects/sync_config_data.yaml
+    sync_strategy_config:
+      $ref: ./components/schemas/objects/sync_strategy_config.yaml
     create_provider_config:
       $ref: ./components/schemas/objects/create_provider_config.yaml
     update_provider_config:

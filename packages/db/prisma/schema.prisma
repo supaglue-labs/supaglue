@@ -193,6 +193,7 @@ model SyncRun {
   // SUCCESS | ERROR | IN_PROGRESS
   status           String
   errorMessage     String?   @map("error_message")
+  strategy         String?
   startTimestamp   DateTime  @map("start_timestamp")
   endTimestamp     DateTime? @map("end_timestamp")
   numRecordsSynced Int?      @map("num_records_synced")

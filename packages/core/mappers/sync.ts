@@ -5,16 +5,21 @@ import { parseCustomerIdPk } from '../lib';
 export const fromSyncModel = (model: SyncModel): Sync => {
   // `strategy` looks like { type: 'full then incremental', ...otherProps }
 
-  const { type: strategyType, ...otherStrategyProps } = model.strategy as { type: SyncStrategyType } & Record<
-    string,
-    unknown
-  >;
+  const {
+    type: strategyType,
+    fullSyncEveryNIncrementals,
+    ...otherStrategyProps
+  } = model.strategy as {
+    type: SyncStrategyType;
+    fullSyncEveryNIncrementals?: number;
+  } & Record<string, unknown>;
 
   // TODO: don't do type assertion
   const base = {
     id: model.id,
     connectionId: model.connectionId,
     strategyType,
+    fullSyncEveryNIncrementals,
     syncConfigId: model.syncConfigId,
     ...otherStrategyProps,
     state: model.state as SyncState,

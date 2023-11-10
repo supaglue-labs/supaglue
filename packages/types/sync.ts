@@ -27,6 +27,7 @@ export type EntitySyncArgs = BaseSync & {
 
 type FullThenIncrementalSyncArgs = {
   strategyType: 'full then incremental';
+  fullSyncEveryNIncrementals?: number;
   state: FullThenIncrementalSyncState;
 };
 
