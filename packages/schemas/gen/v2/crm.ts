@@ -1822,15 +1822,10 @@ export interface operations {
         "application/json": {
           filter: {
             /**
-             * @description The key to search on. Only `email` is supported for all providers.
-             * @enum {string}
-             */
-            key: "email";
-            /**
-             * @description The value to search on.
+             * @description The email to search on.
              * @example hello@example.com
              */
-            value: string;
+            email: string;
           };
         };
       };
@@ -2079,15 +2074,10 @@ export interface operations {
         "application/json": {
           filter: {
             /**
-             * @description The key to search on. Only `email` is supported for all providers.
-             * @enum {string}
-             */
-            key: "email";
-            /**
-             * @description The value to search on.
+             * @description The email to search on.
              * @example hello@example.com
              */
-            value: string;
+            email: string;
           };
         };
       };

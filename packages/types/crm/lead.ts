@@ -41,8 +41,7 @@ export type LeadUpsertParams = {
 
 export type LeadSearchParams = BaseSearchParams & {
   filter: {
-    key: 'email';
-    value: string;
+    email: string;
   };
 };
 
