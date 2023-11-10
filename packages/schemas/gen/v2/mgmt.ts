@@ -12,7 +12,7 @@ type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A
 export interface paths {
   "/customers": {
     /**
-     * List customers
+     * List customers 
      * @description Get a list of customers
      */
     get: operations["getCustomers"];
@@ -33,7 +33,7 @@ export interface paths {
   };
   "/destinations": {
     /**
-     * List destinations
+     * List destinations 
      * @description Get a list of destinations
      */
     get: operations["getDestinations"];
@@ -53,7 +53,7 @@ export interface paths {
   };
   "/magic_links": {
     /**
-     * List magic links
+     * List magic links 
      * @description Get a list of magic links
      */
     get: operations["getMagicLinks"];
@@ -72,7 +72,7 @@ export interface paths {
   };
   "/field_mappings": {
     /**
-     * List schema mappings
+     * List schema mappings 
      * @deprecated
      */
     get: operations["listFieldMappings"];
@@ -85,7 +85,7 @@ export interface paths {
   };
   "/field_mappings/_update_object": {
     /**
-     * Update schema mappings
+     * Update schema mappings 
      * @deprecated
      */
     put: operations["updateObjectFieldMappings"];
@@ -98,7 +98,7 @@ export interface paths {
   };
   "/entity_mappings": {
     /**
-     * List entity mappings.
+     * List entity mappings. 
      * @deprecated
      */
     get: operations["listEntityMappings"];
@@ -111,12 +111,12 @@ export interface paths {
   };
   "/entity_mappings/{entity_id}": {
     /**
-     * Upsert entity mapping
+     * Upsert entity mapping 
      * @deprecated
      */
     put: operations["upsertEntityMapping"];
     /**
-     * Delete entity mapping
+     * Delete entity mapping 
      * @deprecated
      */
     delete: operations["deleteEntityMapping"];
@@ -133,30 +133,30 @@ export interface paths {
   };
   "/schemas": {
     /**
-     * List schemas
-     * @deprecated
+     * List schemas 
+     * @deprecated 
      * @description Get a list of schemas
      */
     get: operations["getSchemas"];
     /**
-     * Create schema
+     * Create schema 
      * @deprecated
      */
     post: operations["createSchema"];
   };
   "/schemas/{schema_id}": {
     /**
-     * Get schema
+     * Get schema 
      * @deprecated
      */
     get: operations["getSchema"];
     /**
-     * Update schema
+     * Update schema 
      * @deprecated
      */
     put: operations["updateSchema"];
     /**
-     * Delete schema
+     * Delete schema 
      * @deprecated
      */
     delete: operations["deleteSchema"];
@@ -169,30 +169,30 @@ export interface paths {
   };
   "/entities": {
     /**
-     * List entities
-     * @deprecated
+     * List entities 
+     * @deprecated 
      * @description Get a list of entities
      */
     get: operations["getEntities"];
     /**
-     * Create entity
+     * Create entity 
      * @deprecated
      */
     post: operations["createEntity"];
   };
   "/entities/{entity_id}": {
     /**
-     * Get entity
+     * Get entity 
      * @deprecated
      */
     get: operations["getEntity"];
     /**
-     * Update entity
+     * Update entity 
      * @deprecated
      */
     put: operations["updateEntity"];
     /**
-     * Delete entity
+     * Delete entity 
      * @deprecated
      */
     delete: operations["deleteEntity"];
@@ -204,7 +204,7 @@ export interface paths {
   };
   "/providers": {
     /**
-     * List providers
+     * List providers 
      * @description Get a list of providers
      */
     get: operations["getProviders"];
@@ -226,7 +226,7 @@ export interface paths {
   };
   "/sync_configs": {
     /**
-     * List Sync Configs
+     * List Sync Configs 
      * @description Get a list of Sync Configs
      */
     get: operations["getSyncConfigs"];
@@ -251,7 +251,7 @@ export interface paths {
     /** Get connection sync config */
     get: operations["getConnectionSyncConfig"];
     /**
-     * Upsert connection sync config
+     * Upsert connection sync config 
      * @description Use this to override SyncConfig and Destination configurations on a per customer-connection basis. E.g. you can override the objects that are synced per customer-connection as well as override the table/collection that these objects are written into.
      */
     put: operations["upsertConnectionSyncConfig"];
@@ -266,12 +266,12 @@ export interface paths {
   };
   "/customers/{customer_id}/connections": {
     /**
-     * List connections
+     * List connections 
      * @description Get a list of connections
      */
     get: operations["getConnections"];
     /**
-     * Create a connection
+     * Create a connection 
      * @description This endpoint is for providers that use API key or access key for authentication. Please use [Embedded Links](https://docs.supaglue.com/platform/managed-auth#oauth-20) for providers that support Oauth2 for authentication.
      */
     post: operations["createConnection"];
@@ -283,15 +283,15 @@ export interface paths {
   };
   "/customers/{customer_id}/connections/_provider_user_id": {
     /**
-     * Get logged in User ID and details
+     * Get logged in User ID and details 
      * @description This endpoint returns the ID of the logged in (common schema) User and details.
-     *
+     * 
      * The common schema User ID maps to the following 3rd-party provider object IDs:
-     *
-     * | Provider  | Remote object ID  |
-     * | --------- | ----------------- |
-     * | Hubspot   | V3 Owner          |
-     * | Dynamics  | Azure System User |
+     * 
+     * | Provider  | Remote object ID  | 
+     * | --------- | ----------------- | 
+     * | Hubspot   | V3 Owner          | 
+     * | Dynamics  | Azure System User | 
      * | Intercom  | Admin             |
      */
     get: operations["getProviderUserId"];
@@ -315,7 +315,7 @@ export interface paths {
   };
   "/syncs": {
     /**
-     * Get Syncs
+     * Get Syncs 
      * @description Get a list of Syncs.
      */
     get: operations["getSyncs"];
@@ -352,7 +352,7 @@ export interface paths {
   };
   "/sync-runs": {
     /**
-     * Get SyncRuns
+     * Get SyncRuns 
      * @description Get a list of SyncRuns.
      */
     get: operations["getSyncRuns"];
@@ -362,68 +362,68 @@ export interface paths {
 export interface webhooks {
   "sync.complete": {
     /**
-     * Sync complete
+     * Sync complete 
      * @description Notification of the completion of a sync
      */
     post: operations["syncComplete"];
   };
   "sync.paused": {
     /**
-     * Sync paused
+     * Sync paused 
      * @description Notification after a sync is paused
      */
     post: operations["syncPaused"];
   };
   "connection.created": {
     /**
-     * Customer connection created
+     * Customer connection created 
      * @description Notification of the creation of a connection for a customer
      */
     post: operations["connectionCreated"];
   };
   "connection.deleted": {
     /**
-     * Customer connection deleted
+     * Customer connection deleted 
      * @description Notification of the deletion of a connection for a customer
      */
     post: operations["connectionDeleted"];
   };
   "entity.entity_mapping.created": {
     /**
-     * Entity mapping created
-     * @deprecated
+     * Entity mapping created 
+     * @deprecated 
      * @description Notification of the creation of an entity mapping
      */
     post: operations["entityEntityMappingCreated"];
   };
   "entity.entity_mapping.updated": {
     /**
-     * Entity mapping updated
-     * @deprecated
+     * Entity mapping updated 
+     * @deprecated 
      * @description Notification of an update to an entity mapping
      */
     post: operations["entityEntityMappingUpdated"];
   };
   "entity.entity_mapping.deleted": {
     /**
-     * Entity mapping deleted
-     * @deprecated
+     * Entity mapping deleted 
+     * @deprecated 
      * @description Notification of the deletion of an entity mapping
      */
     post: operations["entityEntityMappingDeleted"];
   };
   "object.field_mapping.created": {
     /**
-     * Object field mapping created
-     * @deprecated
+     * Object field mapping created 
+     * @deprecated 
      * @description Notification of the creation of am object field mapping
      */
     post: operations["objectFieldMappingCreated"];
   };
   "object.field_mapping.updated": {
     /**
-     * Object field mapping updated
-     * @deprecated
+     * Object field mapping updated 
+     * @deprecated 
      * @description Notification of an update to an object field mapping
      */
     post: operations["objectFieldMappingUpdated"];
@@ -449,7 +449,7 @@ export interface components {
       name: string;
       /** @example contact@mycompany.com */
       email: string;
-      connections?: components["schemas"]["connection"][];
+      connections?: (components["schemas"]["connection"])[];
     };
     simple_customer: {
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
@@ -468,7 +468,7 @@ export interface components {
       application_id: string;
       category: components["schemas"]["category"];
       /**
-       * @example oauth2
+       * @example oauth2 
        * @enum {string}
        */
       auth_type: "oauth2" | "api_key" | "access_key_secret";
@@ -476,10 +476,10 @@ export interface components {
       config?: components["schemas"]["create_provider_config"];
       objects?: components["schemas"]["objects"];
       /**
-       * @deprecated
+       * @deprecated 
        * @description This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview). The object/field mappings (aka [Entity Mappings](https://docs.supaglue.com/platform/entities/overview#entity-mapping)) here are set by you, the developer, and the mappings apply for all your customers.
        */
-      entity_mappings?: components["schemas"]["provider_entity_mapping"][];
+      entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
     };
     /**
      * @example {
@@ -504,13 +504,13 @@ export interface components {
       /** @example My Postgres Destination */
       name: string;
       /**
-       * @example postgres
+       * @example postgres 
        * @enum {string}
        */
       type: "postgres";
       config: components["schemas"]["postgres_config_safe"];
       /**
-       * @description A monotonically increasing version number of the destination configuration
+       * @description A monotonically increasing version number of the destination configuration 
        * @example 1
        */
       version: number;
@@ -520,12 +520,12 @@ export interface components {
       /** @example 726fb798-d854-4c59-9a23-57e3e2f73eae */
       application_id: string;
       /**
-       * @example supaglue
+       * @example supaglue 
        * @enum {string}
        */
       type: "supaglue";
       /**
-       * @description A monotonically increasing version number of the destination configuration
+       * @description A monotonically increasing version number of the destination configuration 
        * @example 1
        */
       version: number;
@@ -537,13 +537,13 @@ export interface components {
       /** @example My BigQuery Destination */
       name: string;
       /**
-       * @example bigquery
+       * @example bigquery 
        * @enum {string}
        */
       type: "bigquery";
       config: components["schemas"]["bigquery_config_safe"];
       /**
-       * @description A monotonically increasing version number of the destination configuration
+       * @description A monotonically increasing version number of the destination configuration 
        * @example 1
        */
       version: number;
@@ -560,7 +560,7 @@ export interface components {
       /** @example myuser */
       user: string;
       /**
-       * @example disable
+       * @example disable 
        * @enum {string}
        */
       ssl_mode?: "disable" | "no-verify" | "prefer" | "require" | "verify-ca" | "verify-full";
@@ -613,7 +613,7 @@ export interface components {
       /** @example myuser */
       user: string;
       /**
-       * @example disable
+       * @example disable 
        * @enum {string}
        */
       ssl_mode?: "disable" | "no-verify" | "prefer" | "require" | "verify-ca" | "verify-full";
@@ -652,20 +652,20 @@ export interface components {
     };
     /** @deprecated */
     schema_config: {
-      fields: {
+      fields: ({
           /**
-           * @description Your application field name.
+           * @description Your application field name. 
            * @example apolla_first_name
            */
           name: string;
           /**
-           * @description The field your customer maps. This is a Provider-specified field name. E.g. FirstName for Salesforce.
+           * @description The field your customer maps. This is a Provider-specified field name. E.g. FirstName for Salesforce. 
            * @example FirstName
            */
           mapped_name?: string;
-        }[];
+        })[];
       /**
-       * @description Specifies whether your customer can add new application field names.
+       * @description Specifies whether your customer can add new application field names. 
        * @example false
        */
       allow_additional_field_mappings: boolean;
@@ -674,7 +674,7 @@ export interface components {
       /** @example ec208408-db29-4705-b39e-4d33070b4ef6 */
       id: string;
       /**
-       * @description `new` or `consumed`
+       * @description `new` or `consumed` 
        * @example new
        */
       status: string;
@@ -686,18 +686,18 @@ export interface components {
       provider_id: string;
       provider_name: components["schemas"]["provider_name"];
       /**
-       * @description The magic link URL.
+       * @description The magic link URL. 
        * @example https://app.hubspot.com/contacts/123456
        */
       url: string;
       /**
-       * @description URL to redirect to after the connection is authorized.
+       * @description URL to redirect to after the connection is authorized. 
        * @example https://app.myapp.com/connections/123456
        */
       return_url: string;
       /**
-       * Format: date-time
-       * @description Any ISO formatted date-time string indicating when the magic link expires.
+       * Format: date-time 
+       * @description Any ISO formatted date-time string indicating when the magic link expires. 
        * @example 2023-02-23T00:00:00Z
        */
       expires_at: Date;
@@ -707,7 +707,7 @@ export interface components {
       customer_id: string;
       provider_name: components["schemas"]["provider_name"];
       /**
-       * @description URL to redirect to after the connection is authorized.
+       * @description URL to redirect to after the connection is authorized. 
        * @example https://app.myapp.com/connections/123456
        */
       return_url: string;
@@ -726,29 +726,29 @@ export interface components {
     };
     /** @deprecated */
     entity_config: {
-      fields: {
+      fields: ({
           /** @example apolla_first_name */
           name: string;
-        }[];
+        })[];
       allow_additional_field_mappings: boolean;
     };
     /** @description This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview). The field mappings (aka [Schemas](https://docs.supaglue.com/platform/objects/overview#schemas)) here are set by you, the developer, and the mappings apply for all your customers. */
     objects: {
-      common?: {
+      common?: ({
           /** @example account */
           name: string;
           /**
-           * @description If set, will sync these mapped fields into the raw_data column in addition to the common object. If not set, will fetch all fields as is.
+           * @description If set, will sync these mapped fields into the raw_data column in addition to the common object. If not set, will fetch all fields as is. 
            * @example 328a8cb3-8345-4b02-b661-ee13b4f76806
            */
           schema_id?: string;
-        }[];
-      standard?: {
+        })[];
+      standard?: ({
           /** @example Account */
           name: string;
           /** @example 777ea826-5776-4347-9ece-47bbb17ccdd4 */
           schema_id?: string;
-        }[];
+        })[];
     };
     object_field_mappings: {
       /** @example contact */
@@ -759,11 +759,11 @@ export interface components {
       allow_additional_field_mappings: boolean;
       /** @example 51797e8d-f081-496d-99ec-5e41b467df4b */
       schema_id: string;
-      fields: components["schemas"]["merged_field_map"][];
+      fields: (components["schemas"]["merged_field_map"])[];
     };
     merged_field_map: {
       /**
-       * @description The name of the field as set in the schema
+       * @description The name of the field as set in the schema 
        * @example email
        */
       name: string;
@@ -779,7 +779,7 @@ export interface components {
       name: string;
       /** @enum {string} */
       type: "common" | "standard";
-      field_mappings: components["schemas"]["object_field_mapping"][];
+      field_mappings: (components["schemas"]["object_field_mapping"])[];
     };
     object_field_mapping: {
       /** @example apolla_first_name */
@@ -799,36 +799,36 @@ export interface components {
       provider_name: components["schemas"]["provider_name"];
       category: components["schemas"]["category"];
       /**
-       * @description Instance URL for the connected customer.
+       * @description Instance URL for the connected customer. 
        * @example https://app.hubspot.com/contacts/123456
        */
       instance_url: string;
       /**
-       * @deprecated
+       * @deprecated 
        * @description This is for field mappings when you data model using [Objects](https://docs.supaglue.com/platform/objects/overview#schemas). The field mappings here are set by your customers using the [Field Mappings API](https://docs.supaglue.com/api/v2/mgmt/update-object-field-mappings).
        */
       schema_mappings_config?: {
-        common_objects?: {
+        common_objects?: ({
             /** @example Contact__c */
             object: string;
-            field_mappings: components["schemas"]["object_field_mapping"][];
-          }[];
-        standard_objects?: {
+            field_mappings: (components["schemas"]["object_field_mapping"])[];
+          })[];
+        standard_objects?: ({
             /** @example Contact */
             object: string;
-            field_mappings: components["schemas"]["object_field_mapping"][];
-          }[];
+            field_mappings: (components["schemas"]["object_field_mapping"])[];
+          })[];
       };
       /**
-       * @deprecated
-       * @description This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview#entity-mapping). The object/field mappings here are set by your customers using the [Entity Mappings API](https://docs.supaglue.com/api/v2/mgmt/upsert-entity-mapping).
+       * @deprecated 
+       * @description This is for object/field mappings when you data model using [Entities](https://docs.supaglue.com/platform/entities/overview#entity-mapping). The object/field mappings here are set by your customers using the [Entity Mappings API](https://docs.supaglue.com/api/v2/mgmt/upsert-entity-mapping). 
        * @example []
        */
-      entity_mappings?: components["schemas"]["connection_entity_mapping"][];
+      entity_mappings?: (components["schemas"]["connection_entity_mapping"])[];
       connection_sync_config?: components["schemas"]["connection_sync_config"];
     };
     /**
-     * @example crm
+     * @example crm 
      * @enum {string}
      */
     category: "crm" | "engagement" | "enrichment" | "marketing_automation" | "no_category";
@@ -847,12 +847,12 @@ export interface components {
       /** @description Configuration options for "how" to sync. */
       default_config: {
         /**
-         * @description The period (in milliseconds) to run the sync.
+         * @description The period (in milliseconds) to run the sync. 
          * @example 60000
          */
         period_ms: number;
         /**
-         * @description \"full then incremental\" will run a full sync on the first run, then incremental syncs. \"full only\" will run a full sync on every run.
+         * @description \"full then incremental\" will run a full sync on the first run, then incremental syncs. \"full only\" will run a full sync on every run. 
          * @enum {string}
          */
         strategy: "full then incremental" | "full only";
@@ -863,41 +863,41 @@ export interface components {
         auto_start_on_connection?: boolean;
       };
       /** @description A list of Supaglue objects to be synced. */
-      common_objects?: {
+      common_objects?: ({
           /**
-           * @description The Supaglue object name
+           * @description The Supaglue object name 
            * @example contact
            */
           object: string;
-        }[];
+        })[];
       /** @description A list of case-sensitive Provider objects to be synced. */
-      standard_objects?: {
+      standard_objects?: ({
           /**
-           * @description The Provider object name (case sensitive)
+           * @description The Provider object name (case sensitive) 
            * @example Contact
            */
           object: string;
-        }[];
+        })[];
       /** @description A list of case-sensitive custom objects to be synced. Only supported for Salesforce and Hubspot. */
-      custom_objects?: {
+      custom_objects?: ({
           /**
-           * @description The custom object name (case sensitive). For Salesforce, this should end with `__c`.
+           * @description The custom object name (case sensitive). For Salesforce, this should end with `__c`. 
            * @example MyCustomObject__c
            */
           object: string;
-        }[];
+        })[];
       /** @deprecated */
-      entities?: {
+      entities?: ({
           /** @example 3a82409f-c98f-4d25-bbd8-3335de3f12cc */
           entity_id: string;
-        }[];
+        })[];
     };
     /** @description An object that stores Oauth2/API key/access key related credentials. */
     create_provider_config: {
       /** @example my_app_id */
       provider_app_id: string;
       /**
-       * @description True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials.
+       * @description True: use Supaglue's OAuth application credentials. False: Use the provided OAuth application credentials. 
        * @example true
        */
       use_managed_oauth?: boolean;
@@ -913,7 +913,7 @@ export interface components {
          *   "crm.objects.deals.write"
          * ]
          */
-        oauth_scopes: string[];
+        oauth_scopes: (string)[];
         credentials: {
           /** @example 7393b5a4-5e20-4648-87af-b7b297793fd1 */
           oauth_client_id: string;
@@ -923,7 +923,7 @@ export interface components {
       };
     };
     /**
-     * @description An object that stores Oauth2/API key/access key related credentials.
+     * @description An object that stores Oauth2/API key/access key related credentials. 
      * @example {
      *   "provider_app_id": "my_app_id",
      *   "oauth": {
@@ -946,7 +946,7 @@ export interface components {
     update_provider_config: {
       provider_app_id: string;
       oauth: {
-        oauth_scopes: string[];
+        oauth_scopes: (string)[];
         credentials: {
           oauth_client_id: string;
           oauth_client_secret: string;
@@ -954,7 +954,7 @@ export interface components {
       };
     };
     /**
-     * @example hubspot
+     * @example hubspot 
      * @enum {string}
      */
     provider_name: "hubspot" | "salesforce" | "pipedrive" | "zendesk_sell" | "ms_dynamics_365_sales" | "zoho_crm" | "capsule" | "outreach" | "gong" | "apollo" | "salesloft" | "intercom" | "linear" | "clearbit" | "6sense" | "marketo" | "salesforce_marketing_cloud_account_engagement" | "slack";
@@ -968,17 +968,17 @@ export interface components {
       /** @example 7026e4e8-15d7-48d8-b997-f2592b654619 */
       id: string;
       /**
-       * @example object
+       * @example object 
        * @enum {string}
        */
       type: "object";
       /**
-       * @example standard
+       * @example standard 
        * @enum {string}
        */
       object_type: "common" | "standard" | "custom";
       /**
-       * @description The Provider's object name (case sensitive)
+       * @description The Provider's object name (case sensitive) 
        * @example contact
        */
       object: string;
@@ -992,17 +992,17 @@ export interface components {
       /** @example 7026e4e8-15d7-48d8-b997-f2592b654619 */
       id: string;
       /**
-       * @example object
+       * @example object 
        * @enum {string}
        */
       type: "object";
       /**
-       * @example standard
+       * @example standard 
        * @enum {string}
        */
       object_type: "common";
       /**
-       * @description Supaglue's object name
+       * @description Supaglue's object name 
        * @example contact
        */
       object: string;
@@ -1016,7 +1016,7 @@ export interface components {
       /** @example 7026e4e8-15d7-48d8-b997-f2592b654619 */
       id: string;
       /**
-       * @example entity
+       * @example entity 
        * @enum {string}
        */
       type: "entity";
@@ -1033,12 +1033,12 @@ export interface components {
       /** @example 971cb76d-9558-42fe-8f3b-8a531c32bd5f */
       id: string;
       /**
-       * @example object
+       * @example object 
        * @enum {string}
        */
       type: "object";
       /**
-       * @example standard
+       * @example standard 
        * @enum {string}
        */
       object_type: "common" | "standard" | "custom";
@@ -1058,7 +1058,7 @@ export interface components {
       /** @example 971cb76d-9558-42fe-8f3b-8a531c32bd5f */
       id: string;
       /**
-       * @example entity
+       * @example entity 
        * @enum {string}
        */
       type: "entity";
@@ -1161,7 +1161,7 @@ export interface components {
       auth_type: "oauth2";
       config: components["schemas"]["update_provider_config"];
       objects?: components["schemas"]["objects"];
-      entity_mappings?: components["schemas"]["provider_entity_mapping"][];
+      entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
       /** @enum {string} */
       category: "crm";
       name: components["schemas"]["provider_name_crm"];
@@ -1170,7 +1170,7 @@ export interface components {
       auth_type: "oauth2";
       config: components["schemas"]["update_provider_config"];
       objects?: components["schemas"]["objects"];
-      entity_mappings?: components["schemas"]["provider_entity_mapping"][];
+      entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
       /** @enum {string} */
       category: "engagement";
       name: components["schemas"]["provider_name_engagement"];
@@ -1179,7 +1179,7 @@ export interface components {
       auth_type: "oauth2";
       config: components["schemas"]["update_provider_config"];
       objects?: components["schemas"]["objects"];
-      entity_mappings?: components["schemas"]["provider_entity_mapping"][];
+      entity_mappings?: (components["schemas"]["provider_entity_mapping"])[];
       /** @enum {string} */
       category: "no_category";
       name: components["schemas"]["provider_name_no_category"];
@@ -1198,14 +1198,14 @@ export interface components {
       /** @example My Postgres Destination */
       name: string;
       /**
-       * @example postgres
+       * @example postgres 
        * @enum {string}
        */
       type: "postgres";
       config: components["schemas"]["postgres_config_unsafe"];
     }, {
       /**
-       * @example supaglue
+       * @example supaglue 
        * @enum {string}
        */
       type: "supaglue";
@@ -1213,7 +1213,7 @@ export interface components {
       /** @example My BigQuery Destination */
       name: string;
       /**
-       * @example bigquery
+       * @example bigquery 
        * @enum {string}
        */
       type: "bigquery";
@@ -1237,7 +1237,7 @@ export interface components {
       /** @example My Postgres Destination */
       name: string;
       /**
-       * @example postgres
+       * @example postgres 
        * @enum {string}
        */
       type: "postgres";
@@ -1248,7 +1248,7 @@ export interface components {
       /** @example My BigQuery Destination */
       name: string;
       /**
-       * @example bigquery
+       * @example bigquery 
        * @enum {string}
        */
       type: "bigquery";
@@ -1272,7 +1272,7 @@ export interface components {
         /** @example 7bfcc74d-c98b-49de-8e8f-3dc7a17273f6 */
         customer_id: string;
         /**
-         * @example hubspot
+         * @example hubspot 
          * @enum {string}
          */
         provider_name?: "hubspot" | "salesforce";
@@ -1304,7 +1304,7 @@ export interface components {
         /** @enum {string} */
         type: "postgres";
         /**
-         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the Postgres Destination will be used.
+         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the Postgres Destination will be used. 
          * @example customer_1_schema
          */
         schema: string;
@@ -1312,53 +1312,53 @@ export interface components {
         /** @enum {string} */
         type: "bigquery";
         /**
-         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.
+         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used. 
          * @example customer_1_dataset
          */
         dataset: string;
       }]>;
       /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
-      standard_objects?: OneOf<[{
+      standard_objects?: (OneOf<[{
           /**
-           * @description The Provider object name (case sensitive)
+           * @description The Provider object name (case sensitive) 
            * @example Contact
            */
           object: string;
         }, {
           /**
-           * @description The Provider object name (case sensitive)
+           * @description The Provider object name (case sensitive) 
            * @example Contact
            */
           object: string;
           /**
-           * @description The table to write the object to. If specified, this will override the default table used by Supaglue.
+           * @description The table to write the object to. If specified, this will override the default table used by Supaglue. 
            * @example my_contacts
            */
           table: string;
-        }]>[];
+        }]>)[];
       /** @description (Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig. */
-      custom_objects?: OneOf<[{
+      custom_objects?: (OneOf<[{
           /**
-           * @description The Provider object name (case sensitive)
+           * @description The Provider object name (case sensitive) 
            * @example Contact__c
            */
           object: string;
         }, {
           /**
-           * @description The Provider object name (case sensitive)
+           * @description The Provider object name (case sensitive) 
            * @example Contact__c
            */
           object: string;
           /**
-           * @description The table to write the object to. If specified, this will override the default table used by Supaglue.
+           * @description The table to write the object to. If specified, this will override the default table used by Supaglue. 
            * @example my_contacts
            */
           table: string;
-        }]>[];
+        }]>)[];
     };
     standard_object: {
       /**
-       * @example standard
+       * @example standard 
        * @enum {string}
        */
       type: "standard";
@@ -1375,13 +1375,13 @@ export interface components {
       /** @example apolla_contact */
       entity_id: string;
       object?: components["schemas"]["standard_object"];
-      field_mappings?: components["schemas"]["entity_field_mapping"][];
+      field_mappings?: (components["schemas"]["entity_field_mapping"])[];
     };
     /** @deprecated */
     connection_entity_mapping: {
       entity_id: string;
       object?: components["schemas"]["standard_or_custom_object"];
-      field_mappings?: components["schemas"]["entity_field_mapping"][];
+      field_mappings?: (components["schemas"]["entity_field_mapping"])[];
     };
     merged_entity_mapping: {
       entity_id: string;
@@ -1402,12 +1402,12 @@ export interface components {
     /** @deprecated */
     entity_field_mapping: {
       /**
-       * @description The name of the field in your application.
+       * @description The name of the field in your application. 
        * @example apolla_first_name
        */
       entity_field: string;
       /**
-       * @description The name of the field in your customer's third-party Provider tool (e.g. Salesforce).
+       * @description The name of the field in your customer's third-party Provider tool (e.g. Salesforce). 
        * @example FirstName
        */
       mapped_field: string;
@@ -1418,7 +1418,7 @@ export interface components {
         /** @enum {string} */
         type: "postgres";
         /**
-         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the Postgres Destination will be used.
+         * @description The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the Postgres Destination will be used. 
          * @example customer_1_schema
          */
         schema: string;
@@ -1426,80 +1426,80 @@ export interface components {
         /** @enum {string} */
         type: "bigquery";
         /**
-         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.
+         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used. 
          * @example customer_1_dataset
          */
         dataset: string;
       }]>;
       /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
-      standard_objects?: OneOf<[{
+      standard_objects?: (OneOf<[{
           /**
-           * @description The Provider object name (case sensitive)
+           * @description The Provider object name (case sensitive) 
            * @example Contact
            */
           object: string;
         }, {
           /**
-           * @description The Provider object name (case sensitive)
+           * @description The Provider object name (case sensitive) 
            * @example Contact
            */
           object: string;
           /**
-           * @description The table to write the object to. If specified, this will override the default table used by Supaglue.
+           * @description The table to write the object to. If specified, this will override the default table used by Supaglue. 
            * @example my_contacts
            */
           table: string;
-        }]>[];
+        }]>)[];
       /** @description (Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig. */
-      custom_objects?: OneOf<[{
+      custom_objects?: (OneOf<[{
           /**
-           * @description The Provider object name (case sensitive)
+           * @description The Provider object name (case sensitive) 
            * @example Contact__c
            */
           object: string;
         }, {
           /**
-           * @description The Provider object name (case sensitive)
+           * @description The Provider object name (case sensitive) 
            * @example Contact__c
            */
           object: string;
           /**
-           * @description The table to write the object to. If specified, this will override the default table used by Supaglue.
+           * @description The table to write the object to. If specified, this will override the default table used by Supaglue. 
            * @example my_contacts
            */
           table: string;
-        }]>[];
+        }]>)[];
     };
   };
   responses: never;
   parameters: {
     /**
-     * @description The pagination cursor value
+     * @description The pagination cursor value 
      * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
      */
     cursor?: string;
     /**
-     * @description Number of results to return per page. (Max: 1000)
+     * @description Number of results to return per page. (Max: 1000) 
      * @example 123
      */
     page_size?: string;
     /**
-     * @description The customer ID that uniquely identifies the customer in your application
+     * @description The customer ID that uniquely identifies the customer in your application 
      * @example 1bae5050-b8ff-472e-8b9f-01f29a81d1ee
      */
     customer_id?: string;
     /**
-     * @description The provider name
+     * @description The provider name 
      * @example salesforce
      */
     provider_name?: string;
     /**
-     * @description The provider name
+     * @description The provider name 
      * @example salesforce
      */
     "x-provider-name": string;
     /**
-     * @description The customer ID that uniquely identifies the customer in your application
+     * @description The customer ID that uniquely identifies the customer in your application 
      * @example my-customer-1
      */
     "x-customer-id": string;
@@ -1509,14 +1509,12 @@ export interface components {
   pathItems: never;
 }
 
-export type $defs = Record<string, never>;
-
 export type external = Record<string, never>;
 
 export interface operations {
 
   /**
-   * List customers
+   * List customers 
    * @description Get a list of customers
    */
   getCustomers: {
@@ -1524,7 +1522,7 @@ export interface operations {
       /** @description Customers */
       200: {
         content: {
-          "application/json": components["schemas"]["simple_customer"][];
+          "application/json": (components["schemas"]["simple_customer"])[];
         };
       };
     };
@@ -1580,7 +1578,7 @@ export interface operations {
     };
   };
   /**
-   * List destinations
+   * List destinations 
    * @description Get a list of destinations
    */
   getDestinations: {
@@ -1588,7 +1586,7 @@ export interface operations {
       /** @description Destinations */
       200: {
         content: {
-          "application/json": components["schemas"]["destination"][];
+          "application/json": (components["schemas"]["destination"])[];
         };
       };
     };
@@ -1647,7 +1645,7 @@ export interface operations {
     };
   };
   /**
-   * List magic links
+   * List magic links 
    * @description Get a list of magic links
    */
   getMagicLinks: {
@@ -1655,7 +1653,7 @@ export interface operations {
       /** @description Magic Links */
       200: {
         content: {
-          "application/json": components["schemas"]["magic_link"][];
+          "application/json": (components["schemas"]["magic_link"])[];
         };
       };
     };
@@ -1686,13 +1684,11 @@ export interface operations {
     };
     responses: {
       /** @description Magic Link deleted */
-      204: {
-        content: never;
-      };
+      204: never;
     };
   };
   /**
-   * List schema mappings
+   * List schema mappings 
    * @deprecated
    */
   listFieldMappings: {
@@ -1706,13 +1702,13 @@ export interface operations {
       /** @description List of objects and their field mappings (if set) */
       200: {
         content: {
-          "application/json": components["schemas"]["object_field_mappings"][];
+          "application/json": (components["schemas"]["object_field_mappings"])[];
         };
       };
     };
   };
   /**
-   * Update schema mappings
+   * Update schema mappings 
    * @deprecated
    */
   updateObjectFieldMappings: {
@@ -1737,7 +1733,7 @@ export interface operations {
     };
   };
   /**
-   * List entity mappings.
+   * List entity mappings. 
    * @deprecated
    */
   listEntityMappings: {
@@ -1751,13 +1747,13 @@ export interface operations {
       /** @description List of entity mappings */
       200: {
         content: {
-          "application/json": components["schemas"]["merged_entity_mapping"][];
+          "application/json": (components["schemas"]["merged_entity_mapping"])[];
         };
       };
     };
   };
   /**
-   * Upsert entity mapping
+   * Upsert entity mapping 
    * @deprecated
    */
   upsertEntityMapping: {
@@ -1778,13 +1774,11 @@ export interface operations {
     };
     responses: {
       /** @description Entity Mapping */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
   /**
-   * Delete entity mapping
+   * Delete entity mapping 
    * @deprecated
    */
   deleteEntityMapping: {
@@ -1800,14 +1794,12 @@ export interface operations {
     };
     responses: {
       /** @description Entity Mapping */
-      204: {
-        content: never;
-      };
+      204: never;
     };
   };
   /**
-   * List schemas
-   * @deprecated
+   * List schemas 
+   * @deprecated 
    * @description Get a list of schemas
    */
   getSchemas: {
@@ -1815,13 +1807,13 @@ export interface operations {
       /** @description Schemas */
       200: {
         content: {
-          "application/json": components["schemas"]["schema"][];
+          "application/json": (components["schemas"]["schema"])[];
         };
       };
     };
   };
   /**
-   * Create schema
+   * Create schema 
    * @deprecated
    */
   createSchema: {
@@ -1840,7 +1832,7 @@ export interface operations {
     };
   };
   /**
-   * Get schema
+   * Get schema 
    * @deprecated
    */
   getSchema: {
@@ -1860,7 +1852,7 @@ export interface operations {
     };
   };
   /**
-   * Update schema
+   * Update schema 
    * @deprecated
    */
   updateSchema: {
@@ -1885,7 +1877,7 @@ export interface operations {
     };
   };
   /**
-   * Delete schema
+   * Delete schema 
    * @deprecated
    */
   deleteSchema: {
@@ -1905,8 +1897,8 @@ export interface operations {
     };
   };
   /**
-   * List entities
-   * @deprecated
+   * List entities 
+   * @deprecated 
    * @description Get a list of entities
    */
   getEntities: {
@@ -1914,13 +1906,13 @@ export interface operations {
       /** @description Entities */
       200: {
         content: {
-          "application/json": components["schemas"]["entity"][];
+          "application/json": (components["schemas"]["entity"])[];
         };
       };
     };
   };
   /**
-   * Create entity
+   * Create entity 
    * @deprecated
    */
   createEntity: {
@@ -1939,7 +1931,7 @@ export interface operations {
     };
   };
   /**
-   * Get entity
+   * Get entity 
    * @deprecated
    */
   getEntity: {
@@ -1958,7 +1950,7 @@ export interface operations {
     };
   };
   /**
-   * Update entity
+   * Update entity 
    * @deprecated
    */
   updateEntity: {
@@ -1982,7 +1974,7 @@ export interface operations {
     };
   };
   /**
-   * Delete entity
+   * Delete entity 
    * @deprecated
    */
   deleteEntity: {
@@ -2001,7 +1993,7 @@ export interface operations {
     };
   };
   /**
-   * List providers
+   * List providers 
    * @description Get a list of providers
    */
   getProviders: {
@@ -2009,7 +2001,7 @@ export interface operations {
       /** @description Providers */
       200: {
         content: {
-          "application/json": components["schemas"]["provider"][];
+          "application/json": (components["schemas"]["provider"])[];
         };
       };
     };
@@ -2084,7 +2076,7 @@ export interface operations {
     };
   };
   /**
-   * List Sync Configs
+   * List Sync Configs 
    * @description Get a list of Sync Configs
    */
   getSyncConfigs: {
@@ -2092,7 +2084,7 @@ export interface operations {
       /** @description SyncConfigs */
       200: {
         content: {
-          "application/json": components["schemas"]["sync_config"][];
+          "application/json": (components["schemas"]["sync_config"])[];
         };
       };
     };
@@ -2187,7 +2179,7 @@ export interface operations {
     };
   };
   /**
-   * Upsert connection sync config
+   * Upsert connection sync config 
    * @description Use this to override SyncConfig and Destination configurations on a per customer-connection basis. E.g. you can override the objects that are synced per customer-connection as well as override the table/collection that these objects are written into.
    */
   upsertConnectionSyncConfig: {
@@ -2221,13 +2213,11 @@ export interface operations {
     };
     responses: {
       /** @description Connection Sync Config */
-      204: {
-        content: never;
-      };
+      204: never;
     };
   };
   /**
-   * List connections
+   * List connections 
    * @description Get a list of connections
    */
   getConnections: {
@@ -2240,13 +2230,13 @@ export interface operations {
       /** @description Connections */
       200: {
         content: {
-          "application/json": components["schemas"]["connection"][];
+          "application/json": (components["schemas"]["connection"])[];
         };
       };
     };
   };
   /**
-   * Create a connection
+   * Create a connection 
    * @description This endpoint is for providers that use API key or access key for authentication. Please use [Embedded Links](https://docs.supaglue.com/platform/managed-auth#oauth-20) for providers that support Oauth2 for authentication.
    */
   createConnection: {
@@ -2259,49 +2249,49 @@ export interface operations {
       content: {
         "application/json": OneOf<[{
           /**
-           * @example apollo
+           * @example apollo 
            * @enum {string}
            */
           provider_name: "apollo";
           /**
-           * @example api_key
+           * @example api_key 
            * @enum {string}
            */
           type: "api_key";
           /**
-           * @description API key for the connected customer.
+           * @description API key for the connected customer. 
            * @example e0c5545d-77b8-458d-b4bf-fc701a9cecac
            */
           api_key: string;
         }, {
           /**
-           * @example gong
+           * @example gong 
            * @enum {string}
            */
           provider_name: "gong";
           /**
-           * @example access_key_secret
+           * @example access_key_secret 
            * @enum {string}
            */
           type: "access_key_secret";
           /**
-           * @description Access key for the connected customer.
+           * @description Access key for the connected customer. 
            * @example e0c5545d-77b8-458d-b4bf-fc701a9cecac
            */
           access_key: string;
           /**
-           * @description Access key secret for the connected customer.
+           * @description Access key secret for the connected customer. 
            * @example 258a80aa-2e9b-40b0-8d7a-28f858a856f3
            */
           access_key_secret: string;
         }, {
           /**
-           * @example salesforce
+           * @example salesforce 
            * @enum {string}
            */
           provider_name: "salesforce";
           /**
-           * @example oauth2
+           * @example oauth2 
            * @enum {string}
            */
           type: "oauth2";
@@ -2310,12 +2300,12 @@ export interface operations {
           login_url?: string;
         }, {
           /**
-           * @example hubspot
+           * @example hubspot 
            * @enum {string}
            */
           provider_name: "hubspot";
           /**
-           * @example oauth2
+           * @example oauth2 
            * @enum {string}
            */
           type: "oauth2";
@@ -2333,15 +2323,15 @@ export interface operations {
     };
   };
   /**
-   * Get logged in User ID and details
+   * Get logged in User ID and details 
    * @description This endpoint returns the ID of the logged in (common schema) User and details.
-   *
+   * 
    * The common schema User ID maps to the following 3rd-party provider object IDs:
-   *
-   * | Provider  | Remote object ID  |
-   * | --------- | ----------------- |
-   * | Hubspot   | V3 Owner          |
-   * | Dynamics  | Azure System User |
+   * 
+   * | Provider  | Remote object ID  | 
+   * | --------- | ----------------- | 
+   * | Hubspot   | V3 Owner          | 
+   * | Dynamics  | Azure System User | 
    * | Intercom  | Admin             |
    */
   getProviderUserId: {
@@ -2403,51 +2393,49 @@ export interface operations {
     };
     responses: {
       /** @description An empty body is returned on successful deletion. */
-      204: {
-        content: never;
-      };
+      204: never;
     };
   };
   /**
-   * Get Syncs
+   * Get Syncs 
    * @description Get a list of Syncs.
    */
   getSyncs: {
     parameters: {
       query?: {
         /**
-         * @description The pagination cursor value
+         * @description The pagination cursor value 
          * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
          */
         cursor?: string;
         /**
-         * @description Number of results to return per page
+         * @description Number of results to return per page 
          * @example 100
          */
         page_size?: string;
         /**
-         * @description The customer ID that uniquely identifies the customer in your application
+         * @description The customer ID that uniquely identifies the customer in your application 
          * @example my-customer-1
          */
         customer_id?: string;
         /**
-         * @description The provider name
+         * @description The provider name 
          * @example salesforce
          */
         provider_name?: string;
         /**
-         * @description The object type to filter by
+         * @description The object type to filter by 
          * @example standard
          */
         object_type?: "common" | "standard" | "custom";
         /**
-         * @description The object to filter by
+         * @description The object to filter by 
          * @example contact
          */
         object?: string;
         /**
-         * @deprecated
-         * @description The entity id to filter by
+         * @deprecated 
+         * @description The entity id to filter by 
          * @example e74b5a4f-f252-4a6c-940c-f35873498543
          */
         entity_id?: string;
@@ -2458,7 +2446,7 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["pagination"] & {
-            results?: components["schemas"]["sync_with_provider_and_customer"][];
+            results?: (components["schemas"]["sync_with_provider_and_customer"])[];
           };
         };
       };
@@ -2476,25 +2464,25 @@ export interface operations {
       content: {
         "application/json": OneOf<[{
           /**
-           * @description The object type to filter by
-           * @example standard
+           * @description The object type to filter by 
+           * @example standard 
            * @enum {string}
            */
           object_type: "common" | "standard" | "custom";
           /**
-           * @description The Provider object to filter by (case sensitive)
+           * @description The Provider object to filter by (case sensitive) 
            * @example Contact
            */
           object: string;
         }, {
           /**
-           * @description The object type to filter by
-           * @example common
+           * @description The object type to filter by 
+           * @example common 
            * @enum {string}
            */
           object_type: "common";
           /**
-           * @description The Supaglue object to filter by
+           * @description The Supaglue object to filter by 
            * @example contact
            */
           object: string;
@@ -2525,19 +2513,19 @@ export interface operations {
       content: {
         "application/json": OneOf<[{
           /**
-           * @description The object type to filter by
-           * @example standard
+           * @description The object type to filter by 
+           * @example standard 
            * @enum {string}
            */
           object_type: "common" | "standard" | "custom";
           /**
-           * @description The object to filter by
+           * @description The object to filter by 
            * @example contact
            */
           object: string;
         }, {
           /**
-           * @description The entity id to filter by
+           * @description The entity id to filter by 
            * @example cfba6060-c43a-4a63-8a8c-501c6099f8b0
            */
           entity_id: string;
@@ -2565,13 +2553,13 @@ export interface operations {
       content: {
         "application/json": OneOf<[{
           /**
-           * @description The object type to filter by
-           * @example standard
+           * @description The object type to filter by 
+           * @example standard 
            * @enum {string}
            */
           object_type: "standard" | "custom";
           /**
-           * @description The Provider object to filter by (case sensitive)
+           * @description The Provider object to filter by (case sensitive) 
            * @example contact
            */
           object: string;
@@ -2579,13 +2567,13 @@ export interface operations {
           perform_full_refresh?: boolean;
         }, {
           /**
-           * @description The object type to filter by
-           * @example common
+           * @description The object type to filter by 
+           * @example common 
            * @enum {string}
            */
           object_type: "common";
           /**
-           * @description The Supaglue object to filter by
+           * @description The Supaglue object to filter by 
            * @example contact
            */
           object: string;
@@ -2609,57 +2597,57 @@ export interface operations {
     };
   };
   /**
-   * Get SyncRuns
+   * Get SyncRuns 
    * @description Get a list of SyncRuns.
    */
   getSyncRuns: {
     parameters: {
       query?: {
         /**
-         * @description The pagination cursor value
+         * @description The pagination cursor value 
          * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
          */
         cursor?: string;
         /**
-         * @description Number of results to return per page
+         * @description Number of results to return per page 
          * @example 100
          */
         page_size?: string;
         /**
-         * @description The customer ID that uniquely identifies the customer in your application
+         * @description The customer ID that uniquely identifies the customer in your application 
          * @example my-customer-1
          */
         customer_id?: string;
         /**
-         * @description The provider name
+         * @description The provider name 
          * @example salesforce
          */
         provider_name?: string;
         /** @example standard */
         object_type?: "common" | "standard" | "custom";
         /**
-         * @description The object to filter by
+         * @description The object to filter by 
          * @example account
          */
         object?: string;
         /**
-         * @deprecated
-         * @description The entity id to filter by
+         * @deprecated 
+         * @description The entity id to filter by 
          * @example e74b5a4f-f252-4a6c-940c-f35873498543
          */
         entity_id?: string;
         /**
-         * @description The status to filter by (case-insensitive)
+         * @description The status to filter by (case-insensitive) 
          * @example SUCCESS
          */
         status?: string;
         /**
-         * @description The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp.
+         * @description The start time to filter by. Should start with one of [`>`, `<`] followed by an ISO 8601 timestamp. 
          * @example >2021-01-06T03:24:53.434326Z
          */
         start_timestamp?: string;
         /**
-         * @description The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp.
+         * @description The end time to filter by. Should start with [`>`, `<`] followed by an ISO 8601 timestamp. 
          * @example >2021-01-06T03:24:53.434326Z
          */
         end_timestamp?: string;
@@ -2670,14 +2658,14 @@ export interface operations {
       200: {
         content: {
           "application/json": components["schemas"]["pagination"] & {
-            results?: components["schemas"]["sync_run"][];
+            results?: (components["schemas"]["sync_run"])[];
           };
         };
       };
     };
   };
   /**
-   * Sync complete
+   * Sync complete 
    * @description Notification of the completion of a sync
    */
   syncComplete: {
@@ -2699,7 +2687,7 @@ export interface operations {
          */
         "application/json": OneOf<[{
           /**
-           * @example sync.complete
+           * @example sync.complete 
            * @enum {string}
            */
           webhook_event_type: "sync.complete";
@@ -2724,7 +2712,7 @@ export interface operations {
           object: string;
         }, {
           /**
-           * @example sync.complete
+           * @example sync.complete 
            * @enum {string}
            */
           webhook_event_type: "sync.complete";
@@ -2750,13 +2738,11 @@ export interface operations {
     };
     responses: {
       /** @description Return a 200 status to indicate that the data was received successfully */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
   /**
-   * Sync paused
+   * Sync paused 
    * @description Notification after a sync is paused
    */
   syncPaused: {
@@ -2775,7 +2761,7 @@ export interface operations {
          */
         "application/json": {
           /**
-           * @example sync.paused
+           * @example sync.paused 
            * @enum {string}
            */
           webhook_event_type: "sync.paused";
@@ -2798,13 +2784,11 @@ export interface operations {
     };
     responses: {
       /** @description Return a 200 status to indicate that the data was received successfully */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
   /**
-   * Customer connection created
+   * Customer connection created 
    * @description Notification of the creation of a connection for a customer
    */
   connectionCreated: {
@@ -2822,7 +2806,7 @@ export interface operations {
          */
         "application/json": {
           /**
-           * @example connection.created
+           * @example connection.created 
            * @enum {string}
            */
           webhook_event_type: "connection.created";
@@ -2839,13 +2823,11 @@ export interface operations {
     };
     responses: {
       /** @description Return a 200 status to indicate that the data was received successfully */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
   /**
-   * Customer connection deleted
+   * Customer connection deleted 
    * @description Notification of the deletion of a connection for a customer
    */
   connectionDeleted: {
@@ -2864,7 +2846,7 @@ export interface operations {
          */
         "application/json": {
           /**
-           * @example connection.deleted
+           * @example connection.deleted 
            * @enum {string}
            */
           webhook_event_type: "connection.deleted";
@@ -2883,14 +2865,12 @@ export interface operations {
     };
     responses: {
       /** @description Return a 200 status to indicate that the data was received successfully */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
   /**
-   * Entity mapping created
-   * @deprecated
+   * Entity mapping created 
+   * @deprecated 
    * @description Notification of the creation of an entity mapping
    */
   entityEntityMappingCreated: {
@@ -2911,7 +2891,7 @@ export interface operations {
          */
         "application/json": {
           /**
-           * @example entity.entity_mapping.created
+           * @example entity.entity_mapping.created 
            * @enum {string}
            */
           webhook_event_type: "entity.entity_mapping.created";
@@ -2928,7 +2908,7 @@ export interface operations {
           /** @example opportunity */
           object_name?: string;
           /**
-           * @example standard
+           * @example standard 
            * @enum {string}
            */
           object_type?: "standard" | "custom";
@@ -2941,14 +2921,12 @@ export interface operations {
     };
     responses: {
       /** @description Return a 200 status to indicate that the data was received successfully */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
   /**
-   * Entity mapping updated
-   * @deprecated
+   * Entity mapping updated 
+   * @deprecated 
    * @description Notification of an update to an entity mapping
    */
   entityEntityMappingUpdated: {
@@ -2969,7 +2947,7 @@ export interface operations {
          */
         "application/json": {
           /**
-           * @example entity.entity_mapping.updated
+           * @example entity.entity_mapping.updated 
            * @enum {string}
            */
           webhook_event_type: "entity.entity_mapping.updated";
@@ -2986,7 +2964,7 @@ export interface operations {
           /** @example opportunity */
           object_name?: string;
           /**
-           * @example standard
+           * @example standard 
            * @enum {string}
            */
           object_type?: "standard" | "custom";
@@ -2999,14 +2977,12 @@ export interface operations {
     };
     responses: {
       /** @description Return a 200 status to indicate that the data was received successfully */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
   /**
-   * Entity mapping deleted
-   * @deprecated
+   * Entity mapping deleted 
+   * @deprecated 
    * @description Notification of the deletion of an entity mapping
    */
   entityEntityMappingDeleted: {
@@ -3027,7 +3003,7 @@ export interface operations {
          */
         "application/json": {
           /**
-           * @example entity.entity_mapping.deleted
+           * @example entity.entity_mapping.deleted 
            * @enum {string}
            */
           webhook_event_type: "entity.entity_mapping.deleted";
@@ -3044,7 +3020,7 @@ export interface operations {
           /** @example opportunity */
           object_name?: string;
           /**
-           * @example standard
+           * @example standard 
            * @enum {string}
            */
           object_type?: "standard" | "custom";
@@ -3057,14 +3033,12 @@ export interface operations {
     };
     responses: {
       /** @description Return a 200 status to indicate that the data was received successfully */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
   /**
-   * Object field mapping created
-   * @deprecated
+   * Object field mapping created 
+   * @deprecated 
    * @description Notification of the creation of am object field mapping
    */
   objectFieldMappingCreated: {
@@ -3086,7 +3060,7 @@ export interface operations {
          */
         "application/json": {
           /**
-           * @example object.field_mapping.created
+           * @example object.field_mapping.created 
            * @enum {string}
            */
           webhook_event_type: "object.field_mapping.created";
@@ -3112,14 +3086,12 @@ export interface operations {
     };
     responses: {
       /** @description Return a 200 status to indicate that the data was received successfully */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
   /**
-   * Object field mapping updated
-   * @deprecated
+   * Object field mapping updated 
+   * @deprecated 
    * @description Notification of an update to an object field mapping
    */
   objectFieldMappingUpdated: {
@@ -3141,7 +3113,7 @@ export interface operations {
          */
         "application/json": {
           /**
-           * @example object.field_mapping.updated
+           * @example object.field_mapping.updated 
            * @enum {string}
            */
           webhook_event_type: "object.field_mapping.updated";
@@ -3167,9 +3139,7 @@ export interface operations {
     };
     responses: {
       /** @description Return a 200 status to indicate that the data was received successfully */
-      200: {
-        content: never;
-      };
+      200: never;
     };
   };
 }

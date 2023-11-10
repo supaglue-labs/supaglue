@@ -53,7 +53,7 @@ export interface CrmRemoteClient extends RemoteClient {
     listId: string,
     paginationParams: PaginationParams,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }>;
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>>>;
 }
 
 export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient implements CrmRemoteClient {
@@ -115,7 +115,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     listId: string,
     paginationParams: PaginationParams,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>>> {
     throw new NotImplementedError();
   }
 }

@@ -57,7 +57,7 @@ export interface components {
   schemas: {
     submit_form_response: {
       /**
-       * @description The id of the lead that was created/updated as a result of submitting the form
+       * @description The id of the lead that was created/updated as a result of submitting the form 
        * @example 12345
        */
       id?: string;
@@ -68,12 +68,12 @@ export interface components {
       id: string;
       name: string;
       /**
-       * Format: date-time
+       * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date;
       /**
-       * Format: date-time
+       * Format: date-time 
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date;
@@ -88,7 +88,7 @@ export interface components {
       form_id: string;
       data_format: string;
       /** @description Selectable options for this field. Only applicable if the data_format is `select`. Only supported for Hubspot and Marketo. */
-      data_options?: components["schemas"]["form_data_option"][];
+      data_options?: (components["schemas"]["form_data_option"])[];
       validation_message?: string | null;
       raw_data?: {
         [key: string]: unknown;
@@ -104,17 +104,17 @@ export interface components {
   responses: never;
   parameters: {
     /**
-     * @description The customer ID that uniquely identifies the customer in your application
+     * @description The customer ID that uniquely identifies the customer in your application 
      * @example my-customer-1
      */
     "x-customer-id": string;
     /**
-     * @description The provider name
+     * @description The provider name 
      * @example salesforce
      */
     "x-provider-name": string;
     /**
-     * @description Whether to include raw data fetched from the 3rd party provider.
+     * @description Whether to include raw data fetched from the 3rd party provider. 
      * @example true
      */
     include_raw_data?: boolean;
@@ -123,8 +123,6 @@ export interface components {
   headers: never;
   pathItems: never;
 }
-
-export type $defs = Record<string, never>;
 
 export type external = Record<string, never>;
 
@@ -146,7 +144,7 @@ export interface operations {
       content: {
         "application/json": {
           /**
-           * @description a mapping of field name to value for each field in the form
+           * @description a mapping of field name to value for each field in the form 
            * @example {
            *   "email": "me@supaglue.com",
            *   "firstName": "George",
@@ -155,7 +153,7 @@ export interface operations {
            */
           formFields: {
             /**
-             * @description the email address of the lead
+             * @description the email address of the lead 
              * @example me@supaglue.com
              */
             email: string;
@@ -189,7 +187,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            forms: components["schemas"]["form_metadata"][];
+            forms: (components["schemas"]["form_metadata"])[];
           };
         };
       };
@@ -215,7 +213,7 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            fields: components["schemas"]["form_field"][];
+            fields: (components["schemas"]["form_field"])[];
           };
         };
       };

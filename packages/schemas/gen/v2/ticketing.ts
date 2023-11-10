@@ -7,11 +7,11 @@
 export interface paths {
   "/accounts": {
     /**
-     * List accounts
+     * List accounts 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of Account objects.
      */
     get: operations["listAccounts"];
@@ -24,11 +24,11 @@ export interface paths {
   };
   "/accounts/{account_id}": {
     /**
-     * Get account
+     * Get account 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns an Account object with the given id.
      */
     get: operations["getAccount"];
@@ -45,11 +45,11 @@ export interface paths {
   };
   "/collections": {
     /**
-     * List collections
+     * List collections 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of Collection objects.
      */
     get: operations["listCollections"];
@@ -62,11 +62,11 @@ export interface paths {
   };
   "/collections/{collection_id}": {
     /**
-     * Get collection
+     * Get collection 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a Collection object with the given id.
      */
     get: operations["getCollection"];
@@ -83,11 +83,11 @@ export interface paths {
   };
   "/collections/{parent_id}/users": {
     /**
-     * List collection users
+     * List collection users 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of User objects.
      */
     get: operations["listCollectionUsers"];
@@ -104,11 +104,11 @@ export interface paths {
   };
   "/users": {
     /**
-     * List users
+     * List users 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of User objects.
      */
     get: operations["listUsers"];
@@ -121,11 +121,11 @@ export interface paths {
   };
   "/users/{user_id}": {
     /**
-     * Get user
+     * Get user 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a User object with the given id.
      */
     get: operations["getUser"];
@@ -142,11 +142,11 @@ export interface paths {
   };
   "/contacts": {
     /**
-     * List contacts
+     * List contacts 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of Contact objects.
      */
     get: operations["listContacts"];
@@ -159,11 +159,11 @@ export interface paths {
   };
   "/contacts/{contact_id}": {
     /**
-     * Get contact
+     * Get contact 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a Contact object with the given id.
      */
     get: operations["getContact"];
@@ -180,11 +180,11 @@ export interface paths {
   };
   "/teams": {
     /**
-     * List teams
+     * List teams 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of Team objects.
      */
     get: operations["listTeams"];
@@ -197,11 +197,11 @@ export interface paths {
   };
   "/teams/{team_id}": {
     /**
-     * Get team
+     * Get team 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns an Team object with the given id.
      */
     get: operations["getTeam"];
@@ -218,16 +218,16 @@ export interface paths {
   };
   "/tickets": {
     /**
-     * List tickets
+     * List tickets 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of Ticket objects.
      */
     get: operations["listTickets"];
     /**
-     * Create ticket
+     * Create ticket 
      * @description Creates a Ticket object with the given values.
      */
     post: operations["createTicket"];
@@ -240,16 +240,16 @@ export interface paths {
   };
   "/tickets/{ticket_id}": {
     /**
-     * Get ticket
+     * Get ticket 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns an Ticket object with the given id.
      */
     get: operations["getTicket"];
     /**
-     * Update ticket
+     * Update ticket 
      * @description Updates a Ticket object with the given values.
      */
     patch: operations["updateTicket"];
@@ -266,16 +266,16 @@ export interface paths {
   };
   "/comments": {
     /**
-     * List comments
+     * List comments 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of Comment objects.
      */
     get: operations["listComments"];
     /**
-     * Create comment
+     * Create comment 
      * @description Creates a Comment object with the given values.
      */
     post: operations["createComment"];
@@ -288,11 +288,11 @@ export interface paths {
   };
   "/comments/{comment_id}": {
     /**
-     * Get comment
+     * Get comment 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a Comment object with the given id.
      */
     get: operations["getComment"];
@@ -309,11 +309,11 @@ export interface paths {
   };
   "/tags": {
     /**
-     * List tags
+     * List tags 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of Tag objects.
      */
     get: operations["listTags"];
@@ -326,11 +326,11 @@ export interface paths {
   };
   "/tags/{tag_id}": {
     /**
-     * Get tag
+     * Get tag 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a Tag object with the given id.
      */
     get: operations["getTag"];
@@ -347,16 +347,16 @@ export interface paths {
   };
   "/attachments": {
     /**
-     * List attachments
+     * List attachments 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns a list of Attachment objects.
      */
     get: operations["listAttachments"];
     /**
-     * Create attachment
+     * Create attachment 
      * @description Creates a Attachment object with the given values.
      */
     post: operations["createAttachment"];
@@ -369,11 +369,11 @@ export interface paths {
   };
   "/attachments/{attachment_id}": {
     /**
-     * Get attachment
+     * Get attachment 
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
-     *
+     * 
      * Returns an Attachment object with the given id.
      */
     get: operations["getAttachment"];
@@ -402,35 +402,35 @@ export interface components {
       /** @example 100 */
       total_count?: number;
     };
-    errors: {
+    errors: ({
         /**
-         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider.
+         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
          * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
          */
         detail?: string;
         /**
-         * @description The Supaglue error code associated with the error.
+         * @description The Supaglue error code associated with the error. 
          * @example MISSING_REQUIRED_FIELD
          */
         problem_type?: string;
         /**
-         * @description A brief description of the error. The schema and type of message will vary by Provider.
+         * @description A brief description of the error. The schema and type of message will vary by Provider. 
          * @example Property values were not valid
          */
         title?: string;
-      }[];
-    warnings: {
+      })[];
+    warnings: ({
         detail?: string;
         problem_type?: string;
         title?: string;
-      }[];
+      })[];
     created_record: {
       id: string;
     };
     account: {
       /** @example Waystar Royco */
       name: string | null;
-      domains: string[];
+      domains: (string)[];
     };
     contact: {
       /** @example Cousin Greg */
@@ -459,7 +459,7 @@ export interface components {
     create_ticket: {
       /** @example Please add more integrations */
       name: string | null;
-      assignees?: string[];
+      assignees?: (string)[];
       /** @example 3fa85f64-5717-4562-b3fc-2c963f66afa6 */
       creator: string;
       /** @example 2022-10-11T00:00:00Z */
@@ -468,7 +468,7 @@ export interface components {
       status?: string;
       /** @example Can you please add more integrations? It'll make syncing data much easier! */
       description?: string;
-      collections?: string[];
+      collections?: (string)[];
       /** @example incident */
       ticket_type?: string;
       /** @example 0958cbc6-6040-430a-848e-aafacbadf4ae */
@@ -477,7 +477,7 @@ export interface components {
       contact?: string;
       /** @example 75b33d04-30d2-4f3e-be45-27838bc94342 */
       parent_ticket?: string;
-      tags?: string[];
+      tags?: (string)[];
       /** @example 2021-12-09T00:00:00Z */
       completed_at?: string;
       /** @example https://thirdpartysoftware.com/project/3/issue/1 */
@@ -488,7 +488,7 @@ export interface components {
     update_ticket: {
       /** @example Please add more integrations */
       name: string | null;
-      assignees?: string[];
+      assignees?: (string)[];
       /** @example 3fa85f64-5717-4562-b3fc-2c963f66afa6 */
       creator: string;
       /** @example 2022-10-11T00:00:00Z */
@@ -497,7 +497,7 @@ export interface components {
       status?: string;
       /** @example Can you please add more integrations? It'll make syncing data much easier! */
       description?: string;
-      collections?: string[];
+      collections?: (string)[];
       /** @example incident */
       ticket_type?: string;
       /** @example 0958cbc6-6040-430a-848e-aafacbadf4ae */
@@ -506,7 +506,7 @@ export interface components {
       contact?: string;
       /** @example 75b33d04-30d2-4f3e-be45-27838bc94342 */
       parent_ticket?: string;
-      tags?: string[];
+      tags?: (string)[];
       /** @example 2021-12-09T00:00:00Z */
       completed_at?: string;
       /** @example https://thirdpartysoftware.com/project/3/issue/1 */
@@ -517,7 +517,7 @@ export interface components {
     ticket: {
       /** @example Please add more integrations */
       name: string | null;
-      assignees?: string[];
+      assignees?: (string)[];
       /** @example 3fa85f64-5717-4562-b3fc-2c963f66afa6 */
       creator: string;
       /** @example 2022-10-11T00:00:00Z */
@@ -526,7 +526,7 @@ export interface components {
       status?: string;
       /** @example Can you please add more integrations? It'll make syncing data much easier! */
       description?: string;
-      collections?: string[];
+      collections?: (string)[];
       /** @example incident */
       ticket_type?: string;
       /** @example 0958cbc6-6040-430a-848e-aafacbadf4ae */
@@ -535,7 +535,7 @@ export interface components {
       contact?: string;
       /** @example 75b33d04-30d2-4f3e-be45-27838bc94342 */
       parent_ticket?: string;
-      tags?: string[];
+      tags?: (string)[];
       /** @example 2021-12-09T00:00:00Z */
       completed_at?: string;
       /** @example https://thirdpartysoftware.com/project/3/issue/1 */
@@ -550,7 +550,7 @@ export interface components {
       email_address: string;
       /** @example false */
       is_active: boolean;
-      teams?: string[];
+      teams?: (string)[];
       /** @example https://supaglue.io/user_profile_pic.png */
       avatar?: string | null;
     };
@@ -594,52 +594,52 @@ export interface components {
   responses: never;
   parameters: {
     /**
-     * @description The customer ID that uniquely identifies the customer in your application
+     * @description The customer ID that uniquely identifies the customer in your application 
      * @example my-customer-1
      */
     "x-customer-id": string;
     /**
-     * @description The provider name
+     * @description The provider name 
      * @example salesforce
      */
     "x-provider-name": string;
     /**
-     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format and URI encoded.
+     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
      * @example 2023-02-23T00:00:00Z
      */
     modified_after?: Date;
     /**
-     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format and URI encoded.
+     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
      * @example 2023-02-23T00:00:00Z
      */
     modified_before?: Date;
     /**
-     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format and URI encoded.
+     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
      * @example 2023-02-23T00:00:00Z
      */
     created_after?: Date;
     /**
-     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format and URI encoded.
+     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
      * @example 2023-02-23T00:00:00Z
      */
     created_before?: Date;
     /**
-     * @description Whether to include data that was deleted in providers.
+     * @description Whether to include data that was deleted in providers. 
      * @example true
      */
     include_deleted_data?: boolean;
     /**
-     * @description Whether to include raw data fetched from the 3rd party provider.
+     * @description Whether to include raw data fetched from the 3rd party provider. 
      * @example true
      */
     include_raw_data?: boolean;
     /**
-     * @description Number of results to return per page. (Max: 1000)
+     * @description Number of results to return per page. (Max: 1000) 
      * @example 123
      */
     page_size?: string;
     /**
-     * @description The pagination cursor value
+     * @description The pagination cursor value 
      * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
      */
     cursor?: string;
@@ -649,18 +649,16 @@ export interface components {
   pathItems: never;
 }
 
-export type $defs = Record<string, never>;
-
 export type external = Record<string, never>;
 
 export interface operations {
 
   /**
-   * List accounts
+   * List accounts 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of Account objects.
    */
   listAccounts: {
@@ -681,18 +679,18 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["account"][];
+            records: (components["schemas"]["account"])[];
           };
         };
       };
     };
   };
   /**
-   * Get account
+   * Get account 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns an Account object with the given id.
    */
   getAccount: {
@@ -719,11 +717,11 @@ export interface operations {
     };
   };
   /**
-   * List collections
+   * List collections 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of Collection objects.
    */
   listCollections: {
@@ -744,18 +742,18 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["collection"][];
+            records: (components["schemas"]["collection"])[];
           };
         };
       };
     };
   };
   /**
-   * Get collection
+   * Get collection 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a Collection object with the given id.
    */
   getCollection: {
@@ -782,11 +780,11 @@ export interface operations {
     };
   };
   /**
-   * List collection users
+   * List collection users 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of User objects.
    */
   listCollectionUsers: {
@@ -811,18 +809,18 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["user"][];
+            records: (components["schemas"]["user"])[];
           };
         };
       };
     };
   };
   /**
-   * List users
+   * List users 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of User objects.
    */
   listUsers: {
@@ -843,18 +841,18 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["user"][];
+            records: (components["schemas"]["user"])[];
           };
         };
       };
     };
   };
   /**
-   * Get user
+   * Get user 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a User object with the given id.
    */
   getUser: {
@@ -881,11 +879,11 @@ export interface operations {
     };
   };
   /**
-   * List contacts
+   * List contacts 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of Contact objects.
    */
   listContacts: {
@@ -906,18 +904,18 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["contact"][];
+            records: (components["schemas"]["contact"])[];
           };
         };
       };
     };
   };
   /**
-   * Get contact
+   * Get contact 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a Contact object with the given id.
    */
   getContact: {
@@ -944,11 +942,11 @@ export interface operations {
     };
   };
   /**
-   * List teams
+   * List teams 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of Team objects.
    */
   listTeams: {
@@ -969,18 +967,18 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["team"][];
+            records: (components["schemas"]["team"])[];
           };
         };
       };
     };
   };
   /**
-   * Get team
+   * Get team 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns an Team object with the given id.
    */
   getTeam: {
@@ -1007,11 +1005,11 @@ export interface operations {
     };
   };
   /**
-   * List tickets
+   * List tickets 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of Ticket objects.
    */
   listTickets: {
@@ -1032,14 +1030,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["ticket"][];
+            records: (components["schemas"]["ticket"])[];
           };
         };
       };
     };
   };
   /**
-   * Create ticket
+   * Create ticket 
    * @description Creates a Ticket object with the given values.
    */
   createTicket: {
@@ -1070,11 +1068,11 @@ export interface operations {
     };
   };
   /**
-   * Get ticket
+   * Get ticket 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns an Ticket object with the given id.
    */
   getTicket: {
@@ -1101,7 +1099,7 @@ export interface operations {
     };
   };
   /**
-   * Update ticket
+   * Update ticket 
    * @description Updates a Ticket object with the given values.
    */
   updateTicket: {
@@ -1135,11 +1133,11 @@ export interface operations {
     };
   };
   /**
-   * List comments
+   * List comments 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of Comment objects.
    */
   listComments: {
@@ -1160,14 +1158,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["comment"][];
+            records: (components["schemas"]["comment"])[];
           };
         };
       };
     };
   };
   /**
-   * Create comment
+   * Create comment 
    * @description Creates a Comment object with the given values.
    */
   createComment: {
@@ -1211,11 +1209,11 @@ export interface operations {
     };
   };
   /**
-   * Get comment
+   * Get comment 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a Comment object with the given id.
    */
   getComment: {
@@ -1242,11 +1240,11 @@ export interface operations {
     };
   };
   /**
-   * List tags
+   * List tags 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of Tag objects.
    */
   listTags: {
@@ -1267,18 +1265,18 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["tag"][];
+            records: (components["schemas"]["tag"])[];
           };
         };
       };
     };
   };
   /**
-   * Get tag
+   * Get tag 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a Tag object with the given id.
    */
   getTag: {
@@ -1305,11 +1303,11 @@ export interface operations {
     };
   };
   /**
-   * List attachments
+   * List attachments 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns a list of Attachment objects.
    */
   listAttachments: {
@@ -1330,14 +1328,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: components["schemas"]["attachment"][];
+            records: (components["schemas"]["attachment"])[];
           };
         };
       };
     };
   };
   /**
-   * Create attachment
+   * Create attachment 
    * @description Creates a Attachment object with the given values.
    */
   createAttachment: {
@@ -1379,11 +1377,11 @@ export interface operations {
     };
   };
   /**
-   * Get attachment
+   * Get attachment 
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
-   *
+   * 
    * Returns an Attachment object with the given id.
    */
   getAttachment: {
