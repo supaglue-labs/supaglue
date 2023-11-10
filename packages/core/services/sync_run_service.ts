@@ -69,7 +69,7 @@ export class SyncRunService {
     return fromSyncRunModelAndSync(model);
   }
 
-  public async logStart(args: { syncId: string; runId: string }): Promise<string> {
+  public async logStart(args: { syncId: string; runId: string; strategy: 'full' | 'incremental' }): Promise<string> {
     await this.#upsert({
       id: args.runId,
       syncId: args.syncId,

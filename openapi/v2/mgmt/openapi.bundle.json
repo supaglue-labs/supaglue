@@ -3304,32 +3304,7 @@
         "type": "object",
         "properties": {
           "default_config": {
-            "type": "object",
-            "description": "Configuration options for \"how\" to sync.",
-            "properties": {
-              "period_ms": {
-                "type": "integer",
-                "minimum": 60000,
-                "example": 60000,
-                "description": "The period (in milliseconds) to run the sync."
-              },
-              "strategy": {
-                "type": "string",
-                "enum": [
-                  "full then incremental",
-                  "full only"
-                ],
-                "description": "\\\"full then incremental\\\" will run a full sync on the first run, then incremental syncs. \\\"full only\\\" will run a full sync on every run."
-              },
-              "auto_start_on_connection": {
-                "type": "boolean",
-                "description": "If true, the sync will start automatically when the connection is created.\nDefault: true\n"
-              }
-            },
-            "required": [
-              "period_ms",
-              "strategy"
-            ]
+            "$ref": "#/components/schemas/sync_strategy_config"
           },
           "common_objects": {
             "description": "A list of Supaglue objects to be synced.",
@@ -3341,6 +3316,9 @@
                   "type": "string",
                   "description": "The Supaglue object name",
                   "example": "contact"
+                },
+                "sync_strategy_override": {
+                  "$ref": "#/components/schemas/sync_strategy_config"
                 }
               },
               "required": [
@@ -3358,6 +3336,9 @@
                   "type": "string",
                   "description": "The Provider object name (case sensitive)",
                   "example": "Contact"
+                },
+                "sync_strategy_override": {
+                  "$ref": "#/components/schemas/sync_strategy_config"
                 }
               },
               "required": [
@@ -3375,6 +3356,9 @@
                   "type": "string",
                   "description": "The custom object name (case sensitive). For Salesforce, this should end with `__c`.",
                   "example": "MyCustomObject__c"
+                },
+                "sync_strategy_override": {
+                  "$ref": "#/components/schemas/sync_strategy_config"
                 }
               },
               "required": [
@@ -3401,6 +3385,38 @@
         },
         "required": [
           "default_config"
+        ]
+      },
+      "sync_strategy_config": {
+        "type": "object",
+        "description": "Configuration options for \"how\" to sync.",
+        "properties": {
+          "period_ms": {
+            "type": "integer",
+            "minimum": 60000,
+            "example": 60000,
+            "description": "The period (in milliseconds) to run the sync."
+          },
+          "strategy": {
+            "type": "string",
+            "enum": [
+              "full then incremental",
+              "full only"
+            ],
+            "description": "\\\"full then incremental\\\" will run a full sync on the first run, then incremental syncs. \\\"full only\\\" will run a full sync on every run."
+          },
+          "auto_start_on_connection": {
+            "type": "boolean",
+            "description": "If true, the sync will start automatically when the connection is created.\nDefault: true\n"
+          },
+          "full_sync_every_n_incrementals": {
+            "type": "number",
+            "description": "If set, Supaglue will run a full sync after N consecutive incremental syncs."
+          }
+        },
+        "required": [
+          "period_ms",
+          "strategy"
         ]
       },
       "create_provider_config": {

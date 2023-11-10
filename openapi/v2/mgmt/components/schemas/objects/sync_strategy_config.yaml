@@ -1,0 +1,25 @@
+type: object
+description: Configuration options for "how" to sync.
+properties:
+  period_ms:
+    type: integer
+    minimum: 60000
+    example: 60000
+    description: The period (in milliseconds) to run the sync.
+  strategy:
+    type: string
+    enum:
+      - full then incremental
+      - full only
+    description: \"full then incremental\" will run a full sync on the first run, then incremental syncs. \"full only\" will run a full sync on every run.
+  auto_start_on_connection:
+    type: boolean
+    description: |
+      If true, the sync will start automatically when the connection is created.
+      Default: true
+  full_sync_every_n_incrementals:
+    type: number
+    description: If set, Supaglue will run a full sync after N consecutive incremental syncs.
+required:
+  - period_ms
+  - strategy

@@ -60,10 +60,13 @@ function getPauseReasonIfShouldPause(err: any): string | undefined {
 export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
   const { sync, runId } = await getSync({ syncId });
 
+  const strategy = getSyncStrategy(sync);
+
   // Record that sync has started
   await logSyncStart({
     syncId,
     runId,
+    strategy,
   });
 
   let numRecordsSynced: number | undefined;
@@ -196,6 +199,33 @@ async function doFullOnlySync(sync: FullOnlySync): Promise<number> {
   return numRecordsSynced;
 }
 
+function getSyncStrategy(sync: FullOnlySync | FullThenIncrementalSync): 'full' | 'incremental' {
+  if (sync.strategyType === 'full only') {
+    return 'full';
+  }
+
+  // Short-circuit normal state transitions if we're forcing a full refresh sync
+  if (sync.argsForNextRun?.performFullRefresh) {
+    return 'full';
+  }
+
+  // Sync state transitions
+  switch (sync.state.phase) {
+    case 'created':
+      return 'full';
+    case 'full':
+      switch (sync.state.status) {
+        case 'in progress':
+          return 'full';
+        case 'done':
+          return 'incremental';
+      }
+      break;
+    case 'incremental':
+      return 'incremental';
+  }
+}
+
 async function doFullThenIncrementalSync(sync: FullThenIncrementalSync): Promise<number> {
   async function doFullStage(): Promise<number> {
     await updateSyncState({
@@ -275,26 +305,10 @@ async function doFullThenIncrementalSync(sync: FullThenIncrementalSync): Promise
     return numRecordsSynced;
   }
 
-  // Short-circuit normal state transitions if we're forcing a full refresh sync
-  if (sync.argsForNextRun?.performFullRefresh) {
+  if (getSyncStrategy(sync) === 'full') {
     return await doFullStage();
   }
-
-  // Sync state transitions
-  switch (sync.state.phase) {
-    case 'created':
-      return await doFullStage();
-    case 'full':
-      switch (sync.state.status) {
-        case 'in progress':
-          return await doFullStage();
-        case 'done':
-          return await doIncrementalPhase();
-      }
-      break;
-    case 'incremental':
-      return await doIncrementalPhase();
-  }
+  return await doIncrementalPhase();
 }
 
 const getErrorMessageStack = (err: Error): { message: string; stack: string } => {

@@ -37,6 +37,7 @@ export type SyncRunUpsertParams = {
   startTimestamp: Date;
   endTimestamp: Date | null;
   numRecordsSynced: number | null;
+  strategy?: 'incremental' | 'full';
 };
 
 export type SyncRunFilter = {
