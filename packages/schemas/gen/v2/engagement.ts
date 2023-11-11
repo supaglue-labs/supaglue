@@ -995,11 +995,7 @@ export interface operations {
       content: {
         "application/json": {
           filter: {
-            /**
-             * @description The email to search on.
-             * @example hello@example.com
-             */
-            email: string;
+            emails?: string[];
           };
         };
       };

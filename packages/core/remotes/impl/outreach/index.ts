@@ -1666,7 +1666,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       const response = await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/prospects`, {
         params: {
           ...DEFAULT_LIST_PARAMS,
-          'filter[emails]': params.filter.email,
+          'filter[emails]': params.filter.emails.join(','),
         },
         headers: this.getAuthHeadersForPassthroughRequest(),
       });

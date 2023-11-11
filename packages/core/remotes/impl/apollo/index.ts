@@ -173,12 +173,18 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   }
 
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
+    if (!params.filter.emails.length) {
+      throw new BadRequestError('At least 1 email must be provided when searching contacts');
+    }
+    if (params.filter.emails.length > 1) {
+      throw new BadRequestError('Only 1 email can be provided when searching contacts in Apollo');
+    }
     return await retryWhenAxiosApolloRateLimited(async () => {
       const response = await axios.post<ApolloPaginatedContacts>(
         `${this.#baseURL}/v1/contacts/search`,
         {
           api_key: this.#apiKey,
-          q_keywords: params.filter.email,
+          q_keywords: params.filter.emails[0],
         },
         {
           headers: this.#headers,

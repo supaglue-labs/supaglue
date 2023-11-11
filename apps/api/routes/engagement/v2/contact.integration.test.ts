@@ -177,7 +177,7 @@ describe('contact', () => {
         `/engagement/v2/contacts/_search`,
         {
           filter: {
-            email: testContact.email_addresses?.[0].email_address,
+            emails: [testContact.email_addresses?.[0].email_address],
           },
         },
         {

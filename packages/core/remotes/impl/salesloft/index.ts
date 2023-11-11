@@ -411,7 +411,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/people`, {
         params: {
           ...DEFAULT_LIST_PARAMS,
-          email_addresses: [params.filter.email],
+          email_addresses: params.filter.emails,
         },
         headers: this.getAuthHeadersForPassthroughRequest(),
       });
