@@ -406,11 +406,15 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   }
 
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const page = cursor?.id as number | undefined;
     return await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/people`, {
         params: {
           ...DEFAULT_LIST_PARAMS,
+          per_page: params.pageSize,
+          page,
           email_addresses: params.filter.emails,
         },
         headers: this.getAuthHeadersForPassthroughRequest(),
@@ -420,8 +424,12 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
         records,
         pagination: {
           total_count: records.length,
-          previous: null,
-          next: null,
+          previous: response.data.metadata.paging?.prev_page
+            ? encodeCursor({ id: response.data.metadata.paging.prev_page, reverse: true })
+            : null,
+          next: response.data.metadata.paging?.next_page
+            ? encodeCursor({ id: response.data.metadata.paging.next_page, reverse: false })
+            : null,
         },
       };
     });

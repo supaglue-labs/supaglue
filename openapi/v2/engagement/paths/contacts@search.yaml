@@ -28,7 +28,7 @@ post:
                     description: The email to search on.
                     example: hello@example.com
               required:
-                - email
+                - emails
           required:
             - filter
   responses:

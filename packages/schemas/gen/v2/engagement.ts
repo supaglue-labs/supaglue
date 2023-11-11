@@ -995,7 +995,7 @@ export interface operations {
       content: {
         "application/json": {
           filter: {
-            emails?: string[];
+            emails: string[];
           };
         };
       };
