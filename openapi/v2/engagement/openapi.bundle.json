@@ -444,9 +444,9 @@
                         "type": "array",
                         "items": {
                           "type": "string",
-                          "description": "The email to search on.",
                           "example": "hello@example.com"
-                        }
+                        },
+                        "description": "The emails to search for. This will be imeplemented as an OR search."
                       }
                     },
                     "required": [
@@ -1265,6 +1265,7 @@
                 "properties": {
                   "filter": {
                     "type": "object",
+                    "description": "If both contact_id and sequence_id are provided, the search will be performed as an AND search.",
                     "properties": {
                       "contact_id": {
                         "type": "string",

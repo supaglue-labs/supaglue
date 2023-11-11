@@ -995,6 +995,7 @@ export interface operations {
       content: {
         "application/json": {
           filter: {
+            /** @description The emails to search for. This will be imeplemented as an OR search. */
             emails: string[];
           };
         };
@@ -1383,6 +1384,7 @@ export interface operations {
     requestBody: {
       content: {
         "application/json": {
+          /** @description If both contact_id and sequence_id are provided, the search will be performed as an AND search. */
           filter: {
             /** @description The ID of the contact to filter on. */
             contact_id?: string;

@@ -25,8 +25,8 @@ post:
                   type: array
                   items:
                     type: string
-                    description: The email to search on.
                     example: hello@example.com
+                  description: The emails to search for. This will be imeplemented as an OR search.
               required:
                 - emails
           required:

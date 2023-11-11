@@ -1665,6 +1665,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     const link = cursor?.id as string;
     const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
     if (params.filter.emails) {
+      // Note this is implemented as an OR, not an AND
       listParams['filter[emails]'] = params.filter.emails.join(',');
     }
     return await retryWhenAxiosRateLimited(async () => {
@@ -1693,6 +1694,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
     const link = cursor?.id as string;
     const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
+    // Note: if both are provided, it will be implemented as an AND.
     if (params.filter.contactId) {
       listParams['filter[prospect][id]'] = params.filter.contactId;
     }
