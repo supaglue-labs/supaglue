@@ -410,7 +410,7 @@
       "post": {
         "operationId": "searchContacts",
         "summary": "Search contacts",
-        "description": "Search contacts by email. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.\n",
+        "description": "Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.\n",
         "tags": [
           "Contacts"
         ],
@@ -424,7 +424,10 @@
             "$ref": "#/components/parameters/include_raw_data"
           },
           {
-            "$ref": "#/components/parameters/page_size"
+            "$ref": "#/components/parameters/read_from_cache"
+          },
+          {
+            "$ref": "#/components/parameters/remote_provider_page_size"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -1236,7 +1239,7 @@
       "post": {
         "operationId": "searchSequenceStates",
         "summary": "Search sequence states",
-        "description": "Search sequence states by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.\nSupport:\n\n| Provider  | Search By               |\n| --------- | ----------------------- |\n| Apollo    | contact_id only         |\n| Salesloft | contact_id, sequence_id |\n| Outreach  | contact_id, sequence_id |\n",
+        "description": "Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.\nSupport:\n\n| Provider  | Search By               |\n| --------- | ----------------------- |\n| Apollo    | contact_id only         |\n| Salesloft | contact_id, sequence_id |\n| Outreach  | contact_id, sequence_id |\n",
         "tags": [
           "Sequence States"
         ],
@@ -1250,7 +1253,10 @@
             "$ref": "#/components/parameters/include_raw_data"
           },
           {
-            "$ref": "#/components/parameters/page_size"
+            "$ref": "#/components/parameters/read_from_cache"
+          },
+          {
+            "$ref": "#/components/parameters/remote_provider_page_size"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -2420,6 +2426,15 @@
         },
         "example": 123,
         "description": "Number of results to return per page. (Max: 1000)"
+      },
+      "remote_provider_page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        },
+        "example": 100,
+        "description": "Number of results to return per page. (Max: 100)"
       },
       "read_from_cache": {
         "name": "read_from_cache",

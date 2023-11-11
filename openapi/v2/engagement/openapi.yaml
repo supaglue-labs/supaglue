@@ -130,6 +130,8 @@ components:
       $ref: ../../common/components/parameters/query/cursor.yaml
     page_size:
       $ref: ../../common/components/parameters/query/page_size.yaml
+    remote_provider_page_size:
+      $ref: ../../common/components/parameters/query/remote_provider_page_size.yaml
     read_from_cache:
       $ref: ../../common/components/parameters/query/read_from_cache.yaml
     x-customer-id:
