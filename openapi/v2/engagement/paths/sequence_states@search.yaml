@@ -2,7 +2,7 @@ post:
   operationId: searchSequenceStates
   summary: Search sequence states
   description: |
-    Search sequence states by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+    Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.
     Support:
 
     | Provider  | Search By               |
@@ -17,7 +17,8 @@ post:
     - x-api-key: []
   parameters:
     - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
-    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/read_from_cache.yaml
+    - $ref: ../../../common/components/parameters/query/remote_provider_page_size.yaml
     - $ref: ../../../common/components/parameters/query/cursor.yaml
   requestBody:
     required: true

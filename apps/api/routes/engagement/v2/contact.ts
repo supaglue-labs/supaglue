@@ -99,6 +99,9 @@ export default function init(app: Router): void {
       req: Request<SearchContactsPathParams, SearchContactsResponse, SearchContactsRequest, SearchContactsQueryParams>,
       res: Response<SearchContactsResponse>
     ) => {
+      if (req.query?.read_from_cache?.toString() === 'true') {
+        throw new BadRequestError('Cached search not yet implemented for engagement contacts.');
+      }
       const { pagination, records } = await engagementCommonObjectService.search('contact', req.customerConnection, {
         filter: req.body.filter,
         cursor: req.query?.cursor,

@@ -65,7 +65,7 @@ export interface paths {
   "/contacts/_search": {
     /**
      * Search contacts
-     * @description Search contacts by email. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+     * @description Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
      */
     post: operations["searchContacts"];
     parameters: {
@@ -203,7 +203,7 @@ export interface paths {
   "/sequence_states/_search": {
     /**
      * Search sequence states
-     * @description Search sequence states by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+     * @description Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.
      * Support:
      *
      * | Provider  | Search By               |
@@ -728,6 +728,11 @@ export interface components {
      */
     page_size?: string;
     /**
+     * @description Number of results to return per page. (Max: 100)
+     * @example 100
+     */
+    remote_provider_page_size?: string;
+    /**
      * @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider.
      *
      *
@@ -977,13 +982,14 @@ export interface operations {
   };
   /**
    * Search contacts
-   * @description Search contacts by email. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+   * @description Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
    */
   searchContacts: {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
-        page_size?: components["parameters"]["page_size"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        page_size?: components["parameters"]["remote_provider_page_size"];
         cursor?: components["parameters"]["cursor"];
       };
       header: {
@@ -1363,7 +1369,7 @@ export interface operations {
   };
   /**
    * Search sequence states
-   * @description Search sequence states by contact_id and/or sequence_id. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+   * @description Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.
    * Support:
    *
    * | Provider  | Search By               |
@@ -1376,7 +1382,8 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
-        page_size?: components["parameters"]["page_size"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        page_size?: components["parameters"]["remote_provider_page_size"];
         cursor?: components["parameters"]["cursor"];
       };
       header: {

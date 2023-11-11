@@ -117,6 +117,9 @@ export default function init(app: Router): void {
       >,
       res: Response<SearchSequenceStatesResponse>
     ) => {
+      if (req.query?.read_from_cache?.toString() === 'true') {
+        throw new BadRequestError('Cached search not yet implemented for engagement contacts.');
+      }
       const { pagination, records } = await engagementCommonObjectService.search(
         'sequence_state',
         req.customerConnection,
