@@ -8,5 +8,27 @@ schema:
     - opportunity
     - lead
 example: contact
-description: The Supaglue common object type to fetch a list for.
+description: |
+  The Supaglue common object type to fetch a list for.
+
+  Support:
+
+  <table>
+    <thead>
+      <tr>
+      <th>Provider</th>
+      <th>Object Type</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Salesforce</td>
+        <td>countact, account, opportunity, lead</td>
+      </tr>
+      <tr>
+        <td>Hubspot</td>
+        <td>contact, account</td>
+      </tr>
+    </tbody>
+    </table>
 required: true
