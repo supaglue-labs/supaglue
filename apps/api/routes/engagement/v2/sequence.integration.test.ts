@@ -5,7 +5,7 @@
  * @jest-environment ./integration-test-environment
  */
 
-import type {
+import {
   CreateContactRequest,
   CreateContactResponse,
   CreateSequenceRequest,
@@ -13,6 +13,8 @@ import type {
   CreateSequenceStateRequest,
   CreateSequenceStateResponse,
   GetSequenceResponse,
+  SearchSequenceStatesRequest,
+  SearchSequenceStatesResponse,
 } from '@supaglue/schemas/v2/engagement';
 
 export function getTestContact() {
@@ -211,6 +213,23 @@ describe('sequence', () => {
       // test that the db was updated
       const dbSequence = await db.query('SELECT * FROM engagement_sequences WHERE id = $1', [response.data.record?.id]);
       expect(dbSequence.rows[0].name).toEqual(testSequence.name);
+
+      // Test that you can search sequence state by contact ID
+      const searchSequenceStates = async () => {
+        return await apiClient.post<SearchSequenceStatesResponse>(
+          '/engagement/v2/sequence_states/_search',
+          {
+            filter: {
+              contact_id: contactRes.data.record!.id,
+            } satisfies SearchSequenceStatesRequest['filter'],
+          },
+          { headers: { 'x-provider-name': providerName } }
+        );
+      };
+      const searchResponse = await searchSequenceStates();
+      expect(searchResponse.status).toEqual(200);
+      expect(searchResponse.data.records.length).toEqual(1);
+      expect(searchResponse.data.records[0].sequence_id).toEqual(response.data.record?.id);
     }, 120000);
   });
 });

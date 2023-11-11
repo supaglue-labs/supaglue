@@ -51,6 +51,8 @@ paths:
     $ref: paths/sequences@{sequence_id}@sequence_steps.yaml
   '/sequence_states':
     $ref: paths/sequence_states.yaml
+  '/sequence_states/_search':
+    $ref: paths/sequence_states@search.yaml
   '/sequence_states/_batch':
     $ref: paths/sequence_states@_batch.yaml
   '/sequence_states/{sequence_state_id}':
@@ -128,6 +130,8 @@ components:
       $ref: ../../common/components/parameters/query/cursor.yaml
     page_size:
       $ref: ../../common/components/parameters/query/page_size.yaml
+    remote_provider_page_size:
+      $ref: ../../common/components/parameters/query/remote_provider_page_size.yaml
     read_from_cache:
       $ref: ../../common/components/parameters/query/read_from_cache.yaml
     x-customer-id:

@@ -1,10 +1,18 @@
 post:
-  operationId: searchContacts
-  summary: Search contacts
+  operationId: searchSequenceStates
+  summary: Search sequence states
   description: |
-    Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
+    Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.
+    Support:
+
+    | Provider  | Search By               |
+    | --------- | ----------------------- |
+    | Apollo    | contact_id only         |
+    | Salesloft | contact_id, sequence_id |
+    | Outreach  | contact_id, sequence_id |
+
   tags:
-    - Contacts
+    - Sequence States
   security:
     - x-api-key: []
   parameters:
@@ -22,17 +30,17 @@ post:
             filter:
               type: object
               properties:
-                email:
+                contact_id:
                   type: string
-                  description: The email to search on.
-                  example: hello@example.com
-              required:
-                - email
+                  description: The ID of the contact to filter on.
+                sequence_id:
+                  type: string
+                  description: The ID of the sequence to filter on.
           required:
             - filter
   responses:
     200:
-      description: Paginated Contacts
+      description: Paginated Sequence States
       content:
         application/json:
           schema:
@@ -43,7 +51,7 @@ post:
               records:
                 type: array
                 items:
-                  $ref: ../components/schemas/objects/contact.yaml
+                  $ref: ../components/schemas/objects/sequence_state.yaml
             required:
               - pagination
               - records

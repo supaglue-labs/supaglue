@@ -65,7 +65,7 @@ export interface paths {
   "/contacts/_search": {
     /**
      * Search contacts
-     * @description Search contacts by email. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+     * @description Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
      */
     post: operations["searchContacts"];
     parameters: {
@@ -193,6 +193,26 @@ export interface paths {
      * @description In other words, adding a sequencestate to sequence.
      */
     post: operations["createSequenceState"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/sequence_states/_search": {
+    /**
+     * Search sequence states
+     * @description Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.
+     * Support:
+     *
+     * | Provider  | Search By               |
+     * | --------- | ----------------------- |
+     * | Apollo    | contact_id only         |
+     * | Salesloft | contact_id, sequence_id |
+     * | Outreach  | contact_id, sequence_id |
+     */
+    post: operations["searchSequenceStates"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -708,6 +728,11 @@ export interface components {
      */
     page_size?: string;
     /**
+     * @description Number of results to return per page. (Max: 100)
+     * @example 100
+     */
+    remote_provider_page_size?: string;
+    /**
      * @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider.
      *
      *
@@ -957,13 +982,14 @@ export interface operations {
   };
   /**
    * Search contacts
-   * @description Search contacts by email. Note: This will perform a search directly in the 3rd-party provider, and not in the managed destination.
+   * @description Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
    */
   searchContacts: {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
-        page_size?: components["parameters"]["page_size"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        page_size?: components["parameters"]["remote_provider_page_size"];
         cursor?: components["parameters"]["cursor"];
       };
       header: {
@@ -1336,6 +1362,54 @@ export interface operations {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Search sequence states
+   * @description Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.
+   * Support:
+   *
+   * | Provider  | Search By               |
+   * | --------- | ----------------------- |
+   * | Apollo    | contact_id only         |
+   * | Salesloft | contact_id, sequence_id |
+   * | Outreach  | contact_id, sequence_id |
+   */
+  searchSequenceStates: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        page_size?: components["parameters"]["remote_provider_page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          filter: {
+            /** @description The ID of the contact to filter on. */
+            contact_id?: string;
+            /** @description The ID of the sequence to filter on. */
+            sequence_id?: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Paginated Sequence States */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: components["schemas"]["sequence_state"][];
           };
         };
       };
