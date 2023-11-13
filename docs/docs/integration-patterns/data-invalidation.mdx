@@ -1,0 +1,41 @@
+import ThemedImage from '@theme/ThemedImage';
+
+# Data Invalidation
+
+When you use the Managed Syncs and Unified API features, Supaglue will perform active data invalidation in your Destination when you perform writes using the Unified API. Data invalidation provides read-after-write semantics, making it well-suited for serving your application to customers.
+
+## Managed Syncs: your database
+
+When you use Managed Syncs with your database, **Supaglue will invalidate and update the cached data after you write using the Unified API**. The data flow looks like the following:
+
+1. Supaglue writes to the third-party provider first.
+2. If that is successful, it will update the records in your database. Supaglue performs data invalidation on a best-effort basis. The next time a scheduled sync runs, Supaglue will pull the latest records if any data invalidation happens to fail.
+
+
+<ThemedImage
+  alt="data invalidation"
+  width="65%"
+  sources={{
+    light: '/img/data-invalidation.png',
+    dark: '/img/data-invalidation.png',
+  }}
+/>
+
+## Managed Syncs: Supaglue-managed database + data listing API
+
+When you use Managed Syncs with a Supaglue-managed database, Supaglue will invalidate and update the cached data after you write using the Unified API. **It is up to you to invalidate the records in your database.** The data flow looks like the following:
+
+1. Supaglue writes to the third-party provider first.
+2. If that is successful, it will update the records in the Supaglue-managed database. Supaglue performs data invalidation on a best-effort basis. The next time a scheduled sync runs, it will pull the latest records if any data invalidation happens to fail.
+3. You must invalidate your database records after a Unified API write.
+    - a. You can trigger a manual sync to pull the latest records from Supaglue and refresh your database and data listing API.
+    - b. Or you can update the record in your database.
+
+<ThemedImage
+  alt="data invalidation 2"
+  width="65%"
+  sources={{
+    light: '/img/data-invalidation-2.png',
+    dark: '/img/data-invalidation-2.png',
+  }}
+/>

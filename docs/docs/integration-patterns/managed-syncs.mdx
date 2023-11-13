@@ -7,7 +7,7 @@ import TabItem from '@theme/TabItem';
 
 Managed Syncs allows you to configure Supaglue to sync data from your customers' third-party providers into a destination database hosted in either your cloud, or Supaglue's cloud.
 
-It's the fastest way to read data into your application, and allows you to offload third-party provider authentication, APIs, rate limits, retries, and more to Supaglue.
+It's the fastest way to read data into your application and allows you to offload third-party provider authentication, APIs, rate limits, retries, and more to Supaglue.
 
 <ThemedImage
   alt="integration patterns syncs"
@@ -200,10 +200,11 @@ The SyncConfig above defines references a Salesforce Provider config and a Postg
 
 ### Sync strategies
 
-Supaglue offers two sync strategies which you can configure in your sync configuration:
+Supaglue offers two sync strategies that you can configure in your sync configuration:
 
 - `full only`: Every sync fetches all records from the Provider.
 - `full then incremental`: The initial sync performs a full sync, then incremental after using a persistent high watermark.
+   - `full_sync_every_n_incrementals`: Setting this configuration allows you to perform incremental syncs and a full refresh after every n incremental syncs. This strategy is helpful to ensure the eventual consistency of records deleted on the provider side that some incremental syncs do not support.
 
 `full then incremental` is used where we can, but for specific objects and Providers, we may only be able to offer `full only` sync strategies. We list these in the [Providers](/category/providers) documentation.
 
@@ -273,10 +274,10 @@ Supaglue writes raw data into a Supaglue-hosted database and provides a [conveni
 
 There are several differences between the two methods of hosting Destinations:
 
-| Dimension        | Your application database                                     | Supaglue-hosted database + Data Listing API                 |
-| ---------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
-| Transformations  | Ideal if you have existing transformation pipelines           | Ideal if you don't have an existing transformation pipeline |
-| Compliance       | Your customer data is never stored in Supaglue at-rest        | Your customer data is stored in Supaglue at-rest            |
-| Security         | Your database needs to be accessible from the public internet | Your final target database can be behind a VPC              |
-| Operational      | You need to ensure your database is up                        | Supaglue will ensure the uptime and sync reliability        |
-| Performance/Load | Supaglue determines how fast to sync to your database         | You want to control how fast to sync to your database       |
+| Dimension                   | Your application database                                     | Supaglue-hosted database + Data Listing API                 |
+| --------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------- |
+| Transformations             | Ideal if you have existing transformation pipelines           | Ideal if you don't have an existing transformation pipeline |
+| Compliance (data residency) | Your customer data is never stored in Supaglue at-rest        | Your customer data is stored in Supaglue at-rest            |
+| Security                    | Your database needs to be accessible from the public internet | Your final target database can be behind a VPC              |
+| Operational                 | You need to ensure your database is up                        | Supaglue will ensure the uptime and sync reliability        |
+| Performance/Load            | Supaglue determines how fast to sync to your database         | You want to control how fast to sync to your database       |

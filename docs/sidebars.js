@@ -73,6 +73,11 @@ const sidebars = {
       label: 'Unified API',
       type: 'doc',
     },
+    {
+      id: 'integration-patterns/data-invalidation',
+      label: 'Data Invalidation',
+      type: 'doc',
+    },
 
     // section
     {
