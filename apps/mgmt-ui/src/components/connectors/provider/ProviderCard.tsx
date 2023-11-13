@@ -36,7 +36,7 @@ export default function ProviderCard({
                 <Typography fontSize={12}>{(displayCategory ?? category).toUpperCase()}</Typography>
               </Stack>
               <Typography color={provider ? '#22c55e' : undefined}>
-                {provider ? 'Connected' : 'Not Connected'}
+                {provider ? 'Configured' : 'Not Configured'}
               </Typography>
             </Stack>
           }
