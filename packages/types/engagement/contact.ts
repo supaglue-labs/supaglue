@@ -39,7 +39,7 @@ export type ContactUpdateParams = ContactCreateParams & {
 
 export type ContactSearchParams = BaseSearchParams & {
   filter: {
-    email: string;
+    emails: string[];
   };
 };
 

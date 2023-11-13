@@ -22,12 +22,14 @@ post:
             filter:
               type: object
               properties:
-                email:
-                  type: string
-                  description: The email to search on.
-                  example: hello@example.com
+                emails:
+                  type: array
+                  items:
+                    type: string
+                    example: hello@example.com
+                  description: The emails to search for. This will be imeplemented as an OR search.
               required:
-                - email
+                - emails
           required:
             - filter
   responses:

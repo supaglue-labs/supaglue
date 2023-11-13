@@ -1661,22 +1661,30 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const link = cursor?.id as string;
+    const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
+    if (params.filter.emails) {
+      // Note this is implemented as an OR, not an AND
+      listParams['filter[emails]'] = params.filter.emails.join(',');
+    }
     return await retryWhenAxiosRateLimited(async () => {
       await this.maybeRefreshAccessToken();
-      const response = await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/prospects`, {
-        params: {
-          ...DEFAULT_LIST_PARAMS,
-          'filter[emails]': params.filter.email,
-        },
-        headers: this.getAuthHeadersForPassthroughRequest(),
-      });
+      const response = link
+        ? await axios.get<OutreachPaginatedRecords>(link, {
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          })
+        : await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/prospects`, {
+            params: listParams,
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          });
       const records = response.data.data.map(fromOutreachProspectToContact);
       return {
         records,
         pagination: {
           total_count: records.length,
-          previous: null,
-          next: null,
+          previous: response.data.links?.prev ? encodeCursor({ id: response.data.links?.prev, reverse: true }) : null,
+          next: response.data.links?.next ? encodeCursor({ id: response.data.links?.next, reverse: false }) : null,
         },
       };
     });
@@ -1686,6 +1694,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
     const link = cursor?.id as string;
     const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
+    // Note: if both are provided, it will be implemented as an AND.
     if (params.filter.contactId) {
       listParams['filter[prospect][id]'] = params.filter.contactId;
     }
