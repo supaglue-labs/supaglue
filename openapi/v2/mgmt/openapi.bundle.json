@@ -1092,7 +1092,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/create_update_sync_config"
+                "$ref": "#/components/schemas/create_sync_config"
               }
             }
           }
@@ -1148,7 +1148,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/create_update_sync_config"
+                "$ref": "#/components/schemas/update_sync_config"
               }
             }
           }
@@ -4439,7 +4439,7 @@
           }
         ]
       },
-      "create_update_sync_config": {
+      "create_sync_config": {
         "type": "object",
         "properties": {
           "destination_name": {
@@ -4456,6 +4456,17 @@
         "required": [
           "destination_name",
           "provider_name",
+          "config"
+        ]
+      },
+      "update_sync_config": {
+        "type": "object",
+        "properties": {
+          "config": {
+            "$ref": "#/components/schemas/sync_config_data"
+          }
+        },
+        "required": [
           "config"
         ]
       },

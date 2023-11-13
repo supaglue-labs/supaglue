@@ -1262,10 +1262,13 @@ export interface components {
       /** @example number */
       version: number;
     }]>;
-    create_update_sync_config: {
+    create_sync_config: {
       /** @example object */
       destination_name: string;
       provider_name: components["schemas"]["provider_name"];
+      config: components["schemas"]["sync_config_data"];
+    };
+    update_sync_config: {
       config: components["schemas"]["sync_config_data"];
     };
     "webhook-payload": OneOf<[{
@@ -2106,7 +2109,7 @@ export interface operations {
   createSyncConfig: {
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_sync_config"];
+        "application/json": components["schemas"]["create_sync_config"];
       };
     };
     responses: {
@@ -2145,7 +2148,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_sync_config"];
+        "application/json": components["schemas"]["update_sync_config"];
       };
     };
     responses: {
