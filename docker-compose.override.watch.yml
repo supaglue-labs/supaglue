@@ -45,4 +45,4 @@ services:
         - action: rebuild
           path: package.json
         - action: rebuild
-          path: ./apps/api/package.json
+          path: ./apps/sync-worker/package.json
