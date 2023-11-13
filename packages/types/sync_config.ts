@@ -1,3 +1,4 @@
+import type { ProviderName } from './';
 import type { SyncStrategyType } from './sync';
 import type { CommonObjectConfig, CustomObjectConfig, StandardObjectConfig } from './sync_object_config';
 
@@ -9,9 +10,12 @@ export type SyncConfig = {
   config: SyncConfigData;
 };
 
-export type SyncConfigCreateParams = Omit<SyncConfig, 'id'>;
+export type SyncConfigCreateParams = Omit<SyncConfig, 'id' | 'destinationId' | 'providerId'> & {
+  destinationName: string;
+  providerName: ProviderName;
+};
 // TODO: only `config` should be updatable
-export type SyncConfigUpdateParams = Omit<SyncConfigCreateParams, 'applicationId'>;
+export type SyncConfigUpdateParams = Omit<SyncConfigCreateParams, 'applicationId' | 'destinationName' | 'providerName'>;
 
 export type SyncConfigData = {
   defaultConfig: SyncStrategyConfig;

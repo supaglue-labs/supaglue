@@ -13,6 +13,7 @@ import type {
   ProviderCreateParams,
   Schema,
   SyncConfig,
+  SyncConfigCreateParams,
   WebhookConfig,
 } from '@supaglue/types';
 import type { Entity } from '@supaglue/types/entity';
@@ -165,7 +166,7 @@ export async function deleteProvider(applicationId: string, providerId: string):
 
 export async function createSyncConfig(
   applicationId: string,
-  data: Omit<SyncConfig, 'id'>
+  data: SyncConfigCreateParams
 ): Promise<ClientResponse<SyncConfig>> {
   const result = await fetch(`/api/internal/sync-configs/create`, {
     method: 'POST',

@@ -12,8 +12,8 @@ describe('validateSyncConfigParams', () => {
   // Define some example data for testing
   const validSyncConfig: SyncConfigCreateParams = {
     applicationId: 'app1',
-    destinationId: 'dest1',
-    providerId: 'prov1',
+    destinationName: 'dest1',
+    providerName: 'hubspot',
     config: {
       defaultConfig: {
         periodMs: 1000,

@@ -1263,10 +1263,9 @@ export interface components {
       version: number;
     }]>;
     create_update_sync_config: {
-      /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
-      destination_id: string;
-      /** @example 7f72ec07-e5c1-47fd-8cf5-e71dd13873af */
-      provider_id: string;
+      /** @example object */
+      destination_name: string;
+      provider_name: components["schemas"]["provider_name"];
       config: components["schemas"]["sync_config_data"];
     };
     "webhook-payload": OneOf<[{

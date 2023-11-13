@@ -14,7 +14,13 @@ import type {
 import type { ProviderEntityMapping } from '@supaglue/types/entity_mapping';
 import { BadRequestError, NotFoundError } from '../errors';
 import { validateEntityOrSchemaFieldName } from '../lib/entity';
-import { fromProviderModel, fromSyncConfigModel, toProviderModel, toSchemaModel, toSyncConfigModel } from '../mappers';
+import {
+  fromCreateParamsToSyncConfigModel,
+  fromProviderModel,
+  fromSyncConfigModel,
+  toProviderModel,
+  toSchemaModel,
+} from '../mappers';
 
 export class ProviderService {
   #prisma: PrismaClient;
@@ -142,7 +148,11 @@ export class ProviderService {
             id: syncConfig.id,
           },
           data: {
-            ...toSyncConfigModel(upsertObjectToSyncConfig(syncConfig, params.name, params.type)),
+            ...fromCreateParamsToSyncConfigModel(
+              upsertObjectToSyncConfig(syncConfig, params.name, params.type),
+              syncConfig.destinationId,
+              providerId
+            ),
           },
         });
       }

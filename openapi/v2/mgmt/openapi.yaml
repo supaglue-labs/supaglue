@@ -199,8 +199,10 @@ components:
       $ref: ./components/schemas/create_destination.yaml
     update_destination:
       $ref: ./components/schemas/update_destination.yaml
-    create_update_sync_config:
-      $ref: ./components/schemas/create_update_sync_config.yaml
+    create_sync_config:
+      $ref: ./components/schemas/create_sync_config.yaml
+    update_sync_config:
+      $ref: ./components/schemas/update_sync_config.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
     upsert_connection_sync_config:

@@ -4442,21 +4442,20 @@
       "create_update_sync_config": {
         "type": "object",
         "properties": {
-          "destination_id": {
+          "destination_name": {
             "type": "string",
-            "example": "6e7baa88-84dd-4dbc-902a-14522c2984eb"
+            "example": "object"
           },
-          "provider_id": {
-            "type": "string",
-            "example": "7f72ec07-e5c1-47fd-8cf5-e71dd13873af"
+          "provider_name": {
+            "$ref": "#/components/schemas/provider_name"
           },
           "config": {
             "$ref": "#/components/schemas/sync_config_data"
           }
         },
         "required": [
-          "destination_id",
-          "provider_id",
+          "destination_name",
+          "provider_name",
           "config"
         ]
       },

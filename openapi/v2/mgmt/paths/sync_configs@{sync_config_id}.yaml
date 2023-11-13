@@ -23,7 +23,7 @@ put:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/create_update_sync_config.yaml
+          $ref: ../components/schemas/update_sync_config.yaml
   responses:
     200:
       description: SyncConfig

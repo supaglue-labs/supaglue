@@ -1,0 +1,13 @@
+type: object
+properties:
+  destination_name:
+    type: string
+    example: object
+  provider_name:
+    $ref: ./objects/provider_name.yaml
+  config:
+    $ref: ./objects/sync_config_data.yaml
+required:
+  - destination_name
+  - provider_name
+  - config
