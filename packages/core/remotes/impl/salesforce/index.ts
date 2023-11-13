@@ -1489,14 +1489,24 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       pageSize = parseInt(paginationParams.page_size, 10);
     }
 
-    const [response, { totalSize: totalCount }] = await Promise.all([
+    const [
+      response,
+      { totalSize: totalCount },
+      {
+        records: [listMetadata],
+      },
+    ] = await Promise.all([
       this.#client.query(
         `SELECT ${propertiesToFetch.join(', ')} FROM ${salesforceObjectType} ${
           cursor?.id ? `WHERE Id > '${cursor.id}'` : ''
         } ORDER BY Id ${pageSize ? `LIMIT ${pageSize}` : ''}`
       ),
       this.#client.query(`SELECT COUNT() FROM ${salesforceObjectType}`),
+      this.#client.query(`SELECT FIELDS(STANDARD) FROM ListView WHERE Id = '${listId}'`),
     ]);
+    if (listMetadata.SobjectType !== salesforceObjectType) {
+      throw new BadRequestError(`List ${listId} is not a ${salesforceObjectType} list`);
+    }
 
     let commonObjectRecords: ListCRMCommonObjectTypeMap<T>[] = [];
 
