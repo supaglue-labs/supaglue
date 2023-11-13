@@ -132,7 +132,6 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     const childLogger = logger.child({ connectionId, providerName, customerId, commonObjectType });
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `temp_${table}`;
-    const dedupedTempTable = `deduped_temp_${table}`;
 
     try {
       await setup();
@@ -206,27 +205,6 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       );
       childLogger.info('Importing common object records into temp table [COMPLETED]');
 
-      // Dedupe the temp table
-      // Since all common objects have `lastModifiedAt`, we can sort by that to avoid dupes.
-      // We need to do the sorting before applying OFFSET / LIMIT because otherwise, if a record
-      // appears as the last record of a page and also the first record of the next page, we will
-      // overwrite the newer record with the older record in the main table.
-      childLogger.info('Writing deduped temp table records into deduped temp table [IN PROGRESS]');
-      await client.query(
-        `CREATE TEMP TABLE IF NOT EXISTS ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY id ASC, last_modified_at DESC`
-      );
-      await client.query(`CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (id ASC, last_modified_at DESC)`);
-      childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
-
-      heartbeat();
-
-      // Drop temp table just in case session disconnects so that we don't have to wait for the VACUUM reaper.
-      childLogger.info('Dropping temp table [IN PROGRESS]');
-      await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
-      childLogger.info('Dropping temp table [COMPLETED]');
-
-      heartbeat();
-
       // Copy from deduped temp table
       const columnsToUpdateStr = columnsToUpdate.join(',');
       const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
@@ -241,7 +219,9 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
-SELECT DISTINCT ON (id) ${columns.join(',')} FROM ${dedupedTempTable} OFFSET ${offset} LIMIT ${batchSize}
+SELECT DISTINCT ON (id) ${columns.join(
+          ','
+        )} FROM ${tempTable} ORDER BY id ASC, last_modified_at DESC OFFSET ${offset} LIMIT ${batchSize}
 ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
@@ -261,7 +241,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
           destination._supaglue_customer_id = '${customerId}'
         AND NOT EXISTS (
             SELECT 1
-            FROM ${dedupedTempTable} AS temp
+            FROM ${tempTable} AS temp
             WHERE temp.id = destination.id
         );
         `);
@@ -372,7 +352,6 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     const table = objectType === 'standard' ? objectName : kCustomObject;
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
-    const dedupedTempTable = `"deduped_temp_${table}"`;
 
     // Write `supaglue_mapped_data` for existing Schemas and Entities users. We should write empty object otherwise.
     const isSchemasOrEntitiesApplication = schemasAndEntitiesEnabled(applicationId);
@@ -465,28 +444,6 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
       );
       childLogger.info('Importing raw records into temp table [COMPLETED]');
 
-      // Dedupe the temp table
-      // Since all records have `lastModifiedAt`, we can sort by that to avoid dupes.
-      // We need to do the sorting before applying OFFSET / LIMIT because otherwise, if a record
-      // appears as the last record of a page and also the first record of the next page, we will
-      // overwrite the newer record with the older record in the main table.
-      childLogger.info('Writing deduped temp table records into deduped temp table [IN PROGRESS]');
-      await client.query(`DROP TABLE IF EXISTS ${dedupedTempTable}`);
-      await client.query(
-        `CREATE TEMP TABLE ${dedupedTempTable} AS SELECT * FROM ${tempTable} ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC`
-      );
-      await client.query(
-        `CREATE INDEX IF NOT EXISTS pk_idx ON ${dedupedTempTable} (_supaglue_id ASC, _supaglue_last_modified_at DESC)`
-      );
-      childLogger.info('Writing deduped temp table records into deduped temp table [COMPLETED]');
-
-      heartbeat();
-
-      // Drop temp table just in case session disconnects so that we don't have to wait for the VACUUM repear.
-      childLogger.info('Dropping temp table [IN PROGRESS]');
-      await client.query(`DROP TABLE IF EXISTS ${tempTable}`);
-      childLogger.info('Dropping temp table [COMPLETED]');
-
       heartbeat();
 
       // Copy from deduped temp table
@@ -505,7 +462,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
 SELECT DISTINCT ON (_supaglue_id${maybeObjectNameColumn}) ${columns.join(
           ','
-        )} FROM ${dedupedTempTable} OFFSET ${offset} limit ${batchSize}
+        )} FROM ${tempTable} ORDER BY ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC OFFSET ${offset} limit ${batchSize}
 ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id${maybeObjectNameColumn})
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
@@ -528,7 +485,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
             ${objectType === 'custom' ? `AND destination._supaglue_object_name = '${objectName}'` : ''}
           AND NOT EXISTS (
               SELECT 1
-              FROM ${dedupedTempTable} AS temp
+              FROM ${tempTable} AS temp
               WHERE temp._supaglue_id = destination._supaglue_id
               
           );
