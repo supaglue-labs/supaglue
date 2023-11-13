@@ -81,8 +81,13 @@ describe('contact', () => {
 
       // test that the db was updated
       const dbContact = await db.query('SELECT * FROM engagement_contacts WHERE id = $1', [response.data.record?.id]);
-      expect(dbContact.rows[0].first_name).toEqual(testContact.first_name);
-      expect(dbContact.rows[0].last_name).toEqual(testContact.last_name);
+      if (providerName === 'apollo') {
+        expect(dbContact.rows[0].first_name).toEqual(capitalizeString(testContact.first_name as string));
+        expect(dbContact.rows[0].last_name).toEqual(capitalizeString(testContact.last_name as string));
+      } else {
+        expect(dbContact.rows[0].first_name).toEqual(testContact.first_name);
+        expect(dbContact.rows[0].last_name).toEqual(testContact.last_name);
+      }
       expect(dbContact.rows[0].job_title).toEqual(testContact.job_title);
       expect(dbContact.rows[0].email_addresses).toEqual(expectedEmailAddresses);
     }, 120_000);
