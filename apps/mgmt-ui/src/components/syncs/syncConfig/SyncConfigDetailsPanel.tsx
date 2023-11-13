@@ -295,14 +295,14 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
             </FormHelperText>
             {strategy === 'full then incremental' && (
               <>
-                <Typography variant="subtitle1">Run Full Sync every N incremental Syncs</Typography>
+                <Typography variant="subtitle1">Incremental with a periodic full sync</Typography>
                 <TextField
                   value={fullSyncEveryNIncrementals}
                   size="small"
-                  label="Run Full Sync every N incremental Syncs"
+                  label="Incremental with a periodic full sync"
                   variant="outlined"
                   type="number"
-                  helperText="All values < 1 will be taken to mean 'never'"
+                  helperText="Enter the number of successful incremental syncs before running a full sync. (All values < 1 will be taken to mean 'never'.)"
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                     let value: number | undefined = parseInt(event.target.value, 10);
                     if (Number.isNaN(value) || value < 1) {
