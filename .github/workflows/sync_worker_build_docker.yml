@@ -35,8 +35,6 @@ jobs:
       image-name: sync-worker
       depot-project: fh1fxkkb69
     secrets:
-      build-args: |
-        POSTHOG_API_KEY=${{ secrets.POSTHOG_API_KEY }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       STAGING_KUBECONFIG: ${{ secrets.STAGING_KUBECONFIG }}

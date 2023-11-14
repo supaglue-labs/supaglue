@@ -1,4 +1,3 @@
-import { configureScope } from '@sentry/node';
 import { UnauthorizedError } from '@supaglue/core/errors';
 import { addLogContext } from '@supaglue/core/lib/logger';
 import type { NextFunction, Request, Response } from 'express';
@@ -13,7 +12,6 @@ export async function orgHeaderMiddleware(req: Request, res: Response, next: Nex
   req.orgId = orgId;
 
   addLogContext('orgId', orgId);
-  configureScope((scope) => scope.setUser({ id: orgId, ip_address: req.ip }));
 
   next();
 }

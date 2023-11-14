@@ -46,3 +46,4 @@ services:
           path: package.json
         - action: rebuild
           path: ./apps/sync-worker/package.json
+    command: /bin/sh -c "yarn workspace sync-worker start"

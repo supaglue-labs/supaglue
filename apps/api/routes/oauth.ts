@@ -51,7 +51,6 @@ export default function init(app: Router): void {
         throw new BadRequestError('Missing applicationId');
       }
 
-      // set the req.orgId so that we can use it in the posthog middleware
       req.orgId = (await applicationService.getById(applicationId)).orgId;
 
       if (!customerId) {
@@ -185,7 +184,6 @@ export default function init(app: Router): void {
       if (!applicationId) {
         throw new BadRequestError('No applicationId on state object');
       }
-      // set the req.orgId so that we can use it in the posthog middleware
       req.orgId = (await applicationService.getById(applicationId)).orgId;
 
       if (

@@ -84,13 +84,6 @@ You can integrate Supaglue with your application in about 5 minutes via our
   </div>
 </details>
 
-<details>
-  <summary>What kind of tracking/analytics do you collect?</summary>
-  <div>
-    We use PostHog to log anonymized, session-level event data in our API and Sentry for error reporting. We use this to improve the product experience! You can opt out of tracking in the open-source version by setting `SUPAGLUE_DISABLE_ERROR_REPORTING=1` and `SUPAGLUE_DISABLE_ANALYTICS=1` in your `.env` file.
-  </div>
-</details>
-
 ## License
 
 [MIT License](https://github.com/supaglue-labs/supaglue/blob/main/LICENSE).
