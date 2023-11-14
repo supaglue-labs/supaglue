@@ -31,8 +31,6 @@ RELEASE_SHA=$(git rev-parse HEAD | cut -c1-7 | xargs -I{} echo "sha-{}")
 
 # build each app in APPS
 for APP_NAME in "${APPS[@]}"; do
-  WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${APP_NAME}\") | .location")
-
   echo "Building and pushing $APP_NAME"
   docker buildx imagetools create supaglue/"$APP_NAME":"$RELEASE_SHA" --tag supaglue/"$APP_NAME":"$VERSION"
 done
