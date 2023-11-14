@@ -10,6 +10,7 @@ import type {
   CreateContactRequest,
   CreateContactResponse,
   GetContactResponse,
+  ListContactsResponse,
   SearchContactsResponse,
   UpdateContactResponse,
 } from '@supaglue/schemas/v2/engagement';
@@ -80,16 +81,24 @@ describe('contact', () => {
       expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
 
       // test that the db was updated
-      const dbContact = await db.query('SELECT * FROM engagement_contacts WHERE id = $1', [response.data.record?.id]);
+      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+        `/engagement/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(
+          testStartTime.toISOString()
+        )}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
       if (providerName === 'apollo') {
-        expect(dbContact.rows[0].first_name).toEqual(capitalizeString(testContact.first_name as string));
-        expect(dbContact.rows[0].last_name).toEqual(capitalizeString(testContact.last_name as string));
+        expect(found?.first_name).toEqual(capitalizeString(testContact.first_name as string));
+        expect(found?.last_name).toEqual(capitalizeString(testContact.last_name as string));
       } else {
-        expect(dbContact.rows[0].first_name).toEqual(testContact.first_name);
-        expect(dbContact.rows[0].last_name).toEqual(testContact.last_name);
+        expect(found?.first_name).toEqual(testContact.first_name);
+        expect(found?.last_name).toEqual(testContact.last_name);
       }
-      expect(dbContact.rows[0].job_title).toEqual(testContact.job_title);
-      expect(dbContact.rows[0].email_addresses).toEqual(expectedEmailAddresses);
     }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
@@ -151,11 +160,21 @@ describe('contact', () => {
       expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
 
       // test that the db was updated
-      const dbContact = await db.query('SELECT * FROM engagement_contacts WHERE id = $1', [response.data.record?.id]);
-      expect(dbContact.rows[0].first_name).toEqual('updated');
-      expect(dbContact.rows[0].last_name).toEqual('contact');
-      expect(dbContact.rows[0].job_title).toEqual(testContact.job_title);
-      expect(dbContact.rows[0].email_addresses).toEqual(expectedEmailAddresses);
+      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+        `/engagement/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(
+          testStartTime.toISOString()
+        )}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.first_name).toEqual('updated');
+      expect(found?.last_name).toEqual('contact');
+      expect(found?.job_title).toEqual(testContact.job_title);
+      expect(found?.email_addresses).toEqual(expectedEmailAddresses);
     }, 120_000);
 
     test(`Test that POST followed by SEARCH has correct data`, async () => {

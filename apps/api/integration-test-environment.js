@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const axios = require('axios');
-const { Pool } = require('pg');
-const { parse } = require('pg-connection-string');
 const { TestEnvironment } = require('jest-environment-node');
 const { createSupaglueClient } = require('@supaglue/schemas');
 const { ProxyAgent, setGlobalDispatcher } = require('undici');
@@ -89,9 +87,7 @@ const getDeletePassthroughRequest = (id, objectName, providerName) => {
 class IntegrationEnvironment extends TestEnvironment {
   async setup() {
     await super.setup();
-    if (process.env.TESTING_DATABASE_URL) {
-      this.global.db = new Pool(parse(process.env.TESTING_DATABASE_URL));
-    }
+    this.global.testStartTime = new Date();
 
     // @note: this should be unifiedApiClient and we should create a separate mgmtApiClient since they use different headers
     this.global.apiClient = axios.create({

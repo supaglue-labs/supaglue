@@ -20,6 +20,9 @@ declare global {
   var addedObjects: AddedObject[];
 
   // eslint-disable-next-line no-var
+  var testStartTime: Date;
+
+  // eslint-disable-next-line no-var
   var db: Pool;
 }
 

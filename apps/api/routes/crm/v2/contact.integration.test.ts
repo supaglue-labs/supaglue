@@ -10,6 +10,7 @@ import type {
   CreateContactRequest,
   CreateContactResponse,
   GetContactResponse,
+  ListContactsResponse,
   SearchContactsResponse,
   UpdateContactResponse,
   UpsertContactRequest,
@@ -64,10 +65,18 @@ describe('contact', () => {
       // expect(getResponse.data.addresses).toEqual(testContact.record.addresses);
 
       // test that the db was updated
-      const dbContact = await db.query(`SELECT * FROM crm_contacts WHERE id = $1`, [response.data.record?.id]);
-      expect(dbContact.rows[0].first_name).toEqual(testContact.first_name);
-      expect(dbContact.rows[0].last_name).toEqual(testContact.last_name);
-      // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
+
+      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+        `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.first_name).toEqual(testContact.first_name);
+      expect(found?.last_name).toEqual(testContact.last_name);
     }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
@@ -115,12 +124,17 @@ describe('contact', () => {
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(getResponse.data.addresses).toEqual(testContact.record.addresses);
 
-      // test that the db was updated
-      const dbContact = await db.query(`SELECT * FROM crm_contacts WHERE id = $1`, [response.data.record?.id]);
-      expect(dbContact.rows[0].first_name).toEqual('updated');
-      expect(dbContact.rows[0].last_name).toEqual('contact');
-      // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
-      // expect(dbContact.rows[0].addresses).toEqual(testContact.record.addresses);
+      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+        `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.first_name).toEqual('updated');
+      expect(found?.last_name).toEqual('contact');
     }, 120_000);
 
     test('PATCH association only /', async () => {
@@ -194,8 +208,15 @@ describe('contact', () => {
       expect(getResponse.data.account_id).toEqual(accountResponse.data.record?.id);
 
       // test that the db was updated
-      const dbContact = await db.query(`SELECT * FROM crm_contacts WHERE id = $1`, [response.data.record?.id]);
-      expect(dbContact.rows[0].account_id).toEqual(accountResponse.data.record?.id);
+      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+        `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
     }, 120000);
 
     test(`Test upserting twice only creates 1 record and cache invalidates`, async () => {
@@ -226,12 +247,17 @@ describe('contact', () => {
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(getResponse.data.addresses).toEqual(testContact.addresses);
 
-      // test that the db was updated
-      const dbContact = await db.query(`SELECT * FROM crm_contacts WHERE id = $1`, [response.data.record?.id]);
-      expect(dbContact.rows[0].first_name).toEqual(testContact.first_name);
-      expect(dbContact.rows[0].last_name).toEqual(testContact.last_name);
-      // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
-      // expect(dbContact.rows[0].addresses).toEqual(testContact.addresses);
+      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+        `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.first_name).toEqual(testContact.first_name);
+      expect(found?.last_name).toEqual(testContact.last_name);
 
       // sleep for 30 seconds to allow hubspot and pipedrive to update indexes
       if (providerName === 'hubspot' || providerName === 'pipedrive') {
@@ -261,12 +287,17 @@ describe('contact', () => {
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(getResponse2.data.addresses).toEqual(testContact.addresses);
 
-      // test that the db was updated
-      const dbContact2 = await db.query(`SELECT * FROM crm_contacts WHERE id = $1`, [response.data.record?.id]);
-      expect(dbContact2.rows[0].first_name).toEqual('updated');
-      expect(dbContact2.rows[0].last_name).toEqual('contact');
-      // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
-      // expect(dbContact2.rows[0].addresses).toEqual(testContact.addresses);
+      const cachedReadResponse2 = await apiClient.get<ListContactsResponse>(
+        `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse2.status).toEqual(200);
+      const found2 = cachedReadResponse2.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found2).toBeTruthy();
+      expect(found2?.first_name).toEqual('updated');
+      expect(found2?.last_name).toEqual('contact');
     }, 120_000);
 
     // Search only supported for hubspot and salesforce

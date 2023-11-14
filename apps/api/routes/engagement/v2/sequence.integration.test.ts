@@ -13,6 +13,7 @@ import type {
   CreateSequenceStateRequest,
   CreateSequenceStateResponse,
   GetSequenceResponse,
+  ListSequencesResponse,
   SearchSequenceStatesRequest,
   SearchSequenceStatesResponse,
 } from '@supaglue/schemas/v2/engagement';
@@ -211,8 +212,18 @@ describe('sequence', () => {
       });
 
       // test that the db was updated
-      const dbSequence = await db.query('SELECT * FROM engagement_sequences WHERE id = $1', [response.data.record?.id]);
-      expect(dbSequence.rows[0].name).toEqual(testSequence.name);
+      const cachedReadResponse = await apiClient.get<ListSequencesResponse>(
+        `/engagement/v2/sequences?read_from_cache=true&modified_after=${encodeURIComponent(
+          testStartTime.toISOString()
+        )}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.name).toEqual(testSequence.name);
 
       // Test that you can search sequence state by contact ID
       const searchSequenceStates = async () => {
