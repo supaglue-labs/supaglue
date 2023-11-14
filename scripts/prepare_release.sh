@@ -19,7 +19,7 @@ if [ "$2" == "--skip_tests" ]; then
   SKIP_TESTS=true
 fi
 
-fail if not clean working directory
+# fail if not clean working directory
 if [ -n "$(git status --porcelain)" ]; then
   echo "Working directory not clean. Please stash all changes before running this script."
   exit 1
