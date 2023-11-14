@@ -1,0 +1,46 @@
+---
+id: get-entities
+title: "List entities"
+description: "Get a list of entities"
+sidebar_label: "List entities"
+hide_title: true
+hide_table_of_contents: true
+api: eJydVW1v2zgM/iuC9tVOsjRoXnA4bAOGobgdMOwFw6ErUkamE222pUly1iDwfx8pu4nTXFdsCZDYFPmQfPRQ2ssMrUMFATO5CK7GRBqLDoI21RWZ5BrD6yrooNHLRAZYe7m4lgfTTSI9qtrpsCP7Xt6lYHX6DfntpqHVDL1y2jIeob3BIEAU2gdhcoFHYIfemsrT82Ivx6MR/52G9qpQpgoUyz5gbaFVLHf41bPjXnq1wRL4KewsUig4BzuK0wFL37Ob1VdUQSb/Q4J1TEPMR/4660X54HS1pii8g9IWbLqczFfPcTJPx9PxOJ1cwkUKU5ymz0cKAKczmFzkskn61S6fwsxmClcXeZ7OVtM8neQwTVezDNPZZD6ej/NLBZdzxqygxF8jlbs0Mr1jd+Iu1+s/ISHXWGT+d2g9jX+6ULCmKGCZa+fDMro3DUvje60dV3XdYtywFYrC/FhClmlmE4plLG9ZEsUE2y9nZUyBUJ1hdf08DUUqJvZihS2Py47Eh4i0pWd73G3QgfgzMELhTyJLDBvTjRyTB2FDL8PekHh0W3Q+DlrtClrdhGD9YjikoRv42sK6qHGgzbBcl2G4HcuH8/eh8xEv313Jpje8H3hm2n3qjfBxq63+B3f3zSx6PrT9DLxByNCd5aM0grxEMCKyLDLcYsGq8NGmFHp62nQFNYyWG07MjbYYo8F4NBjJI2//QgVrqrYKMao9D0CFo8gOfbK8StBMVWaUf3HgSJmS1k5JPFlsHrbyjD7iqgrOZLVi2xf6fsaCnJF74SZOKxOUsuaXKIaB+M/UQkElak8BG+2jD0WWMUqo2gfCckLT6bZuj2AvoMoE9VdhzOkHnDWW8gp8ZE18ev+Wjbe3t1+qJ/TQeXFz1vhAiXucveVTuae2k/b3x0P38UO8E0vAuzC0BeiYKHK87+R8LbF3c2yoBrbt9ytq5pMrmobN32t08f5I5BachhXvOt0myb3KWP9Rn/IlCcjytGyBd3txfh+wyA+T9eb1R57Qmkvpa7sVcvfA6PdL1a6H3Rd9m55/m+QR9794c2hq/j64tyuPBhxmqPVm+uioa34CRGWYnA==
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>List entities</h1>
+
+<MethodEndpoint method={"get"} path={"/entities"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+:::caution deprecated
+
+This endpoint has been deprecated and may be removed in future versions of the API.
+
+:::
+
+Get a list of entities
+
+## Request
+
+<div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Entities
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"649b1e49-2722-46a3-a7e7-10caae78a43f"}}></SchemaItem><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"my-entity"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property openapi-schema__strikethrough"}>config</strong><span className={"openapi-schema__name"}> object</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span><span className={"openapi-schema__deprecated"}>deprecated</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>fields</strong><span className={"openapi-schema__name"}> object[]</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"apolla_first_name"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem><SchemaItem collapsible={false} name={"allow_additional_field_mappings"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean"}}></SchemaItem></div></details></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"[\n  {\n    \"id\": \"649b1e49-2722-46a3-a7e7-10caae78a43f\",\n    \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n    \"name\": \"my-entity\"\n  }\n]"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

@@ -1,0 +1,47 @@
+---
+id: get-collection
+title: "Get collection"
+description: ":::note"
+sidebar_label: "Get collection"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVm1v2zYQ/iuc9iUGIlt2vNQ1hmFt2hXB8iHNy4rBDhJaOttsJFIlKTuGof++O+rNjp2gyfph64fUIo93zx2fe45rT6WguRVKnkbe0JuBPVFxDCGteIdeBCbUInVfQ284HEplYSyv5sKwKXCbaWD4U8l4xfiCi5hPYlyR7FzDQsCSWcUMkD8WZsaqBDRZM5Vp9lFa0KkWBlgac9lmoxMlLUfTzNwcJOjMqqEFnvxuspTP4gzaoUpabKo0SxQFlvgzceDbY4ngxnIsLwBBScM4axJhavKVICyFnTM7BzYTC5BMRHgMk7R8ZrzhyGsOGO/m0DMQZlrYFW6tvQefp8K/B/q6yXE35ZongBkYty/xAyskZBhnEdxqvryNuOXoXVDlvmWgV/hhwjkk3BuuPbtK6cBEqRi49PLHtf4yB0SqqYClU4ZOGTnFylv0E7GpVonL50hHDAHZFUu1WogIdBuDwQNP0hijWJ1BfliDfPCru/BFVCGcA8dj+yAaq4WcEcLaoZesGh/dHZ5cIaRqm51+QIgcL1UKrALyBOFJK6YCjMNeGyJrVsQLnqaxCHnJQA3fMqEh2pNFlavvVl6Vh+ExGGRRCHuTqCKwMsKTYMKaOrdNSVNu5zuHvhNY0PtlEE7CY/846AV+/yjg/qA/AJ/zKQ8nPJr2OXjEQw0mRcKCIYe9IKD/thNpaP2hYGSIbYZXQJYbte58NWS+3sVXdA8exHKgWlhRBCtSf5zFoSez2MlAlW+T1OcuO4+5pa7dIfxL/PyBCmA1D+/RkPE4Zpabe8M0oHNsC2yZKowTi89dirZxRUWkl0Q8O728IifYZFi528bXy9wcD7qTYBq98fsBHPv9yduuP4Dekd8bdPuDN73gbTABCsPDEIy5jWEB8csinF+/Pzs98fJ8k3ej4q6QLVbYeJuvaJqTNWrZXJUjgK6auDv0Oo2h6ay3WJ5Tj4FeVAqY6Zjaz9rUDDsdVMt2LdtCdawI78Ei+s6it9Nql6Uhe3d+6khdSe8lUbFg24YA1/XAlT+BZLWWhMrmsRhsx8MwDK2IKMgehapKhSZuG7fmqu/EyQHKydtUUWDKtvARtHtBO/Cakl5L0rSIXVWZ0mF2UA7CVtl3ON6a3qkTJ7GmgYdLkQrN1sDDve3Sbm3uzI3//oz+Gf+xU2m1ijJHJhrbXyDGg0BYqO5VMV0J64q2GFYnS7ADC4fsb5WxkEsEgycpX7JHF0skT+lL6MjfHo2mTQFHf1HqGDPBVAvJc6jrYDcHVcHpStqb+XXSUl46xXm/OG8alrdciJ9GF5l0lVbGJlw2LnUm2ymuSeqNSWYtZmMWs1ZjsVwu22lxzIWs4neWSt+blIdQL/lpNkEV7yhkp+MaBXdVfs+N4zC7vjgby7u7u7H8ngYtTZ3gFRA2OPsJkCdPvhHXzXT5H1Dxdc/FQnwsPFgignB1ci26LmVztKGvBk8Mt58HKHBzLCvZrdcTvKJrHec5LRfPRFLTSBiqDQrylMcGnqnyD3go7s3ISe2+B+2Ck2INPafUC65FMYleBPrgohxOLfZU/Erj5WozZoVru6L5DR4oxf7VQH7kq/WZij5+fTflPPwXwB+/VJ8F8PjhvAWhMHqHMzC1G3s7L0W6/frR8OnjFdryjNi/OZ6LWVz+oJvZe6ubc7sIT38JzF7zX0nRcPD/VpsXO08eqJ8BFaeJMHn+DyFANrw=
+sidebar_class_name: "get api-method"
+info_path: api/v2/ticketing/unified-ticketing-api-preview
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get collection</h1>
+
+<MethodEndpoint method={"get"} path={"/collections/{collection_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/ticketing/unified-ticketing-api-preview"}></SecuritySchemes>
+
+
+
+:::note
+This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+:::
+
+Returns a Collection object with the given id.
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"collection_id","in":"path","required":true,"schema":{"type":"string"},"example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean"},"description":"Whether to include raw data fetched from the 3rd party provider.","example":true}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+CollectionData
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"Q1 Platform"}}></SchemaItem><SchemaItem collapsible={false} name={"description"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"For tracking all tasks related to Platform for Q1"}}></SchemaItem><SchemaItem collapsible={false} name={"collection_type"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"LIST"}}></SchemaItem><SchemaItem collapsible={false} name={"parent_collection"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"681b0fd7-40e6-4b91-8e23-2814872090be"}}></SchemaItem><SchemaItem collapsible={false} name={"access_level"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"PUBLIC"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"name\": \"Q1 Platform\",\n  \"description\": \"For tracking all tasks related to Platform for Q1\",\n  \"collection_type\": \"LIST\",\n  \"parent_collection\": \"681b0fd7-40e6-4b91-8e23-2814872090be\",\n  \"access_level\": \"PUBLIC\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
