@@ -116,6 +116,24 @@ import {
 const HUBSPOT_RECORD_LIMIT = 100; // remote API limit
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
+// 0-1 and 0-2 are the internal IDs in HubSpot for contact and company respectively
+const HUBSPOT_LIST_OBJECT_TYPE_ID_MAP = {
+  contact: '0-1',
+  account: '0-2',
+  opportunity: '0-3',
+};
+
+const COMMON_MODEL_TO_HUBSPOT_OBJECT_TYPE_MAP: Record<
+  'contact' | 'account' | 'opportunity',
+  HubSpotCommonObjectObjectType
+> = {
+  contact: 'contact',
+  account: 'company',
+  opportunity: 'deal',
+};
+
+const HUBSPOT_LIST_OBJECT_TYPES = Object.keys(HUBSPOT_LIST_OBJECT_TYPE_ID_MAP);
+
 export const DEFAULT_PROPERTY_GROUP = 'custom_properties';
 
 // TODO move this to lekko
@@ -2224,7 +2242,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     objectType: Exclude<CRMCommonObjectType, 'user'>,
     paginationParams: PaginationParams
   ): Promise<PaginatedSupaglueRecords<ListMetadata>> {
-    if (objectType !== 'contact' && objectType !== 'account') {
+    if (!HUBSPOT_LIST_OBJECT_TYPES.includes(objectType)) {
       throw new BadRequestError(`Listing ${objectType} lists is not supported in HubSpot`);
     }
 
@@ -2251,8 +2269,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           },
         }
       );
-      // 0-1 and 0-2 are the internal IDs in HubSpot for contact and company respectively
-      const objectTypeId = objectType === 'contact' ? '0-1' : '0-2';
+      const objectTypeId = HUBSPOT_LIST_OBJECT_TYPE_ID_MAP[objectType as 'contact' | 'account' | 'opportunity'];
       hubspotLists = [
         ...hubspotLists,
         ...v3Response.data.lists.filter((list: any) => list.objectTypeId === objectTypeId),
@@ -2288,18 +2305,18 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     paginationParams: PaginationParams,
     fieldMappingConfig: FieldMappingConfig
   ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>>> {
-    if (objectType !== 'contact' && objectType !== 'account') {
+    if (!HUBSPOT_LIST_OBJECT_TYPES.includes(objectType)) {
       throw new BadRequestError(`Listing ${objectType} lists is not supported in HubSpot`);
     }
+
+    const hubspotObjectName =
+      COMMON_MODEL_TO_HUBSPOT_OBJECT_TYPE_MAP[objectType as 'contact' | 'account' | 'opportunity'];
 
     await this.maybeRefreshAccessToken();
 
     const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
     const pageSize = paginationParams.page_size ?? HUBSPOT_RECORD_LIMIT;
-    const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch(
-      objectType === 'contact' ? 'contact' : 'company',
-      fieldMappingConfig
-    );
+    const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch(hubspotObjectName, fieldMappingConfig);
 
     const [v3MembershipResponse] = await Promise.all([
       axios.get(`https://api.hubapi.com/crm/v3/lists/${listId}/memberships`, {
@@ -2313,28 +2330,21 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       }),
     ]);
 
+    let records: ListCRMCommonObjectTypeMap<T>[] = [];
+
     // Make a Hubspot V3 Contact batch call using the record id (hs_object_id) from the V1 call so we can use our existing CRM Contact common schema
     // https://developers.hubspot.com/docs/api/crm/contacts#retrieve-contacts
-    const batchResponseSimplePublicObject =
-      objectType === 'contact'
-        ? await this.#client.crm.contacts.batchApi.read({
-            properties: propertiesToFetch,
-            propertiesWithHistory: [],
-            inputs: v3MembershipResponse.data.results.map((id: string) => ({
-              id,
-            })),
-          })
-        : await this.#client.crm.companies.batchApi.read({
+    switch (hubspotObjectName) {
+      case 'contact':
+        {
+          const batchResponseSimplePublicObject = await this.#client.crm.contacts.batchApi.read({
             properties: propertiesToFetch,
             propertiesWithHistory: [],
             inputs: v3MembershipResponse.data.results.map((id: string) => ({
               id,
             })),
           });
-
-    const commonObjectContactRecords: ListCRMCommonObjectTypeMap<T>[] =
-      objectType === 'contact'
-        ? (batchResponseSimplePublicObject.results.map((result) => {
+          records = batchResponseSimplePublicObject.results.map((result) => {
             return {
               ...fromHubSpotContactToContact({
                 id: result.id,
@@ -2342,28 +2352,67 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
                 createdAt: result.createdAt.toISOString(),
                 updatedAt: result.updatedAt.toISOString(),
                 archived: false,
-                // NOTE: we don't support full associations here, unlike in CRM List Contacts
+                // NOTE: we don't support full associations here, unlike in CRM List
               }),
               rawData: toMappedProperties(result, fieldMappingConfig),
             };
-          }) as ListCRMCommonObjectTypeMap<T>[])
-        : (batchResponseSimplePublicObject.results.map((result) => {
-            return {
-              ...fromHubSpotCompanyToAccount({
+          }) as ListCRMCommonObjectTypeMap<T>[];
+        }
+        break;
+      case 'company': {
+        const batchResponseSimplePublicObject = await this.#client.crm.companies.batchApi.read({
+          properties: propertiesToFetch,
+          propertiesWithHistory: [],
+          inputs: v3MembershipResponse.data.results.map((id: string) => ({
+            id,
+          })),
+        });
+        records = batchResponseSimplePublicObject.results.map((result) => {
+          return {
+            ...fromHubSpotCompanyToAccount({
+              id: result.id,
+              properties: result.properties,
+              createdAt: result.createdAt.toISOString(),
+              updatedAt: result.updatedAt.toISOString(),
+              archived: false,
+              // NOTE: we don't support full associations here, unlike in CRM List
+            }),
+            rawData: toMappedProperties(result, fieldMappingConfig),
+          };
+        }) as ListCRMCommonObjectTypeMap<T>[];
+        break;
+      }
+      case 'deal': {
+        const pipelineStageMapping = await this.#getPipelineStageMapping();
+        const batchResponseSimplePublicObject = await this.#client.crm.deals.batchApi.read({
+          properties: propertiesToFetch,
+          propertiesWithHistory: [],
+          inputs: v3MembershipResponse.data.results.map((id: string) => ({
+            id,
+          })),
+        });
+        records = batchResponseSimplePublicObject.results.map((result) => {
+          return {
+            ...fromHubSpotDealToOpportunity(
+              {
                 id: result.id,
                 properties: result.properties,
                 createdAt: result.createdAt.toISOString(),
                 updatedAt: result.updatedAt.toISOString(),
                 archived: false,
-                // NOTE: we don't support full associations here, unlike in CRM List Contacts
-              }),
-              rawData: toMappedProperties(result, fieldMappingConfig),
-            };
-          }) as ListCRMCommonObjectTypeMap<T>[]);
-
+                // NOTE: we don't support full associations here, unlike in CRM List
+              },
+              pipelineStageMapping
+            ),
+            rawData: toMappedProperties(result, fieldMappingConfig),
+          };
+        }) as ListCRMCommonObjectTypeMap<T>[];
+        break;
+      }
+    }
     // Map response to ListMetadata interface
     return {
-      records: commonObjectContactRecords,
+      records,
       pagination: {
         total_count: -1,
         next: v3MembershipResponse.data.paging?.next?.after
