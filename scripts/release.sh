@@ -34,11 +34,8 @@ for APP_NAME in "${APPS[@]}"; do
   WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${APP_NAME}\") | .location")
 
   echo "Building and pushing $APP_NAME"
-  yarn dlx --package @sentry/cli sentry-cli releases new --project "$APP_NAME" --org supaglue "$VERSION"
   yarn turbo run build --filter="${APP_NAME}..."
-  yarn dlx --package @sentry/cli sentry-cli releases files --project "$APP_NAME" --org supaglue "$VERSION" upload-sourcemaps "${WORKSPACE_PATH}/dist"
   docker buildx imagetools create supaglue/"$APP_NAME":"$RELEASE_SHA" --tag supaglue/"$APP_NAME":"$VERSION"
-  yarn dlx --package @sentry/cli sentry-cli releases finalize --project "$APP_NAME" --org supaglue "$VERSION"
 done
 
 docker buildx imagetools create supaglue/sync-worker:"$RELEASE_SHA" --tag supaglue/sync-worker:"$VERSION"
