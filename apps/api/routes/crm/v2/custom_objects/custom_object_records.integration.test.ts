@@ -217,10 +217,10 @@ describe('custom_objects_records', () => {
       expect(found).toBeTruthy();
       expect(found?.id).toEqual(response.data.record?.id);
       const rawData = found?.data;
-      expect(rawData?.int__c?.toString()).toEqual(testCustomObjectRecord.int__c?.toString());
-      expect(rawData?.description__c).toEqual(testCustomObjectRecord.description__c);
-      expect(rawData?.double__c?.toString()).toEqual(testCustomObjectRecord.double__c?.toString());
-      expect(rawData?.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
+      expect(rawData?.int__c?.toString()).toEqual('2');
+      expect(rawData?.description__c).toEqual('updated_description');
+      expect(rawData?.double__c?.toString()).toEqual('0.2');
+      expect(rawData?.bool__c?.toString()).toEqual('false');
     }, 120_000);
 
     test(`Test that Bad Requests have useful errors`, async () => {
