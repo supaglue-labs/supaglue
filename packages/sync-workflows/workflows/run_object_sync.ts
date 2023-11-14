@@ -63,6 +63,9 @@ function getPauseReasonIfShouldPause(err: any): string | undefined {
   if (err.cause?.failure?.message.startsWith('Additional field mappings are not allowed')) {
     return `Customer attempted to add additional field mappings for entity where additional field mappings are not allowed`;
   }
+  if (err.cause?.failure?.message === 'The requested resource does not exist') {
+    return `The requested resource does not exist.`;
+  }
 }
 
 export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {

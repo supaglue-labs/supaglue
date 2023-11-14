@@ -21,7 +21,12 @@ import type {
   SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
-import { BadRequestError, InternalServerError, NotFoundError } from '../../../errors';
+import {
+  BadRequestError,
+  InternalServerError,
+  NotFoundError,
+  SGConnectionNoLongerAuthenticatedError,
+} from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import { parseProxyConfig } from '../../../lib/util';
@@ -705,6 +710,15 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       id: response.data.contact.id,
       record: fromApolloContactToContact(response.data.contact),
     };
+  }
+
+  public override handleErr(err: unknown): unknown {
+    const error = err as any;
+    if (error.message === 'Request failed with status code 401') {
+      return new SGConnectionNoLongerAuthenticatedError(error.message, error);
+    }
+
+    return error;
   }
 }
 
