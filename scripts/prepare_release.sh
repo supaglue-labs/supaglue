@@ -15,8 +15,8 @@ VERSION=$1
 SKIP_TESTS=false
 
 # Check for the --skip_tests flag
-if [ "$2" == "--skip_tests" ]; then
-  SKIP_TESTS=true
+if [ "${2-}" == "--skip_tests" ]; then
+  SKIP_TESTS="true"
 fi
 
 # fail if not clean working directory

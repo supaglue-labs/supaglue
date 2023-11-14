@@ -13,8 +13,8 @@ fi
 SKIP_TESTS=false
 
 # Check for the --skip_tests flag
-if [ "$1" == "--skip_tests" ]; then
-  SKIP_TESTS=true
+if [ "${1-}" == "--skip_tests" ]; then
+  SKIP_TESTS="true"
 fi
 
 APPS=(api sync-worker)
