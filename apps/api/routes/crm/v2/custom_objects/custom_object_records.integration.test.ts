@@ -8,6 +8,7 @@
 import type {
   CreateCustomObjectRecordResponse,
   GetCustomObjectRecordResponse,
+  ListCustomObjectRecordsResponse,
   UpdateCustomObjectRecordResponse,
 } from '@supaglue/schemas/v2/crm';
 
@@ -123,17 +124,23 @@ describe('custom_objects_records', () => {
       expect(getResponse.data.data.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
 
       // test that the db was updated
-      const dbRow = await db.query(
-        `SELECT * FROM custom_objects WHERE _supaglue_id = $1 AND _supaglue_provider_name = $2`,
-        [response.data.record?.id, providerName]
+      const cachedReadResponse = await apiClient.get<ListCustomObjectRecordsResponse>(
+        `/crm/v2/custom_objects/${fullObjectName}/records?read_from_cache=true&modified_after=${encodeURIComponent(
+          testStartTime.toISOString()
+        )}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
       );
-      expect(dbRow.rows.length).toEqual(1);
-      expect(dbRow.rows[0]._supaglue_id).toEqual(response.data.record?.id);
-      const rawData = dbRow.rows[0]._supaglue_raw_data;
-      expect(rawData.int__c?.toString()).toEqual(testCustomObjectRecord.int__c?.toString());
-      expect(rawData.description__c).toEqual(testCustomObjectRecord.description__c);
-      expect(rawData.double__c?.toString()).toEqual(testCustomObjectRecord.double__c?.toString());
-      expect(rawData.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.id).toEqual(response.data.record?.id);
+      const rawData = found?.data;
+      expect(rawData?.int__c?.toString()).toEqual(testCustomObjectRecord.int__c?.toString());
+      expect(rawData?.description__c).toEqual(testCustomObjectRecord.description__c);
+      expect(rawData?.double__c?.toString()).toEqual(testCustomObjectRecord.double__c?.toString());
+      expect(rawData?.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
     }, 120_000);
 
     test(`Test that POST followed by PATCH followed by GET has correct data and cache invalidates`, async () => {
@@ -197,18 +204,23 @@ describe('custom_objects_records', () => {
       expect(getResponse.data.data.bool__c?.toString()).toEqual('false');
 
       // test that the db was updated
-      const dbRow = await db.query(
-        `SELECT * FROM custom_objects WHERE _supaglue_id = $1 AND _supaglue_provider_name = $2`,
-        [response.data.record?.id, providerName]
+      const cachedReadResponse = await apiClient.get<ListCustomObjectRecordsResponse>(
+        `/crm/v2/custom_objects/${fullObjectName}/records?read_from_cache=true&modified_after=${encodeURIComponent(
+          testStartTime.toISOString()
+        )}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
       );
-      expect(dbRow.rows.length).toEqual(1);
-      expect(dbRow.rows[0]._supaglue_id).toEqual(response.data.record?.id);
-      const rawData = dbRow.rows[0]._supaglue_raw_data;
-
-      expect(rawData.int__c?.toString()).toEqual(updatedCustomObjectRecord.int__c?.toString());
-      expect(rawData.description__c).toEqual(updatedCustomObjectRecord.description__c);
-      expect(rawData.double__c?.toString()).toEqual(updatedCustomObjectRecord.double__c?.toString());
-      expect(rawData.bool__c?.toString()).toEqual(updatedCustomObjectRecord.bool__c?.toString());
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.id).toEqual(response.data.record?.id);
+      const rawData = found?.data;
+      expect(rawData?.int__c?.toString()).toEqual(testCustomObjectRecord.int__c?.toString());
+      expect(rawData?.description__c).toEqual(testCustomObjectRecord.description__c);
+      expect(rawData?.double__c?.toString()).toEqual(testCustomObjectRecord.double__c?.toString());
+      expect(rawData?.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
     }, 120_000);
 
     test(`Test that Bad Requests have useful errors`, async () => {

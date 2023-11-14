@@ -10,6 +10,7 @@ import type {
   CreateLeadRequest,
   CreateLeadResponse,
   GetLeadResponse,
+  ListLeadsResponse,
   SearchLeadsResponse,
   UpdateLeadResponse,
   UpsertLeadRequest,
@@ -82,14 +83,22 @@ describe('lead', () => {
       expect(getResponse.data.title).toEqual(testLead.title);
 
       // test that the db was updated
-      const dbLead = await db.query('SELECT * FROM crm_leads WHERE id = $1', [response.data.record?.id]);
+      const cachedReadResponse = await apiClient.get<ListLeadsResponse>(
+        `/crm/v2/leads?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
       // pipedrive doesn't support first_name, last_name and company on leads
       if (providerName !== 'pipedrive') {
-        expect(dbLead.rows[0].first_name).toEqual(testLead.first_name);
-        expect(dbLead.rows[0].last_name).toEqual(testLead.last_name);
-        expect(dbLead.rows[0].company).toEqual(testLead.company);
+        expect(found?.first_name).toEqual(testLead.first_name);
+        expect(found?.last_name).toEqual(testLead.last_name);
+        expect(found?.company).toEqual(testLead.company);
       }
-      expect(dbLead.rows[0].title).toEqual(testLead.title);
+      expect(found?.title).toEqual(testLead.title);
     }, 120000);
 
     test('PATCH then GET /', async () => {
@@ -162,14 +171,22 @@ describe('lead', () => {
       expect(getResponse.data.title).toEqual('new title');
 
       // test that the db was updated
-      const dbLead = await db.query('SELECT * FROM crm_leads WHERE id = $1', [response.data.record?.id]);
+      const cachedReadResponse = await apiClient.get<ListLeadsResponse>(
+        `/crm/v2/leads?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
       // pipedrive doesn't support first_name, last_name and company on leads
       if (providerName !== 'pipedrive') {
-        expect(dbLead.rows[0].first_name).toEqual('updated');
-        expect(dbLead.rows[0].last_name).toEqual('lead');
-        expect(dbLead.rows[0].company).toEqual(testLead.company);
+        expect(found?.first_name).toEqual('updated');
+        expect(found?.last_name).toEqual('lead');
+        expect(found?.company).toEqual(testLead.company);
       }
-      expect(dbLead.rows[0].title).toEqual('new title');
+      expect(found?.title).toEqual('new title');
     }, 120_000);
 
     // Search only supported for salesforce
@@ -243,11 +260,19 @@ describe('lead', () => {
         expect(getResponse.data.title).toEqual(testLead.title);
 
         // test that the db was updated
-        const dbLead = await db.query('SELECT * FROM crm_leads WHERE id = $1', [response.data.record?.id]);
-        expect(dbLead.rows[0].first_name).toEqual(testLead.first_name);
-        expect(dbLead.rows[0].last_name).toEqual(testLead.last_name);
-        expect(dbLead.rows[0].company).toEqual(testLead.company);
-        expect(dbLead.rows[0].title).toEqual(testLead.title);
+        const cachedReadResponse = await apiClient.get<ListLeadsResponse>(
+          `/crm/v2/leads?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
+        expect(cachedReadResponse.status).toEqual(200);
+        const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+        expect(found).toBeTruthy();
+        expect(found?.first_name).toEqual(testLead.first_name);
+        expect(found?.last_name).toEqual(testLead.last_name);
+        expect(found?.company).toEqual(testLead.company);
+        expect(found?.title).toEqual(testLead.title);
 
         const testLeadUpsert2 = {
           upsert_on: { key: 'email', values: [email] },
@@ -272,11 +297,19 @@ describe('lead', () => {
         expect(getResponse2.data.title).toEqual(testLead.title);
 
         // test that the db was updated
-        const dbLead2 = await db.query('SELECT * FROM crm_leads WHERE id = $1', [response.data.record?.id]);
-        expect(dbLead2.rows[0].first_name).toEqual('updated');
-        expect(dbLead2.rows[0].last_name).toEqual('lead');
-        expect(dbLead2.rows[0].company).toEqual(testLead.company);
-        expect(dbLead2.rows[0].title).toEqual(testLead.title);
+        const cachedReadResponse2 = await apiClient.get<ListLeadsResponse>(
+          `/crm/v2/leads?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
+        expect(cachedReadResponse2.status).toEqual(200);
+        const found2 = cachedReadResponse2.data.records.find((r) => r.id === response.data.record?.id);
+        expect(found2).toBeTruthy();
+        expect(found2?.first_name).toEqual('updated');
+        expect(found2?.last_name).toEqual('lead');
+        expect(found2?.company).toEqual(testLead.company);
+        expect(found2?.title).toEqual(testLead.title);
       },
       120_000
     );
