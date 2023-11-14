@@ -33,6 +33,7 @@ import {
   NotFoundError,
   NotModifiedError,
   RemoteProviderError,
+  SGConnectionNoLongerAuthenticatedError,
   UnauthorizedError,
 } from '../../../errors';
 import type { ConnectorAuthConfig } from '../../base';
@@ -349,22 +350,26 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   ): (nextUrl?: string) => Promise<any> {
     return async (nextUrl?: string) => {
       await this.maybeRefreshAccessToken();
-      // NOTE: we don't use the odata client here as it doesn't handle pagination
-      const response = await fetch(
-        nextUrl ||
-          this.getUrlForEntityAndParams(entity, {
-            $filter: updatedAfter ? `modifiedon gt ${updatedAfter?.toISOString()}` : undefined,
-            $expand: expand,
-          }),
-        { headers: this.#headers }
-      );
-      if (heartbeat) {
-        heartbeat();
+      try {
+        // NOTE: we don't use the odata client here as it doesn't handle pagination
+        const response = await fetch(
+          nextUrl ||
+            this.getUrlForEntityAndParams(entity, {
+              $filter: updatedAfter ? `modifiedon gt ${updatedAfter?.toISOString()}` : undefined,
+              $expand: expand,
+            }),
+          { headers: this.#headers }
+        );
+        if (heartbeat) {
+          heartbeat();
+        }
+        if (!response.ok) {
+          throw await this.handleErr(response);
+        }
+        return await response.json();
+      } catch (e) {
+        throw await this.handleErr(e);
       }
-      if (!response.ok) {
-        throw await this.handleErr(response);
-      }
-      return await response.json();
     };
   }
 
@@ -555,10 +560,11 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     }
 
     if (isErrnoException(err)) {
-      switch (err.code) {
+      switch ((err.cause as any).code) {
         case 'ENOTFOUND':
+          return new SGConnectionNoLongerAuthenticatedError((err.cause as any).message as string, err.cause as Error);
         case 'ECONNREFUSED':
-          return new BadGatewayError(`Could not connect to remote CRM`, err);
+          return new BadGatewayError(`Could not connect to remote CRM`, err.cause as Error);
         default:
           return err;
       }
