@@ -13,17 +13,6 @@ if ! grep -q "https://index.docker.io/v1/" "$HOME/.docker/config.json"; then
   exit 1
 fi
 
-# check if  ~/.sentryclirc exists, if not fail
-if [ ! -f "$HOME/.sentryclirc" ]; then
-  cat <<EOF
-Not logged into Sentry. Please go to https://sentry.io/settings/account/api/auth-tokens/, create a token and add it to your ~/.sentryclirc:
-
-[auth]
-token=your-auth-token
-EOF
-  exit 1
-fi
-
 source $DIR/helpers.sh
 check_checkly_checks
 check_github_checks
@@ -42,14 +31,8 @@ RELEASE_SHA=$(git rev-parse HEAD | cut -c1-7 | xargs -I{} echo "sha-{}")
 
 # build each app in APPS
 for APP_NAME in "${APPS[@]}"; do
-  WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${APP_NAME}\") | .location")
-
   echo "Building and pushing $APP_NAME"
-  yarn dlx --package @sentry/cli sentry-cli releases new --project "$APP_NAME" --org supaglue "$VERSION"
-  yarn turbo run build --filter="${APP_NAME}..."
-  yarn dlx --package @sentry/cli sentry-cli releases files --project "$APP_NAME" --org supaglue "$VERSION" upload-sourcemaps "${WORKSPACE_PATH}/dist"
   docker buildx imagetools create supaglue/"$APP_NAME":"$RELEASE_SHA" --tag supaglue/"$APP_NAME":"$VERSION"
-  yarn dlx --package @sentry/cli sentry-cli releases finalize --project "$APP_NAME" --org supaglue "$VERSION"
 done
 
 docker buildx imagetools create supaglue/sync-worker:"$RELEASE_SHA" --tag supaglue/sync-worker:"$VERSION"
