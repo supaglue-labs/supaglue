@@ -1,46 +1,14 @@
 import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
-import { RewriteFrames } from '@sentry/integrations';
-import * as Sentry from '@sentry/node';
 import { HTTPError } from '@supaglue/core/errors';
-import { expressScopeMiddleware, httpLogger, logger } from '@supaglue/core/lib';
-import { distinctId } from '@supaglue/core/lib/distinct_identifier';
-import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
+import { expressScopeMiddleware, logger } from '@supaglue/core/lib';
 import cors from 'cors';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import promBundle from 'express-prom-bundle';
-import fs from 'fs';
-import path from 'path';
 import pinoHttp from 'pino-http';
 import { v4 as uuidv4 } from 'uuid';
 import { getDependencyContainer } from './dependency_container';
-import { posthogErrorMiddleware, posthogMiddleware } from './lib/posthog';
-
-const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI) && process.env.SENTRY_DSN;
-const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
-
-if (sentryEnabled) {
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.SUPAGLUE_ENVIRONMENT,
-    integrations: [
-      new RewriteFrames({
-        root: __dirname,
-      }),
-    ],
-    release: version,
-    includeLocalVariables: true,
-    beforeSend(event) {
-      if (event.request?.headers) {
-        delete event.request.headers['X-Api-Key'];
-        delete event.request.headers['x-api-key'];
-      }
-
-      return event;
-    },
-  });
-}
 
 const app = express();
 app.set('trust proxy', true);
@@ -78,7 +46,6 @@ app.use(
   })
 );
 
-app.use(Sentry.Handlers.requestHandler());
 app.use(expressScopeMiddleware());
 
 // Body parsing Middleware
@@ -93,11 +60,9 @@ app.use(
   })
 );
 
-app.use(posthogMiddleware);
-
 app.use(
   pinoHttp({
-    logger: httpLogger,
+    logger,
     customLogLevel: function (req, res, err) {
       if (res.statusCode >= 400 && res.statusCode < 500) {
         return 'warn';
@@ -127,9 +92,6 @@ app.use(
   })
 );
 
-// posthog
-app.use(posthogMiddleware);
-
 initRoutes(app);
 
 // init the processSyncChanges schedule
@@ -137,19 +99,6 @@ const { connectionAndSyncService } = getDependencyContainer();
 connectionAndSyncService.upsertProcessSyncChangesTemporalSchedule().catch((err) => {
   logger.error(err);
 });
-
-// error handling middlewares
-app.use(posthogErrorMiddleware);
-app.use(
-  Sentry.Handlers.errorHandler({
-    shouldHandleError: (error) => {
-      if (error instanceof HTTPError && error.code < 500) {
-        return false;
-      }
-      return true;
-    },
-  })
-);
 
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   // add the error to the response so pino-http can log it
@@ -191,19 +140,6 @@ const server = app.listen(port, (): void => {
 \\_______)(_______)|/       |/     \\|(_______)(_______/(_______)(_______/`);
   }
   logger.info(`Server listening on port ${port}`);
-
-  if (distinctId && !process.env.IS_CLOUD) {
-    posthogClient.capture({
-      distinctId,
-      event: 'API Server started',
-      properties: {
-        result: 'success',
-        isDevelopmentMode: process.env.NODE_ENV === 'development',
-        source: 'api',
-        system: getSystemProperties(),
-      },
-    });
-  }
 });
 
 server.keepAliveTimeout = 61 * 1000;
@@ -223,7 +159,6 @@ createTerminus(server, {
   beforeShutdown: async () => {
     logger.info('Server is shutting down');
     metricsServer.close();
-    await posthogClient.shutdownAsync();
   },
   onShutdown: async () => {
     logger.info('Server is shut down');

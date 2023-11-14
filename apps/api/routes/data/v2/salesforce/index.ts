@@ -1,4 +1,3 @@
-import { configureScope } from '@sentry/node';
 import { UnauthorizedError } from '@supaglue/core/errors';
 import { addLogContext, getCustomerIdPk } from '@supaglue/core/lib';
 import type {
@@ -25,14 +24,9 @@ async function salesforceConnectionMiddleware(req: Request, res: Response, next:
     throw new UnauthorizedError('x-customer-id header must be set');
   }
   addLogContext('externalCustomerId', externalCustomerId);
-  configureScope((scope) => {
-    scope.setTag('externalCustomerId', externalCustomerId);
-    scope.setTag('providerName', 'salesforce');
-  });
 
   req.customerId = externalCustomerId;
   addLogContext('customerId', req.customerId);
-  configureScope((scope) => scope.setTag('customerId', req.customerId));
 
   req.customerConnection = await connectionService.getSafeByCustomerIdAndApplicationIdAndProviderName({
     customerId: getCustomerIdPk(req.supaglueApplication.id, externalCustomerId),
@@ -40,7 +34,6 @@ async function salesforceConnectionMiddleware(req: Request, res: Response, next:
     providerName: 'salesforce',
   });
   addLogContext('connectionId', req.customerConnection?.id);
-  configureScope((scope) => scope.setTag('connectionId', req.customerConnection?.id));
 
   next();
 }

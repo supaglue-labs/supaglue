@@ -6,8 +6,6 @@
   "type": "commonjs",
   "dependencies": {
     "@godaddy/terminus": "^4.11.2",
-    "@sentry/integrations": "^7.64.0",
-    "@sentry/node": "^7.64.0",
     "@supaglue/core": "workspace:*",
     "@supaglue/db": "workspace:*",
     "@supaglue/schemas": "workspace:*",

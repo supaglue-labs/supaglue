@@ -22,8 +22,6 @@ yarn workspace mgmt-ui dev
 - `SUPAGLUE_DEPLOYMENT_ID`: used for developers to opt-in to identifying themselves for analytics
 - `SUPAGLUE_API_ENCRYPTION_KEY`: used as a secret to hash API keys and encrypt OAuth credentials.
 - `SUPAGLUE_QUICKSTART_API_KEY`: the default API key used for local development. this can be regenerated in the mgmt-ui.
-- `SUPAGLUE_DISABLE_ERROR_REPORTING`: set to `1` to disable anonymous Sentry alerts.
-- `SUPAGLUE_DISABLE_ANALYTICS`: set to `1` to disable anonymous Posthog analytics.
 - `SUPAGLUE_INTERNAL_TOKEN`: the shared token between API and mgmt-ui.
 
 - `DEV_{PROVIDER_NAME}_CLIENT_ID`: OAuth2 client id of your third-party CRM Connected App.

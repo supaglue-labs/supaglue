@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
-import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
+import { pinoContextMiddleware } from '@/middleware/pino_context';
 import { addLogContext, logger } from '@supaglue/core/lib/logger';
 import type {
   SendPassthroughRequestPathParams,
@@ -15,7 +15,7 @@ const { passthroughService } = getDependencyContainer();
 export default function init(app: Router): void {
   const v2Router = Router();
   v2Router.use(openapiMiddleware('actions', 'v2'));
-  v2Router.use(pinoAndSentryContextMiddleware);
+  v2Router.use(pinoContextMiddleware);
 
   v2Router.post(
     '/passthrough',
