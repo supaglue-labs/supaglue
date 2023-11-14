@@ -15,7 +15,7 @@ fi
 
 source $DIR/helpers.sh
 check_checkly_checks
-# check_github_checks
+check_github_checks
 
 git checkout main
 git pull
@@ -34,7 +34,6 @@ for APP_NAME in "${APPS[@]}"; do
   WORKSPACE_PATH=$(yarn workspaces list --json | jq -r "select(.name == \"${APP_NAME}\") | .location")
 
   echo "Building and pushing $APP_NAME"
-  yarn turbo run build --filter="${APP_NAME}..."
   docker buildx imagetools create supaglue/"$APP_NAME":"$RELEASE_SHA" --tag supaglue/"$APP_NAME":"$VERSION"
 done
 
