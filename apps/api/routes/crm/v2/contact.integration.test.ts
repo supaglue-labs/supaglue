@@ -17,7 +17,7 @@ import type {
   UpsertContactResponse,
 } from '@supaglue/schemas/v2/crm';
 
-// jest.retryTimes(3);
+jest.retryTimes(3);
 
 describe('contact', () => {
   const testContact: CreateContactRequest['record'] = {
