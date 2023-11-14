@@ -1,6 +1,4 @@
 import { logger } from '@supaglue/core/lib';
-import { distinctId } from '@supaglue/core/lib/distinct_identifier';
-import { getSystemProperties, posthogClient } from '@supaglue/core/lib/posthog';
 import type { ConnectionService } from '@supaglue/core/services';
 import type { SyncRunService } from '@supaglue/core/services/sync_run_service';
 import type { SyncRunStatus } from '@supaglue/types/sync_run';
@@ -53,22 +51,5 @@ export function createLogSyncFinish({
         );
       }
     }
-
-    posthogClient.capture({
-      distinctId: distinctId ?? application.orgId,
-      event: 'Completed Sync',
-      properties: {
-        result: status === 'FAILURE' ? 'error' : 'success',
-        syncId,
-        connectionId,
-        runId,
-        errorMessage,
-        providerName: connection.providerName,
-        applicationId: application.id,
-        applicationEnv: application.environment,
-        source: 'sync-workflows',
-        system: getSystemProperties(),
-      },
-    });
   };
 }

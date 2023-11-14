@@ -1,6 +1,5 @@
 import type { DestinationWriter } from '@supaglue/core/destination_writers/base';
 import { shouldDeleteRecords } from '@supaglue/core/destination_writers/util';
-import { distinctId } from '@supaglue/core/lib/distinct_identifier';
 import type { ConnectionService, RemoteService, SyncConfigService } from '@supaglue/core/services';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { EntityService } from '@supaglue/core/services/entity_service';
@@ -10,7 +9,6 @@ import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import type { Readable } from 'stream';
 import { pipeline, Transform } from 'stream';
-import { logEvent } from '../lib/analytics';
 import type { ApplicationService, SyncService } from '../services';
 
 /**
@@ -93,16 +91,6 @@ export function createSyncEntityRecords(
 
     const application = await applicationService.getById(connection.applicationId);
 
-    logEvent({
-      distinctId: distinctId ?? application.orgId,
-      eventName: 'Start Sync',
-      syncId: syncId,
-      providerName: connection.providerName,
-      entityId,
-      applicationId: application.id,
-      applicationEnv: application.environment,
-    });
-
     const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
 
     const writer = await destinationService.getWriterByDestinationId(syncConfig.destinationId);
@@ -114,16 +102,6 @@ export function createSyncEntityRecords(
 
     try {
       const result = await writeObjects(writer);
-
-      logEvent({
-        distinctId: distinctId ?? application.orgId,
-        eventName: 'Partially Completed Sync',
-        syncId: syncId,
-        providerName: connection.providerName,
-        entityId,
-        applicationId: application.id,
-        applicationEnv: application.environment,
-      });
 
       return {
         syncId: syncId,

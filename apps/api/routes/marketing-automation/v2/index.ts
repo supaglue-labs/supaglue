@@ -1,5 +1,5 @@
 import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
-import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
+import { pinoContextMiddleware } from '@/middleware/pino_context';
 import { Router } from 'express';
 import forms from './forms';
 
@@ -7,7 +7,7 @@ export default function init(app: Router): void {
   const v2Router = Router();
 
   v2Router.use(openapiMiddleware('marketing-automation', 'v2'));
-  v2Router.use(pinoAndSentryContextMiddleware);
+  v2Router.use(pinoContextMiddleware);
 
   forms(v2Router);
 

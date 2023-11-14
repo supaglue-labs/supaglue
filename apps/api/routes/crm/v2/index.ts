@@ -1,5 +1,5 @@
 import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
-import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
+import { pinoContextMiddleware } from '@/middleware/pino_context';
 import { Router } from 'express';
 import accounts from './account';
 import associations from './associations';
@@ -16,7 +16,7 @@ export default function init(app: Router): void {
   const v2Router = Router();
 
   v2Router.use(openapiMiddleware('crm', 'v2'));
-  v2Router.use(pinoAndSentryContextMiddleware);
+  v2Router.use(pinoContextMiddleware);
 
   contacts(v2Router);
   accounts(v2Router);
