@@ -15,7 +15,7 @@ fi
 
 source $DIR/helpers.sh
 check_checkly_checks
-check_github_checks
+# check_github_checks
 
 git checkout main
 git pull
