@@ -11,6 +11,8 @@ import type {
   UpdateCustomObjectRecordResponse,
 } from '@supaglue/schemas/v2/crm';
 
+jest.retryTimes(3);
+
 export const PERMANENT_CUSTOM_OBJECT_NAME = 'PermanentCustomObject';
 
 type PermanentCustomObject = {

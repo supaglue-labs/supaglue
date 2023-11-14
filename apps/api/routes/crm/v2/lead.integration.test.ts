@@ -16,6 +16,8 @@ import type {
   UpsertLeadResponse,
 } from '@supaglue/schemas/v2/crm';
 
+jest.retryTimes(3);
+
 describe('lead', () => {
   // lead create / update / upsert not supported for hubspot
   describe.each(['salesforce', 'pipedrive'])('%s', (providerName) => {
