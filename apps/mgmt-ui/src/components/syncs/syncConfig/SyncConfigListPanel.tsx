@@ -16,6 +16,7 @@ import { Button, Stack } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
 import type { SyncConfigDTO } from '@supaglue/types';
+import { SUPAGLUE_MANAGED_DESTINATION } from '@supaglue/utils';
 import Link from 'next/link';
 import { DeleteSyncConfig } from './DeleteSyncConfig';
 
@@ -56,7 +57,7 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
       width: 75,
       sortable: false,
       renderCell: (params) => {
-        const provider = providers.find((provider) => provider.id === params.row.provider);
+        const provider = providers.find((provider) => provider.name === params.row.provider);
         if (!provider) {
           return <i>Unknown provider</i>;
         }
@@ -76,7 +77,12 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
       width: 150,
       sortable: false,
       renderCell: (params) => {
-        const destination = destinations.find((destination) => destination.id === params.row.destination);
+        const destination = destinations.find((destination) => {
+          if (destination.type === 'supaglue') {
+            return params.row.destination === SUPAGLUE_MANAGED_DESTINATION;
+          }
+          return destination.name === params.row.destination;
+        });
         if (!destination) {
           return <i>Unknown destination</i>;
         }
