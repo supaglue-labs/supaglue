@@ -712,7 +712,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     };
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async handleErr(err: unknown): Promise<unknown> {
     const error = err as any;
     if (error.message === 'Request failed with status code 401') {
       return new SGConnectionNoLongerAuthenticatedError(error.message, error);

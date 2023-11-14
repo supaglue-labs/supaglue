@@ -100,7 +100,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     return super.emit(event, ...args);
   }
 
-  public handleErr(err: unknown): unknown {
+  public async handleErr(err: unknown): Promise<unknown> {
     return err;
   }
 

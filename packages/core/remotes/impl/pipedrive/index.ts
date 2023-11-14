@@ -712,7 +712,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return await super.sendPassthroughRequest(request);
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async handleErr(err: unknown): Promise<unknown> {
     if (!(err instanceof AxiosError)) {
       return err;
     }

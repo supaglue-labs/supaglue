@@ -208,7 +208,7 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
     };
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async handleErr(err: unknown): Promise<unknown> {
     // TODO implement error handling from
     // https://developer.salesforce.com/docs/marketing/pardot/guide/error-codes.html#error-responses-in-api-version-5
 

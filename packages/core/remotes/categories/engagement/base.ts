@@ -48,7 +48,7 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     super(...args);
   }
 
-  public handleErr(err: unknown): unknown {
+  public async handleErr(err: unknown): Promise<unknown> {
     return err;
   }
 

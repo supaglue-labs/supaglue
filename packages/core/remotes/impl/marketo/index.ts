@@ -177,7 +177,7 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
     };
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async handleErr(err: unknown): Promise<unknown> {
     if (!(err instanceof AxiosError)) {
       return err;
     }

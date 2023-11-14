@@ -466,7 +466,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async handleErr(err: unknown): Promise<unknown> {
     if (!(err instanceof AxiosError)) {
       return err;
     }
