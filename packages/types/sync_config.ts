@@ -10,6 +10,14 @@ export type SyncConfig = {
   config: SyncConfigData;
 };
 
+export type SyncConfigDTO = {
+  id: string;
+  applicationId: string;
+  destinationName: string;
+  providerName: ProviderName;
+  config: SyncConfigData;
+};
+
 export type SyncConfigCreateParams = Omit<SyncConfig, 'id' | 'destinationId' | 'providerId'> & {
   destinationName: string;
   providerName: ProviderName;

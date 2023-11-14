@@ -1,7 +1,13 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { SyncConfig, SyncConfigCreateParams, SyncConfigUpdateParams } from '@supaglue/types';
+import type {
+  ProviderName,
+  SyncConfig,
+  SyncConfigCreateParams,
+  SyncConfigDTO,
+  SyncConfigUpdateParams,
+} from '@supaglue/types';
 import { BadRequestError, NotFoundError } from '../errors';
-import { fromCreateParamsToSyncConfigModel, fromSyncConfigModel } from '../mappers';
+import { fromCreateParamsToSyncConfigModel, fromSyncConfigDataModel, fromSyncConfigModel } from '../mappers';
 
 export class SyncConfigService {
   #prisma: PrismaClient;
@@ -76,6 +82,32 @@ export class SyncConfigService {
   public async listByIds(ids: string[]): Promise<SyncConfig[]> {
     const syncConfigs = await this.#prisma.syncConfig.findMany({ where: { id: { in: ids } } });
     return syncConfigs.map(fromSyncConfigModel);
+  }
+
+  public async toSyncConfigDTO(syncConfig: SyncConfig): Promise<SyncConfigDTO> {
+    const dtos = await this.toSyncConfigDTOs([syncConfig]);
+    return dtos[0];
+  }
+
+  public async toSyncConfigDTOs(syncConfigs: SyncConfig[]): Promise<SyncConfigDTO[]> {
+    const syncConfigsExpanded = await this.#prisma.syncConfig.findMany({
+      where: {
+        id: {
+          in: syncConfigs.map((syncConfig) => syncConfig.id),
+        },
+      },
+      include: {
+        destination: true,
+        provider: true,
+      },
+    });
+    return syncConfigsExpanded.map((syncConfigModel) => ({
+      id: syncConfigModel.id,
+      applicationId: syncConfigModel.applicationId,
+      destinationName: syncConfigModel.destination.name,
+      providerName: syncConfigModel.provider.name as ProviderName,
+      config: fromSyncConfigDataModel(syncConfigModel.config),
+    }));
   }
 
   public async create(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {

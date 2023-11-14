@@ -17,7 +17,7 @@ export const fromSyncConfigModel = ({
   } as SyncConfig; // TODO: better type;
 };
 
-const fromSyncConfigDataModel = (config: Prisma.JsonValue): SyncConfigData => {
+export const fromSyncConfigDataModel = (config: Prisma.JsonValue): SyncConfigData => {
   if (!config || typeof config !== 'object' || Array.isArray(config)) {
     throw new Error('SyncConfig config is missing');
   }
