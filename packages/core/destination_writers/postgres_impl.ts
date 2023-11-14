@@ -459,11 +459,12 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         // the record was archived, restored, and archived again.
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
+        const supaglueId = `_supaglue_id${maybeObjectNameColumn})`;
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
-SELECT DISTINCT ON (_supaglue_id${maybeObjectNameColumn}) ${columns.join(
+SELECT DISTINCT ON (${supaglueId}) ${columns.join(
           ','
-        )} FROM ${tempTable} ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC OFFSET ${offset} limit ${batchSize}
-ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id${maybeObjectNameColumn})
+        )} FROM ${tempTable} ORDER BY ${supaglueId} ASC, _supaglue_last_modified_at DESC OFFSET ${offset} limit ${batchSize}
+ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, ${supaglueId})
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
         heartbeat();
