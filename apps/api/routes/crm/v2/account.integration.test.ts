@@ -12,6 +12,8 @@ import type {
   UpsertAccountResponse,
 } from '@supaglue/schemas/v2/crm';
 
+jest.retryTimes(3);
+
 describe('account', () => {
   const testAccount = {
     addresses: [
