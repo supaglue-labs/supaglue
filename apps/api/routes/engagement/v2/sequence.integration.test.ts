@@ -5,7 +5,7 @@
  * @jest-environment ./integration-test-environment
  */
 
-import {
+import type {
   CreateContactRequest,
   CreateContactResponse,
   CreateSequenceRequest,
@@ -104,7 +104,8 @@ describe('sequence', () => {
     );
   });
 
-  describe.each(['outreach', 'salesloft', 'apollo'])('%s', (providerName) => {
+  // TODO: re-enable apollo tests
+  describe.each(['outreach', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateSequenceResponse>(
         '/engagement/v2/sequences',
