@@ -5,22 +5,31 @@ set -euo pipefail
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [ -z "${1-}" ]; then
-  echo "usage: $0 <version>"
+  echo "usage: $0 <version> [--skip_tests]"
   exit 1
 fi
 
 OLD_VERSION=$(jq -r .version ./package.json)
 VERSION=$1
 
-# fail if not clean working directory
-# if [ -n "$(git status --porcelain)" ]; then
-#   echo "Working directory not clean. Please stash all changes before running this script."
-#   exit 1
-# fi
+SKIP_TESTS=false
+
+# Check for the --skip_tests flag
+if [ "$2" == "--skip_tests" ]; then
+  SKIP_TESTS=true
+fi
+
+fail if not clean working directory
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Working directory not clean. Please stash all changes before running this script."
+  exit 1
+fi
 
 source $DIR/helpers.sh
-check_checkly_checks
-# check_github_checks
+if [ "$SKIP_TESTS" == "false" ]; then
+  check_checkly_checks
+  check_github_checks
+fi
 
 echo "Release version: ${VERSION}"
 
