@@ -33,6 +33,7 @@ import {
   NotFoundError,
   NotModifiedError,
   RemoteProviderError,
+  SGConnectionNoLongerAuthenticatedError,
   UnauthorizedError,
 } from '../../../errors';
 import type { ConnectorAuthConfig } from '../../base';
@@ -349,22 +350,26 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   ): (nextUrl?: string) => Promise<any> {
     return async (nextUrl?: string) => {
       await this.maybeRefreshAccessToken();
-      // NOTE: we don't use the odata client here as it doesn't handle pagination
-      const response = await fetch(
-        nextUrl ||
-          this.getUrlForEntityAndParams(entity, {
-            $filter: updatedAfter ? `modifiedon gt ${updatedAfter?.toISOString()}` : undefined,
-            $expand: expand,
-          }),
-        { headers: this.#headers }
-      );
-      if (heartbeat) {
-        heartbeat();
+      try {
+        // NOTE: we don't use the odata client here as it doesn't handle pagination
+        const response = await fetch(
+          nextUrl ||
+            this.getUrlForEntityAndParams(entity, {
+              $filter: updatedAfter ? `modifiedon gt ${updatedAfter?.toISOString()}` : undefined,
+              $expand: expand,
+            }),
+          { headers: this.#headers }
+        );
+        if (heartbeat) {
+          heartbeat();
+        }
+        if (!response.ok) {
+          throw await this.handleErr(response);
+        }
+        return await response.json();
+      } catch (e) {
+        throw await this.handleErr(e);
       }
-      if (!response.ok) {
-        throw this.handleErr(response);
-      }
-      return await response.json();
     };
   }
 
@@ -483,21 +488,21 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async handleErr(err: unknown): Promise<unknown> {
     if (err instanceof Response) {
-      // TODO: pass "cause" into the error constructor. to do this, `handleErr` needs to be async.
+      const { cause } = await err.json();
 
       switch (err.status) {
         case 400:
-          return new InternalServerError(err.statusText);
+          return new InternalServerError(err.statusText, cause);
         case 401:
-          return new UnauthorizedError(err.statusText);
+          return new UnauthorizedError(err.statusText, cause);
         case 403:
-          return new ForbiddenError(err.statusText);
+          return new ForbiddenError(err.statusText, cause);
         case 404:
-          return new NotFoundError(err.statusText);
+          return new NotFoundError(err.statusText, cause);
         case 304:
-          return new NotModifiedError(err.statusText);
+          return new NotModifiedError(err.statusText, cause);
         // The following are unmapped to Supaglue errors, but we want to pass
         // them back as 4xx so they aren't 500 and developers can view error messages
         // NOTE: `429` is omitted below since we process it differently for syncs
@@ -548,17 +553,18 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         case 449:
         case 450:
         case 451:
-          return new RemoteProviderError(err.statusText);
+          return new RemoteProviderError(err.statusText, cause);
         default:
-          return new InternalServerError(err.statusText);
+          return new InternalServerError(err.statusText, cause);
       }
     }
 
     if (isErrnoException(err)) {
-      switch (err.code) {
+      switch ((err.cause as any).code) {
         case 'ENOTFOUND':
+          return new SGConnectionNoLongerAuthenticatedError((err.cause as any).message as string, err.cause as Error);
         case 'ECONNREFUSED':
-          return new BadGatewayError(`Could not connect to remote CRM`, err);
+          return new BadGatewayError(`Could not connect to remote CRM`, err.cause as Error);
         default:
           return err;
       }

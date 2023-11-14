@@ -2377,7 +2377,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     };
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async handleErr(err: unknown): Promise<unknown> {
     // for errors we throw ourselves, they aren't native hubspot client errors, so don't continue
     // to unroll the error body message
     if (err instanceof SGError) {
