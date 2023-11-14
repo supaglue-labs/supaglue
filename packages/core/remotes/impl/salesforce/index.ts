@@ -62,7 +62,6 @@ import {
   BadGatewayError,
   BadRequestError,
   ForbiddenError,
-  InternalServerError,
   NotFoundError,
   NotModifiedError,
   RemoteProviderError,
@@ -1577,14 +1576,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     switch (error.errorCode) {
       case 'DUPLICATE_VALUE':
       case 'ERROR_HTTP_400':
-      case 'INVALID_CROSS_REFERENCE_KEY':
       case 'INVALID_FIELD':
       case 'INVALID_OPERATION':
       case 'INVALID_TYPE':
-      case 'MALFORMED_ID':
       case 'MISSING_ARGUMENT':
-        return new InternalServerError(inferredTitle, error);
       case 'INVALID_EMAIL_ADDRESS':
+      case 'MALFORMED_ID':
       case 'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST':
       case 'REQUIRED_FIELD_MISSING':
       case 'STRING_TOO_LONG':
@@ -1592,6 +1589,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         return new BadRequestError(inferredTitle, error);
       case 'INVALID_ID_FIELD':
       case 'INVALID_LOCATOR':
+      case 'INVALID_CROSS_REFERENCE_KEY':
       case 'ERROR_HTTP_404':
       case 'NOT_FOUND':
         return new NotFoundError(inferredTitle, error);
