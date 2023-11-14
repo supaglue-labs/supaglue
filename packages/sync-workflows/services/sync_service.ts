@@ -7,7 +7,7 @@ import type { PrismaClient } from '@supaglue/db';
 import { Prisma, SYNCS_TABLE, SYNC_CHANGES_TABLE } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import type { ConnectionSafeAny, SyncConfig, SyncStrategyConfig } from '@supaglue/types';
-import type { ObjectSync, Sync, SyncState } from '@supaglue/types/sync';
+import type { ObjectSync, ObjectType, Sync, SyncState } from '@supaglue/types/sync';
 import type { CommonObjectConfig, CustomObjectConfig, StandardObjectConfig } from '@supaglue/types/sync_object_config';
 import type { Client, IntervalSpec, ScheduleDescription, ScheduleOptionsAction } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
@@ -161,12 +161,13 @@ export class SyncService {
   #getSyncArgsHelper(
     syncConfig: SyncConfig,
     connection: ConnectionSafeAny,
+    objectType: ObjectType,
     objectConfig: CommonObjectConfig | StandardObjectConfig | CustomObjectConfig
   ) {
     const autoStart = syncConfig.config.defaultConfig.autoStartOnConnection ?? true;
     return {
       type: 'object',
-      objectType: 'common',
+      objectType,
       object: objectConfig.object,
       connectionId: connection.id,
       syncConfigId: syncConfig.id,
@@ -195,7 +196,7 @@ export class SyncService {
     if (syncConfig.config.commonObjects?.length) {
       syncArgs.push(
         ...syncConfig.config.commonObjects.map((commonObject) =>
-          this.#getSyncArgsHelper(syncConfig, connection, commonObject)
+          this.#getSyncArgsHelper(syncConfig, connection, 'common', commonObject)
         )
       );
     }
@@ -204,13 +205,13 @@ export class SyncService {
     if (connection.connectionSyncConfig?.standardObjects?.length) {
       syncArgs.push(
         ...connection.connectionSyncConfig.standardObjects.map((standardObject) =>
-          this.#getSyncArgsHelper(syncConfig, connection, standardObject)
+          this.#getSyncArgsHelper(syncConfig, connection, 'standard', standardObject)
         )
       );
     } else if (syncConfig.config.standardObjects?.length) {
       syncArgs.push(
         ...syncConfig.config.standardObjects.map((standardObject) =>
-          this.#getSyncArgsHelper(syncConfig, connection, standardObject)
+          this.#getSyncArgsHelper(syncConfig, connection, 'standard', standardObject)
         )
       );
     }
@@ -219,13 +220,13 @@ export class SyncService {
     if (connection.connectionSyncConfig?.customObjects?.length) {
       syncArgs.push(
         ...connection.connectionSyncConfig.customObjects.map((customObject) =>
-          this.#getSyncArgsHelper(syncConfig, connection, customObject)
+          this.#getSyncArgsHelper(syncConfig, connection, 'custom', customObject)
         )
       );
     } else if (syncConfig.config.customObjects?.length) {
       syncArgs.push(
         ...syncConfig.config.customObjects.map((customObject) =>
-          this.#getSyncArgsHelper(syncConfig, connection, customObject)
+          this.#getSyncArgsHelper(syncConfig, connection, 'custom', customObject)
         )
       );
     }
