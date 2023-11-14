@@ -462,7 +462,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
 SELECT DISTINCT ON (_supaglue_id${maybeObjectNameColumn}) ${columns.join(
           ','
-        )} FROM ${tempTable} ORDER BY ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC OFFSET ${offset} limit ${batchSize}
+        )} FROM ${tempTable} ORDER BY _supaglue_id ASC, _supaglue_last_modified_at DESC OFFSET ${offset} limit ${batchSize}
 ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, _supaglue_id${maybeObjectNameColumn})
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
         childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
