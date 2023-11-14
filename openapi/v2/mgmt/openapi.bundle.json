@@ -3294,8 +3294,8 @@
         "required": [
           "id",
           "application_id",
-          "destination_id",
-          "provider_id",
+          "destination_name",
+          "provider_name",
           "config"
         ]
       },

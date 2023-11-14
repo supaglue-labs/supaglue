@@ -838,8 +838,8 @@ export interface components {
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       application_id: string;
       /** @example postgres */
-      destination_name?: string;
-      provider_name?: components["schemas"]["provider_name"];
+      destination_name: string;
+      provider_name: components["schemas"]["provider_name"];
       config: components["schemas"]["sync_config_data"];
     };
     sync_config_data: {

@@ -20,8 +20,8 @@ import type {
   CommonObjectType,
   ProviderCategory,
   ProviderName,
-  SyncConfig,
   SyncConfigCreateParams,
+  SyncConfigDTO,
 } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_SYNCABLE_COMMON_OBJECTS } from '@supaglue/types/engagement';
@@ -80,10 +80,8 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const syncConfig = syncConfigs.find((s) => s.id === syncConfigId);
 
   useEffect(() => {
-    const destination = destinations.find((d) => d.id === syncConfig?.destinationId);
-    setDestinationName(destination ? getDestinationName(destination) : undefined);
-    const provider = providers.find((p) => p.id === syncConfig?.providerId);
-    setProviderName(provider ? provider.name : undefined);
+    setDestinationName(syncConfig?.destinationName);
+    setProviderName(syncConfig?.providerName);
     setSyncPeriodSecs(
       syncConfig?.config?.defaultConfig?.periodMs
         ? syncConfig?.config?.defaultConfig?.periodMs / 1000
@@ -104,7 +102,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
 
   const formTitle = syncConfig ? 'Edit Sync Config' : 'New Sync Config';
 
-  const createOrUpdateSyncConfig = async (): Promise<SyncConfig | undefined> => {
+  const createOrUpdateSyncConfig = async (): Promise<SyncConfigDTO | undefined> => {
     if (!destinationName || !providerName) {
       addNotification({ message: 'Destination and Provider must be selected', severity: 'error' });
       return;
@@ -118,13 +116,13 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
       addNotification({ message: 'Provider not found', severity: 'error' });
       return;
     }
-    if (!syncConfig && syncConfigs.find((s) => s.providerId === provider?.id)) {
+    if (!syncConfig && syncConfigs.find((s) => s.providerName === provider?.name)) {
       addNotification({ message: 'Sync config already exists for provider', severity: 'error' });
       return;
     }
 
     if (syncConfig) {
-      const newSyncConfig: SyncConfig = {
+      const newSyncConfig: SyncConfigDTO = {
         ...syncConfig,
         config: {
           ...syncConfig.config,
