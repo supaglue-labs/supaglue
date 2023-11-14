@@ -22,8 +22,7 @@ describe('account', () => {
     };
   });
 
-  // TODO: re-enable apollo tests
-  describe.each(['outreach', 'salesloft'])('%s', (providerName) => {
+  describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/engagement/v2/accounts',
