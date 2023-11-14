@@ -1,0 +1,6 @@
+type: object
+properties:
+  config:
+    $ref: ./objects/sync_config_data.yaml
+required:
+  - config

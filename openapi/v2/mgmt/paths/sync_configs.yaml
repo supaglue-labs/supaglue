@@ -29,7 +29,7 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/create_update_sync_config.yaml
+          $ref: ../components/schemas/create_sync_config.yaml
   responses:
     '201':
       description: SyncConfig created

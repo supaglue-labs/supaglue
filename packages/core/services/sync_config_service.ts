@@ -1,7 +1,13 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { SyncConfig, SyncConfigCreateParams, SyncConfigUpdateParams } from '@supaglue/types';
+import type {
+  ProviderName,
+  SyncConfig,
+  SyncConfigCreateParams,
+  SyncConfigDTO,
+  SyncConfigUpdateParams,
+} from '@supaglue/types';
 import { BadRequestError, NotFoundError } from '../errors';
-import { fromSyncConfigModel, toSyncConfigModel } from '../mappers';
+import { fromCreateParamsToSyncConfigModel, fromSyncConfigDataModel, fromSyncConfigModel } from '../mappers';
 
 export class SyncConfigService {
   #prisma: PrismaClient;
@@ -78,12 +84,67 @@ export class SyncConfigService {
     return syncConfigs.map(fromSyncConfigModel);
   }
 
+  public async toSyncConfigDTO(syncConfig: SyncConfig): Promise<SyncConfigDTO> {
+    const dtos = await this.toSyncConfigDTOs([syncConfig]);
+    return dtos[0];
+  }
+
+  public async toSyncConfigDTOs(syncConfigs: SyncConfig[]): Promise<SyncConfigDTO[]> {
+    const syncConfigsExpanded = await this.#prisma.syncConfig.findMany({
+      where: {
+        id: {
+          in: syncConfigs.map((syncConfig) => syncConfig.id),
+        },
+      },
+      include: {
+        destination: true,
+        provider: true,
+      },
+    });
+    return syncConfigsExpanded.map((syncConfigModel) => ({
+      id: syncConfigModel.id,
+      applicationId: syncConfigModel.applicationId,
+      destinationName: syncConfigModel.destination.name,
+      providerName: syncConfigModel.provider.name as ProviderName,
+      config: fromSyncConfigDataModel(syncConfigModel.config),
+    }));
+  }
+
   public async create(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
     validateSyncConfigParams(syncConfig);
+    const destination = await this.#prisma.destination.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: syncConfig.applicationId,
+          name: syncConfig.destinationName,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!destination) {
+      throw new NotFoundError(`Destination with name ${syncConfig.destinationName} not found`);
+    }
+
+    const provider = await this.#prisma.provider.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: syncConfig.applicationId,
+          name: syncConfig.providerName,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!provider) {
+      throw new NotFoundError(`Provider with name ${syncConfig.providerName} not found`);
+    }
     // TODO:(SUP1-350): Backfill sync schedules for connections
     const createdSyncConfigModel = await this.#prisma.$transaction(async (tx) => {
       const createdSyncConfigModel = await tx.syncConfig.create({
-        data: toSyncConfigModel(syncConfig),
+        data: fromCreateParamsToSyncConfigModel(syncConfig, destination.id, provider.id),
       });
 
       await tx.syncConfigChange.create({
@@ -100,18 +161,10 @@ export class SyncConfigService {
 
   public async update(id: string, applicationId: string, params: SyncConfigUpdateParams): Promise<SyncConfig> {
     validateSyncConfigParams(params);
-    // TODO(SUP1-328): Remove once we support updating destinations
-    if (params.destinationId) {
-      const { destinationId } = await this.getById(id);
-      if (destinationId && destinationId !== params.destinationId) {
-        throw new BadRequestError('Destination cannot be changed');
-      }
-    }
-
     const [updatedSyncConfigModel] = await this.#prisma.$transaction([
       this.#prisma.syncConfig.update({
         where: { id },
-        data: toSyncConfigModel({ ...params, applicationId }),
+        data: { config: params.config },
       }),
       this.#prisma.syncConfigChange.create({
         data: {
@@ -125,14 +178,45 @@ export class SyncConfigService {
   // Only used for backfill
   public async upsert(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
     validateSyncConfigParams(syncConfig);
+    const destination = await this.#prisma.destination.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: syncConfig.applicationId,
+          name: syncConfig.destinationName,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!destination) {
+      throw new NotFoundError(`Destination with name ${syncConfig.destinationName} not found`);
+    }
+
+    const provider = await this.#prisma.provider.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: syncConfig.applicationId,
+          name: syncConfig.providerName,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!provider) {
+      throw new NotFoundError(`Provider with name ${syncConfig.providerName} not found`);
+    }
 
     const upsertedSyncConfigModel = await this.#prisma.$transaction(async (tx) => {
       const upsertedSyncConfigModel = await tx.syncConfig.upsert({
         where: {
-          providerId: syncConfig.providerId,
+          providerId: provider.id,
         },
-        create: toSyncConfigModel(syncConfig),
-        update: toSyncConfigModel(syncConfig),
+        create: fromCreateParamsToSyncConfigModel(syncConfig, destination.id, provider.id),
+        update: {
+          config: syncConfig.config,
+        },
       });
 
       await tx.syncConfigChange.create({

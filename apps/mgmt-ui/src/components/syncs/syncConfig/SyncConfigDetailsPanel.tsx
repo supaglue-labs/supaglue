@@ -16,7 +16,13 @@ import { getStandardObjectOptions } from '@/utils/provider';
 import { entitiesEnabled } from '@/utils/schema';
 import { Autocomplete, Breadcrumbs, Button, Chip, FormHelperText, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import type { CommonObjectType, ProviderCategory, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
+import type {
+  CommonObjectType,
+  ProviderCategory,
+  ProviderName,
+  SyncConfigCreateParams,
+  SyncConfigDTO,
+} from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_SYNCABLE_COMMON_OBJECTS } from '@supaglue/types/engagement';
 import type { SyncStrategyType } from '@supaglue/types/sync';
@@ -57,8 +63,8 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
   const [fullSyncEveryNIncrementals, setFullSyncEveryNIncrementals] = useState<number | undefined>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [providerId, setProviderId] = useState<string | undefined>();
-  const [destinationId, setDestinationId] = useState<string | undefined>();
+  const [providerName, setProviderName] = useState<string | undefined>();
+  const [destinationName, setDestinationName] = useState<string | undefined>();
   const [strategy, setStrategy] = useState<SyncStrategyType>('full then incremental');
   const [commonObjects, setCommonObjects] = useState<CommonObjectType[]>([]);
   const [standardObjects, setStandardObjects] = useState<string[]>([]);
@@ -69,13 +75,13 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
   const router = useRouter();
 
-  const isFormValid = destinationId && providerId && isSyncPeriodSecsValid(syncPeriodSecs);
+  const isFormValid = destinationName && providerName && isSyncPeriodSecsValid(syncPeriodSecs);
 
   const syncConfig = syncConfigs.find((s) => s.id === syncConfigId);
 
   useEffect(() => {
-    setDestinationId(syncConfig?.destinationId ?? undefined);
-    setProviderId(syncConfig?.providerId ?? undefined);
+    setDestinationName(syncConfig?.destinationName);
+    setProviderName(syncConfig?.providerName);
     setSyncPeriodSecs(
       syncConfig?.config?.defaultConfig?.periodMs
         ? syncConfig?.config?.defaultConfig?.periodMs / 1000
@@ -95,10 +101,9 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   }
 
   const formTitle = syncConfig ? 'Edit Sync Config' : 'New Sync Config';
-  const provider = providers?.find((p) => p.id === providerId);
 
-  const createOrUpdateSyncConfig = async (): Promise<SyncConfig | undefined> => {
-    if (!destinationId || !providerId) {
+  const createOrUpdateSyncConfig = async (): Promise<SyncConfigDTO | undefined> => {
+    if (!destinationName || !providerName) {
       addNotification({ message: 'Destination and Provider must be selected', severity: 'error' });
       return;
     }
@@ -106,16 +111,19 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
       addNotification({ message: 'Cannot save while loading', severity: 'error' });
       return;
     }
-    if (!syncConfig && syncConfigs.find((s) => s.providerId === providerId)) {
+    const provider = providers?.find((p) => p.name === providerName);
+    if (!provider) {
+      addNotification({ message: 'Provider not found', severity: 'error' });
+      return;
+    }
+    if (!syncConfig && syncConfigs.find((s) => s.providerName === provider?.name)) {
       addNotification({ message: 'Sync config already exists for provider', severity: 'error' });
       return;
     }
 
     if (syncConfig) {
-      const newSyncConfig: SyncConfig = {
+      const newSyncConfig: SyncConfigDTO = {
         ...syncConfig,
-        destinationId,
-        providerId,
         config: {
           ...syncConfig.config,
           defaultConfig: {
@@ -139,15 +147,11 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
       return response.data;
     }
 
-    const provider = providers?.find((p) => p.id === providerId);
-    if (!provider) {
-      throw new Error('Could not get provider');
-    }
     // create path
     const newSyncConfig: SyncConfigCreateParams = {
       applicationId: activeApplicationId,
-      destinationId,
-      providerId,
+      destinationName,
+      providerName: providerName as ProviderName,
       config: {
         defaultConfig: {
           periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
@@ -167,7 +171,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
     return response.data;
   };
 
-  const selectedProvider = providers.find((p) => p.id === providerId);
+  const selectedProvider = providers.find((p) => p.name === providerName);
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
   const supportsCustomObjects = ['hubspot', 'salesforce'];
 
@@ -209,14 +213,14 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
               name="Provider"
               disabled={isLoadingProviders || !!syncConfig}
               onChange={(value) => {
-                if (value === providerId) {
+                if (value === providerName) {
                   return;
                 }
-                setProviderId(value);
+                setProviderName(value);
                 setStandardObjects([]);
               }}
-              value={providerId ?? ''}
-              options={providers?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
+              value={providerName ?? ''}
+              options={providers?.map(({ name }) => ({ value: name, displayValue: name })) ?? []}
             />
           </Stack>
           <Stack className="gap-2">
@@ -229,12 +233,12 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   await router.push(`/applications/${activeApplicationId}/connectors/destinations`);
                   return;
                 }
-                setDestinationId(value);
+                setDestinationName(value);
               }}
-              value={destinationId ?? ''}
+              value={destinationName ?? ''}
               options={[
                 ...destinations.map((destination) => ({
-                  value: destination.id,
+                  value: getDestinationName(destination),
                   displayValue: getDestinationName(destination),
                 })),
                 {
@@ -322,17 +326,17 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
               onToggle={setAutoStartOnConnection}
             />
           </Stack>
-          {provider && (
+          {selectedProvider && (
             <>
               <Stack className="gap-2">
                 <Typography variant="subtitle1">Supaglue common objects</Typography>
                 <Autocomplete
                   size="small"
                   disabled={!commonObjectsSupported}
-                  key={providerId}
+                  key={providerName}
                   multiple
                   id="common-objects"
-                  options={getCommonObjectOptions(provider.category)}
+                  options={getCommonObjectOptions(selectedProvider.category)}
                   defaultValue={commonObjects}
                   renderTags={(value: readonly string[], getTagProps) =>
                     value.map((option: string, index: number) => (
@@ -356,7 +360,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 <Autocomplete
                   disabled={!supportsStandardObjects.includes(String(selectedProvider?.name))}
                   size="small"
-                  key={providerId}
+                  key={providerName}
                   multiple
                   id="standard-objects"
                   options={standardObjectsOptions}
@@ -397,7 +401,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                 <Autocomplete
                   disabled={!supportsCustomObjects.includes(String(selectedProvider?.name))}
                   size="small"
-                  key={providerId}
+                  key={providerName}
                   multiple
                   id="custom-objects"
                   options={[]}
@@ -442,7 +446,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   <Typography variant="subtitle1">Entities</Typography>
                   <Autocomplete
                     size="small"
-                    key={providerId}
+                    key={providerName}
                     multiple
                     id="entities"
                     options={entities.map((entity) => entity.id)}

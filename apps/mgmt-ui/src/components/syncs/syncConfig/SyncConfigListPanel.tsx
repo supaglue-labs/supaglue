@@ -15,7 +15,7 @@ import { PeopleAltOutlined } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
-import type { SyncConfig } from '@supaglue/types';
+import type { SyncConfigDTO } from '@supaglue/types';
 import Link from 'next/link';
 import { DeleteSyncConfig } from './DeleteSyncConfig';
 
@@ -155,8 +155,8 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
 
   const rows = syncConfigs.map((syncConfig) => ({
     id: syncConfig.id,
-    provider: syncConfig.providerId,
-    destination: syncConfig.destinationId,
+    provider: syncConfig.providerName,
+    destination: syncConfig.destinationName,
     frequency: `every ${millisToHumanReadable(syncConfig.config.defaultConfig.periodMs)}`,
     objects: getObjectsString(syncConfig),
     entities: getEntitiesString(entities, syncConfig),
@@ -241,7 +241,7 @@ function millisToHumanReadable(millis: number): string {
   return humanReadable;
 }
 
-function getObjectsString(syncConfig: SyncConfig): string {
+function getObjectsString(syncConfig: SyncConfigDTO): string {
   const objectsList = [];
   if (syncConfig.config.commonObjects?.length) {
     objectsList.push(...syncConfig.config.commonObjects.map((object) => object.object));
@@ -258,7 +258,7 @@ function getObjectsString(syncConfig: SyncConfig): string {
   return objectsList.join(', ');
 }
 
-function getEntitiesString(allEntities: ReturnType<typeof useEntities>['entities'], syncConfig: SyncConfig): string {
+function getEntitiesString(allEntities: ReturnType<typeof useEntities>['entities'], syncConfig: SyncConfigDTO): string {
   return (
     syncConfig.config.entities
       ?.map((entity) => {

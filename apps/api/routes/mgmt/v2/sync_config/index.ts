@@ -34,7 +34,8 @@ export default function init(app: Router): void {
       res: Response<GetSyncConfigsResponse>
     ) => {
       const syncConfigs = await syncConfigService.list(req.supaglueApplication.id);
-      return res.status(200).send(syncConfigs.map(snakecaseKeys));
+      const dtos = await syncConfigService.toSyncConfigDTOs(syncConfigs);
+      return res.status(200).send(dtos.map(snakecaseKeys));
     }
   );
 
@@ -57,7 +58,7 @@ export default function init(app: Router): void {
           },
         }),
       });
-      return res.status(201).send(snakecaseKeys(syncConfig));
+      return res.status(201).send(snakecaseKeys(await syncConfigService.toSyncConfigDTO(syncConfig)));
     }
   );
 
@@ -71,7 +72,7 @@ export default function init(app: Router): void {
         req.params.sync_config_id,
         req.supaglueApplication.id
       );
-      return res.status(200).send(snakecaseKeys(syncConfig));
+      return res.status(200).send(snakecaseKeys(await syncConfigService.toSyncConfigDTO(syncConfig)));
     }
   );
 
@@ -93,7 +94,7 @@ export default function init(app: Router): void {
           },
         }),
       });
-      return res.status(200).send(snakecaseKeys(syncConfig));
+      return res.status(200).send(snakecaseKeys(await syncConfigService.toSyncConfigDTO(syncConfig)));
     }
   );
 

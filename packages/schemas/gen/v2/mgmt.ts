@@ -837,10 +837,9 @@ export interface components {
       id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
       application_id: string;
-      /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
-      destination_id: string;
-      /** @example 7f72ec07-e5c1-47fd-8cf5-e71dd13873af */
-      provider_id: string;
+      /** @example postgres */
+      destination_name: string;
+      provider_name: components["schemas"]["provider_name"];
       config: components["schemas"]["sync_config_data"];
     };
     sync_config_data: {
@@ -1262,11 +1261,13 @@ export interface components {
       /** @example number */
       version: number;
     }]>;
-    create_update_sync_config: {
-      /** @example 6e7baa88-84dd-4dbc-902a-14522c2984eb */
-      destination_id: string;
-      /** @example 7f72ec07-e5c1-47fd-8cf5-e71dd13873af */
-      provider_id: string;
+    create_sync_config: {
+      /** @example object */
+      destination_name: string;
+      provider_name: components["schemas"]["provider_name"];
+      config: components["schemas"]["sync_config_data"];
+    };
+    update_sync_config: {
       config: components["schemas"]["sync_config_data"];
     };
     "webhook-payload": OneOf<[{
@@ -2107,7 +2108,7 @@ export interface operations {
   createSyncConfig: {
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_sync_config"];
+        "application/json": components["schemas"]["create_sync_config"];
       };
     };
     responses: {
@@ -2146,7 +2147,7 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["create_update_sync_config"];
+        "application/json": components["schemas"]["update_sync_config"];
       };
     };
     responses: {
