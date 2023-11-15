@@ -6,8 +6,12 @@ import type {
   ConnectionUnsafe,
   CRMProvider,
   ListedObjectRecord,
+  ObjectRecordUpsertData,
+  ObjectRecordWithMetadata,
+  Property,
   Provider,
   RemoteUserIdAndDetails,
+  StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type {
   Account,
@@ -20,6 +24,7 @@ import type {
 } from '@supaglue/types/crm';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { OHandler } from 'odata';
 import { o } from 'odata';
 import { plural } from 'pluralize';
@@ -71,7 +76,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     'OData-MaxVersion': '4.0',
     'OData-Version': '4.0',
     'Content-Type': 'application/json',
-    Prefer: `odata.maxpagesize=${MAX_PAGE_SIZE}`,
+    Prefer: `odata.maxpagesize=${MAX_PAGE_SIZE},return=representation`,
     Authorization: '',
   };
   #odata: OHandler;
@@ -176,17 +181,30 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
+  private async getPublisherPrefix(): Promise<string> {
+    // get the prefix for the default powerapps publisher
+    // the fixed GUID for the default powerapps publisher is 00000001-0000-0000-0000-00000000005a
+    // TODO this probably should be more flexible
+    await this.maybeRefreshAccessToken();
+    return (
+      await this.#odata
+        .get('publishers(00000001-0000-0000-0000-00000000005a)')
+        .query({ $select: 'customizationprefix' })
+    )?.customizationprefix;
+  }
+
   public override async listCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
-    const idkey = `new_${object}id`;
+    const publisherPrefix = await this.getPublisherPrefix();
+    const idkey = `${publisherPrefix}_${object}id`;
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity(
-          `new_${plural(object)}`,
+          `${publisherPrefix}_${plural(object)}`,
           fieldsToFetch,
           modifiedAfter,
           undefined,
@@ -208,6 +226,89 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         getNextCursorFromPage: (response) => response['@odata.nextLink'],
       },
     ]);
+  }
+
+  public override async createObjectRecord(
+    object: StandardOrCustomObject,
+    data: ObjectRecordUpsertData
+  ): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    let objectName = plural(object.name);
+    if (object.type === 'custom') {
+      const publisherPrefix = await this.getPublisherPrefix();
+      objectName = `${publisherPrefix}_${objectName}`;
+      const objectIdField = `${publisherPrefix}_${object.name}id`;
+      // map data to new object with the prefixed field names
+      const mappedData = Object.fromEntries(Object.entries(data).map(([k, v]) => [`${publisherPrefix}_${k}`, v]));
+      const response = await this.#odata.post(objectName, mappedData).query({ $select: objectIdField });
+      return response[objectIdField];
+    }
+    const response = await this.#odata.post(objectName, data).query();
+    return response[`${object.name}id`];
+  }
+
+  public override async getObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    fields: string[]
+  ): Promise<ObjectRecordWithMetadata> {
+    await this.maybeRefreshAccessToken();
+    let objectName = plural(object.name);
+    let publisherPrefix: string | undefined;
+    if (object.type === 'custom') {
+      publisherPrefix = await this.getPublisherPrefix();
+      objectName = `${publisherPrefix}_${objectName}`;
+    }
+    const response = await this.#odata.get(`${objectName}(${id})`).query({ $select: fields.join(',') });
+    const filteredResponse = Object.fromEntries(
+      Object.entries(response)
+        .filter(([k]) => !k.startsWith('@odata'))
+        .map(([k, v]) =>
+          publisherPrefix && k.startsWith(`${publisherPrefix}_`) ? [k.replace(`${publisherPrefix}_`, ''), v] : [k, v]
+        )
+    );
+    return {
+      id,
+      objectName,
+      data: filteredResponse,
+      metadata: {
+        isDeleted: false,
+        lastModifiedAt: new Date(response.modifiedon),
+      },
+    };
+  }
+
+  public override async updateObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    data: ObjectRecordUpsertData
+  ): Promise<void> {
+    await this.maybeRefreshAccessToken();
+    let objectName = plural(object.name);
+    let publisherPrefix: string | undefined;
+    if (object.type === 'custom') {
+      publisherPrefix = await this.getPublisherPrefix();
+      objectName = `${publisherPrefix}_${objectName}`;
+    }
+    // map fields to prefixed fields
+    const mappedData = Object.fromEntries(
+      Object.entries(data).map(([k, v]) => [object.type === 'custom' ? `${publisherPrefix}_${k}` : k, v])
+    );
+    await this.#odata.patch(`${objectName}(${id})`, mappedData).query();
+  }
+
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
+    await this.maybeRefreshAccessToken();
+    const objectName = object.type === 'standard' ? object.name : `${await this.getPublisherPrefix()}_${object.name}`;
+    const response = await this.#odata
+      .get(`EntityDefinitions(LogicalName='${objectName}')/Attributes`)
+      .query({ $select: 'LogicalName', $filter: "IsLogical eq false and LogicalName ne 'owneridtype'" });
+    return response.map((attribute: any) => ({
+      id: attribute.LogicalName,
+      label: attribute.DisplayName?.UserLocalizedLabel?.Label,
+      type: attribute.AttributeType,
+      rawDetails: attribute,
+    }));
   }
 
   public override async listCommonObjectRecords(
@@ -556,7 +657,12 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   public override async handleErr(err: unknown): Promise<unknown> {
     if (err instanceof Response) {
-      const { cause } = await err.json();
+      let cause: Error | undefined;
+      try {
+        ({ cause } = await err.json());
+      } catch (e) {
+        // noop
+      }
 
       switch (err.status) {
         case 400:
@@ -625,7 +731,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
       }
     }
 
-    if (isErrnoException(err)) {
+    if (isErrnoException(err) && err.cause) {
       switch ((err.cause as any).code) {
         case 'ENOTFOUND':
           return new SGConnectionNoLongerAuthenticatedError((err.cause as any).message as string, err.cause as Error);

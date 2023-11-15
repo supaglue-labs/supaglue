@@ -395,7 +395,7 @@ export class ManagedDataService {
     if (pageSize > MAX_PAGE_SIZE) {
       throw new BadRequestError(`Page size cannot exceed ${MAX_PAGE_SIZE}`);
     }
-    if (!['hubspot', 'salesforce'].includes(providerName)) {
+    if (!['hubspot', 'salesforce', 'ms_dynamics_365_sales'].includes(providerName)) {
       throw new BadRequestError(`Provider ${providerName} does not support custom object list reads`);
     }
     const records = await this.#getRecords<SupaglueStandardRecord>(

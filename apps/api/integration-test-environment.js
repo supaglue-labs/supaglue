@@ -79,6 +79,11 @@ const getDeletePassthroughRequest = (id, objectName, providerName) => {
         method: 'DELETE',
         path: `/v2/${toSalesloftObjectName[objectName]}/${id}`,
       };
+    case 'ms_dynamics_365_sales':
+      return {
+        method: 'DELETE',
+        path: `/api/data/v9.2/${objectName}s(${id})`,
+      };
     default:
       throw new Error('Unsupported provider');
   }
@@ -146,7 +151,6 @@ class IntegrationEnvironment extends TestEnvironment {
         );
       }
     }
-    await this.global.db?.end();
     await super.teardown();
   }
 

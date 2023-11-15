@@ -64,7 +64,7 @@ export class ObjectRecordService {
     objectName: string,
     data: ObjectRecordUpsertData
   ): Promise<CreatedObjectRecord> {
-    if (!['salesforce', 'hubspot'].includes(connection.providerName)) {
+    if (!['salesforce', 'hubspot', 'ms_dynamics_365_sales'].includes(connection.providerName)) {
       throw new BadRequestError(`Provider ${connection.providerName} does not support custom object writes`);
     }
     const remoteClient = await this.#remoteService.getRemoteClient(connection.id);

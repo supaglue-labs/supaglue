@@ -14,16 +14,6 @@ import type {
 
 jest.retryTimes(3);
 
-export const PERMANENT_CUSTOM_OBJECT_NAME = 'PermanentCustomObject';
-
-type PermanentCustomObject = {
-  name: string;
-  description__c: string;
-  int__c?: number;
-  double__c?: number;
-  bool__c?: boolean;
-};
-
 // Permanent custom object schema:
 // {
 //       "name": "PermanentCustomObject",
@@ -71,8 +61,14 @@ type PermanentCustomObject = {
 //       ]
 // }
 
+const CUSTOM_OBJECT_NAME_MAP: Record<string, string> = {
+  hubspot: 'PermanentCustomObject',
+  salesforce: 'PermanentCustomObject__c',
+  ms_dynamics_365_sales: 'permanentcustomobject',
+};
+
 describe('custom_objects_records', () => {
-  let testCustomObjectRecord: PermanentCustomObject;
+  let testCustomObjectRecord: Record<string, unknown>;
 
   beforeEach(() => {
     const randomNumber = Math.floor(Math.random() * 100_000);
@@ -85,9 +81,13 @@ describe('custom_objects_records', () => {
     };
   });
 
-  describe.each(['hubspot', 'salesforce'])('%s', (providerName) => {
+  describe.each(['hubspot', 'salesforce', 'ms_dynamics_365_sales'])('%s', (providerName) => {
+    let fullObjectName: string;
+    beforeEach(() => {
+      fullObjectName = CUSTOM_OBJECT_NAME_MAP[providerName];
+    });
+
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
-      const fullObjectName = providerName === 'hubspot' ? 'PermanentCustomObject' : 'PermanentCustomObject__c';
       const response = await apiClient.post<CreateCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records`,
         { record: testCustomObjectRecord },
@@ -101,7 +101,7 @@ describe('custom_objects_records', () => {
       addedObjects.push({
         id: response.data.record!.id,
         providerName,
-        objectName: PERMANENT_CUSTOM_OBJECT_NAME,
+        objectName: providerName === 'ms_dynamics_365_sales' ? `cr50e_${fullObjectName}` : fullObjectName,
       });
       const getResponse = await apiClient.get<GetCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records/${response.data.record!.id}`,
@@ -112,12 +112,12 @@ describe('custom_objects_records', () => {
 
       expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record!.id);
-      expect(getResponse.data.custom_object_name).toEqual(
-        providerName === 'hubspot' ? 'PermanentCustomObject' : 'PermanentCustomObject__c'
-      );
-      expect(providerName === 'hubspot' ? getResponse.data.data.name : getResponse.data.data.Name).toEqual(
-        testCustomObjectRecord.name
-      );
+      expect(getResponse.data.custom_object_name).toEqual(fullObjectName);
+      expect(
+        providerName === 'hubspot' || providerName === 'ms_dynamics_365_sales'
+          ? getResponse.data.data.name
+          : getResponse.data.data.Name
+      ).toEqual(testCustomObjectRecord.name);
       expect(getResponse.data.data.int__c?.toString()).toEqual(testCustomObjectRecord.int__c?.toString());
       expect(getResponse.data.data.description__c).toEqual(testCustomObjectRecord.description__c);
       expect(getResponse.data.data.double__c?.toString()).toEqual(testCustomObjectRecord.double__c?.toString());
@@ -144,7 +144,6 @@ describe('custom_objects_records', () => {
     }, 120_000);
 
     test(`Test that POST followed by PATCH followed by GET has correct data and cache invalidates`, async () => {
-      const fullObjectName = providerName === 'hubspot' ? 'PermanentCustomObject' : 'PermanentCustomObject__c';
       const response = await apiClient.post<CreateCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records`,
         { record: testCustomObjectRecord },
@@ -158,7 +157,7 @@ describe('custom_objects_records', () => {
       addedObjects.push({
         id: response.data.record!.id,
         providerName,
-        objectName: PERMANENT_CUSTOM_OBJECT_NAME,
+        objectName: providerName === 'ms_dynamics_365_sales' ? `cr50e_${fullObjectName}` : fullObjectName,
       });
 
       const updatedCustomObjectRecord = {
@@ -194,10 +193,12 @@ describe('custom_objects_records', () => {
 
       expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record!.id);
-      expect(getResponse.data.custom_object_name).toEqual(
-        providerName === 'hubspot' ? 'PermanentCustomObject' : 'PermanentCustomObject__c'
-      );
-      expect(providerName === 'hubspot' ? getResponse.data.data.name : getResponse.data.data.Name).toEqual('updated');
+      expect(getResponse.data.custom_object_name).toEqual(fullObjectName);
+      expect(
+        providerName === 'hubspot' || providerName === 'ms_dynamics_365_sales'
+          ? getResponse.data.data.name
+          : getResponse.data.data.Name
+      ).toEqual('updated');
       expect(getResponse.data.data.int__c?.toString()).toEqual('2');
       expect(getResponse.data.data.description__c).toEqual('updated_description');
       expect(getResponse.data.data.double__c?.toString()).toEqual('0.2');
@@ -223,21 +224,27 @@ describe('custom_objects_records', () => {
       expect(rawData?.bool__c?.toString()).toEqual('false');
     }, 120_000);
 
-    test(`Test that Bad Requests have useful errors`, async () => {
-      const response = await apiClient.post<CreateCustomObjectRecordResponse>(
-        `/crm/v2/custom_objects/${PERMANENT_CUSTOM_OBJECT_NAME}/records`,
-        // This will fail because description__c is required
-        { record: { ...testCustomObjectRecord, description__c: undefined } },
-        {
-          headers: { 'x-provider-name': providerName },
-        }
-      );
-      expect(response.status).toEqual(400);
-      expect(response.data.errors?.[0].title).toEqual(
-        providerName === 'hubspot'
-          ? 'Error creating PermanentCustomObject.  Some required properties were not set.'
-          : 'Required fields are missing'
-      );
-    }, 120_000);
+    testIf(
+      // ms_dynamics_365_sales doesn't seem to do validation of required fields in their API
+      providerName !== 'ms_dynamics_365_sales',
+      `Test that Bad Requests have useful errors`,
+      async () => {
+        const response = await apiClient.post<CreateCustomObjectRecordResponse>(
+          `/crm/v2/custom_objects/${fullObjectName}/records`,
+          // This will fail because description__c is required
+          { record: { ...testCustomObjectRecord, description__c: undefined } },
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
+        expect(response.status).toEqual(400);
+        expect(response.data.errors?.[0].title).toEqual(
+          providerName === 'hubspot'
+            ? 'Error creating PermanentCustomObject.  Some required properties were not set.'
+            : 'Required fields are missing'
+        );
+      },
+      120_000
+    );
   });
 });

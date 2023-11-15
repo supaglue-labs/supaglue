@@ -1,6 +1,5 @@
 import type { SupaglueClient } from '@supaglue/schemas';
 import type { AxiosInstance } from 'axios';
-import type { Pool } from 'pg';
 
 export type AddedObject = {
   id: string;
@@ -21,9 +20,6 @@ declare global {
 
   // eslint-disable-next-line no-var
   var testStartTime: Date;
-
-  // eslint-disable-next-line no-var
-  var db: Pool;
 }
 
 global.testIf = (condition: boolean, ...args: Parameters<typeof test>) =>
