@@ -160,6 +160,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
         },
         commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
         standardObjects: standardObjects.map((object) => ({ object })),
+        customObjects: customObjects.map((object) => ({ object })),
         entities: entityIds.map((entityId) => ({ entityId })),
       },
     };
