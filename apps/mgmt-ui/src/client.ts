@@ -182,9 +182,14 @@ export async function createSyncConfig(
 
 export async function updateSyncConfig(
   applicationId: string,
-  data: SyncConfigDTO
+  data: SyncConfigDTO,
+  forceDeleteSyncs = false
 ): Promise<ClientResponse<SyncConfigDTO>> {
-  const result = await fetch(`/api/internal/sync-configs/update`, {
+  let url = `/api/internal/sync-configs/update`;
+  if (forceDeleteSyncs) {
+    url += `?force_delete_syncs=${forceDeleteSyncs}`;
+  }
+  const result = await fetch(url, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -196,8 +201,16 @@ export async function updateSyncConfig(
   return await toClientResponse(result);
 }
 
-export async function deleteSyncConfig(applicationId: string, syncConfigId: string): Promise<ClientEmptyResponse> {
-  const result = await fetch(`/api/internal/sync-configs/${syncConfigId}`, {
+export async function deleteSyncConfig(
+  applicationId: string,
+  syncConfigId: string,
+  forceDeleteSyncs = false
+): Promise<ClientEmptyResponse> {
+  let url = `/api/internal/sync-configs/${syncConfigId}`;
+  if (forceDeleteSyncs) {
+    url += `?force_delete_syncs=${forceDeleteSyncs}`;
+  }
+  const result = await fetch(url, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

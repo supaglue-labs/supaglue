@@ -114,12 +114,14 @@ export type GetSyncConfigResponse =
   operations['getSyncConfig']['responses'][keyof operations['getSyncConfig']['responses']]['content']['application/json'];
 
 export type UpdateSyncConfigPathParams = paths[`/sync_configs/{sync_config_id}`]['parameters']['path'];
+export type UpdateSyncConfigQueryParams = operations['updateSyncConfig']['parameters']['query'];
 export type UpdateSyncConfigRequest =
   operations['updateSyncConfig']['requestBody'][keyof operations['updateSyncConfig']['requestBody']]['application/json'];
 export type UpdateSyncConfigResponse =
   operations['updateSyncConfig']['responses'][keyof operations['updateSyncConfig']['responses']]['content']['application/json'];
 
 export type DeleteSyncConfigPathParams = paths[`/sync_configs/{sync_config_id}`]['parameters']['path'];
+export type DeleteSyncConfigQueryParams = operations['deleteSyncConfig']['parameters']['query'];
 export type DeleteSyncConfigRequest = never;
 export type DeleteSyncConfigResponse =
   operations['deleteSyncConfig']['responses'][keyof operations['deleteSyncConfig']['responses']]['content']['application/json'];

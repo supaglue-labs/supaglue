@@ -1142,7 +1142,16 @@
         "tags": [
           "SyncConfigs"
         ],
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "force_delete_syncs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1175,6 +1184,16 @@
         "security": [
           {
             "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "force_delete_syncs",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {

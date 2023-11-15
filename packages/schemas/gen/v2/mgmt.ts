@@ -2140,6 +2140,9 @@ export interface operations {
   /** Update Sync Config */
   updateSyncConfig: {
     parameters: {
+      query?: {
+        force_delete_syncs?: boolean;
+      };
       path: {
         /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
@@ -2162,6 +2165,9 @@ export interface operations {
   /** Delete Sync Config */
   deleteSyncConfig: {
     parameters: {
+      query?: {
+        force_delete_syncs?: boolean;
+      };
       path: {
         /** @example d583ec72-55d4-4f35-9668-f6c759674cc1 */
         sync_config_id: string;
