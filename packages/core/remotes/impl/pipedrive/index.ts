@@ -34,6 +34,7 @@ import {
   InternalServerError,
   NotFoundError,
   RemoteProviderError,
+  SGConnectionNoLongerAuthenticatedError,
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
@@ -719,6 +720,10 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
     // https://pipedrive.readme.io/docs/core-api-concepts-responses#error-response
     const jsonErrorMessage = err.response?.data?.error;
+
+    if (jsonErrorMessage.contains('refresh token is invalid')) {
+      return new SGConnectionNoLongerAuthenticatedError(jsonErrorMessage, err.response?.data);
+    }
 
     switch (err.response?.status) {
       case 400:
