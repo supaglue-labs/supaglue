@@ -1,0 +1,46 @@
+---
+id: list-entity-mappings
+title: "List entity mappings."
+description: "List entity mappings."
+sidebar_label: "List entity mappings."
+hide_title: true
+hide_table_of_contents: true
+api: eJytVltrGzkU/itCfdmCL2keTSntsqWEtuzSC6WkxjmZObbVaqSppHFjjP97z5HGE83YcSFsDLHnXL9z0afZyRJrhwUELOUsuAZH0tboIChrrkgktfLhtQkqbN9DXSuz8nIkA9DX7FoOFPOR9Fg0jmSk3cm7MdRq/AP5ab4nbQ0OKgzofNQbeqAUd+Oi8cFW6MaqpOjKkHCNUKKjJ1+ssQI528mwrdncB0fZ5H4k8Q6qWrOs2t7HeEZOJfrCqZqrIO2nNYqDWlz9I8IagmiM+tmg3gpVIpWxVOhJkRkqI7a2cYKq06qIHaHIDn82yh26tR9lVdTObiiYG0fJo+rwoNEvrSvwZBGHDKLNMAAzZ4mvrfHoOdHlxQV/9eO8o4EKuxQYZyeq+6kW1gSSsktW8/S7Z7/dcQHgHGy5zoCVz+T29jsWgRQEl3YpqIQmJVzQiE/2IGlTM0/oQWv7awFlqRgU6AUNTJeLDv69z621GsGwU4uEC9L632VcuvMgk3aYn+E1FW+8D2BKcLymaVHknPI8gHqfT+g6aVtjGhXVm2behlxYt0gxFy043q7zcJeOEJyBW+IGNTt0eOnnfAgsRqEDSuIHu/q4YcdwJ+fJKbA8Y/DI0gihz9bk1F4Mqu9BHbpTr06bR6bKl/bPK3rU3WwJCPyK2tEGbC0I6j7mP3GCB8d3QtGJWdeWOXuFcSAQ1vQw7cdkGB7d5sDBjdPMUiHUfjadEl9PfFPDSjc4UXZaraow3VwekdHH1ka8+u9K7jPe/8gkkVYgY//7LarVW9weDsEssxnSZT8fpRFkJYIVscuim76PsqJAn+g7AuItMEvLibnQFONicvlswpfDoefvwcCK0JoQvRIBQuKLFt+hTp51BYpbVdrCv+x6VNCSjgZN7CmPpveE/sSVCc6WTcGyb/T5gpqMkWvhIvrIBKVs+CHy8UR8tY0owIjGk8Na+WhDnlX0yi+wgKt0lXtBHCOoPoMxp59w1gjlb/Cxa+Lzh3csvLm5+Wb+sA+tFRdXWx8ocdazh9az14ZuIwLehWmtQcVosZG7dnW7s5YfmDXlY9Vud0vAPzu937OYrnIXXzNGcgNOwS1P+JrpoN0o3vVSeVbQEVmC9ngEqbsA5V8f2hP/VPyfLw8na44n5OglaAO8djMZL4FHAx++MJwFMHx/6UFIRq/ooNUh0x29KDAZdET05vUn5sWGp5lzQDrw7Y/sUgazzWLn5JDS8//sUuybP+clJnZ50ZknzYMOHdcka24G0/1vRXPYqA==
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>List entity mappings.</h1>
+
+<MethodEndpoint method={"get"} path={"/entity_mappings"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/mgmt/management-api"}></SecuritySchemes>
+
+:::caution deprecated
+
+This endpoint has been deprecated and may be removed in future versions of the API.
+
+:::
+
+List entity mappings.
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+List of entity mappings
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"entity_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"entity_name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"allow_additional_field_mappings"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>object</strong><span className={"openapi-schema__name"}> object</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"type"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`standard`, `custom`]"} schema={{"type":"string","enum":["standard","custom"]}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"from"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`developer`, `customer`]"} schema={{"type":"string","enum":["developer","customer"]}}></SchemaItem></div></details></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>field_mappings</strong><span className={"openapi-schema__name"}> object[]</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span></span></summary><div style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"entity_field"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"mapped_field"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"from"} required={false} schemaName={"string"} qualifierMessage={"**Possible values:** [`developer`, `customer`]"} schema={{"type":"string","enum":["developer","customer"]}}></SchemaItem><SchemaItem collapsible={false} name={"is_additional"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"[\n  {\n    \"entity_id\": \"string\",\n    \"entity_name\": \"string\",\n    \"allow_additional_field_mappings\": true,\n    \"object\": {\n      \"type\": \"standard\",\n      \"name\": \"string\",\n      \"from\": \"developer\"\n    },\n    \"field_mappings\": [\n      {\n        \"entity_field\": \"string\",\n        \"mapped_field\": \"string\",\n        \"from\": \"developer\",\n        \"is_additional\": true\n      }\n    ]\n  }\n]"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

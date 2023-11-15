@@ -1,0 +1,56 @@
+---
+id: list-standard-object-schemas
+title: "List standard object schemas"
+description: "List standard object schemas"
+sidebar_label: "List standard object schemas"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdVUtv20YQ/iuD7cUGJNHxUSiKOknRCk1aw4oTBLYQr8mRtCm5u9mHbELWf+/MkpRpWvEh6Kl7sMWd2Zn55vHNVhiLTgZl9KwQU1EqH+ZB6kK64u/br5iHeb7GSnoxEkGuvJheicPyxUh4zKNToSalrbgfS6vG/yB/LXYkLdDnTll2RY7ekSPwrSUwyRT4xta1vtbzaK1xYcq/H+DcmY0q0AGdB2hlWMADC8ePB3pfjfCPeOutCdC8/IwempOEc1miXxqX40AIyamyWDi1wXTzl4H+0/dzeFtrWancD4WUKiudrDCg8ykXpIeE+X6cRx9MhW6sCtJSnIg1SgJGXw14Md2KUFtW98EpvRK7kcB7WdmS76r60cYrMUzqhzVCJ4bZWwhrGSBq9S1iWQMlUAe1VAQz9BWVhtpEB9LaUuWpF8iyw29ROaSmCC7ibtRDYdtqjNPND+Hw+8wfBNF5gNbDIJgF31BZtUfPjk5PTvjfUztnGqRzsobc6CCVphgSbjbpwSyh62NoGplbnFUpSWysl43sq2eL2+fQkgPOQMDKH4CczkhQK6wNj9cKQ+qOsKaPjK5lIYPMujn4YvaReHSbrn2iKznBIVg/zTIaq4mPVq7KiBNlstxV2eb0WRrnrQqcnc/ErjedaWCbvPVm9BGSVX8iY9qXu9MZFnqQ7vMZkBYEA7IszR0UuMGS2cWnuzxH3zReCmjH1paGHTPOxsbJ5PTVhNs6qJDa5FJzvxbw5uJ9etZUSOapQm2AHVASUnEUp6owuf91n6PcVCR7msQnwt0Qy090YKaDM0XM+Y5Z6BOWpIwMhlF0oTHuI4rvGMhrrKh7Us9M4LOJkEsN0dObtfJJkx7fURGSlSqWQdE4sNQVY+KMUO8738OdonudfDF8akVcGVdPOJarjwrvqLGryuiWNYGmiRUXRx1GzsKkDzSzpQykVmXNy3HLt9xCx2w24X4tfaoRXF68u9Y3NzfX+uXWa5U4jdb4UEndq85LPD/soe3j/P3P90M7awHvAxdFpeSlDt227HAlOnZgMhjyA43zmlLNatvtLRXs0pW7HV8T1bu0ckdiI52StzxHtIBH3dwyoRTKs4AYaSlLjy+U4eiiZd5j+C+Xy0H8iYeeLcmN5NmeCsEr6IcDHy6UFwMY7rcnITRKZ0RnNvRkz9YFU+6e93//7QPpysiV7TNtQ6vtD65MJ9J1z3afghv3/JeDOaj+Mw8vcfgve/VG8t0He0ZvtDkZC9pb/wJij2oi
+sidebar_class_name: "get api-method"
+info_path: api/v2/crm/unified-crm-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>List standard object schemas</h1>
+
+<MethodEndpoint method={"get"} path={"/metadata/standard_objects"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/crm/unified-crm-api"}></SecuritySchemes>
+
+
+
+List standard object schemas
+
+Support:
+
+| Provider    | Supported |
+| ----------- | --------- |
+| Hubspot     | Yes       |
+| Salesforce  | Yes       | 
+| Pipedrive   | No        |
+| MS Dynamics | No        |
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+An array containing the names of Standard Objects
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><div style={{"marginTop":".5rem","marginBottom":".5rem","marginLeft":"1rem"}}>
+
+string
+
+</div><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"[\n  \"string\"\n]"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
