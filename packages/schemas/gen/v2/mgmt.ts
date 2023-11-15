@@ -2141,6 +2141,7 @@ export interface operations {
   updateSyncConfig: {
     parameters: {
       query?: {
+        /** @description If true, any syncs for any deleted objects will be cascadingly deleted for all customers with this sync config */
         force_delete_syncs?: boolean;
       };
       path: {
@@ -2166,6 +2167,7 @@ export interface operations {
   deleteSyncConfig: {
     parameters: {
       query?: {
+        /** @description If true, all syncs for all customers with this sync config will be cascadingly deleted */
         force_delete_syncs?: boolean;
       };
       path: {

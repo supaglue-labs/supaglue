@@ -1149,7 +1149,8 @@
             "required": false,
             "schema": {
               "type": "boolean"
-            }
+            },
+            "description": "If true, any syncs for any deleted objects will be cascadingly deleted for all customers with this sync config"
           }
         ],
         "requestBody": {
@@ -1193,7 +1194,8 @@
             "required": false,
             "schema": {
               "type": "boolean"
-            }
+            },
+            "description": "If true, all syncs for all customers with this sync config will be cascadingly deleted"
           }
         ],
         "responses": {
