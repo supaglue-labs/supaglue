@@ -242,18 +242,22 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       if (heartbeat) {
         heartbeat();
       }
-      const response = await axios.post<ApolloPaginatedAccounts>(
-        `${this.#baseURL}/v1/accounts/search`,
-        {
-          api_key: this.#apiKey,
-          page,
-          per_page: MAX_PAGE_SIZE,
-        },
-        {
-          headers: this.#headers,
-        }
-      );
-      return response.data;
+      try {
+        const response = await axios.post<ApolloPaginatedAccounts>(
+          `${this.#baseURL}/v1/accounts/search`,
+          {
+            api_key: this.#apiKey,
+            page,
+            per_page: MAX_PAGE_SIZE,
+          },
+          {
+            headers: this.#headers,
+          }
+        );
+        return response.data;
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
@@ -282,20 +286,24 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       if (heartbeat) {
         heartbeat();
       }
-      const response = await axios.post<ApolloPaginatedContacts>(
-        `${this.#baseURL}/v1/contacts/search`,
-        {
-          api_key: this.#apiKey,
-          sort_by_field: 'contact_updated_at',
-          sort_ascending: false,
-          page,
-          per_page: MAX_PAGE_SIZE,
-        },
-        {
-          headers: this.#headers,
-        }
-      );
-      return response.data;
+      try {
+        const response = await axios.post<ApolloPaginatedContacts>(
+          `${this.#baseURL}/v1/contacts/search`,
+          {
+            api_key: this.#apiKey,
+            sort_by_field: 'contact_updated_at',
+            sort_ascending: false,
+            page,
+            per_page: MAX_PAGE_SIZE,
+          },
+          {
+            headers: this.#headers,
+          }
+        );
+        return response.data;
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
@@ -324,15 +332,19 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       if (heartbeat) {
         heartbeat();
       }
-      const response = await axios.get<ApolloPaginatedUsers>(`${this.#baseURL}/v1/users/search`, {
-        headers: this.#headers,
-        params: {
-          api_key: this.#apiKey,
-          page,
-          per_page: MAX_PAGE_SIZE,
-        },
-      });
-      return response.data;
+      try {
+        const response = await axios.get<ApolloPaginatedUsers>(`${this.#baseURL}/v1/users/search`, {
+          headers: this.#headers,
+          params: {
+            api_key: this.#apiKey,
+            page,
+            per_page: MAX_PAGE_SIZE,
+          },
+        });
+        return response.data;
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
@@ -361,18 +373,22 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       if (heartbeat) {
         heartbeat();
       }
-      const response = await axios.post<ApolloPaginatedSequences>(
-        `${this.#baseURL}/v1/emailer_campaigns/search`,
-        {
-          api_key: this.#apiKey,
-          page,
-          per_page: MAX_PAGE_SIZE,
-        },
-        {
-          headers: this.#headers,
-        }
-      );
-      return response.data;
+      try {
+        const response = await axios.post<ApolloPaginatedSequences>(
+          `${this.#baseURL}/v1/emailer_campaigns/search`,
+          {
+            api_key: this.#apiKey,
+            page,
+            per_page: MAX_PAGE_SIZE,
+          },
+          {
+            headers: this.#headers,
+          }
+        );
+        return response.data;
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
@@ -401,22 +417,26 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       if (heartbeat) {
         heartbeat();
       }
-      const response = await axios.get<{ email_accounts: Record<string, any>[] }>(
-        `${this.#baseURL}/v1/email_accounts`,
-        {
-          headers: this.#headers,
-          params: {
-            api_key: this.#apiKey,
-          },
-        }
-      );
-      // There is no pagination for mailboxes, so just emit them as is.
-      return Readable.from(
-        response.data.email_accounts.map((record) => ({
-          record: fromApolloEmailAccountsToMailbox(record),
-          emittedAt: new Date(),
-        }))
-      );
+      try {
+        const response = await axios.get<{ email_accounts: Record<string, any>[] }>(
+          `${this.#baseURL}/v1/email_accounts`,
+          {
+            headers: this.#headers,
+            params: {
+              api_key: this.#apiKey,
+            },
+          }
+        );
+        // There is no pagination for mailboxes, so just emit them as is.
+        return Readable.from(
+          response.data.email_accounts.map((record) => ({
+            record: fromApolloEmailAccountsToMailbox(record),
+            emittedAt: new Date(),
+          }))
+        );
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
