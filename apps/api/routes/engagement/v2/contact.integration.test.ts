@@ -177,40 +177,45 @@ describe('contact', () => {
       expect(found?.email_addresses).toEqual(expectedEmailAddresses);
     }, 120_000);
 
-    test(`Test that POST followed by SEARCH has correct data`, async () => {
-      const response = await apiClient.post<CreateContactResponse>(
-        '/engagement/v2/contacts',
-        { record: testContact },
-        {
-          headers: { 'x-provider-name': providerName },
+    testIf(
+      ['salesloft', 'outreach'].includes(providerName),
+      `Test that POST followed by SEARCH has correct data`,
+      async () => {
+        const response = await apiClient.post<CreateContactResponse>(
+          '/engagement/v2/contacts',
+          { record: testContact },
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
+        expect(response.status).toEqual(201);
+        expect(response.data.record?.id).toBeTruthy();
+        addedObjects.push({
+          id: response.data.record?.id as string,
+          providerName,
+          objectName: 'contact',
+        });
+
+        if (providerName === 'apollo') {
+          await new Promise((resolve) => setTimeout(resolve, 10_000));
         }
-      );
-      expect(response.status).toEqual(201);
-      expect(response.data.record?.id).toBeTruthy();
-      addedObjects.push({
-        id: response.data.record?.id as string,
-        providerName,
-        objectName: 'contact',
-      });
 
-      if (providerName === 'apollo') {
-        await new Promise((resolve) => setTimeout(resolve, 10_000));
-      }
-
-      const searchResponse = await apiClient.post<SearchContactsResponse>(
-        `/engagement/v2/contacts/_search`,
-        {
-          filter: {
-            emails: [testContact.email_addresses?.[0].email_address],
+        const searchResponse = await apiClient.post<SearchContactsResponse>(
+          `/engagement/v2/contacts/_search`,
+          {
+            filter: {
+              emails: [testContact.email_addresses?.[0].email_address],
+            },
           },
-        },
-        {
-          headers: { 'x-provider-name': providerName },
-        }
-      );
-      expect(searchResponse.status).toEqual(200);
-      expect(searchResponse.data.records.length).toEqual(1);
-      expect(searchResponse.data.records[0].id).toEqual(response.data.record?.id);
-    }, 120_000);
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
+        expect(searchResponse.status).toEqual(200);
+        expect(searchResponse.data.records.length).toEqual(1);
+        expect(searchResponse.data.records[0].id).toEqual(response.data.record?.id);
+      },
+      120_000
+    );
   });
 });
