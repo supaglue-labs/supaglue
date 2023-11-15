@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createSyncConfig, updateSyncConfig } from '@/client';
+import { ConfirmationModal } from '@/components/modals';
 import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { SwitchWithLabel } from '@/components/SwitchWithLabel';
@@ -73,6 +74,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [customInputValue, setCustomInputValue] = useState<string>('');
   const [entityIds, setEntityIds] = useState<string[]>([]);
   const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
+  const [numSyncsToBeDeleted, setNumSyncsToBeDeleted] = useState<number>(0);
   const router = useRouter();
 
   const isFormValid = destinationName && providerName && isSyncPeriodSecsValid(syncPeriodSecs);
@@ -102,7 +104,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
 
   const formTitle = syncConfig ? 'Edit Sync Config' : 'New Sync Config';
 
-  const createOrUpdateSyncConfig = async (): Promise<SyncConfigDTO | undefined> => {
+  const createOrUpdateSyncConfig = async (forceDeleteSyncs = false): Promise<SyncConfigDTO | undefined> => {
     if (!destinationName || !providerName) {
       addNotification({ message: 'Destination and Provider must be selected', severity: 'error' });
       return;
@@ -139,8 +141,15 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
           entities: entityIds.map((entityId) => ({ entityId })),
         },
       };
-      const response = await updateSyncConfig(activeApplicationId, newSyncConfig);
+      const response = await updateSyncConfig(activeApplicationId, newSyncConfig, forceDeleteSyncs);
       if (!response.ok) {
+        if (response.errorMessage.startsWith('This SyncConfig update operation will delete')) {
+          const match = response.errorMessage.match(/~(\d+)/);
+          if (match) {
+            setNumSyncsToBeDeleted(parseInt(match[1], 10));
+          }
+          return;
+        }
         addNotification({ message: response.errorMessage, severity: 'error' });
         return;
       }
@@ -202,6 +211,42 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
       </Breadcrumbs>
 
       <Card>
+        <ConfirmationModal
+          open={!!numSyncsToBeDeleted}
+          handleClose={() => setNumSyncsToBeDeleted(0)}
+          onConfirm={async () => {
+            setIsSaving(true);
+            const newSyncConfig = await createOrUpdateSyncConfig(/*force_delete_syncs=*/ true);
+            if (newSyncConfig) {
+              const latestSyncConfigs = toGetSyncConfigsResponse([
+                ...syncConfigs.filter((syncConfig) => syncConfig.id !== newSyncConfig.id),
+                newSyncConfig,
+              ]);
+              addNotification({ message: 'Successfully updated Sync Config', severity: 'success' });
+              await mutate(latestSyncConfigs, {
+                optimisticData: latestSyncConfigs,
+                revalidate: false,
+                populateCache: false,
+              });
+              setIsSaving(false);
+              router.back();
+            }
+            setIsSaving(false);
+          }}
+          title="Update Sync Config"
+          cancelVariant="text"
+          confirmVariant="contained"
+          confirmColor="error"
+          content={
+            <Typography>
+              Are you sure you want to update this Sync Config? This will delete{' '}
+              <Typography fontWeight="bold" display="inline">
+                {numSyncsToBeDeleted}
+              </Typography>{' '}
+              existing syncs.
+            </Typography>
+          }
+        />
         <Stack direction="column" className="gap-2" sx={{ padding: '2rem' }}>
           <Stack direction="row" className="items-center justify-between w-full">
             <Stack direction="column">
@@ -501,9 +546,10 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                     revalidate: false,
                     populateCache: false,
                   });
+                  setIsSaving(false);
+                  router.back();
                 }
                 setIsSaving(false);
-                router.back();
               }}
             >
               Save

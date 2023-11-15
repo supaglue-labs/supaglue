@@ -7,6 +7,7 @@ export type DeleteResourceConfirmationModalProps = {
   open: boolean;
   handleClose: () => void;
   onDelete: () => void;
+  contentOverride?: React.ReactNode;
 };
 
 export function DeleteResourceConfirmationModal({
@@ -15,6 +16,7 @@ export function DeleteResourceConfirmationModal({
   onDelete,
   handleClose,
   open,
+  contentOverride,
 }: DeleteResourceConfirmationModalProps) {
   return (
     <ConfirmationModal
@@ -27,13 +29,15 @@ export function DeleteResourceConfirmationModal({
       confirmColor="error"
       title={title}
       content={
-        <Typography>
-          Are you sure you want to delete{' '}
-          <Typography fontWeight="bold" display="inline">
-            {resourceName}
+        contentOverride ?? (
+          <Typography>
+            Are you sure you want to delete{' '}
+            <Typography fontWeight="bold" display="inline">
+              {resourceName}
+            </Typography>
+            ?
           </Typography>
-          ?
-        </Typography>
+        )
       }
     />
   );

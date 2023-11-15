@@ -159,11 +159,24 @@ export class SyncConfigService {
     return fromSyncConfigModel(createdSyncConfigModel);
   }
 
-  public async update(id: string, applicationId: string, params: SyncConfigUpdateParams): Promise<SyncConfig> {
+  public async update(
+    id: string,
+    applicationId: string,
+    params: SyncConfigUpdateParams,
+    force_delete_syncs = false
+  ): Promise<SyncConfig> {
     validateSyncConfigParams(params);
+    if (!force_delete_syncs) {
+      const affectedSyncsCount = await this.#diffAndCountAffectedSyncs(id, applicationId, params);
+      if (affectedSyncsCount) {
+        throw new BadRequestError(
+          `This SyncConfig update operation will delete ~${affectedSyncsCount} syncs. If you are sure you want to do this, set force_delete_syncs to true.`
+        );
+      }
+    }
     const [updatedSyncConfigModel] = await this.#prisma.$transaction([
       this.#prisma.syncConfig.update({
-        where: { id },
+        where: { id, applicationId },
         data: { config: params.config },
       }),
       this.#prisma.syncConfigChange.create({
@@ -173,6 +186,82 @@ export class SyncConfigService {
       }),
     ]);
     return fromSyncConfigModel(updatedSyncConfigModel);
+  }
+
+  async #diffAndCountAffectedSyncs(id: string, applicationId: string, params: SyncConfigUpdateParams): Promise<number> {
+    const syncConfig = await this.getByIdAndApplicationId(id, applicationId);
+    // diff objects in the old and new sync configs
+    const oldObjectNames: string[][] = [
+      syncConfig.config.commonObjects?.map((object) => object.object) ?? [],
+      syncConfig.config.standardObjects?.map((object) => object.object) ?? [],
+      syncConfig.config.customObjects?.map((object) => object.object) ?? [],
+      syncConfig.config.entities?.map((entity) => entity.entityId) ?? [],
+    ];
+
+    const newObjectNames: Set<string>[] = [
+      new Set<string>(params.config.commonObjects?.map((object) => object.object) ?? []),
+      new Set<string>(params.config.standardObjects?.map((object) => object.object) ?? []),
+      new Set<string>(params.config.customObjects?.map((object) => object.object) ?? []),
+      new Set<string>(params.config.entities?.map((entity) => entity.entityId) ?? []),
+    ];
+
+    const deletedObjectsAndEntities = [
+      oldObjectNames[0].filter((x) => !newObjectNames[0].has(x)),
+      oldObjectNames[1].filter((x) => !newObjectNames[1].has(x)),
+      oldObjectNames[2].filter((x) => !newObjectNames[2].has(x)),
+      oldObjectNames[3].filter((x) => !newObjectNames[3].has(x)),
+    ];
+
+    // find affected syncs
+    let count = 0;
+    if (deletedObjectsAndEntities[0].length) {
+      count += await this.#prisma.sync.count({
+        where: {
+          syncConfigId: id,
+          object: {
+            in: deletedObjectsAndEntities[0],
+          },
+          objectType: 'common',
+        },
+      });
+    }
+
+    if (deletedObjectsAndEntities[1].length) {
+      count += await this.#prisma.sync.count({
+        where: {
+          syncConfigId: id,
+          object: {
+            in: deletedObjectsAndEntities[1],
+          },
+          objectType: 'standard',
+        },
+      });
+    }
+
+    if (deletedObjectsAndEntities[2].length) {
+      count += await this.#prisma.sync.count({
+        where: {
+          syncConfigId: id,
+          object: {
+            in: deletedObjectsAndEntities[2],
+          },
+          objectType: 'custom',
+        },
+      });
+    }
+
+    if (deletedObjectsAndEntities[3].length) {
+      count += await this.#prisma.sync.count({
+        where: {
+          syncConfigId: id,
+          entityId: {
+            in: deletedObjectsAndEntities[3],
+          },
+        },
+      });
+    }
+
+    return count;
   }
 
   // Only used for backfill
@@ -230,12 +319,17 @@ export class SyncConfigService {
     return fromSyncConfigModel(upsertedSyncConfigModel);
   }
 
-  public async delete(id: string, applicationId: string): Promise<void> {
+  public async delete(id: string, applicationId: string, forceDeleteSyncs = false): Promise<void> {
     const syncs = await this.#prisma.sync.findMany({
       where: {
         syncConfigId: id,
       },
     });
+    if (syncs.length && !forceDeleteSyncs) {
+      throw new BadRequestError(
+        `Deleting this syncConfig will delete ~${syncs.length} syncs. If you are sure you want to do this, set force_delete_syncs to true.`
+      );
+    }
     await this.#prisma.$transaction([
       this.#prisma.syncChange.createMany({
         data: syncs.map((sync) => ({

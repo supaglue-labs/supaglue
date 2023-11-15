@@ -144,7 +144,7 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
             <DeleteSyncConfig
               syncConfigId={params.row.id}
               onDelete={async () => {
-                const response = await deleteSyncConfig(applicationId, params.row.id);
+                const response = await deleteSyncConfig(applicationId, params.row.id, /* force_delete_syncs */ true);
                 if (!response.ok) {
                   addNotification({ message: response.errorMessage, severity: 'error' });
                   return;

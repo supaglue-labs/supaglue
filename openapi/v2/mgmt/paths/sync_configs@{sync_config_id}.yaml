@@ -17,7 +17,12 @@ put:
   summary: Update Sync Config
   tags:
     - SyncConfigs
-  parameters: []
+  parameters:
+    - name: force_delete_syncs
+      in: query
+      required: false
+      schema: 
+        type: boolean
   requestBody:
     required: true
     content:
@@ -38,6 +43,12 @@ delete:
     - SyncConfigs
   security:
     - x-api-key: []
+  parameters:
+    - name: force_delete_syncs
+      in: query
+      required: false
+      schema: 
+        type: boolean
   responses:
     200:
       description: SyncConfig
