@@ -237,6 +237,16 @@ export class SyncConfigService {
       },
     });
     await this.#prisma.$transaction([
+      this.#prisma.syncChange.createMany({
+        data: syncs.map((sync) => ({
+          syncId: sync.id,
+        })),
+      }),
+      this.#prisma.sync.deleteMany({
+        where: {
+          syncConfigId: id,
+        },
+      }),
       this.#prisma.syncConfig.deleteMany({
         where: { id, applicationId },
       }),
@@ -244,16 +254,6 @@ export class SyncConfigService {
         data: {
           syncConfigId: id,
         },
-      }),
-      this.#prisma.sync.deleteMany({
-        where: {
-          syncConfigId: id,
-        },
-      }),
-      this.#prisma.syncChange.createMany({
-        data: syncs.map((sync) => ({
-          syncId: sync.id,
-        })),
       }),
     ]);
   }
