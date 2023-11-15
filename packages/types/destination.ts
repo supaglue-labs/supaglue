@@ -1,6 +1,6 @@
-export type DestinationType = 'postgres' | 'bigquery' | 'supaglue';
+export type DestinationType = 'postgres' | 'supaglue';
 
-export type NonSupaglueDestinationType = 'postgres' | 'bigquery';
+export type NonSupaglueDestinationType = 'postgres';
 
 type BaseDestinationCreateParams = {
   applicationId: string;
@@ -12,21 +12,18 @@ type BaseDestination = BaseDestinationCreateParams & {
 };
 type BaseDestinationUpdateParams = BaseDestination;
 
-export type DestinationConfigUnsafeAny = DestinationConfigUnsafe<'postgres'> | DestinationConfigUnsafe<'bigquery'>;
+export type DestinationConfigUnsafeAny = DestinationConfigUnsafe<'postgres'>;
 
 export type DestinationConfigUnsafe<T extends NonSupaglueDestinationType> = {
   postgres: PostgresConfigUnsafe;
-  bigquery: BigQueryConfigUnsafe;
 }[T];
 
 export type DestinationConfigAtLeastSafe<T extends NonSupaglueDestinationType> = {
   postgres: PostgresConfigAtLeastSafe;
-  bigquery: BigQueryConfigAtLeastSafe;
 }[T];
 
 export type DestinationConfigSafe<T extends NonSupaglueDestinationType> = {
   postgres: PostgresConfigSafeOnly;
-  bigquery: BigQueryConfigSafeOnly;
 }[T];
 
 export type DestinationCreateParams<T extends NonSupaglueDestinationType> = BaseDestinationCreateParams & {
@@ -83,34 +80,10 @@ export type PostgresConfigUnsafeOnly = {
   serverName?: string;
 };
 
-export type BigQueryConfigUnsafe = BigQueryConfigSafeOnly & BigQueryConfigUnsafeOnly;
-export type BigQueryConfigAtLeastSafe = BigQueryConfigSafeOnly & Partial<BigQueryConfigUnsafeOnly>;
-
-export type BigQueryConfigSafeOnly = {
-  projectId: string;
-  dataset: string;
-  credentials: {
-    clientEmail: string;
-  };
-};
-
-// TODO (670): encrypt
-export type BigQueryConfigUnsafeOnly = {
-  credentials: {
-    privateKey: string;
-  };
-};
-
-export type DestinationUnsafeAny = DestinationUnsafe<'postgres'> | DestinationUnsafe<'bigquery'> | SupaglueDestination;
-export type DestinationSafeAny = DestinationSafe<'postgres'> | DestinationSafe<'bigquery'> | SupaglueDestination;
-export type DestinationCreateParamsAny =
-  | DestinationCreateParams<'postgres'>
-  | DestinationCreateParams<'bigquery'>
-  | SupaglueDestinationCreateParams;
-export type DestinationUpdateParamsAny =
-  | DestinationUpdateParams<'postgres'>
-  | DestinationUpdateParams<'bigquery'>
-  | SupaglueDestinationUpdateParams;
+export type DestinationUnsafeAny = DestinationUnsafe<'postgres'> | SupaglueDestination;
+export type DestinationSafeAny = DestinationSafe<'postgres'> | SupaglueDestination;
+export type DestinationCreateParamsAny = DestinationCreateParams<'postgres'> | SupaglueDestinationCreateParams;
+export type DestinationUpdateParamsAny = DestinationUpdateParams<'postgres'> | SupaglueDestinationUpdateParams;
 
 export type DestinationTestParams<T extends NonSupaglueDestinationType> =
   | DestinationCreateParams<T>
@@ -120,7 +93,6 @@ export type DestinationTestParams<T extends NonSupaglueDestinationType> =
 
 export type DestinationTestParamsAny =
   | DestinationTestParams<'postgres'>
-  | DestinationTestParams<'bigquery'>
   | SupaglueDestinationCreateParams
   | SupaglueDestinationUpdateParams;
 

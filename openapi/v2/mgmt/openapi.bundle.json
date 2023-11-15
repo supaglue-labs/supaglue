@@ -2535,47 +2535,6 @@
               "type",
               "version"
             ]
-          },
-          {
-            "type": "object",
-            "title": "bigquery",
-            "properties": {
-              "id": {
-                "type": "string",
-                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
-              },
-              "application_id": {
-                "type": "string",
-                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
-              },
-              "name": {
-                "type": "string",
-                "example": "My BigQuery Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "bigquery"
-                ],
-                "example": "bigquery"
-              },
-              "config": {
-                "$ref": "#/components/schemas/bigquery_config_safe"
-              },
-              "version": {
-                "type": "number",
-                "example": 1,
-                "description": "A monotonically increasing version number of the destination configuration"
-              }
-            },
-            "required": [
-              "id",
-              "application_id",
-              "name",
-              "type",
-              "config",
-              "version"
-            ]
           }
         ]
       },
@@ -2623,36 +2582,6 @@
           "user"
         ]
       },
-      "bigquery_config_safe": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string",
-            "example": "my-gcp-project-id"
-          },
-          "dataset": {
-            "type": "string",
-            "example": "my_bigquery_dataset"
-          },
-          "credentials": {
-            "type": "object",
-            "properties": {
-              "client_email": {
-                "type": "string",
-                "example": "my_bigquery_service_account@my_project.iam.gserviceaccount.com"
-              }
-            },
-            "required": [
-              "client_email"
-            ]
-          }
-        },
-        "required": [
-          "project_id",
-          "dataset",
-          "credentials"
-        ]
-      },
       "postgres_config_at_least_safe": {
         "type": "object",
         "properties": {
@@ -2687,41 +2616,6 @@
           "database",
           "schema",
           "user"
-        ]
-      },
-      "bigquery_config_at_least_safe": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string",
-            "example": "my-gcp-project-id"
-          },
-          "dataset": {
-            "type": "string",
-            "example": "my_bigquery_dataset"
-          },
-          "credentials": {
-            "type": "object",
-            "properties": {
-              "client_email": {
-                "type": "string",
-                "example": "my_bigquery_service_account@my_project.iam.gserviceaccount.com"
-              },
-              "private_key": {
-                "type": "string",
-                "example": "-----BEGIN PRIVATE KEY-----\\nMII..."
-              }
-            },
-            "required": [
-              "client_email",
-              "private_key"
-            ]
-          }
-        },
-        "required": [
-          "project_id",
-          "dataset",
-          "credentials"
         ]
       },
       "postgres_config_unsafe": {
@@ -2787,41 +2681,6 @@
           "schema",
           "user",
           "password"
-        ]
-      },
-      "bigquery_config_unsafe": {
-        "type": "object",
-        "properties": {
-          "project_id": {
-            "type": "string",
-            "example": "my-gcp-project-id"
-          },
-          "dataset": {
-            "type": "string",
-            "example": "my_bigquery_dataset"
-          },
-          "credentials": {
-            "type": "object",
-            "properties": {
-              "client_email": {
-                "type": "string",
-                "example": "my_bigquery_service_account@my_project.iam.gserviceaccount.com"
-              },
-              "private_key": {
-                "type": "string",
-                "example": "-----BEGIN PRIVATE KEY-----\\nMII..."
-              }
-            },
-            "required": [
-              "client_email",
-              "private_key"
-            ]
-          }
-        },
-        "required": [
-          "project_id",
-          "dataset",
-          "credentials"
         ]
       },
       "schema": {
@@ -4357,31 +4216,6 @@
             "required": [
               "type"
             ]
-          },
-          {
-            "type": "object",
-            "title": "bigquery",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "My BigQuery Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "bigquery"
-                ],
-                "example": "bigquery"
-              },
-              "config": {
-                "$ref": "#/components/schemas/bigquery_config_unsafe"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "config"
-            ]
           }
         ]
       },
@@ -4416,36 +4250,6 @@
               },
               "config": {
                 "$ref": "#/components/schemas/postgres_config_at_least_safe"
-              },
-              "version": {
-                "type": "number",
-                "example": "number"
-              }
-            },
-            "required": [
-              "name",
-              "type",
-              "config",
-              "version"
-            ]
-          },
-          {
-            "type": "object",
-            "title": "bigquery",
-            "properties": {
-              "name": {
-                "type": "string",
-                "example": "My BigQuery Destination"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "bigquery"
-                ],
-                "example": "bigquery"
-              },
-              "config": {
-                "$ref": "#/components/schemas/bigquery_config_at_least_safe"
               },
               "version": {
                 "type": "number",
@@ -4631,28 +4435,6 @@
                   "type",
                   "schema"
                 ]
-              },
-              {
-                "description": "Config specific to BigQuery destination",
-                "type": "object",
-                "title": "BigQuery",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "bigquery"
-                    ]
-                  },
-                  "dataset": {
-                    "type": "string",
-                    "description": "The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.",
-                    "example": "customer_1_dataset"
-                  }
-                },
-                "required": [
-                  "type",
-                  "dataset"
-                ]
               }
             ]
           },
@@ -4677,7 +4459,7 @@
                 },
                 {
                   "type": "object",
-                  "title": "Postgres/BigQuery (Preview)",
+                  "title": "Postgres (Preview)",
                   "properties": {
                     "object": {
                       "type": "string",
@@ -4719,7 +4501,7 @@
                 },
                 {
                   "type": "object",
-                  "title": "Postgres/BigQuery (Preview)",
+                  "title": "Postgres (Preview)",
                   "properties": {
                     "object": {
                       "type": "string",
@@ -4941,28 +4723,6 @@
                   "type",
                   "schema"
                 ]
-              },
-              {
-                "description": "Config specific to BigQuery destination",
-                "type": "object",
-                "title": "BigQuery",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "bigquery"
-                    ]
-                  },
-                  "dataset": {
-                    "type": "string",
-                    "description": "The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.",
-                    "example": "customer_1_dataset"
-                  }
-                },
-                "required": [
-                  "type",
-                  "dataset"
-                ]
               }
             ]
           },
@@ -4987,7 +4747,7 @@
                 },
                 {
                   "type": "object",
-                  "title": "Postgres/BigQuery (Preview)",
+                  "title": "Postgres (Preview)",
                   "properties": {
                     "object": {
                       "type": "string",
@@ -5029,7 +4789,7 @@
                 },
                 {
                   "type": "object",
-                  "title": "Postgres/BigQuery (Preview)",
+                  "title": "Postgres (Preview)",
                   "properties": {
                     "object": {
                       "type": "string",
