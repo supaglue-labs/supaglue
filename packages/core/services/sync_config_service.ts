@@ -236,9 +236,6 @@ export class SyncConfigService {
         syncConfigId: id,
       },
     });
-    if (syncs.length) {
-      throw new BadRequestError('Cannot delete sync config with active connections');
-    }
     await this.#prisma.$transaction([
       this.#prisma.syncConfig.deleteMany({
         where: { id, applicationId },
@@ -247,6 +244,16 @@ export class SyncConfigService {
         data: {
           syncConfigId: id,
         },
+      }),
+      this.#prisma.sync.deleteMany({
+        where: {
+          syncConfigId: id,
+        },
+      }),
+      this.#prisma.syncChange.createMany({
+        data: syncs.map((sync) => ({
+          syncId: sync.id,
+        })),
       }),
     ]);
   }
