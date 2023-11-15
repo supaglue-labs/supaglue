@@ -459,7 +459,7 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
         // the record was archived, restored, and archived again.
         // TODO: This may have performance implications. We should look into this later.
         // https://github.com/supaglue-labs/supaglue/issues/497
-        const supaglueId = `_supaglue_id${maybeObjectNameColumn})`;
+        const supaglueId = `_supaglue_id${maybeObjectNameColumn}`;
         await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
 SELECT DISTINCT ON (${supaglueId}) ${columns.join(
           ','
