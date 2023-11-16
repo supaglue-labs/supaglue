@@ -1413,7 +1413,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
             client_id: this.#credentials.clientId,
             client_secret: this.#credentials.clientSecret,
             grant_type: 'refresh_token',
-            refresh_token: 'asdf',
+            refresh_token: this.#credentials.refreshToken,
           }
         );
 
