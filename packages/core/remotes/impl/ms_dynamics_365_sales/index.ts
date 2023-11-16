@@ -311,7 +311,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     }));
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,

@@ -14,7 +14,7 @@ import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
 export interface CrmRemoteClient extends RemoteClient {
-  listCommonObjectRecords(
+  streamCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
@@ -61,7 +61,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     super(...args);
   }
 
-  public async listCommonObjectRecords(
+  public async streamCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,

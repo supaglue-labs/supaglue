@@ -1044,7 +1044,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     );
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date | undefined,

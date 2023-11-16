@@ -1371,7 +1371,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return mapper(response.data.data);
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date
   ): Promise<Readable> {

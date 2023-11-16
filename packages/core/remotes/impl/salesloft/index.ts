@@ -272,7 +272,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date,
     heartbeat?: () => void
