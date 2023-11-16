@@ -1,4 +1,3 @@
-import { BigQuery } from '@google-cloud/bigquery';
 import type { PrismaClient } from '@supaglue/db';
 import type {
   DestinationConfigUnsafeAny,
@@ -16,7 +15,6 @@ import fs from 'fs';
 import path from 'path';
 import { Client } from 'pg';
 import type { DestinationWriter } from '../destination_writers/base';
-import { BigQueryDestinationWriter } from '../destination_writers/bigquery';
 import { PostgresDestinationWriter } from '../destination_writers/postgres';
 import { SupaglueDestinationWriter } from '../destination_writers/supaglue';
 import { BadRequestError } from '../errors';
@@ -185,34 +183,6 @@ export class DestinationService {
           }
         }
         break;
-      case 'bigquery':
-        {
-          try {
-            const bigQueryClient = new BigQuery({
-              ...params.config,
-              credentials: {
-                client_email: params.config.credentials.clientEmail,
-                private_key:
-                  params.config.credentials.privateKey ??
-                  (existingDestination as DestinationUnsafe<'bigquery'> | null)?.config.credentials.privateKey ??
-                  '', // TODO: shouldn't do empty string
-              },
-              autoRetry: false,
-            });
-            const [datasets] = await bigQueryClient.getDatasets();
-
-            // if we can't find params.config.dataset in the list of datasets, it doesn't exist
-            const datasetExists = datasets.some((dataset) => dataset?.id === params.config.dataset);
-            if (!datasetExists) {
-              message = 'dataset does not exist';
-            } else {
-              success = true;
-            }
-          } catch (err: any) {
-            ({ message } = err);
-          }
-        }
-        break;
       default:
         throw new BadRequestError(`unknown destination type`);
     }
@@ -282,8 +252,6 @@ export class DestinationService {
     switch (destination.type) {
       case 'postgres':
         return new PostgresDestinationWriter(destination);
-      case 'bigquery':
-        return new BigQueryDestinationWriter(destination);
       case 'supaglue':
         return new SupaglueDestinationWriter();
       default:
@@ -304,17 +272,6 @@ function mergeDestinationConfig(
       return {
         ...params.config,
         password: params.config.password ?? existingDestination.config.password,
-      };
-    case 'bigquery':
-      if (params.type !== 'bigquery') {
-        throw new BadRequestError('cannot change destination type');
-      }
-      return {
-        ...params.config,
-        credentials: {
-          ...params.config.credentials,
-          privateKey: params.config.credentials.privateKey ?? existingDestination.config.credentials.privateKey,
-        },
       };
     case 'supaglue':
       throw new BadRequestError('cannot update supaglue managed destination');

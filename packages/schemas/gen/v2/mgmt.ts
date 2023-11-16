@@ -539,24 +539,6 @@ export interface components {
        * @example 1
        */
       version: number;
-    }, {
-      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
-      id: string;
-      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
-      application_id: string;
-      /** @example My BigQuery Destination */
-      name: string;
-      /**
-       * @example bigquery
-       * @enum {string}
-       */
-      type: "bigquery";
-      config: components["schemas"]["bigquery_config_safe"];
-      /**
-       * @description A monotonically increasing version number of the destination configuration
-       * @example 1
-       */
-      version: number;
     }]>;
     postgres_config_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -575,16 +557,6 @@ export interface components {
        */
       ssl_mode?: "disable" | "no-verify" | "prefer" | "require" | "verify-ca" | "verify-full";
     };
-    bigquery_config_safe: {
-      /** @example my-gcp-project-id */
-      project_id: string;
-      /** @example my_bigquery_dataset */
-      dataset: string;
-      credentials: {
-        /** @example my_bigquery_service_account@my_project.iam.gserviceaccount.com */
-        client_email: string;
-      };
-    };
     postgres_config_at_least_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
       host: string;
@@ -598,18 +570,6 @@ export interface components {
       user: string;
       /** @example mysensitivepassword */
       password?: string;
-    };
-    bigquery_config_at_least_safe: {
-      /** @example my-gcp-project-id */
-      project_id: string;
-      /** @example my_bigquery_dataset */
-      dataset: string;
-      credentials: {
-        /** @example my_bigquery_service_account@my_project.iam.gserviceaccount.com */
-        client_email: string;
-        /** @example -----BEGIN PRIVATE KEY-----\nMII... */
-        private_key: string;
-      };
     };
     postgres_config_unsafe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -637,18 +597,6 @@ export interface components {
       client_key?: string;
       /** @example 1-dd8643d8-f1ce-420f-a867-66b78a4734be.us-central1.sql.goog */
       server_name?: string;
-    };
-    bigquery_config_unsafe: {
-      /** @example my-gcp-project-id */
-      project_id: string;
-      /** @example my_bigquery_dataset */
-      dataset: string;
-      credentials: {
-        /** @example my_bigquery_service_account@my_project.iam.gserviceaccount.com */
-        client_email: string;
-        /** @example -----BEGIN PRIVATE KEY-----\nMII... */
-        private_key: string;
-      };
     };
     /** @deprecated */
     schema: {
@@ -1224,15 +1172,6 @@ export interface components {
        * @enum {string}
        */
       type: "supaglue";
-    }, {
-      /** @example My BigQuery Destination */
-      name: string;
-      /**
-       * @example bigquery
-       * @enum {string}
-       */
-      type: "bigquery";
-      config: components["schemas"]["bigquery_config_unsafe"];
     }]>;
     /**
      * @example {
@@ -1248,7 +1187,7 @@ export interface components {
      *   }
      * }
      */
-    update_destination: OneOf<[{
+    update_destination: {
       /** @example My Postgres Destination */
       name: string;
       /**
@@ -1259,18 +1198,7 @@ export interface components {
       config: components["schemas"]["postgres_config_at_least_safe"];
       /** @example number */
       version: number;
-    }, {
-      /** @example My BigQuery Destination */
-      name: string;
-      /**
-       * @example bigquery
-       * @enum {string}
-       */
-      type: "bigquery";
-      config: components["schemas"]["bigquery_config_at_least_safe"];
-      /** @example number */
-      version: number;
-    }]>;
+    };
     create_sync_config: {
       /** @example object */
       destination_name: string;
@@ -1317,7 +1245,7 @@ export interface components {
     }]>;
     upsert_connection_sync_config: {
       /** @description An object to override the default Destination configuration per connection. */
-      destination_config?: OneOf<[{
+      destination_config?: {
         /** @enum {string} */
         type: "postgres";
         /**
@@ -1325,15 +1253,7 @@ export interface components {
          * @example customer_1_schema
          */
         schema: string;
-      }, {
-        /** @enum {string} */
-        type: "bigquery";
-        /**
-         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.
-         * @example customer_1_dataset
-         */
-        dataset: string;
-      }]>;
+      };
       /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       standard_objects?: OneOf<[{
           /**
@@ -1431,7 +1351,7 @@ export interface components {
     };
     connection_sync_config: {
       /** @description An object to override the default Destination configuration per connection. */
-      destination_config?: OneOf<[{
+      destination_config?: {
         /** @enum {string} */
         type: "postgres";
         /**
@@ -1439,15 +1359,7 @@ export interface components {
          * @example customer_1_schema
          */
         schema: string;
-      }, {
-        /** @enum {string} */
-        type: "bigquery";
-        /**
-         * @description The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.
-         * @example customer_1_dataset
-         */
-        dataset: string;
-      }]>;
+      };
       /** @description A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig. */
       standard_objects?: OneOf<[{
           /**

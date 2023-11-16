@@ -1,11 +1,5 @@
 import type { Destination as DestinationModel } from '@supaglue/db';
-import type {
-  BigQueryConfigUnsafe,
-  DestinationSafeAny,
-  DestinationUnsafeAny,
-  PostgresConfigUnsafe,
-} from '@supaglue/types';
-import { camelcaseKeys } from '@supaglue/utils';
+import type { DestinationSafeAny, DestinationUnsafeAny, PostgresConfigUnsafe } from '@supaglue/types';
 import { decrypt } from '../lib/crypt';
 
 export const fromDestinationModelToUnsafe = async (model: DestinationModel): Promise<DestinationUnsafeAny> => {
@@ -19,15 +13,6 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
   const decryptedConfig = JSON.parse(await decrypt(model.encryptedConfig));
 
   switch (model.type) {
-    case 'bigquery':
-      return {
-        ...baseParams,
-        type: 'bigquery',
-        config: {
-          ...decryptedConfig,
-          credentials: camelcaseKeys(decryptedConfig.credentials),
-        },
-      };
     case 'postgres':
       return {
         ...baseParams,
@@ -57,20 +42,6 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
   const decryptedConfig = JSON.parse(await decrypt(model.encryptedConfig));
 
   switch (model.type) {
-    case 'bigquery': {
-      const config = camelcaseKeys(decryptedConfig) as BigQueryConfigUnsafe;
-      return {
-        ...baseParams,
-        type: 'bigquery',
-        config: {
-          projectId: config.projectId,
-          dataset: config.dataset,
-          credentials: {
-            clientEmail: config.credentials.clientEmail,
-          },
-        },
-      };
-    }
     case 'postgres': {
       const config = decryptedConfig as PostgresConfigUnsafe;
       return {
