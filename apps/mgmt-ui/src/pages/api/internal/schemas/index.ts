@@ -9,7 +9,7 @@ import { API_HOST } from '../..';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSchemasResponse | null>) {
   const result = await fetch(`${API_HOST}/internal/schemas`, {
     method: 'GET',
-    headers: getApplicationIdScopedHeaders(req),
+    headers: await getApplicationIdScopedHeaders(req),
   });
 
   const r = await result.json();

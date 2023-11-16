@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const result = await fetch(`${API_HOST}/internal/syncs/_pause`, {
     method: 'POST',
     headers: {
-      ...getApplicationIdScopedHeaders(req),
+      ...(await getApplicationIdScopedHeaders(req)),
       'x-customer-id': req.headers['x-customer-id'] as string,
       'x-provider-name': req.headers['x-provider-name'] as string,
     },

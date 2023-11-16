@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'GET': {
       const result = await fetch(url, {
         method: 'GET',
-        headers: getApplicationIdScopedHeaders(req),
+        headers: await getApplicationIdScopedHeaders(req),
       });
 
       const r = await result.json();
@@ -25,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       }
       const result = await fetch(url, {
         method: 'DELETE',
-        headers: getApplicationIdScopedHeaders(req),
+        headers: await getApplicationIdScopedHeaders(req),
       });
 
       if (!result.ok) {

@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case 'POST': {
       const result = await fetch(`${API_HOST}/internal/magic_links`, {
         method: 'POST',
-        headers: getApplicationIdScopedHeaders(req),
+        headers: await getApplicationIdScopedHeaders(req),
         body: JSON.stringify(req.body),
       });
 

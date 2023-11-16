@@ -12,7 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const result = await fetch(`${API_HOST}/internal/sync-runs?${queryParams}`, {
     method: 'GET',
-    headers: getApplicationIdScopedHeaders(req),
+    headers: await getApplicationIdScopedHeaders(req),
   });
 
   const r = await result.json();

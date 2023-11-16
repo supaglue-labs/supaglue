@@ -6,7 +6,7 @@ import { API_HOST } from '../..';
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const result = await fetch(`${API_HOST}/internal/api_keys/_revoke_api_key`, {
     method: 'POST',
-    headers: getApplicationIdScopedHeaders(req),
+    headers: await getApplicationIdScopedHeaders(req),
   });
 
   if (!result.ok) {

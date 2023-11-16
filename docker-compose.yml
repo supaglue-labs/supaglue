@@ -21,6 +21,7 @@ x-common-env: &common-env
   # Edit this when using ngrok
   SUPAGLUE_SERVER_URL: ${SUPAGLUE_SERVER_URL:-http://localhost:8080}
   SUPAGLUE_MAGIC_LINK_URL:
+  CLERK_JWKS_URL: ${CLERK_JWKS_URL:-https://witty-eft-29.clerk.accounts.dev/.well-known/jwks.json}
 
 x-fe-api-common-env: &fe-api-common-env
   SUPAGLUE_INTERNAL_TOKEN: some-internal-token
