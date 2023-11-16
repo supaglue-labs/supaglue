@@ -7,11 +7,11 @@
 
 import type {
   CreateContactRequest,
-  CreateContactResponse,
-  GetContactResponse,
-  ListContactsResponse,
-  SearchContactsResponse,
-  UpdateContactResponse,
+  CreateContactSuccessfulResponse,
+  GetContactSuccessfulResponse,
+  ListContactsSuccessfulResponse,
+  SearchContactsSuccessfulResponse,
+  UpdateContactSuccessfulResponse,
 } from '@supaglue/schemas/v2/engagement';
 
 jest.retryTimes(3);
@@ -34,7 +34,7 @@ describe('contact', () => {
 
   describe.each(['outreach', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
-      const response = await apiClient.post<CreateContactResponse>(
+      const response = await apiClient.post<CreateContactSuccessfulResponse>(
         '/engagement/v2/contacts',
         { record: testContact },
         {
@@ -49,7 +49,7 @@ describe('contact', () => {
         objectName: 'contact',
       });
 
-      const getResponse = await apiClient.get<GetContactResponse>(
+      const getResponse = await apiClient.get<GetContactSuccessfulResponse>(
         `/engagement/v2/contacts/${response.data.record?.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -77,7 +77,7 @@ describe('contact', () => {
       expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+      const cachedReadResponse = await apiClient.get<ListContactsSuccessfulResponse>(
         `/engagement/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,
@@ -93,7 +93,7 @@ describe('contact', () => {
     }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
-      const response = await apiClient.post<CreateContactResponse>(
+      const response = await apiClient.post<CreateContactSuccessfulResponse>(
         '/engagement/v2/contacts',
         { record: testContact },
         {
@@ -108,7 +108,7 @@ describe('contact', () => {
         objectName: 'contact',
       });
 
-      const updateResponse = await apiClient.patch<UpdateContactResponse>(
+      const updateResponse = await apiClient.patch<UpdateContactSuccessfulResponse>(
         `/engagement/v2/contacts/${response.data.record?.id}`,
         {
           record: {
@@ -123,7 +123,7 @@ describe('contact', () => {
 
       expect(updateResponse.status).toEqual(200);
 
-      const getResponse = await apiClient.get<GetContactResponse>(
+      const getResponse = await apiClient.get<GetContactSuccessfulResponse>(
         `/engagement/v2/contacts/${response.data.record?.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -151,7 +151,7 @@ describe('contact', () => {
       expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+      const cachedReadResponse = await apiClient.get<ListContactsSuccessfulResponse>(
         `/engagement/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,
@@ -172,7 +172,7 @@ describe('contact', () => {
       ['salesloft', 'outreach'].includes(providerName),
       `Test that POST followed by SEARCH has correct data`,
       async () => {
-        const response = await apiClient.post<CreateContactResponse>(
+        const response = await apiClient.post<CreateContactSuccessfulResponse>(
           '/engagement/v2/contacts',
           { record: testContact },
           {
@@ -187,7 +187,7 @@ describe('contact', () => {
           objectName: 'contact',
         });
 
-        const searchResponse = await apiClient.post<SearchContactsResponse>(
+        const searchResponse = await apiClient.post<SearchContactsSuccessfulResponse>(
           `/engagement/v2/contacts/_search`,
           {
             filter: {

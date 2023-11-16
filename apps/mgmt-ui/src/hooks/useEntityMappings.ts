@@ -1,11 +1,11 @@
-import type { ListEntityMappingsResponse } from '@supaglue/schemas/v2/mgmt';
+import type { ListEntityMappingsSuccessfulResponse } from '@supaglue/schemas/v2/mgmt';
 import type { MergedEntityMapping } from '@supaglue/types/entity_mapping';
 import { snakecaseKeys } from '@supaglue/utils';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useEntityMappings(customerId: string, providerName: string) {
-  const { data, ...rest } = useSWRWithApplication<ListEntityMappingsResponse>(
+  const { data, ...rest } = useSWRWithApplication<ListEntityMappingsSuccessfulResponse>(
     `/api/internal/entity-mappings?customer_id=${customerId}&provider_name=${providerName}`
   );
 
@@ -17,6 +17,6 @@ export function useEntityMappings(customerId: string, providerName: string) {
 
 export const toListEntityMappingsResponse = (
   mergedEntityMappings: MergedEntityMapping[]
-): ListEntityMappingsResponse => {
+): ListEntityMappingsSuccessfulResponse => {
   return mergedEntityMappings.map(snakecaseKeys);
 };

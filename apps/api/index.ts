@@ -1,7 +1,8 @@
 import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
-import { HTTPError } from '@supaglue/core/errors';
+import { SGError } from '@supaglue/core/errors';
 import { expressScopeMiddleware, logger } from '@supaglue/core/lib';
+import type { ResponseErrors } from '@supaglue/schemas';
 import cors from 'cors';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
@@ -112,17 +113,22 @@ connectionAndSyncService.upsertProcessSyncChangesTemporalSchedule().catch((err) 
   logger.error(err);
 });
 
-app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: unknown, req: Request, res: Response<{ errors: ResponseErrors }>, next: NextFunction) => {
   // add the error to the response so pino-http can log it
   res.err = err as Error;
 
-  if (err instanceof HTTPError) {
-    return res.status(err.code).send({
+  if (err instanceof SGError) {
+    return res.status(err.httpCode).send({
       errors: [
         {
+          id: req.id.toString(),
           title: err.message,
-          detail: err.cause,
-          problem_type: err.problemType,
+          detail: err.detail,
+          problem_type: err.code,
+          code: err.code,
+          meta: err.meta,
+          status: err.status.toString(),
         },
       ],
     });
@@ -131,9 +137,16 @@ app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   return res.status(500).json({
     errors: [
       {
+        id: req.id.toString(),
         title: 'Internal Server Error',
-        detail: (err as any).message || 'Internal Server Error',
+        detail: (err as any).message ?? 'Internal Server Error',
         problem_type: 'INTERNAL_SERVER_ERROR',
+        code: 'INTERNAL_SERVER_ERROR',
+        status: '500',
+        meta: {
+          origin: 'supaglue',
+          cause: err as any,
+        },
       },
     ],
   });

@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysSequence } from '@supaglue/core/mappers/engagement';
 import type {
   CreateSequencePathParams,
@@ -49,7 +49,7 @@ export default function init(app: Router): void {
       res: Response<ListSequencesResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new BadRequestError('Uncached reads not yet implemented for sequences.');
+        throw new NotImplementedError('Uncached reads not yet implemented for sequences.');
       }
       const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const { pagination, records } = await managedDataService.getEngagementSequenceRecords(

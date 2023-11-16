@@ -66,8 +66,8 @@ export default function init(app: Router): void {
       req: Request<DeleteCustomerPathParams, DeleteCustomerResponse, DeleteCustomerRequest>,
       res: Response<DeleteCustomerResponse>
     ) => {
-      const customer = await customerService.delete(req.supaglueApplication.id, req.params.customer_id);
-      return res.status(200).send(snakecaseKeys(customer));
+      await customerService.delete(req.supaglueApplication.id, req.params.customer_id);
+      return res.status(204).end();
     }
   );
 

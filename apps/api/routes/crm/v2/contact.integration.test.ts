@@ -6,15 +6,15 @@
  */
 
 import type {
-  CreateAccountResponse,
+  CreateAccountSuccessfulResponse,
   CreateContactRequest,
-  CreateContactResponse,
-  GetContactResponse,
-  ListContactsResponse,
-  SearchContactsResponse,
-  UpdateContactResponse,
+  CreateContactSuccessfulResponse,
+  GetContactSuccessfulResponse,
+  ListContactsSuccessfulResponse,
+  SearchContactsSuccessfulResponse,
+  UpdateContactSuccessfulResponse,
   UpsertContactRequest,
-  UpsertContactResponse,
+  UpsertContactSuccessfulResponse,
 } from '@supaglue/schemas/v2/crm';
 
 jest.retryTimes(3);
@@ -38,7 +38,7 @@ describe('contact', () => {
 
   describe.each(['salesforce', 'hubspot', 'pipedrive', 'ms_dynamics_365_sales'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
-      const response = await apiClient.post<CreateContactResponse>(
+      const response = await apiClient.post<CreateContactSuccessfulResponse>(
         '/crm/v2/contacts',
         { record: testContact },
         {
@@ -53,9 +53,12 @@ describe('contact', () => {
         objectName: 'contact',
       });
 
-      const getResponse = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
-        headers: { 'x-provider-name': providerName },
-      });
+      const getResponse = await apiClient.get<GetContactSuccessfulResponse>(
+        `/crm/v2/contacts/${response.data.record?.id}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
 
       expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record?.id);
@@ -66,7 +69,7 @@ describe('contact', () => {
 
       // test that the db was updated
 
-      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+      const cachedReadResponse = await apiClient.get<ListContactsSuccessfulResponse>(
         `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -80,7 +83,7 @@ describe('contact', () => {
     }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
-      const response = await apiClient.post<CreateContactResponse>(
+      const response = await apiClient.post<CreateContactSuccessfulResponse>(
         '/crm/v2/contacts',
         { record: testContact },
         {
@@ -95,7 +98,7 @@ describe('contact', () => {
         objectName: 'contact',
       });
 
-      const updateResponse = await apiClient.patch<UpdateContactResponse>(
+      const updateResponse = await apiClient.patch<UpdateContactSuccessfulResponse>(
         `/crm/v2/contacts/${response.data.record?.id}`,
         {
           record: {
@@ -115,16 +118,19 @@ describe('contact', () => {
         await new Promise((resolve) => setTimeout(resolve, 30_000));
       }
 
-      const getResponse = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
-        headers: { 'x-provider-name': providerName },
-      });
+      const getResponse = await apiClient.get<GetContactSuccessfulResponse>(
+        `/crm/v2/contacts/${response.data.record?.id}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
       expect(getResponse.data.id).toEqual(response.data.record?.id);
       expect(getResponse.data.first_name).toEqual('updated');
       expect(getResponse.data.last_name).toEqual('contact');
       // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
       // expect(getResponse.data.addresses).toEqual(testContact.record.addresses);
 
-      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+      const cachedReadResponse = await apiClient.get<ListContactsSuccessfulResponse>(
         `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -141,7 +147,7 @@ describe('contact', () => {
       providerName !== 'ms_dynamics_365_sales',
       'PATCH association only /',
       async () => {
-        const response = await apiClient.post<CreateContactResponse>(
+        const response = await apiClient.post<CreateContactSuccessfulResponse>(
           '/crm/v2/contacts',
           { record: testContact },
           {
@@ -170,7 +176,7 @@ describe('contact', () => {
           ],
           name: 'test account',
         };
-        const accountResponse = await apiClient.post<CreateAccountResponse>(
+        const accountResponse = await apiClient.post<CreateAccountSuccessfulResponse>(
           '/crm/v2/accounts',
           { record: testAccount },
           {
@@ -185,7 +191,7 @@ describe('contact', () => {
           objectName: 'account',
         });
 
-        const updateResponse = await apiClient.patch<UpdateContactResponse>(
+        const updateResponse = await apiClient.patch<UpdateContactSuccessfulResponse>(
           `/crm/v2/contacts/${response.data.record?.id}`,
           {
             record: {
@@ -204,14 +210,17 @@ describe('contact', () => {
           await new Promise((resolve) => setTimeout(resolve, 30_000));
         }
 
-        const getResponse = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
-          headers: { 'x-provider-name': providerName },
-        });
+        const getResponse = await apiClient.get<GetContactSuccessfulResponse>(
+          `/crm/v2/contacts/${response.data.record?.id}`,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
         expect(getResponse.data.id).toEqual(response.data.record?.id);
         expect(getResponse.data.account_id).toEqual(accountResponse.data.record?.id);
 
         // test that the db was updated
-        const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+        const cachedReadResponse = await apiClient.get<ListContactsSuccessfulResponse>(
           `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
           {
             headers: { 'x-provider-name': providerName },
@@ -233,9 +242,13 @@ describe('contact', () => {
           upsert_on: { key: 'email', values: [email] },
           record: { ...testContact, email_addresses: [{ email_address: email, email_address_type: 'primary' }] },
         };
-        const response = await apiClient.post<UpsertContactResponse>('/crm/v2/contacts/_upsert', testContactUpsert, {
-          headers: { 'x-provider-name': providerName },
-        });
+        const response = await apiClient.post<UpsertContactSuccessfulResponse>(
+          '/crm/v2/contacts/_upsert',
+          testContactUpsert,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
 
         expect(response.status).toEqual(200);
         expect(response.data.record?.id).toBeTruthy();
@@ -245,9 +258,12 @@ describe('contact', () => {
           objectName: 'contact',
         });
 
-        const getResponse = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
-          headers: { 'x-provider-name': providerName },
-        });
+        const getResponse = await apiClient.get<GetContactSuccessfulResponse>(
+          `/crm/v2/contacts/${response.data.record?.id}`,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
         expect(getResponse.status).toEqual(200);
         expect(getResponse.data.id).toEqual(response.data.record?.id);
         expect(getResponse.data.first_name).toEqual(testContact.first_name);
@@ -255,7 +271,7 @@ describe('contact', () => {
         // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
         // expect(getResponse.data.addresses).toEqual(testContact.addresses);
 
-        const cachedReadResponse = await apiClient.get<ListContactsResponse>(
+        const cachedReadResponse = await apiClient.get<ListContactsSuccessfulResponse>(
           `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
           {
             headers: { 'x-provider-name': providerName },
@@ -279,15 +295,22 @@ describe('contact', () => {
             last_name: 'contact',
           },
         };
-        const response2 = await apiClient.post<UpsertContactResponse>('/crm/v2/contacts/_upsert', testContactUpsert2, {
-          headers: { 'x-provider-name': providerName },
-        });
+        const response2 = await apiClient.post<UpsertContactSuccessfulResponse>(
+          '/crm/v2/contacts/_upsert',
+          testContactUpsert2,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
         expect(response2.status).toEqual(200);
         expect(response2.data.record?.id).toEqual(response.data.record?.id);
 
-        const getResponse2 = await apiClient.get<GetContactResponse>(`/crm/v2/contacts/${response.data.record?.id}`, {
-          headers: { 'x-provider-name': providerName },
-        });
+        const getResponse2 = await apiClient.get<GetContactSuccessfulResponse>(
+          `/crm/v2/contacts/${response.data.record?.id}`,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
         expect(getResponse2.status).toEqual(200);
         expect(getResponse2.data.id).toEqual(response.data.record?.id);
         expect(getResponse2.data.first_name).toEqual('updated');
@@ -295,7 +318,7 @@ describe('contact', () => {
         // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
         // expect(getResponse2.data.addresses).toEqual(testContact.addresses);
 
-        const cachedReadResponse2 = await apiClient.get<ListContactsResponse>(
+        const cachedReadResponse2 = await apiClient.get<ListContactsSuccessfulResponse>(
           `/crm/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
           {
             headers: { 'x-provider-name': providerName },
@@ -316,7 +339,7 @@ describe('contact', () => {
       `Test that POST followed by SEARCH has correct data`,
       async () => {
         const email = `me+${Math.random()}@example.com`;
-        const response = await apiClient.post<CreateContactResponse>(
+        const response = await apiClient.post<CreateContactSuccessfulResponse>(
           '/crm/v2/contacts',
           { record: { ...testContact, email_addresses: [{ email_address: email, email_address_type: 'primary' }] } },
           {
@@ -335,7 +358,7 @@ describe('contact', () => {
           await new Promise((resolve) => setTimeout(resolve, 30_000));
         }
 
-        const searchResponse = await apiClient.post<SearchContactsResponse>(
+        const searchResponse = await apiClient.post<SearchContactsSuccessfulResponse>(
           `/crm/v2/contacts/_search`,
           {
             filter: {
