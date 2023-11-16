@@ -236,9 +236,19 @@ export interface paths {
   "/sync_configs/{sync_config_id}": {
     /** Get Sync Config */
     get: operations["getSyncConfig"];
-    /** Update Sync Config */
+    /**
+     * Update Sync Config
+     * @description :::danger
+     * If `force_delete_syncs` is set to true, any syncs for any deleted objects will be cascadingly deleted for all customers with this sync config.
+     * :::
+     */
     put: operations["updateSyncConfig"];
-    /** Delete Sync Config */
+    /**
+     * Delete Sync Config
+     * @description :::danger
+     * If `force_delete_syncs` is set to true, all syncs for all customers with this sync config will be cascadingly deleted.
+     * :::
+     */
     delete: operations["deleteSyncConfig"];
     parameters: {
       path: {
@@ -2137,7 +2147,12 @@ export interface operations {
       };
     };
   };
-  /** Update Sync Config */
+  /**
+   * Update Sync Config
+   * @description :::danger
+   * If `force_delete_syncs` is set to true, any syncs for any deleted objects will be cascadingly deleted for all customers with this sync config.
+   * :::
+   */
   updateSyncConfig: {
     parameters: {
       query?: {
@@ -2163,7 +2178,12 @@ export interface operations {
       };
     };
   };
-  /** Delete Sync Config */
+  /**
+   * Delete Sync Config
+   * @description :::danger
+   * If `force_delete_syncs` is set to true, all syncs for all customers with this sync config will be cascadingly deleted.
+   * :::
+   */
   deleteSyncConfig: {
     parameters: {
       query?: {

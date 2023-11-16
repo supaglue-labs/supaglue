@@ -1139,6 +1139,7 @@
       "put": {
         "operationId": "updateSyncConfig",
         "summary": "Update Sync Config",
+        "description": ":::danger\nIf `force_delete_syncs` is set to true, any syncs for any deleted objects will be cascadingly deleted for all customers with this sync config.\n:::\n",
         "tags": [
           "SyncConfigs"
         ],
@@ -1179,6 +1180,7 @@
       "delete": {
         "operationId": "deleteSyncConfig",
         "summary": "Delete Sync Config",
+        "description": ":::danger\nIf `force_delete_syncs` is set to true, all syncs for all customers with this sync config will be cascadingly deleted.\n:::\n",
         "tags": [
           "SyncConfigs"
         ],
