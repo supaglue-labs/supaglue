@@ -74,6 +74,7 @@ import {
   InternalServerError,
   NotFoundError,
   RemoteProviderError,
+  SGConnectionNoLongerAuthenticatedError,
   SGError,
   TooManyRequestsError,
   UnauthorizedError,
@@ -566,29 +567,35 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   private async maybeRefreshAccessToken(): Promise<void> {
     if (!this.#config.expiresAt || Date.parse(this.#config.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS) {
-      // TODO: test this refresh flow
-      const token = await this.#client.oauth.tokensApi.create(
-        'refresh_token',
-        undefined,
-        undefined,
-        this.#config.clientId,
-        this.#config.clientSecret,
-        this.#config.refreshToken
-      );
-      const newAccessToken = token.accessToken;
-      const newRefreshToken = token.refreshToken;
-      const newExpiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
+      try {
+        const token = await this.#client.oauth.tokensApi.create(
+          'refresh_token',
+          undefined,
+          undefined,
+          this.#config.clientId,
+          this.#config.clientSecret,
+          this.#config.refreshToken
+        );
+        const newAccessToken = token.accessToken;
+        const newRefreshToken = token.refreshToken;
+        const newExpiresAt = new Date(Date.now() + token.expiresIn * 1000).toISOString();
 
-      this.#config.accessToken = newAccessToken;
-      this.#config.refreshToken = newRefreshToken;
-      this.#config.expiresAt = newExpiresAt;
+        this.#config.accessToken = newAccessToken;
+        this.#config.refreshToken = newRefreshToken;
+        this.#config.expiresAt = newExpiresAt;
 
-      this.#client.setAccessToken(newAccessToken);
-      this.emit('token_refreshed', {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-        expiresAt: newExpiresAt,
-      });
+        this.#client.setAccessToken(newAccessToken);
+        this.emit('token_refreshed', {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+          expiresAt: newExpiresAt,
+        });
+      } catch (e: any) {
+        if (e.response?.status === 400) {
+          throw new SGConnectionNoLongerAuthenticatedError('Unable to refresh access token. Refresh token invalid.');
+        }
+        throw e;
+      }
     }
   }
 
@@ -2449,6 +2456,9 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           message.includes('Some required properties were not set')
         ) {
           return new BadRequestError(message, error);
+        }
+        if (message.includes('missing or invalid refresh token')) {
+          return new SGConnectionNoLongerAuthenticatedError(message, error);
         }
         return new InternalServerError(message, error);
       case 401:
