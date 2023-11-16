@@ -1481,7 +1481,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       pagination: {
         previous: null,
         next: response.paging?.next?.after ? encodeCursor({ id: response.paging.next.after, reverse: false }) : null,
-        total_count: (response as RecordsResponseWithFlattenedAssociationsAndTotal).total ?? -1,
+        total_count: (response as RecordsResponseWithFlattenedAssociationsAndTotal).total,
       },
       records,
     };
@@ -2086,7 +2086,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       pagination: {
         previous: null,
         next: response.paging?.next?.after ? encodeCursor({ id: response.paging.next.after, reverse: false }) : null,
-        total_count: -1,
       },
       records,
     };
@@ -2511,7 +2510,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
               })
             : null,
         previous: null,
-        total_count: -1,
       },
     };
   }
@@ -2631,7 +2629,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return {
       records,
       pagination: {
-        total_count: -1,
         next: v3MembershipResponse.data.paging?.next?.after
           ? encodeCursor({
               id: v3MembershipResponse.data.paging.next.after,

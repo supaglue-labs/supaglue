@@ -1,5 +1,4 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmLead } from '@supaglue/core/mappers/crm';
 import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
@@ -55,10 +54,22 @@ export default function init(app: Router): void {
       req: Request<ListLeadsPathParams, ListLeadsResponse, ListLeadsRequest, ListLeadsQueryParams>,
       res: Response<ListLeadsResponse>
     ) => {
-      if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new BadRequestError('Uncached reads not yet implemented for leads.');
-      }
       const includeRawData = req.query?.include_raw_data?.toString() === 'true';
+
+      if (req.query?.read_from_cache?.toString() !== 'true') {
+        const { pagination, records } = await crmCommonObjectService.list('lead', req.customerConnection, {
+          modifiedAfter: req.query?.modified_after,
+          cursor: req.query?.cursor,
+          pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+        });
+        return res.status(200).send({
+          pagination,
+          records: records.map((record) => ({
+            ...toSnakecasedKeysCrmLead(record),
+            raw_data: includeRawData ? record.rawData : undefined,
+          })),
+        });
+      }
       const { pagination, records } = await managedDataService.getCrmLeadRecords(
         req.supaglueApplication.id,
         req.customerConnection.providerName,

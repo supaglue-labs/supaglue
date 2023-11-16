@@ -49,6 +49,21 @@ export class CrmCommonObjectService {
     return obj;
   }
 
+  public async list<T extends CRMCommonObjectType>(
+    objectName: T,
+    connection: ConnectionSafeAny,
+    params: CRMCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
+    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
+
+    const end = remoteDuration.startTimer({ operation: 'get', remote_name: providerName });
+    const records = await remoteClient.listCommonObjectRecords(objectName, fieldMappingConfig, params);
+    end();
+
+    return records;
+  }
+
   public async create<T extends CRMCommonObjectType>(
     objectName: T,
     connection: ConnectionSafeAny,

@@ -71,7 +71,15 @@ import {
   UnauthorizedError,
 } from '../../../errors';
 import type { Cursor, PaginatedSupaglueRecords } from '../../../lib';
-import { ASYNC_RETRY_OPTIONS, decodeCursor, encodeCursor, intersection, logger, union } from '../../../lib';
+import {
+  ASYNC_RETRY_OPTIONS,
+  decodeCursor,
+  DEFAULT_PAGE_SIZE,
+  encodeCursor,
+  intersection,
+  logger,
+  union,
+} from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
@@ -454,6 +462,42 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       () => {}
     );
+  }
+
+  public override async listCommonObjectRecords<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    const sobject = capitalizeString(commonObjectType);
+    const propertiesToFetch = await this.getCommonPropertiesToFetch(commonObjectType, fieldMappingConfig);
+    const limit = params.pageSize ?? DEFAULT_PAGE_SIZE;
+    const offset = (decodeCursor(params.cursor)?.id as number | undefined) ?? 0;
+
+    const soql = `SELECT ${propertiesToFetch.join(',')}
+    FROM ${sobject}
+    ${
+      params.modifiedAfter
+        ? `WHERE SystemModstamp > ${params.modifiedAfter.toISOString()} ORDER BY SystemModstamp ASC`
+        : ''
+    }
+    LIMIT ${params.pageSize ?? DEFAULT_PAGE_SIZE}
+    OFFSET ${offset}`;
+
+    const mapper = (record: Record<string, unknown>) => ({
+      ...getMapperForCommonObjectType(commonObjectType)(record),
+      rawData: toMappedProperties(record, fieldMappingConfig),
+    });
+    const response = await this.#client.query(soql);
+    const records = response.records.map(mapper);
+    return {
+      pagination: {
+        next: records.length === response.totalSize ? encodeCursor({ id: limit + offset, reverse: false }) : null,
+        previous: null,
+        total_count: response.totalSize,
+      },
+      records,
+    };
   }
 
   public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
