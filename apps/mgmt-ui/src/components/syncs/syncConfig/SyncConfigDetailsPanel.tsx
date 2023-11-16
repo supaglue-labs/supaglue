@@ -239,11 +239,11 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
           confirmColor="error"
           content={
             <Typography>
-              Are you sure you want to update this Sync Config? This will delete{' '}
+              Are you sure you want to update this Sync Config? This will delete syncs for{' '}
               <Typography fontWeight="bold" display="inline">
                 {numSyncsToBeDeleted}
               </Typography>{' '}
-              existing syncs.
+              customers.
             </Typography>
           }
         />

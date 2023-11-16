@@ -36,7 +36,7 @@ export function DeleteSyncConfig({ syncConfigId, onDelete }: DeleteSyncConfigPro
             <Typography fontWeight="bold" display="inline">
               {`Sync Config ${syncConfigId}`}
             </Typography>
-            ? This will delete all existing syncs that use this Sync Config.
+            ? This will delete syncs for all existing customers that use this Sync Config.
           </Typography>
         }
       />
