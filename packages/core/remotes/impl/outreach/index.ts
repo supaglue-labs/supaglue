@@ -1434,6 +1434,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         if (e.response?.status === 400) {
           throw new SGConnectionNoLongerAuthenticatedError('Unable to refresh access token. Refresh token invalid.');
         }
+        throw e;
       }
     }
   }
