@@ -130,34 +130,41 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       !this.#credentials.expiresAt ||
       Date.parse(this.#credentials.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS
     ) {
-      const response = await axios.post<{ access_token: string; refresh_token: string; expires_in: number }>(
-        `${authConfig.tokenHost}${authConfig.tokenPath}`,
-        {
-          grant_type: 'refresh_token',
-          refresh_token: this.#credentials.refreshToken,
-        },
-        {
-          headers: {
-            Authorization: `Basic ${this.getBasicAuthorizationToken()}`,
-            'Content-type': 'application/x-www-form-urlencoded',
+      try {
+        const response = await axios.post<{ access_token: string; refresh_token: string; expires_in: number }>(
+          `${authConfig.tokenHost}${authConfig.tokenPath}`,
+          {
+            grant_type: 'refresh_token',
+            refresh_token: this.#credentials.refreshToken,
           },
+          {
+            headers: {
+              Authorization: `Basic ${this.getBasicAuthorizationToken()}`,
+              'Content-type': 'application/x-www-form-urlencoded',
+            },
+          }
+        );
+
+        const newAccessToken = response.data.access_token;
+        const newRefreshToken = response.data.refresh_token;
+        const newExpiresAt = new Date(Date.now() + response.data.expires_in * 1000).toISOString();
+
+        this.#credentials.accessToken = newAccessToken;
+        this.#credentials.refreshToken = newRefreshToken;
+        this.#credentials.expiresAt = newExpiresAt;
+        this.#headers = { Authorization: `Bearer ${newAccessToken}` };
+
+        this.emit('token_refreshed', {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+          expiresAt: newExpiresAt,
+        });
+      } catch (e: any) {
+        if (e.response?.status === 400) {
+          throw new SGConnectionNoLongerAuthenticatedError('Unable to refresh access token. Refresh token invalid.');
         }
-      );
-
-      const newAccessToken = response.data.access_token;
-      const newRefreshToken = response.data.refresh_token;
-      const newExpiresAt = new Date(Date.now() + response.data.expires_in * 1000).toISOString();
-
-      this.#credentials.accessToken = newAccessToken;
-      this.#credentials.refreshToken = newRefreshToken;
-      this.#credentials.expiresAt = newExpiresAt;
-      this.#headers = { Authorization: `Bearer ${newAccessToken}` };
-
-      this.emit('token_refreshed', {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-        expiresAt: newExpiresAt,
-      });
+        throw e;
+      }
     }
   }
 
