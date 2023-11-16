@@ -6,8 +6,12 @@ import type {
   ConnectionUnsafe,
   CRMProvider,
   ListedObjectRecord,
+  ObjectRecordUpsertData,
+  ObjectRecordWithMetadata,
+  Property,
   Provider,
   RemoteUserIdAndDetails,
+  StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type {
   Account,
@@ -20,6 +24,7 @@ import type {
 } from '@supaglue/types/crm';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { OHandler } from 'odata';
 import { o } from 'odata';
 import { plural } from 'pluralize';
@@ -71,7 +76,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     'OData-MaxVersion': '4.0',
     'OData-Version': '4.0',
     'Content-Type': 'application/json',
-    Prefer: `odata.maxpagesize=${MAX_PAGE_SIZE}`,
+    Prefer: `odata.maxpagesize=${MAX_PAGE_SIZE},return=representation`,
     Authorization: '',
   };
   #odata: OHandler;
@@ -151,9 +156,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     heartbeat?: () => void
   ): Promise<Readable> {
     const idkey = `${object}id`;
+
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity(plural(object), updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity(plural(object), fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -173,6 +179,136 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         getNextCursorFromPage: (response) => response['@odata.nextLink'],
       },
     ]);
+  }
+
+  private async getPublisherPrefix(): Promise<string> {
+    // get the prefix for the default powerapps publisher
+    // the fixed GUID for the default powerapps publisher is 00000001-0000-0000-0000-00000000005a
+    // TODO this probably should be more flexible
+    await this.maybeRefreshAccessToken();
+    return (
+      await this.#odata
+        .get('publishers(00000001-0000-0000-0000-00000000005a)')
+        .query({ $select: 'customizationprefix' })
+    )?.customizationprefix;
+  }
+
+  public override async listCustomObjectRecords(
+    object: string,
+    fieldsToFetch: FieldsToFetch,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
+    const publisherPrefix = await this.getPublisherPrefix();
+    const idkey = `${publisherPrefix}_${object}id`;
+    return paginator([
+      {
+        pageFetcher: this.getListFetcherForEntity(
+          `${publisherPrefix}_${plural(object)}`,
+          fieldsToFetch,
+          modifiedAfter,
+          undefined,
+          heartbeat
+        ),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.value.map((result: any) => ({
+              id: result[idkey],
+              rawData: result,
+              rawProperties: result,
+              isDeleted: false,
+              lastModifiedAt: new Date(result.modifiedon),
+              emittedAt,
+            }))
+          );
+        },
+        getNextCursorFromPage: (response) => response['@odata.nextLink'],
+      },
+    ]);
+  }
+
+  public override async createObjectRecord(
+    object: StandardOrCustomObject,
+    data: ObjectRecordUpsertData
+  ): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    let objectName = plural(object.name);
+    if (object.type === 'custom') {
+      const publisherPrefix = await this.getPublisherPrefix();
+      objectName = `${publisherPrefix}_${objectName}`;
+      const objectIdField = `${publisherPrefix}_${object.name}id`;
+      // map data to new object with the prefixed field names
+      const mappedData = Object.fromEntries(Object.entries(data).map(([k, v]) => [`${publisherPrefix}_${k}`, v]));
+      const response = await this.#odata.post(objectName, mappedData).query({ $select: objectIdField });
+      return response[objectIdField];
+    }
+    const response = await this.#odata.post(objectName, data).query();
+    return response[`${object.name}id`];
+  }
+
+  public override async getObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    fields: string[]
+  ): Promise<ObjectRecordWithMetadata> {
+    await this.maybeRefreshAccessToken();
+    let objectName = plural(object.name);
+    let publisherPrefix: string | undefined;
+    if (object.type === 'custom') {
+      publisherPrefix = await this.getPublisherPrefix();
+      objectName = `${publisherPrefix}_${objectName}`;
+    }
+    const response = await this.#odata.get(`${objectName}(${id})`).query({ $select: fields.join(',') });
+    const filteredResponse = Object.fromEntries(
+      Object.entries(response)
+        .filter(([k]) => !k.startsWith('@odata'))
+        .map(([k, v]) =>
+          publisherPrefix && k.startsWith(`${publisherPrefix}_`) ? [k.replace(`${publisherPrefix}_`, ''), v] : [k, v]
+        )
+    );
+    return {
+      id,
+      objectName,
+      data: filteredResponse,
+      metadata: {
+        isDeleted: false,
+        lastModifiedAt: new Date(response.modifiedon),
+      },
+    };
+  }
+
+  public override async updateObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    data: ObjectRecordUpsertData
+  ): Promise<void> {
+    await this.maybeRefreshAccessToken();
+    let objectName = plural(object.name);
+    let publisherPrefix: string | undefined;
+    if (object.type === 'custom') {
+      publisherPrefix = await this.getPublisherPrefix();
+      objectName = `${publisherPrefix}_${objectName}`;
+    }
+    // map fields to prefixed fields
+    const mappedData = Object.fromEntries(
+      Object.entries(data).map(([k, v]) => [object.type === 'custom' ? `${publisherPrefix}_${k}` : k, v])
+    );
+    await this.#odata.patch(`${objectName}(${id})`, mappedData).query();
+  }
+
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
+    await this.maybeRefreshAccessToken();
+    const objectName = object.type === 'standard' ? object.name : `${await this.getPublisherPrefix()}_${object.name}`;
+    const response = await this.#odata
+      .get(`EntityDefinitions(LogicalName='${objectName}')/Attributes`)
+      .query({ $select: 'LogicalName', $filter: "IsLogical eq false and LogicalName ne 'owneridtype'" });
+    return response.map((attribute: any) => ({
+      id: attribute.LogicalName,
+      label: attribute.DisplayName?.UserLocalizedLabel?.Label,
+      type: attribute.AttributeType,
+      rawDetails: attribute,
+    }));
   }
 
   public override async listCommonObjectRecords(
@@ -344,6 +480,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   private getListFetcherForEntity(
     entity: string,
+    fieldsToFetch: FieldsToFetch,
     updatedAfter?: Date,
     expand?: string,
     heartbeat?: () => void
@@ -357,6 +494,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
             this.getUrlForEntityAndParams(entity, {
               $filter: updatedAfter ? `modifiedon gt ${updatedAfter?.toISOString()}` : undefined,
               $expand: expand,
+              $select: fieldsToFetch?.type === 'defined' ? fieldsToFetch.fields.join(',') : undefined,
             }),
           { headers: this.#headers }
         );
@@ -373,14 +511,36 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     };
   }
 
+  private getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig: FieldMappingConfig): FieldsToFetch {
+    if (fieldMappingConfig.type === 'defined') {
+      const fields = Array.from(
+        new Set([
+          ...fieldMappingConfig.coreFieldMappings.map((v) => v.schemaField),
+          ...fieldMappingConfig.additionalFieldMappings.map((v) => v.schemaField),
+        ])
+      );
+
+      return {
+        type: 'defined',
+        fields,
+      };
+    }
+
+    return {
+      type: 'inherit_all_fields',
+    };
+  }
+
   private async listAccounts(
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('accounts', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('accounts', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -400,9 +560,11 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('contacts', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('contacts', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -422,10 +584,13 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity(
           'opportunities',
+          fieldsToFetch,
           updatedAfter,
           'stageid_processstage($select=stagename),opportunity_leadtoopportunitysalesprocess($select=name)',
           heartbeat
@@ -449,9 +614,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('leads', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('leads', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -471,9 +637,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('systemusers', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('systemusers', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -490,7 +657,12 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   public override async handleErr(err: unknown): Promise<unknown> {
     if (err instanceof Response) {
-      const { cause } = await err.json();
+      let cause: Error | undefined;
+      try {
+        ({ cause } = await err.json());
+      } catch (e) {
+        // noop
+      }
 
       switch (err.status) {
         case 400:
@@ -559,7 +731,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
       }
     }
 
-    if (isErrnoException(err)) {
+    if (isErrnoException(err) && err.cause) {
       switch ((err.cause as any).code) {
         case 'ENOTFOUND':
           return new SGConnectionNoLongerAuthenticatedError((err.cause as any).message as string, err.cause as Error);
