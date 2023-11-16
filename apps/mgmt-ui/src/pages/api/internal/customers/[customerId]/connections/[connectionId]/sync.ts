@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         `${API_HOST}/internal/customers/${req.query.customerId}/connections/${req.query.connectionId}/sync`,
         {
           method: 'POST',
-          headers: getApplicationIdScopedHeaders(req),
+          headers: await getApplicationIdScopedHeaders(req),
         }
       );
 
@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         `${API_HOST}/internal/customers/${req.query.customerId}/connections/${req.query.connectionId}/sync`,
         {
           method: 'DELETE',
-          headers: getApplicationIdScopedHeaders(req),
+          headers: await getApplicationIdScopedHeaders(req),
         }
       );
 

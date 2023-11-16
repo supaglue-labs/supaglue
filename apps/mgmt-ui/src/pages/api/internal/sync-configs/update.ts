@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   }
   const result = await fetch(url, {
     method: 'PUT',
-    headers: getApplicationIdScopedHeaders(req),
+    headers: await getApplicationIdScopedHeaders(req),
     body: JSON.stringify(req.body),
   });
 

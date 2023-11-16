@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'GET': {
       const result = await fetch(`${API_HOST}/internal/entities/${req.query.entityId}`, {
         method: 'GET',
-        headers: getApplicationIdScopedHeaders(req),
+        headers: await getApplicationIdScopedHeaders(req),
       });
 
       const r = await result.json();
@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'DELETE': {
       const result = await fetch(`${API_HOST}/internal/entities/${req.query.entityId}`, {
         method: 'DELETE',
-        headers: getApplicationIdScopedHeaders(req),
+        headers: await getApplicationIdScopedHeaders(req),
       });
 
       if (!result.ok) {

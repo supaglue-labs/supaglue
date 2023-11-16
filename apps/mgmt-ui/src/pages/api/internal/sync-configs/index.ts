@@ -6,7 +6,7 @@ import { API_HOST } from '../..';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSyncConfigsResponse | null>) {
   const result = await fetch(`${API_HOST}/internal/sync_configs`, {
     method: 'GET',
-    headers: getApplicationIdScopedHeaders(req),
+    headers: await getApplicationIdScopedHeaders(req),
   });
 
   const r = await result.json();

@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const result = await fetch(`${API_HOST}/internal/entity_mappings`, {
         method: 'GET',
         headers: {
-          ...getApplicationIdScopedHeaders(req),
+          ...(await getApplicationIdScopedHeaders(req)),
           'x-customer-id': req.query.customer_id as string,
           'x-provider-name': req.query.provider_name as string,
         },

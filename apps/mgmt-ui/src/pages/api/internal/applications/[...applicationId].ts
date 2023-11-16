@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'GET': {
       const result = await fetch(`${API_HOST}/internal/applications/${req.query.applicationId}`, {
         method: 'GET',
-        headers: getHeaders(req),
+        headers: await getHeaders(req),
       });
 
       const r = await result.json();
@@ -22,7 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'PATCH': {
       const result = await fetch(`${API_HOST}/internal/applications/${req.query.applicationId}`, {
         method: 'PATCH',
-        headers: getHeaders(req),
+        headers: await getHeaders(req),
         body: JSON.stringify(req.body),
       });
 

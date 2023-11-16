@@ -6,7 +6,7 @@ import { API_HOST } from '../..';
 export default async function handler(req: NextApiRequest, res: NextApiResponse<UpdateProviderResponse | null>) {
   const result = await fetch(`${API_HOST}/internal/providers/${req.body.id}`, {
     method: 'PUT',
-    headers: getApplicationIdScopedHeaders(req),
+    headers: await getApplicationIdScopedHeaders(req),
     body: JSON.stringify(req.body),
   });
 
