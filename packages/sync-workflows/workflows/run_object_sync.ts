@@ -57,6 +57,9 @@ function getPauseReasonIfShouldPause(err: any): string | undefined {
   if (err.cause?.type === 'SGConnectionNoLongerAuthenticatedError') {
     return `Connection no longer authenticated: ${err.cause.message}`;
   }
+  if (err.cause?.type === 'ForbiddenError') {
+    return `Forbidden: ${err.cause.message}`;
+  }
   if (err.cause?.failure?.message.startsWith('No entity mapping found for entity')) {
     return err.cause.failure.message;
   }
