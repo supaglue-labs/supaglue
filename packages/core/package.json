@@ -67,7 +67,9 @@
     "download": "concurrently 'npm:download:*'",
     "generate": "concurrently 'npm:generate:*'",
     "download:outreach": "curl --compressed https://developers.outreach.io/page-data/api/reference/overview/page-data.json | jq -r  .result.data.contentItem.data.redocStoreStr | jq .definition.data | yarn json2yaml > ./remotes/impl/outreach/outreach.openapi.yaml",
-    "generate:outreach": "openapi-typescript ./remotes/impl/outreach/outreach.openapi.yaml --output ./remotes/impl/outreach/outreach.openapi.gen.d.ts"
+    "download:salesloft": "curl https://api.apis.guru/v2/specs/salesloft.com/v2/openapi.yaml > ./remotes/impl/salesloft/salesloft.openapi.yaml",
+    "generate:outreach": "openapi-typescript ./remotes/impl/outreach/outreach.openapi.yaml --output ./remotes/impl/outreach/outreach.openapi.gen.d.ts",
+    "generate:salesloft": "openapi-typescript ./remotes/impl/salesloft/salesloft.openapi.yaml --output ./remotes/impl/salesloft/salesloft.openapi.gen.d.ts"
   },
   "files": [
     "dist"

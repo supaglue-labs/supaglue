@@ -46,6 +46,8 @@ import {
   toSalesloftContactCreateParams,
   toSalesloftSequenceStateCreateParams,
 } from './mappers';
+import type { SalesloftApi } from './salesloft.api';
+import { createSalesloftApi } from './salesloft.api';
 
 type Credentials = {
   accessToken: string;
@@ -79,12 +81,14 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
   #headers: Record<string, string>;
   readonly #baseURL: string;
+  readonly #api: SalesloftApi;
 
   public constructor(credentials: Credentials) {
     super('https://api.salesloft.com');
     this.#baseURL = 'https://api.salesloft.com';
     this.#credentials = credentials;
     this.#headers = { Authorization: `Bearer ${this.#credentials.accessToken}` };
+    this.#api = createSalesloftApi(this.#credentials);
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
