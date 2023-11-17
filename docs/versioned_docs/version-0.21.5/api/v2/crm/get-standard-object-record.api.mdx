@@ -1,0 +1,52 @@
+---
+id: get-standard-object-record
+title: "Get standard object record"
+description: "Get standard object record"
+sidebar_label: "Get standard object record"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdV21PIzcQ/iuW+wWkvJE7HTSqqlLoXdGVK4KjJwQIHHtCfN1d79leIAr5752xvckmBIS4fqi6H2DXM/bMPDPzjDPlpgQrvDbFgeIDfgP+xItCCav+HH4F6Y9BGqt4i3tx4/jgnC+LHb9scQeystpPUDzl921R6vbfQF+XM5QqcNLqkkyggQ/gmUtHMBPOYDbYuCguipOqLI31A3p/YEfW3GoFluHzwJIMFHsgYXvxsMZXFP5eDV1pPIs7z8Cx+AThicjAjYyVsEZ4pEtQVt9C2PnJsKbw8ITtTwqRa+lWhYiQBbRZOECYprzf69G/5eBr7FgEj83BlabwUHjaIcoy0zJkpPvV0bYpd3IMuaA3PykBD4rA4cbSUv68jka1aug4b3Vxw2etpH2FjsNauRJ+7eFCKU1+iOyoYcbbCmYzCvdbpS0oKgpNQTTNpEMx/XAv8jKD2j3e6229L3q9Xv/NaMecnR3s9la2DviulKYqPF949qkW5MD2jC1RtL+E7Bdg0oLwwPwY2BCcZ5APQSksF43Y3sQaZ2UmPKY+dx1OMXjts4hFTMxVciRWJKrMSKsUFu17sC5UePLyvi0r500Oth3C1+THGAQWLH49StkC7jkiPJ8sztjiq63yGSOpxexgHyMTnlWF/lZBNmHYGIXXI0xJCHmuqAs2MZVljTrizWSF9LUaUZSpy9opca+Iw807am0QtQWWLDzpzHIFBUdK4ccvdeNwshdQiN11dSXXehMRDL4wM2qAl+iow94b2yCJFqpox9zYVJliUCh2p/2Y4fFRM3FNUrvTWcbQR4Q+wywNY0E69LXKhGVUe7XVZO45QGIdXi3qK8GxvGFdlFgvyUw8g3mDbwgaILWh11WJvQUvRXanr6C/LYftd6Md2X7b395pD7d33rRxfUv9uPUOG01yIntsk7FJg4Toidwd8O5Kf7nutJHqWTe6iKvzeGfkGdjbuucqm1FVel+6QbeLE6bjqlLcZBV0tOlKm3dv+4+yfZJU2O7RQfCuHlQnFHOkzMa4miOAKx9xobXokVpntTuW7aEZhloENSbf3DGFYGfEnC6sSQkudmtwaEanjQwZpjjjGb1Of6vzli+o6bSgJlds7/gwbIvDQsgwLJKDdaAoxFxqgkoZ6X6ZYyRNjrJlEJeEs9VYfsCHHRTeGlVJWqOR/AUyVAYKhqKoXaO4N9C/TYZWqxx5KdBOh52ZiklRsMpB7A7SxM13mIRwSl5lXmOJkdSqNhKtn8zpwoVGQz4jWxQ+shncGDvpkC/nf2m4Y+hOjrQei5i6ixQvN+oYCYVOM9BuPQC6cWc77nRUQpt0bIj7V+FCjtjp8R8XxfX19UXxfOklJYKxNM7nomhk5+krz2oFTRcXgf/zRSm1mYd7T/nQAbdQnNPEGOerE9nhtsHyeEikQYIFTWKTjzEBdMJ0OsQ0ntpsNqNl5Hwb7qQtfiusFkPqLmQWpR29I2eNROZWubSZkY3jxLqb7D86R9YCW5NaQfR1K4gmBhxfA+ctjVwaPK+G48UD5xVOLvI7u0TlRL/flb1/62K1Npro9eoFcR7Wd+G8epl61oHVu92SC1EJL9tQ+obs0Q+Qpbn+4bfP9Mugoi5tDsw4HdMLZWZtRpuTNJqnv+TMWvWfiINxFP88V4+SJzfMB3PUJjAu8Qr/D4kYDYo=
+sidebar_class_name: "get api-method"
+info_path: api/v2/crm/unified-crm-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get standard object record</h1>
+
+<MethodEndpoint method={"get"} path={"/standard_objects/{object_name}/records/{record_id}"}></MethodEndpoint>
+
+<SecuritySchemes infoPath={"api/v2/crm/unified-crm-api"}></SecuritySchemes>
+
+
+
+Get standard object record
+
+Support:
+
+| Provider    | Supported |
+| ----------- | --------- |
+| Hubspot     | Yes       |
+| Salesforce  | Yes       |
+| Pipedrive   | No        |
+| MS Dynamics | No        |
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"object_name","in":"path","schema":{"type":"string"},"example":"MyCustomObject__c","description":"The unique name of the custom object. For Salesforce, this should end with __c. For Hubspot, this will typically be the singular form of the object.","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"record_id","in":"path","required":true,"description":"The ID of the record to retrieve or update","schema":{"type":"string"},"example":"82de27cb-6f8c-4278-b783-82d1d916eddc"}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Standard Object Record
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={false} name={"object_name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>data</strong><span className={"openapi-schema__name"}> object</span><span className={"openapi-schema__divider"}></span><span className={"openapi-schema__required"}>required</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem name={"property name*"} required={false} schemaName={"any"} qualifierMessage={undefined} schema={{"type":"object","additionalProperties":true}} collapsible={false} discriminator={false}></SchemaItem></div></details></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"id\": \"001Fn00023f8oYYIA0\",\n  \"object_name\": \"Account\",\n  \"data\": {\n    \"Name\": \"Acme Corp\",\n    \"Description\": \"We create the best embedded integration platforms.\"\n  }\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
