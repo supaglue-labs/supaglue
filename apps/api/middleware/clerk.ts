@@ -4,7 +4,7 @@ import type { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 
-export async function bearerMiddleware(req: Request, res: Response, next: NextFunction) {
+export async function clerkMiddleware(req: Request, res: Response, next: NextFunction) {
   if (process.env.IS_CLOUD && process.env.CLERK_JWKS_URL) {
     const bearerToken = req.headers.authorization?.replace('Bearer ', '');
     if (!bearerToken) {
