@@ -185,7 +185,16 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
   const supportsCustomObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales'];
 
-  const commonObjectsSupported = selectedProvider?.category !== 'no_category';
+  const selectedDestination = destinations.find((destination: any) => {
+    const isManagedDestination = destination.type === 'supaglue' && destinationName === 'Supaglue Managed Destination'; // this logic is a bit hairy because "supaglue" destination type has no "name" field
+    const isMatchedDestination = destination.name === destinationName;
+    return isMatchedDestination || isManagedDestination;
+  });
+
+  // Common Objects are only supported for categorized providers and Postgres or Managed destinations
+  const isPostgresOrManagedDestination =
+    selectedDestination?.type === 'postgres' || selectedDestination?.type === 'supaglue';
+  const commonObjectsSupported = selectedProvider?.category !== 'no_category' && isPostgresOrManagedDestination;
 
   const getCommonObjectOptions = (category: ProviderCategory) => {
     if (category === 'crm') {
