@@ -1,5 +1,6 @@
 import { extendApi } from '@anatine/zod-openapi';
 import { Zodios } from '@zodios/core';
+import { openApiBuilder } from '@zodios/openapi';
 import type { AxiosRequestConfig } from 'axios';
 import z from 'zod';
 import { defineApi } from '../../utils/zodios-api-shorthand';
@@ -245,4 +246,19 @@ export function createApolloClient(cfg: { apiKey: string; axiosConfig?: AxiosReq
       ...cfg.axiosConfig,
     },
   });
+}
+
+export function outputOpenApi() {
+  return openApiBuilder({
+    title: 'Apollo API',
+    version: '0.0.0',
+  })
+    .addServer({ url: 'https://app.apollo.io/api' })
+    .addPublicApi(apolloApi)
+    .build();
+}
+
+if (require.main === module) {
+  // eslint-disable-next-line no-console
+  console.log(JSON.stringify(outputOpenApi(), null, 2));
 }
