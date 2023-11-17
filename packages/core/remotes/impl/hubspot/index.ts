@@ -2030,14 +2030,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     params: CrmListParams,
     fieldMappingConfig: FieldMappingConfig
   ): Promise<PaginatedSupaglueRecords<Lead>> {
-    return {
-      records: [],
-      pagination: {
-        previous: null,
-        next: null,
-        total_count: 0,
-      },
-    };
+    throw new BadRequestError('Listing leads is not supported for hubspot');
   }
 
   public async streamLeads(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
