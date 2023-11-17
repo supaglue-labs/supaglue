@@ -1,5 +1,6 @@
 import z from 'zod';
 import { createDocument, extendZodWithOpenApi } from 'zod-openapi';
+import { jsonOperation } from '../../utils/integration-utils';
 
 extendZodWithOpenApi(z);
 
@@ -212,94 +213,59 @@ export function outputOpenApi() {
     servers: [{ url: 'https://app.apollo.io/api' }],
     paths: {
       '/v1/emailer_campaigns/{id}': {
-        get: {
-          operationId: 'getEmailerCampaign',
-          requestParams: { path: z.object({ id: z.string() }) },
-          responses: {
-            200: { content: { 'application/json': { schema: apolloEmailerCampaignResponse } } },
-          },
-        },
+        get: jsonOperation('getEmailerCampaign', {
+          path: z.object({ id: z.string() }),
+          response: apolloEmailerCampaignResponse,
+        }),
       },
       '/v1/emailer_campaigns': {
-        post: {
-          operationId: 'createEmailerCampaign',
-          requestBody: { content: { 'application/json': { schema: apolloCreateEmailerCampaign } } },
-          responses: {
-            200: { content: { 'application/json': { schema: apolloEmailerCampaignResponse } } },
-          },
-        },
+        post: jsonOperation('createEmailerCampaign', {
+          body: apolloCreateEmailerCampaign,
+          response: apolloEmailerCampaignResponse,
+        }),
       },
       '/v1/emailer_campaigns/{id}/add_contact_ids': {
-        post: {
-          operationId: 'addContactIdsToEmailerCampaign',
-          requestParams: { path: z.object({ id: z.string() }) },
-          requestBody: { content: { 'application/json': { schema: apolloEmailerCampaignAddContactIds } } },
-          responses: {
-            200: { content: { 'application/json': { schema: apolloEmailerCampaignAddContactIdsResponse } } },
-          },
-        },
+        post: jsonOperation('addContactIdsToEmailerCampaign', {
+          path: z.object({ id: z.string() }),
+          body: apolloEmailerCampaignAddContactIds,
+          response: apolloEmailerCampaignAddContactIdsResponse,
+        }),
       },
       '/v1/emailer_steps': {
-        post: {
-          operationId: 'createEmailerStep',
-          requestBody: { content: { 'application/json': { schema: apolloCreateEmailerStep } } },
-          responses: {
-            200: {
-              content: {
-                'application/json': {
-                  schema: z.object({
-                    emailer_step: apolloEmailerStep,
-                    // Null for templatable steps (e.g. tasks / calls)
-                    emailer_touch: apolloEmailerTouch.nullish(),
-                    emailer_template: apolloEmailerTemplate.nullish(),
-                  }),
-                },
-              },
-            },
-          },
-        },
+        post: jsonOperation('createEmailerStep', {
+          body: apolloCreateEmailerStep,
+          response: z.object({
+            emailer_step: apolloEmailerStep,
+            // Null for templatable steps (e.g. tasks / calls)
+            emailer_touch: apolloEmailerTouch.nullish(),
+            emailer_template: apolloEmailerTemplate.nullish(),
+          }),
+        }),
       },
       '/v1/emailer_steps/{id}': {
-        delete: {
-          operationId: 'deleteEmailerStep',
-          requestParams: { path: z.object({ id: z.string() }) },
-          responses: {
-            200: {
-              content: {
-                'application/json': {
-                  schema: z.object({ emailer_step: z.object({ id: z.string(), deleted: z.boolean() }) }),
-                },
-              },
-            },
-          },
-        },
+        delete: jsonOperation('deleteEmailerStep', {
+          path: z.object({ id: z.string() }),
+          response: z.object({ emailer_step: z.object({ id: z.string(), deleted: z.boolean() }) }),
+        }),
       },
       '/v1/emailer_touches/{id}': {
-        put: {
-          operationId: 'updateEmailerTouch',
-          requestParams: { path: z.object({ id: z.string() }) },
-          requestBody: { content: { 'application/json': { schema: apolloEmailerTouchUpdate } } },
-          responses: {
-            200: { content: { 'application/json': { schema: z.object({ emailer_touch: apolloEmailerTouch }) } } },
-          },
-        },
+        put: jsonOperation('updateEmailerTouch', {
+          path: z.object({ id: z.string() }),
+          body: apolloEmailerTouchUpdate,
+          response: z.object({ emailer_touch: apolloEmailerTouch }),
+        }),
       },
       '/v1/contacts/{id}': {
-        get: {
-          operationId: 'getContact',
-          requestParams: { path: z.object({ id: z.string() }) },
-          responses: {
-            200: { content: { 'application/json': { schema: z.object({ contact: apolloContact }) } } },
-          },
-        },
+        get: jsonOperation('getContact', {
+          path: z.object({ id: z.string() }),
+          response: z.object({ contact: apolloContact }),
+        }),
       },
     },
   });
 }
 
 if (require.main === module) {
-  // eslint-disable-next-line no-console
-  // console.log(JSON.stringify(outputOpenApi(), null, 2));
   // eslint-disable-next-line no-console
   console.log(JSON.stringify(outputOpenApi(), null, 2));
 }
