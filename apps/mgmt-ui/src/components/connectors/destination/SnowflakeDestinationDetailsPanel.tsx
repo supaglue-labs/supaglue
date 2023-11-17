@@ -325,6 +325,7 @@ export default function SnowflakeDestinationDetailsPanel({ isLoading }: Snowflak
             label="Password"
             variant="outlined"
             helperText=""
+            type="password"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               setPassword(event.target.value);
               setIsDirty(true);

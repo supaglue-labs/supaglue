@@ -40,7 +40,7 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
       return {
         ...baseParams,
         type: 'redshift',
-        config: decryptedConfig,
+        config: camelcaseKeys(decryptedConfig),
       };
     case 'postgres':
       return {
@@ -95,7 +95,7 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
       };
     }
     case 'redshift': {
-      const config = decryptedConfig as RedshiftConfigUnsafe;
+      const config = camelcaseKeys(decryptedConfig) as RedshiftConfigUnsafe;
       const { s3AccessKey: _, ...safeConfig } = config;
       return {
         ...baseParams,

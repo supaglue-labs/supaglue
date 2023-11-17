@@ -373,6 +373,7 @@ export default function RedshiftDestinationDetailsPanel({ isLoading }: RedshiftD
             error={!isNew && s3AccessKey === ''}
             value={s3AccessKey}
             size="small"
+            type="password"
             label="S3 Access Key"
             variant="outlined"
             helperText=""
