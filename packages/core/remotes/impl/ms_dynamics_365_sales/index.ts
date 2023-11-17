@@ -369,13 +369,13 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
       case 'account':
-        return this.getAccount(id, fieldMappingConfig);
+        return await this.getAccount(id, fieldMappingConfig);
       case 'contact':
-        return this.getContact(id, fieldMappingConfig);
+        return await this.getContact(id, fieldMappingConfig);
       case 'lead':
-        return this.getLead(id, fieldMappingConfig);
+        return await this.getLead(id, fieldMappingConfig);
       case 'opportunity':
-        return this.getOpportunity(id, fieldMappingConfig);
+        return await this.getOpportunity(id, fieldMappingConfig);
       case 'user':
         return await this.getUser(id, fieldMappingConfig);
       default:
@@ -401,19 +401,17 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         return response['accountid'];
       }
       case 'contact': {
-        const response = await this.#odata
+        const response = await odata
           .post('contacts', toDynamicsContactCreateParams(params))
           .query({ $select: 'contactid' });
         return response['contactid'];
       }
       case 'lead': {
-        const response = await this.#odata
-          .post('leads', toDynamicsLeadCreateParams(params))
-          .query({ $select: 'leadid' });
+        const response = await odata.post('leads', toDynamicsLeadCreateParams(params)).query({ $select: 'leadid' });
         return response['leadid'];
       }
       case 'opportunity': {
-        const response = await this.#odata
+        const response = await odata
           .post('opportunities', toDynamicsOpportunityCreateParams(params))
           .query({ $select: 'opportunityid' });
         return response['opportunityid'];

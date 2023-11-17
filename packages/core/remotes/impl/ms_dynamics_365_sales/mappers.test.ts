@@ -644,7 +644,7 @@ describe('ms_dynamics_365_sales/mappers', () => {
       const expected = {
         firstname: 'John',
         lastname: 'Doe',
-        'parentcustomerid@odata.bind': `/accounts(12345)`,
+        // 'parentcustomerid@odata.bind': `/accounts(12345)`,
         'ownerid@odata.bind': `/systemusers(54321)`,
         ...toDynamicsAddresses(contact.addresses, 3),
         ...toDynamicsEmailAddresses(contact.emailAddresses),
@@ -694,7 +694,7 @@ describe('ms_dynamics_365_sales/mappers', () => {
         actualvalue: 5000,
         stepname: 'Proposal',
         actualclosedate: '2023-08-17',
-        'parentaccountid@odata.bind': `/accounts(12345)`,
+        // 'parentaccountid@odata.bind': `/accounts(12345)`,
         'ownerid@odata.bind': `/systemusers(54321)`,
         statuscode: 1,
         someField: 'someValue',

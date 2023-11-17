@@ -638,7 +638,8 @@ export const toDynamicsContactCreateParams = (contact: ContactCreateParams): Rec
   return {
     firstname: contact.firstName,
     lastname: contact.lastName,
-    'parentcustomerid@odata.bind': contact.accountId ? `/accounts(${contact.accountId})` : undefined,
+    // TODO: Investigate associations in dynamics
+    // 'parentcustomerid@odata.bind': contact.accountId ? `/accounts(${contact.accountId})` : undefined,
     'ownerid@odata.bind': contact.ownerId ? `/systemusers(${contact.ownerId})` : undefined,
     ...toDynamicsAddresses(contact.addresses, 3),
     ...toDynamicsEmailAddresses(contact.emailAddresses),
@@ -658,7 +659,8 @@ export const toDynamicsOpportunityCreateParams = (opportunity: OpportunityCreate
     actualvalue: opportunity.amount,
     stepname: opportunity.stage,
     actualclosedate: opportunity.closeDate?.toISOString().split('T')[0],
-    'parentaccountid@odata.bind': opportunity.accountId ? `/accounts(${opportunity.accountId})` : undefined,
+    // TODO: Investigate associations in dynamics
+    // 'parentaccountid@odata.bind': opportunity.accountId ? `/accounts(${opportunity.accountId})` : undefined,
     'ownerid@odata.bind': opportunity.ownerId ? `/systemusers(${opportunity.ownerId})` : undefined,
     statuscode:
       opportunity.status == 'OPEN' ? 1 : opportunity.status == 'WON' ? 3 : opportunity.status == 'LOST' ? 5 : undefined,
