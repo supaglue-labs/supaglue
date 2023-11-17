@@ -2859,7 +2859,7 @@ export interface operations {
     };
     responses: {
       /** @description Custom Object Record created */
-      201: {
+      200: {
         content: {
           "application/json": {
             record?: components["schemas"]["created_record"];

@@ -29,6 +29,8 @@ put:
   summary: Update provider
   tags:
     - Providers
+  security:
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

@@ -31,6 +31,8 @@ put:
   summary: Update schema
   tags:
     - Schemas
+  security:
+    - x-api-key: []
   parameters: []
   requestBody:
     required: true

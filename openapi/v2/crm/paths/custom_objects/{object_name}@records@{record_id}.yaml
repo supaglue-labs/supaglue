@@ -28,7 +28,7 @@ patch:
           required:
             - record
   responses:
-    '201':
+    '200':
       description: Custom Object Record created
       content:
         application/json:
