@@ -37,7 +37,8 @@
     "qs": "^6.11.2",
     "svix": "^0.84.1",
     "uuid": "^9.0.0",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zod-openapi": "^2.11.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",

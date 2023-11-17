@@ -6350,6 +6350,7 @@ __metadata:
     typescript: ^4.9.5
     uuid: ^9.0.0
     zod: ^3.22.4
+    zod-openapi: ^2.11.0
   peerDependencies:
     simple-oauth2: ^5.0.0
   languageName: unknown
@@ -25414,6 +25415,15 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"zod-openapi@npm:^2.11.0":
+  version: 2.11.0
+  resolution: "zod-openapi@npm:2.11.0"
+  peerDependencies:
+    zod: ^3.21.4
+  checksum: d741a93ef60f092a828398904ed1c14ce57000e0699d8061e67cb28c6170105572bada4c0c61f0fdfc4b6928a926f003996a5d7fe0e2ee07c2e6fc5a54e7af01
   languageName: node
   linkType: hard
 

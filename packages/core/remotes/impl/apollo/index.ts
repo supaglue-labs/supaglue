@@ -37,7 +37,7 @@ import type {
 } from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
-import { createApolloClient } from './apollo.openapi';
+import { createApolloClient } from './apollo.zodios';
 import {
   fromApolloAccountToAccount,
   fromApolloContactCampaignStatusToSequenceState,

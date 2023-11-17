@@ -1,5 +1,5 @@
 ---
-  openapi: "3.0.0"
+  openapi: "3.1.0"
   info: 
     title: "Apollo API"
     version: "0.0.0"
@@ -10,580 +10,45 @@
     /v1/emailer_campaigns/{id}: 
       get: 
         operationId: "getEmailerCampaign"
-        tags: 
-          - "emailer_campaigns"
         parameters: 
           - 
-            name: "id"
             in: "path"
+            name: "id"
             schema: 
               type: "string"
             required: true
         responses: 
           200: 
-            description: "Success"
             content: 
               application/json: 
                 schema: 
                   type: "object"
                   properties: 
                     emailer_campaign: 
-                      type: "object"
-                      properties: 
-                        id: 
-                          type: "string"
-                        name: 
-                          type: "string"
-                          nullable: true
-                        created_at: 
-                          type: "string"
-                        permissions: 
-                          type: "string"
-                          enum: 
-                            - "team_can_use"
-                            - "team_can_view"
-                            - "private"
-                        active: 
-                          type: "boolean"
-                        archived: 
-                          type: "boolean"
-                        label_ids: 
-                          type: "array"
-                          items: 
-                            type: "string"
-                        num_steps: 
-                          type: "number"
-                          nullable: true
-                        user_id: 
-                          type: "string"
-                          nullable: true
-                        unique_scheduled: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_delivered: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_bounced: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_opened: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_replied: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_demoed: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_clicked: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_unsubscribed: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        bounce_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        open_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        click_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        reply_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        spam_blocked_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        opt_out_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        demo_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                      required: 
-                        - "id"
-                        - "created_at"
-                        - "active"
-                        - "archived"
-                        - "label_ids"
-                      additionalProperties: false
+                      $ref: "#/components/schemas/emailer_campaign"
                     emailer_steps: 
-                      type: "array"
+                      type: 
+                        - "array"
+                        - "null"
                       items: 
-                        type: "object"
-                        properties: 
-                          id: 
-                            type: "string"
-                          emailer_campaign_id: 
-                            type: "string"
-                          position: 
-                            type: "number"
-                            nullable: true
-                          wait_time: 
-                            type: "number"
-                            nullable: true
-                          type: 
-                            type: "string"
-                            enum: 
-                              - "auto_email"
-                              - "manual_email"
-                              - "call"
-                              - "action_item"
-                              - "linkedin_step_message"
-                              - "linkedin_step_connect"
-                              - "linkedin_step_view_profile"
-                              - "linkedin_step_interact_post"
-                          wait_mode: 
-                            type: "string"
-                            enum: 
-                              - "second"
-                              - "minute"
-                              - "hour"
-                              - "day"
-                          note: 
-                            type: "string"
-                            nullable: true
-                          max_emails_per_day: 
-                            type: "number"
-                            nullable: true
-                          exact_datetime: 
-                            type: "string"
-                            nullable: true
-                          priority: 
-                            type: "string"
-                            nullable: true
-                          auto_skip_in_x_days: 
-                            type: "number"
-                            nullable: true
-                          counts: 
-                            type: "object"
-                            properties: 
-                              active: 
-                                type: "number"
-                                nullable: true
-                              paused: 
-                                type: "number"
-                                nullable: true
-                              finished: 
-                                type: "number"
-                                nullable: true
-                              bounced: 
-                                type: "number"
-                                nullable: true
-                              spam_blocked: 
-                                type: "number"
-                                nullable: true
-                              hard_bounced: 
-                                type: "number"
-                                nullable: true
-                              not_sent: 
-                                type: "number"
-                                nullable: true
-                            additionalProperties: false
-                            nullable: true
-                        required: 
-                          - "id"
-                          - "emailer_campaign_id"
-                          - "type"
-                          - "wait_mode"
-                        additionalProperties: false
-                      nullable: true
+                        $ref: "#/components/schemas/emailer_step"
                     emailer_touches: 
-                      type: "array"
+                      type: 
+                        - "array"
+                        - "null"
                       items: 
-                        type: "object"
-                        properties: 
-                          id: 
-                            type: "string"
-                          emailer_step_id: 
-                            type: "string"
-                            nullable: true
-                          emailer_template_id: 
-                            type: "string"
-                            nullable: true
-                          emailer_template: 
-                            type: "object"
-                            properties: 
-                              id: 
-                                type: "string"
-                              name: 
-                                type: "string"
-                                nullable: true
-                              user_id: 
-                                type: "string"
-                                nullable: true
-                              subject: 
-                                type: "string"
-                                nullable: true
-                              archived: 
-                                type: "boolean"
-                                nullable: true
-                              created_at: 
-                                type: "string"
-                                nullable: true
-                              global: 
-                                type: "boolean"
-                                nullable: true
-                              body_text: 
-                                type: "string"
-                                nullable: true
-                              folder_id: 
-                                type: "string"
-                                nullable: true
-                              body_html: 
-                                type: "string"
-                                nullable: true
-                              creation_type: 
-                                type: "string"
-                                nullable: true
-                              label_ids: 
-                                type: "array"
-                                items: 
-                                  type: "string"
-                                nullable: true
-                              prompt_id: 
-                                type: "string"
-                                nullable: true
-                            required: 
-                              - "id"
-                            additionalProperties: false
-                            nullable: true
-                          status: 
-                            type: "string"
-                            nullable: true
-                          type: 
-                            type: "string"
-                            enum: 
-                              - "reply_to_thread"
-                              - "new_thread"
-                            nullable: true
-                          include_signature: 
-                            type: "boolean"
-                            nullable: true
-                          has_personalized_opener: 
-                            type: "boolean"
-                            nullable: true
-                          personalized_opener_fallback_option: 
-                            type: "string"
-                            nullable: true
-                          generic_personalized_opener: 
-                            type: "string"
-                            nullable: true
-                          unique_scheduled: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_delivered: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_bounced: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_opened: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_replied: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          bounce_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          open_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          reply_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          demo_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_demoed: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_clicked: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          click_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_unsubscribed: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          opt_out_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_hard_bounced: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_spam_blocked: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          hard_bounce_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          spam_block_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                        required: 
-                          - "id"
-                        additionalProperties: false
-                      nullable: true
+                        $ref: "#/components/schemas/emailer_touch"
                     emailer_templates: 
-                      type: "array"
+                      type: 
+                        - "array"
+                        - "null"
                       items: 
-                        type: "object"
-                        properties: 
-                          id: 
-                            type: "string"
-                          name: 
-                            type: "string"
-                            nullable: true
-                          user_id: 
-                            type: "string"
-                            nullable: true
-                          subject: 
-                            type: "string"
-                            nullable: true
-                          archived: 
-                            type: "boolean"
-                            nullable: true
-                          created_at: 
-                            type: "string"
-                            nullable: true
-                          global: 
-                            type: "boolean"
-                            nullable: true
-                          body_text: 
-                            type: "string"
-                            nullable: true
-                          folder_id: 
-                            type: "string"
-                            nullable: true
-                          body_html: 
-                            type: "string"
-                            nullable: true
-                          creation_type: 
-                            type: "string"
-                            nullable: true
-                          label_ids: 
-                            type: "array"
-                            items: 
-                              type: "string"
-                            nullable: true
-                          prompt_id: 
-                            type: "string"
-                            nullable: true
-                        required: 
-                          - "id"
-                        additionalProperties: false
-                      nullable: true
+                        $ref: "#/components/schemas/emailer_template"
                   required: 
                     - "emailer_campaign"
-                  additionalProperties: false
     /v1/emailer_campaigns: 
       post: 
-        operationId: "postEmailerCampaign"
-        tags: 
-          - "emailer_campaigns"
+        operationId: "createEmailerCampaign"
         requestBody: 
           content: 
             application/json: 
@@ -591,8 +56,9 @@
                 type: "object"
                 properties: 
                   name: 
-                    type: "string"
-                    nullable: true
+                    type: 
+                      - "string"
+                      - "null"
                   permissions: 
                     type: "string"
                     enum: 
@@ -600,581 +66,54 @@
                       - "team_can_view"
                       - "private"
                   user_id: 
-                    type: "string"
-                    nullable: true
+                    type: 
+                      - "string"
+                      - "null"
                   label_ids: 
                     type: "array"
                     items: 
                       type: "string"
                   active: 
                     type: "boolean"
-                additionalProperties: false
-        parameters: []
         responses: 
           200: 
-            description: "Success"
             content: 
               application/json: 
                 schema: 
                   type: "object"
                   properties: 
                     emailer_campaign: 
-                      type: "object"
-                      properties: 
-                        id: 
-                          type: "string"
-                        name: 
-                          type: "string"
-                          nullable: true
-                        created_at: 
-                          type: "string"
-                        permissions: 
-                          type: "string"
-                          enum: 
-                            - "team_can_use"
-                            - "team_can_view"
-                            - "private"
-                        active: 
-                          type: "boolean"
-                        archived: 
-                          type: "boolean"
-                        label_ids: 
-                          type: "array"
-                          items: 
-                            type: "string"
-                        num_steps: 
-                          type: "number"
-                          nullable: true
-                        user_id: 
-                          type: "string"
-                          nullable: true
-                        unique_scheduled: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_delivered: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_bounced: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_opened: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_replied: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_demoed: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_clicked: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_unsubscribed: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        bounce_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        open_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        click_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        reply_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        spam_blocked_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        opt_out_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        demo_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                      required: 
-                        - "id"
-                        - "created_at"
-                        - "active"
-                        - "archived"
-                        - "label_ids"
-                      additionalProperties: false
+                      $ref: "#/components/schemas/emailer_campaign"
                     emailer_steps: 
-                      type: "array"
+                      type: 
+                        - "array"
+                        - "null"
                       items: 
-                        type: "object"
-                        properties: 
-                          id: 
-                            type: "string"
-                          emailer_campaign_id: 
-                            type: "string"
-                          position: 
-                            type: "number"
-                            nullable: true
-                          wait_time: 
-                            type: "number"
-                            nullable: true
-                          type: 
-                            type: "string"
-                            enum: 
-                              - "auto_email"
-                              - "manual_email"
-                              - "call"
-                              - "action_item"
-                              - "linkedin_step_message"
-                              - "linkedin_step_connect"
-                              - "linkedin_step_view_profile"
-                              - "linkedin_step_interact_post"
-                          wait_mode: 
-                            type: "string"
-                            enum: 
-                              - "second"
-                              - "minute"
-                              - "hour"
-                              - "day"
-                          note: 
-                            type: "string"
-                            nullable: true
-                          max_emails_per_day: 
-                            type: "number"
-                            nullable: true
-                          exact_datetime: 
-                            type: "string"
-                            nullable: true
-                          priority: 
-                            type: "string"
-                            nullable: true
-                          auto_skip_in_x_days: 
-                            type: "number"
-                            nullable: true
-                          counts: 
-                            type: "object"
-                            properties: 
-                              active: 
-                                type: "number"
-                                nullable: true
-                              paused: 
-                                type: "number"
-                                nullable: true
-                              finished: 
-                                type: "number"
-                                nullable: true
-                              bounced: 
-                                type: "number"
-                                nullable: true
-                              spam_blocked: 
-                                type: "number"
-                                nullable: true
-                              hard_bounced: 
-                                type: "number"
-                                nullable: true
-                              not_sent: 
-                                type: "number"
-                                nullable: true
-                            additionalProperties: false
-                            nullable: true
-                        required: 
-                          - "id"
-                          - "emailer_campaign_id"
-                          - "type"
-                          - "wait_mode"
-                        additionalProperties: false
-                      nullable: true
+                        $ref: "#/components/schemas/emailer_step"
                     emailer_touches: 
-                      type: "array"
+                      type: 
+                        - "array"
+                        - "null"
                       items: 
-                        type: "object"
-                        properties: 
-                          id: 
-                            type: "string"
-                          emailer_step_id: 
-                            type: "string"
-                            nullable: true
-                          emailer_template_id: 
-                            type: "string"
-                            nullable: true
-                          emailer_template: 
-                            type: "object"
-                            properties: 
-                              id: 
-                                type: "string"
-                              name: 
-                                type: "string"
-                                nullable: true
-                              user_id: 
-                                type: "string"
-                                nullable: true
-                              subject: 
-                                type: "string"
-                                nullable: true
-                              archived: 
-                                type: "boolean"
-                                nullable: true
-                              created_at: 
-                                type: "string"
-                                nullable: true
-                              global: 
-                                type: "boolean"
-                                nullable: true
-                              body_text: 
-                                type: "string"
-                                nullable: true
-                              folder_id: 
-                                type: "string"
-                                nullable: true
-                              body_html: 
-                                type: "string"
-                                nullable: true
-                              creation_type: 
-                                type: "string"
-                                nullable: true
-                              label_ids: 
-                                type: "array"
-                                items: 
-                                  type: "string"
-                                nullable: true
-                              prompt_id: 
-                                type: "string"
-                                nullable: true
-                            required: 
-                              - "id"
-                            additionalProperties: false
-                            nullable: true
-                          status: 
-                            type: "string"
-                            nullable: true
-                          type: 
-                            type: "string"
-                            enum: 
-                              - "reply_to_thread"
-                              - "new_thread"
-                            nullable: true
-                          include_signature: 
-                            type: "boolean"
-                            nullable: true
-                          has_personalized_opener: 
-                            type: "boolean"
-                            nullable: true
-                          personalized_opener_fallback_option: 
-                            type: "string"
-                            nullable: true
-                          generic_personalized_opener: 
-                            type: "string"
-                            nullable: true
-                          unique_scheduled: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_delivered: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_bounced: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_opened: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_replied: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          bounce_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          open_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          reply_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          demo_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_demoed: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_clicked: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          click_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_unsubscribed: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          opt_out_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_hard_bounced: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          unique_spam_blocked: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          hard_bounce_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                          spam_block_rate: 
-                            anyOf: 
-                              - 
-                                type: "number"
-                              - 
-                                type: "string"
-                                enum: 
-                                  - "loading"
-                            nullable: true
-                        required: 
-                          - "id"
-                        additionalProperties: false
-                      nullable: true
+                        $ref: "#/components/schemas/emailer_touch"
                     emailer_templates: 
-                      type: "array"
+                      type: 
+                        - "array"
+                        - "null"
                       items: 
-                        type: "object"
-                        properties: 
-                          id: 
-                            type: "string"
-                          name: 
-                            type: "string"
-                            nullable: true
-                          user_id: 
-                            type: "string"
-                            nullable: true
-                          subject: 
-                            type: "string"
-                            nullable: true
-                          archived: 
-                            type: "boolean"
-                            nullable: true
-                          created_at: 
-                            type: "string"
-                            nullable: true
-                          global: 
-                            type: "boolean"
-                            nullable: true
-                          body_text: 
-                            type: "string"
-                            nullable: true
-                          folder_id: 
-                            type: "string"
-                            nullable: true
-                          body_html: 
-                            type: "string"
-                            nullable: true
-                          creation_type: 
-                            type: "string"
-                            nullable: true
-                          label_ids: 
-                            type: "array"
-                            items: 
-                              type: "string"
-                            nullable: true
-                          prompt_id: 
-                            type: "string"
-                            nullable: true
-                        required: 
-                          - "id"
-                        additionalProperties: false
-                      nullable: true
+                        $ref: "#/components/schemas/emailer_template"
                   required: 
                     - "emailer_campaign"
-                  additionalProperties: false
     /v1/emailer_campaigns/{id}/add_contact_ids: 
       post: 
-        operationId: "postEmailerCampaignAddContactIds"
-        tags: 
-          - "add_contact_ids"
+        operationId: "addContactIdsToEmailerCampaign"
+        parameters: 
+          - 
+            in: "path"
+            name: "id"
+            schema: 
+              type: "string"
+            required: true
         requestBody: 
           content: 
             application/json: 
@@ -1188,25 +127,18 @@
                   emailer_campaign_id: 
                     type: "string"
                   send_email_from_email_account_id: 
-                    type: "string"
-                    nullable: true
+                    type: 
+                      - "string"
+                      - "null"
                   userId: 
-                    type: "string"
-                    nullable: true
+                    type: 
+                      - "string"
+                      - "null"
                 required: 
                   - "contact_ids"
                   - "emailer_campaign_id"
-                additionalProperties: false
-        parameters: 
-          - 
-            name: "id"
-            in: "path"
-            schema: 
-              type: "string"
-            required: true
         responses: 
           200: 
-            description: "Success"
             content: 
               application/json: 
                 schema: 
@@ -1215,42 +147,12 @@
                     contacts: 
                       type: "array"
                       items: 
-                        type: "object"
-                        properties: 
-                          id: 
-                            type: "string"
-                          emailer_campaign_ids: 
-                            type: "array"
-                            items: 
-                              type: "string"
-                          contact_campaign_statuses: 
-                            type: "array"
-                            items: 
-                              type: "object"
-                              properties: 
-                                id: 
-                                  type: "string"
-                                send_email_from_email_account_id: 
-                                  type: "string"
-                                emailer_campaign_id: 
-                                  type: "string"
-                              required: 
-                                - "id"
-                                - "send_email_from_email_account_id"
-                                - "emailer_campaign_id"
-                              additionalProperties: true
-                        required: 
-                          - "id"
-                          - "contact_campaign_statuses"
-                        additionalProperties: true
+                        $ref: "#/components/schemas/contact"
                   required: 
                     - "contacts"
-                  additionalProperties: true
     /v1/emailer_steps: 
       post: 
-        operationId: "postEmailerStep"
-        tags: 
-          - "emailer_steps"
+        operationId: "createEmailerStep"
         requestBody: 
           content: 
             application/json: 
@@ -1260,440 +162,68 @@
                   emailer_campaign_id: 
                     type: "string"
                   priority: 
-                    type: "string"
-                    nullable: true
+                    type: 
+                      - "string"
+                      - "null"
                   position: 
-                    type: "number"
-                    nullable: true
+                    type: 
+                      - "number"
+                      - "null"
                   type: 
-                    type: "string"
-                    enum: 
-                      - "auto_email"
-                      - "manual_email"
-                      - "call"
-                      - "action_item"
-                      - "linkedin_step_message"
-                      - "linkedin_step_connect"
-                      - "linkedin_step_view_profile"
-                      - "linkedin_step_interact_post"
+                    $ref: "#/components/schemas/emailer_step_type"
                   wait_mode: 
-                    type: "string"
-                    enum: 
-                      - "second"
-                      - "minute"
-                      - "hour"
-                      - "day"
+                    $ref: "#/components/schemas/emailer_step_wait_mode"
                   wait_time: 
-                    type: "number"
-                    nullable: true
+                    type: 
+                      - "number"
+                      - "null"
                   exact_datetime: 
-                    type: "string"
-                    nullable: true
+                    type: 
+                      - "string"
+                      - "null"
                   note: 
-                    type: "string"
-                    nullable: true
+                    type: 
+                      - "string"
+                      - "null"
                 required: 
                   - "emailer_campaign_id"
                   - "type"
                   - "wait_mode"
-                additionalProperties: false
-        parameters: []
         responses: 
           200: 
-            description: "Success"
             content: 
               application/json: 
                 schema: 
                   type: "object"
                   properties: 
                     emailer_step: 
-                      type: "object"
-                      properties: 
-                        id: 
-                          type: "string"
-                        emailer_campaign_id: 
-                          type: "string"
-                        position: 
-                          type: "number"
-                          nullable: true
-                        wait_time: 
-                          type: "number"
-                          nullable: true
-                        type: 
-                          type: "string"
-                          enum: 
-                            - "auto_email"
-                            - "manual_email"
-                            - "call"
-                            - "action_item"
-                            - "linkedin_step_message"
-                            - "linkedin_step_connect"
-                            - "linkedin_step_view_profile"
-                            - "linkedin_step_interact_post"
-                        wait_mode: 
-                          type: "string"
-                          enum: 
-                            - "second"
-                            - "minute"
-                            - "hour"
-                            - "day"
-                        note: 
-                          type: "string"
-                          nullable: true
-                        max_emails_per_day: 
-                          type: "number"
-                          nullable: true
-                        exact_datetime: 
-                          type: "string"
-                          nullable: true
-                        priority: 
-                          type: "string"
-                          nullable: true
-                        auto_skip_in_x_days: 
-                          type: "number"
-                          nullable: true
-                        counts: 
-                          type: "object"
-                          properties: 
-                            active: 
-                              type: "number"
-                              nullable: true
-                            paused: 
-                              type: "number"
-                              nullable: true
-                            finished: 
-                              type: "number"
-                              nullable: true
-                            bounced: 
-                              type: "number"
-                              nullable: true
-                            spam_blocked: 
-                              type: "number"
-                              nullable: true
-                            hard_bounced: 
-                              type: "number"
-                              nullable: true
-                            not_sent: 
-                              type: "number"
-                              nullable: true
-                          additionalProperties: false
-                          nullable: true
-                      required: 
-                        - "id"
-                        - "emailer_campaign_id"
-                        - "type"
-                        - "wait_mode"
-                      additionalProperties: false
+                      $ref: "#/components/schemas/emailer_step"
                     emailer_touch: 
-                      type: "object"
-                      properties: 
-                        id: 
-                          type: "string"
-                        emailer_step_id: 
-                          type: "string"
-                          nullable: true
-                        emailer_template_id: 
-                          type: "string"
-                          nullable: true
-                        emailer_template: 
-                          type: "object"
-                          properties: 
-                            id: 
-                              type: "string"
-                            name: 
-                              type: "string"
-                              nullable: true
-                            user_id: 
-                              type: "string"
-                              nullable: true
-                            subject: 
-                              type: "string"
-                              nullable: true
-                            archived: 
-                              type: "boolean"
-                              nullable: true
-                            created_at: 
-                              type: "string"
-                              nullable: true
-                            global: 
-                              type: "boolean"
-                              nullable: true
-                            body_text: 
-                              type: "string"
-                              nullable: true
-                            folder_id: 
-                              type: "string"
-                              nullable: true
-                            body_html: 
-                              type: "string"
-                              nullable: true
-                            creation_type: 
-                              type: "string"
-                              nullable: true
-                            label_ids: 
-                              type: "array"
-                              items: 
-                                type: "string"
-                              nullable: true
-                            prompt_id: 
-                              type: "string"
-                              nullable: true
-                          required: 
-                            - "id"
-                          additionalProperties: false
-                          nullable: true
-                        status: 
-                          type: "string"
-                          nullable: true
-                        type: 
-                          type: "string"
-                          enum: 
-                            - "reply_to_thread"
-                            - "new_thread"
-                          nullable: true
-                        include_signature: 
-                          type: "boolean"
-                          nullable: true
-                        has_personalized_opener: 
-                          type: "boolean"
-                          nullable: true
-                        personalized_opener_fallback_option: 
-                          type: "string"
-                          nullable: true
-                        generic_personalized_opener: 
-                          type: "string"
-                          nullable: true
-                        unique_scheduled: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_delivered: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_bounced: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_opened: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_replied: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        bounce_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        open_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        reply_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        demo_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_demoed: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_clicked: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        click_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_unsubscribed: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        opt_out_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_hard_bounced: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_spam_blocked: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        hard_bounce_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        spam_block_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                      required: 
-                        - "id"
-                      additionalProperties: false
-                      nullable: true
+                      oneOf: 
+                        - 
+                          $ref: "#/components/schemas/emailer_touch"
+                        - 
+                          type: "null"
                     emailer_template: 
-                      type: "object"
-                      properties: 
-                        id: 
-                          type: "string"
-                        name: 
-                          type: "string"
-                          nullable: true
-                        user_id: 
-                          type: "string"
-                          nullable: true
-                        subject: 
-                          type: "string"
-                          nullable: true
-                        archived: 
-                          type: "boolean"
-                          nullable: true
-                        created_at: 
-                          type: "string"
-                          nullable: true
-                        global: 
-                          type: "boolean"
-                          nullable: true
-                        body_text: 
-                          type: "string"
-                          nullable: true
-                        folder_id: 
-                          type: "string"
-                          nullable: true
-                        body_html: 
-                          type: "string"
-                          nullable: true
-                        creation_type: 
-                          type: "string"
-                          nullable: true
-                        label_ids: 
-                          type: "array"
-                          items: 
-                            type: "string"
-                          nullable: true
-                        prompt_id: 
-                          type: "string"
-                          nullable: true
-                      required: 
-                        - "id"
-                      additionalProperties: false
-                      nullable: true
+                      oneOf: 
+                        - 
+                          $ref: "#/components/schemas/emailer_template"
+                        - 
+                          type: "null"
                   required: 
                     - "emailer_step"
-                  additionalProperties: false
     /v1/emailer_steps/{id}: 
       delete: 
         operationId: "deleteEmailerStep"
-        tags: 
-          - "emailer_steps"
         parameters: 
           - 
-            name: "id"
             in: "path"
+            name: "id"
             schema: 
               type: "string"
             required: true
         responses: 
           200: 
-            description: "Success"
             content: 
               application/json: 
                 schema: 
@@ -1709,15 +239,18 @@
                       required: 
                         - "id"
                         - "deleted"
-                      additionalProperties: false
                   required: 
                     - "emailer_step"
-                  additionalProperties: false
     /v1/emailer_touches/{id}: 
       put: 
-        operationId: "putEmailerTouch"
-        tags: 
-          - "emailer_touches"
+        operationId: "updateEmailerTouch"
+        parameters: 
+          - 
+            in: "path"
+            name: "id"
+            schema: 
+              type: "string"
+            required: true
         requestBody: 
           content: 
             application/json: 
@@ -1727,376 +260,400 @@
                   id: 
                     type: "string"
                   emailer_step_id: 
-                    type: "string"
-                    nullable: true
+                    type: 
+                      - "string"
+                      - "null"
                   emailer_template: 
-                    type: "object"
-                    properties: 
-                      id: 
-                        type: "string"
-                      name: 
-                        type: "string"
-                        nullable: true
-                      user_id: 
-                        type: "string"
-                        nullable: true
-                      subject: 
-                        type: "string"
-                        nullable: true
-                      archived: 
-                        type: "boolean"
-                        nullable: true
-                      created_at: 
-                        type: "string"
-                        nullable: true
-                      global: 
-                        type: "boolean"
-                        nullable: true
-                      body_text: 
-                        type: "string"
-                        nullable: true
-                      folder_id: 
-                        type: "string"
-                        nullable: true
-                      body_html: 
-                        type: "string"
-                        nullable: true
-                      creation_type: 
-                        type: "string"
-                        nullable: true
-                      label_ids: 
-                        type: "array"
-                        items: 
-                          type: "string"
-                        nullable: true
-                      prompt_id: 
-                        type: "string"
-                        nullable: true
-                    required: 
-                      - "id"
-                    additionalProperties: false
-                    nullable: true
+                    oneOf: 
+                      - 
+                        $ref: "#/components/schemas/emailer_template"
+                      - 
+                        type: "null"
                   type: 
-                    type: "string"
+                    type: 
+                      - "string"
+                      - "null"
                     enum: 
                       - "reply_to_thread"
                       - "new_thread"
-                    nullable: true
                 required: 
                   - "id"
-                additionalProperties: false
-        parameters: 
-          - 
-            name: "id"
-            in: "path"
-            schema: 
-              type: "string"
-            required: true
         responses: 
           200: 
-            description: "Success"
             content: 
               application/json: 
                 schema: 
                   type: "object"
                   properties: 
                     emailer_touch: 
-                      type: "object"
-                      properties: 
-                        id: 
-                          type: "string"
-                        emailer_step_id: 
-                          type: "string"
-                          nullable: true
-                        emailer_template_id: 
-                          type: "string"
-                          nullable: true
-                        emailer_template: 
-                          type: "object"
-                          properties: 
-                            id: 
-                              type: "string"
-                            name: 
-                              type: "string"
-                              nullable: true
-                            user_id: 
-                              type: "string"
-                              nullable: true
-                            subject: 
-                              type: "string"
-                              nullable: true
-                            archived: 
-                              type: "boolean"
-                              nullable: true
-                            created_at: 
-                              type: "string"
-                              nullable: true
-                            global: 
-                              type: "boolean"
-                              nullable: true
-                            body_text: 
-                              type: "string"
-                              nullable: true
-                            folder_id: 
-                              type: "string"
-                              nullable: true
-                            body_html: 
-                              type: "string"
-                              nullable: true
-                            creation_type: 
-                              type: "string"
-                              nullable: true
-                            label_ids: 
-                              type: "array"
-                              items: 
-                                type: "string"
-                              nullable: true
-                            prompt_id: 
-                              type: "string"
-                              nullable: true
-                          required: 
-                            - "id"
-                          additionalProperties: false
-                          nullable: true
-                        status: 
-                          type: "string"
-                          nullable: true
-                        type: 
-                          type: "string"
-                          enum: 
-                            - "reply_to_thread"
-                            - "new_thread"
-                          nullable: true
-                        include_signature: 
-                          type: "boolean"
-                          nullable: true
-                        has_personalized_opener: 
-                          type: "boolean"
-                          nullable: true
-                        personalized_opener_fallback_option: 
-                          type: "string"
-                          nullable: true
-                        generic_personalized_opener: 
-                          type: "string"
-                          nullable: true
-                        unique_scheduled: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_delivered: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_bounced: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_opened: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_replied: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        bounce_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        open_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        reply_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        demo_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_demoed: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_clicked: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        click_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_unsubscribed: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        opt_out_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_hard_bounced: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        unique_spam_blocked: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        hard_bounce_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                        spam_block_rate: 
-                          anyOf: 
-                            - 
-                              type: "number"
-                            - 
-                              type: "string"
-                              enum: 
-                                - "loading"
-                          nullable: true
-                      required: 
-                        - "id"
-                      additionalProperties: false
+                      $ref: "#/components/schemas/emailer_touch"
                   required: 
                     - "emailer_touch"
-                  additionalProperties: false
     /v1/contacts/{id}: 
       get: 
         operationId: "getContact"
-        tags: 
-          - "contacts"
         parameters: 
           - 
-            name: "id"
             in: "path"
+            name: "id"
             schema: 
               type: "string"
             required: true
         responses: 
           200: 
-            description: "Success"
             content: 
               application/json: 
                 schema: 
                   type: "object"
                   properties: 
                     contact: 
-                      type: "object"
-                      properties: 
-                        id: 
-                          type: "string"
-                        emailer_campaign_ids: 
-                          type: "array"
-                          items: 
-                            type: "string"
-                        contact_campaign_statuses: 
-                          type: "array"
-                          items: 
-                            type: "object"
-                            properties: 
-                              id: 
-                                type: "string"
-                              send_email_from_email_account_id: 
-                                type: "string"
-                              emailer_campaign_id: 
-                                type: "string"
-                            required: 
-                              - "id"
-                              - "send_email_from_email_account_id"
-                              - "emailer_campaign_id"
-                            additionalProperties: true
-                      required: 
-                        - "id"
-                        - "contact_campaign_statuses"
-                      additionalProperties: true
+                      $ref: "#/components/schemas/contact"
                   required: 
                     - "contact"
-                  additionalProperties: false
+  components: 
+    schemas: 
+      emailer_campaign: 
+        type: "object"
+        properties: 
+          id: 
+            type: "string"
+          name: 
+            type: 
+              - "string"
+              - "null"
+          created_at: 
+            type: "string"
+            format: "date-time"
+          permissions: 
+            type: "string"
+            enum: 
+              - "team_can_use"
+              - "team_can_view"
+              - "private"
+          active: 
+            type: "boolean"
+          archived: 
+            type: "boolean"
+          label_ids: 
+            type: "array"
+            items: 
+              type: "string"
+          num_steps: 
+            type: 
+              - "number"
+              - "null"
+          user_id: 
+            type: 
+              - "string"
+              - "null"
+          unique_scheduled: 
+            $ref: "#/components/schemas/metric"
+          unique_delivered: 
+            $ref: "#/components/schemas/metric"
+          unique_bounced: 
+            $ref: "#/components/schemas/metric"
+          unique_opened: 
+            $ref: "#/components/schemas/metric"
+          unique_replied: 
+            $ref: "#/components/schemas/metric"
+          unique_demoed: 
+            $ref: "#/components/schemas/metric"
+          unique_clicked: 
+            $ref: "#/components/schemas/metric"
+          unique_unsubscribed: 
+            $ref: "#/components/schemas/metric"
+          bounce_rate: 
+            $ref: "#/components/schemas/metric"
+          open_rate: 
+            $ref: "#/components/schemas/metric"
+          click_rate: 
+            $ref: "#/components/schemas/metric"
+          reply_rate: 
+            $ref: "#/components/schemas/metric"
+          spam_blocked_rate: 
+            $ref: "#/components/schemas/metric"
+          opt_out_rate: 
+            $ref: "#/components/schemas/metric"
+          demo_rate: 
+            $ref: "#/components/schemas/metric"
+        required: 
+          - "id"
+          - "created_at"
+          - "active"
+          - "archived"
+          - "label_ids"
+      metric: 
+        anyOf: 
+          - 
+            type: "number"
+          - 
+            type: "string"
+            enum: 
+              - "loading"
+          - 
+            type: "null"
+      emailer_step: 
+        type: "object"
+        properties: 
+          id: 
+            type: "string"
+          emailer_campaign_id: 
+            type: "string"
+          position: 
+            type: 
+              - "number"
+              - "null"
+          wait_time: 
+            type: 
+              - "number"
+              - "null"
+          type: 
+            $ref: "#/components/schemas/emailer_step_type"
+          wait_mode: 
+            $ref: "#/components/schemas/emailer_step_wait_mode"
+          note: 
+            type: 
+              - "string"
+              - "null"
+          max_emails_per_day: 
+            type: 
+              - "number"
+              - "null"
+          exact_datetime: 
+            type: 
+              - "string"
+              - "null"
+          priority: 
+            type: 
+              - "string"
+              - "null"
+          auto_skip_in_x_days: 
+            type: 
+              - "number"
+              - "null"
+          counts: 
+            type: 
+              - "object"
+              - "null"
+            properties: 
+              active: 
+                type: 
+                  - "number"
+                  - "null"
+              paused: 
+                type: 
+                  - "number"
+                  - "null"
+              finished: 
+                type: 
+                  - "number"
+                  - "null"
+              bounced: 
+                type: 
+                  - "number"
+                  - "null"
+              spam_blocked: 
+                type: 
+                  - "number"
+                  - "null"
+              hard_bounced: 
+                type: 
+                  - "number"
+                  - "null"
+              not_sent: 
+                type: 
+                  - "number"
+                  - "null"
+        required: 
+          - "id"
+          - "emailer_campaign_id"
+          - "type"
+          - "wait_mode"
+      emailer_step_type: 
+        type: "string"
+        enum: 
+          - "auto_email"
+          - "manual_email"
+          - "call"
+          - "action_item"
+          - "linkedin_step_message"
+          - "linkedin_step_connect"
+          - "linkedin_step_view_profile"
+          - "linkedin_step_interact_post"
+      emailer_step_wait_mode: 
+        type: "string"
+        enum: 
+          - "second"
+          - "minute"
+          - "hour"
+          - "day"
+      emailer_touch: 
+        type: "object"
+        properties: 
+          id: 
+            type: "string"
+          emailer_step_id: 
+            type: 
+              - "string"
+              - "null"
+          emailer_template_id: 
+            type: 
+              - "string"
+              - "null"
+          emailer_template: 
+            oneOf: 
+              - 
+                $ref: "#/components/schemas/emailer_template"
+              - 
+                type: "null"
+          status: 
+            type: 
+              - "string"
+              - "null"
+          type: 
+            type: 
+              - "string"
+              - "null"
+            enum: 
+              - "reply_to_thread"
+              - "new_thread"
+          include_signature: 
+            type: 
+              - "boolean"
+              - "null"
+          has_personalized_opener: 
+            type: 
+              - "boolean"
+              - "null"
+          personalized_opener_fallback_option: 
+            type: 
+              - "string"
+              - "null"
+          generic_personalized_opener: 
+            type: 
+              - "string"
+              - "null"
+          unique_scheduled: 
+            $ref: "#/components/schemas/metric"
+          unique_delivered: 
+            $ref: "#/components/schemas/metric"
+          unique_bounced: 
+            $ref: "#/components/schemas/metric"
+          unique_opened: 
+            $ref: "#/components/schemas/metric"
+          unique_replied: 
+            $ref: "#/components/schemas/metric"
+          bounce_rate: 
+            $ref: "#/components/schemas/metric"
+          open_rate: 
+            $ref: "#/components/schemas/metric"
+          reply_rate: 
+            $ref: "#/components/schemas/metric"
+          demo_rate: 
+            $ref: "#/components/schemas/metric"
+          unique_demoed: 
+            $ref: "#/components/schemas/metric"
+          unique_clicked: 
+            $ref: "#/components/schemas/metric"
+          click_rate: 
+            $ref: "#/components/schemas/metric"
+          unique_unsubscribed: 
+            $ref: "#/components/schemas/metric"
+          opt_out_rate: 
+            $ref: "#/components/schemas/metric"
+          unique_hard_bounced: 
+            $ref: "#/components/schemas/metric"
+          unique_spam_blocked: 
+            $ref: "#/components/schemas/metric"
+          hard_bounce_rate: 
+            $ref: "#/components/schemas/metric"
+          spam_block_rate: 
+            $ref: "#/components/schemas/metric"
+        required: 
+          - "id"
+      emailer_template: 
+        type: "object"
+        properties: 
+          id: 
+            type: "string"
+          name: 
+            type: 
+              - "string"
+              - "null"
+          user_id: 
+            type: 
+              - "string"
+              - "null"
+          subject: 
+            type: 
+              - "string"
+              - "null"
+          archived: 
+            type: 
+              - "boolean"
+              - "null"
+          created_at: 
+            type: 
+              - "string"
+              - "null"
+            format: "date-time"
+          global: 
+            type: 
+              - "boolean"
+              - "null"
+          body_text: 
+            type: 
+              - "string"
+              - "null"
+          folder_id: 
+            type: 
+              - "string"
+              - "null"
+          body_html: 
+            type: 
+              - "string"
+              - "null"
+          creation_type: 
+            type: 
+              - "string"
+              - "null"
+          label_ids: 
+            type: 
+              - "array"
+              - "null"
+            items: 
+              type: "string"
+          prompt_id: 
+            type: 
+              - "string"
+              - "null"
+        required: 
+          - "id"
+      contact: 
+        type: "object"
+        properties: 
+          id: 
+            type: "string"
+          emailer_campaign_ids: 
+            type: "array"
+            items: 
+              type: "string"
+          contact_campaign_statuses: 
+            type: "array"
+            items: 
+              type: "object"
+              properties: 
+                id: 
+                  type: "string"
+                send_email_from_email_account_id: 
+                  type: "string"
+                emailer_campaign_id: 
+                  type: "string"
+              required: 
+                - "id"
+                - "send_email_from_email_account_id"
+                - "emailer_campaign_id"
+        required: 
+          - "id"
+          - "contact_campaign_statuses"
 
