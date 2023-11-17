@@ -19,7 +19,7 @@ description: ''
 
 ## Query patterns
 
-Here are a few high-level best practices when working with tables that Supaglue land:
+Here are a few high-level best practices when working with tables that Supaglue lands:
 
 - Avoid altering the schema of the existing columns
 
