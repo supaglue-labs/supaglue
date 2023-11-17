@@ -79,7 +79,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     'OData-MaxVersion': '4.0',
     'OData-Version': '4.0',
     'Content-Type': 'application/json',
-    Prefer: `odata.maxpagesize=${MAX_PAGE_SIZE},return=representation`,
+    Prefer: `odata.maxpagesize=${MAX_PAGE_SIZE}`,
     Authorization: '',
   };
   #odata: OHandler;
@@ -237,16 +237,21 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   ): Promise<string> {
     await this.maybeRefreshAccessToken();
     let objectName = plural(object.name);
+    // need our own odata client here as we need to set the `Prefer` header to get the created object id back
+    const odata = o(this.baseUrl, {
+      headers: { ...this.#headers, Prefer: `return=representation` },
+      referrer: undefined,
+    });
     if (object.type === 'custom') {
       const publisherPrefix = await this.getPublisherPrefix();
       objectName = `${publisherPrefix}_${objectName}`;
       const objectIdField = `${publisherPrefix}_${object.name}id`;
       // map data to new object with the prefixed field names
       const mappedData = Object.fromEntries(Object.entries(data).map(([k, v]) => [`${publisherPrefix}_${k}`, v]));
-      const response = await this.#odata.post(objectName, mappedData).query({ $select: objectIdField });
+      const response = await odata.post(objectName, mappedData).query({ $select: objectIdField });
       return response[objectIdField];
     }
-    const response = await this.#odata.post(objectName, data).query();
+    const response = await odata.post(objectName, data).query({ $select: `${object.name}id` });
     return response[`${object.name}id`];
   }
 
@@ -383,26 +388,35 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
     await this.maybeRefreshAccessToken();
+    // need our own odata client here as we need to set the `Prefer` header to get the created object id back
+    const odata = o(this.baseUrl, {
+      headers: { ...this.#headers, Prefer: `return=representation` },
+      referrer: undefined,
+    });
     switch (commonObjectType) {
       case 'account': {
-        const response = await this.#odata.post('accounts', toDynamicsAccountCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
-        return id;
+        const response = await odata
+          .post('accounts', toDynamicsAccountCreateParams(params))
+          .query({ $select: 'accountid' });
+        return response['accountid'];
       }
       case 'contact': {
-        const response = await this.#odata.post('contacts', toDynamicsContactCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
-        return id;
+        const response = await this.#odata
+          .post('contacts', toDynamicsContactCreateParams(params))
+          .query({ $select: 'contactid' });
+        return response['contactid'];
       }
       case 'lead': {
-        const response = await this.#odata.post('leads', toDynamicsLeadCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
-        return id;
+        const response = await this.#odata
+          .post('leads', toDynamicsLeadCreateParams(params))
+          .query({ $select: 'leadid' });
+        return response['leadid'];
       }
       case 'opportunity': {
-        const response = await this.#odata.post('opportunities', toDynamicsOpportunityCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
-        return id;
+        const response = await this.#odata
+          .post('opportunities', toDynamicsOpportunityCreateParams(params))
+          .query({ $select: 'opportunityid' });
+        return response['opportunityid'];
       }
       case 'user':
         throw new Error('Cannot create users in MS Dynamics 365');
