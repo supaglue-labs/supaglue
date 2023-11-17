@@ -10,5 +10,8 @@
     },
     "plugins": [{ "transform": "typescript-transform-paths" }]
   },
+  "ts-node": {
+    "swc": true
+  },
   "include": ["./**/*.ts", "integration-test-environment.js"]
 }

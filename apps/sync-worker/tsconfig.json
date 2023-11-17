@@ -5,5 +5,8 @@
     "rootDir": ".",
     "moduleResolution": "node16"
   },
+  "ts-node": {
+    "swc": true
+  },
   "include": ["./**/*.ts"]
 }
