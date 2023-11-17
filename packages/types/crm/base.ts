@@ -19,3 +19,9 @@ export type BaseSearchParams = {
   cursor?: string;
   pageSize?: number;
 };
+
+export type CrmListParams = {
+  cursor?: string;
+  pageSize?: number;
+  modifiedAfter?: Date;
+};

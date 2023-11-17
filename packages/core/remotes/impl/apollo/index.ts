@@ -460,7 +460,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date | undefined,
     heartbeat?: () => void

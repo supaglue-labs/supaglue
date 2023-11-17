@@ -18,6 +18,7 @@ import type {
   ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
+  CrmListParams,
   Lead,
   LeadCreateParams,
   LeadUpdateParams,
@@ -38,7 +39,14 @@ import {
   TooManyRequestsError,
   UnauthorizedError,
 } from '../../../errors';
-import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import type { PaginatedSupaglueRecords } from '../../../lib';
+import {
+  decodeCursor,
+  DEFAULT_PAGE_SIZE,
+  encodeCursor,
+  REFRESH_TOKEN_THRESHOLD_MS,
+  retryWhenAxiosRateLimited,
+} from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
@@ -168,30 +176,52 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.listContacts(fieldMappingConfig, updatedAfter);
+        return await this.streamContacts(fieldMappingConfig, updatedAfter);
       case 'lead':
-        return await this.listLeads(fieldMappingConfig, updatedAfter);
+        return await this.streamLeads(fieldMappingConfig, updatedAfter);
       case 'opportunity':
-        return await this.listOpportunities(fieldMappingConfig, updatedAfter);
+        return await this.streamOpportunities(fieldMappingConfig, updatedAfter);
       case 'account':
-        return await this.listAccounts(fieldMappingConfig, updatedAfter);
+        return await this.streamAccounts(fieldMappingConfig, updatedAfter);
       case 'user':
-        return await this.listUsers(fieldMappingConfig, updatedAfter);
+        return await this.streamUsers(fieldMappingConfig, updatedAfter);
       default:
-        return Readable.from([]);
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
+    }
+  }
+
+  public override async listCommonObjectRecords<T extends 'account' | 'contact' | 'lead' | 'opportunity' | 'user'>(
+    commonObjectType: CRMCommonObjectType,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.listContacts(fieldMappingConfig, params);
+      case 'lead':
+        return await this.listLeads(fieldMappingConfig, params);
+      case 'opportunity':
+        return await this.listOpportunities(fieldMappingConfig, params);
+      case 'account':
+        return await this.listAccounts(fieldMappingConfig, params);
+      case 'user':
+        return await this.listUsers(fieldMappingConfig, params);
+      default:
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
   }
 
   #getListRecordsFetcher(
     endpoint: string,
-    updatedAfter?: Date
+    updatedAfter?: Date,
+    limit = PIPEDRIVE_RECORD_LIMIT
   ): (next_start?: string) => Promise<PipedrivePaginatedRecords> {
     // Pipedrive does not support incremental fetch (i.e. filtering by datetime) so we will do full refresh every time
     return async (next_start?: string) => {
@@ -202,6 +232,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
           const response = await axios.get<PipedrivePaginatedRecords>(endpoint, {
             params: {
               ...DEFAULT_LIST_PARAMS,
+              limit,
               start: parseInt(next_start),
             },
             headers: this.#headers,
@@ -212,7 +243,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
         // first page
         const response = await axios.get<PipedrivePaginatedRecords>(endpoint, {
-          params: DEFAULT_LIST_PARAMS,
+          params: { ...DEFAULT_LIST_PARAMS, limit },
           headers: this.#headers,
         });
         return filterForUpdatedAfter(response.data, updatedAfter);
@@ -220,7 +251,41 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     };
   }
 
-  private async listContacts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
+  private async listContacts(
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<Contact>> {
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/persons`,
+      params.modifiedAfter,
+      params.pageSize ?? DEFAULT_PAGE_SIZE
+    );
+    const fields = await this.#getCustomFieldsForObject('person');
+    const mapper = (
+      result: PipedriveRecord,
+      fields: PipedriveObjectField[],
+      fieldMappingConfig: FieldMappingConfig
+    ): Contact => {
+      const contact = fromPipedrivePersonToContact(result, fields);
+      return { ...contact, rawData: toMappedProperties(contact.rawData, fieldMappingConfig) };
+    };
+    const cursor = decodeCursor(params.cursor);
+    const response = await normalPageFetcher(cursor?.id.toString());
+    if (!response.data) {
+      throw new Error('Unexpected response from Pipedrive');
+    }
+    const records = response.data.map((result) => mapper(result, fields, fieldMappingConfig));
+    const nextCursor = response.additional_data.pagination?.next_start?.toString();
+    return {
+      records,
+      pagination: {
+        next: nextCursor ? encodeCursor({ id: nextCursor, reverse: false }) : null,
+        previous: null,
+      },
+    };
+  }
+
+  private async streamContacts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/persons`,
       updatedAfter
@@ -251,7 +316,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listLeads(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
+  private async streamLeads(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/leads`,
       updatedAfter
@@ -280,6 +345,40 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
+  }
+
+  private async listLeads(
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<Lead>> {
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/leads`,
+      params.modifiedAfter,
+      params.pageSize ?? DEFAULT_PAGE_SIZE
+    );
+    const fields = await this.#getCustomFieldsForObject('lead');
+    const mapper = (
+      result: PipedriveRecord,
+      fields: PipedriveObjectField[],
+      fieldMappingConfig: FieldMappingConfig
+    ): Lead => {
+      const lead = fromPipedriveLeadToLead(result, fields);
+      return { ...lead, rawData: toMappedProperties(lead.rawData, fieldMappingConfig) };
+    };
+    const cursor = decodeCursor(params.cursor);
+    const response = await normalPageFetcher(cursor?.id.toString());
+    if (!response.data) {
+      throw new Error('Unexpected response from Pipedrive');
+    }
+    const records = response.data.map((result) => mapper(result, fields, fieldMappingConfig));
+    const nextCursor = response.additional_data.pagination?.next_start?.toString();
+    return {
+      records,
+      pagination: {
+        next: nextCursor ? encodeCursor({ id: nextCursor, reverse: false }) : null,
+        previous: null,
+      },
+    };
   }
 
   async #getPipelineStageMapping(): Promise<PipelineStageMapping> {
@@ -313,7 +412,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     return pipelineStageMapping;
   }
 
-  private async listOpportunities(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
+  private async streamOpportunities(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/deals`,
@@ -346,7 +445,42 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listAccounts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
+  private async listOpportunities(
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<Opportunity>> {
+    const pipelineStageMapping = await this.#getPipelineStageMapping();
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/deals`,
+      params.modifiedAfter,
+      params.pageSize ?? DEFAULT_PAGE_SIZE
+    );
+    const fields = await this.#getCustomFieldsForObject('deal');
+    const mapper = (
+      result: PipedriveRecord,
+      fields: PipedriveObjectField[],
+      fieldMappingConfig: FieldMappingConfig
+    ): Opportunity => {
+      const opportunity = fromPipedriveDealToOpportunity(result, pipelineStageMapping, fields);
+      return { ...opportunity, rawData: toMappedProperties(opportunity.rawData, fieldMappingConfig) };
+    };
+    const cursor = decodeCursor(params.cursor);
+    const response = await normalPageFetcher(cursor?.id.toString());
+    if (!response.data) {
+      throw new Error('Unexpected response from Pipedrive');
+    }
+    const records = response.data.map((result) => mapper(result, fields, fieldMappingConfig));
+    const nextCursor = response.additional_data.pagination?.next_start?.toString();
+    return {
+      records,
+      pagination: {
+        next: nextCursor ? encodeCursor({ id: nextCursor, reverse: false }) : null,
+        previous: null,
+      },
+    };
+  }
+
+  private async streamAccounts(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/organizations`,
       updatedAfter
@@ -377,7 +511,41 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listUsers(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
+  private async listAccounts(
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<Account>> {
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/organizations`,
+      params.modifiedAfter,
+      params.pageSize ?? DEFAULT_PAGE_SIZE
+    );
+    const fields = await this.#getCustomFieldsForObject('organization');
+    const mapper = (
+      result: PipedriveRecord,
+      fields: PipedriveObjectField[],
+      fieldMappingConfig: FieldMappingConfig
+    ): Account => {
+      const account = fromPipedriveOrganizationToAccount(result, fields);
+      return { ...account, rawData: toMappedProperties(account.rawData, fieldMappingConfig) };
+    };
+    const cursor = decodeCursor(params.cursor);
+    const response = await normalPageFetcher(cursor?.id.toString());
+    if (!response.data) {
+      throw new Error('Unexpected response from Pipedrive');
+    }
+    const records = response.data.map((result) => mapper(result, fields, fieldMappingConfig));
+    const nextCursor = response.additional_data.pagination?.next_start?.toString();
+    return {
+      records,
+      pagination: {
+        next: nextCursor ? encodeCursor({ id: nextCursor, reverse: false }) : null,
+        previous: null,
+      },
+    };
+  }
+
+  private async streamUsers(fieldMappingConfig: FieldMappingConfig, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = this.#getListRecordsFetcher(
       `${this.#credentials.instanceUrl}/api/v1/users`,
       updatedAfter
@@ -401,6 +569,35 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         getNextCursorFromPage: (response) => response.additional_data.pagination?.next_start?.toString(),
       },
     ]);
+  }
+
+  private async listUsers(
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<User>> {
+    const normalPageFetcher = this.#getListRecordsFetcher(
+      `${this.#credentials.instanceUrl}/api/v1/users`,
+      params.modifiedAfter,
+      params.pageSize ?? DEFAULT_PAGE_SIZE
+    );
+    const mapper = (result: PipedriveRecord, fieldMappingConfig: FieldMappingConfig): User => {
+      const user = fromPipedriveUserToUser(result);
+      return { ...user, rawData: toMappedProperties(user.rawData, fieldMappingConfig) };
+    };
+    const cursor = decodeCursor(params.cursor);
+    const response = await normalPageFetcher(cursor?.id.toString());
+    if (!response.data) {
+      throw new Error('Unexpected response from Pipedrive');
+    }
+    const records = response.data.map((result) => mapper(result, fieldMappingConfig));
+    const nextCursor = response.additional_data.pagination?.next_start?.toString();
+    return {
+      records,
+      pagination: {
+        next: nextCursor ? encodeCursor({ id: nextCursor, reverse: false }) : null,
+        previous: null,
+      },
+    };
   }
 
   public override async getCommonObjectRecord<T extends CRMCommonObjectType>(

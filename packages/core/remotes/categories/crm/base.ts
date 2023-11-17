@@ -14,7 +14,7 @@ import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
 export interface CrmRemoteClient extends RemoteClient {
-  listCommonObjectRecords(
+  streamCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
@@ -42,6 +42,11 @@ export interface CrmRemoteClient extends RemoteClient {
     fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['searchParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>>;
+  listCommonObjectRecords<T extends CRMCommonObjectType>(
+    commonObjectType: CRMCommonObjectType,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>>;
 
   listLists(
     objectType: ListCRMCommonObject,
@@ -61,7 +66,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     super(...args);
   }
 
-  public async listCommonObjectRecords(
+  public async streamCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
@@ -99,6 +104,14 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     commonObjectType: T,
     fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    throw new NotImplementedError();
+  }
+
+  listCommonObjectRecords<T extends CRMCommonObjectType>(
+    commonObjectType: CRMCommonObjectType,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
     throw new NotImplementedError();
   }

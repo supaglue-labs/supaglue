@@ -14,7 +14,7 @@ export type UpdateCommonObjectRecordResponse<T extends EngagementCommonObjectTyp
   CreateCommonObjectRecordResponse<T>;
 
 export interface EngagementRemoteClient extends RemoteClient {
-  listCommonObjectRecords(
+  streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date,
     heartbeat?: () => void
@@ -52,7 +52,7 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     return err;
   }
 
-  public async listCommonObjectRecords(
+  public async streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date,
     heartbeat?: () => void

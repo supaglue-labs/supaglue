@@ -1,4 +1,4 @@
-import type { BaseCrmModel, SnakecasedCrmTenantFields } from '.';
+import type { BaseCrmModel, CrmListParams, SnakecasedCrmTenantFields } from '.';
 import type { SnakecasedKeys } from '../snakecased_keys';
 
 export type SnakecasedKeysCrmUser = SnakecasedKeys<User>;
@@ -18,4 +18,5 @@ export type RemoteUserTypes = {
   updateParams: never;
   upsertParams: never;
   searchParams: never;
+  listParams: CrmListParams;
 };

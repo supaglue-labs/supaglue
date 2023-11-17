@@ -272,7 +272,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date,
     heartbeat?: () => void
@@ -466,7 +466,6 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       return {
         records,
         pagination: {
-          total_count: -1,
           previous: response.data.metadata.paging?.prev_page
             ? encodeCursor({ id: response.data.metadata.paging.prev_page, reverse: true })
             : null,

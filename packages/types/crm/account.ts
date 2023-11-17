@@ -1,4 +1,4 @@
-import type { BaseCrmModel, CustomFields, SnakecasedCrmTenantFields } from '.';
+import type { BaseCrmModel, CrmListParams, CustomFields, SnakecasedCrmTenantFields } from '.';
 import type { EqualsFilter, Filter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { Address, LifecycleStage, PhoneNumber } from './common';
@@ -48,4 +48,5 @@ export type RemoteAccountTypes = {
   updateParams: AccountUpdateParams;
   upsertParams: AccountUpsertParams;
   searchParams: never;
+  listParams: CrmListParams;
 };
