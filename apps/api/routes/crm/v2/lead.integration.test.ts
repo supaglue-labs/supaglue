@@ -21,7 +21,7 @@ jest.retryTimes(3);
 
 describe('lead', () => {
   // lead create / update / upsert not supported for hubspot
-  describe.each(['salesforce', 'pipedrive'])('%s', (providerName) => {
+  describe.each(['salesforce', 'pipedrive', 'ms_dynamics_365_sales'])('%s', (providerName) => {
     let testLead: CreateLeadRequest['record'];
     beforeEach(() => {
       testLead = {
@@ -229,8 +229,8 @@ describe('lead', () => {
     );
 
     testIf(
-      // not supported for pipedrive
-      !['pipedrive'].includes(providerName),
+      // not supported for pipedrive or ms dynamics
+      ['salesforce', 'hubspot'].includes(providerName),
       `Test upserting twice only creates 1 record and cache invalidates`,
       async () => {
         const email = `me@example${Math.random()}.com`;

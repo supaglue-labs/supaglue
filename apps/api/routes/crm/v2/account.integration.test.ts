@@ -31,7 +31,7 @@ describe('account', () => {
     name: 'test account',
   };
 
-  describe.each(['salesforce', 'hubspot', 'pipedrive'])('%s', (providerName) => {
+  describe.each(['salesforce', 'hubspot', 'pipedrive', 'ms_dynamics_365_sales'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/crm/v2/accounts',
@@ -128,8 +128,7 @@ describe('account', () => {
     }, 120_000);
 
     testIf(
-      // not supported for pipedrive
-      providerName !== 'pipedrive',
+      ['salesforce', 'hubspot'].includes(providerName),
       `Test upserting twice only creates 1 record and cache invalidates`,
       async () => {
         const website = `https://example${Math.random()}.com/`;
