@@ -591,7 +591,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           expiresAt: newExpiresAt,
         });
       } catch (e: any) {
-        if (e.response?.status === 400) {
+        if (e.response?.status === 400 || e.body?.status === 'BAD_REFRESH_TOKEN') {
           throw new SGConnectionNoLongerAuthenticatedError('Unable to refresh access token. Refresh token invalid.');
         }
         throw e;
