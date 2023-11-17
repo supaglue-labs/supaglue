@@ -61,8 +61,8 @@ import {
   toOutreachSequenceTemplateCreateParams,
   toOutreachTemplateCreateParams,
 } from './mappers';
-import type { OutreachApi } from './outreach.api';
-import { createOutreachApi } from './outreach.api';
+
+import { createOutreachClient } from './outreach.client';
 
 const OUTREACH_RECORD_LIMIT = 1000;
 
@@ -163,13 +163,13 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
   readonly #baseURL: string;
 
-  readonly #api: OutreachApi;
+  readonly #api: ReturnType<typeof createOutreachClient>;
 
   public constructor(credentials: Credentials) {
     super('https://api.outreach.io');
     this.#baseURL = 'https://api.outreach.io';
     this.#credentials = credentials;
-    this.#api = createOutreachApi(this.#credentials);
+    this.#api = createOutreachClient(this.#credentials);
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {

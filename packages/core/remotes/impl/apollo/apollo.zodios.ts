@@ -56,7 +56,7 @@ export const apolloApi = defineApi({
   },
 });
 
-export function createApolloClient(cfg: { apiKey: string; axiosConfig?: AxiosRequestConfig }) {
+export function createApolloZodios(cfg: { apiKey: string; axiosConfig?: AxiosRequestConfig }) {
   return new Zodios(apolloApi, {
     axiosConfig: {
       baseURL: 'https://app.apollo.io/api',

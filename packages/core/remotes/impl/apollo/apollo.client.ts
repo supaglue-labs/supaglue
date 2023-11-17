@@ -6,8 +6,8 @@ interface ApolloCredentials {
   apiKey: string;
 }
 
-export type ApolloApi = ReturnType<typeof createApolloApi>;
-export function createApolloApi(creds: ApolloCredentials) {
+export type ApolloClient = ReturnType<typeof createApolloClient>;
+export function createApolloClient(creds: ApolloCredentials) {
   return createClient<paths>({
     baseUrl: 'https://app.apollo.io/api',
     // TODO: Add middleware as this does not work at the moment

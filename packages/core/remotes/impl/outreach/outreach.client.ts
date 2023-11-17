@@ -12,8 +12,8 @@ interface OutreachCredentials {
   // clientSecret: string;
 }
 
-export type OutreachApi = ReturnType<typeof createOutreachApi>;
-export function createOutreachApi(creds: OutreachCredentials) {
+export type OutreachClient = ReturnType<typeof createOutreachClient>;
+export function createOutreachClient(creds: OutreachCredentials) {
   return createClient<paths>({
     // TODO: Get this from the openapi spec if possible
     baseUrl: 'https://api.outreach.io/api/v2',

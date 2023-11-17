@@ -37,7 +37,7 @@ import type {
 } from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
-import { createApolloClient } from './apollo.zodios';
+import { createApolloZodios } from './apollo.zodios';
 import {
   fromApolloAccountToAccount,
   fromApolloContactCampaignStatusToSequenceState,
@@ -86,14 +86,14 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   readonly #apiKey: string;
   readonly #headers: Record<string, string>;
   readonly #baseURL: string;
-  readonly #api: ReturnType<typeof createApolloClient>;
+  readonly #api: ReturnType<typeof createApolloZodios>;
 
   public constructor(apiKey: string) {
     super('https://api.apollo.io');
     this.#baseURL = 'https://api.apollo.io';
     this.#apiKey = apiKey;
     this.#headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' };
-    this.#api = createApolloClient({
+    this.#api = createApolloZodios({
       apiKey,
       axiosConfig: { proxy: parseProxyConfig(process.env.PROXY_URL) },
     });
