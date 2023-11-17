@@ -1,3 +1,4 @@
+import { bearerMiddleware } from '@/middleware/bearer';
 import { internalMiddleware } from '@/middleware/internal';
 import { internalApplicationMiddleware } from '@/middleware/internal_application';
 import { orgHeaderMiddleware } from '@/middleware/org';
@@ -35,6 +36,7 @@ export default function init(app: Router): void {
   // org-scoped routes should not require application header
   const internalOrgScopedRouter = Router();
   internalOrgScopedRouter.use(internalMiddleware);
+  internalOrgScopedRouter.use(bearerMiddleware);
   internalOrgScopedRouter.use(orgHeaderMiddleware);
 
   application(internalOrgScopedRouter);
@@ -45,6 +47,7 @@ export default function init(app: Router): void {
   // application-scoped routes require application header
   const internalApplicationScopedRouter = Router();
   internalApplicationScopedRouter.use(internalMiddleware);
+  internalApplicationScopedRouter.use(bearerMiddleware);
   internalApplicationScopedRouter.use(orgHeaderMiddleware);
   internalApplicationScopedRouter.use(internalApplicationMiddleware);
 
