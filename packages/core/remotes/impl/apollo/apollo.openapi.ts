@@ -297,9 +297,37 @@ export function outputOpenApi() {
   });
 }
 
+import type { OpenApiMeta } from '@lilyrose2798/trpc-openapi';
+import { generateOpenApiDocument } from '@lilyrose2798/trpc-openapi';
+
+import { initTRPC } from '@trpc/server';
+
+const t = initTRPC.meta<OpenApiMeta>().create(); /* 👈 */
+
+const notImplemented = () => {
+  throw new Error('Not implemented');
+};
+
+const router = t.router({
+  getEmailerCampaign: t.procedure
+    .meta({ openapi: { method: 'GET', path: '/v1/emailer_campaigns/{id}' } })
+    .input(z.object({ id: z.string() }))
+    .output(apolloEmailerCampaignResponse)
+    .query(notImplemented),
+});
+
+export function generateOpenApi() {
+  return generateOpenApiDocument(router, {
+    title: 'Apollo API',
+    version: '0.0.0',
+    baseUrl: 'https://app.apollo.io/api',
+  });
+}
+
 if (require.main === module) {
   // eslint-disable-next-line no-console
   // console.log(JSON.stringify(outputOpenApi(), null, 2));
   // eslint-disable-next-line no-console
-  console.log(JSON.stringify(outputOpenApi(), null, 2));
+  // console.log(JSON.stringify(outputOpenApi(), null, 2));
+  console.log(JSON.stringify(generateOpenApi(), null, 2));
 }
