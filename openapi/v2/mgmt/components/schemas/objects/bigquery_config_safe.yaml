@@ -1,0 +1,20 @@
+type: object
+properties:
+  project_id:
+    type: string
+    example: my-gcp-project-id
+  dataset:
+    type: string
+    example: my_bigquery_dataset
+  credentials:
+    type: object
+    properties:
+      client_email:
+        type: string
+        example: my_bigquery_service_account@my_project.iam.gserviceaccount.com
+    required:
+      - client_email
+required:
+  - project_id
+  - dataset
+  - credentials

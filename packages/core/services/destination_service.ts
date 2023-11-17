@@ -183,6 +183,11 @@ export class DestinationService {
           }
         }
         break;
+      case 'bigquery':
+      case 'snowflake':
+      case 'redshift':
+        success = true;
+        break;
       default:
         throw new BadRequestError(`unknown destination type`);
     }
@@ -272,6 +277,33 @@ function mergeDestinationConfig(
       return {
         ...params.config,
         password: params.config.password ?? existingDestination.config.password,
+      };
+    case 'bigquery':
+      if (params.type !== 'bigquery') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        credentials: {
+          ...params.config.credentials,
+          privateKey: params.config.credentials.privateKey ?? existingDestination.config.credentials.privateKey,
+        },
+      };
+    case 'snowflake':
+      if (params.type !== 'snowflake') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        password: params.config.password ?? existingDestination.config.password,
+      };
+    case 'redshift':
+      if (params.type !== 'redshift') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        s3AccessKey: params.config.s3AccessKey ?? existingDestination.config.s3AccessKey,
       };
     case 'supaglue':
       throw new BadRequestError('cannot update supaglue managed destination');
