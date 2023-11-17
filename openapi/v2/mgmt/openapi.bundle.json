@@ -2535,6 +2535,129 @@
               "type",
               "version"
             ]
+          },
+          {
+            "type": "object",
+            "title": "bigquery",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My BigQuery Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bigquery"
+                ],
+                "example": "bigquery"
+              },
+              "config": {
+                "$ref": "#/components/schemas/bigquery_config_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": 1,
+                "description": "A monotonically increasing version number of the destination configuration"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config",
+              "version"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "snowflake",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Snowflake Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "snowflake"
+                ],
+                "example": "snowflake"
+              },
+              "config": {
+                "$ref": "#/components/schemas/snowflake_config_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": 1,
+                "description": "A monotonically increasing version number of the destination configuration"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config",
+              "version"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "redshift",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My Redshift Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "redshift"
+                ],
+                "example": "redshift"
+              },
+              "config": {
+                "$ref": "#/components/schemas/redshift_config_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": 1,
+                "description": "A monotonically increasing version number of the destination configuration"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config",
+              "version"
+            ]
           }
         ]
       },
@@ -2582,6 +2705,125 @@
           "user"
         ]
       },
+      "bigquery_config_safe": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "my-gcp-project-id"
+          },
+          "dataset": {
+            "type": "string",
+            "example": "my_bigquery_dataset"
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "client_email": {
+                "type": "string",
+                "example": "my_bigquery_service_account@my_project.iam.gserviceaccount.com"
+              }
+            },
+            "required": [
+              "client_email"
+            ]
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset",
+          "credentials"
+        ]
+      },
+      "snowflake_config_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "paa05704.us-east-1"
+          },
+          "role": {
+            "type": "string",
+            "example": "supaglue"
+          },
+          "warehouse": {
+            "type": "string",
+            "example": "compute"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "schema"
+          },
+          "username": {
+            "type": "string",
+            "example": "snowflake_user"
+          }
+        },
+        "required": [
+          "host",
+          "role",
+          "warehouse",
+          "database",
+          "schema",
+          "username"
+        ]
+      },
+      "redshift_config_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "paa05704.us-east-1"
+          },
+          "port": {
+            "type": "number",
+            "example": 5439
+          },
+          "username": {
+            "type": "string",
+            "example": "redshift_user"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "schema"
+          },
+          "upload_method": {
+            "type": "string",
+            "example": "s3_staging"
+          },
+          "s3_key_id": {
+            "type": "string",
+            "example": "AKIDFIAKFISDKFSI"
+          },
+          "s3_bucket_name": {
+            "type": "string",
+            "example": "my_bucket"
+          },
+          "s3_bucket_region": {
+            "type": "string",
+            "example": "us-west-2"
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "username",
+          "database",
+          "schema",
+          "upload_method",
+          "s3_key_id",
+          "s3_bucket_name",
+          "s3_bucket_region"
+        ]
+      },
       "postgres_config_at_least_safe": {
         "type": "object",
         "properties": {
@@ -2616,6 +2858,140 @@
           "database",
           "schema",
           "user"
+        ]
+      },
+      "bigquery_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "my-gcp-project-id"
+          },
+          "dataset": {
+            "type": "string",
+            "example": "my_bigquery_dataset"
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "client_email": {
+                "type": "string",
+                "example": "my_bigquery_service_account@my_project.iam.gserviceaccount.com"
+              },
+              "private_key": {
+                "type": "string",
+                "example": "-----BEGIN PRIVATE KEY-----\\nMII..."
+              }
+            },
+            "required": [
+              "client_email",
+              "private_key"
+            ]
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset",
+          "credentials"
+        ]
+      },
+      "snowflake_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "paa05704.us-east-1"
+          },
+          "role": {
+            "type": "string",
+            "example": "supaglue"
+          },
+          "warehouse": {
+            "type": "string",
+            "example": "compute"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "schema"
+          },
+          "username": {
+            "type": "string",
+            "example": "snowflake_user"
+          },
+          "password": {
+            "type": "string",
+            "example": "12345fakepassword"
+          }
+        },
+        "required": [
+          "host",
+          "role",
+          "warehouse",
+          "database",
+          "schema",
+          "username",
+          "password"
+        ]
+      },
+      "redshift_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "paa05704.us-east-1"
+          },
+          "port": {
+            "type": "number",
+            "example": 5439
+          },
+          "username": {
+            "type": "string",
+            "example": "redshift_user"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "schema"
+          },
+          "upload_method": {
+            "type": "string",
+            "example": "s3_staging"
+          },
+          "s3_key_id": {
+            "type": "string",
+            "example": "AKIDFIAKFISDKFSI"
+          },
+          "s3_bucket_name": {
+            "type": "string",
+            "example": "my_bucket"
+          },
+          "s3_bucket_region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "s3_access_key": {
+            "type": "string",
+            "example": "ASDFKSFSFKSDKFSK"
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "username",
+          "database",
+          "schema",
+          "upload_method",
+          "s3_key_id",
+          "s3_bucket_name",
+          "s3_bucket_region",
+          "s3_access_key"
         ]
       },
       "postgres_config_unsafe": {
@@ -2681,6 +3057,140 @@
           "schema",
           "user",
           "password"
+        ]
+      },
+      "bigquery_config_unsafe": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string",
+            "example": "my-gcp-project-id"
+          },
+          "dataset": {
+            "type": "string",
+            "example": "my_bigquery_dataset"
+          },
+          "credentials": {
+            "type": "object",
+            "properties": {
+              "client_email": {
+                "type": "string",
+                "example": "my_bigquery_service_account@my_project.iam.gserviceaccount.com"
+              },
+              "private_key": {
+                "type": "string",
+                "example": "-----BEGIN PRIVATE KEY-----\\nMII..."
+              }
+            },
+            "required": [
+              "client_email",
+              "private_key"
+            ]
+          }
+        },
+        "required": [
+          "project_id",
+          "dataset",
+          "credentials"
+        ]
+      },
+      "snowflake_config_unsafe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "paa05704.us-east-1"
+          },
+          "role": {
+            "type": "string",
+            "example": "supaglue"
+          },
+          "warehouse": {
+            "type": "string",
+            "example": "compute"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "schema"
+          },
+          "username": {
+            "type": "string",
+            "example": "snowflake_user"
+          },
+          "password": {
+            "type": "string",
+            "example": "12345fakepassword"
+          }
+        },
+        "required": [
+          "host",
+          "role",
+          "warehouse",
+          "database",
+          "schema",
+          "username",
+          "password"
+        ]
+      },
+      "redshift_config_unsafe": {
+        "type": "object",
+        "properties": {
+          "host": {
+            "type": "string",
+            "example": "paa05704.us-east-1"
+          },
+          "port": {
+            "type": "number",
+            "example": 5439
+          },
+          "username": {
+            "type": "string",
+            "example": "redshift_user"
+          },
+          "database": {
+            "type": "string",
+            "example": "my_database"
+          },
+          "schema": {
+            "type": "string",
+            "example": "schema"
+          },
+          "upload_method": {
+            "type": "string",
+            "example": "s3_staging"
+          },
+          "s3_key_id": {
+            "type": "string",
+            "example": "AKIDFIAKFISDKFSI"
+          },
+          "s3_bucket_name": {
+            "type": "string",
+            "example": "my_bucket"
+          },
+          "s3_bucket_region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "s3_access_key": {
+            "type": "string",
+            "example": "ASDFKSFSFKSDKFSK"
+          }
+        },
+        "required": [
+          "host",
+          "port",
+          "username",
+          "database",
+          "schema",
+          "upload_method",
+          "s3_key_id",
+          "s3_bucket_name",
+          "s3_bucket_region",
+          "s3_access_key"
         ]
       },
       "schema": {
@@ -4216,6 +4726,81 @@
             "required": [
               "type"
             ]
+          },
+          {
+            "type": "object",
+            "title": "bigquery",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My BigQuery Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bigquery"
+                ],
+                "example": "bigquery"
+              },
+              "config": {
+                "$ref": "#/components/schemas/bigquery_config_unsafe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "snowflake",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Snowflake Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "snowflake"
+                ],
+                "example": "snowflake"
+              },
+              "config": {
+                "$ref": "#/components/schemas/snowflake_config_unsafe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "redshift",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My Redshift Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "redshift"
+                ],
+                "example": "redshift"
+              },
+              "config": {
+                "$ref": "#/components/schemas/redshift_config_unsafe"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config"
+            ]
           }
         ]
       },
@@ -4250,6 +4835,36 @@
               },
               "config": {
                 "$ref": "#/components/schemas/postgres_config_at_least_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": "number"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "config",
+              "version"
+            ]
+          },
+          {
+            "type": "object",
+            "title": "bigquery",
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "My BigQuery Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "bigquery"
+                ],
+                "example": "bigquery"
+              },
+              "config": {
+                "$ref": "#/components/schemas/bigquery_config_at_least_safe"
               },
               "version": {
                 "type": "number",
@@ -4723,6 +5338,28 @@
                   "type",
                   "schema"
                 ]
+              },
+              {
+                "description": "Config specific to BigQuery destination",
+                "type": "object",
+                "title": "BigQuery",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "bigquery"
+                    ]
+                  },
+                  "dataset": {
+                    "type": "string",
+                    "description": "The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.",
+                    "example": "customer_1_dataset"
+                  }
+                },
+                "required": [
+                  "type",
+                  "dataset"
+                ]
               }
             ]
           },
@@ -4747,7 +5384,7 @@
                 },
                 {
                   "type": "object",
-                  "title": "Postgres (Preview)",
+                  "title": "Postgres/BigQuery (Preview)",
                   "properties": {
                     "object": {
                       "type": "string",
@@ -4789,7 +5426,7 @@
                 },
                 {
                   "type": "object",
-                  "title": "Postgres (Preview)",
+                  "title": "Postgres/BigQuery (Preview)",
                   "properties": {
                     "object": {
                       "type": "string",

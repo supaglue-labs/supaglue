@@ -41,7 +41,9 @@ import ZuoraIcon from '@/assets/connector_icons/zuora.png';
 import BigQueryIcon from '@/assets/destination_icons/bigquery.png';
 import MongoDBIcon from '@/assets/destination_icons/mongodb.png';
 import PostgresIcon from '@/assets/destination_icons/postgres.png';
+import RedshiftQueryIcon from '@/assets/destination_icons/redshift.png';
 import S3Icon from '@/assets/destination_icons/s3.png';
+import SnowflakeQueryIcon from '@/assets/destination_icons/snowflake.png';
 import SupaglueIcon from '@/assets/supaglue.png';
 import Image from 'next/image';
 import type { ReactNode } from 'react';
@@ -54,6 +56,26 @@ export default function getIcon(name: string, size = 25): ReactNode {
     ),
     bigquery: (
       <Image key={name} alt={name} src={BigQueryIcon} width={size} height={size} style={{ objectFit: 'contain' }} />
+    ),
+    snowflake: (
+      <Image
+        key={name}
+        alt={name}
+        src={SnowflakeQueryIcon}
+        width={size}
+        height={size}
+        style={{ objectFit: 'contain' }}
+      />
+    ),
+    redshift: (
+      <Image
+        key={name}
+        alt={name}
+        src={RedshiftQueryIcon}
+        width={size}
+        height={size}
+        style={{ objectFit: 'contain' }}
+      />
     ),
     salesforce: (
       <Image key={name} alt={name} src={SalesforceIcon} width={size} height={size} style={{ objectFit: 'contain' }} />

@@ -17,6 +17,20 @@ properties:
         required:
           - type
           - schema
+      - description: Config specific to BigQuery destination
+        type: object
+        title: BigQuery
+        properties:
+          type:
+            type: string
+            enum: [bigquery]
+          dataset:
+            type: string
+            description: The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.
+            example: customer_1_dataset
+        required:
+          - type
+          - dataset
   standard_objects:
     description: A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig.
     type: array
@@ -32,7 +46,7 @@ properties:
           required:
             - object
         - type: object
-          title: Postgres (Preview)
+          title: Postgres/BigQuery (Preview)
           properties:
             object:
               type: string
@@ -61,7 +75,7 @@ properties:
           required:
             - object
         - type: object
-          title: Postgres (Preview)
+          title: Postgres/BigQuery (Preview)
           properties:
             object:
               type: string

@@ -27,3 +27,54 @@ oneOf:
         example: supaglue
     required:
       - type
+  - type: object
+    title: bigquery
+    properties:
+      name:
+        type: string
+        example: My BigQuery Destination
+      type:
+        type: string
+        enum:
+          - bigquery
+        example: bigquery
+      config:
+        $ref: ./objects/bigquery_config_unsafe.yaml
+    required:
+      - name
+      - type
+      - config
+  - type: object
+    title: snowflake
+    properties:
+      name:
+        type: string
+        example: My Snowflake Destination
+      type:
+        type: string
+        enum:
+          - snowflake
+        example: snowflake
+      config:
+        $ref: ./objects/snowflake_config_unsafe.yaml
+    required:
+      - name
+      - type
+      - config
+  - type: object
+    title: redshift
+    properties:
+      name:
+        type: string
+        example: My Redshift Destination
+      type:
+        type: string
+        enum:
+          - redshift
+        example: redshift
+      config:
+        $ref: ./objects/redshift_config_unsafe.yaml
+    required:
+      - name
+      - type
+      - config
