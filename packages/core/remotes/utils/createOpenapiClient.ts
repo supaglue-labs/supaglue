@@ -6,13 +6,12 @@ type HTTPMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'PATC
 type MaybePromise<T> = T | Promise<T>;
 
 type _ClientOptions = NonNullable<Parameters<typeof createClient>[0]>;
+
+type FetchParams = [string, Parameters<typeof fetch>[1]];
 // Workaround for https://github.com/drwpow/openapi-typescript/issues/1122
 interface ClientOptions extends _ClientOptions {
-  preRequest?: (...args: Parameters<typeof fetch>) => MaybePromise<Parameters<typeof fetch>>;
-  postRequest?: (
-    res: Awaited<ReturnType<typeof fetch>>,
-    requestArgs: Parameters<typeof fetch>
-  ) => ReturnType<typeof fetch>;
+  preRequest?: (...args: FetchParams) => MaybePromise<FetchParams>;
+  postRequest?: (res: Awaited<ReturnType<typeof fetch>>, requestArgs: FetchParams) => ReturnType<typeof fetch>;
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -22,8 +21,8 @@ export function createOpenapiClient<Paths extends {}>({
   ...clientOptions
 }: ClientOptions = {}) {
   const baseFetch = clientOptions?.fetch ?? globalThis.fetch;
-  const customFetch: typeof baseFetch = async (...args) => {
-    const requestArgs = await preRequest(...args);
+  const customFetch: typeof baseFetch = async (url, init) => {
+    const requestArgs = await preRequest(url as string, init);
     const res = await baseFetch(...requestArgs);
     return postRequest(res, requestArgs);
   };
@@ -31,7 +30,7 @@ export function createOpenapiClient<Paths extends {}>({
 
   return {
     /** Untyped request */
-    request: <T>(method: HTTPMethod, url: string, options?: FetchOptions<unknown>) =>
+    request: <T>(method: HTTPMethod, url: string, options?: Omit<FetchOptions<unknown>, 'body'> & { body?: unknown }) =>
       client[method as 'GET'](url as never, options as never).then(throwIfNotOk(method)) as Promise<{
         data: T;
         response: FetchResponse<unknown>['response'];
