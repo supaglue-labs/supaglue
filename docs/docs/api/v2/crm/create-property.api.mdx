@@ -26,8 +26,6 @@ import TabItem from "@theme/TabItem";
 
 <MethodEndpoint method={"post"} path={"/metadata/properties/{object_name}"}></MethodEndpoint>
 
-<SecuritySchemes infoPath={"api/v2/crm/unified-crm-api"}></SecuritySchemes>
-
 
 
 Creates a custom property in the provider and registers it in Supaglue.
@@ -47,17 +45,17 @@ Create a property
 
 The default value for the property. Only supported for Salesforce.
 
-</div></div><div><span className={"badge badge--info"}>oneOf</span><SchemaTabs><TabItem label={"MOD1"} value={"0-property"}><p>MOD1</p><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
+</div></div><div><span className={"badge badge--info"}>oneOf</span><SchemaTabs><TabItem label={"MOD1"} value={"0-item-properties"}><div style={{"marginTop":".5rem","marginBottom":".5rem","marginLeft":"1rem"}}>
 
-The default value for the property. Only supported for Salesforce.
+string
 
-</div></TabItem><TabItem label={"MOD2"} value={"1-property"}><p>MOD2</p><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
+</div></TabItem><TabItem label={"MOD2"} value={"1-item-properties"}><div style={{"marginTop":".5rem","marginBottom":".5rem","marginLeft":"1rem"}}>
 
-The default value for the property. Only supported for Salesforce.
+number
 
-</div></TabItem><TabItem label={"MOD3"} value={"2-property"}><p>MOD3</p><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
+</div></TabItem><TabItem label={"MOD3"} value={"2-item-properties"}><div style={{"marginTop":".5rem","marginBottom":".5rem","marginLeft":"1rem"}}>
 
-The default value for the property. Only supported for Salesforce.
+boolean
 
 </div></TabItem></SchemaTabs></div></details></SchemaItem><SchemaItem collapsible={false} name={"group_name"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"supaglue","description":"Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't."}}></SchemaItem><SchemaItem collapsible={false} name={"type"} required={true} schemaName={"property_type"} qualifierMessage={"**Possible values:** [`text`, `textarea`, `number`, `picklist`, `multipicklist`, `date`, `datetime`, `boolean`, `other`]"} schema={{"type":"string","enum":["text","textarea","number","picklist","multipicklist","date","datetime","boolean","other"],"description":"Type of the field.\n\nSupport:\n\n<table>\n  <thead>\n    <tr>\n    <th>Field</th>\n    <th>Hubspot (type-fieldType)</th>\n    <th>Salesforce</th>\n    <th>Pipedrive</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n     <td>text</td>\n      <td>string-text</td>\n      <td>Text</td>\n      <td>varchar_auto</td>\n    </tr>\n    <tr>\n      <td>textarea</td>\n      <td>string-textarea</td>\n      <td>Textarea</td>\n      <td>text</td>\n    </tr>\n    <tr>\n      <td>number</td>\n      <td>number-number</td>\n      <td>Int/Double (depending on scale)</td>\n      <td>double</td>\n    </tr>\n    <tr>\n      <td>picklist</td>\n      <td>enumeration-select</td>\n      <td>Picklist</td>\n      <td>enum</td>\n    </tr>\n    <tr>\n      <td>multipicklist</td>\n      <td>enumeration-checkbox</td>\n      <td>Multipicklist</td>\n      <td>set</td>\n    </tr>\n    <tr>\n      <td>date</td>\n      <td>date-date</td>\n      <td>Date</td>\n      <td>date</td>\n    </tr>\n    <tr>\n      <td>datetime</td>\n      <td>datetime-date</td>\n      <td>Datetime</td>\n      <td>date</td>\n    </tr>\n    <tr>\n    <td>boolean</td>\n      <td>bool-booleancheckbox</td>\n      <td>Checkbox</td>\n      <td>enum</td>\n    </tr>\n  </tbody>\n  </table>\n","title":"property_type"}}></SchemaItem><SchemaItem collapsible={false} name={"precision"} required={false} schemaName={"number"} qualifierMessage={undefined} schema={{"type":"number","description":"Only applicable in Salesforce. If not given, will default to 18."}}></SchemaItem><SchemaItem collapsible={false} name={"scale"} required={false} schemaName={"number"} qualifierMessage={undefined} schema={{"type":"number","description":"Only applicable in Salesforce. If not given, will default to 0."}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>options</strong><span className={"openapi-schema__name"}> object[]</span></span></summary><div style={{"marginLeft":"1rem"}}><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
 
