@@ -2,13 +2,13 @@ import type { FetchOptions, FetchResponse } from 'openapi-fetch';
 import createClient from 'openapi-fetch';
 
 type HTTPMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'PATCH' | 'TRACE';
-
 type MaybePromise<T> = T | Promise<T>;
-
 type _ClientOptions = NonNullable<Parameters<typeof createClient>[0]>;
-
 type FetchParams = [string, Parameters<typeof fetch>[1]];
+
 // Workaround for https://github.com/drwpow/openapi-typescript/issues/1122
+
+// MARK: - OpenAPI client
 interface ClientOptions extends _ClientOptions {
   preRequest?: (...args: FetchParams) => MaybePromise<FetchParams>;
   postRequest?: (res: Awaited<ReturnType<typeof fetch>>, requestArgs: FetchParams) => ReturnType<typeof fetch>;
@@ -46,18 +46,6 @@ export function createOpenapiClient<Paths extends {}>({
   };
 }
 
-function throwIfNotOk<T>(method: HTTPMethod) {
-  return (res: FetchResponse<T>) => {
-    if (res.error) {
-      // eslint-disable-next-line no-console
-      console.log(res.error);
-      throw new HTTPError<T>({ method, error: res.error, response: res.response });
-    }
-    // You can further modify response as desired...
-    return res;
-  };
-}
-
 export class HTTPError<T> extends Error {
   override name = 'HTTPError';
   readonly method: HTTPMethod;
@@ -78,3 +66,55 @@ export class HTTPError<T> extends Error {
 }
 
 // TODO: Introduce an createOpenapiOauthClient that handles token refreshes
+
+function throwIfNotOk<T>(method: HTTPMethod) {
+  return (res: FetchResponse<T>) => {
+    if (res.error) {
+      // eslint-disable-next-line no-console
+      console.log(res.error);
+      throw new HTTPError<T>({ method, error: res.error, response: res.response });
+    }
+    // You can further modify response as desired...
+    return res;
+  };
+}
+
+// MARK :- OpenAPI Oauth Client
+
+export const REFRESH_TOKEN_THRESHOLD_MS = 300000; // 5 minutes
+interface OauthTokens {
+  accessToken: string;
+  refreshToken: string;
+  /** ISO string */
+  expiresAt: string | null;
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type OAuthClientOptions<Paths extends {} = {}> = ClientOptions & {
+  tokens: OauthTokens;
+  refreshTokens: (client: ReturnType<typeof createOpenapiOauthClient<Paths>>) => Promise<OauthTokens>;
+  onTokenRefreshed?: (tokens: OauthTokens) => void;
+};
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function createOpenapiOauthClient<Paths extends {}>({
+  tokens: initialTokens,
+  refreshTokens,
+  onTokenRefreshed,
+  preRequest = (url, init) => [url, init],
+  ...options
+}: OAuthClientOptions<Paths>) {
+  let tokens = initialTokens;
+  const client = createOpenapiClient<Paths>({
+    ...options,
+    preRequest: async (url, init) => {
+      // Proactive refresh access token
+      if (!tokens.expiresAt || Date.parse(tokens.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS) {
+        tokens = await refreshTokens(client);
+        onTokenRefreshed?.(tokens);
+      }
+      return preRequest(url, { ...init, headers: { ...init?.headers, Authorization: `Bearer ${tokens.accessToken}` } });
+    },
+  });
+  return client;
+}

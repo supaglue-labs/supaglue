@@ -87,7 +87,10 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     this.#baseURL = 'https://api.salesloft.com';
     this.#credentials = credentials;
     this.#headers = { Authorization: `Bearer ${this.#credentials.accessToken}` };
-    this.#api = createSalesloftClient(this.#credentials);
+    this.#api = createSalesloftClient({
+      credentials: this.#credentials,
+      onTokenRefreshed: (tokens) => this.emit('token_refreshed', tokens),
+    });
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {

@@ -169,7 +169,10 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     super('https://api.outreach.io');
     this.#baseURL = 'https://api.outreach.io';
     this.#credentials = credentials;
-    this.#api = createOutreachClient(this.#credentials);
+    this.#api = createOutreachClient({
+      credentials: this.#credentials,
+      onTokenRefreshed: (tokens) => this.emit('token_refreshed', tokens),
+    });
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
