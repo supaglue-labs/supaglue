@@ -1,5 +1,7 @@
-import type { FetchResponse } from 'openapi-fetch';
+import type { FetchOptions, FetchResponse } from 'openapi-fetch';
 import createClient from 'openapi-fetch';
+
+type HTTPMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'PATCH' | 'TRACE';
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -28,24 +30,52 @@ export function createOpenapiClient<Paths extends {}>({
   const client = createClient<Paths>({ ...clientOptions, fetch: customFetch });
 
   return {
-    GET: (...args: Parameters<typeof client.GET>) => client.GET(...args).then(throwIfNotOk),
-    PUT: (...args: Parameters<typeof client.PUT>) => client.PUT(...args).then(throwIfNotOk),
-    POST: (...args: Parameters<typeof client.POST>) => client.POST(...args).then(throwIfNotOk),
-    DELETE: (...args: Parameters<typeof client.DELETE>) => client.DELETE(...args).then(throwIfNotOk),
-    OPTIONS: (...args: Parameters<typeof client.OPTIONS>) => client.OPTIONS(...args).then(throwIfNotOk),
-    HEAD: (...args: Parameters<typeof client.HEAD>) => client.HEAD(...args).then(throwIfNotOk),
-    PATCH: (...args: Parameters<typeof client.PATCH>) => client.PATCH(...args).then(throwIfNotOk),
-    TRACE: (...args: Parameters<typeof client.TRACE>) => client.TRACE(...args).then(throwIfNotOk),
+    /** Untyped request */
+    request: <T>(method: HTTPMethod, url: string, options?: FetchOptions<unknown>) =>
+      client[method as 'GET'](url as never, options as never).then(throwIfNotOk(method)) as Promise<{
+        data: T;
+        response: FetchResponse<unknown>['response'];
+      }>,
+    GET: (...args: Parameters<typeof client.GET>) => client.GET(...args).then(throwIfNotOk('GET')),
+    PUT: (...args: Parameters<typeof client.PUT>) => client.PUT(...args).then(throwIfNotOk('PUT')),
+    POST: (...args: Parameters<typeof client.POST>) => client.POST(...args).then(throwIfNotOk('POST')),
+    DELETE: (...args: Parameters<typeof client.DELETE>) => client.DELETE(...args).then(throwIfNotOk('DELETE')),
+    OPTIONS: (...args: Parameters<typeof client.OPTIONS>) => client.OPTIONS(...args).then(throwIfNotOk('OPTIONS')),
+    HEAD: (...args: Parameters<typeof client.HEAD>) => client.HEAD(...args).then(throwIfNotOk('HEAD')),
+    PATCH: (...args: Parameters<typeof client.PATCH>) => client.PATCH(...args).then(throwIfNotOk('PATCH')),
+    TRACE: (...args: Parameters<typeof client.TRACE>) => client.TRACE(...args).then(throwIfNotOk('TRACE')),
   };
 }
 
-function throwIfNotOk<T>(res: FetchResponse<T>) {
-  if (res.error) {
-    // TODO: Return more detailed error here...
-    // eslint-disable-next-line no-console
-    console.log(res.error);
-    throw new Error('HTTPError');
-  }
-  // You can further modify response as desired...
-  return res;
+function throwIfNotOk<T>(method: HTTPMethod) {
+  return (res: FetchResponse<T>) => {
+    if (res.error) {
+      // eslint-disable-next-line no-console
+      console.log(res.error);
+      throw new HTTPError<T>({ method, error: res.error, response: res.response });
+    }
+    // You can further modify response as desired...
+    return res;
+  };
 }
+
+export class HTTPError<T> extends Error {
+  override name = 'HTTPError';
+  readonly method: HTTPMethod;
+  readonly error: Extract<FetchResponse<T>, { error: unknown }>['error'];
+  readonly response: FetchResponse<T>['response'];
+
+  get code() {
+    return this.response?.status;
+  }
+
+  constructor({ method, error, response }: Extract<FetchResponse<T>, { error: unknown }> & { method: HTTPMethod }) {
+    super(`[HTTP ${response.status}]: ${method.toUpperCase()} ${response.url}`);
+    this.method = method;
+    this.error = error;
+    this.response = response;
+    Object.setPrototypeOf(this, HTTPError.prototype);
+  }
+}
+
+// TODO: Introduce an createOpenapiOauthClient that handles token refreshes
