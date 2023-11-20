@@ -1,7 +1,6 @@
 import type { FetchOptions, FetchResponse } from 'openapi-fetch';
 import createClient from 'openapi-fetch';
-// @ts-expect-error Not sure we get The current file is a CommonJS module whose imports will
-// produce 'require' calls error, but it's ireelevant and thus we will suppress it
+// @ts-expect-error Not sure why this is needed 
 import type { PathsWithMethod } from 'openapi-typescript-helpers';
 
 type HTTPMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'PATCH' | 'TRACE';

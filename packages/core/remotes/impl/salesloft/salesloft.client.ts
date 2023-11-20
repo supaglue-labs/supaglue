@@ -1,6 +1,6 @@
+import type { OAuthClientOptions } from '@supaglue/schemas';
+import { createOpenapiOauthClient } from '@supaglue/schemas';
 import type { ConnectorAuthConfig } from '../../base';
-import type { OAuthClientOptions } from '../../utils/createOpenapiClient';
-import { createOpenapiOauthClient } from '../../utils/createOpenapiClient';
 
 import type { paths } from './salesloft.openapi.gen';
 import oas from './salesloft.openapi.json';

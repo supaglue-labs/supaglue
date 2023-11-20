@@ -1,4 +1,4 @@
-import { createOpenapiClient } from '../../utils/createOpenapiClient';
+import { createOpenapiClient } from '@supaglue/schemas';
 
 import type { paths } from './apollo.openapi.gen';
 import oas from './apollo.openapi.json';

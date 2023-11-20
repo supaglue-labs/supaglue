@@ -9,6 +9,11 @@
       "url": "https://app.apollo.io/api"
     }
   ],
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
   "paths": {
     "/v1/emailer_campaigns/{id}": {
       "get": {
@@ -424,6 +429,13 @@
     }
   },
   "components": {
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "query"
+      }
+    },
     "schemas": {
       "emailer_campaign": {
         "type": "object",

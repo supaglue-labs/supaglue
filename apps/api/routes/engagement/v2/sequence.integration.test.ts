@@ -5,6 +5,7 @@
  * @jest-environment ./integration-test-environment
  */
 
+import { HTTPError } from '@supaglue/schemas';
 import type {
   CreateContactRequest,
   CreateContactResponse,
@@ -92,17 +93,18 @@ describe('sequence', () => {
   test(`Error body`, async () => {
     testSequence.steps[0].interval_seconds = 123;
 
-    const res = await supaglueClient.engagement.POST('/sequences', {
-      body: { record: testSequence },
-      // TODO: Make it so that x-customer-id can be omitted if it was passed into the client at creation time.
-      params: { header: { 'x-provider-name': 'salesloft', 'x-customer-id': process.env.CUSTOMER_ID! } },
-    });
+    const res = (await supaglueClient.engagement
+      .POST('/sequences', {
+        body: { record: testSequence },
+        // TODO: Make it so that x-customer-id can be omitted if it was passed into the client at creation time.
+        params: { header: { 'x-provider-name': 'salesloft', 'x-customer-id': process.env.CUSTOMER_ID! } },
+      })
+      .catch((e) => e as HTTPError<unknown>)) as HTTPError<unknown>;
 
+    expect(res).toBeInstanceOf(HTTPError);
     expect(res.response.status).toEqual(400);
     // Our API spec is wrong and should specify 400 return code with ability to have errors
-    expect((res.error as typeof res.data)?.errors?.[0].title).toMatch(
-      'Salesloft only supports intervals in whole days'
-    );
+    expect((res.error as any)?.errors?.[0].title).toMatch('Salesloft only supports intervals in whole days');
   });
 
   describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {

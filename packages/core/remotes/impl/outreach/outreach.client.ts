@@ -1,6 +1,6 @@
+import type { OAuthClientOptions } from '@supaglue/schemas';
+import { createOpenapiOauthClient, HTTPError } from '@supaglue/schemas';
 import { SGConnectionNoLongerAuthenticatedError } from '../../../errors';
-import type { OAuthClientOptions } from '../../utils/createOpenapiClient';
-import { createOpenapiOauthClient, HTTPError } from '../../utils/createOpenapiClient';
 
 import type { paths } from './outreach.openapi.gen';
 import oas from './outreach.openapi.json';
