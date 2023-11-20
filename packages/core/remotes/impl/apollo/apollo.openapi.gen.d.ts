@@ -163,6 +163,11 @@ export interface operations {
         id: string;
       };
     };
+    requestBody?: {
+      content: {
+        "application/json": unknown;
+      };
+    };
     responses: {
       200: {
         content: {
@@ -261,6 +266,11 @@ export interface operations {
         id: string;
       };
     };
+    requestBody?: {
+      content: {
+        "application/json": unknown;
+      };
+    };
     responses: {
       200: {
         content: {
@@ -305,6 +315,11 @@ export interface operations {
     parameters: {
       path: {
         id: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": unknown;
       };
     };
     responses: {

@@ -4424,7 +4424,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Account was archived, if archived
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       archived_at?: string;
       /**
@@ -4452,7 +4452,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Account was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       creator?: components["schemas"]["EmbeddedResource"];
@@ -4512,7 +4512,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime this Account was last contacted
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       last_contacted_at?: string;
       last_contacted_by?: components["schemas"]["EmbeddedResource"];
@@ -4589,7 +4589,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Account was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       /**
@@ -4610,7 +4610,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Account Stage was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -4631,7 +4631,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Account Stage was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -4639,7 +4639,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Account Tier was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -4660,7 +4660,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Account Tier was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -4675,7 +4675,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Action was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -4686,7 +4686,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When action is due
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       due_on?: string;
       /**
@@ -4721,7 +4721,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Action was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -4730,7 +4730,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Activity was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -4738,7 +4738,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this record was created
-       * @example "2019-01-01T00:00:00.000Z"
+       * @example 2019-01-01T00:00:00.000000Z
        */
       created_at?: string;
       /**
@@ -4769,13 +4769,13 @@ export interface components {
       /**
        * Format: date-time
        * @description When this activity occurred
-       * @example "2019-01-01T00:00:00.000Z"
+       * @example 2019-01-01T00:00:00.000000Z
        */
       occurred_at?: string;
       /**
        * Format: date-time
        * @description When this record was pinned
-       * @example "2019-01-01T00:00:00.000Z"
+       * @example 2019-01-01T00:00:00.000000Z
        */
       pinned_at?: string;
       /**
@@ -4803,7 +4803,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this record was updated
-       * @example "2019-01-01T00:00:00.000Z"
+       * @example 2019-01-01T00:00:00.000000Z
        */
       updated_at?: string;
       /**
@@ -4816,7 +4816,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this bulk job was created
-       * @example "2019-01-01T05:00:00.000Z"
+       * @example 2019-01-01T00:00:00-05:00
        */
       created_at?: string;
       /**
@@ -4827,7 +4827,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this bulk job finished processing
-       * @example "2019-01-02T05:00:00.000Z"
+       * @example 2019-01-02T00:00:00-05:00
        */
       finished_at?: string;
       /**
@@ -4838,7 +4838,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this bulk job was marked as ready to execute
-       * @example "2019-01-02T05:00:00.000Z"
+       * @example 2019-01-02T00:00:00-05:00
        */
       marked_ready_at?: string;
       /**
@@ -4866,7 +4866,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this bulk job started processing. null until bulk job is done
-       * @example "2019-01-02T05:00:00.000Z"
+       * @example 2019-01-02T00:00:00-05:00
        */
       started_at?: string;
       /**
@@ -4887,7 +4887,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this bulk job was updated
-       * @example "2019-01-02T05:00:00.000Z"
+       * @example 2019-01-02T00:00:00-05:00
        */
       updated_at?: string;
     };
@@ -4923,7 +4923,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the cadence was archived, if archived
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       archived_at?: string;
       bounced_stage?: components["schemas"]["EmbeddedResource"];
@@ -4951,7 +4951,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the cadence was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       creator?: components["schemas"]["EmbeddedResource"];
@@ -5024,7 +5024,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the cadence was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -5069,7 +5069,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the person was last added to this cadence
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       added_at?: string;
       cadence?: components["schemas"]["EmbeddedResource"];
@@ -5077,7 +5077,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the person was first added to this cadence
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5122,7 +5122,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the record was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -5230,7 +5230,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The (exclusive) end time of the calendar event.
-       * @example "2022-08-23T08:18:47.853Z"
+       * @example 2022-08-23T08:18:47.853983Z
        */
       end_time?: string;
       /**
@@ -5276,7 +5276,7 @@ export interface components {
       /**
        * Format: date-time
        * @description The (inclusive) start time of the calendar event.
-       * @example "2022-08-23T08:18:47.832Z"
+       * @example 2022-08-23T08:18:47.832113Z
        */
       start_time?: string;
       /**
@@ -5312,7 +5312,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       crm_activity?: components["schemas"]["EmbeddedResource"];
@@ -5357,7 +5357,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -5378,7 +5378,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5415,7 +5415,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -5424,7 +5424,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call disposition was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5440,7 +5440,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call disposition was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -5448,7 +5448,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call instructions were created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5464,7 +5464,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call instructions were last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -5472,7 +5472,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call sentiment was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5488,7 +5488,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the call sentiment was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -5513,7 +5513,7 @@ export interface components {
     ConversationsCall: {
       /**
        * @description Timestamp for when the call started. If not provided, will default to the time the request was received
-       * @example "2022-07-22T01:00:00.000Z"
+       * @example 2022-07-22 01:00:00
        */
       call_created_at?: string;
       /**
@@ -5558,7 +5558,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the crm activity was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5597,7 +5597,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the crm activity was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -5606,7 +5606,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the CrmActivityField was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5660,7 +5660,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the CrmActivityField was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       /**
@@ -5675,7 +5675,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the crm user was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5691,7 +5691,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the crm user was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -5700,7 +5700,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Custom Field was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5721,7 +5721,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Custom Field was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       /**
@@ -5747,7 +5747,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the email was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       crm_activity?: components["schemas"]["EmbeddedResource"];
@@ -5782,13 +5782,13 @@ export interface components {
       /**
        * Format: date-time
        * @description When this email will be sent, or null if already sent
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       send_after?: string;
       /**
        * Format: date-time
        * @description When this email was sent, or null if it was not sent
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       sent_at?: string;
       /**
@@ -5803,7 +5803,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the email was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -5856,7 +5856,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the email template was archived, if archived
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       archived_at?: string;
       /**
@@ -5893,7 +5893,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the email template was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -5914,7 +5914,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the email template was last used
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       last_used_at?: string;
       /**
@@ -5950,7 +5950,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the email template was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -6035,7 +6035,7 @@ export interface components {
       /**
        * Format: date
        * @description Datetime of when the attendee was deleted
-       * @example "2022-12-19T14:49:17.930Z"
+       * @example 2022-12-19T16:49:17.930926+02:00
        */
       deleted_at?: string;
       /**
@@ -6160,7 +6160,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the import was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -6186,7 +6186,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the import was last updated, ignoring relationship changes
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -6199,7 +6199,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this job data record was created
-       * @example "2019-01-01T05:00:00.000Z"
+       * @example 2019-01-01T00:00:00-05:00
        */
       created_at?: string;
       /**
@@ -6210,7 +6210,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this job data record finished processing
-       * @example "2019-01-01T05:00:00.000Z"
+       * @example 2019-01-01T00:00:00-05:00
        */
       finished_at?: string;
       /**
@@ -6231,7 +6231,7 @@ export interface components {
       /**
        * Format: date-time
        * @description When this job data record started processing
-       * @example "2019-01-01T05:00:00.000Z"
+       * @example 2019-01-01T00:00:00-05:00
        */
       started_at?: string;
       /**
@@ -6252,14 +6252,14 @@ export interface components {
        * @description Information about whether this event should trigger an alert
        * @example {
        *   "should_alert": true,
-       *   "should_alert_until": "2019-01-01T05:00:00.000Z"
+       *   "should_alert_until": "2019-01-01T00:00:00-05:00"
        * }
        */
       alert_metadata?: Record<string, never>;
       /**
        * Format: date-time
        * @description When this event occurred
-       * @example "2019-01-01T05:00:00.000Z"
+       * @example 2019-01-01T00:00:00-05:00
        */
       event_occurred_at?: string;
       /**
@@ -6360,13 +6360,13 @@ export interface components {
       /**
        * Format: date
        * @description Datetime of when the meeting was canceled
-       * @example "2022-12-19T14:49:17.931Z"
+       * @example 2022-12-19T16:49:17.931396+02:00
        */
       canceled_at?: string;
       /**
        * Format: date
        * @description Datetime of when the meeting was created
-       * @example "2022-12-19T14:49:17.930Z"
+       * @example 2022-12-19T16:49:17.930298+02:00
        */
       created_at?: string;
       /**
@@ -6385,7 +6385,7 @@ export interface components {
        *     "crm_object_type": "Opportunity",
        *     "crm_url": "link_to_salesforce",
        *     "description1": "Title of the opportunity",
-       *     "description2": "2032-01-10T00:00:00.000Z",
+       *     "description2": "2032-01-10",
        *     "description3": "Prospecting"
        *   },
        *   "who": {
@@ -6408,7 +6408,7 @@ export interface components {
       /**
        * Format: date
        * @description End time of the meeting
-       * @example "2022-12-19T14:49:17.917Z"
+       * @example 2022-12-19T16:49:17.917861+02:00
        */
       end_time?: string;
       /**
@@ -6469,7 +6469,7 @@ export interface components {
       /**
        * Format: date
        * @description Start time of the meeting
-       * @example "2022-12-19T14:49:17.917Z"
+       * @example 2022-12-19T16:49:17.917818+02:00
        */
       start_time?: string;
       /**
@@ -6496,7 +6496,7 @@ export interface components {
       /**
        * Format: date
        * @description Datetime of when the meeting was last updated
-       * @example "2022-12-19T14:49:17.930Z"
+       * @example 2022-12-19T16:49:17.930340+02:00
        */
       updated_at?: string;
     };
@@ -6540,7 +6540,7 @@ export interface components {
       /**
        * Format: date
        * @description Datetime of when the MeetingSetting was created
-       * @example "2022-09-15T08:40:59.055Z"
+       * @example 2022-09-15T11:40:59.055583+03:00
        */
       created_at?: string;
       /**
@@ -6632,7 +6632,7 @@ export interface components {
       /**
        * Format: date
        * @description Datetime of when the MeetingSetting was last updated
-       * @example "2022-09-15T08:40:59.055Z"
+       * @example 2022-09-15T11:40:59.055628+03:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -6654,13 +6654,13 @@ export interface components {
       /**
        * Format: date
        * @description Datetime of when MeetingUrl was created
-       * @example "2022-09-15T08:40:59.056Z"
+       * @example 2022-09-15T11:40:59.056237+03:00
        */
       created_at?: string;
       /**
        * Format: date
        * @description Datetime of when MeetingUrl was last updated
-       * @example "2022-09-15T08:40:59.056Z"
+       * @example 2022-09-15T11:40:59.056272+03:00
        */
       updated_at?: string;
       /**
@@ -6707,7 +6707,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the note was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -6718,7 +6718,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the note was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -6776,7 +6776,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the person was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -6853,7 +6853,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Last datetime this person was contacted
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       last_contacted_at?: string;
       last_contacted_by?: components["schemas"]["EmbeddedResource"];
@@ -6870,7 +6870,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Last datetime this person replied to an email
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       last_replied_at?: string;
       /**
@@ -6982,7 +6982,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the person was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       /**
@@ -7037,7 +7037,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Person Stage was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -7058,7 +7058,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Person Stage was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -7123,7 +7123,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Step was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -7171,7 +7171,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Step was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -7217,7 +7217,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the success was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -7234,19 +7234,19 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the success was recorded
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       succeeded_at?: string;
       /**
        * Format: date-time
        * @description Datetime of when this person was first worked, leading up to the success
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       success_window_started_at?: string;
       /**
        * Format: date-time
        * @description Datetime of when the success was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -7284,14 +7284,14 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the task was completed, ISO-8601 datetime format required
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       completed_at?: string;
       completed_by?: components["schemas"]["EmbeddedResource"];
       /**
        * Format: date-time
        * @description Datetime of when the Task was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       created_by_user?: components["schemas"]["EmbeddedResource"];
@@ -7308,13 +7308,13 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Task is due, can be null.  ISO-8601 datetime format required
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       due_at?: string;
       /**
        * Format: date
        * @description Date of when the Task is due, ISO-8601 date format required
-       * @example "2024-01-01T00:00:00.000Z"
+       * @example 2024-01-01
        */
       due_date?: string;
       /**
@@ -7326,7 +7326,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the user will be reminded of the task, ISO-8601 datetime format required
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       remind_at?: string;
       /**
@@ -7342,7 +7342,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the Task was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       user?: components["schemas"]["EmbeddedResource"];
@@ -7371,7 +7371,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the team was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -7454,7 +7454,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the team was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -7469,7 +7469,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the team template was archived, if archived
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       archived_at?: string;
       /**
@@ -7501,7 +7501,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the team template was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -7512,14 +7512,14 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the team template was last modified
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       last_modified_at?: string;
       last_modified_user?: components["schemas"]["EmbeddedResource"];
       /**
        * Format: date-time
        * @description Datetime of when the team template was last used
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       last_used_at?: string;
       /**
@@ -7548,7 +7548,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the team template was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
     };
@@ -7628,7 +7628,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the user was created
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       created_at?: string;
       /**
@@ -7749,7 +7749,7 @@ export interface components {
       /**
        * Format: date-time
        * @description Datetime of when the user was last updated
-       * @example "2023-01-01T05:00:00.000Z"
+       * @example 2023-01-01T00:00:00.000000-05:00
        */
       updated_at?: string;
       /**
