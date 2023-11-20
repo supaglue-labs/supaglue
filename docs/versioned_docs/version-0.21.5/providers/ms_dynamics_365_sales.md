@@ -37,13 +37,13 @@ Supaglue uses the Microsoft Dynamics 365 v9.2 API.
 
 Use the logical name (i.e. `mailbox`) when specifying [standard entities](https://learn.microsoft.com/en-us/power-apps/developer/data-platform/reference/about-entity-reference) to sync.
 
-Syncs are Full or Incremental, and soft deletes are supported.
+Syncs are Full or Incremental, and soft deletes are not supported.
 
 #### Supported custom objects:
 
-When specifying a custom entity you'd like to sync, omit the `new_` prefix and use the singular noun. For instance, if your custom entity's table is `new_customobjects`, you would specify `customobject` as the object name.
+The custom object must be defined in the new Power Apps interface with the default publisher. When specifying a custom entity you'd like to sync, omit the prefix added by the Power Apps default publisher and use the singular noun. For instance, if your custom entity's table's logical name is `c80e_customobject`, you would specify `customobject` as the object name.
 
-Syncs are Full or Incremental, and soft deletes are supported.
+Syncs are Full or Incremental, and soft deletes are not supported.
 
 ## Provider setup
 
