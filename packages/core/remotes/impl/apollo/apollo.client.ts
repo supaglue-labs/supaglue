@@ -1,6 +1,7 @@
 import { createOpenapiClient } from '../../utils/createOpenapiClient';
 
 import type { paths } from './apollo.openapi.gen';
+import oas from './apollo.openapi.json';
 
 interface ApolloCredentials {
   apiKey: string;
@@ -9,7 +10,7 @@ interface ApolloCredentials {
 export type ApolloClient = ReturnType<typeof createApolloClient>;
 export function createApolloClient(creds: ApolloCredentials) {
   return createOpenapiClient<paths>({
-    baseUrl: 'https://app.apollo.io/api',
+    baseUrl: oas.servers[0].url,
     preRequest(input, init) {
       if (input && init?.method?.toLowerCase() === 'get') {
         const url = new URL(input);

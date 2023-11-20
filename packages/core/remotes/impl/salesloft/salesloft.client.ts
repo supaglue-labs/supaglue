@@ -3,6 +3,7 @@ import type { OAuthClientOptions } from '../../utils/createOpenapiClient';
 import { createOpenapiOauthClient } from '../../utils/createOpenapiClient';
 
 import type { paths } from './salesloft.openapi.gen';
+import oas from './salesloft.openapi.json';
 
 interface SalesloftCredentials {
   accessToken: string;
@@ -18,7 +19,7 @@ export function createSalesloftClient({
   ...options
 }: { credentials: SalesloftCredentials } & Pick<OAuthClientOptions, 'onTokenRefreshed'>) {
   return createOpenapiOauthClient<paths>({
-    baseUrl: ' https://api.salesloft.com',
+    baseUrl: oas.servers[0].url,
     ...options,
     tokens: creds,
     refreshTokens: async (client) =>

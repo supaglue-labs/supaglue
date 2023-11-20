@@ -3,6 +3,7 @@ import type { OAuthClientOptions } from '../../utils/createOpenapiClient';
 import { createOpenapiOauthClient, HTTPError } from '../../utils/createOpenapiClient';
 
 import type { paths } from './outreach.openapi.gen';
+import oas from './outreach.openapi.json';
 
 interface OutreachCredentials {
   accessToken: string;
@@ -19,7 +20,7 @@ export function createOutreachClient({
 }: { credentials: OutreachCredentials } & Pick<OAuthClientOptions, 'onTokenRefreshed'>) {
   // Maybe worth modifying the outreach openapi spec with refresh token tools
   return createOpenapiOauthClient<paths>({
-    baseUrl: 'https://api.outreach.io/api/v2',
+    baseUrl: oas.servers[0].url,
     ...options,
     tokens: creds,
     refreshTokens: async (client) => {
