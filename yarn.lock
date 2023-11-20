@@ -5367,10 +5367,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@prisma/prisma-fmt-wasm@npm:4.12.0-67.659ef412370fa3b41cd7bf6e94587c1dfb7f67e7":
-  version: 4.12.0-67.659ef412370fa3b41cd7bf6e94587c1dfb7f67e7
-  resolution: "@prisma/prisma-fmt-wasm@npm:4.12.0-67.659ef412370fa3b41cd7bf6e94587c1dfb7f67e7"
-  checksum: 8afdf29fcab2313a0952c2c2931e67ded5f60c50d4b4da80c2858f99ae97c95fd8f781e0c96eb99d34c9a0b5b68796b658b873ee9bbb515e8d81afa1490829f8
+"@prisma/prisma-schema-wasm@npm:4.17.0-26.6b0aef69b7cdfc787f822ecd7cdc76d5f1991584":
+  version: 4.17.0-26.6b0aef69b7cdfc787f822ecd7cdc76d5f1991584
+  resolution: "@prisma/prisma-schema-wasm@npm:4.17.0-26.6b0aef69b7cdfc787f822ecd7cdc76d5f1991584"
+  checksum: c0dffdde7b9e59cecea1c581829b1ebb55a934b8b5e7abf30d1e3d498cf3fcc6da39a3c320e1c52f9edb5e5cb08ff7f9bdd24e3ea97546ba4803d03bda5de066
   languageName: node
   linkType: hard
 
@@ -7520,10 +7520,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:^2":
-  version: 2.7.2
-  resolution: "@types/prettier@npm:2.7.2"
-  checksum: b47d76a5252265f8d25dd2fe2a5a61dc43ba0e6a96ffdd00c594cb4fd74c1982c2e346497e3472805d97915407a09423804cc2110a0b8e1b22cffcab246479b7
+"@types/prettier@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/prettier@npm:3.0.0"
+  dependencies:
+    prettier: "*"
+  checksum: a2a512d304e5bcf78f38089dc88ad19215e6ab871d435a17aef3ce538a63b07c0e359c18db23989dc1ed9fff96d99eee1f680416080184df5c7e0e3bf767e165
   languageName: node
   linkType: hard
 
@@ -12115,14 +12117,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.6.0":
-  version: 8.6.0
-  resolution: "eslint-config-prettier@npm:8.6.0"
+"eslint-config-prettier@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "eslint-config-prettier@npm:9.0.0"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: ff0d0dfc839a556355422293428637e8d35693de58dabf8638bf0b6529131a109d0b2ade77521aa6e54573bb842d7d9d322e465dd73dd61c7590fa3834c3fa81
+  checksum: 362e991b6cb343f79362bada2d97c202e5303e6865888918a7445c555fb75e4c078b01278e90be98aa98ae22f8597d8e93d48314bec6824f540f7efcab3ce451
   languageName: node
   linkType: hard
 
@@ -12218,18 +12220,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-prettier@npm:^4.2.1":
-  version: 4.2.1
-  resolution: "eslint-plugin-prettier@npm:4.2.1"
+"eslint-plugin-prettier@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "eslint-plugin-prettier@npm:5.0.1"
   dependencies:
     prettier-linter-helpers: ^1.0.0
+    synckit: ^0.8.5
   peerDependencies:
-    eslint: ">=7.28.0"
-    prettier: ">=2.0.0"
+    "@types/eslint": ">=8.0.0"
+    eslint: ">=8.0.0"
+    prettier: ">=3.0.0"
   peerDependenciesMeta:
+    "@types/eslint":
+      optional: true
     eslint-config-prettier:
       optional: true
-  checksum: b9e839d2334ad8ec7a5589c5cb0f219bded260839a857d7a486997f9870e95106aa59b8756ff3f37202085ebab658de382b0267cae44c3a7f0eb0bcc03a4f6d6
+  checksum: c2261033b97bafe99ccb7cc47c2fac6fa85b8bbc8b128042e52631f906b69e12afed2cdd9d7e3021cc892ee8dd4204a3574e1f32a0b718b4bb3b440944b6983b
   languageName: node
   linkType: hard
 
@@ -19928,9 +19934,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier-plugin-organize-imports@npm:^3.2.2":
-  version: 3.2.2
-  resolution: "prettier-plugin-organize-imports@npm:3.2.2"
+"prettier-plugin-organize-imports@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "prettier-plugin-organize-imports@npm:3.2.4"
   peerDependencies:
     "@volar/vue-language-plugin-pug": ^1.0.4
     "@volar/vue-typescript": ^1.0.4
@@ -19941,22 +19947,22 @@ __metadata:
       optional: true
     "@volar/vue-typescript":
       optional: true
-  checksum: 28620ea73a0a518c93200c7ea17d38a26132db3f55a75954983dff3422d4dd2155515518422b7a68935736aa333b0406a51778053bd30133a57718090272bb5d
+  checksum: 57ae97d7e403445e650ae92b7da586761d1d88a47e46b3ea274baeb96782165bebd0132db9c652081e185c41b50701ba1d30d615ad1c9000300cc0c67eb12b7a
   languageName: node
   linkType: hard
 
-"prettier-plugin-prisma@npm:^4.12.0":
-  version: 4.12.0
-  resolution: "prettier-plugin-prisma@npm:4.12.0"
+"prettier-plugin-prisma@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "prettier-plugin-prisma@npm:5.0.0"
   dependencies:
-    "@prisma/prisma-fmt-wasm": 4.12.0-67.659ef412370fa3b41cd7bf6e94587c1dfb7f67e7
+    "@prisma/prisma-schema-wasm": 4.17.0-26.6b0aef69b7cdfc787f822ecd7cdc76d5f1991584
   peerDependencies:
-    prettier: ">=2"
-  checksum: a2de4c217c96413811236dc38332f2996e103e4e7b431bec3df37c1467034aac67102006943a9397d70f132f67c92605ae474fd83727bf155e9f2e3a54b3116d
+    prettier: ">=2 || >=3"
+  checksum: 158b258de981fe3e21de844f155e5a89af77aa223ddb3ed6f743d861c07d608ec0043603236b4d859d36d28027945598e40f3a089ca0358074b3b42eefcd06a8
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.1.0":
+"prettier@npm:*, prettier@npm:^3.1.0":
   version: 3.1.0
   resolution: "prettier@npm:3.1.0"
   bin:
@@ -22933,20 +22939,20 @@ __metadata:
     "@tsconfig/node18": ^1.0.1
     "@types/eslint": ^8
     "@types/jest": ^29.5.5
-    "@types/prettier": ^2
+    "@types/prettier": ^3.0.0
     "@typescript-eslint/eslint-plugin": ^5.52.0
     "@typescript-eslint/parser": ^5.52.0
     eslint: ^8.34.0
-    eslint-config-prettier: ^8.6.0
-    eslint-plugin-prettier: ^4.2.1
+    eslint-config-prettier: ^9.0.0
+    eslint-plugin-prettier: ^5.0.1
     husky: ^8.0.3
     jest: ^29.7.0
     jest-runner-groups: ^2.2.0
     lint-staged: ^13.1.2
     oas-normalize: ^11.0.1
     prettier: ^3.1.0
-    prettier-plugin-organize-imports: ^3.2.2
-    prettier-plugin-prisma: ^4.12.0
+    prettier-plugin-organize-imports: ^3.2.4
+    prettier-plugin-prisma: ^5.0.0
     ts-jest: ^29.1.1
     tsc-files: ^1.1.3
     tsx: ^3.12.3
@@ -23133,7 +23139,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"synckit@npm:^0.8.4":
+"synckit@npm:^0.8.4, synckit@npm:^0.8.5":
   version: 0.8.5
   resolution: "synckit@npm:0.8.5"
   dependencies:
