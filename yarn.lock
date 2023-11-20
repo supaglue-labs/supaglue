@@ -192,18 +192,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@anatine/zod-openapi@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "@anatine/zod-openapi@npm:2.2.0"
-  dependencies:
-    ts-deepmerge: ^6.0.3
-  peerDependencies:
-    openapi3-ts: ^4.1.2
-    zod: ^3.20.0
-  checksum: 18b4e7e6d0525a325836c1d3b8fe45b5cdb19ace017fe0631e7c24e17cc266062a0c38bf52f10e799643192a4f26b2dd109b727ae59fd49827ac7fabcccdcc57
-  languageName: node
-  linkType: hard
-
 "@apidevtools/json-schema-ref-parser@npm:9.0.9":
   version: 9.0.9
   resolution: "@apidevtools/json-schema-ref-parser@npm:9.0.9"
@@ -6308,7 +6296,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/core@workspace:packages/core"
   dependencies:
-    "@anatine/zod-openapi": ^2.2.0
     "@aws-sdk/client-sesv2": ^3.437.0
     "@google-cloud/bigquery": ^6.2.0
     "@hubspot/api-client": 9.1.0
@@ -6326,8 +6313,6 @@ __metadata:
     "@types/pluralize": ^0.0.29
     "@types/qs": ^6
     "@types/uuid": ^9.0.1
-    "@zodios/core": ^10.9.6
-    "@zodios/openapi": ^10.5.0
     async-retry: ^1.3.3
     axios: ^1.6.0
     concurrently: ^8.2.2
@@ -8123,29 +8108,6 @@ __metadata:
   version: 4.2.2
   resolution: "@xtuc/long@npm:4.2.2"
   checksum: 8ed0d477ce3bc9c6fe2bf6a6a2cc316bb9c4127c5a7827bae947fa8ec34c7092395c5a283cc300c05b5fa01cbbfa1f938f410a7bf75db7c7846fea41949989ec
-  languageName: node
-  linkType: hard
-
-"@zodios/core@npm:^10.9.6":
-  version: 10.9.6
-  resolution: "@zodios/core@npm:10.9.6"
-  peerDependencies:
-    axios: ^0.x || ^1.0.0
-    zod: ^3.x
-  checksum: 482a80bd4da661734f9ed276a92d9275fa1b76011bef26ede4a851e4c495d9103e6c9456074b9e50e4c89ad7e83fcead6ea45ffba615e6ff54b8088433ba47fc
-  languageName: node
-  linkType: hard
-
-"@zodios/openapi@npm:^10.5.0":
-  version: 10.5.0
-  resolution: "@zodios/openapi@npm:10.5.0"
-  dependencies:
-    openapi-types: 12.1.3
-    zod-to-json-schema: 3.19.1
-  peerDependencies:
-    "@zodios/core": ">=10.5.2 <11.0.0"
-    zod: ^3.x
-  checksum: 1bacab639cc491e3c4e2d42945e9d40e2e1819d2d803ff3fd6ca86ea07812249ff912d54757104787bf5a2472c05359bb254439d9237daab5fae91f596553139
   languageName: node
   linkType: hard
 
@@ -18591,7 +18553,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openapi-types@npm:12.1.3, openapi-types@npm:^12.1.3":
+"openapi-types@npm:^12.1.3":
   version: 12.1.3
   resolution: "openapi-types@npm:12.1.3"
   checksum: 7fa5547f87a58d2aa0eba6e91d396f42d7d31bc3ae140e61b5d60b47d2fd068b48776f42407d5a8da7280cf31195aa128c2fc285e8bb871d1105edee5647a0bb
@@ -23656,13 +23618,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-deepmerge@npm:^6.0.3":
-  version: 6.2.0
-  resolution: "ts-deepmerge@npm:6.2.0"
-  checksum: 88014409051cf614c5cd26c60eb2605a59b0b98896609b0483503083a2727362409b1db9b7e4bf4446733396881f32cd504ef8141dd448e38304dcdf1f9d39d0
-  languageName: node
-  linkType: hard
-
 "ts-interface-checker@npm:^0.1.9":
   version: 0.1.13
   resolution: "ts-interface-checker@npm:0.1.13"
@@ -25517,15 +25472,6 @@ __metadata:
   peerDependencies:
     zod: ^3.21.4
   checksum: d741a93ef60f092a828398904ed1c14ce57000e0699d8061e67cb28c6170105572bada4c0c61f0fdfc4b6928a926f003996a5d7fe0e2ee07c2e6fc5a54e7af01
-  languageName: node
-  linkType: hard
-
-"zod-to-json-schema@npm:3.19.1":
-  version: 3.19.1
-  resolution: "zod-to-json-schema@npm:3.19.1"
-  peerDependencies:
-    zod: ^3.19.0
-  checksum: 22c07668e3c28c9d7c9bd3ad04a354ea017b6fc8b4df77ed29d11e42c4c03181612319db374932a1f8b5c37ef861157938dced9d848cad5281ee1540a156995c
   languageName: node
   linkType: hard
 

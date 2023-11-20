@@ -7,14 +7,15 @@ import type { PathsWithMethod } from 'openapi-typescript-helpers';
 type HTTPMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'PATCH' | 'TRACE';
 type MaybePromise<T> = T | Promise<T>;
 type _ClientOptions = NonNullable<Parameters<typeof createClient>[0]>;
-type FetchParams = [string, Parameters<typeof fetch>[1]];
+type Fetch = NonNullable<_ClientOptions['fetch']>;
+type FetchParams = [string, Parameters<Fetch>[1]];
 
 // Workaround for https://github.com/drwpow/openapi-typescript/issues/1122
 
 // MARK: - OpenAPI client
 interface ClientOptions extends _ClientOptions {
   preRequest?: (...args: FetchParams) => MaybePromise<FetchParams>;
-  postRequest?: (res: Awaited<ReturnType<typeof fetch>>, requestArgs: FetchParams) => ReturnType<typeof fetch>;
+  postRequest?: (res: Awaited<ReturnType<Fetch>>, requestArgs: FetchParams) => ReturnType<Fetch>;
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -23,8 +24,8 @@ export function createOpenapiClient<Paths extends {}>({
   postRequest = (res) => Promise.resolve(res),
   ...clientOptions
 }: ClientOptions = {}) {
-  const baseFetch = clientOptions?.fetch ?? globalThis.fetch;
-  const customFetch: typeof baseFetch = async (url, init) => {
+  const baseFetch: Fetch = clientOptions?.fetch ?? globalThis.fetch;
+  const customFetch: Fetch = async (url, init) => {
     const requestArgs = await preRequest(url as string, init);
     const res = await baseFetch(...requestArgs);
     return postRequest(res, requestArgs);
