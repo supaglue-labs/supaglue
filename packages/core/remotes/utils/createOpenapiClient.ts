@@ -1,5 +1,8 @@
 import type { FetchOptions, FetchResponse } from 'openapi-fetch';
 import createClient from 'openapi-fetch';
+// @ts-expect-error Not sure we get The current file is a CommonJS module whose imports will
+// produce 'require' calls error, but it's ireelevant and thus we will suppress it
+import type { PathsWithMethod } from 'openapi-typescript-helpers';
 
 type HTTPMethod = 'GET' | 'PUT' | 'POST' | 'DELETE' | 'OPTIONS' | 'HEAD' | 'PATCH' | 'TRACE';
 type MaybePromise<T> = T | Promise<T>;
@@ -29,20 +32,29 @@ export function createOpenapiClient<Paths extends {}>({
   const client = createClient<Paths>({ ...clientOptions, fetch: customFetch });
 
   return {
+    client,
     /** Untyped request */
     request: <T>(method: HTTPMethod, url: string, options?: Omit<FetchOptions<unknown>, 'body'> & { body?: unknown }) =>
       client[method as 'GET'](url as never, options as never).then(throwIfNotOk(method)) as Promise<{
         data: T;
         response: FetchResponse<unknown>['response'];
       }>,
-    GET: (...args: Parameters<typeof client.GET>) => client.GET(...args).then(throwIfNotOk('GET')),
-    PUT: (...args: Parameters<typeof client.PUT>) => client.PUT(...args).then(throwIfNotOk('PUT')),
-    POST: (...args: Parameters<typeof client.POST>) => client.POST(...args).then(throwIfNotOk('POST')),
-    DELETE: (...args: Parameters<typeof client.DELETE>) => client.DELETE(...args).then(throwIfNotOk('DELETE')),
-    OPTIONS: (...args: Parameters<typeof client.OPTIONS>) => client.OPTIONS(...args).then(throwIfNotOk('OPTIONS')),
-    HEAD: (...args: Parameters<typeof client.HEAD>) => client.HEAD(...args).then(throwIfNotOk('HEAD')),
-    PATCH: (...args: Parameters<typeof client.PATCH>) => client.PATCH(...args).then(throwIfNotOk('PATCH')),
-    TRACE: (...args: Parameters<typeof client.TRACE>) => client.TRACE(...args).then(throwIfNotOk('TRACE')),
+    GET: <P extends PathsWithMethod<Paths, 'get'>>(...args: Parameters<typeof client.GET<P>>) =>
+      client.GET<P>(...args).then(throwIfNotOk('GET')),
+    PUT: <P extends PathsWithMethod<Paths, 'put'>>(...args: Parameters<typeof client.PUT<P>>) =>
+      client.PUT(...args).then(throwIfNotOk('PUT')),
+    POST: <P extends PathsWithMethod<Paths, 'post'>>(...args: Parameters<typeof client.POST<P>>) =>
+      client.POST(...args).then(throwIfNotOk('POST')),
+    DELETE: <P extends PathsWithMethod<Paths, 'delete'>>(...args: Parameters<typeof client.DELETE<P>>) =>
+      client.DELETE(...args).then(throwIfNotOk('DELETE')),
+    OPTIONS: <P extends PathsWithMethod<Paths, 'options'>>(...args: Parameters<typeof client.OPTIONS<P>>) =>
+      client.OPTIONS(...args).then(throwIfNotOk('OPTIONS')),
+    HEAD: <P extends PathsWithMethod<Paths, 'head'>>(...args: Parameters<typeof client.HEAD<P>>) =>
+      client.HEAD(...args).then(throwIfNotOk('HEAD')),
+    PATCH: <P extends PathsWithMethod<Paths, 'patch'>>(...args: Parameters<typeof client.PATCH<P>>) =>
+      client.PATCH(...args).then(throwIfNotOk('PATCH')),
+    TRACE: <P extends PathsWithMethod<Paths, 'trace'>>(...args: Parameters<typeof client.TRACE<P>>) =>
+      client.TRACE(...args).then(throwIfNotOk('TRACE')),
   };
 }
 
@@ -75,7 +87,7 @@ function throwIfNotOk<T>(method: HTTPMethod) {
       throw new HTTPError<T>({ method, error: res.error, response: res.response });
     }
     // You can further modify response as desired...
-    return res;
+    return res as Extract<FetchResponse<T>, { data: unknown }>;
   };
 }
 

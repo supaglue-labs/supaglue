@@ -6338,6 +6338,7 @@ __metadata:
     odata: ^1.3.2
     openapi-fetch: ^0.8.1
     openapi-typescript: ^6.7.1
+    openapi-typescript-helpers: 0.0.4
     pg: ^8.10.2
     pg-connection-string: ^2.6.2
     pg-copy-streams: ^6.0.6
@@ -18597,7 +18598,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openapi-typescript-helpers@npm:^0.0.4":
+"openapi-typescript-helpers@npm:0.0.4, openapi-typescript-helpers@npm:^0.0.4":
   version: 0.0.4
   resolution: "openapi-typescript-helpers@npm:0.0.4"
   checksum: d06d62f9669db5110f32ef36a70f9f2698dd7ad03ba41968baf13e1091caaf23c4af6f8a79103cfd68f65046da4284dcc2f75e9950e9170115189b545e3030fc

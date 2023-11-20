@@ -52,6 +52,7 @@
     "concurrently": "^8.2.2",
     "json2yaml": "^1.1.0",
     "openapi-typescript": "^6.7.1",
+    "openapi-typescript-helpers": "0.0.4",
     "ts-toolbelt": "9.6.0",
     "typescript": "^4.9.5"
   },
