@@ -101,15 +101,15 @@ export default function init(app: Router): void {
   );
 
   connectionRouter.get(
-    '/:connection_id',
+    '/:provider_name',
     async (
       req: Request<GetConnectionPathParams, GetConnectionResponse, GetConnectionRequest>,
       res: Response<GetConnectionResponse>
     ) => {
       const externalCustomerId = req.params.customer_id;
       const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
-      const connection = await connectionService.getSafeByIdAndApplicationIdAndCustomerId(
-        req.params.connection_id,
+      const connection = await connectionService.getSafeByProviderNameAndApplicationIdAndCustomerId(
+        req.params.provider_name,
         req.supaglueApplication.id,
         customerId
       );
@@ -126,7 +126,7 @@ export default function init(app: Router): void {
     ) => {
       const externalCustomerId = req.params.customer_id;
       // TODO: revoke token from provider?
-      await connectionAndSyncService.delete(req.params.connection_id, req.supaglueApplication.id, externalCustomerId);
+      await connectionAndSyncService.delete(req.params.provider_name, req.supaglueApplication.id, externalCustomerId);
       return res.status(204).end();
     }
   );

@@ -531,12 +531,12 @@ export class ConnectionAndSyncService {
     }
   }
 
-  public async delete(id: string, applicationId: string, externalCustomerId: string): Promise<void> {
+  public async delete(providerName: string, applicationId: string, externalCustomerId: string): Promise<void> {
     let errored = false;
     const connection = await this.#prisma.connection.findFirst({
       where: {
-        id,
         provider: {
+          name: providerName,
           applicationId,
         },
         customerId: getCustomerIdPk(applicationId, externalCustomerId),
@@ -551,7 +551,7 @@ export class ConnectionAndSyncService {
     });
 
     if (!connection) {
-      throw new NotFoundError(`Could not find connection ${id} with application id ${applicationId}`);
+      throw new NotFoundError(`Could not find provider ${providerName} with application id ${applicationId}`);
     }
 
     try {
@@ -571,7 +571,7 @@ export class ConnectionAndSyncService {
         ]),
         this.#prisma.connection.delete({
           where: {
-            id,
+            id: connection.id,
           },
         }),
       ]);
@@ -582,7 +582,7 @@ export class ConnectionAndSyncService {
       await this.#webhookService.sendMessage(
         'connection.deleted',
         {
-          connection_id: id,
+          connection_id: connection.id,
           customer_id: connection.customerId,
           provider_id: connection.providerId,
           category: connection.category as ProviderCategory,
@@ -590,7 +590,7 @@ export class ConnectionAndSyncService {
           result: errored ? 'ERROR' : 'SUCCESS',
         },
         applicationId,
-        `${id}-delete`
+        `${connection.id}-delete`
       );
     }
   }

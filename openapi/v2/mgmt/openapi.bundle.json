@@ -1611,7 +1611,7 @@
         }
       ]
     },
-    "/customers/{customer_id}/connections/{connection_id}": {
+    "/customers/{customer_id}/connections/{provider_name}": {
       "get": {
         "operationId": "getConnection",
         "summary": "Get connection",
@@ -1667,11 +1667,11 @@
           }
         },
         {
-          "name": "connection_id",
+          "name": "provider_name",
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string"
+            "$ref": "#/components/schemas/provider_name"
           }
         }
       ]
