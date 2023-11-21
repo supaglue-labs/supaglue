@@ -3,6 +3,7 @@ import type {
   ConnectionUnsafe,
   CRMProvider,
   Property,
+  PropertyUnified,
   Provider,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -52,6 +53,7 @@ import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
 import { toMappedProperties } from '../../utils/properties';
 import {
+  fromFieldTypeToPropertyType,
   fromPipedriveDealToOpportunity,
   fromPipedriveLeadToLead,
   fromPipedriveOrganizationToAccount,
@@ -731,6 +733,40 @@ class PipedriveClient extends AbstractCrmRemoteClient {
       return response.data.data.map(({ key, name, edit_flag }) =>
         edit_flag ? { id: name, label: name } : { id: key, label: name }
       );
+    });
+  }
+
+  public async listPropertiesUnified(objectName: string): Promise<PropertyUnified[]> {
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      // TODO: Handle pagination. We're assuming that by not passing in a limit param, we get all the fields.
+      // This may be an incorrect assumption
+      const response = await axios.get<PipedriveObjectFieldsResponse>(
+        `${this.#credentials.instanceUrl}/api/v1/${this.getFieldsPrefix(objectName)}Fields`,
+        {
+          headers: this.#headers,
+        }
+      );
+      return response.data.data.map((field) => {
+        // Note: For custom fields, we reference using the label.
+        const id = field.edit_flag ? field.name : field.key;
+        const customName = field.edit_flag ? field.key : undefined;
+        return {
+          id,
+          customName,
+          label: field.name,
+          type: fromFieldTypeToPropertyType(field.field_type),
+          isRequired: field.mandatory_flag === true, // not handling the more complex case since it's not unifyable
+          options:
+            'options' in field
+              ? field.options.map((option) => ({
+                  label: option.label,
+                  value: option.id.toString(),
+                }))
+              : undefined,
+          rawDetails: field,
+        };
+      });
     });
   }
 
