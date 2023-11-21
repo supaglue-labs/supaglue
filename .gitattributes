@@ -7,3 +7,6 @@ openapi/**/openapi.bundle.json    linguist-generated
 *.example.json                    linguist-generated
 /docs/docs/api/**/*               linguist-generated
 /docs/docs/api/introduction.md    -linguist-generated
+*.openapi.yaml                    linguist-generated
+*.openapi.json                    linguist-generated
+*.openapi.gen.d.ts                linguist-generated

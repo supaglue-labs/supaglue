@@ -4,7 +4,8 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "target": "esnext",
-    "lib": ["es6"]
+    "lib": ["es6"],
+    "resolveJsonModule": true
   },
   "exclude": ["node_modules", "dist"]
 }

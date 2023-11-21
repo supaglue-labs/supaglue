@@ -15,6 +15,10 @@ app.set('trust proxy', true);
 const metricsApp = express();
 const port = process.env.SUPAGLUE_API_PORT ? parseInt(process.env.SUPAGLUE_API_PORT) : 8080;
 
+if (process.env.GLOBAL_AGENT_HTTP_PROXY) {
+  require('@supaglue/schemas/proxy.bootstrap');
+}
+
 app.use(
   promBundle({
     includeMethod: true,

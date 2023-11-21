@@ -46,6 +46,7 @@ import {
   toSalesloftContactCreateParams,
   toSalesloftSequenceStateCreateParams,
 } from './mappers';
+import { createSalesloftClient } from './salesloft.client';
 
 type Credentials = {
   accessToken: string;
@@ -79,12 +80,17 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
   #headers: Record<string, string>;
   readonly #baseURL: string;
+  readonly #api: ReturnType<typeof createSalesloftClient>;
 
   public constructor(credentials: Credentials) {
     super('https://api.salesloft.com');
     this.#baseURL = 'https://api.salesloft.com';
     this.#credentials = credentials;
     this.#headers = { Authorization: `Bearer ${this.#credentials.accessToken}` };
+    this.#api = createSalesloftClient({
+      credentials: this.#credentials,
+      onTokenRefreshed: (tokens) => this.emit('token_refreshed', tokens),
+    });
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
@@ -178,30 +184,26 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     heartbeat?: () => void
   ): (next?: string) => Promise<SalesloftPaginatedRecords> {
     return async (next?: string) => {
-      return await retryWhenAxiosRateLimited(
-        async () => {
-          if (heartbeat) {
-            heartbeat();
-          }
-          await this.maybeRefreshAccessToken();
-          const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
-            params: updatedAfter
-              ? {
-                  ...DEFAULT_LIST_PARAMS,
-                  ...getUpdatedAfterPathParam(updatedAfter),
-                  page: next ? parseInt(next) : undefined,
-                }
-              : {
-                  ...DEFAULT_LIST_PARAMS,
-                  page: next ? parseInt(next) : undefined,
-                },
-            headers: this.#headers,
-          });
-          return response.data;
-        },
-        // the rate limit is 600/minute shared among all users of the API, so we should wait longer than the usual 1s just to be safe
-        { retries: 3, minTimeout: 10_000, maxTimeout: 60_000, factor: 3, randomize: true }
-      );
+      return await retryWhenAxiosRateLimited(async () => {
+        if (heartbeat) {
+          heartbeat();
+        }
+        await this.maybeRefreshAccessToken();
+        const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
+          params: updatedAfter
+            ? {
+                ...DEFAULT_LIST_PARAMS,
+                ...getUpdatedAfterPathParam(updatedAfter),
+                page: next ? parseInt(next) : undefined,
+              }
+            : {
+                ...DEFAULT_LIST_PARAMS,
+                page: next ? parseInt(next) : undefined,
+              },
+          headers: this.#headers,
+        });
+        return response.data;
+      });
     };
   }
 

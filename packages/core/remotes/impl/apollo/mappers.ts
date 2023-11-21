@@ -16,7 +16,7 @@ import type {
 } from '@supaglue/types/engagement';
 import { camelcaseKeys } from '@supaglue/utils';
 import { pick, removeValues } from '../../../lib/util';
-import type { ApolloEmailerCampaign } from './client';
+import type { ApolloEmailerCampaign } from './apollo.openapi';
 
 export const fromApolloAccountToAccount = (record: Record<string, any>): Account => {
   return {

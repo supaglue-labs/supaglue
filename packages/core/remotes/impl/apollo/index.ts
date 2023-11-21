@@ -2,7 +2,6 @@ import axios from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   Provider,
-  RateLimitInfo,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -29,8 +28,7 @@ import {
   SGConnectionNoLongerAuthenticatedError,
 } from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
-import { isAxiosRateLimited, retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
-import { parseProxyConfig } from '../../../lib/util';
+import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
   CreateCommonObjectRecordResponse,
@@ -38,7 +36,7 @@ import type {
 } from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
-import { createApolloClient } from './client';
+import { createApolloClient } from './apollo.client';
 import {
   fromApolloAccountToAccount,
   fromApolloContactCampaignStatusToSequenceState,
@@ -46,7 +44,6 @@ import {
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
   fromApolloEmailerCampaignToSequence,
-  fromApolloHeadersToRateLimitInfo,
   fromApolloUserToUser,
   toApolloAccountCreateParams,
   toApolloAccountUpdateParams,
@@ -95,10 +92,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     this.#baseURL = 'https://api.apollo.io';
     this.#apiKey = apiKey;
     this.#headers = { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' };
-    this.#api = createApolloClient({
-      apiKey,
-      axiosConfig: { proxy: parseProxyConfig(process.env.PROXY_URL) },
-    });
+    this.#api = createApolloClient({ apiKey });
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
@@ -133,8 +127,8 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     switch (commonObjectType) {
       case 'sequence':
         return this.#api
-          .getEmailerCampaign({ params: { id } })
-          .then(({ emailer_campaign: c }) => fromApolloEmailerCampaignToSequence(c));
+          .GET('/v1/emailer_campaigns/{id}', { params: { path: { id } } })
+          .then(({ data: { emailer_campaign: c } }) => fromApolloEmailerCampaignToSequence(c));
       case 'contact':
         return await this.#getContact(id);
       case 'account':
@@ -514,13 +508,15 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   }
 
   async createSequence(params: SequenceCreateParams): Promise<CreateCommonObjectRecordResponse<'sequence'>> {
-    const res = await this.#api.postEmailerCampaign({
-      name: params.name,
-      permissions: params.type === 'private' ? 'private' : 'team_can_use',
-      active: true,
-      label_ids: params.tags,
-      user_id: params.ownerId,
-      ...params.customFields,
+    const { data: res } = await this.#api.POST('/v1/emailer_campaigns', {
+      body: {
+        name: params.name,
+        permissions: params.type === 'private' ? 'private' : 'team_can_use',
+        active: true,
+        label_ids: params.tags,
+        user_id: params.ownerId,
+        ...params.customFields,
+      },
     });
 
     // Cannot create steps concurrently for apollo otherwise we run into race conditions
@@ -545,31 +541,34 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     const hours = intOnly(divide(minutes, 60));
     const days = intOnly(divide(hours, 24));
 
-    const r = await this.#api.postEmailerStep({
-      emailer_campaign_id: params.sequenceId,
-      position: params.order ?? 1,
-      type:
-        params.type === 'linkedin_send_message'
-          ? 'linkedin_step_message'
-          : params.type === 'task'
-          ? 'action_item'
-          : params.type,
-      ...(days
-        ? { wait_mode: 'day', wait_time: days }
-        : hours
-        ? { wait_mode: 'hour', wait_time: hours }
-        : minutes
-        ? { wait_mode: 'minute', wait_time: minutes }
-        : { wait_mode: 'second', wait_time: seconds ?? 0 }),
-      exact_datetime: params.date, // Not clear exactly how this works
-      note: params.taskNote,
-      ...params.customFields,
+    const { data: r } = await this.#api.POST('/v1/emailer_steps', {
+      body: {
+        emailer_campaign_id: params.sequenceId,
+        position: params.order ?? 1,
+        type:
+          params.type === 'linkedin_send_message'
+            ? 'linkedin_step_message'
+            : params.type === 'task'
+            ? 'action_item'
+            : params.type,
+        ...(days
+          ? { wait_mode: 'day', wait_time: days }
+          : hours
+          ? { wait_mode: 'hour', wait_time: hours }
+          : minutes
+          ? { wait_mode: 'minute', wait_time: minutes }
+          : { wait_mode: 'second', wait_time: seconds ?? 0 }),
+        exact_datetime: params.date, // Not clear exactly how this works
+        note: params.taskNote,
+        ...params.customFields,
+      },
     });
 
     // Only exists for templatable steps like tasks / calls
     if (r.emailer_touch && r.emailer_template) {
-      await this.#api.putEmailerTouch(
-        {
+      await this.#api.PUT('/v1/emailer_touches/{id}', {
+        params: { path: { id: r.emailer_touch.id } },
+        body: {
           id: r.emailer_touch.id,
           emailer_step_id: r.emailer_step.id,
           emailer_template:
@@ -582,8 +581,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
                 },
           type: params.isReply ? 'reply_to_thread' : 'new_thread',
         },
-        { params: { id: r.emailer_touch.id } }
-      );
+      });
     }
     return { id: r.emailer_step.id };
   }
@@ -603,15 +601,16 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (!sequenceId) {
       return [];
     }
-    const res = await this.#api.postEmailerCampaignAddContactIds(
-      {
+    const { data: res } = await this.#api.POST('/v1/emailer_campaigns/{id}/add_contact_ids', {
+      params: { path: { id: sequenceId } },
+      body: {
+        // Duplicated in the body for some reason
         contact_ids: records.map((r) => r.contactId),
         emailer_campaign_id: sequenceId,
         send_email_from_email_account_id: mailboxId,
         userId,
       },
-      { params: { id: sequenceId } } // Duplicated in the body for some reason
-    );
+    });
 
     return await Promise.all(
       records.map(async (record) => {
@@ -619,7 +618,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         if (!contact) {
           // Handle situation where contact have already been added to the sequence. However still accounting for
           // other errors where contact could not be added to sequence
-          contact = await this.#api.getContact({ params: { id: record.contactId } }).then((r) => r.contact);
+          contact = await this.#api
+            .GET('/v1/contacts/{id}', { params: { path: { id: record.contactId } } })
+            .then((r) => r.data.contact);
         }
         if (!contact) {
           throw new NotFoundError(`Unable to find contact ${record.contactId} in Apollo`);
@@ -732,27 +733,6 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       id: response.data.contact.id,
       record: fromApolloContactToContact(response.data.contact),
     };
-  }
-
-  public override async getRateLimitInfo(): Promise<RateLimitInfo> {
-    try {
-      const response = await axios.post<ApolloPaginatedContacts>(
-        `${this.#baseURL}/v1/emailer_campaigns/search`,
-        {
-          api_key: this.#apiKey,
-          q_name: 'unused',
-        },
-        {
-          headers: this.#headers,
-        }
-      );
-      return fromApolloHeadersToRateLimitInfo(response.headers as Record<string, string>);
-    } catch (e: any) {
-      if (isAxiosRateLimited(e)) {
-        return fromApolloHeadersToRateLimitInfo(e.response.headers);
-      }
-      throw e;
-    }
   }
 
   public override async handleErr(err: unknown): Promise<unknown> {

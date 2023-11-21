@@ -62,6 +62,8 @@ import {
   toOutreachTemplateCreateParams,
 } from './mappers';
 
+import { createOutreachClient } from './outreach.client';
+
 const OUTREACH_RECORD_LIMIT = 1000;
 
 const DEFAULT_LIST_PARAMS = {
@@ -161,10 +163,16 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   readonly #credentials: Credentials;
   readonly #baseURL: string;
 
+  readonly #api: ReturnType<typeof createOutreachClient>;
+
   public constructor(credentials: Credentials) {
     super('https://api.outreach.io');
     this.#baseURL = 'https://api.outreach.io';
     this.#credentials = credentials;
+    this.#api = createOutreachClient({
+      credentials: this.#credentials,
+      onTokenRefreshed: (tokens) => this.emit('token_refreshed', tokens),
+    });
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
@@ -1348,6 +1356,10 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     await this.maybeRefreshAccessToken();
     switch (commonObjectType) {
       case 'contact':
+        // TODO: before we do this gotta handle handle errors in the openapi client
+        // return await this.#api
+        //   .GET('/prospects/{id}', { params: { path: { id: Number.parseInt(id) } } })
+        //   .then((response) => fromOutreachProspectToContact(response.data?.data as OutreachRecord));
         return await this.#getRecord(id, '/api/v2/prospects', fromOutreachProspectToContact);
       case 'user':
         return await this.#getRecord(id, '/api/v2/users', (r: any) => fromOutreachUserToUser(r));
