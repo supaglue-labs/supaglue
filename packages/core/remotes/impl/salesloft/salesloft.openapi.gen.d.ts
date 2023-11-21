@@ -4,6 +4,11 @@
  */
 
 
+/** OneOf type helpers */
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
+type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
+
 export interface paths {
   "/v2/account_stages.json": {
     /**
@@ -1203,57 +1208,6 @@ export interface paths {
         200: {
           content: {
             "*/*": components["schemas"]["BulkJob"];
-          };
-        };
-      };
-    };
-  };
-  "/v2/cadence_exports/{id}.json": {
-    /**
-     * Export a cadence
-     * @description Exports a cadence as JSON.
-     */
-    get: {
-      parameters: {
-        path: {
-          /** @description Cadence ID */
-          id: string;
-        };
-      };
-      responses: {
-        /** @description Success */
-        200: {
-          content: {
-            "*/*": components["schemas"]["CadenceExport"];
-          };
-        };
-      };
-    };
-  };
-  "/v2/cadence_imports.json": {
-    /**
-     * Import cadences from JSON
-     * @description New cadences can be created or steps can be imported onto existing cadences which do not have steps.
-     * <a href="/cadence-imports.html" target="_blank" rel="noopener noreferrer">Visit here for more details</a>.
-     */
-    post: {
-      requestBody?: {
-        content: {
-          "application/x-www-form-urlencoded": {
-            /** @description Import data for cadence */
-            cadence_content?: Record<string, never>;
-            /** @description Settings for a cadence */
-            settings?: Record<string, never>;
-            /** @description The shared settings for a cadence */
-            sharing_settings?: Record<string, never>;
-          };
-        };
-      };
-      responses: {
-        /** @description Success */
-        200: {
-          content: {
-            "*/*": components["schemas"]["CadenceImport"];
           };
         };
       };
@@ -4413,6 +4367,12 @@ export interface paths {
       };
     };
   };
+  "/v2/cadence_imports": {
+    post: operations["importCadence"];
+  };
+  "/v2/cadence_exports/{id}": {
+    get: operations["exportCadence"];
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -5056,14 +5016,21 @@ export interface components {
       target_daily_people?: number;
     };
     CadenceExport: {
-      /**
-       * @description The content of the cadence
-       * @example {}
-       */
-      cadence_content?: Record<string, never>;
+      data: {
+        cadence_content: {
+          settings?: components["schemas"]["CadenceSettings"];
+          sharing_settings?: components["schemas"]["CadenceSharingSettings"];
+          step_groups: components["schemas"]["StepGroup"][];
+        };
+      };
     };
     CadenceImport: {
-      cadence?: components["schemas"]["EmbeddedResource"];
+      settings?: components["schemas"]["CadenceSettings"];
+      sharing_settings?: components["schemas"]["CadenceSharingSettings"];
+      cadence_content: {
+        cadence_id?: number;
+        step_groups: components["schemas"]["StepGroup"][];
+      };
     };
     CadenceMembership: {
       /**
@@ -7119,62 +7086,40 @@ export interface components {
       view_params?: Record<string, never>;
     };
     Step: {
-      cadence?: components["schemas"]["EmbeddedResource"];
-      /**
-       * Format: date-time
-       * @description Datetime of when the Step was created
-       * @example 2023-01-01T00:00:00.000000-05:00
-       */
-      created_at?: string;
-      /**
-       * @description Day this step is associated with up
-       * @example 1
-       */
-      day?: number;
-      details?: components["schemas"]["EmbeddedResource"];
-      /**
-       * @description Whether this step is currently active
-       * @example true
-       */
-      disabled?: boolean;
-      /**
-       * @description Display name of the step
-       * @example Day 1: Step 2 - Phone
-       */
-      display_name?: string;
-      /**
-       * @description ID of Step
-       * @example 1
-       */
-      id?: number;
-      /**
-       * @description Whether this step is a multitouch cadence step
-       * @example false
-       */
-      multitouch_enabled?: boolean;
-      /**
-       * @description Name of the step
-       * @example VP Email Short
-       */
-      name?: string;
-      /**
-       * @description The number of the step for this day
-       * @example 1
-       */
-      step_number?: number;
-      /**
-       * @description The type of the action scheduled by this step. Valid types are: email, phone, integration, other. New types may be added in the future.
-       *
-       * @example phone
-       */
-      type?: string;
-      /**
-       * Format: date-time
-       * @description Datetime of when the Step was last updated
-       * @example 2023-01-01T00:00:00.000000-05:00
-       */
-      updated_at?: string;
-    };
+      enabled: boolean;
+      name: string;
+    } & OneOf<[{
+      /** @enum {string} */
+      type: "Phone";
+      type_settings: {
+        instructions: string;
+      };
+    }, {
+      /** @enum {string} */
+      type: "Other";
+      type_settings: {
+        instructions: string;
+      };
+    }, {
+      /** @enum {string} */
+      type: "Integration";
+      type_settings: {
+        instructions: string;
+        integration_id: number;
+        integration_step_type_guid: string;
+      };
+    }, {
+      /** @enum {string} */
+      type: "Email";
+      type_settings: {
+        previous_email_step_group_reference_id?: number;
+        email_template?: {
+          title?: string;
+          subject?: string;
+          body?: string;
+        };
+      };
+    }]>;
     Subscription: {
       /**
        * @description SalesLoft will include this token in the webhook event payload when calling your callback_url. It is strongly encouraged for your handler to verify this value in order to ensure the request came from SalesLoft.
@@ -7758,6 +7703,56 @@ export interface components {
        */
       work_country?: string;
     };
+    CadenceSettings: {
+      name: string;
+      target_daily_people: number;
+      remove_replied: boolean;
+      remove_bounced: boolean;
+      remove_people_when_meeting_booked?: boolean;
+      external_identifier: (string | number) | null;
+      /** @enum {string} */
+      cadence_function: "outbound" | "inbound" | "event" | "other";
+    };
+    CadenceSharingSettings: {
+      team_cadence: boolean;
+      shared: boolean;
+    };
+    StepGroup: {
+      automated_settings?: components["schemas"]["StepGroupAutomatedSettings"];
+      automated: boolean;
+      day: number;
+      due_immediately: boolean;
+      reference_id?: number | null;
+      steps: components["schemas"]["Step"][];
+    };
+    StepGroupAutomatedSettings: {
+      /** @description Determines whether or not the step is able to be sent on weekends */
+      allow_send_on_weekends?: boolean;
+    } & (OneOf<[{
+      /**
+       * @description Describes if the step is due immediately or not.
+       *         Must be either "at_time" or "after_time_delay".
+       * @enum {string}
+       */
+      send_type: "at_time";
+      /** @description The time that the automated action will happen. e.g. 09:00 */
+      time_of_day: string;
+      /**
+       * @description Specifies whether the email is sent after the person's timezone
+       *         or the user's timezone.
+       *         Must be either "person" or "user".
+       */
+      timezone_mode: "person" | "user";
+    }, {
+      /**
+       * @description Describes if the step is due immediately or not.
+       *         Must be either "at_time" or "after_time_delay".
+       * @enum {string}
+       */
+      send_type: "after_time_delay";
+      /** @description must be a number between 0 and 720 (minutes */
+      delay_time: number;
+    }]>);
   };
   responses: never;
   parameters: never;
@@ -7781,4 +7776,45 @@ export type $defs = Record<string, never>;
 
 export type external = Record<string, never>;
 
-export type operations = Record<string, never>;
+export interface operations {
+
+  importCadence: {
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["CadenceImport"];
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            data: {
+              cadence: {
+                id: number;
+              };
+            };
+          };
+        };
+      };
+    };
+  };
+  exportCadence: {
+    parameters: {
+      path: {
+        id: number;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": unknown;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": components["schemas"]["CadenceExport"];
+        };
+      };
+    };
+  };
+}
