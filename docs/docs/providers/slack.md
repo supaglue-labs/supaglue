@@ -27,9 +27,9 @@ import BrowserWindow from '@site/src/components/BrowserWindow';
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-To connect to your customers' HubSpot instances, you'll need to update the redirect URL to point to Supaglue and fetch the API access credentials in your [HubSpot developer account](https://developers.hubspot.com).
+To connect to your customers' Slack workspaces, you'll need to update the redirect URL to point to Supaglue and fetch the API access credentials in your [Slack app](https://api.slack.com/apps).
 
-### Add Redirect URL to your HubSpot app
+### Add Redirect URL to your Slack app
 
 Supaglue provides a redirect URL to send information to your app. To add the redirect URL to your Slack app:
 
@@ -44,23 +44,14 @@ Supaglue provides a redirect URL to send information to your app. To add the red
 
 3. Under "Redirect URLs", paste Supaglue's redirect URL:
 
-   <Tabs>
-   <TabItem value="supaglue-cloud" label="Supaglue Cloud" default>
-
    ```
    https://api.supaglue.io/oauth/callback
    ```
-
-   </TabItem>
-   <TabItem value="localhost" label="Localhost">
 
   Unfortunately Slack does not support http urls for localhost, so you will need to use a workaround such as ngrok to make your local development instance https accessible, e.g.
    ```
    https://xxxxx.ngrok-free.app/oauth/callback
    ```
-
-   </TabItem>
-   </Tabs>
 
 4. Click "Save URLs" to update your changes.
 

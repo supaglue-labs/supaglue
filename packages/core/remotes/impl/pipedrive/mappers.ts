@@ -1,3 +1,4 @@
+import type { PropertyType } from '@supaglue/types';
 import type {
   Account,
   AccountCreateParams,
@@ -385,5 +386,32 @@ export const fromPipelineDealStatusToOpportunityStatus = (
       return 'LOST';
     default:
       return null;
+  }
+};
+
+export const fromFieldTypeToPropertyType = (fieldType: PipedriveObjectField['field_type']): PropertyType => {
+  switch (fieldType) {
+    case 'date':
+    case 'time':
+      return 'datetime';
+    case 'double':
+    case 'monetary':
+    case 'int':
+      return 'number';
+    case 'org':
+    case 'people':
+    case 'user':
+    case 'phone':
+    case 'text':
+    case 'varchar':
+    case 'varchar_auto':
+      return 'text';
+    case 'visible_to':
+    case 'varchar_options':
+    case 'enum':
+    case 'set':
+      return 'picklist';
+    default:
+      return 'other';
   }
 };

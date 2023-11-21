@@ -3,8 +3,10 @@ import type { WebhookConfig } from './webhook';
 type BaseApplication = {
   name: string;
   environment: string;
+  isPaid: boolean;
   config: ApplicationConfig;
   email: string | null;
+  createdAt: string;
 };
 
 export type Application = BaseApplication & {
