@@ -19,6 +19,7 @@ import type {
 } from '@supaglue/types/crm';
 import type { Address, EmailAddress, PhoneNumber } from '@supaglue/types/crm/common';
 import type { CustomObjectSchema } from '@supaglue/types/custom_object';
+import type { Field } from 'jsforce';
 import type {
   CustomField as SalesforceCustomField,
   CustomObject as SalesforceCustomObject,
@@ -472,7 +473,7 @@ export const toCustomObject = (salesforceCustomObject: SalesforceCustomObject): 
 };
 
 export const toPropertyUnified = (salesforceField: SalesforceCustomField, isNameField = false): PropertyUnified => {
-  const type = toPropertyType(salesforceField.type!);
+  const type = fromCustomFieldTypeToPropertyType(salesforceField.type!);
   return {
     id: isNameField ? 'Name' : salesforceField.fullName!,
     label: salesforceField.label!,
@@ -487,7 +488,51 @@ export const toPropertyUnified = (salesforceField: SalesforceCustomField, isName
   };
 };
 
-export const toPropertyType = (salesforceType: string): PropertyType => {
+export const fromDescribeFieldToPropertyUnified = (describeResult: Field): PropertyUnified => {
+  const type = fromDescribeTypeToPropertyType(describeResult.type);
+  return {
+    id: describeResult.name,
+    customName: describeResult.name.endsWith('__c') ? describeResult.name : undefined,
+    label: describeResult.label,
+    type,
+    scale: describeResult.scale ?? undefined,
+    precision: describeResult.precision ?? undefined,
+    isRequired: describeResult.nillable === false,
+    groupName: undefined,
+    options: [],
+    description: describeResult.inlineHelpText ?? undefined,
+    rawDetails: describeResult,
+  };
+};
+
+export const fromDescribeTypeToPropertyType = (describeType: string): PropertyType => {
+  switch (describeType) {
+    case 'id':
+    case 'reference':
+    case 'url':
+    case 'string':
+      return 'text';
+    case 'textarea':
+      return 'textarea';
+    case 'picklist':
+      return 'picklist';
+    case 'boolean':
+      return 'boolean';
+    case 'double':
+    case 'int':
+      return 'number';
+    case 'datetime':
+      return 'datetime';
+    case 'date':
+      return 'date';
+    case 'multipicklist':
+      return 'multipicklist';
+    default:
+      return 'other';
+  }
+};
+
+export const fromCustomFieldTypeToPropertyType = (salesforceType: string): PropertyType => {
   switch (salesforceType) {
     case 'DateTime':
       return 'datetime';
