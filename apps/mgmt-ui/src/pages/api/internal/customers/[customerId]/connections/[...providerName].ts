@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   switch (req.method) {
     case 'DELETE': {
       const result = await fetch(
-        `${API_HOST}/internal/customers/${req.query.customerId}/connections/${req.query.connectionId}`,
+        `${API_HOST}/internal/customers/${req.query.customerId}/connections/${req.query.providerName}`,
         {
           method: 'DELETE',
           headers: await getApplicationIdScopedHeaders(req),

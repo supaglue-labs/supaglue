@@ -29,8 +29,8 @@ parameters:
     required: true
     schema:
       type: string
-  - name: connection_id
+  - name: provider_name
     in: path
     required: true
     schema:
-      type: string
+      $ref: ../components/schemas/objects/provider_name.yaml

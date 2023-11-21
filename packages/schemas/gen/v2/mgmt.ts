@@ -311,7 +311,7 @@ export interface paths {
       };
     };
   };
-  "/customers/{customer_id}/connections/{connection_id}": {
+  "/customers/{customer_id}/connections/{provider_name}": {
     /** Get connection */
     get: operations["getConnection"];
     /** Delete connection */
@@ -319,7 +319,7 @@ export interface paths {
     parameters: {
       path: {
         customer_id: string;
-        connection_id: string;
+        provider_name: components["schemas"]["provider_name"];
       };
     };
   };
@@ -2572,7 +2572,7 @@ export interface operations {
     parameters: {
       path: {
         customer_id: string;
-        connection_id: string;
+        provider_name: components["schemas"]["provider_name"];
       };
     };
     responses: {
@@ -2589,7 +2589,7 @@ export interface operations {
     parameters: {
       path: {
         customer_id: string;
-        connection_id: string;
+        provider_name: components["schemas"]["provider_name"];
       };
     };
     responses: {
