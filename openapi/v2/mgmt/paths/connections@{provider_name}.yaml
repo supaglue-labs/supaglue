@@ -1,0 +1,35 @@
+get:
+  operationId: getConnection
+  summary: Get connection
+  tags:
+    - Connections
+  security:
+    - x-api-key: []
+  responses:
+    200:
+      description: Connection
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/connection.yaml
+delete:
+  operationId: deleteConnection
+  summary: Delete connection
+  tags:
+    - Connections
+  security:
+    - x-api-key: []
+  responses:
+    204:
+      description: An empty body is returned on successful deletion.
+parameters:
+  - name: customer_id
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: provider_name
+    in: path
+    required: true
+    schema:
+      $ref: ../components/schemas/objects/provider_name.yaml

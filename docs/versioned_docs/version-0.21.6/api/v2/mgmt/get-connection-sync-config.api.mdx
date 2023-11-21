@@ -1,0 +1,53 @@
+---
+id: get-connection-sync-config
+title: "Get connection sync config"
+description: "Get connection sync config"
+sidebar_label: "Get connection sync config"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVltv2zYU/isE99ICvqQB9mIMxdJ2KIx2mNe0GIYkSBjpSGZLkQpJOTEM/fedQ0qyZDlNUbQPcwA75Ll/58YdNyVY4aXRy5QveA7+tdEaEro53+oET5nM+YR7kTu+uODHyI5fTbiDpLLSb5Fpxx+mopTTL0CnqxqppbCiAA/WBbrGA5p7mCaV86YAO5UpGpEaL9cgUrB4cskaCsEXO+63JbE7b6XOeT3h8CCKUtFdsd3reIFCKbjEypIcROrHNbCWzJZvmF8Lzyot7ypQWyZT0F5mEhwSeoxSs62pLBNlqWQS0EHNFu4qaQFh8raCetKLorRmg8rsNNx8VxxOKHCZsQkcDaK1wBoLB85c0Y0rjXbgyNDpyQn9DPXsU8cod6zLbWK0RyRIohfy/LMjsd3Yf3P7GfWgIHqF5eNlNIrWvNRB9jqJukc+nGkWpZk3zGzAWowqoJ9CJirl2Zu9Fha1VLFAGZqimyaGGdo3Gv7KQkGNIkU55kpIML0J2VoZ53PEiPW8pLI+iMhLH9LRsg+gvojsXUavqAietPxK5n9XYLffaLllP245FV448GgajWMhCZ0Km15HLe4I3kxJ55nJWIJyUwfaSS83wFZtQbU6mrw4cvl2yxxWCKQztszaYCCdYKKkixrvpVLMiy8wzGLsodafyCpjvUVoZvvQhbWCwpQeiuD6Pp2PgXOm1AEuDUtIxVPJnHepeLaysJFw//y4Nhp3tyhKKCPMw6DGIHfa2NNwR10DsOHngX2p/3dw13tF+2a/JoTaoVLXgWuYg7fge8MhINqMD1SPm2dtmv1GY0v4NR7mx/VTzzuwm3ZXVVbRNPe+dIv5HPfazFWlyFUFM2nmRV74+eZ0NLTPGx52tlryurcfz2l2xIHZ25IdmnjzDihN3XJpeQ7XykGjr5YMuaighFLmHqfNBhSN51BkIknAxTUXHKpJW2bIMAUadZzMTl/Mfu1l8k+hRY7eah+k4qYQSdgUjX9tnEjEkSgJqtQk7vcOo8QUSBuCOCCOUvkLfthSe2vSKmTnEv/+AYXMQLFQEEPPGJqs6BCG64z9aypsQM0qB7GLiAcliyDVX/Qe8rhdHMMx2KsgNyOrwZVX2MpBw6cP7+ny5ubmUj9RDw0XBVdiO6DhHmZfrdUBFl1ZeHjw81IJGVQGNHdNHV880ifhVbZG48Sy291iFJ+sqmu6vgsbBt9mE74RVobuo5fapC2vsFOlIwL2TSaUg5Fr3bOBP/vQNPVz9iNfXEdjD+0yejluBNXggvOwkr/X8cNX1lcdOHz0DVyITGfYdaXv0UbPK5oM3XR6+8dH5BUVZbU/EGL3N//05rXQ257u/qSI5um7N6iH7L9RReOoedmxR8qjAt3gidwEBo3r/wAQmUPa
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get connection sync config</h1>
+
+<MethodEndpoint method={"get"} path={"/connection_sync_configs"}></MethodEndpoint>
+
+
+
+Get connection sync config
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Connection Sync Config
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><strong>destination_config</strong><span style={{"opacity":"0.6"}}> object</span></summary><div style={{"marginLeft":"1rem"}}><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
+
+An object to override the default Destination configuration per connection.
+
+</div></div><div><span className={"badge badge--info"}>oneOf</span><SchemaTabs><TabItem label={"Postgres"} value={"0-item-properties"}><SchemaItem collapsible={false} name={"type"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`postgres`]"} schema={{"type":"string","enum":["postgres"]}}></SchemaItem><SchemaItem collapsible={false} name={"schema"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The schema you'd like to sync to. This schema must already exist. Supaglue will not create it. If not specified, the schema specified in the Postgres Destination will be used.","example":"customer_1_schema"}}></SchemaItem></TabItem><TabItem label={"BigQuery"} value={"1-item-properties"}><SchemaItem collapsible={false} name={"type"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`bigquery`]"} schema={{"type":"string","enum":["bigquery"]}}></SchemaItem><SchemaItem collapsible={false} name={"dataset"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The dataset you'd like to sync to. This dataset must already exist. Supaglue will not create it. If not specified, the dataset specified in the BigQuery Destination will be used.","example":"customer_1_dataset"}}></SchemaItem></TabItem></SchemaTabs></div></details></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>standard_objects</strong><span className={"openapi-schema__name"}> object[]</span></span></summary><div style={{"marginLeft":"1rem"}}><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
+
+A list of case-sensitive Provider standard objects to by synced. If specified, this list will take override the custom_objects list in SyncConfig.
+
+</div><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><div><span className={"badge badge--info"}>oneOf</span><SchemaTabs><TabItem label={"All"} value={"0-item-properties"}><SchemaItem collapsible={false} name={"object"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The Provider object name (case sensitive)","example":"Contact"}}></SchemaItem></TabItem><TabItem label={"Postgres/BigQuery (Preview)"} value={"1-item-properties"}><SchemaItem collapsible={false} name={"object"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The Provider object name (case sensitive)","example":"Contact"}}></SchemaItem><SchemaItem collapsible={false} name={"table"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The table to write the object to. If specified, this will override the default table used by Supaglue.","example":"my_contacts"}}></SchemaItem></TabItem></SchemaTabs></div><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>custom_objects</strong><span className={"openapi-schema__name"}> object[]</span></span></summary><div style={{"marginLeft":"1rem"}}><div style={{"marginTop":".5rem","marginBottom":".5rem"}}>
+
+(Preview) A list of case-sensitive Provider custom objects to be synced. If specified, this list will take override the custom_objects list in SyncConfig.
+
+
+</div><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><div><span className={"badge badge--info"}>oneOf</span><SchemaTabs><TabItem label={"All"} value={"0-item-properties"}><SchemaItem collapsible={false} name={"object"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The Provider object name (case sensitive)","example":"Contact__c"}}></SchemaItem></TabItem><TabItem label={"Postgres/BigQuery (Preview)"} value={"1-item-properties"}><SchemaItem collapsible={false} name={"object"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The Provider object name (case sensitive)","example":"Contact__c"}}></SchemaItem><SchemaItem collapsible={false} name={"table"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","description":"The table to write the object to. If specified, this will override the default table used by Supaglue.","example":"my_contacts"}}></SchemaItem></TabItem></SchemaTabs></div><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></div></details></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"destination_config\": {},\n  \"standard_objects\": [\n    {},\n    {}\n  ],\n  \"custom_objects\": [\n    {},\n    {}\n  ]\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

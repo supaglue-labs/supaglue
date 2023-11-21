@@ -95,3 +95,63 @@ oneOf:
       - type
       - config
       - version
+  - type: object
+    title: snowflake
+    properties:
+      id:
+        type: string
+        example: e888cedf-e9d0-42c5-9485-2d72984faef2
+      application_id:
+        type: string
+        example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+      name:
+        type: string
+        example: My Snowflake Destination
+      type:
+        type: string
+        enum:
+          - snowflake
+        example: snowflake
+      config:
+        $ref: ./snowflake_config_safe.yaml
+      version:
+        type: number
+        example: 1
+        description: A monotonically increasing version number of the destination configuration
+    required:
+      - id
+      - application_id
+      - name
+      - type
+      - config
+      - version
+  - type: object
+    title: redshift
+    properties:
+      id:
+        type: string
+        example: e888cedf-e9d0-42c5-9485-2d72984faef2
+      application_id:
+        type: string
+        example: 9572d08b-f19f-48cc-a992-1eb7031d3f6a
+      name:
+        type: string
+        example: My Redshift Destination
+      type:
+        type: string
+        enum:
+          - redshift
+        example: redshift
+      config:
+        $ref: ./redshift_config_safe.yaml
+      version:
+        type: number
+        example: 1
+        description: A monotonically increasing version number of the destination configuration
+    required:
+      - id
+      - application_id
+      - name
+      - type
+      - config
+      - version

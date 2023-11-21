@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://hub.docker.com/r/supaglue/api" target="_blank"><img alt="Docker Image Version (latest semver)" src="https://img.shields.io/docker/v/supaglue/api"></a>
+  <a href="https://hub.docker.com/r/supaglue/api" target="_blank"><img alt="Docker Image Version (latest semver)" src="https://img.shields.io/docker/v/supaglue/api?sort=semver"></a>
   <a href="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml"><img title="CI Status" src="https://github.com/supaglue-labs/supaglue/actions/workflows/ci.yml/badge.svg"></a>
   <a href="https://github.com/supaglue-labs/supaglue/issues"><img title="github issues" src="https://img.shields.io/github/issues/supaglue-labs/supaglue"></a>
   <a href="https://github.com/supaglue-labs/supaglue"><img title="github activity" src="https://img.shields.io/github/commit-activity/w/supaglue-labs/supaglue"></a>
@@ -29,7 +29,7 @@ https://github.com/supaglue-labs/supaglue/assets/1925713/8cc42b76-0118-40fb-950c
 ### Run Supaglue locally
 
 ```shell
-git clone -b v0.18.1 https://github.com/supaglue-labs/supaglue.git && cd supaglue
+git clone -b v0.21.6 https://github.com/supaglue-labs/supaglue.git && cd supaglue
 ./scripts/create_quickstart_env.sh
 docker compose up
 ```

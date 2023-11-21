@@ -10,20 +10,6 @@ type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> &
 type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
 
 export interface paths {
-  "/passthrough": {
-    /**
-     * Send passthrough request 
-     * @deprecated 
-     * @description Send request directly to a provider
-     */
-    post: operations["sendPassthroughRequest"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-  };
   "/accounts": {
     /** List accounts */
     get: operations["listAccounts"];
@@ -38,13 +24,13 @@ export interface paths {
   };
   "/accounts/{account_id}": {
     /**
-     * Get account 
+     * Get account
      * @description Support:
-     * 
-     * | Provider   | Supported | 
-     * | ---------- | --------- | 
-     * | Salesloft  | Yes       | 
-     * | Outreach   | Yes       | 
+     *
+     * | Provider   | Supported |
+     * | ---------- | --------- |
+     * | Salesloft  | Yes       |
+     * | Outreach   | Yes       |
      * | Apollo     | No        |
      */
     get: operations["getAccount"];
@@ -65,10 +51,23 @@ export interface paths {
     /** List contacts */
     get: operations["listContacts"];
     /**
-     * Create contact 
+     * Create contact
      * @description Some providers do not support `primary` phone number type, in which case we will default to `mobile`. If both `primary` and `mobile` phone numbers are specified and only a single mobile number is possible, then `mobile` will be used and `primary` will be dropped.
      */
     post: operations["createContact"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/contacts/_search": {
+    /**
+     * Search contacts
+     * @description Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
+     */
+    post: operations["searchContacts"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -144,7 +143,7 @@ export interface paths {
     /** List sequences */
     get: operations["listSequences"];
     /**
-     * Create sequence 
+     * Create sequence
      * @description Note this uses an undocumented private api endpoint for Apollo and should be considered to be in alpha state
      */
     post: operations["createSequence"];
@@ -179,7 +178,7 @@ export interface paths {
       };
       path: {
         /**
-         * @description The ID of the sequence. 
+         * @description The ID of the sequence.
          * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
          */
         sequence_id: string;
@@ -190,7 +189,7 @@ export interface paths {
     /** List sequence states */
     get: operations["listSequenceStates"];
     /**
-     * Create sequence state 
+     * Create sequence state
      * @description In other words, adding a sequencestate to sequence.
      */
     post: operations["createSequenceState"];
@@ -201,13 +200,33 @@ export interface paths {
       };
     };
   };
+  "/sequence_states/_search": {
+    /**
+     * Search sequence states
+     * @description Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.
+     * Support:
+     *
+     * | Provider  | Search By               |
+     * | --------- | ----------------------- |
+     * | Apollo    | contact_id only         |
+     * | Salesloft | contact_id, sequence_id |
+     * | Outreach  | contact_id, sequence_id |
+     */
+    post: operations["searchSequenceStates"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/sequence_states/_batch": {
     /**
-     * Batch create sequence states 
+     * Batch create sequence states
      * @description Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider  | Supported |
      * | --------- | --------- |
      * | Apollo    | Yes       |
@@ -252,19 +271,19 @@ export interface components {
       /** @example mycompany.com */
       domain: string | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
@@ -304,19 +323,19 @@ export interface components {
       reply_count: number;
       bounced_count: number;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
@@ -354,19 +373,19 @@ export interface components {
       /** @example b854e510-1c40-4ef6-ade4-8eb35f49d331 */
       sequence_id: string | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
@@ -375,7 +394,7 @@ export interface components {
       /** @example c590dc63-8e43-48a4-8154-1fbb00ac936b */
       contact_id: string;
       /**
-       * @description The ID of the mailbox to use for the sequence. Required for Apollo and Outreach. Unused for Salesloft. 
+       * @description The ID of the mailbox to use for the sequence. Required for Apollo and Outreach. Unused for Salesloft.
        * @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d
        */
       mailbox_id?: string;
@@ -392,19 +411,19 @@ export interface components {
       /** @example 39fd1fe0-094b-4a61-b47f-3e3ac033203d */
       user_id: string | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
@@ -421,19 +440,19 @@ export interface components {
       /** @example george@supaglue.com */
       email: string | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
@@ -449,30 +468,30 @@ export interface components {
       is_enabled: boolean;
       name: string | null;
       /** @description Raw values in Outreach, ids in Apollo, and not supported in Salesloft */
-      tags: (string)[];
+      tags: string[];
       num_steps: number;
       metrics: {
         [key: string]: unknown;
       };
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
-      /** @description When archived, cannot add contact to sequence or send mail. This is null when provider does not have such concept (e.g. apollo) */
-      is_archived?: boolean | null;
+      /** @description When archived, cannot add contact to sequence or send mail. */
+      is_archived?: boolean;
       /**
-       * @description The share type of the sequence. If `team` will share with the whole team. `private` will only share with the owner. 
+       * @description The share type of the sequence. If `team` will share with the whole team. `private` will only share with the owner.
        * @enum {string}
        */
       share_type?: "team" | "private";
@@ -480,14 +499,14 @@ export interface components {
     create_sequence: {
       name: string;
       /** @description Raw values in Outreach, ids in Apollo, and not supported in Salesloft */
-      tags?: (string)[];
+      tags?: string[];
       /**
-       * @description The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner. 
+       * @description The share type of the sequence. Setting to `team` will share with the whole team. `private` will only share with the owner.
        * @enum {string}
        */
       type: "team" | "private";
       owner_id?: string;
-      steps?: (components["schemas"]["create_sequence_step"])[];
+      steps?: components["schemas"]["create_sequence_step"][];
       custom_fields?: components["schemas"]["custom_fields"];
     };
     create_sequence_step: {
@@ -496,7 +515,7 @@ export interface components {
       /** @description The interval (in seconds) until this step will activate after the previous step (in case of first step, relative to when prospect first enters a sequence); only applicable to interval-based sequences. This is 0 by default */
       interval_seconds?: number;
       /**
-       * @description The date this step will activate; only applicable to date-based sequences. 
+       * @description The date this step will activate; only applicable to date-based sequences.
        * @example 2023-01-01
        */
       date?: string;
@@ -512,11 +531,11 @@ export interface components {
         /** @description The name of the template. In Outreach, if missing this will create an `invisible` template that doesn't show up in the templates list UI. */
         name?: string;
         /** @description A list of default person and email address pairs to receive this template in the "to" field */
-        to?: (string)[];
+        to?: string[];
         /** @description A list of default person and email address pairs to receive this template in the "cc" field */
-        cc?: (string)[];
+        cc?: string[];
         /** @description A list of default person and email address pairs to receive this template in the "bcc" field */
-        bcc?: (string)[];
+        bcc?: string[];
         custom_fields?: components["schemas"]["custom_fields"];
       }]>;
       /** @description If true, this step will be sent as a reply to the previous step. */
@@ -525,9 +544,9 @@ export interface components {
       order?: number;
       /**
        * @description The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.
-       * 
+       *
        * See below for how these types are mapped:
-       * 
+       *
        * <table>
        *   <thead>
        *       <tr>
@@ -566,7 +585,7 @@ export interface components {
        *       </tr>
        *   </tbody>
        * </table>
-       *  
+       *
        * @enum {string}
        */
       type: "auto_email" | "manual_email" | "call" | "task" | "linkedin_send_message";
@@ -643,87 +662,92 @@ export interface components {
     created_record: {
       id: string;
     };
-    errors: ({
+    errors: {
         /**
-         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
+         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider.
          * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
          */
         detail?: string;
         /**
-         * @description The Supaglue error code associated with the error. 
+         * @description The Supaglue error code associated with the error.
          * @example MISSING_REQUIRED_FIELD
          */
         problem_type?: string;
         /**
-         * @description A brief description of the error. The schema and type of message will vary by Provider. 
+         * @description A brief description of the error. The schema and type of message will vary by Provider.
          * @example Property values were not valid
          */
         title?: string;
-      })[];
-    warnings: ({
+      }[];
+    warnings: {
         detail?: string;
         problem_type?: string;
         title?: string;
-      })[];
+      }[];
   };
   responses: never;
   parameters: {
     /**
-     * @description Whether to include data that was deleted in providers. 
+     * @description Whether to include data that was deleted in providers.
      * @example true
      */
     include_deleted_data?: boolean;
     /**
-     * @description Whether to include raw data fetched from the 3rd party provider. 
+     * @description Whether to include raw data fetched from the 3rd party provider.
      * @example true
      */
     include_raw_data?: boolean;
     /**
-     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     created_after?: Date;
     /**
-     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     created_before?: Date;
     /**
-     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     modified_after?: Date;
     /**
-     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     modified_before?: Date;
     /**
-     * @description The pagination cursor value 
+     * @description The pagination cursor value
      * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
      */
     cursor?: string;
     /**
-     * @description Number of results to return per page. (Max: 1000) 
+     * @description Number of results to return per page. (Max: 1000)
      * @example 123
      */
     page_size?: string;
     /**
-     * @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. 
-     * 
-     * 
+     * @description Number of results to return per page. (Max: 100)
+     * @example 100
+     */
+    remote_provider_page_size?: string;
+    /**
+     * @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider.
+     *
+     *
      * **NOTE**: `read_from_cache=true` requires you to have the object synced to the Supaglue Managed Destination.
-     *  
+     *
      * @example true
      */
     read_from_cache?: boolean;
     /**
-     * @description The customer ID that uniquely identifies the customer in your application 
+     * @description The customer ID that uniquely identifies the customer in your application
      * @example my-customer-1
      */
     "x-customer-id": string;
     /**
-     * @description The provider name 
+     * @description The provider name
      * @example salesforce
      */
     "x-provider-name": string;
@@ -733,77 +757,12 @@ export interface components {
   pathItems: never;
 }
 
+export type $defs = Record<string, never>;
+
 export type external = Record<string, never>;
 
 export interface operations {
 
-  /**
-   * Send passthrough request 
-   * @deprecated 
-   * @description Send request directly to a provider
-   */
-  sendPassthroughRequest: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** @description The path to send the request to (do not pass the domain) */
-          path: string;
-          /**
-           * @example GET 
-           * @enum {string}
-           */
-          method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-          /** @description Headers to pass to downstream */
-          headers?: {
-            [key: string]: string | undefined;
-          };
-          /** @description Query parameters to pass to downstream */
-          query?: {
-            [key: string]: string | undefined;
-          };
-          /** @description Body to pass to downstream (can be string or JSON object) */
-          body?: OneOf<[string, {
-            [key: string]: unknown;
-          }]>;
-        };
-      };
-    };
-    responses: {
-      /** @description Passthrough response */
-      200: {
-        content: {
-          "application/json": {
-            /**
-             * @description The full URL the request was went to 
-             * @example https://customengagement.com/api/cars
-             */
-            url: string;
-            /**
-             * @description Status code from the downstream 
-             * @example 200
-             */
-            status: number;
-            /** @description The response headers from the downstream */
-            headers: {
-              [key: string]: string | undefined;
-            };
-            /** @description The body from the downstream */
-            body?: string | number | boolean | ({
-                [key: string]: unknown;
-              })[] | {
-              [key: string]: unknown;
-            };
-          };
-        };
-      };
-    };
-  };
   /** List accounts */
   listAccounts: {
     parameters: {
@@ -825,7 +784,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["account"])[];
+            records: components["schemas"]["account"][];
           };
         };
       };
@@ -870,13 +829,13 @@ export interface operations {
     };
   };
   /**
-   * Get account 
+   * Get account
    * @description Support:
-   * 
-   * | Provider   | Supported | 
-   * | ---------- | --------- | 
-   * | Salesloft  | Yes       | 
-   * | Outreach   | Yes       | 
+   *
+   * | Provider   | Supported |
+   * | ---------- | --------- |
+   * | Salesloft  | Yes       |
+   * | Outreach   | Yes       |
    * | Apollo     | No        |
    */
   getAccount: {
@@ -954,14 +913,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["contact"])[];
+            records: components["schemas"]["contact"][];
           };
         };
       };
     };
   };
   /**
-   * Create contact 
+   * Create contact
    * @description Some providers do not support `primary` phone number type, in which case we will default to `mobile`. If both `primary` and `mobile` phone numbers are specified and only a single mobile number is possible, then `mobile` will be used and `primary` will be dropped.
    */
   createContact: {
@@ -1016,6 +975,45 @@ export interface operations {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Search contacts
+   * @description Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
+   */
+  searchContacts: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        page_size?: components["parameters"]["remote_provider_page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          filter: {
+            /** @description The emails to search for. This will be imeplemented as an OR search. */
+            emails: string[];
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Paginated Contacts */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: components["schemas"]["contact"][];
           };
         };
       };
@@ -1097,7 +1095,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["user"])[];
+            records: components["schemas"]["user"][];
           };
         };
       };
@@ -1148,7 +1146,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["mailbox"])[];
+            records: components["schemas"]["mailbox"][];
           };
         };
       };
@@ -1199,14 +1197,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["sequence"])[];
+            records: components["schemas"]["sequence"][];
           };
         };
       };
     };
   };
   /**
-   * Create sequence 
+   * Create sequence
    * @description Note this uses an undocumented private api endpoint for Apollo and should be considered to be in alpha state
    */
   createSequence: {
@@ -1269,7 +1267,7 @@ export interface operations {
       };
       path: {
         /**
-         * @description The ID of the sequence. 
+         * @description The ID of the sequence.
          * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
          */
         sequence_id: string;
@@ -1316,14 +1314,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["sequence_state"])[];
+            records: components["schemas"]["sequence_state"][];
           };
         };
       };
     };
   };
   /**
-   * Create sequence state 
+   * Create sequence state
    * @description In other words, adding a sequencestate to sequence.
    */
   createSequenceState: {
@@ -1367,11 +1365,60 @@ export interface operations {
     };
   };
   /**
-   * Batch create sequence states 
-   * @description Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.
-   * 
+   * Search sequence states
+   * @description Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.
    * Support:
-   * 
+   *
+   * | Provider  | Search By               |
+   * | --------- | ----------------------- |
+   * | Apollo    | contact_id only         |
+   * | Salesloft | contact_id, sequence_id |
+   * | Outreach  | contact_id, sequence_id |
+   */
+  searchSequenceStates: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+        page_size?: components["parameters"]["remote_provider_page_size"];
+        cursor?: components["parameters"]["cursor"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description If both contact_id and sequence_id are provided, the search will be performed as an AND search. */
+          filter: {
+            /** @description The ID of the contact to filter on. */
+            contact_id?: string;
+            /** @description The ID of the sequence to filter on. */
+            sequence_id?: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Paginated Sequence States */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: components["schemas"]["sequence_state"][];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Batch create sequence states
+   * @description Add multiple contacts to a sequence atomically. You must pass in the same sequenceId, userId and mailboxId for all the contact records.
+   *
+   * Support:
+   *
    * | Provider  | Supported |
    * | --------- | --------- |
    * | Apollo    | Yes       |
@@ -1389,7 +1436,7 @@ export interface operations {
       content: {
         "application/json": {
           /** @description Will use the batch endpoints when possible (e.g. Apollo) */
-          records: (components["schemas"]["create_sequence_state"])[];
+          records: components["schemas"]["create_sequence_state"][];
         };
       };
     };
@@ -1400,7 +1447,7 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             /** @description Created records, in order passed in */
-            records?: (components["schemas"]["created_record"])[];
+            records?: components["schemas"]["created_record"][];
             warnings?: components["schemas"]["warnings"];
           };
         };

@@ -20,12 +20,10 @@ export const SCHEMAS_OR_ENTITIES_APPLICATION_IDS = [
 ];
 
 export const ASYNC_RETRY_OPTIONS = {
-  // TODO: Don't make this 'forever', so that the activity will actually get heartbeats
-  // and will know that this activity is making progress.
-  forever: true,
+  retries: 3,
   factor: 2,
-  minTimeout: 1000,
-  maxTimeout: 60 * 1000,
+  minTimeout: 1_000,
+  maxTimeout: 60_000,
 };
 
 export const REFRESH_TOKEN_THRESHOLD_MS = 300000;

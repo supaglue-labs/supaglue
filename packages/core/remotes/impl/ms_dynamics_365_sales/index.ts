@@ -6,20 +6,26 @@ import type {
   ConnectionUnsafe,
   CRMProvider,
   ListedObjectRecord,
+  ObjectRecordUpsertData,
+  ObjectRecordWithMetadata,
+  Property,
   Provider,
   RemoteUserIdAndDetails,
+  StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type {
   Account,
   Contact,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
+  CrmListParams,
   Lead,
   Opportunity,
   User,
 } from '@supaglue/types/crm';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import type { OHandler } from 'odata';
 import { o } from 'odata';
 import { plural } from 'pluralize';
@@ -33,8 +39,11 @@ import {
   NotFoundError,
   NotModifiedError,
   RemoteProviderError,
+  SGConnectionNoLongerAuthenticatedError,
   UnauthorizedError,
 } from '../../../errors';
+import type { PaginatedSupaglueRecords } from '../../../lib/pagination';
+import { decodeCursor, DEFAULT_PAGE_SIZE, encodeCursor } from '../../../lib/pagination';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
@@ -150,9 +159,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     heartbeat?: () => void
   ): Promise<Readable> {
     const idkey = `${object}id`;
+
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity(plural(object), updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity(plural(object), fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -174,7 +184,142 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public override async listCommonObjectRecords(
+  private async getPublisherPrefix(): Promise<string> {
+    // get the prefix for the default powerapps publisher
+    // the fixed GUID for the default powerapps publisher is 00000001-0000-0000-0000-00000000005a
+    // TODO this probably should be more flexible
+    await this.maybeRefreshAccessToken();
+    return (
+      await this.#odata
+        .get('publishers(00000001-0000-0000-0000-00000000005a)')
+        .query({ $select: 'customizationprefix' })
+    )?.customizationprefix;
+  }
+
+  public override async listCustomObjectRecords(
+    object: string,
+    fieldsToFetch: FieldsToFetch,
+    modifiedAfter?: Date,
+    heartbeat?: () => void
+  ): Promise<Readable> {
+    const publisherPrefix = await this.getPublisherPrefix();
+    const idkey = `${publisherPrefix}_${object}id`;
+    return paginator([
+      {
+        pageFetcher: this.getListFetcherForEntity(
+          `${publisherPrefix}_${plural(object)}`,
+          fieldsToFetch,
+          modifiedAfter,
+          undefined,
+          heartbeat
+        ),
+        createStreamFromPage: (response) => {
+          const emittedAt = new Date();
+          return Readable.from(
+            response.value.map((result: any) => ({
+              id: result[idkey],
+              rawData: result,
+              rawProperties: result,
+              isDeleted: false,
+              lastModifiedAt: new Date(result.modifiedon),
+              emittedAt,
+            }))
+          );
+        },
+        getNextCursorFromPage: (response) => response['@odata.nextLink'],
+      },
+    ]);
+  }
+
+  public override async createObjectRecord(
+    object: StandardOrCustomObject,
+    data: ObjectRecordUpsertData
+  ): Promise<string> {
+    await this.maybeRefreshAccessToken();
+    let objectName = plural(object.name);
+    // need our own odata client here as we need to set the `Prefer` header to get the created object id back
+    const odata = o(this.baseUrl, {
+      headers: { ...this.#headers, Prefer: `return=representation` },
+      referrer: undefined,
+    });
+    if (object.type === 'custom') {
+      const publisherPrefix = await this.getPublisherPrefix();
+      objectName = `${publisherPrefix}_${objectName}`;
+      const objectIdField = `${publisherPrefix}_${object.name}id`;
+      // map data to new object with the prefixed field names
+      const mappedData = Object.fromEntries(Object.entries(data).map(([k, v]) => [`${publisherPrefix}_${k}`, v]));
+      const response = await odata.post(objectName, mappedData).query({ $select: objectIdField });
+      return response[objectIdField];
+    }
+    const response = await odata.post(objectName, data).query({ $select: `${object.name}id` });
+    return response[`${object.name}id`];
+  }
+
+  public override async getObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    fields: string[]
+  ): Promise<ObjectRecordWithMetadata> {
+    await this.maybeRefreshAccessToken();
+    let objectName = plural(object.name);
+    let publisherPrefix: string | undefined;
+    if (object.type === 'custom') {
+      publisherPrefix = await this.getPublisherPrefix();
+      objectName = `${publisherPrefix}_${objectName}`;
+    }
+    const response = await this.#odata.get(`${objectName}(${id})`).query({ $select: fields.join(',') });
+    const filteredResponse = Object.fromEntries(
+      Object.entries(response)
+        .filter(([k]) => !k.startsWith('@odata'))
+        .map(([k, v]) =>
+          publisherPrefix && k.startsWith(`${publisherPrefix}_`) ? [k.replace(`${publisherPrefix}_`, ''), v] : [k, v]
+        )
+    );
+    return {
+      id,
+      objectName,
+      data: filteredResponse,
+      metadata: {
+        isDeleted: false,
+        lastModifiedAt: new Date(response.modifiedon),
+      },
+    };
+  }
+
+  public override async updateObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    data: ObjectRecordUpsertData
+  ): Promise<void> {
+    await this.maybeRefreshAccessToken();
+    let objectName = plural(object.name);
+    let publisherPrefix: string | undefined;
+    if (object.type === 'custom') {
+      publisherPrefix = await this.getPublisherPrefix();
+      objectName = `${publisherPrefix}_${objectName}`;
+    }
+    // map fields to prefixed fields
+    const mappedData = Object.fromEntries(
+      Object.entries(data).map(([k, v]) => [object.type === 'custom' ? `${publisherPrefix}_${k}` : k, v])
+    );
+    await this.#odata.patch(`${objectName}(${id})`, mappedData).query();
+  }
+
+  public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
+    await this.maybeRefreshAccessToken();
+    const objectName = object.type === 'standard' ? object.name : `${await this.getPublisherPrefix()}_${object.name}`;
+    const response = await this.#odata
+      .get(`EntityDefinitions(LogicalName='${objectName}')/Attributes`)
+      .query({ $select: 'LogicalName', $filter: "IsLogical eq false and LogicalName ne 'owneridtype'" });
+    return response.map((attribute: any) => ({
+      id: attribute.LogicalName,
+      label: attribute.DisplayName?.UserLocalizedLabel?.Label,
+      type: attribute.AttributeType,
+      rawDetails: attribute,
+    }));
+  }
+
+  public override async streamCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
@@ -182,15 +327,36 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'account':
-        return await this.listAccounts(fieldMappingConfig, updatedAfter, heartbeat);
+        return await this.streamAccounts(fieldMappingConfig, updatedAfter, heartbeat);
       case 'contact':
-        return await this.listContacts(fieldMappingConfig, updatedAfter, heartbeat);
+        return await this.streamContacts(fieldMappingConfig, updatedAfter, heartbeat);
       case 'lead':
-        return await this.listLeads(fieldMappingConfig, updatedAfter, heartbeat);
+        return await this.streamLeads(fieldMappingConfig, updatedAfter, heartbeat);
       case 'opportunity':
-        return await this.listOpportunities(fieldMappingConfig, updatedAfter, heartbeat);
+        return await this.streamOpportunities(fieldMappingConfig, updatedAfter, heartbeat);
       case 'user':
-        return await this.listUsers(fieldMappingConfig, updatedAfter, heartbeat);
+        return await this.streamUsers(fieldMappingConfig, updatedAfter, heartbeat);
+      default:
+        throw new Error(`Unsupported common object type: ${commonObjectType}`);
+    }
+  }
+
+  public override async listCommonObjectRecords<T extends 'account' | 'contact' | 'lead' | 'opportunity' | 'user'>(
+    commonObjectType: CRMCommonObjectType,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.listContacts(fieldMappingConfig, params);
+      case 'lead':
+        return await this.listLeads(fieldMappingConfig, params);
+      case 'opportunity':
+        return await this.listOpportunities(fieldMappingConfig, params);
+      case 'account':
+        return await this.listAccounts(fieldMappingConfig, params);
+      case 'user':
+        return await this.listUsers(fieldMappingConfig, params);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -203,13 +369,13 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
       case 'account':
-        return this.getAccount(id, fieldMappingConfig);
+        return await this.getAccount(id, fieldMappingConfig);
       case 'contact':
-        return this.getContact(id, fieldMappingConfig);
+        return await this.getContact(id, fieldMappingConfig);
       case 'lead':
-        return this.getLead(id, fieldMappingConfig);
+        return await this.getLead(id, fieldMappingConfig);
       case 'opportunity':
-        return this.getOpportunity(id, fieldMappingConfig);
+        return await this.getOpportunity(id, fieldMappingConfig);
       case 'user':
         return await this.getUser(id, fieldMappingConfig);
       default:
@@ -222,26 +388,33 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     params: CRMCommonObjectTypeMap<T>['createParams']
   ): Promise<string> {
     await this.maybeRefreshAccessToken();
+    // need our own odata client here as we need to set the `Prefer` header to get the created object id back
+    const odata = o(this.baseUrl, {
+      headers: { ...this.#headers, Prefer: `return=representation` },
+      referrer: undefined,
+    });
     switch (commonObjectType) {
       case 'account': {
-        const response = await this.#odata.post('accounts', toDynamicsAccountCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
-        return id;
+        const response = await odata
+          .post('accounts', toDynamicsAccountCreateParams(params))
+          .query({ $select: 'accountid' });
+        return response['accountid'];
       }
       case 'contact': {
-        const response = await this.#odata.post('contacts', toDynamicsContactCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
-        return id;
+        const response = await odata
+          .post('contacts', toDynamicsContactCreateParams(params))
+          .query({ $select: 'contactid' });
+        return response['contactid'];
       }
       case 'lead': {
-        const response = await this.#odata.post('leads', toDynamicsLeadCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
-        return id;
+        const response = await odata.post('leads', toDynamicsLeadCreateParams(params)).query({ $select: 'leadid' });
+        return response['leadid'];
       }
       case 'opportunity': {
-        const response = await this.#odata.post('opportunities', toDynamicsOpportunityCreateParams(params)).query();
-        const id = response.headers.get('location')?.split('(')?.[1]?.split(')')?.[0];
-        return id;
+        const response = await odata
+          .post('opportunities', toDynamicsOpportunityCreateParams(params))
+          .query({ $select: 'opportunityid' });
+        return response['opportunityid'];
       }
       case 'user':
         throw new Error('Cannot create users in MS Dynamics 365');
@@ -343,39 +516,145 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
 
   private getListFetcherForEntity(
     entity: string,
+    fieldsToFetch: FieldsToFetch,
     updatedAfter?: Date,
     expand?: string,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    limit?: number
   ): (nextUrl?: string) => Promise<any> {
     return async (nextUrl?: string) => {
       await this.maybeRefreshAccessToken();
-      // NOTE: we don't use the odata client here as it doesn't handle pagination
-      const response = await fetch(
-        nextUrl ||
-          this.getUrlForEntityAndParams(entity, {
-            $filter: updatedAfter ? `modifiedon gt ${updatedAfter?.toISOString()}` : undefined,
-            $expand: expand,
-          }),
-        { headers: this.#headers }
+      try {
+        // NOTE: we don't use the odata client here as it doesn't handle pagination
+        const response = await fetch(
+          nextUrl ||
+            this.getUrlForEntityAndParams(entity, {
+              $filter: updatedAfter ? `modifiedon gt ${updatedAfter?.toISOString()}` : undefined,
+              $expand: expand,
+              $select: fieldsToFetch?.type === 'defined' ? fieldsToFetch.fields.join(',') : undefined,
+            }),
+          { headers: { ...this.#headers, Prefer: `odata.maxpagesize=${limit ?? MAX_PAGE_SIZE},return=representation` } }
+        );
+        if (heartbeat) {
+          heartbeat();
+        }
+        if (!response.ok) {
+          throw await this.handleErr(response);
+        }
+        return await response.json();
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
+    };
+  }
+
+  private getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig: FieldMappingConfig): FieldsToFetch {
+    if (fieldMappingConfig.type === 'defined') {
+      const fields = Array.from(
+        new Set([
+          ...fieldMappingConfig.coreFieldMappings.map((v) => v.schemaField),
+          ...fieldMappingConfig.additionalFieldMappings.map((v) => v.schemaField),
+        ])
       );
-      if (heartbeat) {
-        heartbeat();
-      }
-      if (!response.ok) {
-        throw this.handleErr(response);
-      }
-      return await response.json();
+
+      return {
+        type: 'defined',
+        fields,
+      };
+    }
+
+    return {
+      type: 'inherit_all_fields',
+    };
+  }
+
+  private async listImpl<T extends CRMCommonObjectType>(
+    objectType: T,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams,
+    mapper: (result: any) => CRMCommonObjectTypeMap<T>['object']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    const msObjectType = objectType === 'user' ? 'systemusers' : plural(objectType);
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+    const fetcher = this.getListFetcherForEntity(
+      msObjectType,
+      fieldsToFetch,
+      params.modifiedAfter,
+      objectType === 'opportunity'
+        ? 'stageid_processstage($select=stagename),opportunity_leadtoopportunitysalesprocess($select=name)'
+        : undefined,
+      /* heartbeat */ undefined,
+      params.pageSize ?? DEFAULT_PAGE_SIZE
+    );
+    const nextLink = decodeCursor(params.cursor)?.id as string | undefined;
+    const response = await fetcher(nextLink);
+    const records = response.value.map(mapper);
+    return {
+      records,
+      pagination: {
+        next: response['@odata.nextLink']
+          ? encodeCursor({ id: response['@odata.nextLink'] as string, reverse: false })
+          : null,
+        previous: null,
+      },
     };
   }
 
   private async listAccounts(
     fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<Account>> {
+    return this.listImpl('account', fieldMappingConfig, params, (result) =>
+      fromDynamicsAccountToRemoteAccount(result, fieldMappingConfig)
+    );
+  }
+
+  private async listContacts(
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<Contact>> {
+    return this.listImpl('contact', fieldMappingConfig, params, (result) =>
+      fromDynamicsContactToRemoteContact(result, fieldMappingConfig)
+    );
+  }
+
+  private async listLeads(
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<Lead>> {
+    return this.listImpl('lead', fieldMappingConfig, params, (result) =>
+      fromDynamicsLeadToRemoteLead(result, fieldMappingConfig)
+    );
+  }
+
+  private async listOpportunities(
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<Opportunity>> {
+    return this.listImpl('opportunity', fieldMappingConfig, params, (result) =>
+      fromDynamicsOpportunityToRemoteOpportunity(result, fieldMappingConfig)
+    );
+  }
+
+  private async listUsers(
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmListParams
+  ): Promise<PaginatedSupaglueRecords<User>> {
+    return this.listImpl('user', fieldMappingConfig, params, (result) =>
+      fromDynamicsUserToRemoteUser(result, fieldMappingConfig)
+    );
+  }
+
+  private async streamAccounts(
+    fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('accounts', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('accounts', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -390,14 +669,16 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listContacts(
+  private async streamContacts(
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('contacts', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('contacts', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -412,15 +693,18 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listOpportunities(
+  private async streamOpportunities(
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
+
     return paginator([
       {
         pageFetcher: this.getListFetcherForEntity(
           'opportunities',
+          fieldsToFetch,
           updatedAfter,
           'stageid_processstage($select=stagename),opportunity_leadtoopportunitysalesprocess($select=name)',
           heartbeat
@@ -439,14 +723,15 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listLeads(
+  private async streamLeads(
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('leads', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('leads', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -461,14 +746,15 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  private async listUsers(
+  private async streamUsers(
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
     heartbeat?: () => void
   ): Promise<Readable> {
+    const fieldsToFetch = this.getFieldsToFetchFromFieldMappingConfig(fieldMappingConfig);
     return paginator([
       {
-        pageFetcher: this.getListFetcherForEntity('systemusers', updatedAfter, undefined, heartbeat),
+        pageFetcher: this.getListFetcherForEntity('systemusers', fieldsToFetch, updatedAfter, undefined, heartbeat),
         createStreamFromPage: (response) => {
           const emittedAt = new Date();
           return Readable.from(
@@ -483,21 +769,26 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     ]);
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async handleErr(err: unknown): Promise<unknown> {
     if (err instanceof Response) {
-      // TODO: pass "cause" into the error constructor. to do this, `handleErr` needs to be async.
+      let cause: Error | undefined;
+      try {
+        ({ cause } = await err.json());
+      } catch (e) {
+        // noop
+      }
 
       switch (err.status) {
         case 400:
-          return new InternalServerError(err.statusText);
+          return new InternalServerError(err.statusText, cause);
         case 401:
-          return new UnauthorizedError(err.statusText);
+          return new UnauthorizedError(err.statusText, cause);
         case 403:
-          return new ForbiddenError(err.statusText);
+          return new ForbiddenError(err.statusText, cause);
         case 404:
-          return new NotFoundError(err.statusText);
+          return new NotFoundError(err.statusText, cause);
         case 304:
-          return new NotModifiedError(err.statusText);
+          return new NotModifiedError(err.statusText, cause);
         // The following are unmapped to Supaglue errors, but we want to pass
         // them back as 4xx so they aren't 500 and developers can view error messages
         // NOTE: `429` is omitted below since we process it differently for syncs
@@ -548,17 +839,18 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         case 449:
         case 450:
         case 451:
-          return new RemoteProviderError(err.statusText);
+          return new RemoteProviderError(err.statusText, cause);
         default:
-          return new InternalServerError(err.statusText);
+          return new InternalServerError(err.statusText, cause);
       }
     }
 
-    if (isErrnoException(err)) {
-      switch (err.code) {
+    if (isErrnoException(err) && err.cause) {
+      switch ((err.cause as any).code) {
         case 'ENOTFOUND':
+          return new SGConnectionNoLongerAuthenticatedError((err.cause as any).message as string, err.cause as Error);
         case 'ECONNREFUSED':
-          return new BadGatewayError(`Could not connect to remote CRM`, err);
+          return new BadGatewayError(`Could not connect to remote CRM`, err.cause as Error);
         default:
           return err;
       }

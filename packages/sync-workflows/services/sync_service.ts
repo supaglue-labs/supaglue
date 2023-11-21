@@ -6,8 +6,9 @@ import { TEMPORAL_CONTEXT_ARGS, TEMPORAL_CUSTOM_SEARCH_ATTRIBUTES } from '@supag
 import type { PrismaClient } from '@supaglue/db';
 import { Prisma, SYNCS_TABLE, SYNC_CHANGES_TABLE } from '@supaglue/db';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
-import type { ConnectionSafeAny, SyncConfig } from '@supaglue/types';
-import type { ObjectSync, Sync, SyncState } from '@supaglue/types/sync';
+import type { ConnectionSafeAny, SyncConfig, SyncStrategyConfig } from '@supaglue/types';
+import type { ObjectSync, ObjectType, Sync, SyncState } from '@supaglue/types/sync';
+import type { CommonObjectConfig, CustomObjectConfig, StandardObjectConfig } from '@supaglue/types/sync_object_config';
 import type { Client, IntervalSpec, ScheduleDescription, ScheduleOptionsAction } from '@temporalio/client';
 import { ScheduleAlreadyRunning, ScheduleNotFoundError, WorkflowNotFoundError } from '@temporalio/client';
 import type { ApplicationService } from '.';
@@ -157,6 +158,35 @@ export class SyncService {
     await this.#processSyncChanges(full);
   }
 
+  #getSyncArgsHelper(
+    syncConfig: SyncConfig,
+    connection: ConnectionSafeAny,
+    objectType: ObjectType,
+    objectConfig: CommonObjectConfig | StandardObjectConfig | CustomObjectConfig
+  ) {
+    const autoStart = syncConfig.config.defaultConfig.autoStartOnConnection ?? true;
+    return {
+      type: 'object',
+      objectType,
+      object: objectConfig.object,
+      connectionId: connection.id,
+      syncConfigId: syncConfig.id,
+      paused: !autoStart,
+      strategy: {
+        type:
+          objectConfig.syncStrategyOverride?.strategy ??
+          syncConfig.config.defaultConfig.strategy ??
+          'full then incremental',
+        fullSyncEveryNIncrementals:
+          objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals ??
+          syncConfig.config.defaultConfig.fullSyncEveryNIncrementals,
+      },
+      state: {
+        phase: 'created',
+      },
+    };
+  }
+
   #computeSyncCreateManyInputList(syncConfig: SyncConfig, connection: ConnectionSafeAny): Prisma.SyncCreateManyInput[] {
     const syncArgs: Prisma.SyncCreateManyInput[] = [];
 
@@ -165,94 +195,39 @@ export class SyncService {
     // Common
     if (syncConfig.config.commonObjects?.length) {
       syncArgs.push(
-        ...syncConfig.config.commonObjects.map((commonObject) => ({
-          type: 'object',
-          objectType: 'common',
-          object: commonObject.object,
-          connectionId: connection.id,
-          syncConfigId: syncConfig.id,
-          paused: !autoStart,
-          strategy: {
-            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          },
-          state: {
-            phase: 'created',
-          },
-        }))
+        ...syncConfig.config.commonObjects.map((commonObject) =>
+          this.#getSyncArgsHelper(syncConfig, connection, 'common', commonObject)
+        )
       );
     }
 
     // Standard
     if (connection.connectionSyncConfig?.standardObjects?.length) {
       syncArgs.push(
-        ...connection.connectionSyncConfig.standardObjects.map((standardObject) => ({
-          type: 'object',
-          objectType: 'standard',
-          object: standardObject.object,
-          connectionId: connection.id,
-          syncConfigId: syncConfig.id,
-          paused: false,
-          strategy: {
-            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          },
-          state: {
-            phase: 'created',
-          },
-        }))
+        ...connection.connectionSyncConfig.standardObjects.map((standardObject) =>
+          this.#getSyncArgsHelper(syncConfig, connection, 'standard', standardObject)
+        )
       );
     } else if (syncConfig.config.standardObjects?.length) {
       syncArgs.push(
-        ...syncConfig.config.standardObjects.map((standardObject) => ({
-          type: 'object',
-          objectType: 'standard',
-          object: standardObject.object,
-          connectionId: connection.id,
-          syncConfigId: syncConfig.id,
-          paused: !autoStart,
-          strategy: {
-            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          },
-          state: {
-            phase: 'created',
-          },
-        }))
+        ...syncConfig.config.standardObjects.map((standardObject) =>
+          this.#getSyncArgsHelper(syncConfig, connection, 'standard', standardObject)
+        )
       );
     }
 
     // Custom
     if (connection.connectionSyncConfig?.customObjects?.length) {
       syncArgs.push(
-        ...connection.connectionSyncConfig.customObjects.map((customObject) => ({
-          type: 'object',
-          objectType: 'custom',
-          object: customObject.object,
-          connectionId: connection.id,
-          syncConfigId: syncConfig.id,
-          paused: false,
-          strategy: {
-            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          },
-          state: {
-            phase: 'created',
-          },
-        }))
+        ...connection.connectionSyncConfig.customObjects.map((customObject) =>
+          this.#getSyncArgsHelper(syncConfig, connection, 'custom', customObject)
+        )
       );
     } else if (syncConfig.config.customObjects?.length) {
       syncArgs.push(
-        ...syncConfig.config.customObjects.map((customObject) => ({
-          type: 'object',
-          objectType: 'custom',
-          object: customObject.object,
-          connectionId: connection.id,
-          syncConfigId: syncConfig.id,
-          paused: !autoStart,
-          strategy: {
-            type: syncConfig.config.defaultConfig.strategy ?? 'full then incremental',
-          },
-          state: {
-            phase: 'created',
-          },
-        }))
+        ...syncConfig.config.customObjects.map((customObject) =>
+          this.#getSyncArgsHelper(syncConfig, connection, 'custom', customObject)
+        )
       );
     }
 
@@ -486,6 +461,31 @@ WHERE s.connection_id = '${connection.id}'`);
     });
   }
 
+  #getSyncStrategyConfig(syncConfig: SyncConfig, sync: Sync): SyncStrategyConfig {
+    if (sync.type === 'entity') {
+      return syncConfig.config.defaultConfig;
+    }
+    if (sync.objectType === 'common') {
+      return (
+        syncConfig.config.commonObjects?.find((object) => object.object === sync.object)?.syncStrategyOverride ??
+        syncConfig.config.defaultConfig
+      );
+    }
+    if (sync.objectType === 'standard') {
+      return (
+        syncConfig.config.standardObjects?.find((object) => object.object === sync.object)?.syncStrategyOverride ??
+        syncConfig.config.defaultConfig
+      );
+    }
+    if (sync.objectType === 'custom') {
+      return (
+        syncConfig.config.customObjects?.find((object) => object.object === sync.object)?.syncStrategyOverride ??
+        syncConfig.config.defaultConfig
+      );
+    }
+    return syncConfig.config.defaultConfig;
+  }
+
   async #processSyncChanges(full?: boolean): Promise<void> {
     // TODO: Page over the SyncChanges in case there are too many in one iteration.
 
@@ -534,11 +534,22 @@ WHERE s.connection_id = '${connection.id}'`);
         throw new Error('Unexpected error: syncConfig not found');
       }
 
-      await this.upsertTemporalSync(
-        fromSyncModel(sync),
-        connection,
-        syncConfig.config.defaultConfig.periodMs ?? FIFTEEN_MINUTES_MS
-      );
+      const syncType = fromSyncModel(sync);
+      const strategyConfig = this.#getSyncStrategyConfig(syncConfig, syncType);
+
+      await this.#prisma.sync.update({
+        where: {
+          id: sync.id,
+        },
+        data: {
+          strategy: {
+            type: strategyConfig.strategy ?? 'full then incremental',
+            fullSyncEveryNIncrementals: strategyConfig.fullSyncEveryNIncrementals,
+          },
+        },
+      });
+
+      await this.upsertTemporalSync(syncType, connection, strategyConfig.periodMs ?? FIFTEEN_MINUTES_MS);
     }
 
     // Delete the ObjectSyncChange objects

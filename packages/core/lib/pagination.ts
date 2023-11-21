@@ -76,7 +76,7 @@ export type PaginatedSupaglueRecords<T> = {
   pagination: {
     previous: string | null;
     next: string | null;
-    total_count: number;
+    total_count?: number;
   };
   records: T[];
 };

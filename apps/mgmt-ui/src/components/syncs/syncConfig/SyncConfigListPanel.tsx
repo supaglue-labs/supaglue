@@ -15,7 +15,8 @@ import { PeopleAltOutlined } from '@mui/icons-material';
 import { Button, Stack } from '@mui/material';
 import type { GridColDef } from '@mui/x-data-grid';
 import { DataGrid } from '@mui/x-data-grid';
-import type { SyncConfig } from '@supaglue/types';
+import type { SyncConfigDTO } from '@supaglue/types';
+import { SUPAGLUE_MANAGED_DESTINATION } from '@supaglue/utils';
 import Link from 'next/link';
 import { DeleteSyncConfig } from './DeleteSyncConfig';
 
@@ -56,7 +57,7 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
       width: 75,
       sortable: false,
       renderCell: (params) => {
-        const provider = providers.find((provider) => provider.id === params.row.provider);
+        const provider = providers.find((provider) => provider.name === params.row.provider);
         if (!provider) {
           return <i>Unknown provider</i>;
         }
@@ -76,7 +77,12 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
       width: 150,
       sortable: false,
       renderCell: (params) => {
-        const destination = destinations.find((destination) => destination.id === params.row.destination);
+        const destination = destinations.find((destination) => {
+          if (destination.type === 'supaglue') {
+            return params.row.destination === SUPAGLUE_MANAGED_DESTINATION;
+          }
+          return destination.name === params.row.destination;
+        });
         if (!destination) {
           return <i>Unknown destination</i>;
         }
@@ -138,7 +144,7 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
             <DeleteSyncConfig
               syncConfigId={params.row.id}
               onDelete={async () => {
-                const response = await deleteSyncConfig(applicationId, params.row.id);
+                const response = await deleteSyncConfig(applicationId, params.row.id, /* force_delete_syncs */ true);
                 if (!response.ok) {
                   addNotification({ message: response.errorMessage, severity: 'error' });
                   return;
@@ -155,8 +161,8 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
 
   const rows = syncConfigs.map((syncConfig) => ({
     id: syncConfig.id,
-    provider: syncConfig.providerId,
-    destination: syncConfig.destinationId,
+    provider: syncConfig.providerName,
+    destination: syncConfig.destinationName,
     frequency: `every ${millisToHumanReadable(syncConfig.config.defaultConfig.periodMs)}`,
     objects: getObjectsString(syncConfig),
     entities: getEntitiesString(entities, syncConfig),
@@ -241,7 +247,7 @@ function millisToHumanReadable(millis: number): string {
   return humanReadable;
 }
 
-function getObjectsString(syncConfig: SyncConfig): string {
+function getObjectsString(syncConfig: SyncConfigDTO): string {
   const objectsList = [];
   if (syncConfig.config.commonObjects?.length) {
     objectsList.push(...syncConfig.config.commonObjects.map((object) => object.object));
@@ -258,7 +264,7 @@ function getObjectsString(syncConfig: SyncConfig): string {
   return objectsList.join(', ');
 }
 
-function getEntitiesString(allEntities: ReturnType<typeof useEntities>['entities'], syncConfig: SyncConfig): string {
+function getEntitiesString(allEntities: ReturnType<typeof useEntities>['entities'], syncConfig: SyncConfigDTO): string {
   return (
     syncConfig.config.entities
       ?.map((entity) => {

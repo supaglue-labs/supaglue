@@ -5,11 +5,7 @@
 import * as Sentry from '@sentry/nextjs';
 
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN;
-const SENTRY_ENABLED = !(
-  process.env.SUPAGLUE_DISABLE_ERROR_REPORTING ||
-  process.env.NEXT_PUBLIC_SUPAGLUE_DISABLE_ERROR_REPORTING ||
-  process.env.CI
-);
+const SENTRY_ENABLED = !(process.env.NEXT_PUBLIC_SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI);
 const SUPAGLUE_ENVIRONMENT = process.env.SUPAGLUE_ENVIRONMENT || process.env.NEXT_PUBLIC_SUPAGLUE_ENVIRONMENT;
 
 Sentry.init({

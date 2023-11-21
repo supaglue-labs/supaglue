@@ -14,3 +14,8 @@ export type BaseEngagementModel = {
   lastModifiedAt: Date;
   rawData: Record<string, any>;
 };
+
+export type BaseSearchParams = {
+  cursor?: string;
+  pageSize?: number;
+};

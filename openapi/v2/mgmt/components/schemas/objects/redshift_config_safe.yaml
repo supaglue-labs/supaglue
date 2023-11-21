@@ -1,0 +1,39 @@
+type: object
+properties:
+  host:
+    type: string
+    example: paa05704.us-east-1
+  port:
+    type: number
+    example: 5439
+  username:
+    type: string
+    example: redshift_user
+  database:
+    type: string
+    example: my_database
+  schema:
+    type: string
+    example: schema
+  upload_method:
+    type: string
+    example: s3_staging
+  s3_key_id:
+    type: string
+    example: AKIDFIAKFISDKFSI
+  s3_bucket_name:
+    type: string
+    example: my_bucket
+  s3_bucket_region:
+    type: string
+    example: us-west-2
+required:
+  - host
+  - port
+  - username
+  - database
+  - schema
+  - upload_method
+  - s3_key_id
+  - s3_bucket_name
+  - s3_bucket_region

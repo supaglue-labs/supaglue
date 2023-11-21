@@ -40,18 +40,18 @@ export function getMarketingAutmationRemoteClient<T extends MarketingAutomationP
       }
 
       return new Proxy(v, {
-        apply(_target, thisArg, argArray) {
+        async apply(_target, thisArg, argArray) {
           try {
             const res = v.apply(target, argArray);
             if (Promise.resolve(res) === res) {
               // if it's a promise
-              return (res as Promise<unknown>).catch((err) => {
-                throw target.handleErr(err);
+              return (res as Promise<unknown>).catch(async (err) => {
+                throw await target.handleErr(err);
               });
             }
             return res;
           } catch (err: unknown) {
-            throw target.handleErr(err);
+            throw await target.handleErr(err);
           }
         },
       });

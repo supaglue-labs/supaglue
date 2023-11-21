@@ -1,3 +1,4 @@
+import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   EngagementOauthProvider,
@@ -10,19 +11,26 @@ import type {
   AccountCreateParams,
   Contact,
   ContactCreateParams,
+  ContactSearchParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
   Sequence,
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
+  SequenceStateSearchParams,
   SequenceStepCreateParams,
   User,
 } from '@supaglue/types/engagement';
-import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
-import { BadRequestError, InternalServerError, RemoteProviderError } from '../../../errors';
-import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import {
+  BadRequestError,
+  InternalServerError,
+  RemoteProviderError,
+  SGConnectionNoLongerAuthenticatedError,
+} from '../../../errors';
+import type { PaginatedSupaglueRecords } from '../../../lib';
+import { decodeCursor, encodeCursor, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
@@ -88,30 +96,37 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       !this.#credentials.expiresAt ||
       Date.parse(this.#credentials.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS
     ) {
-      const response = await axios.post<{ refresh_token: string; access_token: string; expires_in: number }>(
-        `${authConfig.tokenHost}${authConfig.tokenPath}`,
-        {
-          client_id: this.#credentials.clientId,
-          client_secret: this.#credentials.clientSecret,
-          grant_type: 'refresh_token',
-          refresh_token: this.#credentials.refreshToken,
+      try {
+        const response = await axios.post<{ refresh_token: string; access_token: string; expires_in: number }>(
+          `${authConfig.tokenHost}${authConfig.tokenPath}`,
+          {
+            client_id: this.#credentials.clientId,
+            client_secret: this.#credentials.clientSecret,
+            grant_type: 'refresh_token',
+            refresh_token: this.#credentials.refreshToken,
+          }
+        );
+
+        const newAccessToken = response.data.access_token;
+        const newRefreshToken = response.data.refresh_token;
+        const newExpiresAt = new Date(Date.now() + response.data.expires_in * 1000).toISOString();
+
+        this.#credentials.accessToken = newAccessToken;
+        this.#credentials.refreshToken = newRefreshToken;
+        this.#credentials.expiresAt = newExpiresAt;
+        this.#headers = { Authorization: `Bearer ${newAccessToken}` };
+
+        this.emit('token_refreshed', {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+          expiresAt: newExpiresAt,
+        });
+      } catch (e: any) {
+        if (e.response?.status === 400) {
+          throw new SGConnectionNoLongerAuthenticatedError('Unable to refresh access token. Refresh token invalid.');
         }
-      );
-
-      const newAccessToken = response.data.access_token;
-      const newRefreshToken = response.data.refresh_token;
-      const newExpiresAt = new Date(Date.now() + response.data.expires_in * 1000).toISOString();
-
-      this.#credentials.accessToken = newAccessToken;
-      this.#credentials.refreshToken = newRefreshToken;
-      this.#credentials.expiresAt = newExpiresAt;
-      this.#headers = { Authorization: `Bearer ${newAccessToken}` };
-
-      this.emit('token_refreshed', {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-        expiresAt: newExpiresAt,
-      });
+        throw e;
+      }
     }
   }
 
@@ -163,26 +178,30 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     heartbeat?: () => void
   ): (next?: string) => Promise<SalesloftPaginatedRecords> {
     return async (next?: string) => {
-      return await retryWhenAxiosRateLimited(async () => {
-        if (heartbeat) {
-          heartbeat();
-        }
-        await this.maybeRefreshAccessToken();
-        const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
-          params: updatedAfter
-            ? {
-                ...DEFAULT_LIST_PARAMS,
-                ...getUpdatedAfterPathParam(updatedAfter),
-                page: next ? parseInt(next) : undefined,
-              }
-            : {
-                ...DEFAULT_LIST_PARAMS,
-                page: next ? parseInt(next) : undefined,
-              },
-          headers: this.#headers,
-        });
-        return response.data;
-      });
+      return await retryWhenAxiosRateLimited(
+        async () => {
+          if (heartbeat) {
+            heartbeat();
+          }
+          await this.maybeRefreshAccessToken();
+          const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
+            params: updatedAfter
+              ? {
+                  ...DEFAULT_LIST_PARAMS,
+                  ...getUpdatedAfterPathParam(updatedAfter),
+                  page: next ? parseInt(next) : undefined,
+                }
+              : {
+                  ...DEFAULT_LIST_PARAMS,
+                  page: next ? parseInt(next) : undefined,
+                },
+            headers: this.#headers,
+          });
+          return response.data;
+        },
+        // the rate limit is 600/minute shared among all users of the API, so we should wait longer than the usual 1s just to be safe
+        { retries: 3, minTimeout: 10_000, maxTimeout: 60_000, factor: 3, randomize: true }
+      );
     };
   }
 
@@ -257,7 +276,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date,
     heartbeat?: () => void
@@ -383,7 +402,86 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     return response.data.data.id.toString();
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async searchCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.#searchContacts(params as ContactSearchParams);
+      case 'sequence_state':
+        return await this.#searchSequenceStates(params as SequenceStateSearchParams);
+      case 'user':
+      case 'mailbox':
+      case 'sequence':
+      case 'account':
+        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Salesloft`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const page = cursor?.id as number | undefined;
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/people`, {
+        params: {
+          ...DEFAULT_LIST_PARAMS,
+          per_page: params.pageSize,
+          page,
+          email_addresses: params.filter.emails,
+        },
+        headers: this.getAuthHeadersForPassthroughRequest(),
+      });
+      const records = response.data.data.map(fromSalesloftPersonToContact);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: response.data.metadata.paging?.prev_page
+            ? encodeCursor({ id: response.data.metadata.paging.prev_page, reverse: true })
+            : null,
+          next: response.data.metadata.paging?.next_page
+            ? encodeCursor({ id: response.data.metadata.paging.next_page, reverse: false })
+            : null,
+        },
+      };
+    });
+  }
+
+  async #searchSequenceStates(params: SequenceStateSearchParams): Promise<PaginatedSupaglueRecords<SequenceState>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const page = cursor?.id as number | undefined;
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/cadence_memberships`, {
+        params: {
+          ...DEFAULT_LIST_PARAMS,
+          per_page: params.pageSize,
+          page,
+          person_id: params.filter.contactId,
+          cadence_id: params.filter.sequenceId,
+        },
+        headers: this.getAuthHeadersForPassthroughRequest(),
+      });
+      const records = response.data.data.map(fromSalesloftCadenceMembershipToSequenceState);
+      return {
+        records,
+        pagination: {
+          previous: response.data.metadata.paging?.prev_page
+            ? encodeCursor({ id: response.data.metadata.paging.prev_page, reverse: true })
+            : null,
+          next: response.data.metadata.paging?.next_page
+            ? encodeCursor({ id: response.data.metadata.paging.next_page, reverse: false })
+            : null,
+        },
+      };
+    });
+  }
+
+  public override async handleErr(err: unknown): Promise<unknown> {
     if (!(err instanceof AxiosError)) {
       return err;
     }

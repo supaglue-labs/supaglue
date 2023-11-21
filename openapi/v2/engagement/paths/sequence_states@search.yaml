@@ -1,0 +1,61 @@
+post:
+  operationId: searchSequenceStates
+  summary: Search sequence states
+  description: |
+    Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.
+    Support:
+
+    | Provider  | Search By               |
+    | --------- | ----------------------- |
+    | Apollo    | contact_id only         |
+    | Salesloft | contact_id, sequence_id |
+    | Outreach  | contact_id, sequence_id |
+
+  tags:
+    - Sequence States
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+    - $ref: ../../../common/components/parameters/query/read_from_cache.yaml
+    - $ref: ../../../common/components/parameters/query/remote_provider_page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            filter:
+              type: object
+              description: If both contact_id and sequence_id are provided, the search will be performed as an AND search.
+              properties:
+                contact_id:
+                  type: string
+                  description: The ID of the contact to filter on.
+                sequence_id:
+                  type: string
+                  description: The ID of the sequence to filter on.
+          required:
+            - filter
+  responses:
+    200:
+      description: Paginated Sequence States
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/sequence_state.yaml
+            required:
+              - pagination
+              - records
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

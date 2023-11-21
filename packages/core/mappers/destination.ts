@@ -4,6 +4,8 @@ import type {
   DestinationSafeAny,
   DestinationUnsafeAny,
   PostgresConfigUnsafe,
+  RedshiftConfigUnsafe,
+  SnowflakeConfigUnsafe,
 } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils';
 import { decrypt } from '../lib/crypt';
@@ -27,6 +29,18 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
           ...decryptedConfig,
           credentials: camelcaseKeys(decryptedConfig.credentials),
         },
+      };
+    case 'snowflake':
+      return {
+        ...baseParams,
+        type: 'snowflake',
+        config: decryptedConfig,
+      };
+    case 'redshift':
+      return {
+        ...baseParams,
+        type: 'redshift',
+        config: camelcaseKeys(decryptedConfig),
       };
     case 'postgres':
       return {
@@ -69,6 +83,24 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
             clientEmail: config.credentials.clientEmail,
           },
         },
+      };
+    }
+    case 'snowflake': {
+      const config = decryptedConfig as SnowflakeConfigUnsafe;
+      const { password: _, ...safeConfig } = config;
+      return {
+        ...baseParams,
+        type: 'snowflake',
+        config: safeConfig,
+      };
+    }
+    case 'redshift': {
+      const config = camelcaseKeys(decryptedConfig) as RedshiftConfigUnsafe;
+      const { s3AccessKey: _, ...safeConfig } = config;
+      return {
+        ...baseParams,
+        type: 'redshift',
+        config: safeConfig,
       };
     }
     case 'postgres': {

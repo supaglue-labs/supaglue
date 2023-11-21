@@ -396,9 +396,7 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
           day,
           automated: step.type === 'auto_email',
           automated_settings:
-            step.type === 'auto_email' && delayInMins !== 0
-              ? { send_type: 'after_time_delay', delay_time: delayInMins }
-              : undefined,
+            step.type === 'auto_email' ? { send_type: 'after_time_delay', delay_time: delayInMins } : undefined,
           due_immediately: false,
           steps: cadenceStep ? [cadenceStep] : [],
           reference_id: step.order ?? null,

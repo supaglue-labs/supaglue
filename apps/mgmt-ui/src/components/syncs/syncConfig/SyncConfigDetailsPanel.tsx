@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { createSyncConfig, updateSyncConfig } from '@/client';
+import { ConfirmationModal } from '@/components/modals';
 import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
 import { SwitchWithLabel } from '@/components/SwitchWithLabel';
@@ -7,6 +8,7 @@ import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
 import { useEntities } from '@/hooks/useEntities';
+import { useLekkoConfigs } from '@/hooks/useLekkoConfigs';
 import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
@@ -15,7 +17,13 @@ import { getStandardObjectOptions } from '@/utils/provider';
 import { entitiesEnabled } from '@/utils/schema';
 import { Autocomplete, Breadcrumbs, Button, Chip, FormHelperText, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
-import type { CommonObjectType, ProviderCategory, SyncConfig, SyncConfigCreateParams } from '@supaglue/types';
+import type {
+  CommonObjectType,
+  ProviderCategory,
+  ProviderName,
+  SyncConfigCreateParams,
+  SyncConfigDTO,
+} from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_SYNCABLE_COMMON_OBJECTS } from '@supaglue/types/engagement';
 import type { SyncStrategyType } from '@supaglue/types/sync';
@@ -45,17 +53,19 @@ type SyncConfigDetailsPanelImplProps = {
   syncConfigId?: string;
 };
 
-function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPanelImplProps & SupaglueProps) {
+function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImplProps & SupaglueProps) {
   const activeApplicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
   const { syncConfigs = [], isLoading, mutate } = useSyncConfigs();
   const { providers = [], isLoading: isLoadingProviders } = useProviders();
   const { destinations = [], isLoading: isLoadingDestinations } = useDestinations();
   const { entities = [], isLoading: isLoadingEntities } = useEntities();
+  const { entitiesWhitelistConfig, isLoading: isLoadingLekkoConfigs } = useLekkoConfigs();
   const [syncPeriodSecs, setSyncPeriodSecs] = useState<number | undefined>();
+  const [fullSyncEveryNIncrementals, setFullSyncEveryNIncrementals] = useState<number | undefined>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [providerId, setProviderId] = useState<string | undefined>();
-  const [destinationId, setDestinationId] = useState<string | undefined>();
+  const [providerName, setProviderName] = useState<string | undefined>();
+  const [destinationName, setDestinationName] = useState<string | undefined>();
   const [strategy, setStrategy] = useState<SyncStrategyType>('full then incremental');
   const [commonObjects, setCommonObjects] = useState<CommonObjectType[]>([]);
   const [standardObjects, setStandardObjects] = useState<string[]>([]);
@@ -64,20 +74,22 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
   const [customInputValue, setCustomInputValue] = useState<string>('');
   const [entityIds, setEntityIds] = useState<string[]>([]);
   const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
+  const [numSyncsToBeDeleted, setNumSyncsToBeDeleted] = useState<number>(0);
   const router = useRouter();
 
-  const isFormValid = destinationId && providerId && isSyncPeriodSecsValid(syncPeriodSecs);
+  const isFormValid = destinationName && providerName && isSyncPeriodSecsValid(syncPeriodSecs);
 
   const syncConfig = syncConfigs.find((s) => s.id === syncConfigId);
 
   useEffect(() => {
-    setDestinationId(syncConfig?.destinationId ?? undefined);
-    setProviderId(syncConfig?.providerId ?? undefined);
+    setDestinationName(syncConfig?.destinationName);
+    setProviderName(syncConfig?.providerName);
     setSyncPeriodSecs(
       syncConfig?.config?.defaultConfig?.periodMs
         ? syncConfig?.config?.defaultConfig?.periodMs / 1000
         : ONE_HOUR_SECONDS
     );
+    setFullSyncEveryNIncrementals(syncConfig?.config?.defaultConfig?.fullSyncEveryNIncrementals ?? undefined);
     setAutoStartOnConnection(syncConfig?.config?.defaultConfig?.autoStartOnConnection ?? true);
     setStrategy(syncConfig?.config?.defaultConfig?.strategy ?? 'full then incremental');
     setCommonObjects(syncConfig?.config?.commonObjects?.map((o) => o.object) ?? []);
@@ -86,15 +98,14 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
     setEntityIds(syncConfig?.config?.entities?.map((entity) => entity.entityId) ?? []);
   }, [syncConfig?.id]);
 
-  if (isLoading || isLoadingProviders || isLoadingDestinations || isLoadingEntities) {
+  if (isLoading || isLoadingProviders || isLoadingDestinations || isLoadingEntities || isLoadingLekkoConfigs) {
     return <Spinner />;
   }
 
   const formTitle = syncConfig ? 'Edit Sync Config' : 'New Sync Config';
-  const provider = providers?.find((p) => p.id === providerId);
 
-  const createOrUpdateSyncConfig = async (): Promise<SyncConfig | undefined> => {
-    if (!destinationId || !providerId) {
+  const createOrUpdateSyncConfig = async (forceDeleteSyncs = false): Promise<SyncConfigDTO | undefined> => {
+    if (!destinationName || !providerName) {
       addNotification({ message: 'Destination and Provider must be selected', severity: 'error' });
       return;
     }
@@ -102,22 +113,26 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
       addNotification({ message: 'Cannot save while loading', severity: 'error' });
       return;
     }
-    if (!syncConfig && syncConfigs.find((s) => s.providerId === providerId)) {
+    const provider = providers?.find((p) => p.name === providerName);
+    if (!provider) {
+      addNotification({ message: 'Provider not found', severity: 'error' });
+      return;
+    }
+    if (!syncConfig && syncConfigs.find((s) => s.providerName === provider?.name)) {
       addNotification({ message: 'Sync config already exists for provider', severity: 'error' });
       return;
     }
 
     if (syncConfig) {
-      const newSyncConfig: SyncConfig = {
+      const newSyncConfig: SyncConfigDTO = {
         ...syncConfig,
-        destinationId,
-        providerId,
         config: {
           ...syncConfig.config,
           defaultConfig: {
             ...syncConfig.config.defaultConfig,
             periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
             strategy,
+            fullSyncEveryNIncrementals: fullSyncEveryNIncrementals ?? undefined,
             autoStartOnConnection,
           },
           commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
@@ -126,23 +141,26 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
           entities: entityIds.map((entityId) => ({ entityId })),
         },
       };
-      const response = await updateSyncConfig(activeApplicationId, newSyncConfig);
+      const response = await updateSyncConfig(activeApplicationId, newSyncConfig, forceDeleteSyncs);
       if (!response.ok) {
+        if (response.errorMessage.startsWith('This SyncConfig update operation will delete')) {
+          const match = response.errorMessage.match(/~(\d+)/);
+          if (match) {
+            setNumSyncsToBeDeleted(parseInt(match[1], 10));
+          }
+          return;
+        }
         addNotification({ message: response.errorMessage, severity: 'error' });
         return;
       }
       return response.data;
     }
 
-    const provider = providers?.find((p) => p.id === providerId);
-    if (!provider) {
-      throw new Error('Could not get provider');
-    }
     // create path
     const newSyncConfig: SyncConfigCreateParams = {
       applicationId: activeApplicationId,
-      destinationId,
-      providerId,
+      destinationName,
+      providerName: providerName as ProviderName,
       config: {
         defaultConfig: {
           periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
@@ -151,6 +169,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
         },
         commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
         standardObjects: standardObjects.map((object) => ({ object })),
+        customObjects: customObjects.map((object) => ({ object })),
         entities: entityIds.map((entityId) => ({ entityId })),
       },
     };
@@ -162,11 +181,20 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
     return response.data;
   };
 
-  const selectedProvider = providers.find((p) => p.id === providerId);
+  const selectedProvider = providers.find((p) => p.name === providerName);
   const supportsStandardObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales', 'gong', 'intercom', 'linear'];
-  const supportsCustomObjects = ['hubspot', 'salesforce'];
+  const supportsCustomObjects = ['hubspot', 'salesforce', 'ms_dynamics_365_sales'];
 
-  const commonObjectsSupported = selectedProvider?.category !== 'no_category';
+  const selectedDestination = destinations.find((destination: any) => {
+    const isManagedDestination = destination.type === 'supaglue' && destinationName === 'Supaglue Managed Destination'; // this logic is a bit hairy because "supaglue" destination type has no "name" field
+    const isMatchedDestination = destination.name === destinationName;
+    return isMatchedDestination || isManagedDestination;
+  });
+
+  // Common Objects are only supported for categorized providers and Postgres or Managed destinations
+  const isPostgresOrManagedDestination =
+    selectedDestination?.type === 'postgres' || selectedDestination?.type === 'supaglue';
+  const commonObjectsSupported = selectedProvider?.category !== 'no_category' && isPostgresOrManagedDestination;
 
   const getCommonObjectOptions = (category: ProviderCategory) => {
     if (category === 'crm') {
@@ -192,6 +220,42 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
       </Breadcrumbs>
 
       <Card>
+        <ConfirmationModal
+          open={!!numSyncsToBeDeleted}
+          handleClose={() => setNumSyncsToBeDeleted(0)}
+          onConfirm={async () => {
+            setIsSaving(true);
+            const newSyncConfig = await createOrUpdateSyncConfig(/*force_delete_syncs=*/ true);
+            if (newSyncConfig) {
+              const latestSyncConfigs = toGetSyncConfigsResponse([
+                ...syncConfigs.filter((syncConfig) => syncConfig.id !== newSyncConfig.id),
+                newSyncConfig,
+              ]);
+              addNotification({ message: 'Successfully updated Sync Config', severity: 'success' });
+              await mutate(latestSyncConfigs, {
+                optimisticData: latestSyncConfigs,
+                revalidate: false,
+                populateCache: false,
+              });
+              setIsSaving(false);
+              router.back();
+            }
+            setIsSaving(false);
+          }}
+          title="Update Sync Config"
+          cancelVariant="text"
+          confirmVariant="contained"
+          confirmColor="error"
+          content={
+            <Typography>
+              Are you sure you want to update this Sync Config? This will delete syncs for{' '}
+              <Typography fontWeight="bold" display="inline">
+                {numSyncsToBeDeleted}
+              </Typography>{' '}
+              customers.
+            </Typography>
+          }
+        />
         <Stack direction="column" className="gap-2" sx={{ padding: '2rem' }}>
           <Stack direction="row" className="items-center justify-between w-full">
             <Stack direction="column">
@@ -204,14 +268,14 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
               name="Provider"
               disabled={isLoadingProviders || !!syncConfig}
               onChange={(value) => {
-                if (value === providerId) {
+                if (value === providerName) {
                   return;
                 }
-                setProviderId(value);
+                setProviderName(value);
                 setStandardObjects([]);
               }}
-              value={providerId ?? ''}
-              options={providers?.map(({ id, name }) => ({ value: id, displayValue: name })) ?? []}
+              value={providerName ?? ''}
+              options={providers?.map(({ name }) => ({ value: name, displayValue: name })) ?? []}
             />
           </Stack>
           <Stack className="gap-2">
@@ -224,12 +288,12 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                   await router.push(`/applications/${activeApplicationId}/connectors/destinations`);
                   return;
                 }
-                setDestinationId(value);
+                setDestinationName(value);
               }}
-              value={destinationId ?? ''}
+              value={destinationName ?? ''}
               options={[
                 ...destinations.map((destination) => ({
-                  value: destination.id,
+                  value: getDestinationName(destination),
                   displayValue: getDestinationName(destination),
                 })),
                 {
@@ -288,6 +352,26 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
               For Incremental: we will use this strategy when available for the provider and object otherwise we will
               use full sync. Please refer to provider docs for more details.
             </FormHelperText>
+            {strategy === 'full then incremental' && (
+              <>
+                <Typography variant="subtitle1">Incremental with a periodic full sync</Typography>
+                <TextField
+                  value={fullSyncEveryNIncrementals}
+                  size="small"
+                  label="Incremental with a periodic full sync"
+                  variant="outlined"
+                  type="number"
+                  helperText="Enter the number of successful incremental syncs before running a full sync. (All values < 1 will be taken to mean 'never'.)"
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                    let value: number | undefined = parseInt(event.target.value, 10);
+                    if (Number.isNaN(value) || value < 1) {
+                      value = undefined;
+                    }
+                    setFullSyncEveryNIncrementals(value);
+                  }}
+                />
+              </>
+            )}
           </Stack>
           <Stack className="gap-2">
             <SwitchWithLabel
@@ -297,17 +381,17 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
               onToggle={setAutoStartOnConnection}
             />
           </Stack>
-          {provider && (
+          {selectedProvider && (
             <>
               <Stack className="gap-2">
                 <Typography variant="subtitle1">Supaglue common objects</Typography>
                 <Autocomplete
                   size="small"
                   disabled={!commonObjectsSupported}
-                  key={providerId}
+                  key={providerName}
                   multiple
                   id="common-objects"
-                  options={getCommonObjectOptions(provider.category)}
+                  options={getCommonObjectOptions(selectedProvider.category)}
                   defaultValue={commonObjects}
                   renderTags={(value: readonly string[], getTagProps) =>
                     value.map((option: string, index: number) => (
@@ -331,7 +415,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                 <Autocomplete
                   disabled={!supportsStandardObjects.includes(String(selectedProvider?.name))}
                   size="small"
-                  key={providerId}
+                  key={providerName}
                   multiple
                   id="standard-objects"
                   options={standardObjectsOptions}
@@ -372,7 +456,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                 <Autocomplete
                   disabled={!supportsCustomObjects.includes(String(selectedProvider?.name))}
                   size="small"
-                  key={providerId}
+                  key={providerName}
                   multiple
                   id="custom-objects"
                   options={[]}
@@ -412,12 +496,12 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                   }}
                 />
               </Stack>
-              {entitiesEnabled(lekko.entitiesWhitelistConfig.applicationIds, activeApplicationId) && (
+              {entitiesEnabled(entitiesWhitelistConfig.applicationIds, activeApplicationId) && (
                 <Stack className="gap-2">
                   <Typography variant="subtitle1">Entities</Typography>
                   <Autocomplete
                     size="small"
-                    key={providerId}
+                    key={providerName}
                     multiple
                     id="entities"
                     options={entities.map((entity) => entity.id)}
@@ -471,9 +555,10 @@ function SyncConfigDetailsPanelImpl({ syncConfigId, lekko }: SyncConfigDetailsPa
                     revalidate: false,
                     populateCache: false,
                   });
+                  setIsSaving(false);
+                  router.back();
                 }
                 setIsSaving(false);
-                router.back();
               }}
             >
               Save

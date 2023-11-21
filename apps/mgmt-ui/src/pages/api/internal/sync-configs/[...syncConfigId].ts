@@ -4,11 +4,12 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<GetSyncConfigsResponse | null>) {
+  let url = `${API_HOST}/internal/sync_configs/${req.query.syncConfigId}`;
   switch (req.method) {
     case 'GET': {
-      const result = await fetch(`${API_HOST}/internal/sync_configs/${req.query.syncConfigId}`, {
+      const result = await fetch(url, {
         method: 'GET',
-        headers: getApplicationIdScopedHeaders(req),
+        headers: await getApplicationIdScopedHeaders(req),
       });
 
       const r = await result.json();
@@ -19,9 +20,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return res.status(200).json(r);
     }
     case 'DELETE': {
-      const result = await fetch(`${API_HOST}/internal/sync_configs/${req.query.syncConfigId}`, {
+      if (req.query.force_delete_syncs) {
+        url += `?force_delete_syncs=${req.query.force_delete_syncs}`;
+      }
+      const result = await fetch(url, {
         method: 'DELETE',
-        headers: getApplicationIdScopedHeaders(req),
+        headers: await getApplicationIdScopedHeaders(req),
       });
 
       if (!result.ok) {

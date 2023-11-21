@@ -1,0 +1,49 @@
+services:
+  api:
+    image: !reset
+    volumes: !reset []
+    build:
+      context: .
+      dockerfile: ./apps/api/Dockerfile.dev
+    working_dir: /workspace
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/api
+          target: /workspace/apps/api
+          ignore:
+            - node_modules/
+        - action: sync
+          path: ./packages
+          target: /workspace/packages
+        - action: sync
+          path: ./openapi
+          target: /workspace/openapi
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: ./apps/api/package.json
+    command: /bin/sh -c "yarn workspace api start"
+
+  sync-worker:
+    image: !reset
+    volumes: !reset []
+    build:
+      context: .
+      dockerfile: ./apps/sync-worker/Dockerfile.dev
+    working_dir: /workspace
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/sync-worker
+          target: /workspace/apps/sync-worker
+          ignore:
+            - node_modules/
+        - action: sync
+          path: ./packages
+          target: /workspace/packages
+        - action: rebuild
+          path: package.json
+        - action: rebuild
+          path: ./apps/sync-worker/package.json
+    command: /bin/sh -c "yarn workspace sync-worker start"

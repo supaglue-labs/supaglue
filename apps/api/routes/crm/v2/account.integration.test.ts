@@ -8,9 +8,12 @@
 import type {
   CreateAccountResponse,
   GetAccountResponse,
+  ListAccountsResponse,
   UpdateAccountResponse,
   UpsertAccountResponse,
 } from '@supaglue/schemas/v2/crm';
+
+jest.retryTimes(3);
 
 describe('account', () => {
   const testAccount = {
@@ -28,8 +31,8 @@ describe('account', () => {
     name: 'test account',
   };
 
-  describe.each(['salesforce', 'hubspot', 'pipedrive'])('%s', (providerName) => {
-    test(`POST /`, async () => {
+  describe.each(['salesforce', 'hubspot', 'pipedrive', 'ms_dynamics_365_sales'])('%s', (providerName) => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/crm/v2/accounts',
         { record: testAccount },
@@ -56,13 +59,19 @@ describe('account', () => {
       // expect(getResponse.data.addresses).toEqual(testAccount.record.addresses);
 
       // test that the db was updated
-      const dbAccount = await db.query('SELECT * FROM crm_accounts WHERE id = $1', [response.data.record?.id]);
-      expect(dbAccount.rows[0].name).toEqual(testAccount.name);
-      // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
-      // expect(dbAccount.rows[0].addresses).toEqual(testAccount.record.addresses);
-    }, 120000);
+      const cachedReadResponse = await apiClient.get<ListAccountsResponse>(
+        `/crm/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.name).toEqual(testAccount.name);
+    }, 120_000);
 
-    test('PATCH /', async () => {
+    test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/crm/v2/accounts',
         { record: testAccount },
@@ -106,16 +115,21 @@ describe('account', () => {
       // expect(getResponse.data.addresses).toEqual(testAccount.record.addresses);
 
       // test that the db was updated
-      const dbAccount = await db.query('SELECT * FROM crm_accounts WHERE id = $1', [response.data.record?.id]);
-      expect(dbAccount.rows[0].name).toEqual('updated account');
-      // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
-      // expect(dbAccount.rows[0].addresses).toEqual(testAccount.record.addresses);
-    }, 120000);
+      const cachedReadResponse = await apiClient.get<ListAccountsResponse>(
+        `/crm/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.name).toEqual('updated account');
+    }, 120_000);
 
     testIf(
-      // not supported for pipedrive
-      providerName !== 'pipedrive',
-      `POST /_upsert`,
+      ['salesforce', 'hubspot'].includes(providerName),
+      `Test upserting twice only creates 1 record and cache invalidates`,
       async () => {
         const website = `https://example${Math.random()}.com/`;
         const domain = website.replace('https://', '').replace('http://', '').replace('/', '');
@@ -147,16 +161,21 @@ describe('account', () => {
         expect(getResponse.data.name).toEqual(testAccount.name);
 
         // test that the db was updated
-        const dbAccount = await db.query('SELECT * FROM crm_accounts WHERE id = $1', [response.data.record?.id]);
-        expect(dbAccount.rows[0].name).toEqual(testAccount.name);
-        // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
-        // expect(dbAccount.rows[0].addresses).toEqual(testAccount.addresses);
-        expect(dbAccount.rows[0].website).toEqual(website);
-        expect(dbAccount.rows[0].name).toEqual(testAccount.name);
+        const cachedReadResponse = await apiClient.get<ListAccountsResponse>(
+          `/crm/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
+        expect(cachedReadResponse.status).toEqual(200);
+        const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+        expect(found).toBeTruthy();
+        expect(found?.name).toEqual(testAccount.name);
+        expect(found?.website).toEqual(website);
 
-        // sleep for 12 seconds to allow hubspot to update indexes
+        // sleep for 30 seconds to allow hubspot to update indexes
         if (providerName === 'hubspot') {
-          await new Promise((resolve) => setTimeout(resolve, 12000));
+          await new Promise((resolve) => setTimeout(resolve, 30_000));
         }
 
         const testAccountUpsert2 = {
@@ -182,13 +201,19 @@ describe('account', () => {
         expect(getResponse2.data.website).toEqual(website);
 
         // test that the db was updated
-        const dbAccount2 = await db.query('SELECT * FROM crm_accounts WHERE id = $1', [response.data.record?.id]);
-        expect(dbAccount2.rows[0].name).toEqual('updated account');
-        // TODO this fails. For salesforce and pipedrive, no addresses are returned, for hubspot, the returned address is missing street_2
-        // expect(dbAccount2.rows[0].addresses).toEqual(testAccount.addresses);
-        expect(dbAccount2.rows[0].website).toEqual(website);
+        const cachedReadResponse2 = await apiClient.get<ListAccountsResponse>(
+          `/crm/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
+        expect(cachedReadResponse2.status).toEqual(200);
+        const found2 = cachedReadResponse2.data.records.find((r) => r.id === response.data.record?.id);
+        expect(found2).toBeTruthy();
+        expect(found2?.name).toEqual('updated account');
+        expect(found2?.website).toEqual(website);
       },
-      120000
+      120_000
     );
   });
 });

@@ -479,7 +479,7 @@ export const toPropertyUnified = (salesforceField: SalesforceCustomField, isName
     type,
     scale: salesforceField.scale ?? undefined,
     precision: salesforceField.precision ?? undefined,
-    isRequired: salesforceField.required ?? false,
+    isRequired: (isNameField || salesforceField.required) ?? false,
     groupName: undefined,
     options: [],
     description: salesforceField.description ?? undefined,

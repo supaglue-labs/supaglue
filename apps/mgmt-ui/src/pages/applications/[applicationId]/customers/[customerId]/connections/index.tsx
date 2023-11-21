@@ -72,7 +72,7 @@ export default function Home(props: SupaglueProps) {
             customerId={activeCustomerId}
             providerName={params.row.providerName}
             onDelete={async () => {
-              const response = await deleteConnection(applicationId, activeCustomerId, params.row.id);
+              const response = await deleteConnection(applicationId, activeCustomerId, params.row.providerName);
               if (!response.ok) {
                 addNotification({ message: response.errorMessage, severity: 'error' });
                 return;

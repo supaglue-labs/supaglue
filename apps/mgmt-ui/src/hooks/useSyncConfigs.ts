@@ -1,5 +1,5 @@
 import type { GetSyncConfigsResponse } from '@supaglue/schemas/v2/mgmt';
-import type { SyncConfig } from '@supaglue/types';
+import type { SyncConfigDTO } from '@supaglue/types';
 import { snakecaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';
 import { toSyncConfig } from './useSyncConfig';
@@ -16,6 +16,6 @@ export function useSyncConfigs() {
   };
 }
 
-export const toGetSyncConfigsResponse = (syncConfigs: SyncConfig[]): GetSyncConfigsResponse => {
+export const toGetSyncConfigsResponse = (syncConfigs: SyncConfigDTO[]): GetSyncConfigsResponse => {
   return syncConfigs.map(snakecaseKeys);
 };

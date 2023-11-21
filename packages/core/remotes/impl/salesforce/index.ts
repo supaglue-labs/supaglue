@@ -12,6 +12,7 @@ import type {
   Property,
   PropertyUnified,
   Provider,
+  RateLimitInfo,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
@@ -48,6 +49,7 @@ import type {
   CustomObjectSchemaCreateParams,
   CustomObjectSchemaUpdateParams,
   SimpleCustomObjectSchema,
+  SimpleCustomObjectSchemaDeprecated,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
@@ -61,7 +63,6 @@ import {
   BadGatewayError,
   BadRequestError,
   ForbiddenError,
-  InternalServerError,
   NotFoundError,
   NotModifiedError,
   RemoteProviderError,
@@ -71,7 +72,15 @@ import {
   UnauthorizedError,
 } from '../../../errors';
 import type { Cursor, PaginatedSupaglueRecords } from '../../../lib';
-import { ASYNC_RETRY_OPTIONS, decodeCursor, encodeCursor, intersection, logger, union } from '../../../lib';
+import {
+  ASYNC_RETRY_OPTIONS,
+  decodeCursor,
+  DEFAULT_PAGE_SIZE,
+  encodeCursor,
+  intersection,
+  logger,
+  union,
+} from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
@@ -332,11 +341,29 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return SALESFORCE_OBJECTS as unknown as string[];
   }
 
-  public override async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
+  /**
+   * @deprecated
+   */
+  public override async listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]> {
     const metadata = await this.#client.describeGlobal();
     // this returns standard objects and external objects too,
     // so we need to filter them out
     return metadata.sobjects.filter(({ custom }) => custom).map(({ name }) => ({ id: name, name }));
+  }
+
+  public override async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
+    const metadata = await this.#client.describeGlobal();
+    // this returns standard objects and external objects too,
+    // so we need to filter them out
+    return metadata.sobjects
+      .filter(({ custom }) => custom)
+      .map(({ name, label, labelPlural }) => ({
+        name,
+        labels: {
+          singular: label,
+          plural: labelPlural,
+        },
+      }));
   }
 
   public override async listStandardObjectRecords(
@@ -403,7 +430,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     ]);
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date | undefined,
@@ -436,6 +463,42 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       () => {}
     );
+  }
+
+  public override async listCommonObjectRecords<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    const sobject = capitalizeString(commonObjectType);
+    const propertiesToFetch = await this.getCommonPropertiesToFetch(commonObjectType, fieldMappingConfig);
+    const limit = params.pageSize ?? DEFAULT_PAGE_SIZE;
+    const offset = (decodeCursor(params.cursor)?.id as number | undefined) ?? 0;
+
+    const soql = `SELECT ${propertiesToFetch.join(',')}
+    FROM ${sobject}
+    ${
+      params.modifiedAfter
+        ? `WHERE SystemModstamp > ${params.modifiedAfter.toISOString()} ORDER BY SystemModstamp ASC`
+        : ''
+    }
+    LIMIT ${params.pageSize ?? DEFAULT_PAGE_SIZE}
+    OFFSET ${offset}`;
+
+    const mapper = (record: Record<string, unknown>) => ({
+      ...getMapperForCommonObjectType(commonObjectType)(record),
+      rawData: toMappedProperties(record, fieldMappingConfig),
+    });
+    const response = await this.#client.query(soql);
+    const records = response.records.map(mapper);
+    return {
+      pagination: {
+        next: records.length === response.totalSize ? encodeCursor({ id: limit + offset, reverse: false }) : null,
+        previous: null,
+        total_count: response.totalSize,
+      },
+      records,
+    };
   }
 
   public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
@@ -1285,7 +1348,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   ): Promise<PaginatedSupaglueRecords<Contact>> {
     const propertiesToFetch = await this.getCommonPropertiesToFetch('contact', fieldMappingConfig);
     const soql = `SELECT ${propertiesToFetch.join(',')}
-    FROM Contact WHERE Email = '${params.filter.value}'`;
+    FROM Contact WHERE Email = '${params.filter.email}'`;
     const response = await this.#client.query(soql);
     const records = response.records.map((record) => ({
       ...fromSalesforceContactToContact(record),
@@ -1370,7 +1433,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   ): Promise<PaginatedSupaglueRecords<Lead>> {
     const propertiesToFetch = await this.getCommonPropertiesToFetch('lead', fieldMappingConfig);
     const soql = `SELECT ${propertiesToFetch.join(',')}
-    FROM Lead WHERE Email = '${params.filter.value}'`;
+    FROM Lead WHERE Email = '${params.filter.email}'`;
     const response = await this.#client.query(soql);
     const records = response.records.map((record) => ({
       ...fromSalesforceLeadToLead(record),
@@ -1455,7 +1518,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     listId: string,
     paginationParams: PaginationParams,
     fieldMappingConfig: FieldMappingConfig
-  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>> & { metadata: ListMetadata }> {
+  ): Promise<PaginatedSupaglueRecords<ListCRMCommonObjectTypeMap<T>>> {
     const salesforceObjectType = capitalizeString(objectType);
     const propertiesToFetch = await this.getCommonPropertiesToFetch(objectType, fieldMappingConfig);
 
@@ -1485,6 +1548,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       this.#client.query(`SELECT COUNT() FROM ${salesforceObjectType}`),
       this.#client.query(`SELECT FIELDS(STANDARD) FROM ListView WHERE Id = '${listId}'`),
     ]);
+    if (listMetadata.SobjectType !== salesforceObjectType) {
+      throw new BadRequestError(`List ${listId} is not a ${salesforceObjectType} list`);
+    }
 
     let commonObjectRecords: ListCRMCommonObjectTypeMap<T>[] = [];
 
@@ -1518,13 +1584,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const hasMore = response.records.length === pageSize;
     return {
       records: commonObjectRecords,
-      metadata: {
-        name: listMetadata.DeveloperName,
-        label: listMetadata.Name,
-        id: listMetadata.Id,
-        objectType,
-        rawData: listMetadata,
-      },
       pagination: {
         total_count: totalCount,
         next: hasMore
@@ -1538,7 +1597,20 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     };
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async getRateLimitInfo(): Promise<RateLimitInfo> {
+    const response = await this.#fetch(`/services/data/v${SALESFORCE_API_VERSION}/limits`, {
+      method: 'GET',
+    });
+    const json = await response.json();
+    return {
+      daily: {
+        limit: json.DailyApiRequests.Max,
+        remaining: json.DailyApiRequests.Remaining,
+      },
+    };
+  }
+
+  public override async handleErr(err: unknown): Promise<unknown> {
     const error = err as any;
 
     // map certain provider errors to sg sync worker errors
@@ -1562,14 +1634,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     switch (error.errorCode) {
       case 'DUPLICATE_VALUE':
       case 'ERROR_HTTP_400':
-      case 'INVALID_CROSS_REFERENCE_KEY':
       case 'INVALID_FIELD':
       case 'INVALID_OPERATION':
       case 'INVALID_TYPE':
-      case 'MALFORMED_ID':
       case 'MISSING_ARGUMENT':
-        return new InternalServerError(inferredTitle, error);
       case 'INVALID_EMAIL_ADDRESS':
+      case 'MALFORMED_ID':
       case 'INVALID_OR_NULL_FOR_RESTRICTED_PICKLIST':
       case 'REQUIRED_FIELD_MISSING':
       case 'STRING_TOO_LONG':
@@ -1577,6 +1647,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         return new BadRequestError(inferredTitle, error);
       case 'INVALID_ID_FIELD':
       case 'INVALID_LOCATOR':
+      case 'INVALID_CROSS_REFERENCE_KEY':
       case 'ERROR_HTTP_404':
       case 'NOT_FOUND':
         return new NotFoundError(inferredTitle, error);

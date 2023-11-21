@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 0.18.1
+  version: 0.21.6
   title: Unified Ticketing API (Preview)
   contact:
     name: Supaglue
@@ -107,6 +107,14 @@ components:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
+    pagination:
+      $ref: ../../common/components/schemas/pagination.yaml
+    errors:
+      $ref: ../../common/components/schemas/errors.yaml
+    warnings:
+      $ref: ../../common/components/schemas/warnings.yaml
+    created_record:
+      $ref: ../../common/components/schemas/created_model.yaml
     account:
       $ref: ./components/schemas/objects/account.yaml
     contact:
@@ -125,6 +133,10 @@ components:
       $ref: ./components/schemas/objects/comment.yaml
     tag:
       $ref: ./components/schemas/objects/tag.yaml
+    team:
+      $ref: ./components/schemas/objects/team.yaml
+    attachment:
+      $ref: ./components/schemas/objects/attachment.yaml
   parameters:
     x-customer-id:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml

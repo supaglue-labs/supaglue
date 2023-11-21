@@ -114,12 +114,14 @@ export type GetSyncConfigResponse =
   operations['getSyncConfig']['responses'][keyof operations['getSyncConfig']['responses']]['content']['application/json'];
 
 export type UpdateSyncConfigPathParams = paths[`/sync_configs/{sync_config_id}`]['parameters']['path'];
+export type UpdateSyncConfigQueryParams = operations['updateSyncConfig']['parameters']['query'];
 export type UpdateSyncConfigRequest =
   operations['updateSyncConfig']['requestBody'][keyof operations['updateSyncConfig']['requestBody']]['application/json'];
 export type UpdateSyncConfigResponse =
   operations['updateSyncConfig']['responses'][keyof operations['updateSyncConfig']['responses']]['content']['application/json'];
 
 export type DeleteSyncConfigPathParams = paths[`/sync_configs/{sync_config_id}`]['parameters']['path'];
+export type DeleteSyncConfigQueryParams = operations['deleteSyncConfig']['parameters']['query'];
 export type DeleteSyncConfigRequest = never;
 export type DeleteSyncConfigResponse =
   operations['deleteSyncConfig']['responses'][keyof operations['deleteSyncConfig']['responses']]['content']['application/json'];
@@ -137,10 +139,16 @@ export type CreateConnectionResponse =
   operations['createConnection']['responses'][keyof operations['createConnection']['responses']]['content']['application/json'];
 
 export type GetConnectionPathParams =
-  paths[`/customers/{customer_id}/connections/{connection_id}`]['parameters']['path'];
+  paths[`/customers/{customer_id}/connections/{provider_name}`]['parameters']['path'];
 export type GetConnectionRequest = never;
 export type GetConnectionResponse =
   operations['getConnection']['responses'][keyof operations['getConnection']['responses']]['content']['application/json'];
+
+export type GetRateLimitInfoPathParams =
+  paths[`/customers/{customer_id}/connections/{provider_name}/_rate_limit_info`]['parameters']['path'];
+export type GetRateLimitInfoRequest = never;
+export type GetRateLimitInfoResponse =
+  operations['getConnectionRateLimitInfo']['responses'][keyof operations['getConnectionRateLimitInfo']['responses']]['content']['application/json'];
 
 export type GetProviderUserIdPathParams =
   paths[`/customers/{customer_id}/connections/_provider_user_id`]['parameters']['path'];
@@ -150,7 +158,7 @@ export type GetProviderUserIdResponse =
 export type GetProvideruserIdQueryParams = operations['getProviderUserId']['parameters']['query'];
 
 export type DeleteConnectionPathParams =
-  paths[`/customers/{customer_id}/connections/{connection_id}`]['parameters']['path'];
+  paths[`/customers/{customer_id}/connections/{provider_name}`]['parameters']['path'];
 export type DeleteConnectionRequest = never;
 export type DeleteConnectionResponse =
   operations['deleteConnection']['responses'][keyof operations['deleteConnection']['responses']]['content']['application/json'];

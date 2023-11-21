@@ -33,9 +33,6 @@ FROM base AS runner
 RUN apt-get update && apt-get install -y openssl libssl-dev ca-certificates && rm -rf /var/lib/apt/lists/* && apt-get clean
 WORKDIR /app
 
-ARG POSTHOG_API_KEY
-ENV SUPAGLUE_POSTHOG_API_KEY=$POSTHOG_API_KEY
-
 COPY --from=installer /app/apps/api/dist .
 COPY --from=installer /app/node_modules ./node_modules
 COPY --from=installer /app/apps/api/package.json .

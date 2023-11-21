@@ -18,13 +18,16 @@ import type {
   GetProvideruserIdQueryParams,
   GetProviderUserIdRequest,
   GetProviderUserIdResponse,
+  GetRateLimitInfoPathParams,
+  GetRateLimitInfoRequest,
+  GetRateLimitInfoResponse,
 } from '@supaglue/schemas/v2/mgmt';
 import { camelcaseKeys } from '@supaglue/utils';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { connectionService, connectionAndSyncService, remoteService } = getDependencyContainer();
+const { connectionService, connectionAndSyncService, remoteService, customerService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const connectionRouter = Router({ mergeParams: true });
@@ -35,7 +38,9 @@ export default function init(app: Router): void {
       req: Request<GetConnectionsPathParams, GetConnectionsResponse, GetConnectionsRequest>,
       res: Response<GetConnectionsResponse>
     ) => {
-      const customerId = getCustomerIdPk(req.supaglueApplication.id, req.params.customer_id);
+      const externalCustomerId = req.params.customer_id;
+      const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
+      await customerService.getByExternalId(req.supaglueApplication.id, externalCustomerId); // Fetch to ensure it exists since `listSafeByCustomer` returns [] if not found
       const connections = await connectionService.listSafeByCustomer(req.supaglueApplication.id, customerId);
       return res.status(200).send(connections.map(snakecaseKeys));
     }
@@ -53,8 +58,9 @@ export default function init(app: Router): void {
       res: Response<GetProviderUserIdResponse>
     ) => {
       const providerName = req.query.provider_name;
-      const connection = await connectionService.getSafeByCustomerIdProviderNameAndApplicationId(
-        req.params.customer_id,
+      const externalCustomerId = req.params.customer_id;
+      const connection = await connectionService.getSafeByExternalCustomerIdProviderNameAndApplicationId(
+        externalCustomerId,
         providerName,
         req.supaglueApplication.id
       );
@@ -87,9 +93,10 @@ export default function init(app: Router): void {
       req: Request<CreateConnectionPathParams, CreateConnectionResponse, CreateConnectionRequest>,
       res: Response<CreateConnectionResponse>
     ) => {
+      const externalCustomerId = req.params.customer_id;
       const connection = await connectionAndSyncService.createManually(
         req.supaglueApplication.id,
-        req.params.customer_id,
+        externalCustomerId,
         camelcaseKeys(req.body)
       );
       return res.status(200).send(snakecaseKeys(connection));
@@ -97,28 +104,52 @@ export default function init(app: Router): void {
   );
 
   connectionRouter.get(
-    '/:connection_id',
+    '/:provider_name',
     async (
       req: Request<GetConnectionPathParams, GetConnectionResponse, GetConnectionRequest>,
       res: Response<GetConnectionResponse>
     ) => {
-      const connection = await connectionService.getSafeByIdAndApplicationId(
-        req.params.connection_id,
-        req.supaglueApplication.id
+      const externalCustomerId = req.params.customer_id;
+      const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
+      const connection = await connectionService.getSafeByProviderNameAndApplicationIdAndCustomerId(
+        req.params.provider_name,
+        req.supaglueApplication.id,
+        customerId
       );
 
       return res.status(200).send(snakecaseKeys(connection));
     }
   );
 
+  connectionRouter.get(
+    '/:provider_name/_rate_limit_info',
+    async (
+      req: Request<GetRateLimitInfoPathParams, GetRateLimitInfoResponse, GetRateLimitInfoRequest>,
+      res: Response<GetRateLimitInfoResponse>
+    ) => {
+      const externalCustomerId = req.params.customer_id;
+      const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
+      const connection = await connectionService.getSafeByProviderNameAndApplicationIdAndCustomerId(
+        req.params.provider_name,
+        req.supaglueApplication.id,
+        customerId
+      );
+      const client = await remoteService.getRemoteClient(connection.id);
+      const rateLimitInfo = await client.getRateLimitInfo();
+
+      return res.status(200).send(rateLimitInfo);
+    }
+  );
+
   connectionRouter.delete(
-    '/:connection_id',
+    '/:provider_name',
     async (
       req: Request<DeleteConnectionPathParams, DeleteConnectionResponse, DeleteConnectionRequest>,
       res: Response<DeleteConnectionResponse>
     ) => {
+      const externalCustomerId = req.params.customer_id;
       // TODO: revoke token from provider?
-      await connectionAndSyncService.delete(req.params.connection_id, req.supaglueApplication.id);
+      await connectionAndSyncService.delete(req.params.provider_name, req.supaglueApplication.id, externalCustomerId);
       return res.status(204).end();
     }
   );

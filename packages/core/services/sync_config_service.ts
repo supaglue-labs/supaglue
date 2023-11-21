@@ -1,7 +1,13 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { SyncConfig, SyncConfigCreateParams, SyncConfigUpdateParams } from '@supaglue/types';
+import type {
+  ProviderName,
+  SyncConfig,
+  SyncConfigCreateParams,
+  SyncConfigDTO,
+  SyncConfigUpdateParams,
+} from '@supaglue/types';
 import { BadRequestError, NotFoundError } from '../errors';
-import { fromSyncConfigModel, toSyncConfigModel } from '../mappers';
+import { fromCreateParamsToSyncConfigModel, fromSyncConfigDataModel, fromSyncConfigModel } from '../mappers';
 
 export class SyncConfigService {
   #prisma: PrismaClient;
@@ -78,12 +84,67 @@ export class SyncConfigService {
     return syncConfigs.map(fromSyncConfigModel);
   }
 
+  public async toSyncConfigDTO(syncConfig: SyncConfig): Promise<SyncConfigDTO> {
+    const dtos = await this.toSyncConfigDTOs([syncConfig]);
+    return dtos[0];
+  }
+
+  public async toSyncConfigDTOs(syncConfigs: SyncConfig[]): Promise<SyncConfigDTO[]> {
+    const syncConfigsExpanded = await this.#prisma.syncConfig.findMany({
+      where: {
+        id: {
+          in: syncConfigs.map((syncConfig) => syncConfig.id),
+        },
+      },
+      include: {
+        destination: true,
+        provider: true,
+      },
+    });
+    return syncConfigsExpanded.map((syncConfigModel) => ({
+      id: syncConfigModel.id,
+      applicationId: syncConfigModel.applicationId,
+      destinationName: syncConfigModel.destination.name,
+      providerName: syncConfigModel.provider.name as ProviderName,
+      config: fromSyncConfigDataModel(syncConfigModel.config),
+    }));
+  }
+
   public async create(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
     validateSyncConfigParams(syncConfig);
+    const destination = await this.#prisma.destination.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: syncConfig.applicationId,
+          name: syncConfig.destinationName,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!destination) {
+      throw new NotFoundError(`Destination with name ${syncConfig.destinationName} not found`);
+    }
+
+    const provider = await this.#prisma.provider.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: syncConfig.applicationId,
+          name: syncConfig.providerName,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!provider) {
+      throw new NotFoundError(`Provider with name ${syncConfig.providerName} not found`);
+    }
     // TODO:(SUP1-350): Backfill sync schedules for connections
     const createdSyncConfigModel = await this.#prisma.$transaction(async (tx) => {
       const createdSyncConfigModel = await tx.syncConfig.create({
-        data: toSyncConfigModel(syncConfig),
+        data: fromCreateParamsToSyncConfigModel(syncConfig, destination.id, provider.id),
       });
 
       await tx.syncConfigChange.create({
@@ -98,20 +159,25 @@ export class SyncConfigService {
     return fromSyncConfigModel(createdSyncConfigModel);
   }
 
-  public async update(id: string, applicationId: string, params: SyncConfigUpdateParams): Promise<SyncConfig> {
+  public async update(
+    id: string,
+    applicationId: string,
+    params: SyncConfigUpdateParams,
+    force_delete_syncs = false
+  ): Promise<SyncConfig> {
     validateSyncConfigParams(params);
-    // TODO(SUP1-328): Remove once we support updating destinations
-    if (params.destinationId) {
-      const { destinationId } = await this.getById(id);
-      if (destinationId && destinationId !== params.destinationId) {
-        throw new BadRequestError('Destination cannot be changed');
+    if (!force_delete_syncs) {
+      const affectedSyncsCount = await this.#diffAndCountAffectedSyncs(id, applicationId, params);
+      if (affectedSyncsCount) {
+        throw new BadRequestError(
+          `This SyncConfig update operation will delete ~${affectedSyncsCount} syncs. If you are sure you want to do this, set force_delete_syncs to true.`
+        );
       }
     }
-
     const [updatedSyncConfigModel] = await this.#prisma.$transaction([
       this.#prisma.syncConfig.update({
-        where: { id },
-        data: toSyncConfigModel({ ...params, applicationId }),
+        where: { id, applicationId },
+        data: { config: params.config },
       }),
       this.#prisma.syncConfigChange.create({
         data: {
@@ -122,17 +188,124 @@ export class SyncConfigService {
     return fromSyncConfigModel(updatedSyncConfigModel);
   }
 
+  async #diffAndCountAffectedSyncs(id: string, applicationId: string, params: SyncConfigUpdateParams): Promise<number> {
+    const syncConfig = await this.getByIdAndApplicationId(id, applicationId);
+    // diff objects in the old and new sync configs
+    const oldObjectNames: string[][] = [
+      syncConfig.config.commonObjects?.map((object) => object.object) ?? [],
+      syncConfig.config.standardObjects?.map((object) => object.object) ?? [],
+      syncConfig.config.customObjects?.map((object) => object.object) ?? [],
+      syncConfig.config.entities?.map((entity) => entity.entityId) ?? [],
+    ];
+
+    const newObjectNames: Set<string>[] = [
+      new Set<string>(params.config.commonObjects?.map((object) => object.object) ?? []),
+      new Set<string>(params.config.standardObjects?.map((object) => object.object) ?? []),
+      new Set<string>(params.config.customObjects?.map((object) => object.object) ?? []),
+      new Set<string>(params.config.entities?.map((entity) => entity.entityId) ?? []),
+    ];
+
+    const deletedObjectsAndEntities = [
+      oldObjectNames[0].filter((x) => !newObjectNames[0].has(x)),
+      oldObjectNames[1].filter((x) => !newObjectNames[1].has(x)),
+      oldObjectNames[2].filter((x) => !newObjectNames[2].has(x)),
+      oldObjectNames[3].filter((x) => !newObjectNames[3].has(x)),
+    ];
+
+    // find affected syncs
+    let count = 0;
+    if (deletedObjectsAndEntities[0].length) {
+      count += await this.#prisma.sync.count({
+        where: {
+          syncConfigId: id,
+          object: {
+            in: deletedObjectsAndEntities[0],
+          },
+          objectType: 'common',
+        },
+      });
+    }
+
+    if (deletedObjectsAndEntities[1].length) {
+      count += await this.#prisma.sync.count({
+        where: {
+          syncConfigId: id,
+          object: {
+            in: deletedObjectsAndEntities[1],
+          },
+          objectType: 'standard',
+        },
+      });
+    }
+
+    if (deletedObjectsAndEntities[2].length) {
+      count += await this.#prisma.sync.count({
+        where: {
+          syncConfigId: id,
+          object: {
+            in: deletedObjectsAndEntities[2],
+          },
+          objectType: 'custom',
+        },
+      });
+    }
+
+    if (deletedObjectsAndEntities[3].length) {
+      count += await this.#prisma.sync.count({
+        where: {
+          syncConfigId: id,
+          entityId: {
+            in: deletedObjectsAndEntities[3],
+          },
+        },
+      });
+    }
+
+    return count;
+  }
+
   // Only used for backfill
   public async upsert(syncConfig: SyncConfigCreateParams): Promise<SyncConfig> {
     validateSyncConfigParams(syncConfig);
+    const destination = await this.#prisma.destination.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: syncConfig.applicationId,
+          name: syncConfig.destinationName,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!destination) {
+      throw new NotFoundError(`Destination with name ${syncConfig.destinationName} not found`);
+    }
+
+    const provider = await this.#prisma.provider.findUnique({
+      where: {
+        applicationId_name: {
+          applicationId: syncConfig.applicationId,
+          name: syncConfig.providerName,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!provider) {
+      throw new NotFoundError(`Provider with name ${syncConfig.providerName} not found`);
+    }
 
     const upsertedSyncConfigModel = await this.#prisma.$transaction(async (tx) => {
       const upsertedSyncConfigModel = await tx.syncConfig.upsert({
         where: {
-          providerId: syncConfig.providerId,
+          providerId: provider.id,
         },
-        create: toSyncConfigModel(syncConfig),
-        update: toSyncConfigModel(syncConfig),
+        create: fromCreateParamsToSyncConfigModel(syncConfig, destination.id, provider.id),
+        update: {
+          config: syncConfig.config,
+        },
       });
 
       await tx.syncConfigChange.create({
@@ -146,16 +319,28 @@ export class SyncConfigService {
     return fromSyncConfigModel(upsertedSyncConfigModel);
   }
 
-  public async delete(id: string, applicationId: string): Promise<void> {
+  public async delete(id: string, applicationId: string, forceDeleteSyncs = false): Promise<void> {
     const syncs = await this.#prisma.sync.findMany({
       where: {
         syncConfigId: id,
       },
     });
-    if (syncs.length) {
-      throw new BadRequestError('Cannot delete sync config with active connections');
+    if (syncs.length && !forceDeleteSyncs) {
+      throw new BadRequestError(
+        `Deleting this syncConfig will delete ~${syncs.length} syncs. If you are sure you want to do this, set force_delete_syncs to true.`
+      );
     }
     await this.#prisma.$transaction([
+      this.#prisma.syncChange.createMany({
+        data: syncs.map((sync) => ({
+          syncId: sync.id,
+        })),
+      }),
+      this.#prisma.sync.deleteMany({
+        where: {
+          syncConfigId: id,
+        },
+      }),
       this.#prisma.syncConfig.deleteMany({
         where: { id, applicationId },
       }),
@@ -168,7 +353,7 @@ export class SyncConfigService {
   }
 }
 
-const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
+export const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpdateParams): void => {
   // Check that there are no duplicates among objects
   const commonObjects = params.config.commonObjects?.map((object) => object.object) ?? [];
   const allObjects = [...(params.config.standardObjects?.map((object) => object.object) ?? [])];
@@ -190,4 +375,39 @@ const validateSyncConfigParams = (params: SyncConfigCreateParams | SyncConfigUpd
   if (entityDuplicates.length > 0) {
     throw new BadRequestError(`Duplicate entities found: ${entityDuplicates.join(', ')}`);
   }
+
+  // Validate that `fullSyncEveryNIncrementals` >= 1
+  if (params.config.defaultConfig.strategy === 'full only' && params.config.defaultConfig.fullSyncEveryNIncrementals) {
+    throw new BadRequestError('fullSyncEveryNIncrementals cannot be set for full syncs');
+  }
+  [
+    ...(params.config.commonObjects ?? []),
+    ...(params.config.customObjects ?? []),
+    ...(params.config.standardObjects ?? []),
+  ].forEach((objectConfig) => {
+    if (
+      objectConfig.syncStrategyOverride?.strategy === 'full only' &&
+      objectConfig.syncStrategyOverride.fullSyncEveryNIncrementals
+    ) {
+      throw new BadRequestError('fullSyncEveryNIncrementals cannot be set for full syncs');
+    }
+  });
+  if (
+    params.config.defaultConfig.fullSyncEveryNIncrementals !== undefined &&
+    params.config.defaultConfig.fullSyncEveryNIncrementals < 1
+  ) {
+    throw new BadRequestError('fullSyncEveryNIncrementals must be greater than 0');
+  }
+  [
+    ...(params.config.commonObjects ?? []),
+    ...(params.config.customObjects ?? []),
+    ...(params.config.standardObjects ?? []),
+  ].forEach((objectConfig) => {
+    if (
+      objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals !== undefined &&
+      objectConfig.syncStrategyOverride?.fullSyncEveryNIncrementals < 1
+    ) {
+      throw new BadRequestError('fullSyncEveryNIncrementals must be greater than 0');
+    }
+  });
 };

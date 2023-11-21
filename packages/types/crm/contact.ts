@@ -1,4 +1,4 @@
-import type { BaseCrmModel, BaseSearchParams, CustomFields, SnakecasedCrmTenantFields } from '.';
+import type { BaseCrmModel, BaseSearchParams, CrmListParams, CustomFields, SnakecasedCrmTenantFields } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from './common';
@@ -30,8 +30,7 @@ export type ContactUpdateParams = ContactCreateParams & {
 
 export type ContactSearchParams = BaseSearchParams & {
   filter: {
-    key: 'email';
-    value: string;
+    email: string;
   };
 };
 
@@ -54,4 +53,5 @@ export type RemoteContactTypes = {
   updateParams: ContactUpdateParams;
   upsertParams: ContactUpsertParams;
   searchParams: ContactSearchParams;
+  listParams: CrmListParams;
 };

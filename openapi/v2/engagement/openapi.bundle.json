@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.18.1",
+    "version": "0.21.6",
     "title": "Unified Engagement API",
     "contact": {
       "name": "Supaglue",
@@ -17,162 +17,6 @@
     }
   ],
   "paths": {
-    "/passthrough": {
-      "post": {
-        "deprecated": true,
-        "operationId": "sendPassthroughRequest",
-        "tags": [
-          "Passthrough"
-        ],
-        "summary": "Send passthrough request",
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "description": "Send request directly to a provider",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "path": {
-                    "type": "string",
-                    "description": "The path to send the request to (do not pass the domain)"
-                  },
-                  "method": {
-                    "type": "string",
-                    "enum": [
-                      "GET",
-                      "POST",
-                      "PUT",
-                      "PATCH",
-                      "DELETE"
-                    ],
-                    "example": "GET"
-                  },
-                  "headers": {
-                    "type": "object",
-                    "description": "Headers to pass to downstream",
-                    "additionalProperties": {
-                      "type": "string"
-                    }
-                  },
-                  "query": {
-                    "type": "object",
-                    "description": "Query parameters to pass to downstream",
-                    "additionalProperties": {
-                      "type": "string"
-                    }
-                  },
-                  "body": {
-                    "description": "Body to pass to downstream (can be string or JSON object)",
-                    "oneOf": [
-                      {
-                        "type": "string"
-                      },
-                      {
-                        "type": "object",
-                        "additionalProperties": true
-                      }
-                    ]
-                  }
-                },
-                "required": [
-                  "path",
-                  "method"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Passthrough response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "url": {
-                      "type": "string",
-                      "description": "The full URL the request was went to",
-                      "example": "https://customengagement.com/api/cars"
-                    },
-                    "status": {
-                      "type": "number",
-                      "description": "Status code from the downstream",
-                      "example": 200
-                    },
-                    "headers": {
-                      "type": "object",
-                      "description": "The response headers from the downstream",
-                      "additionalProperties": {
-                        "type": "string"
-                      }
-                    },
-                    "body": {
-                      "anyOf": [
-                        {
-                          "type": "string"
-                        },
-                        {
-                          "type": "number"
-                        },
-                        {
-                          "type": "integer"
-                        },
-                        {
-                          "type": "boolean"
-                        },
-                        {
-                          "type": "array",
-                          "items": {
-                            "additionalProperties": true
-                          }
-                        },
-                        {
-                          "type": "object",
-                          "additionalProperties": true
-                        }
-                      ],
-                      "description": "The body from the downstream"
-                    }
-                  },
-                  "required": [
-                    "url",
-                    "status",
-                    "headers"
-                  ]
-                },
-                "examples": {
-                  "Example": {
-                    "value": {
-                      "url": "https://customengagement.com/api/cars",
-                      "status": 200,
-                      "headers": {
-                        "x-requests-limit": 96
-                      },
-                      "body": []
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
     "/accounts": {
       "post": {
         "operationId": "createAccount",
@@ -525,6 +369,101 @@
             "$ref": "#/components/parameters/cursor"
           }
         ],
+        "responses": {
+          "200": {
+            "description": "Paginated Contacts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/contact"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
+    "/contacts/_search": {
+      "post": {
+        "operationId": "searchContacts",
+        "summary": "Search contacts",
+        "description": "Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.\n",
+        "tags": [
+          "Contacts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/read_from_cache"
+          },
+          {
+            "$ref": "#/components/parameters/remote_provider_page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "object",
+                    "properties": {
+                      "emails": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "example": "hello@example.com"
+                        },
+                        "description": "The emails to search for. This will be imeplemented as an OR search."
+                      }
+                    },
+                    "required": [
+                      "emails"
+                    ]
+                  }
+                },
+                "required": [
+                  "filter"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Paginated Contacts",
@@ -1296,6 +1235,99 @@
         }
       ]
     },
+    "/sequence_states/_search": {
+      "post": {
+        "operationId": "searchSequenceStates",
+        "summary": "Search sequence states",
+        "description": "Search sequence states by contact_id and/or sequence_id. Note: only `read_from_cache=false` is supported at the moment.\nSupport:\n\n| Provider  | Search By               |\n| --------- | ----------------------- |\n| Apollo    | contact_id only         |\n| Salesloft | contact_id, sequence_id |\n| Outreach  | contact_id, sequence_id |\n",
+        "tags": [
+          "Sequence States"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/read_from_cache"
+          },
+          {
+            "$ref": "#/components/parameters/remote_provider_page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "object",
+                    "description": "If both contact_id and sequence_id are provided, the search will be performed as an AND search.",
+                    "properties": {
+                      "contact_id": {
+                        "type": "string",
+                        "description": "The ID of the contact to filter on."
+                      },
+                      "sequence_id": {
+                        "type": "string",
+                        "description": "The ID of the sequence to filter on."
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "filter"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paginated Sequence States",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/sequence_state"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/sequence_states/_batch": {
       "post": {
         "operationId": "batchCreateSequenceState",
@@ -1442,10 +1474,6 @@
     {
       "name": "Accounts",
       "description": "The `Account` Common Object represents a \"company\" or \"account\" in Engagements."
-    },
-    {
-      "name": "Passthrough",
-      "description": "Passthrough operations to underlying providers."
     }
   ],
   "components": {
@@ -1945,8 +1973,7 @@
           },
           "is_archived": {
             "type": "boolean",
-            "nullable": true,
-            "description": "When archived, cannot add contact to sequence or send mail. This is null when provider does not have such concept (e.g. apollo)"
+            "description": "When archived, cannot add contact to sequence or send mail."
           },
           "share_type": {
             "type": "string",
@@ -2399,6 +2426,15 @@
         },
         "example": 123,
         "description": "Number of results to return per page. (Max: 1000)"
+      },
+      "remote_provider_page_size": {
+        "name": "page_size",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        },
+        "example": 100,
+        "description": "Number of results to return per page. (Max: 100)"
       },
       "read_from_cache": {
         "name": "read_from_cache",

@@ -4,6 +4,7 @@ import type {
   CreateSyncConfigRequest,
   CreateSyncConfigResponse,
   DeleteSyncConfigPathParams,
+  DeleteSyncConfigQueryParams,
   DeleteSyncConfigRequest,
   DeleteSyncConfigResponse,
   GetSyncConfigPathParams,
@@ -13,6 +14,7 @@ import type {
   GetSyncConfigsRequest,
   GetSyncConfigsResponse,
   UpdateSyncConfigPathParams,
+  UpdateSyncConfigQueryParams,
   UpdateSyncConfigRequest,
   UpdateSyncConfigResponse,
 } from '@supaglue/schemas/v2/mgmt';
@@ -34,7 +36,8 @@ export default function init(app: Router): void {
       res: Response<GetSyncConfigsResponse>
     ) => {
       const syncConfigs = await syncConfigService.list(req.supaglueApplication.id);
-      return res.status(200).send(syncConfigs.map(snakecaseKeys));
+      const dtos = await syncConfigService.toSyncConfigDTOs(syncConfigs);
+      return res.status(200).send(dtos.map(snakecaseKeys));
     }
   );
 
@@ -57,7 +60,7 @@ export default function init(app: Router): void {
           },
         }),
       });
-      return res.status(201).send(snakecaseKeys(syncConfig));
+      return res.status(201).send(snakecaseKeys(await syncConfigService.toSyncConfigDTO(syncConfig)));
     }
   );
 
@@ -71,39 +74,58 @@ export default function init(app: Router): void {
         req.params.sync_config_id,
         req.supaglueApplication.id
       );
-      return res.status(200).send(snakecaseKeys(syncConfig));
+      return res.status(200).send(snakecaseKeys(await syncConfigService.toSyncConfigDTO(syncConfig)));
     }
   );
 
   syncConfigRouter.put(
     '/:sync_config_id',
     async (
-      req: Request<UpdateSyncConfigPathParams, UpdateSyncConfigResponse, UpdateSyncConfigRequest>,
+      req: Request<
+        UpdateSyncConfigPathParams,
+        UpdateSyncConfigResponse,
+        UpdateSyncConfigRequest,
+        UpdateSyncConfigQueryParams
+      >,
       res: Response<UpdateSyncConfigResponse>
     ) => {
-      const syncConfig = await syncConfigService.update(req.params.sync_config_id, req.supaglueApplication.id, {
-        ...camelcaseKeys({
-          ...req.body,
-          config: {
-            ...req.body.config,
-            common_objects: req.body.config.common_objects?.map((commonObject) => ({
-              ...commonObject,
-              object: commonObject.object as CommonObjectType,
-            })),
-          },
-        }),
-      });
-      return res.status(200).send(snakecaseKeys(syncConfig));
+      const syncConfig = await syncConfigService.update(
+        req.params.sync_config_id,
+        req.supaglueApplication.id,
+        {
+          ...camelcaseKeys({
+            ...req.body,
+            config: {
+              ...req.body.config,
+              common_objects: req.body.config.common_objects?.map((commonObject) => ({
+                ...commonObject,
+                object: commonObject.object as CommonObjectType,
+              })),
+            },
+          }),
+        },
+        req.query?.force_delete_syncs
+      );
+      return res.status(200).send(snakecaseKeys(await syncConfigService.toSyncConfigDTO(syncConfig)));
     }
   );
 
   syncConfigRouter.delete(
     '/:sync_config_id',
     async (
-      req: Request<DeleteSyncConfigPathParams, DeleteSyncConfigResponse, DeleteSyncConfigRequest>,
+      req: Request<
+        DeleteSyncConfigPathParams,
+        DeleteSyncConfigResponse,
+        DeleteSyncConfigRequest,
+        DeleteSyncConfigQueryParams
+      >,
       res: Response<DeleteSyncConfigResponse>
     ) => {
-      await syncConfigService.delete(req.params.sync_config_id, req.supaglueApplication.id);
+      await syncConfigService.delete(
+        req.params.sync_config_id,
+        req.supaglueApplication.id,
+        req.query?.force_delete_syncs
+      );
       return res.status(204).end();
     }
   );

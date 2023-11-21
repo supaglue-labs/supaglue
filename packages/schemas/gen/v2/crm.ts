@@ -4,11 +4,6 @@
  */
 
 
-/** OneOf type helpers */
-type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
-type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U;
-type OneOf<T extends any[]> = T extends [infer Only] ? Only : T extends [infer A, infer B, ...infer Rest] ? OneOf<[XOR<A, B>, ...Rest]> : never;
-
 export interface paths {
   "/accounts": {
     /** List accounts */
@@ -24,7 +19,7 @@ export interface paths {
   };
   "/accounts/_upsert": {
     /**
-     * Upsert account 
+     * Upsert account
      * @description Upsert an account. If the account does not exist, it will be created. If the account does exist, it will be updated.
      * Only supported for Salesforce and Hubspot.
      */
@@ -65,10 +60,10 @@ export interface paths {
   };
   "/contacts/_search": {
     /**
-     * Search contacts 
+     * Search contacts
      * @description Search contacts by a filter.
      * Support:
-     * 
+     *
      * | Provider    | Search By       |
      * | ----------- | --------------- |
      * | Hubspot     | Email           |
@@ -86,7 +81,7 @@ export interface paths {
   };
   "/contacts/_upsert": {
     /**
-     * Upsert contact 
+     * Upsert contact
      * @description Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.
      * Only supported for Salesforce, Hubspot, and Pipedrive.
      */
@@ -128,7 +123,7 @@ export interface paths {
   };
   "/leads/_upsert": {
     /**
-     * Upsert lead 
+     * Upsert lead
      * @description Upsert a lead. If the lead does not exist, it will be created. If the lead does exist, it will be updated.
      * Only supported for Salesforce.
      */
@@ -142,10 +137,10 @@ export interface paths {
   };
   "/leads/_search": {
     /**
-     * Search leads 
+     * Search leads
      * @description Search leads by a filter.
      * Support:
-     * 
+     *
      * | Provider    | Search By       |
      * | ----------- | --------------- |
      * | Hubspot     | Email           |
@@ -217,13 +212,13 @@ export interface paths {
   };
   "/users/{user_id}": {
     /**
-     * Get user 
+     * Get user
      * @description The common schema User maps to the following 3rd-party provider objects:
-     * 
-     * | Provider  | Remote object ID  | 
-     * | --------- | ----------------- | 
-     * | Hubspot   | V3 Owner          | 
-     * | Dynamics  | Azure System User | 
+     *
+     * | Provider  | Remote object ID  |
+     * | --------- | ----------------- |
+     * | Hubspot   | V3 Owner          |
+     * | Dynamics  | Azure System User |
      * | Intercom  | Admin             |
      */
     get: operations["getUser"];
@@ -240,30 +235,30 @@ export interface paths {
   };
   "/custom_objects/{object_name}/records": {
     /**
-     * List custom object records 
+     * List custom object records
      * @description List custom object records
      * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
     get: operations["listCustomObjectRecords"];
     /**
-     * Create custom object record 
+     * Create custom object record
      * @description Create custom object record
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
@@ -280,11 +275,11 @@ export interface paths {
   };
   "/custom_objects/{object_name}/records/{record_id}": {
     /**
-     * Get custom object record 
+     * Get custom object record
      * @description Get custom object record
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
@@ -294,11 +289,11 @@ export interface paths {
      */
     get: operations["getCustomObjectRecord"];
     /**
-     * Update custom object record 
+     * Update custom object record
      * @description Update custom object record
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
@@ -315,7 +310,7 @@ export interface paths {
       path: {
         object_name: components["parameters"]["object_name"];
         /**
-         * @description The ID of the record to retrieve or update 
+         * @description The ID of the record to retrieve or update
          * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
          */
         record_id: string;
@@ -324,30 +319,30 @@ export interface paths {
   };
   "/standard_objects/{object_name}/records": {
     /**
-     * List standard object records 
+     * List standard object records
      * @description List standard object records
      * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
     get: operations["listStandardObjectRecords"];
     /**
-     * Create standard object record 
+     * Create standard object record
      * @description Create standard object record
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
@@ -364,11 +359,11 @@ export interface paths {
   };
   "/standard_objects/{object_name}/records/{record_id}": {
     /**
-     * Get standard object record 
+     * Get standard object record
      * @description Get standard object record
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
@@ -378,11 +373,11 @@ export interface paths {
      */
     get: operations["getStandardObjectRecord"];
     /**
-     * Update standard object record 
+     * Update standard object record
      * @description Update standard object record
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
@@ -399,7 +394,7 @@ export interface paths {
       path: {
         object_name: components["parameters"]["object_name"];
         /**
-         * @description The ID of the record to retrieve or update 
+         * @description The ID of the record to retrieve or update
          * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
          */
         record_id: string;
@@ -408,11 +403,11 @@ export interface paths {
   };
   "/associations": {
     /**
-     * List associations for a record and target object 
+     * List associations for a record and target object
      * @description Get a list of associations
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
@@ -422,11 +417,11 @@ export interface paths {
      */
     get: operations["listAssociations"];
     /**
-     * Upsert association 
+     * Upsert association
      * @description Upsert association
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
@@ -444,32 +439,32 @@ export interface paths {
   };
   "/metadata/associations": {
     /**
-     * List association schemas 
+     * List association schemas
      * @description Get a list of Association Schemas
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
     get: operations["listAssociationSchemas"];
     /**
-     * Create association schema 
+     * Create association schema
      * @description Create an association schema
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
-     * 
+     *
      * Note: When creating a new association schema for Hubspot, Hubspot will also create a default association schema (with an empty name). Either can be used to create associations.
      */
     post: operations["createAssociationSchema"];
@@ -482,25 +477,25 @@ export interface paths {
   };
   "/metadata/custom_objects": {
     /**
-     * List custom object schemas 
+     * List custom object schemas
      * @description List custom object schemas
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
     get: operations["listCustomObjectSchemas"];
     /**
-     * Create custom object schema 
+     * Create custom object schema
      * @description Create custom object schema
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported | Notes                                                   |
      * | ----------- | --------- | ------------------------------------------------------- |
      * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
@@ -518,15 +513,15 @@ export interface paths {
   };
   "/metadata/standard_objects": {
     /**
-     * List standard object schemas 
+     * List standard object schemas
      * @description List standard object schemas
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
@@ -542,7 +537,7 @@ export interface paths {
     /** List properties */
     get: operations["listPropertiesPreview"];
     /**
-     * Create property 
+     * Create property
      * @description Creates a custom property in the provider and registers it in Supaglue.
      */
     post: operations["createProperty"];
@@ -559,14 +554,14 @@ export interface paths {
   };
   "/metadata/properties/{object_name}/{property_name}": {
     /**
-     * Get property (preview) 
+     * Get property (preview)
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
      */
     get: operations["getProperty"];
     /**
-     * Update property (preview) 
+     * Update property (preview)
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
@@ -587,7 +582,7 @@ export interface paths {
   };
   "/metadata/properties/{object_name}/register": {
     /**
-     * Register Property (preview) 
+     * Register Property (preview)
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
      * :::
@@ -609,25 +604,25 @@ export interface paths {
   };
   "/metadata/custom_objects/{object_name}": {
     /**
-     * Get custom object schema details 
+     * Get custom object schema details
      * @description Get custom object schema details
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported |
      * | ----------- | --------- |
      * | Hubspot     | Yes       |
-     * | Salesforce  | Yes       | 
+     * | Salesforce  | Yes       |
      * | Pipedrive   | No        |
      * | MS Dynamics | No        |
      */
     get: operations["getCustomObjectSchema"];
     /**
-     * Update custom object schema 
+     * Update custom object schema
      * @description Update custom object schema
-     * 
+     *
      * Support:
-     * 
+     *
      * | Provider    | Supported | Notes                                                   |
      * | ----------- | --------- | ------------------------------------------------------- |
      * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
@@ -658,12 +653,12 @@ export interface paths {
   };
   "/lists/{list_id}": {
     /**
-     * List list memberships 
+     * List list memberships
      * @description Support:
-     * 
+     *
      * | Provider   | Object                                      | Common Schema support | Notes                                 |
      * | ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |
-     * | Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |
+     * | Hubspot    | `contact`, `account`                        | Yes                   | Raw data response from V3 API         |
      * | Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |
      */
     get: operations["listListMemberships"];
@@ -675,20 +670,6 @@ export interface paths {
       path: {
         /** @example 220e715a-0cbc-4d2d-8420-cd729f12f094 */
         list_id: string;
-      };
-    };
-  };
-  "/passthrough": {
-    /**
-     * Send passthrough request 
-     * @deprecated 
-     * @description Send request directly to a provider
-     */
-    post: operations["sendPassthroughRequest"];
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
       };
     };
   };
@@ -707,7 +688,7 @@ export interface components {
       /** @example API's */
       industry: string | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_activity_at: Date | null;
@@ -722,19 +703,19 @@ export interface components {
       /** @example https://supaglue.com/ */
       website: string | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
@@ -769,7 +750,7 @@ export interface components {
       /** @example 54312 */
       id: string;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_activity_at: Date | null;
@@ -778,19 +759,19 @@ export interface components {
       phone_numbers: components["schemas"]["phone_numbers"];
       lifecycle_stage: components["schemas"]["lifecycle_stage"];
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
@@ -824,7 +805,7 @@ export interface components {
       converted_contact_id: string | null;
       converted_contact?: components["schemas"]["contact"];
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2023-02-27T00:00:00Z
        */
       converted_date: Date | null;
@@ -843,19 +824,19 @@ export interface components {
       /** @example Co-Founder */
       title: string | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2023-02-10T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2023-02-10T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
@@ -887,7 +868,7 @@ export interface components {
       /** @example 100000 */
       amount: number | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2023-02-27T00:00:00Z
        */
       close_date?: Date | null;
@@ -896,7 +877,7 @@ export interface components {
       /** @example 54312 */
       id: string;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2023-02-27T00:00:00Z
        */
       last_activity_at: Date | null;
@@ -910,19 +891,19 @@ export interface components {
       /** @example OPEN */
       status: string | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2023-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2023-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
@@ -936,47 +917,47 @@ export interface components {
       email: string | null;
       is_active: boolean | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       created_at: Date | null;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       updated_at: Date | null;
       /** @example false */
       is_deleted: boolean;
       /**
-       * Format: date-time 
+       * Format: date-time
        * @example 2022-02-27T00:00:00Z
        */
       last_modified_at: Date;
     };
     property_unified: {
       /**
-       * @description The machine name of the property as it appears in the third-party Provider. 
+       * @description The machine name of the property as it appears in the third-party Provider.
        * @example FirstName
        */
       id: string;
       /** @description Only applicable for custom properties. This represents the unique identifier that can be used to refer to this property across all customers. */
       custom_name?: string;
       /**
-       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @description The human-readable name of the property as provided by the third-party Provider.
        * @example First Name
        */
       label: string;
       /** @description A description of the field. */
       description?: string;
       /**
-       * @description Whether or not this field is required. Must be false for Salesforce boolean fields. 
+       * @description Whether or not this field is required. Must be false for Salesforce boolean fields.
        * @example false
        */
       is_required?: boolean;
       /** @description The default value for the property. Only supported for Salesforce. */
       default_value?: string | number | boolean;
       /**
-       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't.
        * @example supaglue
        */
       group_name?: string;
@@ -986,9 +967,9 @@ export interface components {
       /** @description Only applicable in Salesforce. If not given, will default to 0. */
       scale?: number;
       /** @description The list of options for a picklist/multipicklist field. */
-      options?: (components["schemas"]["picklist_option"])[];
+      options?: components["schemas"]["picklist_option"][];
       /**
-       * @description The raw details of the property as provided by the third-party Provider, if available. 
+       * @description The raw details of the property as provided by the third-party Provider, if available.
        * @example {}
        */
       raw_details?: {
@@ -998,24 +979,24 @@ export interface components {
     create_property: {
       /**
        * @description The unique identifier to be used to refer to this property across all customers. Supaglue will use this to appropriately map to the provider field ID.
-       *  
+       *
        * @example ticketId
        */
       name: string;
       /**
-       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @description The human-readable name of the property as provided by the third-party Provider.
        * @example First Name
        */
       label: string;
       /** @description A description of the field. */
       description?: string;
       /**
-       * @description Defaults to false. 
+       * @description Defaults to false.
        * @example false
        */
       is_required?: boolean;
       /**
-       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. If not specified, Supaglue will create the field in the 'custom_properties' group. 
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. If not specified, Supaglue will create the field in the 'custom_properties' group.
        * @example supaglue
        */
       group_name?: string;
@@ -1025,36 +1006,36 @@ export interface components {
       /** @description Only applicable in Salesforce. If not given, will default to 0. */
       scale?: number;
       /** @description The list of options for a picklist/multipicklist field. */
-      options?: (components["schemas"]["picklist_option"])[];
+      options?: components["schemas"]["picklist_option"][];
     };
     register_property: {
       /**
-       * @description The machine name of the property as it appears in the third-party Provider. 
+       * @description The machine name of the property as it appears in the third-party Provider.
        * @example 1234523
        */
       id: string;
       /**
        * @description The unique identifier to be used to refer to this property across all customers. Supaglue will use this to appropriately map to the provider field ID.
-       *  
+       *
        * @example ticketId
        */
       name: string;
     };
     update_property: {
       /**
-       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @description The human-readable name of the property as provided by the third-party Provider.
        * @example First Name
        */
       label?: string;
       /** @description A description of the field. */
       description?: string;
       /**
-       * @description Defaults to false. 
+       * @description Defaults to false.
        * @example false
        */
       is_required?: boolean;
       /**
-       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't.
        * @example supaglue
        */
       group_name?: string;
@@ -1064,13 +1045,13 @@ export interface components {
       /** @description Only applicable in Salesforce. If not given, will default to 0. */
       scale?: number;
       /** @description The list of options for a picklist/multipicklist field. */
-      options?: (components["schemas"]["picklist_option"])[];
+      options?: components["schemas"]["picklist_option"][];
     };
     /**
      * @description Type of the field.
-     * 
+     *
      * Support:
-     * 
+     *
      * <table>
      *   <thead>
      *     <tr>
@@ -1131,7 +1112,7 @@ export interface components {
      *     </tr>
      *   </tbody>
      *   </table>
-     *  
+     *
      * @enum {string}
      */
     property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "other";
@@ -1147,24 +1128,24 @@ export interface components {
     };
     list_metadata: {
       /**
-       * @description The provider-specific unique identifier for this list. 
+       * @description The provider-specific unique identifier for this list.
        * @example 00BDn00000RHS32MAH
        */
       id: string;
       /** @enum {string} */
       object_type: "contact" | "account" | "lead" | "opportunity";
       /**
-       * @description The developer name of this list. 
+       * @description The developer name of this list.
        * @example RecentlyViewedContacts
        */
       name: string;
       /**
-       * @description The label for this list. 
+       * @description The label for this list.
        * @example Recently Viewed Contacts
        */
       label: string;
       /**
-       * @description The raw data from the provider for this list. 
+       * @description The raw data from the provider for this list.
        * @example {
        *   "attributes": {
        *     "type": "ListView",
@@ -1219,30 +1200,30 @@ export interface components {
         /** @example Tickets */
         plural: string;
       };
-      fields: (components["schemas"]["custom_object_field"])[];
+      fields: components["schemas"]["custom_object_field"][];
     };
     custom_object_field: {
       /**
-       * @description The machine name of the property as it appears in the third-party Provider. In Salesforce, this must end with `__c`. 
+       * @description The machine name of the property as it appears in the third-party Provider. In Salesforce, this must end with `__c`.
        * @example FirstName
        */
       id: string;
       /**
-       * @description The human-readable name of the property as provided by the third-party Provider. 
+       * @description The human-readable name of the property as provided by the third-party Provider.
        * @example First Name
        */
       label: string;
       /** @description A description of the field. */
       description?: string;
       /**
-       * @description Whether or not this field is required. Must be false for Salesforce boolean fields. 
+       * @description Whether or not this field is required. Must be false for Salesforce boolean fields.
        * @example false
        */
       is_required?: boolean;
       /** @description The default value for the property. Only supported for Salesforce. */
       default_value?: string | number | boolean;
       /**
-       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't. 
+       * @description Only applicable for Hubspot. If specified, Supaglue will attempt to attach the field to this group if it exists, or create it if it doesn't.
        * @example supaglue
        */
       group_name?: string;
@@ -1252,9 +1233,9 @@ export interface components {
       /** @description Only applicable in Salesforce. If not given, will default to 0. */
       scale?: number;
       /** @description The list of options for a picklist/multipicklist field. */
-      options?: (components["schemas"]["picklist_option"])[];
+      options?: components["schemas"]["picklist_option"][];
       /**
-       * @description The raw details of the property as provided by the third-party Provider, if available. 
+       * @description The raw details of the property as provided by the third-party Provider, if available.
        * @example {}
        */
       raw_details?: {
@@ -1295,22 +1276,28 @@ export interface components {
         [key: string]: unknown;
       };
     };
-    simple_custom_object: {
+    simple_custom_object_schema: {
       /** @example ticket */
       name: string;
+      labels?: {
+        /** @example Ticket */
+        singular: string;
+        /** @example Tickets */
+        plural: string;
+      };
     };
     /** @description An instance of an association between two records. */
     association: {
       association_schema_id: string;
       /**
-       * @description The name of the object that the source record belongs to. 
+       * @description The name of the object that the source record belongs to.
        * @example company
        */
       source_object: string;
       /** @example 45636a40-87e3-4707-b43c-39fecf9a8f4b */
       source_record_id: string;
       /**
-       * @description The name of the object that the target record belongs to. 
+       * @description The name of the object that the target record belongs to.
        * @example contact
        */
       target_object: string;
@@ -1325,28 +1312,28 @@ export interface components {
       target_object: string;
       display_name: string;
     };
-    errors: ({
+    errors: {
         /**
-         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider. 
+         * @description The full error message from the remote Provider. The schema and level of detail will vary by Provider.
          * @example {"code":400,"body":{"status":"error","message":"Property values were not valid: [{\\"isValid\\":false,\\"message\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\",\\"error\\":\\"PROPERTY_DOESNT_EXIST\\",\\"name\\":\\"__about_us\\",\\"localizedErrorMessage\\":\\"Property \\\\\\"__about_us\\\\\\" does not exist\\"}]","correlationId":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","category":"VALIDATION_ERROR"},"headers":{"access-control-allow-credentials":"false","cf-cache-status":"DYNAMIC","cf-ray":"8053d17b9dae9664-SJC","connection":"close","content-length":"361","content-type":"application/json;charset=utf-8","date":"Mon, 11 Sep 2023 23:51:22 GMT","nel":"{\\"success_fraction\\":0.01,\\"report_to\\":\\"cf-nel\\",\\"max_age\\":604800}","report-to":"{\\"endpoints\\":[{\\"url\\":\\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\\"}],\\"group\\":\\"cf-nel\\",\\"max_age\\":604800}","server":"cloudflare","strict-transport-security":"max-age=31536000; includeSubDomains; preload","vary":"origin, Accept-Encoding","x-content-type-options":"nosniff","x-envoy-upstream-service-time":"91","x-evy-trace-listener":"listener_https","x-evy-trace-route-configuration":"listener_https/all","x-evy-trace-route-service-name":"envoyset-translator","x-evy-trace-served-by-pod":"iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2","x-evy-trace-virtual-host":"all","x-hubspot-correlation-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-hubspot-ratelimit-interval-milliseconds":"10000","x-hubspot-ratelimit-max":"100","x-hubspot-ratelimit-remaining":"99","x-hubspot-ratelimit-secondly":"10","x-hubspot-ratelimit-secondly-remaining":"9","x-request-id":"ac94252c-90b5-45d2-ad1d-9a9f7651d7d2","x-trace":"2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"}}
          */
         detail?: string;
         /**
-         * @description The Supaglue error code associated with the error. 
+         * @description The Supaglue error code associated with the error.
          * @example MISSING_REQUIRED_FIELD
          */
         problem_type?: string;
         /**
-         * @description A brief description of the error. The schema and type of message will vary by Provider. 
+         * @description A brief description of the error. The schema and type of message will vary by Provider.
          * @example Property values were not valid
          */
         title?: string;
-      })[];
-    warnings: ({
+      }[];
+    warnings: {
         detail?: string;
         problem_type?: string;
         title?: string;
-      })[];
+      }[];
     created_record: {
       id: string;
     };
@@ -1442,14 +1429,14 @@ export interface components {
     create_update_association: {
       association_schema_id: string;
       /**
-       * @description The name of the object that the source record belongs to. 
+       * @description The name of the object that the source record belongs to.
        * @example company
        */
       source_object: string;
       /** @example 45636a40-87e3-4707-b43c-39fecf9a8f4b */
       source_record_id: string;
       /**
-       * @description The name of the object that the target record belongs to. 
+       * @description The name of the object that the target record belongs to.
        * @example contact
        */
       target_object: string;
@@ -1464,7 +1451,7 @@ export interface components {
     };
     create_custom_object_schema: {
       /**
-       * @description The name you'd like to use for the custom object. For Salesforce, we will append `__c` if necessary. For HubSpot, it will pass through as-is. 
+       * @description The name you'd like to use for the custom object. For Salesforce, we will append `__c` if necessary. For HubSpot, it will pass through as-is.
        * @example ticket
        */
       name: string;
@@ -1477,11 +1464,11 @@ export interface components {
         plural: string;
       };
       /**
-       * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field. 
+       * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field.
        * @example ticket_id
        */
       primary_field_id: string;
-      fields: (components["schemas"]["custom_object_field"])[];
+      fields: components["schemas"]["custom_object_field"][];
     };
     update_custom_object_schema: {
       /** @example Ticket object */
@@ -1493,11 +1480,11 @@ export interface components {
         plural: string;
       };
       /**
-       * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field. 
+       * @description The key name of the "primary" field. For example, in HubSpot, this is the field that will be displayed for a record in the UI by default. For Salesforce, this will be referenced as the "Name" field.
        * @example ticket_id
        */
       primary_field_id: string;
-      fields: (components["schemas"]["custom_object_field"])[];
+      fields: components["schemas"]["custom_object_field"][];
     };
     created_custom_object_record: {
       id: string;
@@ -1507,76 +1494,98 @@ export interface components {
   responses: never;
   parameters: {
     /**
-     * @description Whether to include data that was deleted in providers. 
+     * @description Whether to include data that was deleted in providers.
      * @example true
      */
     include_deleted_data?: boolean;
     /**
-     * @description Whether to include raw data fetched from the 3rd party provider. 
+     * @description Whether to include raw data fetched from the 3rd party provider.
      * @example true
      */
     include_raw_data?: boolean;
     /**
-     * @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider. 
-     * 
-     * 
+     * @description Whether to read from Supaglue's Managed Destination cache or to read directly from the provider.
+     *
+     *
      * **NOTE**: `read_from_cache=true` requires you to have the object synced to the Supaglue Managed Destination.
-     *  
+     *
      * @example true
      */
     read_from_cache?: boolean;
     /**
-     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects created after this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     created_after?: Date;
     /**
-     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects created before this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     created_before?: Date;
     /**
-     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects modified after this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     modified_after?: Date;
     /**
-     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format and URI encoded. 
+     * @description If provided, will only return objects modified before this datetime. Datetime must be in ISO 8601 format and URI encoded.
      * @example 2023-02-23T00:00:00Z
      */
     modified_before?: Date;
     /**
-     * @description The pagination cursor value 
+     * @description The pagination cursor value
      * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
      */
     cursor?: string;
     /**
-     * @description Number of results to return per page. (Max: 100) 
+     * @description Number of results to return per page. (Max: 100)
      * @example 100
      */
     remote_provider_page_size?: string;
     /**
-     * @description Number of results to return per page. (Max: 1000) 
+     * @description Number of results to return per page. (Max: 1000)
      * @example 123
      */
     page_size?: string;
     /**
-     * @description The customer ID that uniquely identifies the customer in your application 
+     * @description The customer ID that uniquely identifies the customer in your application
      * @example my-customer-1
      */
     "x-customer-id": string;
     /**
-     * @description The provider name 
+     * @description The provider name
      * @example salesforce
      */
     "x-provider-name": string;
     /**
-     * @description The Supaglue common object type to fetch a list for. 
+     * @description The Supaglue common object type to fetch a list for.
+     *
+     * Support:
+     *
+     * <table>
+     *   <thead>
+     *     <tr>
+     *     <th>Provider</th>
+     *     <th>Object Type</th>
+     *     </tr>
+     *   </thead>
+     *   <tbody>
+     *     <tr>
+     *       <td>Salesforce</td>
+     *       <td>countact, account, opportunity, lead</td>
+     *     </tr>
+     *     <tr>
+     *       <td>Hubspot</td>
+     *       <td>contact, account</td>
+     *     </tr>
+     *   </tbody>
+     *   </table>
+     *
      * @example contact
      */
     object_type: "contact" | "account" | "opportunity" | "lead";
     /**
-     * @description The unique name of the custom object. For Salesforce, this should end with __c. For Hubspot, this will typically be the singular form of the object. 
+     * @description The unique name of the custom object. For Salesforce, this should end with __c. For Hubspot, this will typically be the singular form of the object.
      * @example MyCustomObject__c
      */
     object_name: string;
@@ -1585,6 +1594,8 @@ export interface components {
   headers: never;
   pathItems: never;
 }
+
+export type $defs = Record<string, never>;
 
 export type external = Record<string, never>;
 
@@ -1611,7 +1622,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["account"])[];
+            records: components["schemas"]["account"][];
           };
         };
       };
@@ -1646,7 +1657,7 @@ export interface operations {
     };
   };
   /**
-   * Upsert account 
+   * Upsert account
    * @description Upsert an account. If the account does not exist, it will be created. If the account does exist, it will be updated.
    * Only supported for Salesforce and Hubspot.
    */
@@ -1663,12 +1674,12 @@ export interface operations {
           record: components["schemas"]["create_update_account"];
           upsert_on: {
             /**
-             * @description The key to upsert on. Only `website` is supported for Salesforce, while both `domain` and `website` are supported for Hubspot. 
+             * @description The key to upsert on. Only `website` is supported for Salesforce, while both `domain` and `website` are supported for Hubspot.
              * @enum {string}
              */
             key: "domain" | "website";
             /** @description The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown. */
-            values: (string)[];
+            values: string[];
           };
         };
       };
@@ -1760,7 +1771,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["contact"])[];
+            records: components["schemas"]["contact"][];
           };
         };
       };
@@ -1805,10 +1816,10 @@ export interface operations {
     };
   };
   /**
-   * Search contacts 
+   * Search contacts
    * @description Search contacts by a filter.
    * Support:
-   * 
+   *
    * | Provider    | Search By       |
    * | ----------- | --------------- |
    * | Hubspot     | Email           |
@@ -1833,15 +1844,10 @@ export interface operations {
         "application/json": {
           filter: {
             /**
-             * @description The key to search on. Only `email` is supported for all providers. 
-             * @enum {string}
-             */
-            key: "email";
-            /**
-             * @description The value to search on. 
+             * @description The email to search on.
              * @example hello@example.com
              */
-            value: string;
+            email: string;
           };
         };
       };
@@ -1852,14 +1858,14 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["contact"])[];
+            records: components["schemas"]["contact"][];
           };
         };
       };
     };
   };
   /**
-   * Upsert contact 
+   * Upsert contact
    * @description Upsert a contact. If the contact does not exist, it will be created. If the contact does exist, it will be updated.
    * Only supported for Salesforce, Hubspot, and Pipedrive.
    */
@@ -1876,12 +1882,12 @@ export interface operations {
           record: components["schemas"]["create_update_contact"];
           upsert_on: {
             /**
-             * @description The key to upsert on. Only `email` is supported for all providers. 
+             * @description The key to upsert on. Only `email` is supported for all providers.
              * @enum {string}
              */
             key: "email";
             /** @description The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown. */
-            values: (string)[];
+            values: string[];
           };
         };
       };
@@ -1975,7 +1981,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["lead"])[];
+            records: components["schemas"]["lead"][];
           };
         };
       };
@@ -2021,7 +2027,7 @@ export interface operations {
     };
   };
   /**
-   * Upsert lead 
+   * Upsert lead
    * @description Upsert a lead. If the lead does not exist, it will be created. If the lead does exist, it will be updated.
    * Only supported for Salesforce.
    */
@@ -2038,12 +2044,12 @@ export interface operations {
           record: components["schemas"]["create_update_lead"];
           upsert_on: {
             /**
-             * @description The key to upsert on. Only `email` is supported. 
+             * @description The key to upsert on. Only `email` is supported.
              * @enum {string}
              */
             key: "email";
             /** @description The values to upsert on. If more than one value is provided, it will act as a logical OR. If more than one account is found that matches, then an error will be thrown. */
-            values: (string)[];
+            values: string[];
           };
         };
       };
@@ -2062,10 +2068,10 @@ export interface operations {
     };
   };
   /**
-   * Search leads 
+   * Search leads
    * @description Search leads by a filter.
    * Support:
-   * 
+   *
    * | Provider    | Search By       |
    * | ----------- | --------------- |
    * | Hubspot     | Email           |
@@ -2090,15 +2096,10 @@ export interface operations {
         "application/json": {
           filter: {
             /**
-             * @description The key to search on. Only `email` is supported for all providers. 
-             * @enum {string}
-             */
-            key: "email";
-            /**
-             * @description The value to search on. 
+             * @description The email to search on.
              * @example hello@example.com
              */
-            value: string;
+            email: string;
           };
         };
       };
@@ -2109,7 +2110,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["lead"])[];
+            records: components["schemas"]["lead"][];
           };
         };
       };
@@ -2191,7 +2192,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["opportunity"])[];
+            records: components["schemas"]["opportunity"][];
           };
         };
       };
@@ -2313,20 +2314,20 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["user"])[];
+            records: components["schemas"]["user"][];
           };
         };
       };
     };
   };
   /**
-   * Get user 
+   * Get user
    * @description The common schema User maps to the following 3rd-party provider objects:
-   * 
-   * | Provider  | Remote object ID  | 
-   * | --------- | ----------------- | 
-   * | Hubspot   | V3 Owner          | 
-   * | Dynamics  | Azure System User | 
+   *
+   * | Provider  | Remote object ID  |
+   * | --------- | ----------------- |
+   * | Hubspot   | V3 Owner          |
+   * | Dynamics  | Azure System User |
    * | Intercom  | Admin             |
    */
   getUser: {
@@ -2353,16 +2354,16 @@ export interface operations {
     };
   };
   /**
-   * List custom object records 
+   * List custom object records
    * @description List custom object records
    * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2388,22 +2389,22 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["custom_object_record"])[];
+            records: components["schemas"]["custom_object_record"][];
           };
         };
       };
     };
   };
   /**
-   * Create custom object record 
+   * Create custom object record
    * @description Create custom object record
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2438,11 +2439,11 @@ export interface operations {
     };
   };
   /**
-   * Get custom object record 
+   * Get custom object record
    * @description Get custom object record
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
@@ -2459,7 +2460,7 @@ export interface operations {
       path: {
         object_name: components["parameters"]["object_name"];
         /**
-         * @description The ID of the record to retrieve or update 
+         * @description The ID of the record to retrieve or update
          * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
          */
         record_id: string;
@@ -2475,11 +2476,11 @@ export interface operations {
     };
   };
   /**
-   * Update custom object record 
+   * Update custom object record
    * @description Update custom object record
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
@@ -2496,7 +2497,7 @@ export interface operations {
       path: {
         object_name: components["parameters"]["object_name"];
         /**
-         * @description The ID of the record to retrieve or update 
+         * @description The ID of the record to retrieve or update
          * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
          */
         record_id: string;
@@ -2523,16 +2524,16 @@ export interface operations {
     };
   };
   /**
-   * List standard object records 
+   * List standard object records
    * @description List standard object records
    * Note: This endpoint will only work if a Sync is setup with the Supaglue managed destination.
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2558,22 +2559,22 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["standard_object_record"])[];
+            records: components["schemas"]["standard_object_record"][];
           };
         };
       };
     };
   };
   /**
-   * Create standard object record 
+   * Create standard object record
    * @description Create standard object record
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2608,11 +2609,11 @@ export interface operations {
     };
   };
   /**
-   * Get standard object record 
+   * Get standard object record
    * @description Get standard object record
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
@@ -2629,7 +2630,7 @@ export interface operations {
       path: {
         object_name: components["parameters"]["object_name"];
         /**
-         * @description The ID of the record to retrieve or update 
+         * @description The ID of the record to retrieve or update
          * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
          */
         record_id: string;
@@ -2645,11 +2646,11 @@ export interface operations {
     };
   };
   /**
-   * Update standard object record 
+   * Update standard object record
    * @description Update standard object record
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
@@ -2666,7 +2667,7 @@ export interface operations {
       path: {
         object_name: components["parameters"]["object_name"];
         /**
-         * @description The ID of the record to retrieve or update 
+         * @description The ID of the record to retrieve or update
          * @example 82de27cb-6f8c-4278-b783-82d1d916eddc
          */
         record_id: string;
@@ -2693,11 +2694,11 @@ export interface operations {
     };
   };
   /**
-   * List associations for a record and target object 
+   * List associations for a record and target object
    * @description Get a list of associations
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
@@ -2722,18 +2723,18 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            results?: (components["schemas"]["association"])[];
+            results?: components["schemas"]["association"][];
           };
         };
       };
     };
   };
   /**
-   * Upsert association 
+   * Upsert association
    * @description Upsert association
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
@@ -2767,15 +2768,15 @@ export interface operations {
     };
   };
   /**
-   * List association schemas 
+   * List association schemas
    * @description Get a list of Association Schemas
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2795,25 +2796,25 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            results?: (components["schemas"]["association_schema"])[];
+            results?: components["schemas"]["association_schema"][];
           };
         };
       };
     };
   };
   /**
-   * Create association schema 
+   * Create association schema
    * @description Create an association schema
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
-   * 
+   *
    * Note: When creating a new association schema for Hubspot, Hubspot will also create a default association schema (with an empty name). Either can be used to create associations.
    */
   createAssociationSchema: {
@@ -2842,15 +2843,15 @@ export interface operations {
     };
   };
   /**
-   * List custom object schemas 
+   * List custom object schemas
    * @description List custom object schemas
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2862,20 +2863,20 @@ export interface operations {
       };
     };
     responses: {
-      /** @description An array containing the names of Custom Objects */
+      /** @description An array containing the names and labels of Custom Objects */
       200: {
         content: {
-          "application/json": (string)[];
+          "application/json": components["schemas"]["simple_custom_object_schema"][];
         };
       };
     };
   };
   /**
-   * Create custom object schema 
+   * Create custom object schema
    * @description Create custom object schema
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported | Notes                                                   |
    * | ----------- | --------- | ------------------------------------------------------- |
    * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
@@ -2913,15 +2914,15 @@ export interface operations {
     };
   };
   /**
-   * List standard object schemas 
+   * List standard object schemas
    * @description List standard object schemas
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -2936,7 +2937,7 @@ export interface operations {
       /** @description An array containing the names of Standard Objects */
       200: {
         content: {
-          "application/json": (string)[];
+          "application/json": string[];
         };
       };
     };
@@ -2958,14 +2959,14 @@ export interface operations {
       200: {
         content: {
           "application/json": {
-            properties: (components["schemas"]["property_unified"])[];
+            properties: components["schemas"]["property_unified"][];
           };
         };
       };
     };
   };
   /**
-   * Create property 
+   * Create property
    * @description Creates a custom property in the provider and registers it in Supaglue.
    */
   createProperty: {
@@ -2994,7 +2995,7 @@ export interface operations {
     };
   };
   /**
-   * Get property (preview) 
+   * Get property (preview)
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
@@ -3022,7 +3023,7 @@ export interface operations {
     };
   };
   /**
-   * Update property (preview) 
+   * Update property (preview)
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
@@ -3055,7 +3056,7 @@ export interface operations {
     };
   };
   /**
-   * Register Property (preview) 
+   * Register Property (preview)
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
    * :::
@@ -3089,15 +3090,15 @@ export interface operations {
     };
   };
   /**
-   * Get custom object schema details 
+   * Get custom object schema details
    * @description Get custom object schema details
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported |
    * | ----------- | --------- |
    * | Hubspot     | Yes       |
-   * | Salesforce  | Yes       | 
+   * | Salesforce  | Yes       |
    * | Pipedrive   | No        |
    * | MS Dynamics | No        |
    */
@@ -3121,11 +3122,11 @@ export interface operations {
     };
   };
   /**
-   * Update custom object schema 
+   * Update custom object schema
    * @description Update custom object schema
-   * 
+   *
    * Support:
-   * 
+   *
    * | Provider    | Supported | Notes                                                   |
    * | ----------- | --------- | ------------------------------------------------------- |
    * | Hubspot     | Yes       | All field types supported except picklist/multipicklist |
@@ -3181,19 +3182,19 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["list_metadata"])[];
+            records: components["schemas"]["list_metadata"][];
           };
         };
       };
     };
   };
   /**
-   * List list memberships 
+   * List list memberships
    * @description Support:
-   * 
+   *
    * | Provider   | Object                                      | Common Schema support | Notes                                 |
    * | ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |
-   * | Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |
+   * | Hubspot    | `contact`, `account`                        | Yes                   | Raw data response from V3 API         |
    * | Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |
    */
   listListMemberships: {
@@ -3218,75 +3219,7 @@ export interface operations {
         content: {
           "application/json": {
             pagination: components["schemas"]["pagination"];
-            records: (components["schemas"]["list_membership"])[];
-            metadata: components["schemas"]["list_metadata"];
-          };
-        };
-      };
-    };
-  };
-  /**
-   * Send passthrough request 
-   * @deprecated 
-   * @description Send request directly to a provider
-   */
-  sendPassthroughRequest: {
-    parameters: {
-      header: {
-        "x-customer-id": components["parameters"]["x-customer-id"];
-        "x-provider-name": components["parameters"]["x-provider-name"];
-      };
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** @description The path to send the request to (do not pass the domain) */
-          path: string;
-          /**
-           * @example GET 
-           * @enum {string}
-           */
-          method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-          /** @description Headers to pass to downstream */
-          headers?: {
-            [key: string]: string | undefined;
-          };
-          /** @description Query parameters to pass to downstream */
-          query?: {
-            [key: string]: string | undefined;
-          };
-          /** @description Body to pass to downstream (can be string or JSON object) */
-          body?: OneOf<[string, {
-            [key: string]: unknown;
-          }]>;
-        };
-      };
-    };
-    responses: {
-      /** @description Passthrough response */
-      200: {
-        content: {
-          "application/json": {
-            /**
-             * @description The full URL the request was went to 
-             * @example https://customcrm.com/api/cars
-             */
-            url: string;
-            /**
-             * @description Status code from the downstream 
-             * @example 200
-             */
-            status: number;
-            /** @description The response headers from the downstream */
-            headers: {
-              [key: string]: string | undefined;
-            };
-            /** @description The body from the downstream */
-            body?: string | number | boolean | ({
-                [key: string]: unknown;
-              })[] | {
-              [key: string]: unknown;
-            };
+            records: components["schemas"]["list_membership"][];
           };
         };
       };

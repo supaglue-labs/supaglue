@@ -1,4 +1,4 @@
-import type { BaseCrmModel, CustomFields, SnakecasedCrmTenantFields } from '.';
+import type { BaseCrmModel, CrmListParams, CustomFields, SnakecasedCrmTenantFields } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 
@@ -42,4 +42,5 @@ export type RemoteOpportunityTypes = {
   updateParams: OpportunityUpdateParams;
   upsertParams: never;
   searchParams: never;
+  listParams: CrmListParams;
 };

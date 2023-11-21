@@ -15,15 +15,25 @@ get:
 put:
   operationId: updateSyncConfig
   summary: Update Sync Config
+  description: |
+    :::danger
+    If `force_delete_syncs` is set to true, any syncs for any deleted objects will be cascadingly deleted for all customers with this sync config.
+    :::
   tags:
     - SyncConfigs
-  parameters: []
+  parameters:
+    - name: force_delete_syncs
+      in: query
+      required: false
+      schema: 
+        type: boolean
+      description: If true, any syncs for any deleted objects will be cascadingly deleted for all customers with this sync config
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/create_update_sync_config.yaml
+          $ref: ../components/schemas/update_sync_config.yaml
   responses:
     200:
       description: SyncConfig
@@ -34,10 +44,21 @@ put:
 delete:
   operationId: deleteSyncConfig
   summary: Delete Sync Config
+  description: |
+    :::danger
+    If `force_delete_syncs` is set to true, all syncs for all customers with this sync config will be cascadingly deleted.
+    :::
   tags:
     - SyncConfigs
   security:
     - x-api-key: []
+  parameters:
+    - name: force_delete_syncs
+      in: query
+      required: false
+      schema: 
+        type: boolean
+      description: If true, all syncs for all customers with this sync config will be cascadingly deleted
   responses:
     200:
       description: SyncConfig

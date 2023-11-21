@@ -1,0 +1,54 @@
+post:
+  operationId: searchContacts
+  summary: Search contacts
+  description: |
+    Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
+  tags:
+    - Contacts
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+    - $ref: ../../../common/components/parameters/query/read_from_cache.yaml
+    - $ref: ../../../common/components/parameters/query/remote_provider_page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            filter:
+              type: object
+              properties:
+                emails:
+                  type: array
+                  items:
+                    type: string
+                    example: hello@example.com
+                  description: The emails to search for. This will be imeplemented as an OR search.
+              required:
+                - emails
+          required:
+            - filter
+  responses:
+    200:
+      description: Paginated Contacts
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/contact.yaml
+            required:
+              - pagination
+              - records
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

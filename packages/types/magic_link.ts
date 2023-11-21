@@ -9,7 +9,7 @@ import type {
 export type MagicLink = {
   id: string;
   applicationId: string;
-  customerId: string;
+  customerId: string; // external customer id
   providerId: string;
   providerName: ProviderName;
   expiresAt: Date;

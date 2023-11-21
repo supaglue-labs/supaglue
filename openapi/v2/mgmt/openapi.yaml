@@ -2,7 +2,7 @@
 # Other than the `webhooks` key, we should not use 3.1.0 features since the validation middleware doesn't support it yet
 openapi: 3.1.0
 info:
-  version: 0.18.1
+  version: 0.21.6
   title: Management API
   contact:
     name: Supaglue
@@ -67,8 +67,10 @@ paths:
     $ref: paths/connections.yaml
   '/customers/{customer_id}/connections/_provider_user_id':
     $ref: paths/connections@_provider_user_id.yaml
-  '/customers/{customer_id}/connections/{connection_id}':
-    $ref: paths/connections@{connection_id}.yaml
+  '/customers/{customer_id}/connections/{provider_name}':
+    $ref: paths/connections@{provider_name}.yaml
+  '/customers/{customer_id}/connections/{provider_name}/_rate_limit_info':
+    $ref: paths/connections@{provider_name}@_rate_limit_info.yaml
   '/syncs':
     $ref: paths/syncs.yaml
   '/syncs/_pause':
@@ -127,14 +129,26 @@ components:
       $ref: ./components/schemas/objects/postgres_config_safe.yaml
     bigquery_config_safe:
       $ref: ./components/schemas/objects/bigquery_config_safe.yaml
+    snowflake_config_safe:
+      $ref: ./components/schemas/objects/snowflake_config_safe.yaml
+    redshift_config_safe:
+      $ref: ./components/schemas/objects/redshift_config_safe.yaml
     postgres_config_at_least_safe:
       $ref: ./components/schemas/objects/postgres_config_at_least_safe.yaml
     bigquery_config_at_least_safe:
       $ref: ./components/schemas/objects/bigquery_config_at_least_safe.yaml
+    snowflake_config_at_least_safe:
+      $ref: ./components/schemas/objects/snowflake_config_at_least_safe.yaml
+    redshift_config_at_least_safe:
+      $ref: ./components/schemas/objects/redshift_config_at_least_safe.yaml
     postgres_config_unsafe:
       $ref: ./components/schemas/objects/postgres_config_unsafe.yaml
     bigquery_config_unsafe:
       $ref: ./components/schemas/objects/bigquery_config_unsafe.yaml
+    snowflake_config_unsafe:
+      $ref: ./components/schemas/objects/snowflake_config_unsafe.yaml
+    redshift_config_unsafe:
+      $ref: ./components/schemas/objects/redshift_config_unsafe.yaml
     schema:
       $ref: ./components/schemas/objects/schema.yaml
     schema_config:
@@ -159,12 +173,18 @@ components:
       $ref: ./components/schemas/objects/object_field_mapping.yaml
     connection:
       $ref: ./components/schemas/objects/connection.yaml
+    single_rate_limit_info:
+      $ref: ./components/schemas/objects/single_rate_limit_info.yaml
+    rate_limit_info:
+      $ref: ./components/schemas/objects/rate_limit_info.yaml
     category:
       $ref: ./components/schemas/objects/category.yaml
     sync_config:
       $ref: ./components/schemas/objects/sync_config.yaml
     sync_config_data:
       $ref: ./components/schemas/objects/sync_config_data.yaml
+    sync_strategy_config:
+      $ref: ./components/schemas/objects/sync_strategy_config.yaml
     create_provider_config:
       $ref: ./components/schemas/objects/create_provider_config.yaml
     update_provider_config:
@@ -197,8 +217,10 @@ components:
       $ref: ./components/schemas/create_destination.yaml
     update_destination:
       $ref: ./components/schemas/update_destination.yaml
-    create_update_sync_config:
-      $ref: ./components/schemas/create_update_sync_config.yaml
+    create_sync_config:
+      $ref: ./components/schemas/create_sync_config.yaml
+    update_sync_config:
+      $ref: ./components/schemas/update_sync_config.yaml
     webhook-payload:
       $ref: './components/schemas/webhook-payload.yaml'
     upsert_connection_sync_config:

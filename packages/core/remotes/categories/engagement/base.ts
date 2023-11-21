@@ -1,6 +1,7 @@
 import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
 import type { Readable } from 'stream';
 import { NotImplementedError } from '../../../errors';
+import type { PaginatedSupaglueRecords } from '../../../lib/pagination';
 import type { RemoteClient } from '../../base';
 import { AbstractRemoteClient } from '../../base';
 
@@ -13,7 +14,7 @@ export type UpdateCommonObjectRecordResponse<T extends EngagementCommonObjectTyp
   CreateCommonObjectRecordResponse<T>;
 
 export interface EngagementRemoteClient extends RemoteClient {
-  listCommonObjectRecords(
+  streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date,
     heartbeat?: () => void
@@ -35,6 +36,11 @@ export interface EngagementRemoteClient extends RemoteClient {
     commonObjectType: T,
     params: Array<EngagementCommonObjectTypeMap<T>['createParams']>
   ): Promise<Array<CreateCommonObjectRecordResponse<T>>>;
+
+  searchCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>>;
 }
 
 export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClient implements EngagementRemoteClient {
@@ -42,11 +48,11 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     super(...args);
   }
 
-  public handleErr(err: unknown): unknown {
+  public async handleErr(err: unknown): Promise<unknown> {
     return err;
   }
 
-  public async listCommonObjectRecords(
+  public async streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date,
     heartbeat?: () => void
@@ -76,6 +82,13 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     commonObjectType: T,
     params: Array<EngagementCommonObjectTypeMap<T>['createParams']>
   ): Promise<Array<CreateCommonObjectRecordResponse<T>>> {
+    throw new NotImplementedError();
+  }
+
+  searchCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
     throw new NotImplementedError();
   }
 }

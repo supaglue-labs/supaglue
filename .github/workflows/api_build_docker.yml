@@ -37,8 +37,6 @@ jobs:
       image-name: api
       depot-project: s2bgc6nj7c
     secrets:
-      build-args: |
-        POSTHOG_API_KEY=${{ secrets.POSTHOG_API_KEY }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       STAGING_KUBECONFIG: ${{ secrets.STAGING_KUBECONFIG }}
@@ -54,6 +52,7 @@ jobs:
       api-url: https://api.staging.supaglue.io
       customer-id: customer1
       environment: Staging
+      release-ref: ${{ github.head_ref }}
     secrets:
       TESTING_API_KEY: ${{ secrets.STAGING_TESTING_API_KEY }}
       SLACK_WEBHOOK_URL: ${{ secrets.ALERTS_SLACK_WEBHOOK_URL }}

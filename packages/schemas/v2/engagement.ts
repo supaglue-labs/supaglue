@@ -1,12 +1,5 @@
 import type { operations, paths } from '../gen/v2/engagement';
 
-export type SendPassthroughRequestPathParams = never;
-export type SendPassthroughRequestQueryParams = Required<operations['getUser']>['parameters']['query'];
-export type SendPassthroughRequestRequest =
-  operations['sendPassthroughRequest']['requestBody']['content']['application/json'];
-export type SendPassthroughRequestResponse =
-  operations['sendPassthroughRequest']['responses'][keyof operations['sendPassthroughRequest']['responses']]['content']['application/json'];
-
 export type CreateAccountPathParams = never;
 export type CreateAccountQueryParams = never;
 export type CreateAccountRequest = operations['createAccount']['requestBody']['content']['application/json'];
@@ -36,6 +29,12 @@ export type CreateContactQueryParams = never;
 export type CreateContactRequest = operations['createContact']['requestBody']['content']['application/json'];
 export type CreateContactResponse =
   operations['createContact']['responses'][keyof operations['createContact']['responses']]['content']['application/json'];
+
+export type SearchContactsPathParams = never;
+export type SearchContactsQueryParams = Required<operations['searchContacts']>['parameters']['query'];
+export type SearchContactsRequest = operations['searchContacts']['requestBody']['content']['application/json'];
+export type SearchContactsResponse =
+  operations['searchContacts']['responses'][keyof operations['searchContacts']['responses']]['content']['application/json'];
 
 export type ListContactsPathParams = never;
 export type ListContactsQueryParams = Required<operations['listContacts']>['parameters']['query'];
@@ -115,6 +114,13 @@ export type ListSequenceStatesQueryParams = Required<operations['listSequenceSta
 export type ListSequenceStatesRequest = never;
 export type ListSequenceStatesResponse =
   operations['listSequenceStates']['responses'][keyof operations['listSequenceStates']['responses']]['content']['application/json'];
+
+export type SearchSequenceStatesPathParams = never;
+export type SearchSequenceStatesQueryParams = Required<operations['searchSequenceStates']>['parameters']['query'];
+export type SearchSequenceStatesRequest =
+  operations['searchSequenceStates']['requestBody']['content']['application/json'];
+export type SearchSequenceStatesResponse =
+  operations['searchSequenceStates']['responses'][keyof operations['searchSequenceStates']['responses']]['content']['application/json'];
 
 export type BatchCreateSequenceStatePathParams = never;
 export type BatchCreateSequenceStateQueryParams = never;

@@ -8,6 +8,18 @@ export type RemoteUserIdAndDetails = {
   additionalRawDetails?: Record<string, unknown>;
 };
 
+type SingleRateLimitInfo = {
+  limit: number;
+  remaining: number;
+  reset_time?: number;
+};
+
+export type RateLimitInfo = {
+  daily?: SingleRateLimitInfo;
+  hourly?: SingleRateLimitInfo;
+  other?: Record<string, SingleRateLimitInfo>;
+};
+
 export type ApiKeyConnectionCredentialsDecrypted = {
   type: 'api_key';
   apiKey: string;
@@ -126,15 +138,10 @@ export type ConnectionSyncConfig = {
   customObjects?: CustomObjectConfig[];
 };
 
-export type ConnectionSyncDestinationConfig =
-  | {
-      type: 'postgres';
-      schema: string;
-    }
-  | {
-      type: 'bigquery';
-      dataset: string;
-    };
+export type ConnectionSyncDestinationConfig = {
+  type: 'postgres';
+  schema: string;
+};
 
 export type ConnectionCreateParams<T extends ProviderName> = {
   applicationId: string;

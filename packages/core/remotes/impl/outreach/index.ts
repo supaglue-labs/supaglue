@@ -1,3 +1,4 @@
+import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   EngagementOauthProvider,
@@ -10,17 +11,20 @@ import type {
 import type {
   AccountCreateParams,
   AccountUpdateParams,
+  Contact,
   ContactCreateParams,
+  ContactSearchParams,
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
   SequenceCreateParams,
+  SequenceState,
   SequenceStateCreateParams,
+  SequenceStateSearchParams,
   SequenceStepCreateParams,
   SequenceTemplateCreateParams,
   SequenceTemplateId,
 } from '@supaglue/types/engagement';
-import axios, { AxiosError } from 'axios';
 import { Readable } from 'stream';
 import z from 'zod';
 import {
@@ -30,11 +34,13 @@ import {
   InternalServerError,
   NotFoundError,
   RemoteProviderError,
+  SGConnectionNoLongerAuthenticatedError,
   TooManyRequestsError,
   UnauthorizedError,
   UnprocessableEntityError,
 } from '../../../errors';
-import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import type { PaginatedSupaglueRecords } from '../../../lib';
+import { decodeCursor, encodeCursor, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
@@ -1365,7 +1371,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return mapper(response.data.data);
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date
   ): Promise<Readable> {
@@ -1400,29 +1406,36 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       !this.#credentials.expiresAt ||
       Date.parse(this.#credentials.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS
     ) {
-      const response = await axios.post<{ refresh_token: string; access_token: string; expires_in: number }>(
-        `${this.#baseURL}/oauth/token`,
-        {
-          client_id: this.#credentials.clientId,
-          client_secret: this.#credentials.clientSecret,
-          grant_type: 'refresh_token',
-          refresh_token: this.#credentials.refreshToken,
+      try {
+        const response = await axios.post<{ refresh_token: string; access_token: string; expires_in: number }>(
+          `${this.#baseURL}/oauth/token`,
+          {
+            client_id: this.#credentials.clientId,
+            client_secret: this.#credentials.clientSecret,
+            grant_type: 'refresh_token',
+            refresh_token: this.#credentials.refreshToken,
+          }
+        );
+
+        const newAccessToken = response.data.access_token;
+        const newRefreshToken = response.data.refresh_token;
+        const newExpiresAt = new Date(Date.now() + response.data.expires_in * 1000).toISOString();
+
+        this.#credentials.accessToken = newAccessToken;
+        this.#credentials.refreshToken = newRefreshToken;
+        this.#credentials.expiresAt = newExpiresAt;
+
+        this.emit('token_refreshed', {
+          accessToken: newAccessToken,
+          refreshToken: newRefreshToken,
+          expiresAt: newExpiresAt,
+        });
+      } catch (e: any) {
+        if (e.response?.status === 400) {
+          throw new SGConnectionNoLongerAuthenticatedError('Unable to refresh access token. Refresh token invalid.');
         }
-      );
-
-      const newAccessToken = response.data.access_token;
-      const newRefreshToken = response.data.refresh_token;
-      const newExpiresAt = new Date(Date.now() + response.data.expires_in * 1000).toISOString();
-
-      this.#credentials.accessToken = newAccessToken;
-      this.#credentials.refreshToken = newRefreshToken;
-      this.#credentials.expiresAt = newExpiresAt;
-
-      this.emit('token_refreshed', {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-        expiresAt: newExpiresAt,
-      });
+        throw e;
+      }
     }
   }
 
@@ -1636,6 +1649,88 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return response.data.data.id.toString();
   }
 
+  public override async searchCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.#searchContacts(params as ContactSearchParams);
+      case 'sequence_state':
+        return await this.#searchSequenceStates(params as SequenceStateSearchParams);
+      case 'user':
+      case 'mailbox':
+      case 'sequence':
+      case 'account':
+        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Outreach`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const link = cursor?.id as string;
+    const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
+    if (params.filter.emails) {
+      // Note this is implemented as an OR, not an AND
+      listParams['filter[emails]'] = params.filter.emails.join(',');
+    }
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = link
+        ? await axios.get<OutreachPaginatedRecords>(link, {
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          })
+        : await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/prospects`, {
+            params: listParams,
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          });
+      const records = response.data.data.map(fromOutreachProspectToContact);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: response.data.links?.prev ? encodeCursor({ id: response.data.links?.prev, reverse: true }) : null,
+          next: response.data.links?.next ? encodeCursor({ id: response.data.links?.next, reverse: false }) : null,
+        },
+      };
+    });
+  }
+
+  async #searchSequenceStates(params: SequenceStateSearchParams): Promise<PaginatedSupaglueRecords<SequenceState>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const link = cursor?.id as string;
+    const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
+    // Note: if both are provided, it will be implemented as an AND.
+    if (params.filter.contactId) {
+      listParams['filter[prospect][id]'] = params.filter.contactId;
+    }
+    if (params.filter.sequenceId) {
+      listParams['filter[sequence][id]'] = params.filter.sequenceId;
+    }
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = link
+        ? await axios.get<OutreachPaginatedRecords>(link, {
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          })
+        : await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/sequenceStates`, {
+            params: listParams,
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          });
+      const records = response.data.data.map(fromOutreachSequenceStateToSequenceState);
+      return {
+        records,
+        pagination: {
+          total_count: response.data.meta.count,
+          previous: response.data.links?.prev ? encodeCursor({ id: response.data.links?.prev, reverse: true }) : null,
+          next: response.data.links?.next ? encodeCursor({ id: response.data.links?.next, reverse: false }) : null,
+        },
+      };
+    });
+  }
+
   public override async sendPassthroughRequest(
     request: SendPassthroughRequestRequest
   ): Promise<SendPassthroughRequestResponse> {
@@ -1643,7 +1738,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return await super.sendPassthroughRequest(request);
   }
 
-  public override handleErr(err: unknown): unknown {
+  public override async handleErr(err: unknown): Promise<unknown> {
     if (!(err instanceof AxiosError)) {
       return err;
     }

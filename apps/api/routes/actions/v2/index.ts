@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
-import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
-import { addLogContext } from '@supaglue/core/lib/logger';
+import { pinoContextMiddleware } from '@/middleware/pino_context';
+import { addLogContext, logger } from '@supaglue/core/lib/logger';
 import type {
   SendPassthroughRequestPathParams,
   SendPassthroughRequestRequest,
@@ -15,7 +15,7 @@ const { passthroughService } = getDependencyContainer();
 export default function init(app: Router): void {
   const v2Router = Router();
   v2Router.use(openapiMiddleware('actions', 'v2'));
-  v2Router.use(pinoAndSentryContextMiddleware);
+  v2Router.use(pinoContextMiddleware);
 
   v2Router.post(
     '/passthrough',
@@ -30,6 +30,17 @@ export default function init(app: Router): void {
         query: req.body.query,
       });
       const response = await passthroughService.send(req.customerConnection.id, req.body);
+
+      if (response.status >= 300) {
+        logger.warn(
+          {
+            passthroughBody: req.body,
+            passthroughResponse: response,
+          },
+          'non-2xx passthrough axios response'
+        );
+      }
+
       return res.status(200).send(response);
     }
   );

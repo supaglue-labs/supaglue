@@ -9,6 +9,7 @@ import type {
   CreateAccountRequest,
   CreateAccountResponse,
   GetAccountResponse,
+  ListAccountsResponse,
   UpdateAccountResponse,
 } from '@supaglue/schemas/v2/engagement';
 
@@ -23,7 +24,7 @@ describe('account', () => {
   });
 
   describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
-    test(`POST /`, async () => {
+    test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/engagement/v2/accounts',
         { record: testAccount },
@@ -55,12 +56,22 @@ describe('account', () => {
       expect(getResponse.data.name).toEqual(testAccount.name);
 
       // test that the db was updated
-      const dbAccount = await db.query('SELECT * FROM engagement_accounts WHERE id = $1', [response.data.record?.id]);
-      expect(dbAccount.rows[0].name).toEqual(testAccount.name);
-      expect(dbAccount.rows[0].domain).toEqual(testAccount.domain);
-    }, 120000);
+      const cachedReadResponse = await apiClient.get<ListAccountsResponse>(
+        `/engagement/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(
+          testStartTime.toISOString()
+        )}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.name).toEqual(testAccount.name);
+      expect(found?.domain).toEqual(testAccount.domain);
+    }, 120_000);
 
-    test('PATCH /', async () => {
+    test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/engagement/v2/accounts',
         { record: testAccount },
@@ -106,9 +117,19 @@ describe('account', () => {
       expect(getResponse.data.domain).toEqual(testAccount.domain);
 
       // test that the db was updated
-      const dbAccount = await db.query('SELECT * FROM engagement_accounts WHERE id = $1', [response.data.record?.id]);
-      expect(dbAccount.rows[0].name).toEqual('updated account');
-      expect(dbAccount.rows[0].domain).toEqual(testAccount.domain);
-    }, 120000);
+      const cachedReadResponse = await apiClient.get<ListAccountsResponse>(
+        `/engagement/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(
+          testStartTime.toISOString()
+        )}`,
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
+      expect(cachedReadResponse.status).toEqual(200);
+      const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
+      expect(found).toBeTruthy();
+      expect(found?.name).toEqual('updated account');
+      expect(found?.domain).toEqual(testAccount.domain);
+    }, 120_000);
   });
 });

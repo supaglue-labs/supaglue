@@ -1,6 +1,6 @@
 {
   "name": "@supaglue/sync-workflows",
-  "version": "0.18.1",
+  "version": "0.21.6",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
     "@supaglue/core": "workspace:*",
@@ -14,9 +14,9 @@
     "typescript": "^4.9.5"
   },
   "peerDependencies": {
-    "@temporalio/activity": "^1.8.0",
-    "@temporalio/client": "^1.8.0",
-    "@temporalio/workflow": "^1.8.0"
+    "@temporalio/activity": "^1.8.6",
+    "@temporalio/client": "^1.8.6",
+    "@temporalio/workflow": "^1.8.6"
   },
   "scripts": {
     "build": "yarn run clean && tsc -p .",

@@ -1,0 +1,10 @@
+FROM node:18-bullseye-slim AS base
+
+FROM base AS dev
+WORKDIR /workspace
+
+# First install dependencies (as they change less often)
+COPY . .
+COPY .yarnrc.build.yml .yarnrc.yml
+COPY .yarn .yarn
+RUN --mount=type=cache,mode=0777,target=/workspace/.yarn/cache,id=api-yarn-cache yarn install

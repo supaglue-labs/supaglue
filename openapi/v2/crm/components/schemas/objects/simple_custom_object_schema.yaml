@@ -1,0 +1,20 @@
+type: object
+properties:
+  name:
+    type: string
+    example: ticket
+  labels:
+    type: object
+    properties:
+      singular:
+        type: string
+        example: Ticket
+      plural:
+        type: string
+        example: Tickets
+    required:
+      - singular
+      - plural
+required:
+  - name
+  - label

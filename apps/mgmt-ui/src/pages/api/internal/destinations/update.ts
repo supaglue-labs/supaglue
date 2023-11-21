@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const result = await fetch(`${API_HOST}/internal/destinations/${req.body.id}`, {
     method: 'PUT',
 
-    headers: getApplicationIdScopedHeaders(req),
+    headers: await getApplicationIdScopedHeaders(req),
     body: JSON.stringify(req.body),
   });
 

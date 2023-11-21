@@ -1,38 +1,11 @@
-import { RewriteFrames } from '@sentry/integrations';
-import * as Sentry from '@sentry/node';
 import { logger } from '@supaglue/core/lib';
-import { distinctId } from '@supaglue/core/lib/distinct_identifier';
-import { posthogClient } from '@supaglue/core/lib/posthog';
 import { createActivities } from '@supaglue/sync-workflows';
 import { SYNC_TASK_QUEUE } from '@supaglue/sync-workflows/constants';
 import type { LogLevel, LogMetadata } from '@temporalio/worker';
 import { appendDefaultInterceptors, NativeConnection, Runtime, Worker } from '@temporalio/worker';
 import fs from 'fs';
-import path from 'path';
 import { getDependencyContainer } from './dependency_container';
 import ActivityLogInterceptor from './interceptors/activity_log_interceptor';
-
-const sentryEnabled = !(process.env.SUPAGLUE_DISABLE_ERROR_REPORTING || process.env.CI) && process.env.SENTRY_DSN;
-const { version } = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
-
-if (sentryEnabled) {
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.SUPAGLUE_ENVIRONMENT,
-    integrations: [
-      new RewriteFrames({
-        root: __dirname,
-      }),
-    ],
-    release: version,
-    includeLocalVariables: true,
-    initialScope: {
-      user: {
-        id: distinctId,
-      },
-    },
-  });
-}
 
 const TEMPORAL_ADDRESS =
   process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
@@ -80,6 +53,7 @@ async function run() {
         },
       },
     },
+    shutdownSignals: [], // we want to handle shutdown ourselves,
   });
 
   const connection = await NativeConnection.connect({
@@ -112,16 +86,19 @@ async function run() {
         return config;
       },
     },
+    // more resource efficient, will be the default in 1.9.0. See https://typescript.temporal.io/api/interfaces/worker.WorkerOptions#reusev8context
+    reuseV8Context: true,
   });
 
   const handle = () => {
-    posthogClient.shutdown();
     worker.shutdown();
     process.exit(0);
   };
 
   process.on('SIGINT', handle);
   process.on('SIGTERM', handle);
+  process.on('SIGQUIT', handle);
+  process.on('SIGUSR2', handle);
 
   await worker.run();
 }

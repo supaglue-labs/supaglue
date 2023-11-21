@@ -39,7 +39,6 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const pool = new Pool({
       ...rest,
       max: 20,
-      statement_timeout: 60 * 60 * 1000, // 1 hour - assuming that COPY FROM STDIN is subject to this timeout
       ssl: getSsl(this.#destination.config),
     });
     return await pool.connect();
@@ -107,6 +106,9 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     commonObjectType: CommonObjectType,
     alsoCreateTempTable = false
   ) {
+    // Set statement timeout for this session's sync operation to 2 hours
+    await client.query(`set statement_timeout to 7200000`);
+
     // Create tables if necessary
     // TODO: We should only need to do this once at the beginning
     await client.query(getCommonObjectSchemaSetupSql(category, commonObjectType)(schema));

@@ -1,10 +1,9 @@
 import { openApiErrorHandlerMiddleware, openapiMiddleware } from '@/middleware/openapi';
-import { pinoAndSentryContextMiddleware } from '@/middleware/pino_context';
+import { pinoContextMiddleware } from '@/middleware/pino_context';
 import { Router } from 'express';
 import account from './account';
 import contact from './contact';
 import mailbox from './mailbox';
-import passthrough from './passthrough';
 import sequence from './sequence';
 import sequenceState from './sequence_state';
 import user from './user';
@@ -13,7 +12,7 @@ export default function init(app: Router): void {
   const v2Router = Router();
 
   v2Router.use(openapiMiddleware('engagement', 'v2'));
-  v2Router.use(pinoAndSentryContextMiddleware);
+  v2Router.use(pinoContextMiddleware);
 
   account(v2Router);
   contact(v2Router);
@@ -21,7 +20,6 @@ export default function init(app: Router): void {
   sequence(v2Router);
   sequenceState(v2Router);
   mailbox(v2Router);
-  passthrough(v2Router);
 
   v2Router.use(openApiErrorHandlerMiddleware);
 

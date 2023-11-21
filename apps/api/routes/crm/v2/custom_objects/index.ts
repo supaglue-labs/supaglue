@@ -36,7 +36,7 @@ export default function init(app: Router): void {
       res: Response<ListCustomObjectRecordsResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new BadRequestError('Uncached reads not supported for standard object list reads.');
+        throw new BadRequestError('Uncached reads not supported for custom object list reads.');
       }
       const { pagination, records } = await managedDataService.getCustomObjectRecords(
         req.supaglueApplication.id,
@@ -113,7 +113,7 @@ export default function init(app: Router): void {
         req.params.record_id,
         req.body.record
       );
-      return res.status(201).send({ record: { id: req.params.record_id } });
+      return res.status(200).send({ record: { id: req.params.record_id } });
     }
   );
 

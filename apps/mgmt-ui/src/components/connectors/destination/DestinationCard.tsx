@@ -3,7 +3,7 @@ import { createDestination } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
-import { Button, Card, CardContent, CardHeader, Divider, Grid, Stack, Typography } from '@mui/material';
+import { Button, Card, CardContent, CardHeader, Chip, Divider, Grid, Stack, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import type { DestinationSafeAny } from '@supaglue/types';
 import { useRouter } from 'next/router';
@@ -34,7 +34,7 @@ export default function DestinationCard({
     return response.data;
   };
 
-  const { icon, name, description, type } = destinationInfo;
+  const { icon, name, description, type, status } = destinationInfo;
 
   return (
     <Card
@@ -47,8 +47,9 @@ export default function DestinationCard({
           avatar={icon}
           subheader={
             <Stack direction="row" className="justify-between">
-              <Stack direction="column">
+              <Stack direction="row" className="gap-1">
                 <Typography>{name}</Typography>
+                {status && <Chip label={status} size="small" className="text-xs p-0" />}
               </Stack>
               <Typography color={destination ? '#22c55e' : undefined}>
                 {destination ? 'Connected' : 'Not Connected'}

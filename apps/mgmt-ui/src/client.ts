@@ -11,8 +11,10 @@ import type {
   MagicLinkCreateParams,
   Provider,
   ProviderCreateParams,
+  ProviderName,
   Schema,
-  SyncConfig,
+  SyncConfigCreateParams,
+  SyncConfigDTO,
   WebhookConfig,
 } from '@supaglue/types';
 import type { Entity } from '@supaglue/types/entity';
@@ -165,8 +167,8 @@ export async function deleteProvider(applicationId: string, providerId: string):
 
 export async function createSyncConfig(
   applicationId: string,
-  data: Omit<SyncConfig, 'id'>
-): Promise<ClientResponse<SyncConfig>> {
+  data: SyncConfigCreateParams
+): Promise<ClientResponse<SyncConfigDTO>> {
   const result = await fetch(`/api/internal/sync-configs/create`, {
     method: 'POST',
     headers: {
@@ -179,8 +181,16 @@ export async function createSyncConfig(
   return await toClientResponse(result);
 }
 
-export async function updateSyncConfig(applicationId: string, data: SyncConfig): Promise<ClientResponse<SyncConfig>> {
-  const result = await fetch(`/api/internal/sync-configs/update`, {
+export async function updateSyncConfig(
+  applicationId: string,
+  data: SyncConfigDTO,
+  forceDeleteSyncs = false
+): Promise<ClientResponse<SyncConfigDTO>> {
+  let url = `/api/internal/sync-configs/update`;
+  if (forceDeleteSyncs) {
+    url += `?force_delete_syncs=${forceDeleteSyncs}`;
+  }
+  const result = await fetch(url, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -192,8 +202,16 @@ export async function updateSyncConfig(applicationId: string, data: SyncConfig):
   return await toClientResponse(result);
 }
 
-export async function deleteSyncConfig(applicationId: string, syncConfigId: string): Promise<ClientEmptyResponse> {
-  const result = await fetch(`/api/internal/sync-configs/${syncConfigId}`, {
+export async function deleteSyncConfig(
+  applicationId: string,
+  syncConfigId: string,
+  forceDeleteSyncs = false
+): Promise<ClientEmptyResponse> {
+  let url = `/api/internal/sync-configs/${syncConfigId}`;
+  if (forceDeleteSyncs) {
+    url += `?force_delete_syncs=${forceDeleteSyncs}`;
+  }
+  const result = await fetch(url, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
@@ -426,9 +444,9 @@ export async function deleteCustomer(applicationId: string, customerId: string):
 export async function deleteConnection(
   applicationId: string,
   customerId: string,
-  connectionId: string
+  providerName: ProviderName
 ): Promise<ClientEmptyResponse> {
-  const result = await fetch(`/api/internal/customers/${encodeURIComponent(customerId)}/connections/${connectionId}`, {
+  const result = await fetch(`/api/internal/customers/${encodeURIComponent(customerId)}/connections/${providerName}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',

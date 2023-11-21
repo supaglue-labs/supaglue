@@ -1,24 +1,35 @@
+import axios from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   Provider,
+  RateLimitInfo,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type {
   AccountCreateParams,
   AccountUpdateParams,
+  Contact,
   ContactCreateParams,
+  ContactSearchParams,
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
   SequenceCreateParams,
+  SequenceState,
   SequenceStateCreateParams,
+  SequenceStateSearchParams,
   SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
-import axios from 'axios';
 import { Readable } from 'stream';
-import { BadRequestError } from '../../../errors';
-import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
+import {
+  BadRequestError,
+  InternalServerError,
+  NotFoundError,
+  SGConnectionNoLongerAuthenticatedError,
+} from '../../../errors';
+import type { PaginatedSupaglueRecords } from '../../../lib';
+import { isAxiosRateLimited, retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import { parseProxyConfig } from '../../../lib/util';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
@@ -35,6 +46,7 @@ import {
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
   fromApolloEmailerCampaignToSequence,
+  fromApolloHeadersToRateLimitInfo,
   fromApolloUserToUser,
   toApolloAccountCreateParams,
   toApolloAccountUpdateParams,
@@ -119,11 +131,13 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
-      case 'contact':
       case 'sequence':
         return this.#api
           .getEmailerCampaign({ params: { id } })
           .then(({ emailer_campaign: c }) => fromApolloEmailerCampaignToSequence(c));
+      case 'contact':
+        return await this.#getContact(id);
+      case 'account':
       case 'user':
       case 'mailbox':
       case 'sequence_state':
@@ -133,23 +147,119 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     }
   }
 
-  async #getAccountPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedAccounts> {
+  async #getContact(id: string): Promise<Contact> {
     return await retryWhenAxiosApolloRateLimited(async () => {
-      if (heartbeat) {
-        heartbeat();
-      }
-      const response = await axios.post<ApolloPaginatedAccounts>(
-        `${this.#baseURL}/v1/accounts/search`,
+      // This uses a private API.
+      const response = await axios.get<{ contact: Record<string, unknown> }>(`${this.#baseURL}/v1/contacts/${id}`, {
+        headers: this.#headers,
+        params: {
+          api_key: this.#apiKey,
+        },
+      });
+      return fromApolloContactToContact(response.data.contact);
+    });
+  }
+
+  public override async searchCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.#searchContacts(params as ContactSearchParams);
+      case 'sequence_state':
+        return await this.#searchSequenceStates(params as SequenceStateSearchParams);
+      case 'user':
+      case 'mailbox':
+      case 'sequence':
+      case 'account':
+        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
+    if (!params.filter.emails.length) {
+      throw new BadRequestError('At least 1 email must be provided when searching contacts');
+    }
+    if (params.filter.emails.length > 1) {
+      throw new BadRequestError('Only 1 email can be provided when searching contacts in Apollo');
+    }
+    return await retryWhenAxiosApolloRateLimited(async () => {
+      const response = await axios.post<ApolloPaginatedContacts>(
+        `${this.#baseURL}/v1/contacts/search`,
         {
           api_key: this.#apiKey,
-          page,
-          per_page: MAX_PAGE_SIZE,
+          q_keywords: params.filter.emails[0],
         },
         {
           headers: this.#headers,
         }
       );
-      return response.data;
+      const records = response.data.contacts.map(fromApolloContactToContact);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: null,
+          next: null,
+        },
+      };
+    });
+  }
+
+  async #searchSequenceStates(params: SequenceStateSearchParams): Promise<PaginatedSupaglueRecords<SequenceState>> {
+    if (!params.filter.contactId) {
+      throw new BadRequestError('Contact ID is required for searching sequence states in Apollo');
+    }
+    if (params.filter.sequenceId) {
+      throw new BadRequestError('Sequence ID is not supported for searching sequence states in Apollo');
+    }
+    return await retryWhenAxiosApolloRateLimited(async () => {
+      // This uses a private API.
+      const response = await axios.get<{ contact: Record<string, unknown> }>(
+        `${this.#baseURL}/v1/contacts/${params.filter.contactId}`,
+        {
+          headers: this.#headers,
+          params: {
+            api_key: this.#apiKey,
+          },
+        }
+      );
+      const records = fromApolloContactToSequenceStates(response.data.contact);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: null,
+          next: null,
+        },
+      };
+    });
+  }
+
+  async #getAccountPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedAccounts> {
+    return await retryWhenAxiosApolloRateLimited(async () => {
+      if (heartbeat) {
+        heartbeat();
+      }
+      try {
+        const response = await axios.post<ApolloPaginatedAccounts>(
+          `${this.#baseURL}/v1/accounts/search`,
+          {
+            api_key: this.#apiKey,
+            page,
+            per_page: MAX_PAGE_SIZE,
+          },
+          {
+            headers: this.#headers,
+          }
+        );
+        return response.data;
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
@@ -178,20 +288,24 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       if (heartbeat) {
         heartbeat();
       }
-      const response = await axios.post<ApolloPaginatedContacts>(
-        `${this.#baseURL}/v1/contacts/search`,
-        {
-          api_key: this.#apiKey,
-          sort_by_field: 'contact_updated_at',
-          sort_ascending: false,
-          page,
-          per_page: MAX_PAGE_SIZE,
-        },
-        {
-          headers: this.#headers,
-        }
-      );
-      return response.data;
+      try {
+        const response = await axios.post<ApolloPaginatedContacts>(
+          `${this.#baseURL}/v1/contacts/search`,
+          {
+            api_key: this.#apiKey,
+            sort_by_field: 'contact_updated_at',
+            sort_ascending: false,
+            page,
+            per_page: MAX_PAGE_SIZE,
+          },
+          {
+            headers: this.#headers,
+          }
+        );
+        return response.data;
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
@@ -220,15 +334,19 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       if (heartbeat) {
         heartbeat();
       }
-      const response = await axios.get<ApolloPaginatedUsers>(`${this.#baseURL}/v1/users/search`, {
-        headers: this.#headers,
-        params: {
-          api_key: this.#apiKey,
-          page,
-          per_page: MAX_PAGE_SIZE,
-        },
-      });
-      return response.data;
+      try {
+        const response = await axios.get<ApolloPaginatedUsers>(`${this.#baseURL}/v1/users/search`, {
+          headers: this.#headers,
+          params: {
+            api_key: this.#apiKey,
+            page,
+            per_page: MAX_PAGE_SIZE,
+          },
+        });
+        return response.data;
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
@@ -257,18 +375,22 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       if (heartbeat) {
         heartbeat();
       }
-      const response = await axios.post<ApolloPaginatedSequences>(
-        `${this.#baseURL}/v1/emailer_campaigns/search`,
-        {
-          api_key: this.#apiKey,
-          page,
-          per_page: MAX_PAGE_SIZE,
-        },
-        {
-          headers: this.#headers,
-        }
-      );
-      return response.data;
+      try {
+        const response = await axios.post<ApolloPaginatedSequences>(
+          `${this.#baseURL}/v1/emailer_campaigns/search`,
+          {
+            api_key: this.#apiKey,
+            page,
+            per_page: MAX_PAGE_SIZE,
+          },
+          {
+            headers: this.#headers,
+          }
+        );
+        return response.data;
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
@@ -297,22 +419,26 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       if (heartbeat) {
         heartbeat();
       }
-      const response = await axios.get<{ email_accounts: Record<string, any>[] }>(
-        `${this.#baseURL}/v1/email_accounts`,
-        {
-          headers: this.#headers,
-          params: {
-            api_key: this.#apiKey,
-          },
-        }
-      );
-      // There is no pagination for mailboxes, so just emit them as is.
-      return Readable.from(
-        response.data.email_accounts.map((record) => ({
-          record: fromApolloEmailAccountsToMailbox(record),
-          emittedAt: new Date(),
-        }))
-      );
+      try {
+        const response = await axios.get<{ email_accounts: Record<string, any>[] }>(
+          `${this.#baseURL}/v1/email_accounts`,
+          {
+            headers: this.#headers,
+            params: {
+              api_key: this.#apiKey,
+            },
+          }
+        );
+        // There is no pagination for mailboxes, so just emit them as is.
+        return Readable.from(
+          response.data.email_accounts.map((record) => ({
+            record: fromApolloEmailAccountsToMailbox(record),
+            emittedAt: new Date(),
+          }))
+        );
+      } catch (e) {
+        throw await this.handleErr(e);
+      }
     });
   }
 
@@ -336,7 +462,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  public override async listCommonObjectRecords(
+  public override async streamCommonObjectRecords(
     commonObjectType: EngagementCommonObjectType,
     updatedAfter?: Date | undefined,
     heartbeat?: () => void
@@ -409,7 +535,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     params: SequenceStepCreateParams
   ): Promise<CreateCommonObjectRecordResponse<'sequence_step'>> {
     if (!params.sequenceId) {
-      throw new Error('Sequence ID is required');
+      throw new BadRequestError('Sequence ID is required');
     }
     const intOnly = (n: number | null | undefined) => (Number.isInteger(n) ? (n as number) : null);
     const divide = (n: number | null, by: number) => (n != null ? n / by : null);
@@ -470,7 +596,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     const [userId, ...otherUserIds] = Array.from(new Set(records.map((r) => r.userId)));
 
     if (otherSequenceIds.length || otherMailboxIds.length || otherUserIds.length) {
-      throw new Error(
+      throw new BadRequestError(
         'Batch create sequence states only works when all records are for the same sequence, mailbox and user'
       );
     }
@@ -487,33 +613,41 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       { params: { id: sequenceId } } // Duplicated in the body for some reason
     );
 
-    // NOTE: This can happen if some of the contacts have been added to the sequence already
-    // as apollo's api do NOT return them as part of the response...
-    if (res.contacts.length !== records.length) {
-      throw new Error('Apollo could not add some contact(s) to the sequence.');
-    }
-    return res.contacts.map((contact) => {
-      // For whatever reason the campaignStatus id seems to be the same
-      // across multiple contacts... https://share.cleanshot.com/HKWJ85Ss
-      // but there also doesn't seem to be any other unique id we can use...
-      const campaignStatus = contact.contact_campaign_statuses.find(
-        (status: Record<string, any>) =>
-          status.send_email_from_email_account_id === mailboxId && status.emailer_campaign_id === sequenceId
-      );
-      return {
-        id: campaignStatus!.id.toString(),
-        record: fromApolloContactCampaignStatusToSequenceState(contact.id, campaignStatus as any),
-      };
-    });
+    return await Promise.all(
+      records.map(async (record) => {
+        let contact = res.contacts.find((c) => c.id === record.contactId);
+        if (!contact) {
+          // Handle situation where contact have already been added to the sequence. However still accounting for
+          // other errors where contact could not be added to sequence
+          contact = await this.#api.getContact({ params: { id: record.contactId } }).then((r) => r.contact);
+        }
+        if (!contact) {
+          throw new NotFoundError(`Unable to find contact ${record.contactId} in Apollo`);
+        }
+
+        // For whatever reason the campaignStatus id seems to be the same
+        // across multiple contacts... https://share.cleanshot.com/HKWJ85Ss
+        // but there also doesn't seem to be any other unique id we can use...
+        const campaignStatus = contact.contact_campaign_statuses.find(
+          (status: Record<string, any>) =>
+            status.send_email_from_email_account_id === mailboxId && status.emailer_campaign_id === sequenceId
+        );
+        // Should we issue warnings instead?
+        if (!campaignStatus) {
+          throw new InternalServerError(`Unable to add contact ${record.contactId} to sequence`);
+        }
+        return {
+          id: campaignStatus.id.toString(),
+          record: fromApolloContactCampaignStatusToSequenceState(contact.id, campaignStatus as any),
+        };
+      })
+    );
   }
 
   async createSequenceState(
     params: SequenceStateCreateParams
   ): Promise<CreateCommonObjectRecordResponse<'sequence_state'>> {
     const res = await this.batchCreateSequenceState([params]);
-    if (res.length === 0) {
-      throw new Error('Apollo could not add this contact to the sequence.');
-    }
     return res[0];
   }
 
@@ -598,6 +732,36 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       id: response.data.contact.id,
       record: fromApolloContactToContact(response.data.contact),
     };
+  }
+
+  public override async getRateLimitInfo(): Promise<RateLimitInfo> {
+    try {
+      const response = await axios.post<ApolloPaginatedContacts>(
+        `${this.#baseURL}/v1/emailer_campaigns/search`,
+        {
+          api_key: this.#apiKey,
+          q_name: 'unused',
+        },
+        {
+          headers: this.#headers,
+        }
+      );
+      return fromApolloHeadersToRateLimitInfo(response.headers as Record<string, string>);
+    } catch (e: any) {
+      if (isAxiosRateLimited(e)) {
+        return fromApolloHeadersToRateLimitInfo(e.response.headers);
+      }
+      throw e;
+    }
+  }
+
+  public override async handleErr(err: unknown): Promise<unknown> {
+    const error = err as any;
+    if (error.message === 'Request failed with status code 401') {
+      return new SGConnectionNoLongerAuthenticatedError(error.message, error);
+    }
+
+    return error;
   }
 }
 

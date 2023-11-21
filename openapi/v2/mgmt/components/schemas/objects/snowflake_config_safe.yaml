@@ -1,0 +1,27 @@
+type: object
+properties:
+  host:
+    type: string
+    example: paa05704.us-east-1
+  role:
+    type: string
+    example: supaglue
+  warehouse:
+    type: string
+    example: compute
+  database:
+    type: string
+    example: my_database
+  schema:
+    type: string
+    example: schema
+  username:
+    type: string
+    example: snowflake_user
+required:
+  - host
+  - role
+  - warehouse
+  - database
+  - schema
+  - username

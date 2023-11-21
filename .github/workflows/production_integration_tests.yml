@@ -11,14 +11,28 @@ concurrency:
   group: ${{ github.repository }}-api-${{ github.event.number || github.head_ref || github.sha }}-${{ github.workflow }}-${{ github.event_name }}
 
 jobs:
+  tag:
+    name: Get latest production tag
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - uses: oprypin/find-latest-tag@v1
+        with:
+          repository: supaglue-labs/supaglue
+          releases-only: true
+        id: tag
+
   test:
     name: Run integration tests
     uses: ./.github/workflows/integration_tests.yml
+    needs: tag
     with:
       api-url: https://api.supaglue.io
       customer-id: customer1
       page-on-failure: true
       environment: Production
+      release-ref: ${{ needs.tag.outputs.tag }}
     secrets:
       TESTING_API_KEY: ${{ secrets.PRODUCTION_TESTING_API_KEY }}
       SLACK_WEBHOOK_URL: ${{ secrets.ALERTS_SLACK_WEBHOOK_URL }}

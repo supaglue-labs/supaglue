@@ -13,6 +13,10 @@ import type {
   ListContactsQueryParams,
   ListContactsRequest,
   ListContactsResponse,
+  SearchContactsPathParams,
+  SearchContactsQueryParams,
+  SearchContactsRequest,
+  SearchContactsResponse,
   UpdateContactPathParams,
   UpdateContactQueryParams,
   UpdateContactRequest,
@@ -86,6 +90,32 @@ export default function init(app: Router): void {
         camelcaseKeysSansCustomFields(req.body.record)
       );
       return res.status(201).send({ record: { id } });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchContactsPathParams, SearchContactsResponse, SearchContactsRequest, SearchContactsQueryParams>,
+      res: Response<SearchContactsResponse>
+    ) => {
+      if (req.query?.read_from_cache?.toString() === 'true') {
+        throw new BadRequestError('Cached search not yet implemented for engagement contacts.');
+      }
+      const { pagination, records } = await engagementCommonObjectService.search('contact', req.customerConnection, {
+        filter: req.body.filter,
+        cursor: req.query?.cursor,
+        pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+      });
+      return res.status(200).send({
+        pagination,
+        records: records.map((record) => {
+          const snakecased = toSnakecasedKeysEngagementContact(record);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { raw_data, ...rest } = snakecased;
+          return req.query?.include_raw_data?.toString() === 'true' ? snakecased : rest;
+        }),
+      });
     }
   );
 

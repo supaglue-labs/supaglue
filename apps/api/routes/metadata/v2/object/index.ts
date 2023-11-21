@@ -29,13 +29,16 @@ export default function init(app: Router): void {
     }
   );
 
+  /**
+   * @deprecated
+   */
   objectRouter.get(
     '/custom',
     async (
       req: Request<ListCustomObjectsPathParams, ListCustomObjectsResponse, ListCustomObjectsRequest>,
       res: Response<ListCustomObjectsResponse>
     ) => {
-      const customObjects = await metadataService.listCustomObjectSchemas(req.customerConnection.id);
+      const customObjects = await metadataService.listCustomObjectSchemasDeprecated(req.customerConnection.id);
       return res.status(200).send(customObjects);
     }
   );

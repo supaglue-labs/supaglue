@@ -1,9 +1,11 @@
+import axios from '@supaglue/core/remotes/sg_axios';
 import type {
   CreatePropertyParams,
   ObjectRecordUpsertData,
   ObjectRecordWithMetadata,
   Property,
   PropertyUnified,
+  RateLimitInfo,
   RemoteUserIdAndDetails,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -17,10 +19,10 @@ import type {
   CustomObjectSchemaCreateParams,
   CustomObjectSchemaUpdateParams,
   SimpleCustomObjectSchema,
+  SimpleCustomObjectSchemaDeprecated,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
-import axios from 'axios';
 import { EventEmitter } from 'events';
 import type { Readable } from 'stream';
 import { NotImplementedError } from '../errors';
@@ -43,6 +45,10 @@ export interface RemoteClient {
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
   listStandardObjectSchemas(): Promise<string[]>;
+  /**
+   * @deprecated
+   */
+  listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]>;
   listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]>;
   getCustomObjectSchema(id: string): Promise<CustomObjectSchema>;
   createCustomObjectSchema(params: CustomObjectSchemaCreateParams): Promise<string>;
@@ -76,6 +82,8 @@ export interface RemoteClient {
 
   getUserIdAndDetails(): Promise<RemoteUserIdAndDetails>;
   getUserIdAndDetails__v2_1(): Promise<RemoteUserIdAndDetails>;
+
+  getRateLimitInfo(): Promise<RateLimitInfo>;
 }
 
 export abstract class AbstractRemoteClient extends EventEmitter implements RemoteClient {
@@ -95,7 +103,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     return super.emit(event, ...args);
   }
 
-  public handleErr(err: unknown): unknown {
+  public async handleErr(err: unknown): Promise<unknown> {
     return err;
   }
 
@@ -144,6 +152,12 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   }
 
   public async listStandardObjectSchemas(): Promise<string[]> {
+    throw new NotImplementedError();
+  }
+  /**
+   * @deprecated
+   */
+  public async listCustomObjectSchemasDeprecated(): Promise<SimpleCustomObjectSchemaDeprecated[]> {
     throw new NotImplementedError();
   }
   public async listCustomObjectSchemas(): Promise<SimpleCustomObjectSchema[]> {
@@ -201,6 +215,10 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   }
   public async getUserIdAndDetails__v2_1(): Promise<RemoteUserIdAndDetails> {
     throw new NotImplementedError();
+  }
+
+  public async getRateLimitInfo(): Promise<RateLimitInfo> {
+    return {};
   }
 
   protected abstract getAuthHeadersForPassthroughRequest(): Record<string, string>;

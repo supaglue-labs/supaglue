@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   maybeAddFilter(queryParams, req);
   const result = await fetch(`${API_HOST}/internal/syncs?${queryParams}`, {
     method: 'GET',
-    headers: getApplicationIdScopedHeaders(req),
+    headers: await getApplicationIdScopedHeaders(req),
   });
 
   const r = await result.json();

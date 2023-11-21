@@ -1,6 +1,7 @@
 import type { ConnectionSafeAny } from '@supaglue/types';
 import type { EngagementCommonObjectType, EngagementCommonObjectTypeMap } from '@supaglue/types/engagement';
 import { CacheInvalidationError } from '../../../errors';
+import type { PaginatedSupaglueRecords } from '../../../lib';
 import { remoteDuration } from '../../../lib/metrics';
 import type { DestinationService } from '../../destination_service';
 import type { RemoteService } from '../../remote_service';
@@ -100,6 +101,18 @@ export class EngagementCommonObjectService {
       }
     }
     return res.id;
+  }
+
+  public async search<T extends EngagementCommonObjectType>(
+    objectName: T,
+    connection: ConnectionSafeAny,
+    params: EngagementCommonObjectTypeMap<T>['searchParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    const [remoteClient, providerName] = await this.#remoteService.getEngagementRemoteClient(connection.id);
+    const end = remoteDuration.startTimer({ operation: 'search', remote_name: providerName });
+    const records = await remoteClient.searchCommonObjectRecords(objectName, params);
+    end();
+    return records;
   }
 
   public async update<T extends EngagementCommonObjectType>(

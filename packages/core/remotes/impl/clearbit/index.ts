@@ -1,3 +1,4 @@
+import axios from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   Provider,
@@ -5,7 +6,6 @@ import type {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type { PersonEnrichmentData } from '@supaglue/types/enrichment/person_enrichment_data';
-import axios from 'axios';
 import { BadRequestError } from '../../../errors';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEnrichmentRemoteClient } from '../../categories/enrichment/base';

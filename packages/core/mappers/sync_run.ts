@@ -10,6 +10,7 @@ export const fromSyncRunModelAndSync = (args: SyncRunModelExpanded): SyncRun => 
     id,
     syncId: sync.id,
     status: status as SyncRunStatus,
+    strategy: args.strategy as 'full' | 'incremental',
     errorMessage,
     startTimestamp,
     endTimestamp,

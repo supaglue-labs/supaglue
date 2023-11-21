@@ -6,7 +6,7 @@ get:
 
     | Provider   | Object                                      | Common Schema support | Notes                                 |
     | ---------- | ------------------------------------------- | --------------------- | ------------------------------------- |
-    | Hubspot    | `contact`                                   | Yes                   | Raw data response from V3 API         |
+    | Hubspot    | `contact`, `account`                        | Yes                   | Raw data response from V3 API         |
     | Salesforce | `contact`, `account`, `lead`, `opportunity` | Yes                   | Raw data response from V57.0 REST API |
 
   tags:
@@ -31,12 +31,9 @@ get:
                 type: array
                 items:
                   $ref: ../components/schemas/objects/list_membership.yaml
-              metadata:
-                $ref: ../components/schemas/objects/list_metadata.yaml
             required:
               - pagination
               - records
-              - metadata
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

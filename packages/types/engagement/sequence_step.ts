@@ -44,4 +44,5 @@ export type RemoteSequenceStepTypes = {
   object: SequenceStep;
   createParams: SequenceStepCreateParams;
   updateParams: never;
+  searchParams: never;
 };

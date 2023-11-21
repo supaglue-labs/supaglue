@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'PUT': {
       const result = await fetch(`${API_HOST}/internal/customers`, {
         method: 'PUT',
-        headers: getApplicationIdScopedHeaders(req),
+        headers: await getApplicationIdScopedHeaders(req),
         body: JSON.stringify(req.body),
       });
 
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'DELETE': {
       const result = await fetch(`${API_HOST}/internal/customers/${req.query.customerId}`, {
         method: 'DELETE',
-        headers: getApplicationIdScopedHeaders(req),
+        headers: await getApplicationIdScopedHeaders(req),
       });
 
       if (!result.ok) {
