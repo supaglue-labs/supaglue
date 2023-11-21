@@ -105,7 +105,7 @@ interface OauthTokens {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type OAuthClientOptions<Paths extends {} = {}> = ClientOptions & {
   tokens: OauthTokens;
-  refreshTokens: (client: ReturnType<typeof createOpenapiOauthClient<Paths>>) => Promise<OauthTokens>;
+  refreshTokens: (client: ReturnType<typeof createOpenapiOauthClient<Paths>>['request']) => Promise<OauthTokens>;
   onTokenRefreshed?: (tokens: OauthTokens) => void;
 };
 
@@ -123,7 +123,10 @@ export function createOpenapiOauthClient<Paths extends {}>({
     preRequest: async (url, init) => {
       // Proactive refresh access token
       if (!tokens.expiresAt || Date.parse(tokens.expiresAt) < Date.now() + REFRESH_TOKEN_THRESHOLD_MS) {
-        tokens = await refreshTokens(client);
+        tokens = await refreshTokens((method, url, init) =>
+          // Create new client to avoid inf loops due to preRequest being called on refresh tokens
+          createOpenapiClient().request(method, url, init)
+        );
         onTokenRefreshed?.(tokens);
       }
       return preRequest(url, { ...init, headers: { ...init?.headers, Authorization: `Bearer ${tokens.accessToken}` } });

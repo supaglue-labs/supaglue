@@ -14,7 +14,6 @@ import type {
   ContactSearchParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
-  Sequence,
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
@@ -155,10 +154,13 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       case 'account':
         return await this.#getRecord<Account>(id, '/v2/accounts', fromSalesloftAccountToAccount);
       case 'sequence': {
-        const stepCount = await this.#getCadenceStepCount(id);
-        return await this.#getRecord<Sequence>(id, '/v2/cadences', (data: any) =>
-          fromSalesloftCadenceToSequence(data, stepCount)
-        );
+        const params = { path: { id } };
+        const [cadence, stepCount, cadenceExport] = await Promise.all([
+          this.#api.GET('/v2/cadences/{id}.json', { params }),
+          this.#getCadenceStepCount(id),
+          this.#api.GET('/v2/cadence_exports/{id}', { params }),
+        ]);
+        return fromSalesloftCadenceToSequence(cadence.data.data, stepCount, cadenceExport.data.data);
       }
       case 'sequence_state':
         return await this.#getRecord<SequenceState>(
