@@ -152,7 +152,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     return this.#headers;
   }
 
-  public override async listStandardObjectRecords(
+  public override async streamStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     updatedAfter?: Date,
@@ -196,7 +196,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     )?.customizationprefix;
   }
 
-  public override async listCustomObjectRecords(
+  public override async streamCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,

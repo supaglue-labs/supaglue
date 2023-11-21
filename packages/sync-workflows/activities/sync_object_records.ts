@@ -15,7 +15,7 @@ import type {
 import { ApplicationFailure, Context } from '@temporalio/activity';
 import type { Readable } from 'stream';
 import { pipeline, Transform } from 'stream';
-import type { ApplicationService, SyncService } from '../services';
+import type { SyncService } from '../services';
 
 export type SyncObjectRecordsArgs = {
   syncId: string;
@@ -39,8 +39,7 @@ export function createSyncObjectRecords(
   remoteService: RemoteService,
   destinationService: DestinationService,
   syncService: SyncService,
-  syncConfigService: SyncConfigService,
-  applicationService: ApplicationService
+  syncConfigService: SyncConfigService
 ) {
   return async function syncObjectRecords({
     syncId,
@@ -52,6 +51,29 @@ export function createSyncObjectRecords(
     const sync = await syncService.getSyncById(syncId);
     const syncConfig = await syncConfigService.getById(sync.syncConfigId);
     const connection = await connectionService.getSafeById(connectionId);
+    // Find associations to fetch
+    let associationsToFetch: string[] | undefined = undefined;
+    if (connection.providerName === 'hubspot') {
+      switch (objectType) {
+        case 'common':
+          associationsToFetch = syncConfig.config.commonObjects?.find(
+            (config) => config.object === object
+          )?.associationsToFetch;
+          break;
+        case 'standard':
+          associationsToFetch = syncConfig.config.standardObjects?.find(
+            (config) => config.object === object
+          )?.associationsToFetch;
+          break;
+        case 'custom':
+          associationsToFetch = syncConfig.config.customObjects?.find(
+            (config) => config.object === object
+          )?.associationsToFetch;
+          break;
+        default:
+          break;
+      }
+    }
 
     async function writeObjects(writer: DestinationWriter) {
       switch (objectType) {
@@ -80,7 +102,8 @@ export function createSyncObjectRecords(
                   object as CRMCommonObjectType,
                   fieldMappingConfig,
                   updatedAfter,
-                  heartbeat
+                  heartbeat,
+                  associationsToFetch
                 );
                 return await writer.writeCommonObjectRecords(
                   connection,
@@ -120,7 +143,13 @@ export function createSyncObjectRecords(
             const client = await remoteService.getRemoteClient(connectionId);
             const fieldMappingConfig = await connectionService.getFieldMappingConfig(connectionId, 'standard', object);
             const fieldsToFetch = getFieldsToFetch(fieldMappingConfig);
-            const stream = await client.listStandardObjectRecords(object, fieldsToFetch, updatedAfter, heartbeat);
+            const stream = await client.streamStandardObjectRecords(
+              object,
+              fieldsToFetch,
+              updatedAfter,
+              heartbeat,
+              associationsToFetch
+            );
             return await writer.writeObjectRecords(
               connection,
               object,
@@ -138,7 +167,13 @@ export function createSyncObjectRecords(
               type: 'inherit_all_fields' as const,
             };
             const fieldsToFetch = getFieldsToFetch(fieldMappingConfig);
-            const stream = await client.listCustomObjectRecords(object, fieldsToFetch, updatedAfter, heartbeat);
+            const stream = await client.streamCustomObjectRecords(
+              object,
+              fieldsToFetch,
+              updatedAfter,
+              heartbeat,
+              associationsToFetch
+            );
             return await writer.writeObjectRecords(
               connection,
               object,
@@ -151,8 +186,6 @@ export function createSyncObjectRecords(
           break;
       }
     }
-
-    const application = await applicationService.getById(connection.applicationId);
 
     const updatedAfter = updatedAfterMs ? new Date(updatedAfterMs) : undefined;
 

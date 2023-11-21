@@ -366,7 +366,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       }));
   }
 
-  public override async listStandardObjectRecords(
+  public override async streamStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
@@ -404,13 +404,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  public override async listCustomObjectRecords(
+  public override async streamCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date | undefined,
     heartbeat?: (() => void) | undefined
   ): Promise<Readable> {
-    return await this.listStandardObjectRecords(object, fieldsToFetch, modifiedAfter, heartbeat);
+    return await this.streamStandardObjectRecords(object, fieldsToFetch, modifiedAfter, heartbeat);
   }
 
   async getCommonPropertiesToFetch(
