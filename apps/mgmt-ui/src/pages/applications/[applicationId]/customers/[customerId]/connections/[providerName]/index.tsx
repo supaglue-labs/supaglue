@@ -58,11 +58,7 @@ type FriendlyStandardOrCustomObjectWithAttribution = {
 export default function Home(props: SupaglueProps) {
   const applicationId = useActiveApplicationId();
   const customerId = useActiveCustomerId();
-  const { providerName } = useRouter().query;
-  const { rateLimitInfo, isLoading: isLoadingRateLimitInfo } = useRateLimitInfo(customerId, providerName as string);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  console.log(`rateLimitInfo: `, rateLimitInfo);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
