@@ -200,7 +200,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
           return response.data;
         },
         // the rate limit is 600/minute shared among all users of the API, so we should wait longer than the usual 1s just to be safe
-        { retries: 3, minTimeout: 5_000, maxTimeout: 60_000, factor: 3 }
+        { retries: 3, minTimeout: 10_000, maxTimeout: 60_000, factor: 3, randomize: true }
       );
     };
   }
