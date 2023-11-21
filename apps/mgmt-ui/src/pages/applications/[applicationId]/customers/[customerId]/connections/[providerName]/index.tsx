@@ -7,6 +7,7 @@ import { useActiveCustomerId } from '@/hooks/useActiveCustomerId';
 import { useCustomObjects } from '@/hooks/useCustomObjects';
 import { toListEntityMappingsResponse, useEntityMappings } from '@/hooks/useEntityMappings';
 import { useProperties } from '@/hooks/useProperties';
+import { useRateLimitInfo } from '@/hooks/useRateLimitInfo';
 import { useStandardObjects } from '@/hooks/useStandardObjects';
 import Header from '@/layout/Header';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
@@ -29,6 +30,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import type { ProviderName } from '@supaglue/types';
 import type {
   ConnectionEntityMapping,
   EntityFieldMapping,
@@ -56,15 +58,76 @@ type FriendlyStandardOrCustomObjectWithAttribution = {
 export default function Home(props: SupaglueProps) {
   const applicationId = useActiveApplicationId();
   const customerId = useActiveCustomerId();
-  const { providerName } = useRouter().query;
-  const { entityMappings = [], isLoading, mutate } = useEntityMappings(customerId, providerName as string);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [tab, setTab] = useState(0);
-  const { addNotification } = useNotification();
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  return (
+    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <Header title="Connection" onDrawerToggle={handleDrawerToggle} {...props} />
+      <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
+        <Stack className="gap-2">
+          <Breadcrumbs>
+            <Link color="inherit" href={`/applications/${applicationId}`}>
+              Home
+            </Link>
+            <Link color="inherit" href={`/applications/${applicationId}/customers`}>
+              Customers
+            </Link>
+            <Link color="inherit" href={`/applications/${applicationId}/customers/${customerId}/connections`}>
+              Connections
+            </Link>
+            <Typography color="text.primary">Connection</Typography>
+          </Breadcrumbs>
+          <RateLimitInfoCard />
+          <EntityMappingsCard />
+        </Stack>
+      </Box>
+    </Box>
+  );
+}
+
+function RateLimitInfoCard() {
+  const { providerName } = useRouter().query;
+  const { rateLimitInfo, isLoading } = useRateLimitInfo(useActiveCustomerId(), providerName as ProviderName);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
+  return (
+    <Card>
+      <Typography variant="h6" component="h2" sx={{ p: 2 }}>
+        Rate Limit Info
+      </Typography>
+      <Box sx={{ py: 2, px: 4 }}>
+        {rateLimitInfo?.daily && (
+          <Typography variant="body1" component="p">
+            <b>{rateLimitInfo.daily.remaining}</b> of <b>{rateLimitInfo.daily.limit}</b> daily requests remaining.
+          </Typography>
+        )}
+        {rateLimitInfo?.hourly && (
+          <Typography variant="body1" component="p">
+            <b>{rateLimitInfo.hourly.remaining}</b> of <b>{rateLimitInfo.hourly.limit}</b> hourly requests remaining.
+          </Typography>
+        )}
+      </Box>
+    </Card>
+  );
+}
+
+function EntityMappingsCard() {
+  const applicationId = useActiveApplicationId();
+  const customerId = useActiveCustomerId();
+  const { providerName } = useRouter().query;
+  const { addNotification } = useNotification();
+  const { entityMappings = [], isLoading, mutate } = useEntityMappings(customerId, providerName as string);
+  const [tab, setTab] = useState(0);
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   const saveEntityMapping = async (mergedEntityMapping: MergedEntityMapping) => {
     const { entityId, object, fieldMappings } = mergedEntityMapping;
@@ -100,54 +163,31 @@ export default function Home(props: SupaglueProps) {
   };
 
   return (
-    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-      <Header title="Connection" onDrawerToggle={handleDrawerToggle} {...props} />
-      <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' }}>
-        {isLoading ? (
-          <Spinner />
-        ) : (
-          <Stack className="gap-2">
-            <Breadcrumbs>
-              <Link color="inherit" href={`/applications/${applicationId}`}>
-                Home
-              </Link>
-              <Link color="inherit" href={`/applications/${applicationId}/customers`}>
-                Customers
-              </Link>
-              <Link color="inherit" href={`/applications/${applicationId}/customers/${customerId}/connections`}>
-                Connections
-              </Link>
-              <Typography color="text.primary">Connection</Typography>
-            </Breadcrumbs>
-            <Card>
-              <Typography variant="h6" component="h2" sx={{ p: 2 }}>
-                Entity Mappings
-              </Typography>
-              <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={tab}>
-                  {entityMappings.map((mapping, idx) => (
-                    <Tab key={idx} label={mapping.entityName} onClick={() => setTab(idx)} />
-                  ))}
-                </Tabs>
-              </Box>
-              <Box component="main" sx={{ flex: 1, py: 6, px: 4 }}>
-                {entityMappings.map((mapping, idx) => (
-                  <TabPanel value={tab} index={idx} key={idx} className="w-full">
-                    <EntityMapping
-                      initialMapping={mapping}
-                      customerId={customerId}
-                      entity={mapping.entityName}
-                      providerName={providerName as string}
-                      saveEntityMapping={saveEntityMapping}
-                    />
-                  </TabPanel>
-                ))}
-              </Box>
-            </Card>
-          </Stack>
-        )}
+    <Card>
+      <Typography variant="h6" component="h2" sx={{ p: 2 }}>
+        Entity Mappings
+      </Typography>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={tab}>
+          {entityMappings.map((mapping, idx) => (
+            <Tab key={idx} label={mapping.entityName} onClick={() => setTab(idx)} />
+          ))}
+        </Tabs>
       </Box>
-    </Box>
+      <Box component="main" sx={{ flex: 1, py: 6, px: 4 }}>
+        {entityMappings.map((mapping, idx) => (
+          <TabPanel value={tab} index={idx} key={idx} className="w-full">
+            <EntityMapping
+              initialMapping={mapping}
+              customerId={customerId}
+              entity={mapping.entityName}
+              providerName={providerName as string}
+              saveEntityMapping={saveEntityMapping}
+            />
+          </TabPanel>
+        ))}
+      </Box>
+    </Card>
   );
 }
 
