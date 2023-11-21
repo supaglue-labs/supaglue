@@ -15,6 +15,8 @@ import type {
   UpdateContactResponse,
 } from '@supaglue/schemas/v2/engagement';
 
+jest.retryTimes(3);
+
 describe('contact', () => {
   let testContact: CreateContactRequest['record'];
   beforeEach(async () => {
