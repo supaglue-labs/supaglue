@@ -37,13 +37,17 @@ properties:
     type: string
     format: date-time
     example: '2022-02-27T00:00:00Z'
-  is_archived: 
+  is_archived:
     type: boolean
     description: When archived, cannot add contact to sequence or send mail.
   share_type:
     type: string
     description: The share type of the sequence. If `team` will share with the whole team. `private` will only share with the owner.
     enum: [team, private]
+  steps:
+    type: array
+    items:
+      $ref: ../create_sequence_step.yaml
 required:
   - id
   - is_enabled
@@ -53,4 +57,4 @@ required:
   - metrics
   - created_at
   - updated_at
-  - last_modified_at	
+  - last_modified_at

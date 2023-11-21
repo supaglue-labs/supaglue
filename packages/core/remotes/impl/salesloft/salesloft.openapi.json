@@ -2122,18 +2122,22 @@
     },
     "/v2/cadences/{id}.json": {
       "get": {
-        "description": "Fetches a cadence, by ID only.\n",
-        "parameters": [
-          { "description": "Cadence ID", "in": "path", "name": "id", "required": true, "schema": { "type": "string" } }
-        ],
+        "operationId": "getCadence",
+        "parameters": [{ "in": "path", "name": "id", "schema": { "type": "string" }, "required": true }],
+        "requestBody": { "content": { "application/json": {} } },
         "responses": {
           "200": {
-            "content": { "*/*": { "schema": { "$ref": "#/components/schemas/Cadence" } } },
-            "description": "Success"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "data": { "$ref": "#/components/schemas/Cadence" } },
+                  "required": ["data"]
+                }
+              }
+            }
           }
-        },
-        "summary": "Fetch a cadence",
-        "tags": ["Cadences"]
+        }
       }
     },
     "/v2/calendar/events": {
@@ -6393,10 +6397,20 @@
     "/v2/cadence_exports/{id}": {
       "get": {
         "operationId": "exportCadence",
-        "parameters": [{ "in": "path", "name": "id", "schema": { "type": "number" }, "required": true }],
+        "parameters": [{ "in": "path", "name": "id", "schema": { "type": "string" }, "required": true }],
         "requestBody": { "content": { "application/json": {} } },
         "responses": {
-          "200": { "content": { "application/json": { "schema": { "$ref": "#/components/schemas/CadenceExport" } } } }
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": { "data": { "$ref": "#/components/schemas/CadenceExport" } },
+                  "required": ["data"]
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -6799,12 +6813,7 @@
           },
           "cadence_priority": { "$ref": "#/components/schemas/EmbeddedResource" },
           "counts": { "$ref": "#/components/schemas/CadenceCounts" },
-          "created_at": {
-            "description": "Datetime of when the cadence was created",
-            "example": "2023-01-01T00:00:00.000000-05:00",
-            "format": "date-time",
-            "type": "string"
-          },
+          "created_at": { "type": "string", "format": "date-time" },
           "creator": { "$ref": "#/components/schemas/EmbeddedResource" },
           "draft": { "description": "Whether this cadence is in draft mode", "example": false, "type": "boolean" },
           "external_identifier": {
@@ -6819,7 +6828,7 @@
             "items": { "$ref": "#/components/schemas/EmbeddedResource" },
             "type": "array"
           },
-          "id": { "description": "ID of cadence", "example": 1, "type": "integer" },
+          "id": { "type": "number" },
           "name": { "description": "Cadence name", "example": "Prospecting - VP of Sales", "type": "string" },
           "opt_out_link_included": {
             "description": "Whether this cadence is configured to include an opt-out link by default",
@@ -6854,13 +6863,12 @@
             "example": false,
             "type": "boolean"
           },
-          "updated_at": {
-            "description": "Datetime of when the cadence was last updated",
-            "example": "2023-01-01T00:00:00.000000-05:00",
-            "format": "date-time",
-            "type": "string"
-          }
-        }
+          "updated_at": { "type": "string", "format": "date-time" },
+          "current_state": { "type": "string", "enum": ["draft", "active", "archived", "expired", "deleted"] }
+        },
+        "type": "object",
+        "required": ["current_state", "id", "created_at", "updated_at"],
+        "additionalProperties": {}
       },
       "CadenceCounts": {
         "properties": {
@@ -6894,39 +6902,45 @@
       "CadenceExport": {
         "type": "object",
         "properties": {
-          "data": {
-            "type": "object",
-            "properties": {
-              "cadence_content": {
-                "type": "object",
-                "properties": {
-                  "settings": { "$ref": "#/components/schemas/CadenceSettings" },
-                  "sharing_settings": { "$ref": "#/components/schemas/CadenceSharingSettings" },
-                  "step_groups": { "type": "array", "items": { "$ref": "#/components/schemas/StepGroup" } }
-                },
-                "required": ["step_groups"]
-              }
-            },
-            "required": ["cadence_content"]
-          }
-        },
-        "required": ["data"]
-      },
-      "CadenceImport": {
-        "type": "object",
-        "properties": {
-          "settings": { "$ref": "#/components/schemas/CadenceSettings" },
-          "sharing_settings": { "$ref": "#/components/schemas/CadenceSharingSettings" },
           "cadence_content": {
             "type": "object",
             "properties": {
-              "cadence_id": { "type": "number" },
+              "settings": { "$ref": "#/components/schemas/CadenceSettings" },
+              "sharing_settings": { "$ref": "#/components/schemas/CadenceSharingSettings" },
               "step_groups": { "type": "array", "items": { "$ref": "#/components/schemas/StepGroup" } }
             },
             "required": ["step_groups"]
           }
         },
-        "required": ["cadence_content"]
+        "required": ["cadence_content"],
+        "description": "@see https://gist.github.com/tonyxiao/0820140ebf60e408b454804f0ea05177"
+      },
+      "CadenceImport": {
+        "type": "object",
+        "properties": {
+          "settings": {
+            "allOf": [
+              { "$ref": "#/components/schemas/CadenceSettings" },
+              { "description": "optional when cadence_content.cadence_id is specified" }
+            ]
+          },
+          "sharing_settings": {
+            "allOf": [
+              { "$ref": "#/components/schemas/CadenceSharingSettings" },
+              { "description": "optional when cadence_content.cadence_id is specified" }
+            ]
+          },
+          "cadence_content": {
+            "type": "object",
+            "properties": {
+              "cadence_id": { "type": "number", "description": "For importing" },
+              "step_groups": { "type": "array", "items": { "$ref": "#/components/schemas/StepGroup" } }
+            },
+            "required": ["step_groups"]
+          }
+        },
+        "required": ["cadence_content"],
+        "description": "@see https://gist.github.com/tonyxiao/6e14c2348e4672e91257c0b918d5ccab"
       },
       "CadenceMembership": {
         "properties": {
@@ -8588,7 +8602,10 @@
         "allOf": [
           {
             "type": "object",
-            "properties": { "enabled": { "type": "boolean" }, "name": { "type": "string" } },
+            "properties": {
+              "enabled": { "type": "boolean", "description": "Describes if that step is currently enabled" },
+              "name": { "type": "string", "description": "The name given by the user for the step" }
+            },
             "required": ["enabled", "name"]
           },
           {
@@ -8624,9 +8641,18 @@
                   "type_settings": {
                     "type": "object",
                     "properties": {
-                      "instructions": { "type": "string" },
-                      "integration_id": { "type": "number" },
-                      "integration_step_type_guid": { "type": "string" }
+                      "instructions": {
+                        "type": "string",
+                        "description": "The instructions to follow when executing that step"
+                      },
+                      "integration_id": {
+                        "type": "number",
+                        "description": "Identifies the Salesloft integration you are trying to use"
+                      },
+                      "integration_step_type_guid": {
+                        "type": "string",
+                        "description": "For LinkedIn steps, identifies one of the LinkedIn Steps."
+                      }
                     },
                     "required": ["instructions", "integration_id", "integration_step_type_guid"]
                   }
@@ -8640,14 +8666,18 @@
                   "type_settings": {
                     "type": "object",
                     "properties": {
-                      "previous_email_step_group_reference_id": { "type": "number" },
+                      "previous_email_step_group_reference_id": {
+                        "type": "number",
+                        "description": "Used to reference the step group of the previous email in a thread"
+                      },
                       "email_template": {
                         "type": "object",
                         "properties": {
                           "title": { "type": "string" },
                           "subject": { "type": "string" },
                           "body": { "type": "string" }
-                        }
+                        },
+                        "description": "Content for the email template used in this step"
                       }
                     }
                   }
@@ -9147,6 +9177,17 @@
           "work_country": { "description": "Work Country", "example": "PE", "type": "string" }
         }
       },
+      "_Cadence": {
+        "type": "object",
+        "properties": {
+          "current_state": { "type": "string", "enum": ["draft", "active", "archived", "expired", "deleted"] },
+          "id": { "type": "number" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        },
+        "required": ["current_state", "id", "created_at", "updated_at"],
+        "additionalProperties": {}
+      },
       "CadenceSettings": {
         "type": "object",
         "properties": {
@@ -9156,7 +9197,11 @@
           "remove_bounced": { "type": "boolean" },
           "remove_people_when_meeting_booked": { "type": "boolean" },
           "external_identifier": { "nullable": true, "anyOf": [{ "type": "string" }, { "type": "number" }] },
-          "cadence_function": { "type": "string", "enum": ["outbound", "inbound", "event", "other"] }
+          "cadence_function": {
+            "type": "string",
+            "enum": ["outbound", "inbound", "event", "other"],
+            "description": "https://share.cleanshot.com/1JmgKzwV"
+          }
         },
         "required": [
           "name",
@@ -9175,12 +9220,28 @@
       "StepGroup": {
         "type": "object",
         "properties": {
-          "automated_settings": { "$ref": "#/components/schemas/StepGroupAutomatedSettings" },
-          "automated": { "type": "boolean" },
-          "day": { "type": "number" },
-          "due_immediately": { "type": "boolean" },
-          "reference_id": { "type": "number", "nullable": true },
-          "steps": { "type": "array", "items": { "$ref": "#/components/schemas/Step" } }
+          "automated_settings": {
+            "allOf": [
+              { "$ref": "#/components/schemas/StepGroupAutomatedSettings" },
+              { "description": "Collection of all the settings for an automated step. Only valid if automated is true" }
+            ]
+          },
+          "automated": {
+            "type": "boolean",
+            "description": "Describes if the step happens with or without human intervention. Can only be true if steps in group are Email steps."
+          },
+          "day": { "type": "number", "description": "The day that the step will be executed" },
+          "due_immediately": { "type": "boolean", "description": "Describes if the step is due immediately or not." },
+          "reference_id": {
+            "type": "number",
+            "nullable": true,
+            "description": "Used to correlate threaded email steps. Required for email step, can pass 0 for example."
+          },
+          "steps": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Step" },
+            "description": "All of the steps that belong to a particular day"
+          }
         },
         "required": ["automated", "day", "due_immediately", "steps"]
       },
@@ -9233,7 +9294,8 @@
               }
             ]
           }
-        ]
+        ],
+        "description": "Represents the parameters for an automated action. Only valid for automated email steps"
       }
     },
     "securitySchemes": {

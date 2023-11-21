@@ -549,15 +549,15 @@ class ApolloClient extends AbstractEngagementRemoteClient {
           params.type === 'linkedin_send_message'
             ? 'linkedin_step_message'
             : params.type === 'task'
-            ? 'action_item'
-            : params.type,
+              ? 'action_item'
+              : params.type,
         ...(days
           ? { wait_mode: 'day', wait_time: days }
           : hours
-          ? { wait_mode: 'hour', wait_time: hours }
-          : minutes
-          ? { wait_mode: 'minute', wait_time: minutes }
-          : { wait_mode: 'second', wait_time: seconds ?? 0 }),
+            ? { wait_mode: 'hour', wait_time: hours }
+            : minutes
+              ? { wait_mode: 'minute', wait_time: minutes }
+              : { wait_mode: 'second', wait_time: seconds ?? 0 }),
         exact_datetime: params.date, // Not clear exactly how this works
         note: params.taskNote,
         ...params.customFields,

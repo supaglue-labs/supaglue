@@ -13,106 +13,11 @@ import type {
   User,
 } from '@supaglue/types/engagement';
 import { camelcaseKeys } from '@supaglue/utils';
-import z from 'zod';
 import { BadRequestError } from '../../../errors';
+import type { components } from './salesloft.openapi.gen';
 
-export const salesloftPerson = z.object({
-  id: z.number(),
-  first_name: z.string().nullish(),
-  last_name: z.string().nullish(),
-  city: z.string().nullish(),
-  state: z.string().nullish(),
-  country: z.string().nullish(),
-  title: z.string().nullish(),
-  owner: z.object({ id: z.number() }).nullish(),
-  account: z.object({ id: z.number() }).nullish(),
-  phone: z.string().nullish(),
-  home_phone: z.string().nullish(),
-  mobile_phone: z.string().nullish(),
-  email_address: z.string().nullish(),
-  secondary_email_address: z.string().nullish(),
-  personal_email_address: z.string().nullish(),
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime(),
-  counts: z.object({
-    emails_sent: z.number().nullish(),
-    emails_viewed: z.number().nullish(),
-    emails_clicked: z.number().nullish(),
-    emails_replied_to: z.number().nullish(),
-    emails_bounced: z.number().nullish(),
-    calls: z.number().nullish(),
-  }),
-  custom_fields: z.record(z.any()),
-});
+export type Salesloft = components['schemas'];
 
-export type SalesloftPerson = z.infer<typeof salesloftPerson>;
-
-export const salesloftUser = z
-  .object({
-    id: z.number(),
-    guid: z.string(),
-    created_at: z.string().datetime(),
-    updated_at: z.string().datetime(),
-    first_name: z.string().nullish(),
-    name: z.string().nullish(),
-    last_name: z.string().nullish(),
-    job_role: z.string().nullish(),
-    active: z.boolean(),
-    time_zone: z.string().nullish(),
-    slack_username: z.string().nullish(),
-    twitter_handle: z.string().nullish(),
-    email: z.string().nullish(),
-    email_client_email_address: z.string().nullish(),
-    sending_email_address: z.string().nullish(),
-    from_address: z.string().nullish(),
-    full_email_address: z.string().nullish(),
-    bcc_email_address: z.string().nullish(),
-    work_country: z.string().nullish(),
-    email_signature: z.string().nullish(),
-    email_signature_type: z.string().nullish(),
-    email_signature_click_tracking_disabled: z.boolean().nullish(),
-    team_admin: z.boolean().nullish(),
-    local_dial_enabled: z.boolean().nullish(),
-    click_to_call_enabled: z.boolean().nullish(),
-    email_client_configured: z.boolean().nullish(),
-    crm_connected: z.boolean().nullish(),
-  })
-  .catchall(z.any());
-
-export type SalesloftUser = z.infer<typeof salesloftUser>;
-
-export const salesloftCadence = z
-  .object({
-    id: z.number(),
-    created_at: z.string().datetime(),
-    updated_at: z.string().datetime(),
-    name: z.string().nullish(),
-    current_state: z.enum(['draft', 'active', 'archived', 'expired', 'deleted']),
-    archived_at: z.string().nullish(),
-    team_cadence: z.boolean().nullish(),
-    shared: z.boolean(),
-    remove_bounces_enabled: z.boolean().nullish(),
-    remove_replies_enabled: z.boolean().nullish(),
-    opt_out_link_included: z.boolean().nullish(),
-    draft: z.boolean().nullish(),
-    cadence_framework_id: z.number().nullish(),
-    cadence_function: z.string().nullish(),
-    external_identifier: z.string().nullish(),
-    tags: z.array(z.string()),
-    counts: z
-      .object({
-        cadence_people: z.number().nullish(),
-        people_acted_on_count: z.number().nullish(),
-        target_daily_people: z.number().nullish(),
-        opportunities_created: z.number().nullish(),
-        meetings_booked: z.number().nullish(),
-      })
-
-      .nullish(),
-  })
-  .catchall(z.any());
-
-export type SalesloftCadence = z.infer<typeof salesloftCadence>;
 export const fromSalesloftAccountToAccount = (record: Record<string, any>): Account => {
   return {
     id: record.id.toString(),
@@ -203,29 +108,36 @@ export const fromSalesloftPersonToPhoneNumbers = (record: Record<string, any>): 
   return out;
 };
 
-export const fromSalesloftUserToUser = (record: SalesloftUser): User => {
+export const fromSalesloftUserToUser = (record: Salesloft['User']): User => {
   return {
-    id: record.id.toString(),
+    id: record.id!.toString(),
     firstName: record.first_name ?? null,
     lastName: record.last_name ?? null,
     email: record.email ?? null,
-    createdAt: new Date(record.created_at),
-    updatedAt: new Date(record.updated_at),
-    lastModifiedAt: new Date(record.updated_at),
+    createdAt: new Date(record.created_at!),
+    updatedAt: new Date(record.updated_at!),
+    lastModifiedAt: new Date(record.updated_at!),
     isDeleted: false,
     rawData: record,
     isLocked: record.active,
   };
 };
 
-export const fromSalesloftCadenceToSequence = (record: SalesloftCadence, stepCount: number): Sequence => {
+export const fromSalesloftCadenceToSequence = (
+  record: Salesloft['Cadence'],
+  stepCount: number,
+  cadenceExport?: Salesloft['CadenceExport']
+): Sequence => {
+  const steps = cadenceExport?.cadence_content.step_groups.flatMap((group) =>
+    group.steps.map((s) => fromSalesloftCadenceStepToSequenceStep(s, group))
+  );
   return {
-    id: record.id.toString(),
+    id: record.id!.toString(),
     name: record.name ?? null,
     isEnabled: !record.draft,
     numSteps: stepCount,
-    metrics: camelcaseKeys(record.counts ?? {}),
-    tags: record.tags ?? [],
+    metrics: camelcaseKeys(record.counts ?? {}!),
+    tags: record.tags ?? []!,
     ownerId: record.owner?.id?.toString() ?? null,
     createdAt: new Date(record.created_at),
     updatedAt: new Date(record.updated_at),
@@ -234,6 +146,7 @@ export const fromSalesloftCadenceToSequence = (record: SalesloftCadence, stepCou
     rawData: record,
     isArchived: record.current_state === 'archived',
     shareType: record.shared ? 'team' : 'private',
+    steps,
   };
 };
 
@@ -294,8 +207,8 @@ export const toSalesloftSequenceStateCreateParams = (
  * Issues:
  * - `ownerId` does not appear to be supported by salesloft
  */
-export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): CadenceImport => {
-  const stepGroups: StepGroup[] = [];
+export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): Salesloft['CadenceImport'] => {
+  const stepGroups: Salesloft['StepGroup'][] = [];
   let dayOffset = 0; // salesloft day is always relative to start of the sequence, so we account for that here
   for (const [index, step] of (sequence.steps ?? []).entries()) {
     // salesloft does not have a concept of step groups within their UI
@@ -338,7 +251,7 @@ export const toSalesloftCadenceImportParams = (sequence: SequenceCreateParams): 
  * - Differentiate between auto-email vs. manual email
  * - Only works if a cadence has exactly 0 steps... https://share.cleanshot.com/dVx6sqTD
  */
-export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParams): CadenceImport => {
+export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParams): Salesloft['CadenceImport'] => {
   if (step.date) {
     throw new BadRequestError('Only relative delays are supported for Salesloft sequences');
   }
@@ -364,7 +277,7 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
     throw new BadRequestError('Template IDs are not currently supported for Salesloft sequences');
   }
 
-  const cadenceStep: Step | null =
+  const cadenceStep: Salesloft['Step'] | null =
     (step.type === 'manual_email' || step.type === 'auto_email') && step.template && 'body' in step.template
       ? {
           enabled: true,
@@ -375,18 +288,18 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
           },
         }
       : step.type === 'call'
-      ? {
-          enabled: true,
-          type: 'Phone',
-          name: step.name ?? `Step ${step.order}`,
-          type_settings: { instructions: step.taskNote ?? '' },
-        }
-      : {
-          enabled: true,
-          type: 'Other',
-          name: step.name ?? `Step ${step.order}`,
-          type_settings: { instructions: `${step.type}: ${step.taskNote ?? ''}` },
-        };
+        ? {
+            enabled: true,
+            type: 'Phone',
+            name: step.name ?? `Step ${step.order}`,
+            type_settings: { instructions: step.taskNote ?? '' },
+          }
+        : {
+            enabled: true,
+            type: 'Other',
+            name: step.name ?? `Step ${step.order}`,
+            type_settings: { instructions: `${step.type}: ${step.taskNote ?? ''}` },
+          };
 
   return {
     cadence_content: {
@@ -407,116 +320,38 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
   };
 };
 
-/** @see https://gist.github.com/tonyxiao/6e14c2348e4672e91257c0b918d5ccab */
-export interface CadenceImport {
-  /** optional when cadence_content.cadence_id is specified */
-  settings?: Settings;
-  /** optional when cadence_content.cadence_id is specified */
-  sharing_settings?: SharingSettings;
-  cadence_content: {
-    /** For importing */
-    cadence_id?: number;
-    step_groups: StepGroup[];
+function fromSalesloftCadenceStepToSequenceStep(
+  cadenceStep: Salesloft['Step'],
+  group: Salesloft['StepGroup']
+): SequenceStepCreateParams {
+  const step: Omit<SequenceStepCreateParams, 'type'> = {
+    name: cadenceStep.name,
+    intervalSeconds: group.day
+      ? // Delay time is in minutes
+        (group.day - 1) * 86400 + (group.automated_settings?.delay_time ?? 0) * 60
+      : undefined,
+  };
+  if (cadenceStep.type === 'Email') {
+    return {
+      ...step,
+      type: group.automated ? 'auto_email' : 'manual_email',
+      template: {
+        name: cadenceStep.type_settings.email_template?.title,
+        subject: cadenceStep.type_settings.email_template?.subject ?? '',
+        body: cadenceStep.type_settings.email_template?.body ?? '',
+      },
+    };
+  }
+  if (cadenceStep.type === 'Phone') {
+    return {
+      ...step,
+      type: 'call',
+      taskNote: cadenceStep.type_settings.instructions,
+    };
+  }
+  return {
+    name: cadenceStep.name,
+    type: 'task',
+    taskNote: cadenceStep.type_settings.instructions,
   };
 }
-
-interface Settings {
-  name: string;
-  target_daily_people: number;
-  remove_replied: boolean;
-  remove_bounced: boolean;
-  remove_people_when_meeting_booked?: boolean;
-  external_identifier: null | string | number;
-  /** https://share.cleanshot.com/1JmgKzwV */
-  cadence_function: 'outbound' | 'inbound' | 'event' | 'other';
-}
-
-interface SharingSettings {
-  team_cadence: boolean;
-  shared: boolean;
-}
-
-interface StepGroup {
-  /** Collection of all the settings for an automated step. Only valid if automated is true. */
-  automated_settings?: AutomatedSettings;
-  /** Describes if the step happens with or without human intervention. Can only be true if steps in group are Email steps. */
-  automated: boolean;
-  /** The day that the step will be executed */
-  day: number;
-  /** Describes if the step is due immediately or not. */
-  due_immediately: boolean;
-  /** Used to correlate threaded email steps. Required for email step, can pass 0 for example. */
-  reference_id?: number | null;
-  /** All of the steps that belong to a particular day */
-  steps: Step[];
-}
-
-/**
- * Represents the parameters for an automated action. Only valid for automated email steps
- */
-type AutomatedSettings = {
-  /** Determines whether or not the step is able to be sent on weekends */
-  allow_send_on_weekends?: boolean;
-} & (
-  | {
-      /**
-       * Describes if the step is due immediately or not.
-       * Must be either "at_time" or "after_time_delay".
-       */
-      send_type: 'at_time';
-
-      /** The time that the automated action will happen. e.g. 09:00 */
-      time_of_day: string;
-
-      /**
-       * Specifies whether the email is sent after the person's timezone
-       * or the user's timezone.
-       * Must be either "person" or "user".
-       */
-      timezone_mode: 'person' | 'user';
-    }
-  | {
-      /**
-       * Describes if the step is due immediately or not.
-       * Must be either "at_time" or "after_time_delay".
-       */
-      send_type: 'after_time_delay';
-
-      /** must be a number between 0 and 720 (minutes */
-      delay_time: number;
-    }
-);
-
-type Step = {
-  /** Describes if that step is currently enabled */
-  enabled: boolean;
-  /** The name given by the user for the step */
-  name: string;
-} & (
-  | { type: 'Phone'; type_settings: { instructions: string } }
-  | { type: 'Other'; type_settings: { instructions: string } }
-  | {
-      type: 'Integration';
-      type_settings: {
-        /** The instructions to follow when executing that step */
-        instructions: string;
-        /** Identifies the Salesloft integration you are trying to use */
-        integration_id: number;
-        /** For LinkedIn steps, identifies one of the LinkedIn Steps. */
-        integration_step_type_guid: string;
-      };
-    }
-  | {
-      type: 'Email';
-      type_settings: {
-        /** Used to reference the step group of the previous email in a thread */
-        previous_email_step_group_reference_id?: number;
-        /** Content for the email template used in this step */
-        email_template?: {
-          title?: string;
-          subject?: string;
-          body?: string;
-        };
-      };
-    }
-);

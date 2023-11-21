@@ -495,6 +495,7 @@ export interface components {
        * @enum {string}
        */
       share_type?: "team" | "private";
+      steps?: components["schemas"]["create_sequence_step"][];
     };
     create_sequence: {
       name: string;

@@ -1390,26 +1390,7 @@ export interface paths {
     };
   };
   "/v2/cadences/{id}.json": {
-    /**
-     * Fetch a cadence
-     * @description Fetches a cadence, by ID only.
-     */
-    get: {
-      parameters: {
-        path: {
-          /** @description Cadence ID */
-          id: string;
-        };
-      };
-      responses: {
-        /** @description Success */
-        200: {
-          content: {
-            "*/*": components["schemas"]["Cadence"];
-          };
-        };
-      };
-    };
+    get: operations["getCadence"];
   };
   "/v2/calendar/events": {
     /**
@@ -4908,12 +4889,8 @@ export interface components {
       cadence_function?: string;
       cadence_priority?: components["schemas"]["EmbeddedResource"];
       counts?: components["schemas"]["CadenceCounts"];
-      /**
-       * Format: date-time
-       * @description Datetime of when the cadence was created
-       * @example 2023-01-01T00:00:00.000000-05:00
-       */
-      created_at?: string;
+      /** Format: date-time */
+      created_at: string;
       creator?: components["schemas"]["EmbeddedResource"];
       /**
        * @description Whether this cadence is in draft mode
@@ -4936,11 +4913,7 @@ export interface components {
        * ]
        */
       groups?: components["schemas"]["EmbeddedResource"][];
-      /**
-       * @description ID of cadence
-       * @example 1
-       */
-      id?: number;
+      id: number;
       /**
        * @description Cadence name
        * @example Prospecting - VP of Sales
@@ -4981,12 +4954,11 @@ export interface components {
        * @example false
        */
       team_cadence?: boolean;
-      /**
-       * Format: date-time
-       * @description Datetime of when the cadence was last updated
-       * @example 2023-01-01T00:00:00.000000-05:00
-       */
-      updated_at?: string;
+      /** Format: date-time */
+      updated_at: string;
+      /** @enum {string} */
+      current_state: "draft" | "active" | "archived" | "expired" | "deleted";
+      [key: string]: unknown;
     };
     CadenceCounts: {
       /**
@@ -5015,19 +4987,20 @@ export interface components {
        */
       target_daily_people?: number;
     };
+    /** @description @see https://gist.github.com/tonyxiao/0820140ebf60e408b454804f0ea05177 */
     CadenceExport: {
-      data: {
-        cadence_content: {
-          settings?: components["schemas"]["CadenceSettings"];
-          sharing_settings?: components["schemas"]["CadenceSharingSettings"];
-          step_groups: components["schemas"]["StepGroup"][];
-        };
+      cadence_content: {
+        settings?: components["schemas"]["CadenceSettings"];
+        sharing_settings?: components["schemas"]["CadenceSharingSettings"];
+        step_groups: components["schemas"]["StepGroup"][];
       };
     };
+    /** @description @see https://gist.github.com/tonyxiao/6e14c2348e4672e91257c0b918d5ccab */
     CadenceImport: {
       settings?: components["schemas"]["CadenceSettings"];
       sharing_settings?: components["schemas"]["CadenceSharingSettings"];
       cadence_content: {
+        /** @description For importing */
         cadence_id?: number;
         step_groups: components["schemas"]["StepGroup"][];
       };
@@ -7086,7 +7059,9 @@ export interface components {
       view_params?: Record<string, never>;
     };
     Step: {
+      /** @description Describes if that step is currently enabled */
       enabled: boolean;
+      /** @description The name given by the user for the step */
       name: string;
     } & OneOf<[{
       /** @enum {string} */
@@ -7104,15 +7079,20 @@ export interface components {
       /** @enum {string} */
       type: "Integration";
       type_settings: {
+        /** @description The instructions to follow when executing that step */
         instructions: string;
+        /** @description Identifies the Salesloft integration you are trying to use */
         integration_id: number;
+        /** @description For LinkedIn steps, identifies one of the LinkedIn Steps. */
         integration_step_type_guid: string;
       };
     }, {
       /** @enum {string} */
       type: "Email";
       type_settings: {
+        /** @description Used to reference the step group of the previous email in a thread */
         previous_email_step_group_reference_id?: number;
+        /** @description Content for the email template used in this step */
         email_template?: {
           title?: string;
           subject?: string;
@@ -7703,6 +7683,16 @@ export interface components {
        */
       work_country?: string;
     };
+    _Cadence: {
+      /** @enum {string} */
+      current_state: "draft" | "active" | "archived" | "expired" | "deleted";
+      id: number;
+      /** Format: date-time */
+      created_at: string;
+      /** Format: date-time */
+      updated_at: string;
+      [key: string]: unknown;
+    };
     CadenceSettings: {
       name: string;
       target_daily_people: number;
@@ -7710,7 +7700,10 @@ export interface components {
       remove_bounced: boolean;
       remove_people_when_meeting_booked?: boolean;
       external_identifier: (string | number) | null;
-      /** @enum {string} */
+      /**
+       * @description https://share.cleanshot.com/1JmgKzwV
+       * @enum {string}
+       */
       cadence_function: "outbound" | "inbound" | "event" | "other";
     };
     CadenceSharingSettings: {
@@ -7719,12 +7712,18 @@ export interface components {
     };
     StepGroup: {
       automated_settings?: components["schemas"]["StepGroupAutomatedSettings"];
+      /** @description Describes if the step happens with or without human intervention. Can only be true if steps in group are Email steps. */
       automated: boolean;
+      /** @description The day that the step will be executed */
       day: number;
+      /** @description Describes if the step is due immediately or not. */
       due_immediately: boolean;
+      /** @description Used to correlate threaded email steps. Required for email step, can pass 0 for example. */
       reference_id?: number | null;
+      /** @description All of the steps that belong to a particular day */
       steps: components["schemas"]["Step"][];
     };
+    /** @description Represents the parameters for an automated action. Only valid for automated email steps */
     StepGroupAutomatedSettings: {
       /** @description Determines whether or not the step is able to be sent on weekends */
       allow_send_on_weekends?: boolean;
@@ -7778,6 +7777,27 @@ export type external = Record<string, never>;
 
 export interface operations {
 
+  getCadence: {
+    parameters: {
+      path: {
+        id: string;
+      };
+    };
+    requestBody?: {
+      content: {
+        "application/json": unknown;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            data: components["schemas"]["Cadence"];
+          };
+        };
+      };
+    };
+  };
   importCadence: {
     requestBody?: {
       content: {
@@ -7801,7 +7821,7 @@ export interface operations {
   exportCadence: {
     parameters: {
       path: {
-        id: number;
+        id: string;
       };
     };
     requestBody?: {
@@ -7812,7 +7832,9 @@ export interface operations {
     responses: {
       200: {
         content: {
-          "application/json": components["schemas"]["CadenceExport"];
+          "application/json": {
+            data: components["schemas"]["CadenceExport"];
+          };
         };
       };
     };
