@@ -1,27 +1,20 @@
 get:
-  operationId: getConnection
-  summary: Get connection
+  operationId: getConnectionRateLimitInfo
+  summary: Get connection rate limit info
+  description: |
+    Get rate limit info for a connection. This endpoint is only available for
+    salesforce and apollo connections.
   tags:
     - Connections
   security:
     - x-api-key: []
   responses:
     200:
-      description: Connection
+      description: Connection rate limit info
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/objects/connection.yaml
-delete:
-  operationId: deleteConnection
-  summary: Delete connection
-  tags:
-    - Connections
-  security:
-    - x-api-key: []
-  responses:
-    204:
-      description: An empty body is returned on successful deletion.
+            $ref: ../components/schemas/objects/rate_limit_info.yaml
 parameters:
   - name: customer_id
     in: path

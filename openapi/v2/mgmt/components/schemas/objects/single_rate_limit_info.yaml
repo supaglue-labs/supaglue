@@ -1,0 +1,15 @@
+type: object
+properties:
+  limit:
+    type: integer
+    example: 1000
+  remaining:
+    type: integer
+    example: 900
+  reset_time:
+    type: integer
+    description: The time (in epoch seconds) at which the rate limit will reset. If missing, the rate limit is a sliding window.
+    example: 1615219200
+required:
+  - limit
+  - remaining

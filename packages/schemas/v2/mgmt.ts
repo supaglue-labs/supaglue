@@ -144,6 +144,12 @@ export type GetConnectionRequest = never;
 export type GetConnectionResponse =
   operations['getConnection']['responses'][keyof operations['getConnection']['responses']]['content']['application/json'];
 
+export type GetRateLimitInfoPathParams =
+  paths[`/customers/{customer_id}/connections/{provider_name}/_rate_limit_info`]['parameters']['path'];
+export type GetRateLimitInfoRequest = never;
+export type GetRateLimitInfoResponse =
+  operations['getConnectionRateLimitInfo']['responses'][keyof operations['getConnectionRateLimitInfo']['responses']]['content']['application/json'];
+
 export type GetProviderUserIdPathParams =
   paths[`/customers/{customer_id}/connections/_provider_user_id`]['parameters']['path'];
 export type GetProviderUserIdRequest = never;

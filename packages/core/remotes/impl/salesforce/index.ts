@@ -12,6 +12,7 @@ import type {
   Property,
   PropertyUnified,
   Provider,
+  RateLimitInfo,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
@@ -1592,6 +1593,19 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
             })
           : null,
         previous: null,
+      },
+    };
+  }
+
+  public override async getRateLimitInfo(): Promise<RateLimitInfo> {
+    const response = await this.#fetch(`/services/data/v${SALESFORCE_API_VERSION}/limits`, {
+      method: 'GET',
+    });
+    const json = await response.json();
+    return {
+      daily: {
+        limit: json.DailyApiRequests.Max,
+        remaining: json.DailyApiRequests.Remaining,
       },
     };
   }

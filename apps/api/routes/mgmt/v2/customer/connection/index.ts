@@ -18,6 +18,9 @@ import type {
   GetProvideruserIdQueryParams,
   GetProviderUserIdRequest,
   GetProviderUserIdResponse,
+  GetRateLimitInfoPathParams,
+  GetRateLimitInfoRequest,
+  GetRateLimitInfoResponse,
 } from '@supaglue/schemas/v2/mgmt';
 import { camelcaseKeys } from '@supaglue/utils';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
@@ -115,6 +118,26 @@ export default function init(app: Router): void {
       );
 
       return res.status(200).send(snakecaseKeys(connection));
+    }
+  );
+
+  connectionRouter.get(
+    '/:provider_name/_rate_limit_info',
+    async (
+      req: Request<GetRateLimitInfoPathParams, GetRateLimitInfoResponse, GetRateLimitInfoRequest>,
+      res: Response<GetRateLimitInfoResponse>
+    ) => {
+      const externalCustomerId = req.params.customer_id;
+      const customerId = getCustomerIdPk(req.supaglueApplication.id, externalCustomerId);
+      const connection = await connectionService.getSafeByProviderNameAndApplicationIdAndCustomerId(
+        req.params.provider_name,
+        req.supaglueApplication.id,
+        customerId
+      );
+      const client = await remoteService.getRemoteClient(connection.id);
+      const rateLimitInfo = await client.getRateLimitInfo();
+
+      return res.status(200).send(rateLimitInfo);
     }
   );
 

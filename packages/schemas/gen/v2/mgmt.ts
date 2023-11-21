@@ -323,6 +323,20 @@ export interface paths {
       };
     };
   };
+  "/customers/{customer_id}/connections/{provider_name}/_rate_limit_info": {
+    /**
+     * Get connection rate limit info
+     * @description Get rate limit info for a connection. This endpoint is only available for
+     * salesforce and apollo connections.
+     */
+    get: operations["getConnectionRateLimitInfo"];
+    parameters: {
+      path: {
+        customer_id: string;
+        provider_name: components["schemas"]["provider_name"];
+      };
+    };
+  };
   "/syncs": {
     /**
      * Get Syncs
@@ -982,6 +996,24 @@ export interface components {
        */
       entity_mappings?: components["schemas"]["connection_entity_mapping"][];
       connection_sync_config?: components["schemas"]["connection_sync_config"];
+    };
+    single_rate_limit_info: {
+      /** @example 1000 */
+      limit: number;
+      /** @example 900 */
+      remaining: number;
+      /**
+       * @description The time (in epoch seconds) at which the rate limit will reset. If missing, the rate limit is a sliding window.
+       * @example 1615219200
+       */
+      reset_time?: number;
+    };
+    rate_limit_info: {
+      daily?: components["schemas"]["single_rate_limit_info"];
+      hourly?: components["schemas"]["single_rate_limit_info"];
+      other?: {
+        [key: string]: components["schemas"]["single_rate_limit_info"];
+      };
     };
     /**
      * @example crm
@@ -2596,6 +2628,27 @@ export interface operations {
       /** @description An empty body is returned on successful deletion. */
       204: {
         content: never;
+      };
+    };
+  };
+  /**
+   * Get connection rate limit info
+   * @description Get rate limit info for a connection. This endpoint is only available for
+   * salesforce and apollo connections.
+   */
+  getConnectionRateLimitInfo: {
+    parameters: {
+      path: {
+        customer_id: string;
+        provider_name: components["schemas"]["provider_name"];
+      };
+    };
+    responses: {
+      /** @description Connection rate limit info */
+      200: {
+        content: {
+          "application/json": components["schemas"]["rate_limit_info"];
+        };
       };
     };
   };
