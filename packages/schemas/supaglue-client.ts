@@ -1,5 +1,4 @@
-import createClient from 'openapi-fetch';
-
+import { createOpenapiClient } from './createOpenapiClient';
 import type { paths as actions } from './gen/v2/actions';
 import type { paths as crm } from './gen/v2/crm';
 import type { paths as data } from './gen/v2/data';
@@ -25,18 +24,18 @@ export function createSupaglueClient({ apiUrl = 'https://api.supaglue.io', ...op
     ({
       baseUrl: new URL(segment, apiUrl).toString(),
       headers: { ['x-api-key']: options.apiKey },
-    } satisfies Parameters<typeof createClient>[0]);
+    }) satisfies Parameters<typeof createOpenapiClient>[0];
 
   return {
-    actions: createClient<actions>(getOptions('actions/v2')),
-    crm: createClient<crm>(getOptions('crm/v2')),
-    data: createClient<data>(getOptions('data/v2')),
-    engagement: createClient<engagement>(getOptions('engagement/v2')),
-    enrichment: createClient<enrichment>(getOptions('enrichment/v2')),
-    marketingAutomation: createClient<marketingAutomation>(getOptions('marketing-automation/v2')),
-    metadata: createClient<metadata>(getOptions('metadata/v2')),
-    ticketing: createClient<ticketing>(getOptions('ticketing/v2')),
+    actions: createOpenapiClient<actions>(getOptions('actions/v2')),
+    crm: createOpenapiClient<crm>(getOptions('crm/v2')),
+    data: createOpenapiClient<data>(getOptions('data/v2')),
+    engagement: createOpenapiClient<engagement>(getOptions('engagement/v2')),
+    enrichment: createOpenapiClient<enrichment>(getOptions('enrichment/v2')),
+    marketingAutomation: createOpenapiClient<marketingAutomation>(getOptions('marketing-automation/v2')),
+    metadata: createOpenapiClient<metadata>(getOptions('metadata/v2')),
+    ticketing: createOpenapiClient<ticketing>(getOptions('ticketing/v2')),
     // TODO: Mgmt uses different headers, we should fix that
-    mgmt: createClient<mgmt>(getOptions('mgmt/v2')),
+    mgmt: createOpenapiClient<mgmt>(getOptions('mgmt/v2')),
   };
 }

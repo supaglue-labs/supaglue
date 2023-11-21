@@ -6,7 +6,6 @@
   "types": "index.ts",
   "packageManager": "yarn@3.4.1",
   "dependencies": {
-    "@anatine/zod-openapi": "^2.2.0",
     "@aws-sdk/client-sesv2": "^3.437.0",
     "@google-cloud/bigquery": "^6.2.0",
     "@hubspot/api-client": "9.1.0",
@@ -16,13 +15,13 @@
     "@supaglue/types": "workspace:^",
     "@supaglue/utils": "workspace:*",
     "@temporalio/proto": "^1.8.6",
-    "@zodios/core": "^10.9.6",
     "async-retry": "^1.3.3",
     "axios": "^1.6.0",
     "csv-parse": "^5.3.5",
     "csv-stringify": "^6.3.0",
     "jsforce": "^2.0.0-beta.20",
     "odata": "^1.3.2",
+    "openapi-fetch": "^0.8.1",
     "pg": "^8.10.2",
     "pg-connection-string": "^2.6.2",
     "pg-copy-streams": "^6.0.6",
@@ -35,7 +34,8 @@
     "qs": "^6.11.2",
     "svix": "^0.84.1",
     "uuid": "^9.0.0",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zod-openapi": "^2.11.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^1.0.1",
@@ -46,7 +46,9 @@
     "@types/pluralize": "^0.0.29",
     "@types/qs": "^6",
     "@types/uuid": "^9.0.1",
-    "openapi3-ts": "^4.1.2",
+    "concurrently": "^8.2.2",
+    "openapi-typescript": "^6.7.1",
+    "prettier": "^3.1.0",
     "ts-toolbelt": "9.6.0",
     "typescript": "^4.9.5"
   },
@@ -59,7 +61,16 @@
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
     "test": "SUPAGLUE_LOG_LEVEL=debug jest --selectProjects @supaglue/core --group=unit",
-    "tsc:watch": "tsc --noEmit --watch"
+    "tsc:watch": "tsc --noEmit --watch",
+    "codegen": "yarn download && yarn generate",
+    "download": "concurrently 'npm:download:*'",
+    "generate": "concurrently 'npm:generate:*'",
+    "download:outreach": "curl --compressed https://developers.outreach.io/page-data/api/reference/overview/page-data.json | jq -r  .result.data.contentItem.data.redocStoreStr | jq .definition.data | prettier --parser json > ./remotes/impl/outreach/outreach.openapi.json",
+    "download:salesloft": "curl https://api.apis.guru/v2/specs/salesloft.com/v2/openapi.json | prettier --parser json > ./remotes/impl/salesloft/salesloft.openapi.json",
+    "download:apollo": "node --loader tsx remotes/impl/apollo/apollo.openapi.ts | prettier --parser json > ./remotes/impl/apollo/apollo.openapi.json",
+    "generate:outreach": "openapi-typescript ./remotes/impl/outreach/outreach.openapi.json --output ./remotes/impl/outreach/outreach.openapi.gen.d.ts",
+    "generate:salesloft": "openapi-typescript ./remotes/impl/salesloft/salesloft.openapi.json --output ./remotes/impl/salesloft/salesloft.openapi.gen.d.ts",
+    "generate:apollo": "openapi-typescript ./remotes/impl/apollo/apollo.openapi.json --output ./remotes/impl/apollo/apollo.openapi.gen.d.ts"
   },
   "files": [
     "dist"

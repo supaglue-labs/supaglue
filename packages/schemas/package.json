@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "openapi-typescript": "^6.7.0",
+    "openapi-typescript-helpers": "^0.0.4",
     "tsx": "^3.12.3"
   }
 }

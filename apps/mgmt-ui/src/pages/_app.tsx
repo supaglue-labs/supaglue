@@ -30,8 +30,8 @@ if (typeof window !== 'undefined') {
     api_host: process.env.FRONTEND_URL
       ? `${process.env.FRONTEND_URL}/ingest`
       : window.location.port === '3000'
-      ? `http://${window.location.hostname}:3000/ingest`
-      : `https://${window.location.hostname}/ingest`,
+        ? `http://${window.location.hostname}:3000/ingest`
+        : `https://${window.location.hostname}/ingest`,
   });
 }
 
