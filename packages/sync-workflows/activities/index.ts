@@ -63,8 +63,7 @@ export const createActivities = ({
       remoteService,
       destinationService,
       syncService,
-      syncConfigService,
-      applicationService
+      syncConfigService
     ),
     /**
      * @deprecated

@@ -3790,6 +3790,15 @@
                 },
                 "sync_strategy_override": {
                   "$ref": "#/components/schemas/sync_strategy_config"
+                },
+                "associations_to_fetch": {
+                  "type": "array",
+                  "description": "A list of associated objects to fetch when syncing this object. \nIf empty or unspecified, no additional associations will be fetched other than the ones required to populate the common model.\nOnly relevant for Hubspot.\n",
+                  "items": {
+                    "type": "string",
+                    "description": "Name of the associated object to fetch",
+                    "example": "account"
+                  }
                 }
               },
               "required": [
@@ -3810,6 +3819,15 @@
                 },
                 "sync_strategy_override": {
                   "$ref": "#/components/schemas/sync_strategy_config"
+                },
+                "associations_to_fetch": {
+                  "type": "array",
+                  "description": "A list of associated objects to fetch when syncing this object. \nIf empty or unspecified, no associations will be fetched.\nOnly relevant for Hubspot.\n",
+                  "items": {
+                    "type": "string",
+                    "description": "Name of the associated object to fetch",
+                    "example": "account"
+                  }
                 }
               },
               "required": [
@@ -3830,6 +3848,15 @@
                 },
                 "sync_strategy_override": {
                   "$ref": "#/components/schemas/sync_strategy_config"
+                },
+                "associations_to_fetch": {
+                  "type": "array",
+                  "description": "A list of associated objects to fetch when syncing this object. \nIf empty or unspecified, no associations will be fetched.\nOnly relevant for Hubspot.\n",
+                  "items": {
+                    "type": "string",
+                    "description": "Name of the associated object to fetch",
+                    "example": "account"
+                  }
                 }
               },
               "required": [

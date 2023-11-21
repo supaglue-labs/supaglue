@@ -1040,6 +1040,12 @@ export interface components {
            */
           object: string;
           sync_strategy_override?: components["schemas"]["sync_strategy_config"];
+          /**
+           * @description A list of associated objects to fetch when syncing this object.
+           * If empty or unspecified, no additional associations will be fetched other than the ones required to populate the common model.
+           * Only relevant for Hubspot.
+           */
+          associations_to_fetch?: string[];
         }[];
       /** @description A list of case-sensitive Provider objects to be synced. */
       standard_objects?: {
@@ -1049,6 +1055,12 @@ export interface components {
            */
           object: string;
           sync_strategy_override?: components["schemas"]["sync_strategy_config"];
+          /**
+           * @description A list of associated objects to fetch when syncing this object.
+           * If empty or unspecified, no associations will be fetched.
+           * Only relevant for Hubspot.
+           */
+          associations_to_fetch?: string[];
         }[];
       /** @description A list of case-sensitive custom objects to be synced. Only supported for Salesforce and Hubspot. */
       custom_objects?: {
@@ -1058,6 +1070,12 @@ export interface components {
            */
           object: string;
           sync_strategy_override?: components["schemas"]["sync_strategy_config"];
+          /**
+           * @description A list of associated objects to fetch when syncing this object.
+           * If empty or unspecified, no associations will be fetched.
+           * Only relevant for Hubspot.
+           */
+          associations_to_fetch?: string[];
         }[];
       /** @deprecated */
       entities?: {

@@ -65,17 +65,19 @@ export interface RemoteClient {
   listAssociations(params: ListAssociationsParams): Promise<Association[]>;
   createAssociation(params: AssociationCreateParams): Promise<Association>;
 
-  listStandardObjectRecords(
+  streamStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    associationsToFetch?: string[]
   ): Promise<Readable>;
-  listCustomObjectRecords(
+  streamCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    associationsToFetch?: string[]
   ): Promise<Readable>;
 
   sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse>;
@@ -192,7 +194,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new NotImplementedError();
   }
 
-  public async listStandardObjectRecords(
+  public async streamStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
@@ -201,7 +203,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new NotImplementedError();
   }
 
-  public listCustomObjectRecords(
+  public streamCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,

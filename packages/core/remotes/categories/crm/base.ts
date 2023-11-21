@@ -18,7 +18,8 @@ export interface CrmRemoteClient extends RemoteClient {
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    associationsToFetch?: string[]
   ): Promise<Readable>;
   getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
