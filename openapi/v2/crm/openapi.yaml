@@ -227,3 +227,5 @@ components:
       $ref: ./components/parameters/query/object_type.yaml
     object_name:
       $ref: ./components/parameters/path/object_name.yaml
+    associations_to_fetch:
+      $ref: ./components/parameters/query/associations_to_fetch.yaml

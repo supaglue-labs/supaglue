@@ -43,6 +43,7 @@ export default function init(app: Router): void {
           modifiedAfter: req.query?.modified_after,
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+          associationsToFetch: req.query?.associations_to_fetch,
         });
         return res.status(200).send({
           pagination,
@@ -89,7 +90,12 @@ export default function init(app: Router): void {
       req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest, GetAccountQueryParams>,
       res: Response<GetAccountResponse>
     ) => {
-      const account = await crmCommonObjectService.get('account', req.customerConnection, req.params.account_id);
+      const account = await crmCommonObjectService.get(
+        'account',
+        req.customerConnection,
+        req.params.account_id,
+        req.query?.associations_to_fetch
+      );
       const snakecasedKeysAccount = toSnakecasedKeysCrmAccount(account);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysAccount;

@@ -1,0 +1,9 @@
+name: associations_to_fetch
+in: query
+schema:
+  type: array
+  items:
+    type: string
+    example: contact
+description: |
+  List of associated objects to attempt to fetch associations for. Only relevant for hubspot and when `read_from_cache` is false.

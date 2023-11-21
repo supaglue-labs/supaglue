@@ -41,7 +41,12 @@ export interface RemoteClient {
   updateProperty(objectName: string, propertyName: string, params: UpdatePropertyParams): Promise<PropertyUnified>;
 
   createObjectRecord(object: StandardOrCustomObject, data: ObjectRecordUpsertData): Promise<string>;
-  getObjectRecord(object: StandardOrCustomObject, id: string, fields: string[]): Promise<ObjectRecordWithMetadata>;
+  getObjectRecord(
+    object: StandardOrCustomObject,
+    id: string,
+    fields: string[],
+    associationsToFetch?: string[]
+  ): Promise<ObjectRecordWithMetadata>;
   updateObjectRecord(object: StandardOrCustomObject, id: string, data: ObjectRecordUpsertData): Promise<void>;
 
   listStandardObjectSchemas(): Promise<string[]>;
@@ -140,7 +145,8 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   public async getObjectRecord(
     object: StandardOrCustomObject,
     id: string,
-    fields: string[]
+    fields: string[],
+    associationsToFetch?: string[]
   ): Promise<ObjectRecordWithMetadata> {
     throw new NotImplementedError();
   }

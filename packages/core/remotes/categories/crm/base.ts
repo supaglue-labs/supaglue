@@ -24,7 +24,8 @@ export interface CrmRemoteClient extends RemoteClient {
   getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
-    fieldMappingConfig: FieldMappingConfig
+    fieldMappingConfig: FieldMappingConfig,
+    associationsToFetch?: string[]
   ): Promise<CRMCommonObjectTypeMap<T>['object']>;
   createCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
@@ -71,14 +72,16 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     commonObjectType: CRMCommonObjectType,
     fieldMappingConfig: FieldMappingConfig,
     updatedAfter?: Date,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    associationsToFetch?: string[]
   ): Promise<Readable> {
     throw new NotImplementedError();
   }
   public async getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
-    fieldMappingConfig: FieldMappingConfig
+    fieldMappingConfig: FieldMappingConfig,
+    associationsToFetch?: string[]
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     throw new NotImplementedError();
   }

@@ -98,6 +98,9 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
         "responses": {
@@ -243,6 +246,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
         "responses": {
@@ -458,6 +464,9 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
         "responses": {
@@ -519,6 +528,9 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
         "requestBody": {
@@ -691,6 +703,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
         "responses": {
@@ -1297,6 +1312,9 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
         "responses": {
@@ -1351,6 +1369,9 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
         "responses": {
@@ -4680,6 +4701,18 @@
         "example": "MyCustomObject__c",
         "description": "The unique name of the custom object. For Salesforce, this should end with __c. For Hubspot, this will typically be the singular form of the object.",
         "required": true
+      },
+      "associations_to_fetch": {
+        "name": "associations_to_fetch",
+        "in": "query",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "example": "contact"
+          }
+        },
+        "description": "List of associated objects to attempt to fetch associations for. Only relevant for hubspot and when `read_from_cache` is false.\n"
       }
     }
   }

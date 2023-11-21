@@ -1130,17 +1130,18 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
-    fieldMappingConfig: FieldMappingConfig
+    fieldMappingConfig: FieldMappingConfig,
+    associationsToFetch?: string[]
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
       case 'account':
-        return this.getAccount(id, fieldMappingConfig);
+        return this.getAccount(id, fieldMappingConfig, associationsToFetch);
       case 'contact':
-        return this.getContact(id, fieldMappingConfig);
+        return this.getContact(id, fieldMappingConfig, associationsToFetch);
       case 'lead':
         throw new Error('Cannot get leads in HubSpot');
       case 'opportunity':
-        return this.getOpportunity(id, fieldMappingConfig);
+        return this.getOpportunity(id, fieldMappingConfig, associationsToFetch);
       case 'user':
         return this.getUser(id, fieldMappingConfig);
       default:
@@ -1509,7 +1510,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     await this.maybeRefreshAccessToken();
     const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company', params.associationsToFetch);
     const response = params.modifiedAfter
       ? await this.#fetchPageOfIncrementalRecords(
           'company',
@@ -1550,10 +1551,14 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     };
   }
 
-  public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
+  public async getAccount(
+    id: string,
+    fieldMappingConfig: FieldMappingConfig,
+    associationsToFetch?: string[]
+  ): Promise<Account> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company', associationsToFetch);
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
@@ -1717,7 +1722,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal', params.associationsToFetch);
     const response = params.modifiedAfter
       ? await this.#fetchPageOfIncrementalRecords(
           'deal',
@@ -1758,11 +1763,15 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     };
   }
 
-  public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
+  public async getOpportunity(
+    id: string,
+    fieldMappingConfig: FieldMappingConfig,
+    associationsToFetch?: string[]
+  ): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal', associationsToFetch);
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
@@ -1900,10 +1909,14 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     ]);
   }
 
-  public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
+  public async getContact(
+    id: string,
+    fieldMappingConfig: FieldMappingConfig,
+    associationsToFetch?: string[]
+  ): Promise<Contact> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact', associationsToFetch);
 
     const associations = [
       ...associatedStandardObjectTypes,
@@ -1955,7 +1968,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     await this.maybeRefreshAccessToken();
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact');
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact', params.associationsToFetch);
     const response = params.modifiedAfter
       ? await this.#fetchPageOfIncrementalRecords(
           'contact',

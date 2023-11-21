@@ -18,10 +18,12 @@ export type BaseCrmModel = {
 export type BaseSearchParams = {
   cursor?: string;
   pageSize?: number;
+  associationsToFetch?: string[];
 };
 
 export type CrmListParams = {
   cursor?: string;
   pageSize?: number;
   modifiedAfter?: Date;
+  associationsToFetch?: string[];
 };

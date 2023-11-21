@@ -46,6 +46,7 @@ export default function init(app: Router): void {
           modifiedAfter: req.query?.modified_after,
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+          associationsToFetch: req.query?.associations_to_fetch,
         });
         return res.status(200).send({
           pagination,
@@ -92,7 +93,12 @@ export default function init(app: Router): void {
       req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, GetContactQueryParams>,
       res: Response<GetContactResponse>
     ) => {
-      const contact = await crmCommonObjectService.get('contact', req.customerConnection, req.params.contact_id);
+      const contact = await crmCommonObjectService.get(
+        'contact',
+        req.customerConnection,
+        req.params.contact_id,
+        req.query?.associations_to_fetch
+      );
       const snakecasedKeysContact = toSnakecasedKeysCrmContact(contact);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysContact;
@@ -139,6 +145,7 @@ export default function init(app: Router): void {
         filter: req.body.filter,
         cursor: req.query?.cursor,
         pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+        associationsToFetch: req.query?.associations_to_fetch,
       });
       return res.status(200).send({
         pagination,

@@ -50,6 +50,7 @@ get:
     - $ref: ../../../common/components/parameters/query/modified_after.yaml
     - $ref: ../../../common/components/parameters/query/page_size.yaml
     - $ref: ../../../common/components/parameters/query/cursor.yaml
+    - $ref: ../components/parameters/query/associations_to_fetch.yaml
   responses:
     200:
       description: Paginated Contacts
