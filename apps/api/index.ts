@@ -146,6 +146,9 @@ server.keepAliveTimeout = process.env.SERVER_KEEP_ALIVE_TIMEOUT
   ? parseInt(process.env.SERVER_KEEP_ALIVE_TIMEOUT)
   : 121_000;
 server.headersTimeout = server.keepAliveTimeout + 1000; // should be 1 second more than keepAliveTimeout, according to most sources
+if (process.env.SERVER_TIMEOUT) {
+  server.setTimeout(parseInt(process.env.SERVER_TIMEOUT));
+}
 
 const metricsServer = metricsApp.listen(9090, (): void => {
   logger.info('Metrics server listening on port 9090');
