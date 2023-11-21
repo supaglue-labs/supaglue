@@ -41,7 +41,12 @@ export default function init(app: Router): void {
     ) => {
       const client = await remoteService.getRemoteClient(req.customerConnection.id);
       const properties = await client.listPropertiesUnified(req.params.object_name);
-      return res.status(200).send({ properties: properties.map(snakecaseKeys) });
+      return res.status(200).send({
+        properties: properties.map(({ rawDetails, ...property }) => ({
+          ...snakecaseKeys(property),
+          raw_details: rawDetails,
+        })),
+      });
     }
   );
 

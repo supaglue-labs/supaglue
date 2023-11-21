@@ -80,7 +80,7 @@ class LinearClient extends AbstractNoCategoryRemoteClient {
     ]);
   }
 
-  public override async listStandardObjectRecords(
+  public override async streamStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date | undefined,

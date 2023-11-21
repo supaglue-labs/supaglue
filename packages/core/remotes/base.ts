@@ -5,6 +5,7 @@ import type {
   ObjectRecordWithMetadata,
   Property,
   PropertyUnified,
+  RateLimitInfo,
   RemoteUserIdAndDetails,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -64,23 +65,27 @@ export interface RemoteClient {
   listAssociations(params: ListAssociationsParams): Promise<Association[]>;
   createAssociation(params: AssociationCreateParams): Promise<Association>;
 
-  listStandardObjectRecords(
+  streamStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    associationsToFetch?: string[]
   ): Promise<Readable>;
-  listCustomObjectRecords(
+  streamCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    associationsToFetch?: string[]
   ): Promise<Readable>;
 
   sendPassthroughRequest(request: SendPassthroughRequestRequest): Promise<SendPassthroughRequestResponse>;
 
   getUserIdAndDetails(): Promise<RemoteUserIdAndDetails>;
   getUserIdAndDetails__v2_1(): Promise<RemoteUserIdAndDetails>;
+
+  getRateLimitInfo(): Promise<RateLimitInfo>;
 }
 
 export abstract class AbstractRemoteClient extends EventEmitter implements RemoteClient {
@@ -189,7 +194,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new NotImplementedError();
   }
 
-  public async listStandardObjectRecords(
+  public async streamStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
@@ -198,7 +203,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new NotImplementedError();
   }
 
-  public listCustomObjectRecords(
+  public streamCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
@@ -212,6 +217,10 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   }
   public async getUserIdAndDetails__v2_1(): Promise<RemoteUserIdAndDetails> {
     throw new NotImplementedError();
+  }
+
+  public async getRateLimitInfo(): Promise<RateLimitInfo> {
+    return {};
   }
 
   protected abstract getAuthHeadersForPassthroughRequest(): Record<string, string>;

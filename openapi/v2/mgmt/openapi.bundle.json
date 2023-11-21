@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.21.5",
+    "version": "0.21.6",
     "title": "Management API",
     "contact": {
       "name": "Supaglue",
@@ -1611,7 +1611,7 @@
         }
       ]
     },
-    "/customers/{customer_id}/connections/{connection_id}": {
+    "/customers/{customer_id}/connections/{provider_name}": {
       "get": {
         "operationId": "getConnection",
         "summary": "Get connection",
@@ -1629,11 +1629,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/connection"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/connection"
                 }
               }
             }
@@ -1667,11 +1663,56 @@
           }
         },
         {
-          "name": "connection_id",
+          "name": "provider_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/provider_name"
+          }
+        }
+      ]
+    },
+    "/customers/{customer_id}/connections/{provider_name}/_rate_limit_info": {
+      "get": {
+        "operationId": "getConnectionRateLimitInfo",
+        "summary": "Get connection rate limit info",
+        "description": "Get rate limit info for a connection. This endpoint is only available for\nsalesforce and apollo connections.\n",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection rate limit info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rate_limit_info"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
           "in": "path",
           "required": true,
           "schema": {
             "type": "string"
+          }
+        },
+        {
+          "name": "provider_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/provider_name"
           }
         }
       ]
@@ -3650,6 +3691,45 @@
           "instance_url"
         ]
       },
+      "single_rate_limit_info": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "example": 1000
+          },
+          "remaining": {
+            "type": "integer",
+            "example": 900
+          },
+          "reset_time": {
+            "type": "integer",
+            "description": "The time (in epoch seconds) at which the rate limit will reset. If missing, the rate limit is a sliding window.",
+            "example": 1615219200
+          }
+        },
+        "required": [
+          "limit",
+          "remaining"
+        ]
+      },
+      "rate_limit_info": {
+        "type": "object",
+        "properties": {
+          "daily": {
+            "$ref": "#/components/schemas/single_rate_limit_info"
+          },
+          "hourly": {
+            "$ref": "#/components/schemas/single_rate_limit_info"
+          },
+          "other": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/single_rate_limit_info"
+            }
+          }
+        }
+      },
       "category": {
         "type": "string",
         "enum": [
@@ -3710,6 +3790,15 @@
                 },
                 "sync_strategy_override": {
                   "$ref": "#/components/schemas/sync_strategy_config"
+                },
+                "associations_to_fetch": {
+                  "type": "array",
+                  "description": "A list of associated objects to fetch when syncing this object. \nIf empty or unspecified, no additional associations will be fetched other than the ones required to populate the common model.\nOnly relevant for Hubspot.\n",
+                  "items": {
+                    "type": "string",
+                    "description": "Name of the associated object to fetch",
+                    "example": "account"
+                  }
                 }
               },
               "required": [
@@ -3730,6 +3819,15 @@
                 },
                 "sync_strategy_override": {
                   "$ref": "#/components/schemas/sync_strategy_config"
+                },
+                "associations_to_fetch": {
+                  "type": "array",
+                  "description": "A list of associated objects to fetch when syncing this object. \nIf empty or unspecified, no associations will be fetched.\nOnly relevant for Hubspot.\n",
+                  "items": {
+                    "type": "string",
+                    "description": "Name of the associated object to fetch",
+                    "example": "account"
+                  }
                 }
               },
               "required": [
@@ -3750,6 +3848,15 @@
                 },
                 "sync_strategy_override": {
                   "$ref": "#/components/schemas/sync_strategy_config"
+                },
+                "associations_to_fetch": {
+                  "type": "array",
+                  "description": "A list of associated objects to fetch when syncing this object. \nIf empty or unspecified, no associations will be fetched.\nOnly relevant for Hubspot.\n",
+                  "items": {
+                    "type": "string",
+                    "description": "Name of the associated object to fetch",
+                    "example": "account"
+                  }
                 }
               },
               "required": [

@@ -18,6 +18,8 @@ import type {
   SearchSequenceStatesResponse,
 } from '@supaglue/schemas/v2/engagement';
 
+jest.retryTimes(3);
+
 export function getTestContact() {
   return {
     first_name: `first ${Math.random().toString()}`,

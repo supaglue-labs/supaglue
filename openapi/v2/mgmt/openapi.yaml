@@ -2,7 +2,7 @@
 # Other than the `webhooks` key, we should not use 3.1.0 features since the validation middleware doesn't support it yet
 openapi: 3.1.0
 info:
-  version: 0.21.5
+  version: 0.21.6
   title: Management API
   contact:
     name: Supaglue
@@ -67,8 +67,10 @@ paths:
     $ref: paths/connections.yaml
   '/customers/{customer_id}/connections/_provider_user_id':
     $ref: paths/connections@_provider_user_id.yaml
-  '/customers/{customer_id}/connections/{connection_id}':
-    $ref: paths/connections@{connection_id}.yaml
+  '/customers/{customer_id}/connections/{provider_name}':
+    $ref: paths/connections@{provider_name}.yaml
+  '/customers/{customer_id}/connections/{provider_name}/_rate_limit_info':
+    $ref: paths/connections@{provider_name}@_rate_limit_info.yaml
   '/syncs':
     $ref: paths/syncs.yaml
   '/syncs/_pause':
@@ -171,6 +173,10 @@ components:
       $ref: ./components/schemas/objects/object_field_mapping.yaml
     connection:
       $ref: ./components/schemas/objects/connection.yaml
+    single_rate_limit_info:
+      $ref: ./components/schemas/objects/single_rate_limit_info.yaml
+    rate_limit_info:
+      $ref: ./components/schemas/objects/rate_limit_info.yaml
     category:
       $ref: ./components/schemas/objects/category.yaml
     sync_config:

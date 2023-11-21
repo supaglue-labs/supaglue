@@ -1,0 +1,28 @@
+get:
+  operationId: getConnectionRateLimitInfo
+  summary: Get connection rate limit info
+  description: |
+    Get rate limit info for a connection. This endpoint is only available for
+    salesforce and apollo connections.
+  tags:
+    - Connections
+  security:
+    - x-api-key: []
+  responses:
+    200:
+      description: Connection rate limit info
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/objects/rate_limit_info.yaml
+parameters:
+  - name: customer_id
+    in: path
+    required: true
+    schema:
+      type: string
+  - name: provider_name
+    in: path
+    required: true
+    schema:
+      $ref: ../components/schemas/objects/provider_name.yaml

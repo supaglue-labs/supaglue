@@ -311,7 +311,7 @@ export interface paths {
       };
     };
   };
-  "/customers/{customer_id}/connections/{connection_id}": {
+  "/customers/{customer_id}/connections/{provider_name}": {
     /** Get connection */
     get: operations["getConnection"];
     /** Delete connection */
@@ -319,7 +319,21 @@ export interface paths {
     parameters: {
       path: {
         customer_id: string;
-        connection_id: string;
+        provider_name: components["schemas"]["provider_name"];
+      };
+    };
+  };
+  "/customers/{customer_id}/connections/{provider_name}/_rate_limit_info": {
+    /**
+     * Get connection rate limit info
+     * @description Get rate limit info for a connection. This endpoint is only available for
+     * salesforce and apollo connections.
+     */
+    get: operations["getConnectionRateLimitInfo"];
+    parameters: {
+      path: {
+        customer_id: string;
+        provider_name: components["schemas"]["provider_name"];
       };
     };
   };
@@ -983,6 +997,24 @@ export interface components {
       entity_mappings?: components["schemas"]["connection_entity_mapping"][];
       connection_sync_config?: components["schemas"]["connection_sync_config"];
     };
+    single_rate_limit_info: {
+      /** @example 1000 */
+      limit: number;
+      /** @example 900 */
+      remaining: number;
+      /**
+       * @description The time (in epoch seconds) at which the rate limit will reset. If missing, the rate limit is a sliding window.
+       * @example 1615219200
+       */
+      reset_time?: number;
+    };
+    rate_limit_info: {
+      daily?: components["schemas"]["single_rate_limit_info"];
+      hourly?: components["schemas"]["single_rate_limit_info"];
+      other?: {
+        [key: string]: components["schemas"]["single_rate_limit_info"];
+      };
+    };
     /**
      * @example crm
      * @enum {string}
@@ -1008,6 +1040,12 @@ export interface components {
            */
           object: string;
           sync_strategy_override?: components["schemas"]["sync_strategy_config"];
+          /**
+           * @description A list of associated objects to fetch when syncing this object.
+           * If empty or unspecified, no additional associations will be fetched other than the ones required to populate the common model.
+           * Only relevant for Hubspot.
+           */
+          associations_to_fetch?: string[];
         }[];
       /** @description A list of case-sensitive Provider objects to be synced. */
       standard_objects?: {
@@ -1017,6 +1055,12 @@ export interface components {
            */
           object: string;
           sync_strategy_override?: components["schemas"]["sync_strategy_config"];
+          /**
+           * @description A list of associated objects to fetch when syncing this object.
+           * If empty or unspecified, no associations will be fetched.
+           * Only relevant for Hubspot.
+           */
+          associations_to_fetch?: string[];
         }[];
       /** @description A list of case-sensitive custom objects to be synced. Only supported for Salesforce and Hubspot. */
       custom_objects?: {
@@ -1026,6 +1070,12 @@ export interface components {
            */
           object: string;
           sync_strategy_override?: components["schemas"]["sync_strategy_config"];
+          /**
+           * @description A list of associated objects to fetch when syncing this object.
+           * If empty or unspecified, no associations will be fetched.
+           * Only relevant for Hubspot.
+           */
+          associations_to_fetch?: string[];
         }[];
       /** @deprecated */
       entities?: {
@@ -2572,7 +2622,7 @@ export interface operations {
     parameters: {
       path: {
         customer_id: string;
-        connection_id: string;
+        provider_name: components["schemas"]["provider_name"];
       };
     };
     responses: {
@@ -2589,13 +2639,34 @@ export interface operations {
     parameters: {
       path: {
         customer_id: string;
-        connection_id: string;
+        provider_name: components["schemas"]["provider_name"];
       };
     };
     responses: {
       /** @description An empty body is returned on successful deletion. */
       204: {
         content: never;
+      };
+    };
+  };
+  /**
+   * Get connection rate limit info
+   * @description Get rate limit info for a connection. This endpoint is only available for
+   * salesforce and apollo connections.
+   */
+  getConnectionRateLimitInfo: {
+    parameters: {
+      path: {
+        customer_id: string;
+        provider_name: components["schemas"]["provider_name"];
+      };
+    };
+    responses: {
+      /** @description Connection rate limit info */
+      200: {
+        content: {
+          "application/json": components["schemas"]["rate_limit_info"];
+        };
       };
     };
   };

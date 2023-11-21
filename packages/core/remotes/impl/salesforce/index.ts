@@ -12,6 +12,7 @@ import type {
   Property,
   PropertyUnified,
   Provider,
+  RateLimitInfo,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
@@ -86,6 +87,7 @@ import { paginator } from '../../utils/paginator';
 import { toMappedProperties } from '../../utils/properties';
 import { capitalizeString } from '../../utils/string';
 import {
+  fromDescribeFieldToPropertyUnified,
   fromSalesforceAccountToAccount,
   fromSalesforceContactToContact,
   fromSalesforceLeadToLead,
@@ -365,7 +367,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       }));
   }
 
-  public override async listStandardObjectRecords(
+  public override async streamStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
@@ -403,13 +405,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     );
   }
 
-  public override async listCustomObjectRecords(
+  public override async streamCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date | undefined,
     heartbeat?: (() => void) | undefined
   ): Promise<Readable> {
-    return await this.listStandardObjectRecords(object, fieldsToFetch, modifiedAfter, heartbeat);
+    return await this.streamStandardObjectRecords(object, fieldsToFetch, modifiedAfter, heartbeat);
   }
 
   async getCommonPropertiesToFetch(
@@ -1261,6 +1263,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return await this.getSObjectProperties(capitalizeString(object.name));
   }
 
+  public override async listPropertiesUnified(objectName: string): Promise<PropertyUnified[]> {
+    const response = await this.#client.describe(capitalizeString(objectName));
+    return response.fields
+      .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
+      .map(fromDescribeFieldToPropertyUnified);
+  }
+
   private async getSObjectProperties(sobject: string): Promise<Property[]> {
     const response = await this.#client.describe(sobject);
     return response.fields
@@ -1592,6 +1601,19 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
             })
           : null,
         previous: null,
+      },
+    };
+  }
+
+  public override async getRateLimitInfo(): Promise<RateLimitInfo> {
+    const response = await this.#fetch(`/services/data/v${SALESFORCE_API_VERSION}/limits`, {
+      method: 'GET',
+    });
+    const json = await response.json();
+    return {
+      daily: {
+        limit: json.DailyApiRequests.Max,
+        remaining: json.DailyApiRequests.Remaining,
       },
     };
   }

@@ -186,26 +186,30 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     heartbeat?: () => void
   ): (next?: string) => Promise<SalesloftPaginatedRecords> {
     return async (next?: string) => {
-      return await retryWhenAxiosRateLimited(async () => {
-        if (heartbeat) {
-          heartbeat();
-        }
-        await this.maybeRefreshAccessToken();
-        const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
-          params: updatedAfter
-            ? {
-                ...DEFAULT_LIST_PARAMS,
-                ...getUpdatedAfterPathParam(updatedAfter),
-                page: next ? parseInt(next) : undefined,
-              }
-            : {
-                ...DEFAULT_LIST_PARAMS,
-                page: next ? parseInt(next) : undefined,
-              },
-          headers: this.#headers,
-        });
-        return response.data;
-      });
+      return await retryWhenAxiosRateLimited(
+        async () => {
+          if (heartbeat) {
+            heartbeat();
+          }
+          await this.maybeRefreshAccessToken();
+          const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
+            params: updatedAfter
+              ? {
+                  ...DEFAULT_LIST_PARAMS,
+                  ...getUpdatedAfterPathParam(updatedAfter),
+                  page: next ? parseInt(next) : undefined,
+                }
+              : {
+                  ...DEFAULT_LIST_PARAMS,
+                  page: next ? parseInt(next) : undefined,
+                },
+            headers: this.#headers,
+          });
+          return response.data;
+        },
+        // the rate limit is 600/minute shared among all users of the API, so we should wait longer than the usual 1s just to be safe
+        { retries: 3, minTimeout: 10_000, maxTimeout: 60_000, factor: 3, randomize: true }
+      );
     };
   }
 

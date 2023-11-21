@@ -9,6 +9,7 @@ import type {
   ObjectRecordUpsertData,
   ObjectRecordWithMetadata,
   Property,
+  PropertyUnified,
   Provider,
   RemoteUserIdAndDetails,
   StandardOrCustomObjectDef,
@@ -48,6 +49,7 @@ import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 import { paginator } from '../../utils/paginator';
 import {
+  fromAttributeToPropertyUnified,
   fromDynamicsAccountToRemoteAccount,
   fromDynamicsContactToRemoteContact,
   fromDynamicsLeadToRemoteLead,
@@ -152,7 +154,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     return this.#headers;
   }
 
-  public override async listStandardObjectRecords(
+  public override async streamStandardObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     updatedAfter?: Date,
@@ -196,7 +198,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     )?.customizationprefix;
   }
 
-  public override async listCustomObjectRecords(
+  public override async streamCustomObjectRecords(
     object: string,
     fieldsToFetch: FieldsToFetch,
     modifiedAfter?: Date,
@@ -310,13 +312,20 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     const objectName = object.type === 'standard' ? object.name : `${await this.getPublisherPrefix()}_${object.name}`;
     const response = await this.#odata
       .get(`EntityDefinitions(LogicalName='${objectName}')/Attributes`)
-      .query({ $select: 'LogicalName', $filter: "IsLogical eq false and LogicalName ne 'owneridtype'" });
-    return response.map((attribute: any) => ({
-      id: attribute.LogicalName,
-      label: attribute.DisplayName?.UserLocalizedLabel?.Label,
-      type: attribute.AttributeType,
-      rawDetails: attribute,
+      .query({ $filter: "IsLogical eq false and LogicalName ne 'owneridtype'" });
+    return response.map((property: any) => ({
+      id: property.LogicalName,
+      label: property.DisplayName?.UserLocalizedLabel?.Label,
+      type: property.AttributeType,
+      rawDetails: property,
     }));
+  }
+
+  public override async listPropertiesUnified(objectName: string): Promise<PropertyUnified[]> {
+    await this.maybeRefreshAccessToken();
+    const publisherPrefix = await this.getPublisherPrefix();
+    const response = await this.#odata.get(`EntityDefinitions(LogicalName='${objectName}')/Attributes`).query();
+    return response.map((property: any) => fromAttributeToPropertyUnified(property, publisherPrefix));
   }
 
   public override async streamCommonObjectRecords(

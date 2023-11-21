@@ -3,12 +3,12 @@ import { isAxiosError } from 'axios';
 import { logger } from '.';
 import { SGTerminalTooManyRequestsError, TooManyRequestsError } from '../errors';
 
-const isAxiosRateLimited = (e: any): boolean => {
+export const isAxiosRateLimited = (e: any): boolean => {
   return isAxiosError(e) && e.response?.status === 429;
 };
 
 // Heuristic to detect free plan, daily rate limit, or hourly rate limit
-const isApolloDailyHourlyRateLimited = (e: any): boolean => {
+export const isApolloDailyHourlyRateLimited = (e: any): boolean => {
   const isFreePlan = e.response.data.includes('This endpoint is only available to paying teams');
   const isDailyHourlyRateLimited =
     /^The maximum number of api calls allowed for [a-z0-9/]+ is [0-9]+ times per (hour|day). Please upgrade your plan/.test(

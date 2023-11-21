@@ -8,6 +8,8 @@ export const fromApplicationModel = ({
   config,
   orgId,
   email,
+  isPaid,
+  createdAt,
 }: ApplicationModel): Application => {
   return {
     id,
@@ -16,5 +18,7 @@ export const fromApplicationModel = ({
     config: config as ApplicationConfig,
     orgId,
     email,
+    isPaid: isPaid === true ? true : false,
+    createdAt: createdAt.toISOString(),
   };
 };

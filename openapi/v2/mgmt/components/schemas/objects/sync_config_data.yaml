@@ -14,6 +14,16 @@ properties:
           example: contact
         sync_strategy_override:
           $ref: ./sync_strategy_config.yaml
+        associations_to_fetch:
+          type: array
+          description: |
+            A list of associated objects to fetch when syncing this object. 
+            If empty or unspecified, no additional associations will be fetched other than the ones required to populate the common model.
+            Only relevant for Hubspot.
+          items:
+            type: string
+            description: Name of the associated object to fetch
+            example: account
       required:
         - object
   standard_objects:
@@ -28,6 +38,16 @@ properties:
           example: Contact
         sync_strategy_override:
           $ref: ./sync_strategy_config.yaml
+        associations_to_fetch:
+          type: array
+          description: |
+            A list of associated objects to fetch when syncing this object. 
+            If empty or unspecified, no associations will be fetched.
+            Only relevant for Hubspot.
+          items:
+            type: string
+            description: Name of the associated object to fetch
+            example: account
       required:
         - object
   custom_objects:
@@ -42,6 +62,16 @@ properties:
           example: MyCustomObject__c
         sync_strategy_override:
           $ref: ./sync_strategy_config.yaml
+        associations_to_fetch:
+          type: array
+          description: |
+            A list of associated objects to fetch when syncing this object. 
+            If empty or unspecified, no associations will be fetched.
+            Only relevant for Hubspot.
+          items:
+            type: string
+            description: Name of the associated object to fetch
+            example: account
       required:
         - object
   entities:

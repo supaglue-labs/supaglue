@@ -1,3 +1,4 @@
+import type { RateLimitInfo } from '@supaglue/types';
 import type {
   Account,
   AccountCreateParams,
@@ -245,3 +246,22 @@ export const fromApolloEmailerCampaignToSequence = (c: ApolloEmailerCampaign): S
   ),
   rawData: c,
 });
+
+export const fromApolloHeadersToRateLimitInfo = (apolloHeaders: Record<string, string>): RateLimitInfo => {
+  return {
+    daily: {
+      limit: parseInt(apolloHeaders['x-rate-limit-24-hour']),
+      remaining: parseInt(apolloHeaders['x-24-hour-requests-left'] ?? 0),
+    },
+    hourly: {
+      limit: parseInt(apolloHeaders['x-rate-limit-hourly']),
+      remaining: parseInt(apolloHeaders['x-hourly-requests-left'] ?? 0),
+    },
+    other: {
+      minute: {
+        limit: parseInt(apolloHeaders['x-rate-limit-minute']),
+        remaining: parseInt(apolloHeaders['x-minute-requests-left'] ?? 0),
+      },
+    },
+  };
+};

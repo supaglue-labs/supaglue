@@ -1,0 +1,10 @@
+type: object
+properties:
+  daily:
+    $ref: ./single_rate_limit_info.yaml
+  hourly:
+    $ref: ./single_rate_limit_info.yaml
+  other:
+    type: object
+    additionalProperties:
+      $ref: ./single_rate_limit_info.yaml

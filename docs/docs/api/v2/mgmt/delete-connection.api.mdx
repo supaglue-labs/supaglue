@@ -5,7 +5,7 @@ description: "Delete connection"
 sidebar_label: "Delete connection"
 hide_title: true
 hide_table_of_contents: true
-api: eJy9VNtu00AQ/ZXV8gJSapcKXiyEKLQPFUVCLRVCbUS29iReYe+6ewmNrP33zqwdx26CeEAikRJ753bmzJltuW7ACCe1uih4xguowMEnrRTkdMhn3ImV5dkt3x1aPp9xC7k30m3Q1PLHI9HIo19Ab/OAVgO2QUfAyJafHL+hvwJsbmQT02b8VDGoG7dh97rYMGmZAeeNgoJpxazPc7B26SsWEWFIwkOYPctxFtGyfAy3EUbUeGpsRKbwBT1zb52uwfyUBfpICm6EKzkhffDSADbvjAfsKy+hFoTXbRoKtc5ItaLqu2xDwX/JhzQh0FLveI/wMUvG0y1gm7Yj7CHdlSbLGEfgNBSz3nbuTYWJSucam6UpziexvhGrykMidVqvapeuT/hzSq97H3b69YKH0ZyvqY9unqNpD13hyWc8mG0p2vn09JQgCjB79bAMQy/mNBNVpX/jvNdQkShtPIs6YK7sAQXKttRUmBrtchwnJ6+TtyRV6Soq/kUosUK0ysWoGQ3MidxRWI9v2ycacTySqCp0bj8MHOW6RtuUxIlxT40v8MMulDO68HEod/j9DhU6A/VCTUyRMSzp6SUuYMJ+aM9yoZi3GFDiTpAPRtYxim2FwKRysOq21jKhitEG2ISqRigfhY2ssZurSzpcLBZ36i966L2ouUZbh4VHnB1atwkFgxocPLq0qYSMmSKJbS/t22EXLYZn08Uc9RGNkz1DMZaIiVK07T02d2OqEOj4wYOJV8+Mr4WR4p5UgCtQSEvPuGBLUVnYQ0uyQPYR8Murfm1fMdLRoS62Qlck6bUg7WQcH+MeTC4Yuin+Z+kJS2EeRvfK2fnl+bdzdBWeyB+va7eb/QOxdbDKeI+7cvRLHR50f0d6w4vg/eDeWf4YMFwLnTf1Ow8hPAErz0F5
+api: eJy9VNtuEzEQ/RXLvIAUklKgDxFCFNqHiiKhlgqhtto63knWqtd2fQkN0f47M95NstsWIfFAIiX2eC5nZs7MmlsHXkRlzUnJp7wEDRE+WWNAkpCPeBSLwKeXfCcM/HrEA8jkVVzh05rfvxROvbwFul03+OohOFQEtFzz/b039FdCkF657HbKDw2D2sUVm9lyxVRgHmLyBkpmDQtJSghhnjTLiNBkzJtm9MDHUUbLZB+uE17UKPUhIzN4QU2ZQrQ1+EKVqKPI2IlYcUJ6l5QHTD76BJiXrKAWhDeuHJmG6JVZUPStN+ftUpXoLd//zd+Ig0k1FbZKMyxWREkQGsLceklOnXJQerWk8y8wmPltEUBrvNahKFcYW8lQvD54W2Q7UrOVLaSv8SiFC0mTrU3Rg5CEbWFzYOGs1nYTT9t5zDlgzaQlW60MCE9ONP7PFD0fBMB2UmzhbyHaAdqiFWJahdQ2lYWQ0iYTCzALsYAaTM5OC3lL1IF7UTtNtdilHlXUj0vbEJewm5XdkTP3GEs95ZNNV8Nk3WtwM9kRAl8GHhvCAX65oUfymmDE6MJ0MkESj0NyYqETjJWd1Is6Tpb7/CHvzjsddvj1hDe9YTinZrek743EtvUo+YyC0YZHO52OQxUIRPooHoZhqMWiZQI79xOHYgmaJjdkWR4WFqsOUEPe5pYCU6Ktj73x/qvxQa/SX4TpepOtsNvWRCEjmXX4NnkSWWuhqFSlleHDtkYtX4ZFHDw+Gtln+GEnJnpbptyhK/x+B43KQLlQEkNkDEMmuuQtNWY/bGJSGJYCGlS4OEgHLetsxTZEYEToRbvaAhOm7K2JMKaoGcpHEXLV2MXZKQlvbm6uzF/40GlRcs6GiIF7NXtqJw1KsGVDhPs4cVqo7CkXcd1R+3K7sGisp8Pt1cuDHocTg2SsEBO5WK9nmNyF101D4rsEPu/nEV8Kr8SMWIAjUKpAZxywudABHqElWtAAT/nzs263vWDEo6ey2BDdEKWXgrgz5XjMczDYwrRO/2PoB3vluuntlaPj0+Nvx7QYExW/P67tbHYHqtaTUfpz3IajX8rwSfV3xDdcBO+36u3LHw22a6HVpnyvm6b5DYgJqIA=
 sidebar_class_name: "delete api-method"
 info_path: api/v2/mgmt/management-api
 custom_edit_url: null
@@ -24,7 +24,7 @@ import TabItem from "@theme/TabItem";
 
 <h1 className={"openapi__heading"}>Delete connection</h1>
 
-<MethodEndpoint method={"delete"} path={"/customers/{customer_id}/connections/{connection_id}"}></MethodEndpoint>
+<MethodEndpoint method={"delete"} path={"/customers/{customer_id}/connections/{provider_name}"}></MethodEndpoint>
 
 
 
@@ -32,7 +32,7 @@ Delete connection
 
 ## Request
 
-<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"connection_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"204"} value={"204"}><div>
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"provider_name","in":"path","required":true,"schema":{"type":"string","enum":["hubspot","salesforce","pipedrive","zendesk_sell","ms_dynamics_365_sales","zoho_crm","capsule","outreach","gong","apollo","salesloft","intercom","linear","clearbit","6sense","marketo","salesforce_marketing_cloud_account_engagement","slack"],"example":"hubspot","title":"provider_name"}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"204"} value={"204"}><div>
 
 An empty body is returned on successful deletion.
 

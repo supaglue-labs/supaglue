@@ -8,12 +8,12 @@ const isAxiosRateLimited = (e: any): boolean => {
 };
 
 export const retryWhenAxiosRateLimited = async <Args extends any[], Return>(
-  operation: (...operationParameters: Args) => Return,
-  ...parameters: Args
+  operation: () => Return,
+  retryOptions: Parameters<typeof retry>[1] = ASYNC_RETRY_OPTIONS
 ): Promise<Return> => {
   const helper = async (bail: (e: Error) => void) => {
     try {
-      return await operation(...parameters);
+      return await operation();
     } catch (e: any) {
       // keep retrying when encountering rate limiting errors
       if (isAxiosRateLimited(e)) {
@@ -27,5 +27,5 @@ export const retryWhenAxiosRateLimited = async <Args extends any[], Return>(
       return null as Return;
     }
   };
-  return await retry(helper, ASYNC_RETRY_OPTIONS);
+  return await retry(helper, retryOptions);
 };

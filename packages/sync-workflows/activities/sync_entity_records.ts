@@ -67,7 +67,7 @@ export function createSyncEntityRecords(
       const fieldsToFetch = getFieldsToFetch(fieldMappingConfig);
       switch (object.type) {
         case 'standard': {
-          const stream = await client.listStandardObjectRecords(object.name, fieldsToFetch, updatedAfter, heartbeat);
+          const stream = await client.streamStandardObjectRecords(object.name, fieldsToFetch, updatedAfter, heartbeat);
           return await writer.writeEntityRecords(
             connection,
             entity.name,
@@ -77,7 +77,7 @@ export function createSyncEntityRecords(
           );
         }
         case 'custom': {
-          const stream = await client.listCustomObjectRecords(object.name, fieldsToFetch, updatedAfter, heartbeat);
+          const stream = await client.streamCustomObjectRecords(object.name, fieldsToFetch, updatedAfter, heartbeat);
           return await writer.writeEntityRecords(
             connection,
             entity.name,

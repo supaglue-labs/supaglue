@@ -11,6 +11,7 @@ import type {
   MagicLinkCreateParams,
   Provider,
   ProviderCreateParams,
+  ProviderName,
   Schema,
   SyncConfigCreateParams,
   SyncConfigDTO,
@@ -443,9 +444,9 @@ export async function deleteCustomer(applicationId: string, customerId: string):
 export async function deleteConnection(
   applicationId: string,
   customerId: string,
-  connectionId: string
+  providerName: ProviderName
 ): Promise<ClientEmptyResponse> {
-  const result = await fetch(`/api/internal/customers/${encodeURIComponent(customerId)}/connections/${connectionId}`, {
+  const result = await fetch(`/api/internal/customers/${encodeURIComponent(customerId)}/connections/${providerName}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
