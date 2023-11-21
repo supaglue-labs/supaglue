@@ -14,6 +14,7 @@ import type {
   ContactSearchParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
+  Sequence,
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
@@ -154,13 +155,10 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       case 'account':
         return await this.#getRecord<Account>(id, '/v2/accounts', fromSalesloftAccountToAccount);
       case 'sequence': {
-        const params = { path: { id } };
-        const [cadence, stepCount, cadenceExport] = await Promise.all([
-          this.#api.GET('/v2/cadences/{id}.json', { params }),
-          this.#getCadenceStepCount(id),
-          this.#api.GET('/v2/cadence_exports/{id}', { params }),
-        ]);
-        return fromSalesloftCadenceToSequence(cadence.data.data, stepCount, cadenceExport.data.data);
+        const stepCount = await this.#getCadenceStepCount(id);
+        return await this.#getRecord<Sequence>(id, '/v2/cadences', (data: any) =>
+          fromSalesloftCadenceToSequence(data, stepCount)
+        );
       }
       case 'sequence_state':
         return await this.#getRecord<SequenceState>(
@@ -186,30 +184,26 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     heartbeat?: () => void
   ): (next?: string) => Promise<SalesloftPaginatedRecords> {
     return async (next?: string) => {
-      return await retryWhenAxiosRateLimited(
-        async () => {
-          if (heartbeat) {
-            heartbeat();
-          }
-          await this.maybeRefreshAccessToken();
-          const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
-            params: updatedAfter
-              ? {
-                  ...DEFAULT_LIST_PARAMS,
-                  ...getUpdatedAfterPathParam(updatedAfter),
-                  page: next ? parseInt(next) : undefined,
-                }
-              : {
-                  ...DEFAULT_LIST_PARAMS,
-                  page: next ? parseInt(next) : undefined,
-                },
-            headers: this.#headers,
-          });
-          return response.data;
-        },
-        // the rate limit is 600/minute shared among all users of the API, so we should wait longer than the usual 1s just to be safe
-        { retries: 3, minTimeout: 10_000, maxTimeout: 60_000, factor: 3, randomize: true }
-      );
+      return await retryWhenAxiosRateLimited(async () => {
+        if (heartbeat) {
+          heartbeat();
+        }
+        await this.maybeRefreshAccessToken();
+        const response = await axios.get<SalesloftPaginatedRecords>(endpoint, {
+          params: updatedAfter
+            ? {
+                ...DEFAULT_LIST_PARAMS,
+                ...getUpdatedAfterPathParam(updatedAfter),
+                page: next ? parseInt(next) : undefined,
+              }
+            : {
+                ...DEFAULT_LIST_PARAMS,
+                page: next ? parseInt(next) : undefined,
+              },
+          headers: this.#headers,
+        });
+        return response.data;
+      });
     };
   }
 

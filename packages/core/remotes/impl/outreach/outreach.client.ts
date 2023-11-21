@@ -23,9 +23,9 @@ export function createOutreachClient({
     baseUrl: oas.servers[0].url,
     ...options,
     tokens: creds,
-    refreshTokens: async (client) => {
+    refreshTokens: async (request) => {
       try {
-        const res = await client.request<{ refresh_token: string; access_token: string; expires_in: number }>(
+        const res = await request<{ refresh_token: string; access_token: string; expires_in: number }>(
           'POST',
           '/oauth/token',
           {

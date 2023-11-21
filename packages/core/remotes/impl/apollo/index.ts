@@ -2,7 +2,6 @@ import axios from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   Provider,
-  RateLimitInfo,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -29,7 +28,7 @@ import {
   SGConnectionNoLongerAuthenticatedError,
 } from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
-import { isAxiosRateLimited, retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
+import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
   CreateCommonObjectRecordResponse,
@@ -45,7 +44,6 @@ import {
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
   fromApolloEmailerCampaignToSequence,
-  fromApolloHeadersToRateLimitInfo,
   fromApolloUserToUser,
   toApolloAccountCreateParams,
   toApolloAccountUpdateParams,
@@ -551,15 +549,15 @@ class ApolloClient extends AbstractEngagementRemoteClient {
           params.type === 'linkedin_send_message'
             ? 'linkedin_step_message'
             : params.type === 'task'
-              ? 'action_item'
-              : params.type,
+            ? 'action_item'
+            : params.type,
         ...(days
           ? { wait_mode: 'day', wait_time: days }
           : hours
-            ? { wait_mode: 'hour', wait_time: hours }
-            : minutes
-              ? { wait_mode: 'minute', wait_time: minutes }
-              : { wait_mode: 'second', wait_time: seconds ?? 0 }),
+          ? { wait_mode: 'hour', wait_time: hours }
+          : minutes
+          ? { wait_mode: 'minute', wait_time: minutes }
+          : { wait_mode: 'second', wait_time: seconds ?? 0 }),
         exact_datetime: params.date, // Not clear exactly how this works
         note: params.taskNote,
         ...params.customFields,
@@ -735,27 +733,6 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       id: response.data.contact.id,
       record: fromApolloContactToContact(response.data.contact),
     };
-  }
-
-  public override async getRateLimitInfo(): Promise<RateLimitInfo> {
-    try {
-      const response = await axios.post<ApolloPaginatedContacts>(
-        `${this.#baseURL}/v1/emailer_campaigns/search`,
-        {
-          api_key: this.#apiKey,
-          q_name: 'unused',
-        },
-        {
-          headers: this.#headers,
-        }
-      );
-      return fromApolloHeadersToRateLimitInfo(response.headers as Record<string, string>);
-    } catch (e: any) {
-      if (isAxiosRateLimited(e)) {
-        return fromApolloHeadersToRateLimitInfo(e.response.headers);
-      }
-      throw e;
-    }
   }
 
   public override async handleErr(err: unknown): Promise<unknown> {

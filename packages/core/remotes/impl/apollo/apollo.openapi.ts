@@ -211,6 +211,10 @@ export function outputOpenApi() {
     openapi: '3.1.0',
     info: { title: 'Apollo API', version: '0.0.0' },
     servers: [{ url: 'https://app.apollo.io/api' }],
+    security: [{ api_key: [] }],
+    components: {
+      securitySchemes: { api_key: { type: 'apiKey', name: 'api_key', in: 'query' } },
+    },
     paths: {
       '/v1/emailer_campaigns/{id}': {
         get: jsonOperation('getEmailerCampaign', {
