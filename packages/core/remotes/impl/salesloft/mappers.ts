@@ -9,6 +9,7 @@ import type {
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
+  SequenceStep,
   SequenceStepCreateParams,
   User,
 } from '@supaglue/types/engagement';
@@ -323,8 +324,8 @@ export const toSalesloftCadenceStepImportParams = (step: SequenceStepCreateParam
 function fromSalesloftCadenceStepToSequenceStep(
   cadenceStep: Salesloft['Step'],
   group: Salesloft['StepGroup']
-): SequenceStepCreateParams {
-  const step: Omit<SequenceStepCreateParams, 'type'> = {
+): SequenceStep {
+  const step: Omit<SequenceStep, 'type'> = {
     name: cadenceStep.name,
     intervalSeconds: group.day
       ? // Delay time is in minutes

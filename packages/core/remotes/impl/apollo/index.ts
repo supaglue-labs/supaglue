@@ -18,6 +18,7 @@ import type {
   SequenceState,
   SequenceStateCreateParams,
   SequenceStateSearchParams,
+  SequenceStep,
   SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
@@ -125,10 +126,42 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
-      case 'sequence':
+      case 'sequence': {
+        let intervalSeconds = 0;
         return this.#api
           .GET('/v1/emailer_campaigns/{id}', { params: { path: { id } } })
-          .then(({ data: { emailer_campaign: c } }) => fromApolloEmailerCampaignToSequence(c));
+          .then(({ data: { emailer_campaign: c, emailer_steps, emailer_templates, emailer_touches } }) => ({
+            ...fromApolloEmailerCampaignToSequence(c),
+            steps: emailer_steps?.map((s): SequenceStep => {
+              const templateId = emailer_touches?.find((t) => t.emailer_step_id === s.id)?.emailer_template_id;
+              const template = emailer_templates?.find((t) => t.id === templateId);
+              intervalSeconds +=
+                (s.wait_time ?? 0) * { second: 1, minute: 60, hour: 60 * 60, day: 60 * 60 * 24 }[s.wait_mode];
+
+              return {
+                type:
+                  s.type == 'linkedin_step_message'
+                    ? 'linkedin_send_message'
+                    : s.type == 'call'
+                      ? 'call'
+                      : s.type === 'auto_email'
+                        ? 'auto_email'
+                        : s.type === 'manual_email'
+                          ? 'manual_email'
+                          : 'task',
+                date: s.exact_datetime ?? undefined,
+                taskNote: s.note ?? undefined,
+                intervalSeconds,
+                template: {
+                  // id: template?.id, // if we return this then all in a sudden we don't pass validation, seems overly strict...
+                  body: template?.body_html ?? template?.body_text ?? '',
+                  subject: template?.subject ?? '',
+                  name: template?.name ?? undefined,
+                },
+              };
+            }),
+          }));
+      }
       case 'contact':
         return await this.#getContact(id);
       case 'account':

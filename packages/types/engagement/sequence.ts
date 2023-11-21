@@ -17,6 +17,8 @@ type CoreSequence = {
   steps?: SequenceStepCreateParams[];
 };
 
+export type SequenceStep = Omit<SequenceStepCreateParams, 'customFields'>;
+
 export type Sequence = BaseEngagementModel & CoreSequence;
 
 export type RemoteSequenceTypes = {
