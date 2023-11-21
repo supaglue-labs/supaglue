@@ -1,4 +1,4 @@
-import { NotFoundError, UnauthorizedError } from '@supaglue/core/errors';
+import { BadRequestError, NotFoundError, UnauthorizedError } from '@supaglue/core/errors';
 import { cryptoHash, encrypt, generateApiKey } from '@supaglue/core/lib/crypt';
 import { fromApplicationModel } from '@supaglue/core/mappers/application';
 import type { PrismaClient } from '@supaglue/db';
@@ -194,7 +194,7 @@ export class ApplicationService {
       await this.#prisma.application.deleteMany({ where: { id, orgId } });
     } catch (e: unknown) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2003') {
-        throw new Error(`Can't delete application ${id}. There may still be connections associated.`);
+        throw new BadRequestError(`Can't delete application ${id}. There may still be connections associated.`);
       }
 
       throw e;

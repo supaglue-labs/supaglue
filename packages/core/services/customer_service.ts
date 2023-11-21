@@ -85,7 +85,7 @@ export class CustomerService {
       return fromCustomerModel(deletedCustomer);
     } catch (e) {
       if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2003') {
-        throw new Error(
+        throw new BadRequestError(
           `Can't delete customer ${externalId}. There may still be connections associated. Delete those first.`
         );
       }
