@@ -5,3 +5,4 @@ import { ProxyAgent, setGlobalDispatcher } from 'undici';
 if (process.env['GLOBAL_AGENT_HTTP_PROXY']) {
   setGlobalDispatcher(new ProxyAgent(process.env['GLOBAL_AGENT_HTTP_PROXY']));
 }
+console.log('boostraping debugging proxy to', process.env['GLOBAL_AGENT_HTTP_PROXY']);
