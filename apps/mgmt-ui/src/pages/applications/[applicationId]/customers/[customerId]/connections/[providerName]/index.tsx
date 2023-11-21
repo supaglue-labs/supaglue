@@ -7,6 +7,7 @@ import { useActiveCustomerId } from '@/hooks/useActiveCustomerId';
 import { useCustomObjects } from '@/hooks/useCustomObjects';
 import { toListEntityMappingsResponse, useEntityMappings } from '@/hooks/useEntityMappings';
 import { useProperties } from '@/hooks/useProperties';
+import { useRateLimitInfo } from '@/hooks/useRateLimitInfo';
 import { useStandardObjects } from '@/hooks/useStandardObjects';
 import Header from '@/layout/Header';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
@@ -57,10 +58,13 @@ export default function Home(props: SupaglueProps) {
   const applicationId = useActiveApplicationId();
   const customerId = useActiveCustomerId();
   const { providerName } = useRouter().query;
+  const { rateLimitInfo, isLoading: isLoadingRateLimitInfo } = useRateLimitInfo(customerId, providerName as string);
   const { entityMappings = [], isLoading, mutate } = useEntityMappings(customerId, providerName as string);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [tab, setTab] = useState(0);
   const { addNotification } = useNotification();
+
+  console.log(`rateLimitInfo: `, rateLimitInfo);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
