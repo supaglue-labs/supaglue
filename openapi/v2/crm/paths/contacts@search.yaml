@@ -19,6 +19,7 @@ post:
     - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
     - $ref: ../../../common/components/parameters/query/page_size.yaml
     - $ref: ../../../common/components/parameters/query/cursor.yaml
+    - $ref: ../components/parameters/query/associations_to_fetch.yaml
   requestBody:
     required: true
     content:

@@ -1589,6 +1589,8 @@ export interface components {
      * @example MyCustomObject__c
      */
     object_name: string;
+    /** @description List of associated objects to attempt to fetch associations for. Only relevant for hubspot and when `read_from_cache` is false. */
+    associations_to_fetch?: string[];
   };
   requestBodies: never;
   headers: never;
@@ -1610,6 +1612,7 @@ export interface operations {
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
+        associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1702,6 +1705,7 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
+        associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1759,6 +1763,7 @@ export interface operations {
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
+        associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1833,6 +1838,7 @@ export interface operations {
         include_raw_data?: components["parameters"]["include_raw_data"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
+        associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1910,6 +1916,7 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
+        associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -2180,6 +2187,7 @@ export interface operations {
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
+        associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -2243,6 +2251,7 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
+        associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];

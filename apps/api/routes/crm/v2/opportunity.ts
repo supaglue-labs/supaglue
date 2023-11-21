@@ -37,7 +37,8 @@ export default function init(app: Router): void {
       const opportunity = await crmCommonObjectService.get(
         'opportunity',
         req.customerConnection,
-        req.params.opportunity_id
+        req.params.opportunity_id,
+        req.query?.associations_to_fetch
       );
       const snakecasedKeysOpportunity = toSnakecasedKeysCrmOpportunity(opportunity);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -66,6 +67,7 @@ export default function init(app: Router): void {
           modifiedAfter: req.query?.modified_after,
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+          associationsToFetch: req.query?.associations_to_fetch,
         });
         return res.status(200).send({
           pagination,
