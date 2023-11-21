@@ -87,6 +87,7 @@ import { paginator } from '../../utils/paginator';
 import { toMappedProperties } from '../../utils/properties';
 import { capitalizeString } from '../../utils/string';
 import {
+  fromDescribeFieldToPropertyUnified,
   fromSalesforceAccountToAccount,
   fromSalesforceContactToContact,
   fromSalesforceLeadToLead,
@@ -1260,6 +1261,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public override async listProperties(object: StandardOrCustomObjectDef): Promise<Property[]> {
     return await this.getSObjectProperties(capitalizeString(object.name));
+  }
+
+  public override async listPropertiesUnified(objectName: string): Promise<PropertyUnified[]> {
+    const response = await this.#client.describe(capitalizeString(objectName));
+    return response.fields
+      .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
+      .map(fromDescribeFieldToPropertyUnified);
   }
 
   private async getSObjectProperties(sobject: string): Promise<Property[]> {
