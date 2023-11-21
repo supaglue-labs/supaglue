@@ -1,0 +1,40 @@
+---
+id: get-mailbox
+title: "Get mailbox"
+description: "Get mailbox"
+sidebar_label: "Get mailbox"
+hide_title: true
+hide_table_of_contents: true
+api: eJy1Vm1v2zYQ/isE9yUBLFuR3TQ1hmEdVhTBVmBokxVbEji0dLLZSaRKUk4MQ/99d5Qly7ZSZG0XBIlN3stzb89xw3UBRjip1WXCp3wB7p2Q2Vw/8gF3YmH59IZvT8DyuwG3EJdGujVebPhjIAoZ/AP07a7C20IYkYMDY/29wi9oVao4KxOYGfEwS4QTaFsqPP9cglnjFxsvIRd8uuFuXZDCXOsMhOLVgCdgYyMLQogXH5fglmCY02xrlKFRRkZZCg7tJCw1OmcoxcYmYQjIrVlh9EomYIboDB5FXmToxZkSqkEL8jGIS+t0DiaQSYNwCQLV+iBaZ6RaEMLWIM/XOxtn/BD7FUJqrtnlrwhROFYqiVnI1gzhKSdTCdZjbwWlYmtdGiaKIpOxrxRaNvC5lAaSniiaWAN/8lVxWJGBTbWJoTeIxgPbengSTF43zmyXz0K45ZHGM1GF0YuLeB6fB+dhFAaTcSiCi8kFBEKkIp6LJJ0I4NSEBmyhlcV+RYNRGNK//Sh2PR5r5TDxJNLJ8OiTJbnNMTA9/wSxQ0VMAk6Ok7UXjPAIfAf7i8n4LKJgKCN9kqrMMjFvurKjSReoWFows9rJoeiTTvn4VZqcpRAG4avJPJiI87NgPnmZBmMYizgcj6NwnFCKYwPCQTIT7jnQsC9ykuQ4dBA46Vtg5zQKoygIoyB6eRWGU//7Nzkpi+T/dyLtLIEM+SfpIZOOgVRkFhuVZ8K6Wa4TmrunoH0DFGkppn4shxEf8Zxijf6AxUIp7dgcGDZCQuxnQSXMt9OQV1V3om64H7e61Xads1fmvXLspa0nJzhRTrqsM9DosaqOuPktOJa3g4VbYKm3K4XGhQZ/ykd5s0tGmx07VERMYFbN2ihNRpzlXGGnoxGumKEtC7HIShhKPQK1EAvIcWpHq+iIoD5sJdnrPy49GzQL6wONcj2tnbXVVgZPfgNaRi2RNjKHFLrvD90wlKKaiCzTuItgBRlxg/VncQy2pnQPiDpDpZocU7i1jXAYnQ1f8F2er5XPPnvThuq1a7oSse/TLc4m3rbk2Kg6tj+3GYt1TvXeS+ne5VEhf8Afdqmc0UkZ09mt+ggZigJFRKE0+Cj4kx3IU4auS/rkWXTI/tIl9S51LepJ6xXQxgMWxBvLy8xJHCS6NUmwv60te5B4rrzLTiqQo2GhzXp4i8hu/pTwwBBcrhWr6ZrhyHbk706asCkxw27soyITjgZ8VBsIagO202On5MRn5BdhfRHZ9fvf6fD+/v5WPatJt7KU6UJblwvVKeD+2OxVom1OB4+OsEpvw9dysx2pG96OFKpPOysXe3+J3khks5kj+GuTVRUd1+8umrQdRXlKPPLfrsfv8fLqDcZPYd8LcSWoq6fcD/FKGFmz5X8CffJ+S4un7Cn/zfirdddng6uTzuoOpbck8NUovucb8AvpPHzL7nI5+Abgh+++LwI4fIbuQaiFXiM3Fq5zd/QCo9K3i+TtmyuUFSV1fZe2a47efqDK9Ja0y+e1e/pLYHrFf6RBx4XwUyte3zyp0K6HpqGpYarqX48hjSo=
+sidebar_class_name: "get api-method"
+info_path: api/v2/engagement/unified-engagement-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get mailbox</h1>
+
+<MethodEndpoint method={"get"} path={"/mailboxes/{mailbox_id}"}></MethodEndpoint>
+
+
+
+Get mailbox
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"mailbox_id","in":"path","required":true,"schema":{"type":"string"},"example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean"},"description":"Whether to include raw data fetched from the 3rd party provider.","example":true}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Mailbox
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":54312}}></SchemaItem><SchemaItem collapsible={false} name={"email"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":null}}></SchemaItem><SchemaItem collapsible={false} name={"user_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"nullable":true,"type":"string","example":"39fd1fe0-094b-4a61-b47f-3e3ac033203d"}}></SchemaItem><SchemaItem collapsible={false} name={"created_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"format":"date-time","example":"2022-02-27T00:00:00Z"}}></SchemaItem><SchemaItem collapsible={false} name={"updated_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"format":"date-time","example":"2022-02-27T00:00:00Z"}}></SchemaItem><SchemaItem collapsible={false} name={"is_deleted"} required={true} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean","example":false}}></SchemaItem><SchemaItem collapsible={false} name={"last_modified_at"} required={true} schemaName={"date-time"} qualifierMessage={undefined} schema={{"type":"string","format":"date-time","example":"2022-02-27T00:00:00Z"}}></SchemaItem><SchemaItem collapsible={false} name={"is_disabled"} required={false} schemaName={"boolean"} qualifierMessage={undefined} schema={{"type":"boolean","nullable":true,"description":"When disabled, cannot be used to send email."}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"id\": 54312,\n  \"email\": null,\n  \"user_id\": \"39fd1fe0-094b-4a61-b47f-3e3ac033203d\",\n  \"created_at\": \"2022-02-27T00:00:00Z\",\n  \"updated_at\": \"2022-02-27T00:00:00Z\",\n  \"is_deleted\": false,\n  \"last_modified_at\": \"2022-02-27T00:00:00Z\",\n  \"is_disabled\": true\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

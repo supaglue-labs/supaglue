@@ -1,6 +1,7 @@
 import type { ProviderCategory } from '@supaglue/types/common';
 import { ActivityFailure, ApplicationFailure, proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
+import { ForbiddenError, UnauthorizedError } from '@supaglue/core/errors';
 import type { FullThenIncrementalSync, Sync } from '@supaglue/types/sync';
 import type { createActivities } from '../activities/index';
 
@@ -57,8 +58,8 @@ function getPauseReasonIfShouldPause(err: any): string | undefined {
   if (err.cause?.type === 'SGConnectionNoLongerAuthenticatedError') {
     return `Connection no longer authenticated: ${err.cause.message}`;
   }
-  if (err.cause?.type === 'ForbiddenError') {
-    return `Forbidden: ${err.cause.message}`;
+  if (err instanceof ForbiddenError || err.cause?.type === 'ForbiddenError') {
+    return `Forbidden: ${err.cause?.message ?? err.message}`;
   }
   if (err.cause?.failure?.message.startsWith('No entity mapping found for entity')) {
     return err.cause.failure.message;
@@ -68,6 +69,9 @@ function getPauseReasonIfShouldPause(err: any): string | undefined {
   }
   if (err.cause?.failure?.message === 'The requested resource does not exist') {
     return `The requested resource does not exist.`;
+  }
+  if (err instanceof UnauthorizedError) {
+    return `Unauthorized: ${err.message}`;
   }
 }
 

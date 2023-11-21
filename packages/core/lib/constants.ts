@@ -20,7 +20,7 @@ export const SCHEMAS_OR_ENTITIES_APPLICATION_IDS = [
 ];
 
 export const ASYNC_RETRY_OPTIONS = {
-  retries: 5,
+  retries: 3,
   factor: 2,
   minTimeout: 1_000,
   maxTimeout: 60_000,

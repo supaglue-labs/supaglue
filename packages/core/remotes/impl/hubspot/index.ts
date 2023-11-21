@@ -420,6 +420,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const { accessToken } = config;
     this.#client = new Client({
       accessToken,
+      numberOfApiCallRetries: 2,
     });
     this.#config = config;
   }
@@ -433,26 +434,31 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return Number(hubId);
   }
 
+  /**
+   * This API is for the marketing automation cateogry only.
+   */
   public async marketingAutomationSubmitForm(formId: string, formData: SubmitFormData): Promise<SubmitFormResult> {
-    await this.maybeRefreshAccessToken();
-
     const portalId = this.getHubId();
 
     // Submit the form
-    await axios.post(
-      `https://api.hsforms.com/submissions/v3/integration/secure/submit/${portalId}/${formId}`,
-      {
-        fields: Object.entries(formData).map(([name, value]) => ({
-          name,
-          value,
-        })),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${this.#config.accessToken}`,
+    await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+
+      return await axios.post(
+        `https://api.hsforms.com/submissions/v3/integration/secure/submit/${portalId}/${formId}`,
+        {
+          fields: Object.entries(formData).map(([name, value]) => ({
+            name,
+            value,
+          })),
         },
-      }
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${this.#config.accessToken}`,
+          },
+        }
+      );
+    });
 
     // TODO there's no way to get the created/updated prospect id from the form submit, it seems.
     //      There's also no way to tell if it was created or updated.
@@ -461,12 +467,17 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     };
   }
 
+  /**
+   * This API is for the marketing automation cateogry only.
+   */
   public async marketingAutomationListForms(): Promise<FormMetadata[]> {
-    await this.maybeRefreshAccessToken();
-    const response = await axios.get<HubSpotAPIV2ListFormsResponse>(`${this.baseUrl}/forms/v2/forms`, {
-      headers: {
-        Authorization: `Bearer ${this.#config.accessToken}`,
-      },
+    const response = await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      return await axios.get<HubSpotAPIV2ListFormsResponse>(`${this.baseUrl}/forms/v2/forms`, {
+        headers: {
+          Authorization: `Bearer ${this.#config.accessToken}`,
+        },
+      });
     });
 
     return response.data.map((form) => ({
@@ -478,12 +489,17 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     }));
   }
 
+  /**
+   * This API is for the marketing automation cateogry only.
+   */
   public async marketingAutomationGetFormFields(formId: string): Promise<FormField[]> {
-    await this.maybeRefreshAccessToken();
-    const response = await axios.get<HubSpotAPIV2ListFormsSingleForm>(`${this.baseUrl}/forms/v2/forms/${formId}`, {
-      headers: {
-        Authorization: `Bearer ${this.#config.accessToken}`,
-      },
+    const response = await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      return await axios.get<HubSpotAPIV2ListFormsSingleForm>(`${this.baseUrl}/forms/v2/forms/${formId}`, {
+        headers: {
+          Authorization: `Bearer ${this.#config.accessToken}`,
+        },
+      });
     });
 
     return response.data.formFieldGroups.flatMap((group) =>
@@ -2465,19 +2481,21 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     let hasMore = true;
 
     while (hubspotLists.length < pageSize && hasMore) {
-      await this.maybeRefreshAccessToken();
-      const v3Response = await axios.post(
-        `https://api.hubapi.com/crm/v3/lists/search`,
-        {
-          count: pageSize,
-          offset,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${this.#config.accessToken}`,
+      const v3Response = await retryWhenAxiosRateLimited(async () => {
+        await this.maybeRefreshAccessToken();
+        return await axios.post(
+          `https://api.hubapi.com/crm/v3/lists/search`,
+          {
+            count: pageSize,
+            offset,
           },
-        }
-      );
+          {
+            headers: {
+              Authorization: `Bearer ${this.#config.accessToken}`,
+            },
+          }
+        );
+      });
       const objectTypeId = HUBSPOT_LIST_OBJECT_TYPE_ID_MAP[objectType as 'contact' | 'account' | 'opportunity'];
       hubspotLists = [
         ...hubspotLists,
@@ -2520,21 +2538,22 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const hubspotObjectName =
       COMMON_MODEL_TO_HUBSPOT_OBJECT_TYPE_MAP[objectType as 'contact' | 'account' | 'opportunity'];
 
-    await this.maybeRefreshAccessToken();
-
     const cursor = paginationParams.cursor ? decodeCursor(paginationParams.cursor) : undefined;
     const pageSize = paginationParams.page_size ?? HUBSPOT_RECORD_LIMIT;
     const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch(hubspotObjectName, fieldMappingConfig);
 
     const [v3MembershipResponse] = await Promise.all([
-      axios.get(`https://api.hubapi.com/crm/v3/lists/${listId}/memberships`, {
-        headers: {
-          Authorization: `Bearer ${this.#config.accessToken}`,
-        },
-        params: {
-          after: cursor?.id,
-          limit: pageSize,
-        },
+      retryWhenAxiosRateLimited(async () => {
+        await this.maybeRefreshAccessToken();
+        return axios.get(`https://api.hubapi.com/crm/v3/lists/${listId}/memberships`, {
+          headers: {
+            Authorization: `Bearer ${this.#config.accessToken}`,
+          },
+          params: {
+            after: cursor?.id,
+            limit: pageSize,
+          },
+        });
       }),
     ]);
 
