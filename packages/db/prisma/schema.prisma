@@ -19,6 +19,7 @@ model SystemSettings {
 
 model Application {
   id               String            @id @default(uuid())
+  isPaid           Boolean?          @default(false) @map("is_paid")
   email            String?
   name             String
   config           Json
