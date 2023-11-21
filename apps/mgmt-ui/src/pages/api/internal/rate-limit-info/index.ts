@@ -6,7 +6,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   switch (req.method) {
     case 'GET': {
       const result = await fetch(
-        `${API_HOST}/internal/customers/${req.query.customerId}/connections/${req.query.providerName}/_rate_limit_info`,
+        `${API_HOST}/internal/customers/${req.query.customer_id}/connections/${req.query.provider_name}/_rate_limit_info`,
         {
           method: 'GET',
           headers: await getApplicationIdScopedHeaders(req),

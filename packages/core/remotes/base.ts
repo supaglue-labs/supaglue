@@ -218,7 +218,7 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
   }
 
   public async getRateLimitInfo(): Promise<RateLimitInfo> {
-    throw new NotImplementedError();
+    return {};
   }
 
   protected abstract getAuthHeadersForPassthroughRequest(): Record<string, string>;
