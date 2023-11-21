@@ -119,7 +119,7 @@ export default function init(app: Router): void {
   );
 
   connectionRouter.delete(
-    '/:connection_id',
+    '/:provider_name',
     async (
       req: Request<DeleteConnectionPathParams, DeleteConnectionResponse, DeleteConnectionRequest>,
       res: Response<DeleteConnectionResponse>
