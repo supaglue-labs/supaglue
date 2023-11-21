@@ -1,0 +1,32 @@
+type: object
+properties:
+  daily:
+    type: object
+    properties:
+      limit:
+        type: integer
+        example: 1000
+      remaining:
+        type: integer
+        example: 1000
+      reset_time:
+        type: integer
+        example: 1615219200
+    required:
+      - limit
+      - remaining
+  hourly:
+    type: object
+    properties:
+      limit:
+        type: integer
+        example: 1000
+      remaining:
+        type: integer
+        example: 1000
+      reset_time:
+        type: integer
+        example: 1615219200
+    required:
+      - limit
+      - remaining
