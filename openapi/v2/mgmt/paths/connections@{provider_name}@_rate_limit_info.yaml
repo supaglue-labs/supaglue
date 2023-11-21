@@ -1,6 +1,9 @@
 get:
   operationId: getConnectionRateLimitInfo
   summary: Get connection rate limit info
+  description: |
+    Get rate limit info for a connection. This endpoint is only available for
+    salesforce and apollo connections.
   tags:
     - Connections
   security:

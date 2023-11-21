@@ -1,32 +1,10 @@
 type: object
 properties:
   daily:
-    type: object
-    properties:
-      limit:
-        type: integer
-        example: 1000
-      remaining:
-        type: integer
-        example: 1000
-      reset_time:
-        type: integer
-        example: 1615219200
-    required:
-      - limit
-      - remaining
+    $ref: ./single_rate_limit_info.yaml
   hourly:
+    $ref: ./single_rate_limit_info.yaml
+  other:
     type: object
-    properties:
-      limit:
-        type: integer
-        example: 1000
-      remaining:
-        type: integer
-        example: 1000
-      reset_time:
-        type: integer
-        example: 1615219200
-    required:
-      - limit
-      - remaining
+    additionalProperties:
+      $ref: ./single_rate_limit_info.yaml

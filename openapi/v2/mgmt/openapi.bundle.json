@@ -1676,6 +1676,7 @@
       "get": {
         "operationId": "getConnectionRateLimitInfo",
         "summary": "Get connection rate limit info",
+        "description": "Get rate limit info for a connection. This endpoint is only available for\nsalesforce and apollo connections.\n",
         "tags": [
           "Connections"
         ],
@@ -3690,50 +3691,42 @@
           "instance_url"
         ]
       },
+      "single_rate_limit_info": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "example": 1000
+          },
+          "remaining": {
+            "type": "integer",
+            "example": 900
+          },
+          "reset_time": {
+            "type": "integer",
+            "description": "The time (in epoch seconds) at which the rate limit will reset. If missing, the rate limit is a sliding window.",
+            "example": 1615219200
+          }
+        },
+        "required": [
+          "limit",
+          "remaining"
+        ]
+      },
       "rate_limit_info": {
         "type": "object",
         "properties": {
           "daily": {
-            "type": "object",
-            "properties": {
-              "limit": {
-                "type": "integer",
-                "example": 1000
-              },
-              "remaining": {
-                "type": "integer",
-                "example": 1000
-              },
-              "reset_time": {
-                "type": "integer",
-                "example": 1615219200
-              }
-            },
-            "required": [
-              "limit",
-              "remaining"
-            ]
+            "$ref": "#/components/schemas/single_rate_limit_info"
           },
           "hourly": {
+            "$ref": "#/components/schemas/single_rate_limit_info"
+          },
+          "other": {
             "type": "object",
-            "properties": {
-              "limit": {
-                "type": "integer",
-                "example": 1000
-              },
-              "remaining": {
-                "type": "integer",
-                "example": 1000
-              },
-              "reset_time": {
-                "type": "integer",
-                "example": 1615219200
-              }
-            },
-            "required": [
-              "limit",
-              "remaining"
-            ]
+            "additionalProperties": {
+              "$ref": "#/components/schemas/single_rate_limit_info"
+            }
           }
         }
       },

@@ -5,6 +5,7 @@ import type {
   ObjectRecordWithMetadata,
   Property,
   PropertyUnified,
+  RateLimitInfo,
   RemoteUserIdAndDetails,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
@@ -81,6 +82,8 @@ export interface RemoteClient {
 
   getUserIdAndDetails(): Promise<RemoteUserIdAndDetails>;
   getUserIdAndDetails__v2_1(): Promise<RemoteUserIdAndDetails>;
+
+  getRateLimitInfo(): Promise<RateLimitInfo>;
 }
 
 export abstract class AbstractRemoteClient extends EventEmitter implements RemoteClient {
@@ -211,6 +214,10 @@ export abstract class AbstractRemoteClient extends EventEmitter implements Remot
     throw new NotImplementedError();
   }
   public async getUserIdAndDetails__v2_1(): Promise<RemoteUserIdAndDetails> {
+    throw new NotImplementedError();
+  }
+
+  public async getRateLimitInfo(): Promise<RateLimitInfo> {
     throw new NotImplementedError();
   }
 

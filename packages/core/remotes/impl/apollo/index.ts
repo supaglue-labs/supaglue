@@ -2,6 +2,7 @@ import axios from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   Provider,
+  RateLimitInfo,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
@@ -28,7 +29,7 @@ import {
   SGConnectionNoLongerAuthenticatedError,
 } from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
-import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
+import { isAxiosRateLimited, retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import { parseProxyConfig } from '../../../lib/util';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
@@ -45,6 +46,7 @@ import {
   fromApolloContactToSequenceStates,
   fromApolloEmailAccountsToMailbox,
   fromApolloEmailerCampaignToSequence,
+  fromApolloHeadersToRateLimitInfo,
   fromApolloUserToUser,
   toApolloAccountCreateParams,
   toApolloAccountUpdateParams,
@@ -730,6 +732,27 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       id: response.data.contact.id,
       record: fromApolloContactToContact(response.data.contact),
     };
+  }
+
+  public override async getRateLimitInfo(): Promise<RateLimitInfo> {
+    try {
+      const response = await axios.post<ApolloPaginatedContacts>(
+        `${this.#baseURL}/v1/emailer_campaigns/search`,
+        {
+          api_key: this.#apiKey,
+          q_name: 'unused',
+        },
+        {
+          headers: this.#headers,
+        }
+      );
+      return fromApolloHeadersToRateLimitInfo(response.headers as Record<string, string>);
+    } catch (e: any) {
+      if (isAxiosRateLimited(e)) {
+        return fromApolloHeadersToRateLimitInfo(e.response.headers);
+      }
+      throw e;
+    }
   }
 
   public override async handleErr(err: unknown): Promise<unknown> {
