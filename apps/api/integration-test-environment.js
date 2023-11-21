@@ -2,13 +2,9 @@
 const axios = require('axios');
 const { TestEnvironment } = require('jest-environment-node');
 const { createSupaglueClient } = require('@supaglue/schemas');
-const { ProxyAgent, setGlobalDispatcher } = require('undici');
 
-// global-agent and undici are used for proxying http requests for debugging purposes
-require('global-agent/bootstrap');
-if (process.env['GLOBAL_AGENT_HTTP_PROXY']) {
-  setGlobalDispatcher(new ProxyAgent(process.env['GLOBAL_AGENT_HTTP_PROXY']));
-}
+// For debugging
+require('@supaglue/schemas/proxy.bootstrap');
 
 const toHubspotPluralObjectName = {
   contact: 'contacts',

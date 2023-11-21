@@ -6362,9 +6362,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/schemas@workspace:packages/schemas"
   dependencies:
+    global-agent: ^3.0.0
     openapi-fetch: 0.8.1
     openapi-typescript: ^6.7.0
     tsx: ^3.12.3
+    undici: ^5.27.2
   languageName: unknown
   linkType: soft
 
@@ -8495,7 +8497,6 @@ __metadata:
     express: ">=5.0.0-beta.1"
     express-openapi-validator: ^5.0.2
     express-prom-bundle: ^6.6.0
-    global-agent: 3.0.0
     json-schema-traverse: ^1.0.0
     jsonwebtoken: ^9.0.2
     jwks-rsa: ^3.1.0
@@ -8510,7 +8511,6 @@ __metadata:
     tsx: ^3.12.3
     typescript: ^4.9.5
     typescript-transform-paths: ^3.4.6
-    undici: 5.27.2
     uuid: ^9.0.0
   languageName: unknown
   linkType: soft
@@ -13571,7 +13571,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"global-agent@npm:3.0.0":
+"global-agent@npm:^3.0.0":
   version: 3.0.0
   resolution: "global-agent@npm:3.0.0"
   dependencies:
@@ -24057,7 +24057,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:5.27.2, undici@npm:^5.23.0, undici@npm:^5.27.2":
+"undici@npm:^5.23.0, undici@npm:^5.27.2":
   version: 5.27.2
   resolution: "undici@npm:5.27.2"
   dependencies:
