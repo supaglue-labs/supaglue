@@ -323,6 +323,16 @@ export interface paths {
       };
     };
   };
+  "/customers/{customer_id}/connections/{provider_name}/_rate_limit_info": {
+    /** Get connection rate limit info */
+    get: operations["getConnectionRateLimitInfo"];
+    parameters: {
+      path: {
+        customer_id: string;
+        provider_name: components["schemas"]["provider_name"];
+      };
+    };
+  };
   "/syncs": {
     /**
      * Get Syncs
@@ -982,6 +992,24 @@ export interface components {
        */
       entity_mappings?: components["schemas"]["connection_entity_mapping"][];
       connection_sync_config?: components["schemas"]["connection_sync_config"];
+    };
+    rate_limit_info: {
+      daily?: {
+        /** @example 1000 */
+        limit: number;
+        /** @example 1000 */
+        remaining: number;
+        /** @example 1615219200 */
+        reset_time?: number;
+      };
+      hourly?: {
+        /** @example 1000 */
+        limit: number;
+        /** @example 1000 */
+        remaining: number;
+        /** @example 1615219200 */
+        reset_time?: number;
+      };
     };
     /**
      * @example crm
@@ -2596,6 +2624,23 @@ export interface operations {
       /** @description An empty body is returned on successful deletion. */
       204: {
         content: never;
+      };
+    };
+  };
+  /** Get connection rate limit info */
+  getConnectionRateLimitInfo: {
+    parameters: {
+      path: {
+        customer_id: string;
+        provider_name: components["schemas"]["provider_name"];
+      };
+    };
+    responses: {
+      /** @description Connection rate limit info */
+      200: {
+        content: {
+          "application/json": components["schemas"]["rate_limit_info"];
+        };
       };
     };
   };

@@ -1629,11 +1629,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "allOf": [
-                    {
-                      "$ref": "#/components/schemas/connection"
-                    }
-                  ]
+                  "$ref": "#/components/schemas/connection"
                 }
               }
             }
@@ -1654,6 +1650,50 @@
         "responses": {
           "204": {
             "description": "An empty body is returned on successful deletion."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "customer_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "provider_name",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "$ref": "#/components/schemas/provider_name"
+          }
+        }
+      ]
+    },
+    "/customers/{customer_id}/connections/{provider_name}/_rate_limit_info": {
+      "get": {
+        "operationId": "getConnectionRateLimitInfo",
+        "summary": "Get connection rate limit info",
+        "tags": [
+          "Connections"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection rate limit info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/rate_limit_info"
+                }
+              }
+            }
           }
         }
       },
@@ -3649,6 +3689,53 @@
           "category",
           "instance_url"
         ]
+      },
+      "rate_limit_info": {
+        "type": "object",
+        "properties": {
+          "daily": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "example": 1000
+              },
+              "remaining": {
+                "type": "integer",
+                "example": 1000
+              },
+              "reset_time": {
+                "type": "integer",
+                "example": 1615219200
+              }
+            },
+            "required": [
+              "limit",
+              "remaining"
+            ]
+          },
+          "hourly": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "example": 1000
+              },
+              "remaining": {
+                "type": "integer",
+                "example": 1000
+              },
+              "reset_time": {
+                "type": "integer",
+                "example": 1615219200
+              }
+            },
+            "required": [
+              "limit",
+              "remaining"
+            ]
+          }
+        }
       },
       "category": {
         "type": "string",
