@@ -1,3 +1,4 @@
+import type { PropertyType } from '@supaglue/types';
 import type {
   Account,
   AccountCreateParams,
@@ -810,3 +811,42 @@ export const toDynamicsPhoneNumbers = (phoneNumbers: PhoneNumber[] | undefined):
     };
   }, {});
 };
+
+const fromAttributeTypeToPropertyType = (attributeType: string, format?: string): PropertyType => {
+  switch (attributeType) {
+    case 'String':
+    case 'Memo':
+    case 'EntityName':
+    case 'Uniqueidentifier':
+    case 'Lookup':
+      return 'text';
+    case 'BigInt':
+    case 'Integer':
+    case 'Double':
+    case 'Decimal':
+    case 'Money':
+      return 'number';
+    case 'Boolean':
+      return 'boolean';
+    case 'DateTime':
+      return format == 'DateOnly' ? 'date' : 'datetime';
+    case 'Picklist':
+      return 'picklist';
+    default:
+      return 'other';
+  }
+};
+
+export const fromAttributeToPropertyUnified = (attribute: any, publisherPrefix: string) => ({
+  id: attribute.LogicalName,
+  customName: attribute.LogicalName.startsWith(publisherPrefix) ? attribute.LogicalName : undefined,
+  label: attribute.DisplayName?.UserLocalizedLabel?.Label,
+  description: attribute.Description?.UserLocalizedLabel?.Label,
+  isRequired:
+    attribute.RequiredLevel?.Value === 'ApplicationRequired' || attribute.RequiredLevel?.Value === 'SystemRequired',
+  defaultValue: attribute.DefaultValue || attribute.DefaultFormValue,
+  type: fromAttributeTypeToPropertyType(attribute.AttributeType, attribute.Format),
+  precision: attribute.Precision,
+  options: [], // TODO can't figure out how to get these from the API, but not needed for now
+  rawDetails: attribute,
+});
