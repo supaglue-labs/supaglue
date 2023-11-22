@@ -4,8 +4,10 @@ import { fetcher } from '.';
 import { useActiveApplicationId } from './useActiveApplicationId';
 
 export function useActiveApplication() {
-  const applicationId = useActiveApplicationId();
-  if (!applicationId) {
+  let applicationId: string;
+  try {
+    applicationId = useActiveApplicationId();
+  } catch (e) {
     return {
       activeApplication: undefined,
       isLoading: false,
