@@ -9,7 +9,6 @@ import type {
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
-  SequenceStep,
   SequenceStepCreateParams,
   User,
 } from '@supaglue/types/engagement';
@@ -18,6 +17,7 @@ import { BadRequestError } from '../../../errors';
 import type { components } from './salesloft.openapi.gen';
 
 export type Salesloft = components['schemas'];
+type SequenceStep = NonNullable<Sequence['steps']>[number];
 
 export const fromSalesloftAccountToAccount = (record: Record<string, any>): Account => {
   return {

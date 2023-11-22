@@ -14,11 +14,11 @@ import type {
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
+  Sequence,
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
   SequenceStateSearchParams,
-  SequenceStep,
   SequenceStepCreateParams,
 } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
@@ -51,6 +51,8 @@ import {
   toApolloContactCreateParams,
   toApolloContactUpdateParams,
 } from './mappers';
+
+type SequenceStep = NonNullable<Sequence['steps']>[number];
 
 const MAX_PAGE_SIZE = 100; // undocumented, but seems to be the max page size for Apollo
 

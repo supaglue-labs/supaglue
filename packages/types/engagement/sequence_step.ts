@@ -5,7 +5,7 @@ export type SnakecasedKeysSequenceStep = SnakecasedKeys<SequenceStep>;
 export type SnakecasedKeysSequenceStepWithTenant = SnakecasedKeysSequenceStep & SnakecasedEngagementTenantFields;
 
 type CoreSequenceStep = {
-  sequenceId: string;
+  sequenceId?: string;
   name: string;
   // This is unused -- add more fields later.
 };

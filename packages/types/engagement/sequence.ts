@@ -14,10 +14,8 @@ type CoreSequence = {
   ownerId: string | null;
   shareType: 'team' | 'private';
   isArchived: boolean | undefined;
-  steps?: SequenceStepCreateParams[];
+  steps?: Omit<SequenceStepCreateParams, 'customFields'>[];
 };
-
-export type SequenceStep = Omit<SequenceStepCreateParams, 'customFields'>;
 
 export type Sequence = BaseEngagementModel & CoreSequence;
 
