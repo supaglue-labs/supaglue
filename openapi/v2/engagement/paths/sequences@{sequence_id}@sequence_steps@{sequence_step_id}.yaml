@@ -1,6 +1,7 @@
 patch:
   operationId: updateSequenceStep
   summary: Update Sequence Step
+  description: Works for `apollo` and `outreach`. Not supported in `salesloft`
   tags:
     - Sequences
   security:

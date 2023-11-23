@@ -186,7 +186,10 @@ export interface paths {
     };
   };
   "/sequences/{sequence_id}/sequence_steps/{sequence_step_id}": {
-    /** Update Sequence Step */
+    /**
+     * Update Sequence Step
+     * @description Works for `apollo` and `outreach`. Not supported in `salesloft`
+     */
     patch: operations["updateSequenceStep"];
     parameters: {
       header: {
@@ -1409,7 +1412,10 @@ export interface operations {
       };
     };
   };
-  /** Update Sequence Step */
+  /**
+   * Update Sequence Step
+   * @description Works for `apollo` and `outreach`. Not supported in `salesloft`
+   */
   updateSequenceStep: {
     parameters: {
       header: {
