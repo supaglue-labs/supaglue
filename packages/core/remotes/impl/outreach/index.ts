@@ -1331,7 +1331,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
                         ...seqTemplate,
                         template: await this.#api
                           .GET('/templates/{id}', {
-                            params: { path: { id: seqTemplate.id! } },
+                            params: { path: { id: seqTemplate.relationships!.template!.data!.id! } },
                           })
                           .then((r) => r.data.data),
                       })) ?? []
@@ -1629,6 +1629,41 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         };
       case 'account':
         return { id: await this.updateAccount(params as AccountUpdateParams) };
+      case 'sequence_step': {
+        const p = params as EngagementCommonObjectTypeMap<'sequence_step'>['updateParams'];
+        const seqTemplates = await this.#api
+          .GET('/sequenceTemplates', {
+            params: { query: { 'filter[sequenceStep][id]': p.sequence_step_id } },
+          })
+          .then((seqTemplatesRes) =>
+            Promise.all(
+              seqTemplatesRes.data.data?.map(async (seqTemplate) => ({
+                ...seqTemplate,
+                template: await this.#api
+                  .GET('/templates/{id}', {
+                    params: { path: { id: seqTemplate.relationships!.template!.data!.id! } },
+                  })
+                  .then((r) => r.data.data),
+              })) ?? []
+            )
+          );
+        const template = seqTemplates[0]?.template;
+
+        if (!template) {
+          throw new NotFoundError(`Sequence step ${p.sequence_step_id} does not have a template`);
+        }
+        await this.#api.PATCH('/templates/{id}', {
+          params: { path: { id: template.id! } },
+          body: {
+            data: {
+              id: template.id!,
+              type: template.type!,
+              attributes: { bodyHtml: p.template?.body, subject: p.template?.subject },
+            },
+          },
+        });
+        return { id: p.sequence_step_id };
+      }
       default:
         throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
