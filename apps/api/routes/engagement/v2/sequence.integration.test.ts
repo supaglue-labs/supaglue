@@ -135,6 +135,24 @@ describe('sequence', () => {
       expect(getResponse.data.name).toEqual(testSequence.name);
       expect(getResponse.data.num_steps).toEqual(testSequence.steps?.length);
       expect(getResponse.data.share_type).toEqual('team');
+      expect(getResponse.data.steps).toHaveLength(testSequence.steps?.length);
+
+      // Salesloft does not support updating email template / body
+      if (providerName !== 'salesloft') {
+        const header = { 'x-customer-id': process.env.CUSTOMER_ID!, 'x-provider-name': providerName };
+        const stepId = getResponse.data.steps?.[0].id;
+        await supaglueClient.engagement.PATCH('/sequences/{sequence_id}/sequence_steps/{sequence_step_id}', {
+          params: { header, path: { sequence_id: response.data.record!.id, sequence_step_id: stepId! } },
+          body: { record: { template: { body: 'Updated body', subject: 'modified subject' } } },
+        });
+        const res = await supaglueClient.engagement.GET('/sequences/{sequence_id}', {
+          params: { header, path: { sequence_id: response.data.record!.id } },
+        });
+        expect(res.response.status).toEqual(200);
+        const step = res.data?.steps?.find((s) => s.id === stepId);
+        expect(step?.template?.body).toEqual('Updated body');
+        expect(step?.template?.subject).toEqual('modified subject');
+      }
 
       const contactRes = await apiClient.post<CreateContactResponse>(
         '/engagement/v2/contacts',
