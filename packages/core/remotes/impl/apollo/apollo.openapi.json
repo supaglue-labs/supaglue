@@ -461,7 +461,7 @@
         }
       }
     },
-    "v1/emailer_campaigns/check_contacts_deployability": {
+    "/v1/emailer_campaigns/check_contacts_deployability": {
       "post": {
         "description": "Check if contacts are deployable to a sequence, primarily used to check if contacts are already in another sequence.",
         "operationId": "checkContactsDeployability",
@@ -481,7 +481,7 @@
                     "type": "string"
                   }
                 },
-                "required": ["contact_ids", "emailer_campaign_id"]
+                "required": ["contact_ids"]
               }
             }
           }

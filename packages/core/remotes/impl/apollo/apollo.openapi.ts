@@ -289,7 +289,7 @@ export function outputOpenApi() {
           response: z.object({ email_accounts: z.array(emailAccount) }),
         }),
       },
-      'v1/emailer_campaigns/check_contacts_deployability': {
+      '/v1/emailer_campaigns/check_contacts_deployability': {
         post: jsonOperation('checkContactsDeployability', {
           meta: {
             description:
@@ -297,7 +297,7 @@ export function outputOpenApi() {
           },
           body: z.object({
             contact_ids: z.array(z.string()),
-            emailer_campaign_id: z.string(),
+            emailer_campaign_id: z.string().optional(),
           }),
           response: z.object({
             num_active_in_other_campaigns: z.number(),

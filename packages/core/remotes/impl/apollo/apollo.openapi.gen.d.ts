@@ -29,7 +29,7 @@ export interface paths {
   "/v1/email_accounts": {
     get: operations["listEmailAccounts"];
   };
-  "v1/emailer_campaigns/check_contacts_deployability": {
+  "/v1/emailer_campaigns/check_contacts_deployability": {
     /** @description Check if contacts are deployable to a sequence, primarily used to check if contacts are already in another sequence. */
     post: operations["checkContactsDeployability"];
   };
@@ -379,7 +379,7 @@ export interface operations {
       content: {
         "application/json": {
           contact_ids: string[];
-          emailer_campaign_id: string;
+          emailer_campaign_id?: string;
         };
       };
     };
