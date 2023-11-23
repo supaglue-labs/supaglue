@@ -156,7 +156,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
                 taskNote: s.note ?? undefined,
                 intervalSeconds: intervalSeconds,
                 template: {
-                  // id: template?.id, // if we return this then all in a sudden we don't pass validation, seems overly strict...
+                  id: template?.id,
                   body: template?.body_html ?? template?.body_text ?? '',
                   subject: template?.subject ?? '',
                   name: template?.name ?? undefined,
