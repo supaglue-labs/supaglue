@@ -141,6 +141,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
                 (s.wait_time ?? 0) * { second: 1, minute: 60, hour: 60 * 60, day: 60 * 60 * 24 }[s.wait_mode];
 
               return {
+                id: s.id,
                 type:
                   s.type == 'linkedin_step_message'
                     ? 'linkedin_send_message'
@@ -153,7 +154,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
                           : 'task',
                 date: s.exact_datetime ?? undefined,
                 taskNote: s.note ?? undefined,
-                intervalSeconds,
+                intervalSeconds: intervalSeconds,
                 template: {
                   // id: template?.id, // if we return this then all in a sudden we don't pass validation, seems overly strict...
                   body: template?.body_html ?? template?.body_text ?? '',
@@ -737,6 +738,27 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         return (await this.updateAccount(params as AccountUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
       case 'contact':
         return (await this.updateContact(params as ContactUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
+      case 'sequence_step': {
+        const p = params as EngagementCommonObjectTypeMap<'sequence_step'>['updateParams'];
+        const { touch, template } = await this.#api
+          .GET('/v1/emailer_campaigns/{id}', { params: { path: { id: p.sequence_id } } })
+          .then((r) => {
+            const touch = r.data.emailer_touches?.find((t) => t.emailer_step_id === p.sequence_step_id);
+            const template = r.data.emailer_templates?.find((t) => t.id === touch?.emailer_template_id);
+            return { touch, template };
+          });
+        if (!touch || !template) {
+          throw new NotFoundError(`Unable to find sequence step touch/template ${p.sequence_step_id} in Apollo`);
+        }
+        await this.#api.PUT('/v1/emailer_touches/{id}', {
+          params: { path: { id: touch.id } },
+          body: {
+            id: touch.id,
+            emailer_template: { id: template.id, body_html: p.template?.body, subject: p.template?.subject },
+          },
+        });
+        return { id: p.sequence_step_id };
+      }
       default:
         throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }

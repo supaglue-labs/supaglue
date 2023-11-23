@@ -1,8 +1,8 @@
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
-import type { SequenceStepCreateParams } from './sequence_step';
+import type { SequenceStep, SequenceStepCreateParams, SnakecasedKeysSequenceStep } from './sequence_step';
 
-export type SnakecasedKeysSequence = SnakecasedKeys<Sequence>;
+export type SnakecasedKeysSequence = Omit<SnakecasedKeys<Sequence>, 'steps'> & { steps?: SnakecasedKeysSequenceStep[] };
 export type SnakecasedKeysSequenceWithTenant = SnakecasedKeysSequence & SnakecasedEngagementTenantFields;
 
 type CoreSequence = {
@@ -14,7 +14,7 @@ type CoreSequence = {
   ownerId: string | null;
   shareType: 'team' | 'private';
   isArchived: boolean | undefined;
-  steps?: Omit<SequenceStepCreateParams, 'customFields'>[];
+  steps?: SequenceStep[];
 };
 
 export type Sequence = BaseEngagementModel & CoreSequence;

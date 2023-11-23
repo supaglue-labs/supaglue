@@ -2,6 +2,11 @@ import type { SequenceStep, SnakecasedKeysSequenceStep } from '@supaglue/types/e
 
 export const toSnakecasedKeysSequenceStep = (sequenceStep: SequenceStep): SnakecasedKeysSequenceStep => {
   return {
+    type: sequenceStep.type,
+    date: sequenceStep.date,
+    interval_seconds: sequenceStep.intervalSeconds,
+    task_note: sequenceStep.taskNote,
+    template: sequenceStep.template,
     sequence_id: sequenceStep.sequenceId,
     last_modified_at: sequenceStep.lastModifiedAt,
     id: sequenceStep.id,

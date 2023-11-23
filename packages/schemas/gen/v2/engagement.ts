@@ -185,6 +185,28 @@ export interface paths {
       };
     };
   };
+  "/sequences/{sequence_id}/sequence_steps/{sequence_step_id}": {
+    /** Update Sequence Step */
+    patch: operations["updateSequenceStep"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        /**
+         * @description The ID of the sequence.
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
+        sequence_id: string;
+        /**
+         * @description The ID of the sequence step.
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
+        sequence_step_id: string;
+      };
+    };
+  };
   "/sequence_states": {
     /** List sequence states */
     get: operations["listSequenceStates"];
@@ -592,6 +614,16 @@ export interface components {
       type: "auto_email" | "manual_email" | "call" | "task" | "linkedin_send_message";
       /** @description An optional note to be attached to this step. */
       task_note?: string;
+      custom_fields?: components["schemas"]["custom_fields"];
+    };
+    update_sequence_step: {
+      /** @description The email/message template to be used for this step. Only applicable for email or message steps. */
+      template?: {
+        /** @description The body of the email (HTML). */
+        body?: string;
+        /** @description The subject of the email. */
+        subject?: string;
+      };
       custom_fields?: components["schemas"]["custom_fields"];
     };
     pagination: {
@@ -1288,6 +1320,45 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /** Update Sequence Step */
+  updateSequenceStep: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        /**
+         * @description The ID of the sequence.
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
+        sequence_id: string;
+        /**
+         * @description The ID of the sequence step.
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
+        sequence_step_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["update_sequence_step"];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence step updated */
+      200: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
             warnings?: components["schemas"]["warnings"];
           };
         };

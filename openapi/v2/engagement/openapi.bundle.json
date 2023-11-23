@@ -1103,6 +1103,87 @@
         }
       ]
     },
+    "/sequences/{sequence_id}/sequence_steps/{sequence_step_id}": {
+      "patch": {
+        "operationId": "updateSequenceStep",
+        "summary": "Update Sequence Step",
+        "tags": [
+          "Sequences"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "record": {
+                    "$ref": "#/components/schemas/update_sequence_step"
+                  }
+                },
+                "required": [
+                  "record"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sequence step updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    },
+                    "warnings": {
+                      "$ref": "#/components/schemas/warnings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        },
+        {
+          "name": "sequence_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the sequence.",
+          "schema": {
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+        },
+        {
+          "name": "sequence_step_id",
+          "in": "path",
+          "required": true,
+          "description": "The ID of the sequence step.",
+          "schema": {
+            "type": "string"
+          },
+          "example": "0258cbc6-6020-430a-848e-aafacbadf4ae"
+        }
+      ]
+    },
     "/sequence_states": {
       "post": {
         "operationId": "createSequenceState",
@@ -2149,6 +2230,28 @@
         "required": [
           "type"
         ]
+      },
+      "update_sequence_step": {
+        "type": "object",
+        "properties": {
+          "template": {
+            "description": "The email/message template to be used for this step. Only applicable for email or message steps.",
+            "type": "object",
+            "properties": {
+              "body": {
+                "type": "string",
+                "description": "The body of the email (HTML)."
+              },
+              "subject": {
+                "type": "string",
+                "description": "The subject of the email."
+              }
+            }
+          },
+          "custom_fields": {
+            "$ref": "#/components/schemas/custom_fields"
+          }
+        }
       },
       "pagination": {
         "type": "object",

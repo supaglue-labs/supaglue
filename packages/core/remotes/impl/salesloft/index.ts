@@ -380,7 +380,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       case 'account':
         return {
           id: await this.#updateRecord(
-            params.id,
+            (params as EngagementCommonObjectTypeMap<'account'>['updateParams']).id,
             '/v2/accounts',
             toSalesloftAccountCreateParams(params as AccountCreateParams)
           ),
@@ -388,7 +388,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       case 'contact':
         return {
           id: await this.#updateRecord(
-            params.id,
+            (params as EngagementCommonObjectTypeMap<'contact'>['updateParams']).id,
             '/v2/people',
             toSalesloftContactCreateParams(params as ContactCreateParams)
           ),

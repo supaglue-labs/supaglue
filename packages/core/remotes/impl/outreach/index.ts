@@ -22,6 +22,7 @@ import type {
   SequenceState,
   SequenceStateCreateParams,
   SequenceStateSearchParams,
+  SequenceStep,
   SequenceStepCreateParams,
   SequenceTemplateCreateParams,
   SequenceTemplateId,
@@ -1342,18 +1343,23 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         ]);
         return {
           ...fromOutreachSequenceToSequence(sequence?.data as OutreachSequence),
-          steps: steps?.map(({ attributes: s = {}, sequenceTemplates }) => ({
-            type: s.stepType as 'auto_email' | 'manual_email' | 'call' | 'task',
-            date: s.date,
-            name: s.displayName,
-            intervalSeconds: s.interval,
-            taskNote: s.taskNote,
-            template: {
-              id: sequenceTemplates?.[0].template?.id,
-              body: sequenceTemplates?.[0].template?.attributes?.bodyHtml ?? '',
-              subject: sequenceTemplates?.[0].template?.attributes?.subject ?? '',
-            },
-          })),
+          steps: steps?.map(
+            ({ id, attributes: s = {}, sequenceTemplates }): SequenceStep => ({
+              id: `${id}`,
+              createdAt: new Date(s.createdAt!),
+              updatedAt: new Date(s.updatedAt!),
+              type: s.stepType as 'auto_email' | 'manual_email' | 'call' | 'task',
+              date: s.date,
+              name: s.displayName,
+              intervalSeconds: s.interval,
+              taskNote: s.taskNote,
+              template: {
+                id: `${sequenceTemplates?.[0].template?.id}`,
+                body: sequenceTemplates?.[0].template?.attributes?.bodyHtml ?? '',
+                subject: sequenceTemplates?.[0].template?.attributes?.subject ?? '',
+              },
+            })
+          ),
         } satisfies Sequence;
       }
       case 'mailbox':

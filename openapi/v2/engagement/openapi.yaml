@@ -49,6 +49,8 @@ paths:
     $ref: paths/sequences@{sequence_id}.yaml
   '/sequences/{sequence_id}/sequence_steps':
     $ref: paths/sequences@{sequence_id}@sequence_steps.yaml
+  '/sequences/{sequence_id}/sequence_steps/{sequence_step_id}':
+    $ref: paths/sequences@{sequence_id}@sequence_steps@{sequence_step_id}.yaml
   '/sequence_states':
     $ref: paths/sequence_states.yaml
   '/sequence_states/_search':
@@ -97,6 +99,8 @@ components:
       $ref: ./components/schemas/create_sequence.yaml
     create_sequence_step:
       $ref: ./components/schemas/create_sequence_step.yaml
+    update_sequence_step:
+      $ref: ./components/schemas/update_sequence_step.yaml
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     address:

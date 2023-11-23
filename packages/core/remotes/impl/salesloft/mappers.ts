@@ -326,6 +326,7 @@ function fromSalesloftCadenceStepToSequenceStep(
   group: Salesloft['StepGroup']
 ): SequenceStep {
   const step: Omit<SequenceStep, 'type'> = {
+    id: undefined, // Cadence step export does NOT contain id...
     name: cadenceStep.name,
     intervalSeconds: group.day
       ? // Delay time is in minutes
