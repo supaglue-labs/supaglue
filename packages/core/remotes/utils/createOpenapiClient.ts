@@ -129,7 +129,10 @@ export function createOpenapiOauthClient<Paths extends {}>({
         );
         onTokenRefreshed?.(tokens);
       }
-      return preRequest(url, { ...init, headers: { ...init?.headers, Authorization: `Bearer ${tokens.accessToken}` } });
+      // Cannot simply use object spread as it won't work for all cases
+      const headers = new Headers(init?.headers);
+      headers.set('Authorization', `Bearer ${tokens.accessToken}`);
+      return preRequest(url, { ...init, headers });
     },
   });
   return client;
