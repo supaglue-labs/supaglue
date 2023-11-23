@@ -95,6 +95,8 @@ components:
       $ref: ./components/schemas/objects/user.yaml
     sequence:
       $ref: ./components/schemas/objects/sequence.yaml
+    sequence_step:
+      $ref: ./components/schemas/objects/sequence_step.yaml
     create_sequence:
       $ref: ./components/schemas/create_sequence.yaml
     create_sequence_step:

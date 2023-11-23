@@ -47,7 +47,8 @@ properties:
   steps:
     type: array
     items:
-      $ref: ../create_sequence_step.yaml
+      $ref: ./sequence_step.yaml
+    description: Only returned when getting single sequence, not returned when listing sequences because it is too expensive to do so.
 required:
   - id
   - is_enabled
