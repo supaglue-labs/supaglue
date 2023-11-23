@@ -9,6 +9,11 @@
       "url": "https://app.apollo.io/api"
     }
   ],
+  "security": [
+    {
+      "api_key": []
+    }
+  ],
   "paths": {
     "/v1/emailer_campaigns/{id}": {
       "get": {
@@ -164,13 +169,17 @@
                     "type": "string"
                   },
                   "send_email_from_email_account_id": {
-                    "type": ["string", "null"]
+                    "type": "string"
                   },
                   "userId": {
                     "type": ["string", "null"]
+                  },
+                  "sequence_active_in_other_campaigns": {
+                    "type": "boolean",
+                    "description": "\n    By default Apollo will not add contact to more than one sequence at a time. However if we pass \"true\"\n    to this field, it will add the contact to the sequence even if they are already in another sequence.\n  "
                   }
                 },
-                "required": ["contact_ids", "emailer_campaign_id"]
+                "required": ["contact_ids", "emailer_campaign_id", "send_email_from_email_account_id"]
               }
             }
           }
@@ -421,9 +430,170 @@
           }
         }
       }
+    },
+    "/v1/email_accounts": {
+      "get": {
+        "operationId": "listEmailAccounts",
+        "requestBody": {
+          "content": {
+            "application/json": {}
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email_accounts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/email_account"
+                      }
+                    }
+                  },
+                  "required": ["email_accounts"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "v1/emailer_campaigns/check_contacts_deployability": {
+      "post": {
+        "description": "Check if contacts are deployable to a sequence, primarily used to check if contacts are already in another sequence.",
+        "operationId": "checkContactsDeployability",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "contact_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "emailer_campaign_id": {
+                    "type": "string"
+                  }
+                },
+                "required": ["contact_ids", "emailer_campaign_id"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "num_active_in_other_campaigns": {
+                      "type": "number"
+                    },
+                    "num_finished_in_other_campaigns": {
+                      "type": "number"
+                    },
+                    "num_same_company": {
+                      "type": "number"
+                    },
+                    "num_no_email": {
+                      "type": "number"
+                    },
+                    "num_unverified_email": {
+                      "type": "number"
+                    },
+                    "num_without_ownership_permission": {
+                      "type": "number"
+                    },
+                    "num_with_job_change_contacts": {
+                      "type": "number"
+                    },
+                    "sample_active_in_other_campaigns_contacts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["id", "name"]
+                      }
+                    },
+                    "sample_finished_in_other_campaigns_contacts": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "sample_same_company_contacts": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "sample_no_email_contacts": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "sample_unverified_email_contacts": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "sample_without_ownership_permission": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "sample_with_job_change_contacts": {
+                      "type": "array",
+                      "items": {}
+                    },
+                    "show_warning": {
+                      "type": "boolean"
+                    },
+                    "num_total_dangerous_contacts": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "num_active_in_other_campaigns",
+                    "num_finished_in_other_campaigns",
+                    "num_same_company",
+                    "num_no_email",
+                    "num_unverified_email",
+                    "num_without_ownership_permission",
+                    "num_with_job_change_contacts",
+                    "sample_active_in_other_campaigns_contacts",
+                    "sample_finished_in_other_campaigns_contacts",
+                    "sample_same_company_contacts",
+                    "sample_no_email_contacts",
+                    "sample_unverified_email_contacts",
+                    "sample_without_ownership_permission",
+                    "sample_with_job_change_contacts",
+                    "show_warning",
+                    "num_total_dangerous_contacts"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "query"
+      }
+    },
     "schemas": {
       "emailer_campaign": {
         "type": "object",
@@ -783,6 +953,24 @@
           }
         },
         "required": ["id", "contact_campaign_statuses"]
+      },
+      "email_account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "userId": {},
+          "email": {},
+          "createdAt": {},
+          "updatedAt": {},
+          "lastModifiedAt": {},
+          "isDeleted": {},
+          "rawData": {},
+          "isDisabled": {}
+        },
+        "required": ["id"],
+        "additionalProperties": {}
       }
     }
   }

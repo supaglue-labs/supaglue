@@ -637,6 +637,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (!sequenceId) {
       return [];
     }
+    if (!mailboxId) {
+      throw new BadRequestError('Mailbox ID is required when creating apollo sequence states');
+    }
     const { data: res } = await this.#api.POST('/v1/emailer_campaigns/{id}/add_contact_ids', {
       params: { path: { id: sequenceId } },
       body: {
@@ -645,6 +648,8 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         emailer_campaign_id: sequenceId,
         send_email_from_email_account_id: mailboxId,
         userId,
+        // Force contact to be added to sequence even if they are already in another sequence
+        sequence_active_in_other_campaigns: true,
       },
     });
 

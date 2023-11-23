@@ -26,6 +26,13 @@ export interface paths {
   "/v1/contacts/{id}": {
     get: operations["getContact"];
   };
+  "/v1/email_accounts": {
+    get: operations["listEmailAccounts"];
+  };
+  "v1/emailer_campaigns/check_contacts_deployability": {
+    /** @description Check if contacts are deployable to a sequence, primarily used to check if contacts are already in another sequence. */
+    post: operations["checkContactsDeployability"];
+  };
 }
 
 export type webhooks = Record<string, never>;
@@ -143,6 +150,18 @@ export interface components {
           emailer_campaign_id: string;
         }[];
     };
+    email_account: {
+      id: string;
+      userId?: unknown;
+      email?: unknown;
+      createdAt?: unknown;
+      updatedAt?: unknown;
+      lastModifiedAt?: unknown;
+      isDeleted?: unknown;
+      rawData?: unknown;
+      isDisabled?: unknown;
+      [key: string]: unknown;
+    };
   };
   responses: never;
   parameters: never;
@@ -218,8 +237,14 @@ export interface operations {
         "application/json": {
           contact_ids: string[];
           emailer_campaign_id: string;
-          send_email_from_email_account_id?: string | null;
+          send_email_from_email_account_id: string;
           userId?: string | null;
+          /**
+           * @description
+           *     By default Apollo will not add contact to more than one sequence at a time. However if we pass "true"
+           *     to this field, it will add the contact to the sequence even if they are already in another sequence.
+           */
+          sequence_active_in_other_campaigns?: boolean;
         };
       };
     };
@@ -327,6 +352,60 @@ export interface operations {
         content: {
           "application/json": {
             contact: components["schemas"]["contact"];
+          };
+        };
+      };
+    };
+  };
+  listEmailAccounts: {
+    requestBody?: {
+      content: {
+        "application/json": unknown;
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            email_accounts: components["schemas"]["email_account"][];
+          };
+        };
+      };
+    };
+  };
+  /** @description Check if contacts are deployable to a sequence, primarily used to check if contacts are already in another sequence. */
+  checkContactsDeployability: {
+    requestBody?: {
+      content: {
+        "application/json": {
+          contact_ids: string[];
+          emailer_campaign_id: string;
+        };
+      };
+    };
+    responses: {
+      200: {
+        content: {
+          "application/json": {
+            num_active_in_other_campaigns: number;
+            num_finished_in_other_campaigns: number;
+            num_same_company: number;
+            num_no_email: number;
+            num_unverified_email: number;
+            num_without_ownership_permission: number;
+            num_with_job_change_contacts: number;
+            sample_active_in_other_campaigns_contacts: {
+                id: string;
+                name: string;
+              }[];
+            sample_finished_in_other_campaigns_contacts: unknown[];
+            sample_same_company_contacts: unknown[];
+            sample_no_email_contacts: unknown[];
+            sample_unverified_email_contacts: unknown[];
+            sample_without_ownership_permission: unknown[];
+            sample_with_job_change_contacts: unknown[];
+            show_warning: boolean;
+            num_total_dangerous_contacts: number;
           };
         };
       };
