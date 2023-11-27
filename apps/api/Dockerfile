@@ -45,4 +45,4 @@ COPY --from=installer /app/packages/db/prisma ./prisma
 COPY --from=installer /app/packages/sync-workflows/dist ./node_modules/@supaglue/sync-workflows
 COPY --from=installer /app/openapi ./openapi
 
-CMD node ./index.js
+CMD node --enable-source-maps ./index.js
