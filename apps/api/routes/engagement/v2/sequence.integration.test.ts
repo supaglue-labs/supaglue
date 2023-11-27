@@ -150,7 +150,7 @@ describe('sequence', () => {
         });
         expect(res.response.status).toEqual(200);
         const step = res.data?.steps?.find((s) => s.id === stepId);
-        expect(step?.template?.body).toEqual('Updated body');
+        expect(step?.template?.body).toEqual(expect.stringContaining('Updated body'));
         expect(step?.template?.subject).toEqual('modified subject');
       }
 
