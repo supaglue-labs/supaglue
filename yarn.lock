@@ -8505,6 +8505,7 @@ __metadata:
     express: ">=5.0.0-beta.1"
     express-openapi-validator: ^5.0.2
     express-prom-bundle: ^6.6.0
+    express-robots-txt: ^1.0.0
     json-schema-traverse: ^1.0.0
     jsonwebtoken: ^9.0.2
     jwks-rsa: ^3.1.0
@@ -12605,6 +12606,15 @@ __metadata:
   peerDependencies:
     prom-client: ">=12.0.0"
   checksum: 414451347abb7ed414fcecfbc35dd39ae6abf8f3d69824679640b539b5849dd53c8a94ce43c263bf6e78c3ec2646803ed843cfb5613b8385c0ded4b59465e9b7
+  languageName: node
+  linkType: hard
+
+"express-robots-txt@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "express-robots-txt@npm:1.0.0"
+  peerDependencies:
+    express: ^4.12.1
+  checksum: 8ee6e2a076bb7c06e59c01201ce3a789e31b1d1e938792d835538bf89337f3957baaab62ed5d045bb22724edebaaabcd2cf8974afb5fe3d056555a79da83846b
   languageName: node
   linkType: hard
 

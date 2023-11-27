@@ -6,6 +6,7 @@ import cors from 'cors';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
 import promBundle from 'express-prom-bundle';
+import robots from 'express-robots-txt';
 import pinoHttp from 'pino-http';
 import { v4 as uuidv4 } from 'uuid';
 import { getDependencyContainer } from './dependency_container';
@@ -18,6 +19,13 @@ const port = process.env.SUPAGLUE_API_PORT ? parseInt(process.env.SUPAGLUE_API_P
 if (process.env.GLOBAL_AGENT_HTTP_PROXY) {
   require('@supaglue/schemas/proxy.bootstrap');
 }
+
+app.use(
+  robots({
+    UserAgent: '*',
+    Disallow: '/',
+  })
+);
 
 app.use(
   promBundle({
