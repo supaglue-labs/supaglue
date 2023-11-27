@@ -6,7 +6,6 @@
 
 import { describe, expect, it } from '@jest/globals';
 import type { ContactCreateParams, SequenceCreateParams, SequenceStateCreateParams } from '@supaglue/types/engagement';
-import type { SalesloftCadence, SalesloftUser } from './mappers';
 import {
   fromSalesloftAccountToAccount,
   fromSalesloftCadenceMembershipToSequenceState,
@@ -133,7 +132,7 @@ describe('Salesloft mapper tests', () => {
       rawData: record,
       isLocked: undefined,
     };
-    expect(fromSalesloftUserToUser(record as any as SalesloftUser)).toEqual(expected);
+    expect(fromSalesloftUserToUser(record as any)).toEqual(expected);
   });
 
   it('should convert Salesloft cadence to Sequence object correctly', () => {
@@ -171,7 +170,7 @@ describe('Salesloft mapper tests', () => {
       shareType: 'private',
       isArchived: false,
     };
-    expect(fromSalesloftCadenceToSequence(record as any as SalesloftCadence, stepCount)).toEqual(expected);
+    expect(fromSalesloftCadenceToSequence(record as any, stepCount)).toEqual(expected);
   });
 
   it('should convert Salesloft cadence membership to SequenceState object correctly', () => {

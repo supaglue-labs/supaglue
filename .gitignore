@@ -34,3 +34,4 @@ tsconfig.*.json
 !tsconfig.build.json
 
 cli/
+*.debug.ts*

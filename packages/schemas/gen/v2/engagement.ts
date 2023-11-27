@@ -185,6 +185,31 @@ export interface paths {
       };
     };
   };
+  "/sequences/{sequence_id}/sequence_steps/{sequence_step_id}": {
+    /**
+     * Update Sequence Step
+     * @description Works for `apollo` and `outreach`. Not supported in `salesloft`
+     */
+    patch: operations["updateSequenceStep"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        /**
+         * @description The ID of the sequence.
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
+        sequence_id: string;
+        /**
+         * @description The ID of the sequence step.
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
+        sequence_step_id: string;
+      };
+    };
+  };
   "/sequence_states": {
     /** List sequence states */
     get: operations["listSequenceStates"];
@@ -495,6 +520,90 @@ export interface components {
        * @enum {string}
        */
       share_type?: "team" | "private";
+      /** @description Only returned when getting single sequence, not returned when listing sequences because it is too expensive to do so. */
+      steps?: components["schemas"]["sequence_step"][];
+    };
+    sequence_step: {
+      id?: string;
+      /** @description The name given by the user for the step. Used by Salesloft only. */
+      name?: string;
+      /** @description The interval (in seconds) until this step will activate after the previous step (in case of first step, relative to when prospect first enters a sequence); only applicable to interval-based sequences. This is 0 by default */
+      interval_seconds?: number;
+      /**
+       * @description The date this step will activate; only applicable to date-based sequences.
+       * @example 2023-01-01
+       */
+      date?: string;
+      /** @description The email/message template to be used for this step. Only applicable for email or message steps. */
+      template?: {
+        /** @description The ID of the template */
+        id?: string;
+        /** @description The body of the email (HTML). */
+        body: string;
+        /** @description The subject of the email. */
+        subject: string;
+        /** @description The name of the template. In Outreach, if missing this will create an `invisible` template that doesn't show up in the templates list UI. */
+        name?: string;
+        /** @description A list of default person and email address pairs to receive this template in the "to" field */
+        to?: string[];
+        /** @description A list of default person and email address pairs to receive this template in the "cc" field */
+        cc?: string[];
+        /** @description A list of default person and email address pairs to receive this template in the "bcc" field */
+        bcc?: string[];
+      };
+      /** @description If true, this step will be sent as a reply to the previous step. */
+      is_reply?: boolean;
+      /** @description The step's display order within its sequence. Only applicable for Outreach when adding steps one at a time after the initial sequence creation, otherwise when creating steps together with sequence order is implicit based on the order of step within the step array. Salesloft does not use the `order` param, and order is instead determined by `interval_seconds` which translates into the `day` parameter */
+      order?: number;
+      /**
+       * @description The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.
+       *
+       * See below for how these types are mapped:
+       *
+       * <table>
+       *   <thead>
+       *       <tr>
+       *           <th>Provider</th>
+       *           <th>auto_email</th>
+       *           <th>manual_email</th>
+       *           <th>call</th>
+       *           <th>task</th>
+       *           <th>linkedin_send_message</th>
+       *       </tr>
+       *   </thead>
+       *   <tbody>
+       *       <tr>
+       *           <td>Apollo</td>
+       *           <td>auto_email</td>
+       *           <td>manual_email</td>
+       *           <td>call</td>
+       *           <td>action_item</td>
+       *           <td>linkedin_send_message</td>
+       *       </tr>
+       *       <tr>
+       *           <td>Outreach</td>
+       *           <td>auto_email</td>
+       *           <td>manual_email</td>
+       *           <td>call</td>
+       *           <td>task</td>
+       *           <td>linkedin_send_message</td>
+       *       </tr>
+       *       <tr>
+       *           <td>Salesloft</td>
+       *           <td>Email</td>
+       *           <td>Email</td>
+       *           <td>Phone</td>
+       *           <td>Other</td>
+       *           <td>(Not supported)</td>
+       *       </tr>
+       *   </tbody>
+       * </table>
+       *
+       * @enum {string}
+       */
+      type: "auto_email" | "manual_email" | "call" | "task" | "linkedin_send_message";
+      /** @description An optional note to be attached to this step. */
+      task_note?: string;
     };
     create_sequence: {
       name: string;
@@ -591,6 +700,16 @@ export interface components {
       type: "auto_email" | "manual_email" | "call" | "task" | "linkedin_send_message";
       /** @description An optional note to be attached to this step. */
       task_note?: string;
+      custom_fields?: components["schemas"]["custom_fields"];
+    };
+    update_sequence_step: {
+      /** @description The email/message template to be used for this step. Only applicable for email or message steps. */
+      template?: {
+        /** @description The body of the email (HTML). */
+        body?: string;
+        /** @description The subject of the email. */
+        subject?: string;
+      };
       custom_fields?: components["schemas"]["custom_fields"];
     };
     pagination: {
@@ -1287,6 +1406,48 @@ export interface operations {
           "application/json": {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Update Sequence Step
+   * @description Works for `apollo` and `outreach`. Not supported in `salesloft`
+   */
+  updateSequenceStep: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+      path: {
+        /**
+         * @description The ID of the sequence.
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
+        sequence_id: string;
+        /**
+         * @description The ID of the sequence step.
+         * @example 0258cbc6-6020-430a-848e-aafacbadf4ae
+         */
+        sequence_step_id: string;
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["update_sequence_step"];
+        };
+      };
+    };
+    responses: {
+      /** @description Sequence step updated */
+      200: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
             warnings?: components["schemas"]["warnings"];
           };
         };

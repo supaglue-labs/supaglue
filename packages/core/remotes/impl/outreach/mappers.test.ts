@@ -46,12 +46,13 @@ describe('Outreach mappers', () => {
   describe('fromOutreachSequenceToSequence Function', () => {
     it('should convert a valid OutreachRecord to Sequence', () => {
       const record: OutreachSequence = {
+        type: 'sequence',
         id: 1,
         attributes: {
           name: 'Test Sequence',
           enabled: true,
           locked: false,
-          lockedAt: null,
+          lockedAt: undefined,
           shareType: 'read_only',
           sequenceStepCount: 5,
           tags: ['tag1', 'tag2'],
@@ -67,7 +68,6 @@ describe('Outreach mappers', () => {
             },
           },
         },
-        links: {},
       };
 
       const expectedResult: Sequence = {

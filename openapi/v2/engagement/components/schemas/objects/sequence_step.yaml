@@ -1,0 +1,105 @@
+type: object
+properties:
+  id:
+    type: string
+  name:
+    type: string
+    description: The name given by the user for the step. Used by Salesloft only.
+  interval_seconds:
+    type: number
+    description: The interval (in seconds) until this step will activate after the previous step (in case of first step, relative to when prospect first enters a sequence); only applicable to interval-based sequences. This is 0 by default
+  date:
+    type: string
+    example: '2023-01-01'
+    description: The date this step will activate; only applicable to date-based sequences.
+  template:
+    description: The email/message template to be used for this step. Only applicable for email or message steps.
+    type: object
+    properties:
+      id:
+        type: string
+        description: The ID of the template
+      body:
+        type: string
+        description: The body of the email (HTML).
+      subject:
+        type: string
+        description: The subject of the email.
+      name:
+        type: string
+        description: The name of the template. In Outreach, if missing this will create an `invisible` template that doesn't show up in the templates list UI.
+      to:
+        type: array
+        description: A list of default person and email address pairs to receive this template in the "to" field
+        items:
+          type: string
+      cc:
+        type: array
+        description: A list of default person and email address pairs to receive this template in the "cc" field
+        items:
+          type: string
+      bcc:
+        type: array
+        description: A list of default person and email address pairs to receive this template in the "bcc" field
+        items:
+          type: string
+    required:
+      - body
+      - subject
+  is_reply:
+    type: boolean
+    description: If true, this step will be sent as a reply to the previous step.
+  order:
+    type: number
+    description: The step's display order within its sequence. Only applicable for Outreach when adding steps one at a time after the initial sequence creation, otherwise when creating steps together with sequence order is implicit based on the order of step within the step array. Salesloft does not use the `order` param, and order is instead determined by `interval_seconds` which translates into the `day` parameter
+  type:
+    type: string
+    enum: [auto_email, manual_email, call, task, linkedin_send_message]
+    description: |
+      The type of the sequence state. Note: `linkedin_send_message` is undocumented in Outreach and subject to change.
+
+      See below for how these types are mapped:
+
+      <table>
+        <thead>
+            <tr>
+                <th>Provider</th>
+                <th>auto_email</th>
+                <th>manual_email</th>
+                <th>call</th>
+                <th>task</th>
+                <th>linkedin_send_message</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Apollo</td>
+                <td>auto_email</td>
+                <td>manual_email</td>
+                <td>call</td>
+                <td>action_item</td>
+                <td>linkedin_send_message</td>
+            </tr>
+            <tr>
+                <td>Outreach</td>
+                <td>auto_email</td>
+                <td>manual_email</td>
+                <td>call</td>
+                <td>task</td>
+                <td>linkedin_send_message</td>
+            </tr>
+            <tr>
+                <td>Salesloft</td>
+                <td>Email</td>
+                <td>Email</td>
+                <td>Phone</td>
+                <td>Other</td>
+                <td>(Not supported)</td>
+            </tr>
+        </tbody>
+      </table>
+  task_note:
+    type: string
+    description: An optional note to be attached to this step.
+required:
+  - type

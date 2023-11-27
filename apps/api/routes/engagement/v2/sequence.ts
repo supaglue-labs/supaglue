@@ -8,6 +8,7 @@ import type {
   CreateSequenceStepPathParams,
   CreateSequenceStepRequest,
   CreateSequenceStepResponse,
+  EngagementV2,
   GetSequencePathParams,
   GetSequenceRequest,
   GetSequenceResponse,
@@ -97,6 +98,25 @@ export default function init(app: Router): void {
         sequenceId: req.params.sequence_id,
       });
       return res.status(201).send({ record: { id } });
+    }
+  );
+
+  type PatchSequenceStep = EngagementV2['paths']['/sequences/{sequence_id}/sequence_steps/{sequence_step_id}']['patch'];
+  router.patch(
+    '/:sequence_id/sequence_steps/:sequence_step_id',
+    async (
+      req: Request<
+        PatchSequenceStep['parameters']['path'],
+        PatchSequenceStep['responses'][200]['content']['application/json'],
+        PatchSequenceStep['requestBody']['content']['application/json']
+      >,
+      res: Response<PatchSequenceStep['responses'][200]['content']['application/json']>
+    ) => {
+      await engagementCommonObjectService.update('sequence_step', req.customerConnection, {
+        ...req.body.record,
+        ...req.params,
+      });
+      return res.status(200).send({});
     }
   );
 

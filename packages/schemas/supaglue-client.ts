@@ -25,7 +25,7 @@ export function createSupaglueClient({ apiUrl = 'https://api.supaglue.io', ...op
     ({
       baseUrl: new URL(segment, apiUrl).toString(),
       headers: { ['x-api-key']: options.apiKey },
-    } satisfies Parameters<typeof createClient>[0]);
+    }) satisfies Parameters<typeof createClient>[0];
 
   return {
     actions: createClient<actions>(getOptions('actions/v2')),

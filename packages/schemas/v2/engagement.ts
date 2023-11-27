@@ -134,3 +134,10 @@ export type CreateSequenceStepQueryParams = never;
 export type CreateSequenceStepRequest = operations['createSequenceStep']['requestBody']['content']['application/json'];
 export type CreateSequenceStepResponse =
   operations['createSequenceStep']['responses'][keyof operations['createSequenceStep']['responses']]['content']['application/json'];
+
+export type EngagementV2Paths = paths;
+
+export type EngagementV2 = {
+  paths: paths;
+  operations: operations;
+};

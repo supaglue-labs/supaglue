@@ -1,4 +1,5 @@
 import type { Sequence, SnakecasedKeysSequence } from '@supaglue/types/engagement';
+import { toSnakecasedKeysSequenceStep } from './sequence_step';
 
 export const toSnakecasedKeysSequence = (sequence: Sequence): SnakecasedKeysSequence => {
   return {
@@ -16,5 +17,6 @@ export const toSnakecasedKeysSequence = (sequence: Sequence): SnakecasedKeysSequ
     raw_data: sequence.rawData,
     is_archived: sequence.isArchived,
     share_type: sequence.shareType,
+    steps: sequence.steps?.map(toSnakecasedKeysSequenceStep),
   };
 };

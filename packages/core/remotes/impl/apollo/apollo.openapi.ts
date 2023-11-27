@@ -59,8 +59,12 @@ export type ApolloEmailerCampaignAddContactIds = z.infer<typeof apolloEmailerCam
 export const apolloEmailerCampaignAddContactIds = z.object({
   contact_ids: z.array(z.string()),
   emailer_campaign_id: z.string(),
-  send_email_from_email_account_id: z.string().nullish(),
+  send_email_from_email_account_id: z.string(),
   userId: z.string().nullish(),
+  sequence_active_in_other_campaigns: z.boolean().optional().describe(`
+    By default Apollo will not add contact to more than one sequence at a time. However if we pass "true"
+    to this field, it will add the contact to the sequence even if they are already in another sequence.
+  `),
 });
 
 export type ApolloContact = z.infer<typeof apolloContact>;
@@ -192,6 +196,21 @@ export const apolloEmailerTouch = z
   })
   .openapi({ ref: 'emailer_touch' });
 
+const emailAccount = z
+  .object({
+    id: z.string(),
+    userId: z.unknown(),
+    email: z.unknown(),
+    createdAt: z.unknown(),
+    updatedAt: z.unknown(),
+    lastModifiedAt: z.unknown(),
+    isDeleted: z.unknown(),
+    rawData: z.unknown(),
+    isDisabled: z.unknown(),
+  })
+  .catchall(z.unknown())
+  .openapi({ ref: 'email_account' });
+
 export const apolloEmailerTouchUpdate = apolloEmailerTouch.pick({
   id: true,
   emailer_step_id: true,
@@ -263,6 +282,41 @@ export function outputOpenApi() {
         get: jsonOperation('getContact', {
           path: z.object({ id: z.string() }),
           response: z.object({ contact: apolloContact }),
+        }),
+      },
+      '/v1/email_accounts': {
+        get: jsonOperation('listEmailAccounts', {
+          response: z.object({ email_accounts: z.array(emailAccount) }),
+        }),
+      },
+      '/v1/emailer_campaigns/check_contacts_deployability': {
+        post: jsonOperation('checkContactsDeployability', {
+          meta: {
+            description:
+              'Check if contacts are deployable to a sequence, primarily used to check if contacts are already in another sequence.',
+          },
+          body: z.object({
+            contact_ids: z.array(z.string()),
+            emailer_campaign_id: z.string().optional(),
+          }),
+          response: z.object({
+            num_active_in_other_campaigns: z.number(),
+            num_finished_in_other_campaigns: z.number(),
+            num_same_company: z.number(),
+            num_no_email: z.number(),
+            num_unverified_email: z.number(),
+            num_without_ownership_permission: z.number(),
+            num_with_job_change_contacts: z.number(),
+            sample_active_in_other_campaigns_contacts: z.array(z.object({ id: z.string(), name: z.string() })),
+            sample_finished_in_other_campaigns_contacts: z.array(z.unknown()),
+            sample_same_company_contacts: z.array(z.unknown()),
+            sample_no_email_contacts: z.array(z.unknown()),
+            sample_unverified_email_contacts: z.array(z.unknown()),
+            sample_without_ownership_permission: z.array(z.unknown()),
+            sample_with_job_change_contacts: z.array(z.unknown()),
+            show_warning: z.boolean(),
+            num_total_dangerous_contacts: z.number(),
+          }),
         }),
       },
     },

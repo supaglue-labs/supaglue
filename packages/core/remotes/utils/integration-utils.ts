@@ -5,13 +5,19 @@ export function jsonOperation(
   {
     body,
     response,
+    meta,
     ...params
   }: {
+    meta?: Omit<
+      ZodOpenApiOperationObject,
+      'parameters' | 'requestBody' | 'requestParams' | 'responses' | 'operationId'
+    >;
     body?: ZodOpenApiMediaTypeObject['schema'];
     response: ZodOpenApiMediaTypeObject['schema'];
   } & ZodOpenApiParameters
 ) {
   return {
+    ...meta,
     operationId: id,
     requestParams: params,
     requestBody: { content: { 'application/json': { schema: body } } },

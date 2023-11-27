@@ -6399,6 +6399,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/types@workspace:packages/types"
   dependencies:
+    "@supaglue/schemas": "workspace:*"
     "@tsconfig/node18": ^1.0.1
     typescript: ^4.9.5
   languageName: unknown

@@ -1,0 +1,14 @@
+type: object
+properties:
+  template:
+    description: The email/message template to be used for this step. Only applicable for email or message steps.
+    type: object
+    properties:
+      body:
+        type: string
+        description: The body of the email (HTML).
+      subject:
+        type: string
+        description: The subject of the email.
+  custom_fields:
+    $ref: ./objects/custom_fields.yaml

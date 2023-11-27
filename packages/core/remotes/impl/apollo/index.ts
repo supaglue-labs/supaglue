@@ -14,6 +14,7 @@ import type {
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
+  Sequence,
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
@@ -50,6 +51,8 @@ import {
   toApolloContactCreateParams,
   toApolloContactUpdateParams,
 } from './mappers';
+
+type SequenceStep = NonNullable<Sequence['steps']>[number];
 
 const MAX_PAGE_SIZE = 100; // undocumented, but seems to be the max page size for Apollo
 
@@ -125,10 +128,43 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
-      case 'sequence':
+      case 'sequence': {
+        let intervalSeconds = 0;
         return this.#api
           .GET('/v1/emailer_campaigns/{id}', { params: { path: { id } } })
-          .then(({ data: { emailer_campaign: c } }) => fromApolloEmailerCampaignToSequence(c));
+          .then(({ data: { emailer_campaign: c, emailer_steps, emailer_templates, emailer_touches } }) => ({
+            ...fromApolloEmailerCampaignToSequence(c),
+            steps: emailer_steps?.map((s): SequenceStep => {
+              const templateId = emailer_touches?.find((t) => t.emailer_step_id === s.id)?.emailer_template_id;
+              const template = emailer_templates?.find((t) => t.id === templateId);
+              intervalSeconds +=
+                (s.wait_time ?? 0) * { second: 1, minute: 60, hour: 60 * 60, day: 60 * 60 * 24 }[s.wait_mode];
+
+              return {
+                id: s.id,
+                type:
+                  s.type == 'linkedin_step_message'
+                    ? 'linkedin_send_message'
+                    : s.type == 'call'
+                      ? 'call'
+                      : s.type === 'auto_email'
+                        ? 'auto_email'
+                        : s.type === 'manual_email'
+                          ? 'manual_email'
+                          : 'task',
+                date: s.exact_datetime ?? undefined,
+                taskNote: s.note ?? undefined,
+                intervalSeconds: intervalSeconds,
+                template: {
+                  id: template?.id,
+                  body: template?.body_html ?? template?.body_text ?? '',
+                  subject: template?.subject ?? '',
+                  name: template?.name ?? undefined,
+                },
+              };
+            }),
+          }));
+      }
       case 'contact':
         return await this.#getContact(id);
       case 'account':
@@ -549,15 +585,15 @@ class ApolloClient extends AbstractEngagementRemoteClient {
           params.type === 'linkedin_send_message'
             ? 'linkedin_step_message'
             : params.type === 'task'
-            ? 'action_item'
-            : params.type,
+              ? 'action_item'
+              : params.type,
         ...(days
           ? { wait_mode: 'day', wait_time: days }
           : hours
-          ? { wait_mode: 'hour', wait_time: hours }
-          : minutes
-          ? { wait_mode: 'minute', wait_time: minutes }
-          : { wait_mode: 'second', wait_time: seconds ?? 0 }),
+            ? { wait_mode: 'hour', wait_time: hours }
+            : minutes
+              ? { wait_mode: 'minute', wait_time: minutes }
+              : { wait_mode: 'second', wait_time: seconds ?? 0 }),
         exact_datetime: params.date, // Not clear exactly how this works
         note: params.taskNote,
         ...params.customFields,
@@ -601,6 +637,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (!sequenceId) {
       return [];
     }
+    if (!mailboxId) {
+      throw new BadRequestError('Mailbox ID is required when creating apollo sequence states');
+    }
     const { data: res } = await this.#api.POST('/v1/emailer_campaigns/{id}/add_contact_ids', {
       params: { path: { id: sequenceId } },
       body: {
@@ -609,6 +648,8 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         emailer_campaign_id: sequenceId,
         send_email_from_email_account_id: mailboxId,
         userId,
+        // Force contact to be added to sequence even if they are already in another sequence
+        sequence_active_in_other_campaigns: true,
       },
     });
 
@@ -702,6 +743,27 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         return (await this.updateAccount(params as AccountUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
       case 'contact':
         return (await this.updateContact(params as ContactUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
+      case 'sequence_step': {
+        const p = params as EngagementCommonObjectTypeMap<'sequence_step'>['updateParams'];
+        const { touch, template } = await this.#api
+          .GET('/v1/emailer_campaigns/{id}', { params: { path: { id: p.sequence_id } } })
+          .then((r) => {
+            const touch = r.data.emailer_touches?.find((t) => t.emailer_step_id === p.sequence_step_id);
+            const template = r.data.emailer_templates?.find((t) => t.id === touch?.emailer_template_id);
+            return { touch, template };
+          });
+        if (!touch || !template) {
+          throw new NotFoundError(`Unable to find sequence step touch/template ${p.sequence_step_id} in Apollo`);
+        }
+        await this.#api.PUT('/v1/emailer_touches/{id}', {
+          params: { path: { id: touch.id } },
+          body: {
+            id: touch.id,
+            emailer_template: { id: template.id, body_html: p.template?.body, subject: p.template?.subject },
+          },
+        });
+        return { id: p.sequence_step_id };
+      }
       default:
         throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
     }
