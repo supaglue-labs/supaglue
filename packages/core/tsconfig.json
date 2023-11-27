@@ -4,7 +4,8 @@
     "outDir": "dist",
     "rootDir": ".",
     "moduleResolution": "node16",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "sourceMap": true
   },
   "include": ["./**/*.ts"]
 }
