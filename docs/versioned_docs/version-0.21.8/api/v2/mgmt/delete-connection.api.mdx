@@ -1,0 +1,40 @@
+---
+id: delete-connection
+title: "Delete connection"
+description: "Delete connection"
+sidebar_label: "Delete connection"
+hide_title: true
+hide_table_of_contents: true
+api: eJy9VNtuEzEQ/RXLvIAUEig3KUKIWx8qioRaEEJttXW8k6xVr+36Ehqi/XdmvJtktwlC4oFESuzxXM7MnJk1tw68iMqak5JPeQkaInywxoAkIR/xKBaBTy/4Thj41YgHkMmruMKnNb97LJx6fAN0u2rw1UNwqAhoueZHT57TXwlBeuWy2yl/ZxjULq7YzJYrpgLzEJM3UDJrWEhSQgjzpFlGhCZj3jSjez4+ZrRM9uE64UWNUh8yMoMX1JQpRFuDL1SJOoqMnYgVJ6S3SXnA5KNPgHnJCmpBeOPKkWmIXpkFRd96c94uVYne8v3f/I04mFRTYas0w2JFlAShIcytl+TUKQelV0s6/wKDmd8UAbTGax2KcoWxlQzFs5cvimxHarayhfQ1HqVwIWmytSl6EJKwLWwOLJzV2m7iaTuPOQesmbRkq5UB4cmJxv+ZoueXAbCdFFv4G4h2gLZohZhWIbVNZSGktMnEAsxCLKAGk7PTQt4QdeBO1E5TLXapRxX1fmkb4hJ2s7I7cuYeY6mnfLLpapisew1uJjtC4MvAY0M4wC839EheE4wYXZhOJkjicUhOLHSCsbKTelHHyfKI3+fdeafD3n054U1vGM6p2S3peyOxbT1KPqFgtOHRTqfjUAUCke7FwzAMtVi0TGDnfuJQLEHT5IYsy8PCYtUBasjb3FJgSrT18WR89HT8qlfpz8J0vclW2G1ropCRzDp8mzyJrLVQVKrSyvB2W6OWL8MiDh73RvYBftiJid6WKXfoEr/fQaMyUC6UxBAZw5CJLnlLjdkPm5gUhqWABhUuDtJByzpbsQ0RGBF60a62wIQpe2sijClqhvJehFw19u3slITX19eX5i986LQoOWdDxMC9mh3aSYMSbNkQ4S5OnBYqe8pFXHfUvtguLBrr6XB79fKgx+HEIBkrxEQu1usZJvfN66Yh8W0Cn/fziC+FV2JGLMARKFWgMw7YXOgAe2iJFjTAU/7wrNttjxjx6FAWG6IbovRSEHemHI95DgZbmNbpfwx9b69cNb298vH49PjrMS3GRMXvj2s7m92BqnUwSn+O23D0SxkeVH9NfMNF8Gar3r780WC7FlptyveqaZrfi9eogQ==
+sidebar_class_name: "delete api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Delete connection</h1>
+
+<MethodEndpoint method={"delete"} path={"/customers/{customer_id}/connections/{provider_name}"}></MethodEndpoint>
+
+
+
+Delete connection
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"provider_name","in":"path","required":true,"schema":{"type":"string","enum":["hubspot","salesforce","pipedrive","zendesk_sell","ms_dynamics_365_sales","zoho_crm","capsule","outreach","gong","apollo","salesloft","intercom","linear","clearbit","6sense","marketo","salesforce_marketing_cloud_account_engagement","slack"],"example":"hubspot","title":"provider_name"}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"204"} value={"204"}><div>
+
+An empty body is returned on successful deletion.
+
+</div><div></div></TabItem></ApiTabs></div></div>
+      
