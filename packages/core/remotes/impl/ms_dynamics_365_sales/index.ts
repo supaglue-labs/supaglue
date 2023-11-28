@@ -27,6 +27,7 @@ import type {
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
+import { MS_DYNAMICS_365_SALES_STANDARD_OBJECTS } from '@supaglue/utils';
 import type { OHandler } from 'odata';
 import { o } from 'odata';
 import { plural } from 'pluralize';
@@ -471,6 +472,10 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     return {
       userId: systemUserId,
     };
+  }
+
+  public override async listStandardObjectSchemas(): Promise<string[]> {
+    return MS_DYNAMICS_365_SALES_STANDARD_OBJECTS;
   }
 
   private async getUserIdForActiveDirectoryUserId(activeDirectoryUserId: string): Promise<string | undefined> {
