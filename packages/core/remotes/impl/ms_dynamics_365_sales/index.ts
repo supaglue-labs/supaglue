@@ -869,7 +869,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           return new InternalServerError(err.message, err); // err may not be serializable, so we don't return it
       }
     }
-    return new InternalServerError('Unknown error', err as Error); // err may not be serializable, so we don't return it
+    return new InternalServerError((err as any).message ?? 'Unknown error', err as Error); // err may not be serializable, so we don't return it
   }
 }
 
