@@ -45,7 +45,16 @@ export default function init(app: Router): void {
       req: Request<never, any, never, any, { applicationId: string; customerId: string; providerName: string }>,
       res: Response
     ) => {
-      const { applicationId, customerId, providerName, returnUrl, loginUrl, scope, businessUnitId } = req.query;
+      const {
+        applicationId,
+        customerId,
+        providerName,
+        returnUrl,
+        loginUrl,
+        scope,
+        businessUnitId,
+        autoStartOnConnection,
+      } = req.query;
 
       if (!applicationId) {
         throw new BadRequestError('Missing applicationId');
@@ -142,6 +151,7 @@ export default function init(app: Router): void {
           scope: noScope ? [] : oauthScopes, // TODO: this should be in a session
           loginUrl,
           businessUnitId,
+          autoStartOnConnection,
         }),
         ...additionalAuthParams,
       });
@@ -171,6 +181,7 @@ export default function init(app: Router): void {
         applicationId,
         loginUrl,
         businessUnitId,
+        autoStartOnConnection,
       }: {
         returnUrl: string;
         scope?: string;
@@ -179,6 +190,7 @@ export default function init(app: Router): void {
         customerId?: string;
         loginUrl?: string;
         businessUnitId?: string;
+        autoStartOnConnection?: string;
       } = JSON.parse(decodeURIComponent(state));
 
       if (!applicationId) {
@@ -321,7 +333,9 @@ export default function init(app: Router): void {
           : { ...basePayload, providerName };
 
       try {
-        await connectionAndSyncService.create(payload as ConnectionCreateParamsAny);
+        await connectionAndSyncService.create(payload as ConnectionCreateParamsAny, {
+          autoStartOnConnection: parseStringBoolean(autoStartOnConnection),
+        });
       } catch (e: any) {
         if (e.code === 'P2003') {
           throw new BadRequestError(`Can't find customer with id: ${customerId}. Ensure it is URI encoded if needed.`);
@@ -337,4 +351,14 @@ export default function init(app: Router): void {
   );
 
   app.use('/oauth', publicOauthRouter);
+}
+
+function parseStringBoolean(param?: string): boolean | undefined {
+  if (param === 'true') {
+    return true;
+  } else if (param === 'false') {
+    return false;
+  }
+
+  return undefined;
 }

@@ -158,6 +158,10 @@ export type ConnectionCreateParams<T extends ProviderName> = {
 
 export type ConnectionCreateParamsAny = ConnectionCreateParams<ProviderName>;
 
+export type ConnectionSyncOverrideParams = {
+  autoStartOnConnection?: boolean;
+};
+
 export type ConnectionUpsertParams<T extends ProviderName> = ConnectionCreateParams<T>;
 
 export type ConnectionUpsertParamsAny = ConnectionUpsertParams<ProviderName>;

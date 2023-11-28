@@ -20,6 +20,7 @@ import type {
   ConnectionCreateParams,
   ConnectionCreateParamsAny,
   ConnectionSafeAny,
+  ConnectionSyncOverrideParams,
   ConnectionUnsafeAny,
   ConnectionUpsertParamsAny,
   ImportedConnectionCredentials,
@@ -355,7 +356,10 @@ export class ConnectionAndSyncService {
     }
   }
 
-  public async create(params: ConnectionCreateParamsAny): Promise<ConnectionUnsafeAny> {
+  public async create(
+    params: ConnectionCreateParamsAny,
+    syncConfigOverrideParams?: ConnectionSyncOverrideParams
+  ): Promise<ConnectionUnsafeAny> {
     const provider = await this.#providerService.getByNameAndApplicationId(params.providerName, params.applicationId);
     const syncConfig = await this.#syncConfigService.findByProviderId(provider.id);
     const application = await this.#applicationService.getById(provider.applicationId);
@@ -383,7 +387,10 @@ export class ConnectionAndSyncService {
           // New syncs
           const syncIds: string[] = [];
 
-          const autoStart = syncConfig.config.defaultConfig.autoStartOnConnection ?? true;
+          const autoStart =
+            syncConfigOverrideParams?.autoStartOnConnection ??
+            syncConfig.config.defaultConfig.autoStartOnConnection ??
+            true;
 
           if (syncConfig.config.commonObjects?.length) {
             const commonObjectSyncArgs: Prisma.SyncCreateManyInput[] = [];
