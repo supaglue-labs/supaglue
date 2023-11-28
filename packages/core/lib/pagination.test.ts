@@ -31,11 +31,11 @@ describe('getPaginatedSupaglueRecords', () => {
 
     expect(result.pagination.next).toBeTruthy();
     if (result.pagination.next) {
-      expect(decodeCursor(result.pagination.next)).toEqual({ id: '10', reverse: false });
+      expect(decodeCursor(decodeURIComponent(result.pagination.next))).toEqual({ id: '10', reverse: false });
     }
     expect(result.pagination.previous).toBeTruthy();
     if (result.pagination.previous) {
-      expect(decodeCursor(result.pagination.previous)).toEqual({ id: '1', reverse: true });
+      expect(decodeCursor(decodeURIComponent(result.pagination.previous))).toEqual({ id: '1', reverse: true });
     }
     expect(result.records.length).toBe(10);
   });
@@ -48,7 +48,7 @@ describe('getPaginatedSupaglueRecords', () => {
     expect(result.pagination.next).toBeNull();
     expect(result.pagination.previous).toBeTruthy();
     if (result.pagination.previous) {
-      expect(decodeCursor(result.pagination.previous)).toEqual({ id: '1', reverse: true });
+      expect(decodeCursor(decodeURIComponent(result.pagination.previous))).toEqual({ id: '1', reverse: true });
     }
     expect(result.records.length).toBe(10);
   });
@@ -59,7 +59,7 @@ describe('getPaginatedSupaglueRecords', () => {
 
     expect(result.pagination.next).toBeTruthy();
     if (result.pagination.next) {
-      expect(decodeCursor(result.pagination.next)).toEqual({ id: '10', reverse: false });
+      expect(decodeCursor(decodeURIComponent(result.pagination.next))).toEqual({ id: '10', reverse: false });
     }
     expect(result.pagination.previous).toBeNull();
     expect(result.records.length).toBe(10);
@@ -81,11 +81,11 @@ describe('getPaginatedSupaglueRecords', () => {
 
     expect(result.pagination.next).toBeTruthy();
     if (result.pagination.next) {
-      expect(decodeCursor(result.pagination.next)).toEqual({ id: '11', reverse: false });
+      expect(decodeCursor(decodeURIComponent(result.pagination.next))).toEqual({ id: '11', reverse: false });
     }
     expect(result.pagination.previous).toBeTruthy();
     if (result.pagination.previous) {
-      expect(decodeCursor(result.pagination.previous)).toEqual({ id: '2', reverse: true });
+      expect(decodeCursor(decodeURIComponent(result.pagination.previous))).toEqual({ id: '2', reverse: true });
     }
     expect(result.records.length).toBe(10);
   });
@@ -97,7 +97,7 @@ describe('getPaginatedSupaglueRecords', () => {
 
     expect(result.pagination.next).toBeTruthy();
     if (result.pagination.next) {
-      expect(decodeCursor(result.pagination.next)).toEqual({ id: '9', reverse: false });
+      expect(decodeCursor(decodeURIComponent(result.pagination.next))).toEqual({ id: '9', reverse: false });
     }
     expect(result.pagination.previous).toBeNull();
     expect(result.records.length).toBe(9);
