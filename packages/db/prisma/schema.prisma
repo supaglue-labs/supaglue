@@ -126,7 +126,7 @@ model Connection {
   providerName         String     @map("provider_name")
   status               String // available | added | authorized | callable
   credentials          Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
-  customer             Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customer             Customer   @relation(fields: [customerId], references: [id])
   customerId           String     @map("customer_id")
   instanceUrl          String     @default("") @map("instance_url")
   createdAt            DateTime   @default(now()) @map("created_at")

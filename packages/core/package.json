@@ -70,7 +70,7 @@
     "download:salesloft": "curl https://api.apis.guru/v2/specs/salesloft.com/v2/openapi.json | prettier --parser json > ./remotes/impl/salesloft/salesloft.orig.openapi.json && node --loader tsx remotes/impl/salesloft/salesloft.openapi.ts | prettier --parser json > ./remotes/impl/salesloft/salesloft.openapi.json",
     "download:apollo": "node --loader tsx remotes/impl/apollo/apollo.openapi.ts | prettier --parser json > ./remotes/impl/apollo/apollo.openapi.json",
     "generate:outreach": "openapi-typescript ./remotes/impl/outreach/outreach.openapi.json --output ./remotes/impl/outreach/outreach.openapi.gen.d.ts",
-    "generate:salesloft": "node --loader tsx remotes/impl/salesloft/salesloft.openapi.ts | prettier --parser json > ./remotes/impl/salesloft/salesloft.openapi.json && openapi-typescript ./remotes/impl/salesloft/salesloft.openapi.json --output ./remotes/impl/salesloft/salesloft.openapi.gen.d.ts",
+    "generate:salesloft": "npx tsx remotes/impl/salesloft/salesloft.openapi.ts | prettier --parser json > ./remotes/impl/salesloft/salesloft.openapi.json && openapi-typescript ./remotes/impl/salesloft/salesloft.openapi.json --output ./remotes/impl/salesloft/salesloft.openapi.gen.d.ts",
     "generate:apollo": "openapi-typescript ./remotes/impl/apollo/apollo.openapi.json --output ./remotes/impl/apollo/apollo.openapi.gen.d.ts"
   },
   "files": [
