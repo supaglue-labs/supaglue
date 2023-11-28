@@ -1178,6 +1178,8 @@ export const PROVIDERS_THAT_SUPPORT_SCHEMAS = ['salesforce', 'hubspot', 'pipedri
 
 export const LINEAR_STANDARD_OBJECTS = ['issues', 'comments', 'users', 'projects', 'teams'] as const;
 
+// source: https://supaglue-prod.crm.dynamics.com/api/data/v9.2/EntityDefinitions?$select=LogicalName
+// Be sure to manually remove custom entities from this list
 export const MS_DYNAMICS_365_SALES_STANDARD_OBJECTS = [
   'aaduser',
   'account',
