@@ -48,7 +48,7 @@ export type Cursor = {
 };
 
 export const encodeCursor = (cursorParams: Cursor): string => {
-  return Buffer.from(JSON.stringify(cursorParams), 'binary').toString('base64');
+  return encodeURIComponent(Buffer.from(JSON.stringify(cursorParams), 'binary').toString('base64'));
 };
 
 export const decodeCursor = (encoded?: string): Cursor | undefined => {
