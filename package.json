@@ -65,6 +65,7 @@
     "got": "11.8.5",
     "vm2": "3.9.18",
     "yaml": "2.2.2",
-    "async": "3.2.4"
+    "async": "3.2.4",
+    "@hubspot/api-client@9.1.0": "patch:@hubspot/api-client@npm%3A9.1.0#./.yarn/patches/@hubspot-api-client-npm-9.1.0-1ec9bcc0df.patch"
   }
 }

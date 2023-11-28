@@ -1,0 +1,13 @@
+diff --git a/lib/src/services/decorators/RetryDecorator.js b/lib/src/services/decorators/RetryDecorator.js
+index bfb0c678692ffe8462e3d314bc3604270fe40f65..c167ee3f2a7331678d6b856454ded10b32c96c8f 100644
+--- a/lib/src/services/decorators/RetryDecorator.js
++++ b/lib/src/services/decorators/RetryDecorator.js
+@@ -70,7 +70,7 @@ class RetryDecorator {
+         });
+     }
+     _waitAfterRequestFailure(statusCode, retryNumber, retryTimeout) {
+-        console.error(`Request failed with status code [${statusCode}], will retry [${retryNumber}] time in [${retryTimeout}] ms`);
++        // console.error(`Request failed with status code [${statusCode}], will retry [${retryNumber}] time in [${retryTimeout}] ms`);
+         return new Promise((resolve) => setTimeout(resolve, retryTimeout * retryNumber));
+     }
+ }

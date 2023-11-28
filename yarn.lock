@@ -4321,6 +4321,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hubspot/api-client@patch:@hubspot/api-client@npm%3A9.1.0#./.yarn/patches/@hubspot-api-client-npm-9.1.0-1ec9bcc0df.patch::locator=supaglue%40workspace%3A.":
+  version: 9.1.0
+  resolution: "@hubspot/api-client@patch:@hubspot/api-client@npm%3A9.1.0#./.yarn/patches/@hubspot-api-client-npm-9.1.0-1ec9bcc0df.patch::version=9.1.0&hash=194d8a&locator=supaglue%40workspace%3A."
+  dependencies:
+    "@types/node-fetch": ^2.5.7
+    bottleneck: ^2.19.5
+    es6-promise: ^4.2.4
+    form-data: ^2.5.0
+    lodash.get: ^4.4.2
+    lodash.merge: ^4.6.2
+    node-fetch: ^2.6.0
+    url-parse: ^1.4.3
+  checksum: 4a2245fb9e5cce48a4f5cb3629a49aa2d83e359675609842ad5fe0d9b985ce10464ebc05a0073446225c714be1cc9c9499dabd04443b619199a9090e53c57c86
+  languageName: node
+  linkType: hard
+
 "@humanwhocodes/config-array@npm:^0.11.8":
   version: 0.11.8
   resolution: "@humanwhocodes/config-array@npm:0.11.8"
