@@ -91,3 +91,13 @@ Supaglue provides a redirect URL to send information to your app. To add the red
   ```
   id,api,refresh_token
   ```
+
+## Managed authentication
+
+There are two types of Salesforce orgs you can connect to: Production and Sandbox.
+
+Production orgs are intended for production usage. Your customers may also have sandbox orgs containing partial or test data. Enterprise Salesforce customers sometimes choose to test the initial integration with your application before going live with their production Salesforce org.
+
+Salesforce uses different [identity URLs](https://help.salesforce.com/s/articleView?id=sf.remoteaccess_using_openid.htm&type=5) for accessing production versus sandbox orgs. The identity URL for production orgs is `https://login.salesforce.com`, whereas the identity URL for sandbox orgs is `https://test.salesforce.com`.
+
+Supaglue lets you connect to both types of Salesforce orgs by configuring the [Embedded Link](/platform/managed-auth/#embedded-link) (or alternatively using our hosted Magic Link). Be sure to pass in the `loginUrl` parameter in the Embedded Link when connecting to sandbox orgs (by default it will assume you are connecting to a production org).
