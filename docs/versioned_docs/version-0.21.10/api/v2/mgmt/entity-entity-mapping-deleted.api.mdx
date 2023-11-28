@@ -1,0 +1,44 @@
+---
+id: entity-entity-mapping-deleted
+title: "Entity mapping deleted"
+description: "Notification of the deletion of an entity mapping"
+sidebar_label: "Entity mapping deleted"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVllv2zgQ/isE91Wy5ft46rF+CHbbLmwURdEGCUWNbLWSqCUpJ0Gg/94ZSr7kxvHLvq0NWCbnnu/jUM88gkKDFBYiPre6BA93jNRJYROV8zn/qGwSJ6iAS6ZiZjfAIkhhtxY5g9wm9olloiiSfM09rgrQzuAGnfJavHC/H2qdP8kBRvT4ow9bVPDtUwF73U79uGs8dqK9uhVrw+ff+BcIN0r9ZAsyNvzW4xr+LcHYdyp64vNnLlVuUUR/0UnaFND9YaioZw6PIitSoL8Ptas7l8fdlXk0gsTVNwhkGM4G/igMRv6wNx374TgCvyek7AVBbzCZjdDkKI3abhLGUk6GkS9n09AfztBkCtPYH0RyInqT/mQQj9EOK8lBHszEJBj1Z72ZD0F/iGbTkR9GwdSfjsbBaByOx/FoRmalsSoDXRv1RD8cyGE0gnGMwkKrbRKhMBcZlWtECiZWWgKhF/7AeDuRKgqlbZljuQdZ0yVjRR4JTQ3RYMoU281Xn9+/X6xWvPK4kRvIBPW40a+t6/hIEZuAeQmBvY2xuiYV5GVG0F+GBpmwx/YV1eoExt8EPPi5BuHqHOJLPq9CvzqD/5LLq5hRtahxyeEJa6oz2lwyPWJU1aLUJbNjtlUtur1MiSMe1rWd0mAvrg48fdnZjsAeXyyXn5b8lniitdJ3GRgj1q9UsCBVtlOtqnoyJZrm67ffUf2YhWcUauN/Cl4bkX15t1VVRzaFyk19yvpBQI/T6b4EW+qcCYZShn2ypWFWsSSPKAnAaS9sPfKFFexBGIaXBSRbiJgppcQq4zJNn1yd8IgT16BfmtDP/CfgID6d7x7firS84mQifBnYjXLjleypVGE3uGw6iBsG9BZ0HazUKco21hZm3u2KIumYshBrDNZJVDdbZ7a77fP23bZqdNjbf25cUAOy1JjRiiZX3bZHH735rpg97LjzF9A4bGbkQcfjCTnegEBQzuJhGIZa1GGRpuoBL9ItpDQKXdeFa6hrt0sIe0r31fJwsy3+v7b+42vr7Ky3DzQhHCtCgMhX4xp0+r0OZY/ddUPgg8hROcN2OyRdN6yQbu40Ce64RxEzkRB9IyXNmz1vJY4xr0XsE2HVptcf+GE3udUqKl3nv+P3C6SoDMQvItZpZgxDlrRw+HbYV1UyiW90paGjnxing5aZs2I7cHA+WFjXr3gG3wAjdkDbdCiqS+WdMI7J7PPyb9q8v7//nr9yRhstJP8vnLyXhQ==
+sidebar_class_name: "event api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Entity mapping deleted</h1>
+
+<MethodEndpoint method={"event"} path={"webhook"}></MethodEndpoint>
+
+:::caution deprecated
+
+This endpoint has been deprecated and may be replaced or removed in future versions of the API.
+
+:::
+
+Notification of the deletion of an entity mapping
+
+## Request
+
+<MimeTabs className={"openapi-tabs__mime"}><TabItem label={"application/json"} value={"application/json-schema"}><details style={{}} className={"openapi-markdown__details mime"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-mime"}><h3 className={"openapi-markdown__details-summary-header-body"}>Body</h3></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"webhook_event_type"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`entity.entity_mapping.deleted`]"} schema={{"type":"string","enum":["entity.entity_mapping.deleted"],"example":"entity.entity_mapping.deleted"}}></SchemaItem><SchemaItem collapsible={false} name={"entity_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"e30cbb93-5b05-4186-b6de-1acc10013795"}}></SchemaItem><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"7bfcc74d-c98b-49de-8e8f-3dc7a17273f6"}}></SchemaItem><SchemaItem collapsible={false} name={"connection_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"a7052919-e024-4985-bd08-856056b66f59"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"1a2b3c4d5e6f"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"salesforce"}}></SchemaItem><SchemaItem collapsible={false} name={"object_name"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"opportunity"}}></SchemaItem><SchemaItem collapsible={false} name={"object_type"} required={false} schemaName={"string"} qualifierMessage={"**Possible values:** [`standard`, `custom`]"} schema={{"type":"string","enum":["standard","custom"],"example":"standard"}}></SchemaItem><SchemaItem collapsible={false} name={"result"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`SUCCESS`, `ERROR`]"} schema={{"type":"string","enum":["SUCCESS","ERROR"]}}></SchemaItem><SchemaItem collapsible={false} name={"error_message"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"Error message"}}></SchemaItem></ul></details></TabItem></MimeTabs><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Return a 200 status to indicate that the data was received successfully
+
+</div><div></div></TabItem></ApiTabs></div></div>
+      

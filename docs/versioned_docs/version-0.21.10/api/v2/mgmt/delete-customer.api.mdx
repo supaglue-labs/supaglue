@@ -1,0 +1,40 @@
+---
+id: delete-customer
+title: "Delete customer"
+description: "Delete customer"
+sidebar_label: "Delete customer"
+hide_title: true
+hide_table_of_contents: true
+api: eJyVVW1P2zAQ/iuR92WTkoZ1aLTVNMGAD2ggTTA0TYDAddzGLLGN7XRUUf777pwXkpYXrZUax37u7rm759ySKM0NdULJk4TMSMIz7vhhYZ3KuSEhcXRpyeyKtFuW3ITEclYY4dZwUJLHiGoR/eH4dlPBqeFWK2k52JVkvLODj4RbZoTGOBCl558p6bh0iKFaZ4J5LvG9RWBJLEt5TnHl1pqDqZrfc+bAUBtk7kQdpmd7K5Ie3joj5BLw/JHmOsOtZML4/NNiEU3me4tod0H3ovkk4dFkdzqejhefGf08JRVQa1i+6XCtChO1aBsVUjwUPOpRisADOJQ05697OlsfqlxTuQ5OJEMTSF5kr9tgBSlz+/ma1bYjeJKqwkY8FMLwBPu3UaCGTBtgmCz00AnnnVuBUW7bU3BboedhO4+8aAL21FVNDbh3KBeUSJ34IEZIBJpq6lLSZ+pMwcPttjd5V/9fdkgGmKTqSd2eH4SdkbizjsseuYqgxM2qpV8YaAFJndN2Fseg9pEtNF1mBR8JFefL3MWrMdmsykWDCQ5+nHga7dRcYHK1bHuz06UKO99ho5VLD9PULOU08VUexoMwAaACpwKaZepvkPAVz3BIrN9jjFtYpQ2hCr0tFAbGRGsfO6Pxx9GUPPX/jEq6BLbSeauwVRuaNfzaPDsxQZ0Vs/tdjVCO4UYRB4dbgnoHH5gAZ1RSMNy7hu8vngGYYy6YxJBZACELfPGNHwW/VREwKoPCgkEqrMeAZe6tOqkGAm6fZX3/2YDKJID8JPcx7QijeirfqPVVCy7PT3Hz7u7uWr6hhwaFyWllHQTu1Wx7YgYF6LTg+KOLdUaF9+NLWDbiverGyYL5bGN+UwiJmLKcA/dLk1UVbsOAGH9Ph2RFjaBzbDIoPBEW1zAjC5pZvkWnu6XJ+/NmVD8EKJPnaLY6lqjYFUVpzAgsvcwHl0B1A/BGzkijRhyAUrXr2W79MQyG+uj49PjnMcBpgXXpz1E9NM0CAzxLrT9gNQP8rcIX4F9QCDChXzt4ffKiQTevNRqLdAO36D9dB5Aj
+sidebar_class_name: "delete api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Delete customer</h1>
+
+<MethodEndpoint method={"delete"} path={"/customers/{customer_id}"}></MethodEndpoint>
+
+
+
+Delete customer
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string"},"example":"your-customers-unique-application-id"}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Customer
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"your-customers-unique-application-id"}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"MyCompany Inc"}}></SchemaItem><SchemaItem collapsible={false} name={"email"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"contact@mycompany.com"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n  \"customer_id\": \"your-customers-unique-application-id\",\n  \"name\": \"MyCompany Inc\",\n  \"email\": \"contact@mycompany.com\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

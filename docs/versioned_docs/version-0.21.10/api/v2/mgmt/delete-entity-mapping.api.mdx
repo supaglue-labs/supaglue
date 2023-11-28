@@ -1,0 +1,44 @@
+---
+id: delete-entity-mapping
+title: "Delete entity mapping"
+description: "Delete entity mapping"
+sidebar_label: "Delete entity mapping"
+hide_title: true
+hide_table_of_contents: true
+api: eJytVW1v00AM/iun4wtISduVMY0KIUDbh4khob0IoW1i7sVtTyS57O5SVlX579iXpE1fBmiik9rEr4/tx95SJlhYVOAxkSNvS4ykKdCC1yY/IxHpU/R4mnvtF1+gKHQ+lZH0MHVydCM35E7eRdKhKi3JSLuUjzEUOv6J/HZXkdaiK0zukJyXcjg45J8EnbK64IyUr44o2lRVFW0ZnARAAmu7bAWpAAsZaawLqXN6IevHWJXOmwxtrBOy0hxihpCgpTenZpgBg/CLgs2dtyFrJPERsiJlWbZYxziQ23CuZihatTg7EX4GXpS5figxXQidMM6JRkeKjqHOxcKUVhD6VKvQbcndeSi1bSdRRZ0qCmvmFMzGQfKsOhyk6CbGKtxbRJtBNBmeBFN3/se6nQX42Y7DP4IaDN8cq7E6io8Gw0F8+HoA8fHhMcYAE1BjSCaHgJKZQ6OdmTUhw8Ap7Uj2GzwNE1x/uQJYcWvQzltOlDblrnlfuFG/T9TsubKAaVpiT5t+Ns18fz7cac5lYyM+fj0LUFqKX3KBNZU7RF+VS5LPJIjWQ2xttse3mY/SCLIS3ghIU/NLJDjHlLfSBZlS6Go6BUAVR5sYTsyF1jEGveFB7y0vqvahz18ghymhzX3wiqQyuQfl2a3B19ZJSpqb5lYlRrkPqx4pk5Fus4kbyp1dfUEfcZZ7a5JSseyW/r5hSsbItXARm8gEpSz5JexET3w3pVCQi9KRw0y7YEOeWfDqLpTHaX22nIA8EVRfjiGn63HWAOUTuNA1cX1xzsL7+/vb/C98aKy4uMI4T4k7PXvqGG20YcUIj4++X6SgQ7TQyGVD4xu5RWMKMlpvGrFuRsnZbrkcUxXXNq0qFtOdseG8RnIOVsOYx01cT7TjZ9qYCaQOdyDx/Ck+oXp50SzuK8GE2Qe1ZXTO3J0Dk2Qk6TEQvnMQqjsybmj9bBD/86LuraZGvf2fYVUWn7pnA9++on8EsH3U1xC6B+/k9Pz06pTUUDJTuvelPibNAzd876C6h6dOzd9c5l7zd7wgdLner8xrzZMOqztWW3ONd1VV/QYE2NxZ
+sidebar_class_name: "delete api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Delete entity mapping</h1>
+
+<MethodEndpoint method={"delete"} path={"/entity_mappings/{entity_id}"}></MethodEndpoint>
+
+:::caution deprecated
+
+This endpoint has been deprecated and may be replaced or removed in future versions of the API.
+
+:::
+
+Delete entity mapping
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"entity_id","in":"path","required":true,"schema":{"type":"string"},"example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"204"} value={"204"}><div>
+
+Entity Mapping
+
+</div><div></div></TabItem></ApiTabs></div></div>
+      
