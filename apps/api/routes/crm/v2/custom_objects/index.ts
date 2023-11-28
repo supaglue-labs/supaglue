@@ -53,6 +53,8 @@ export default function init(app: Router): void {
           id: record._supaglue_id,
           custom_object_name: req.params.object_name,
           data: record._supaglue_raw_data,
+          is_deleted: record._supaglue_is_deleted,
+          last_modified_at: record._supaglue_last_modified_at,
         })),
       });
     }
@@ -74,7 +76,13 @@ export default function init(app: Router): void {
         req.params.object_name,
         req.params.record_id
       );
-      return res.status(200).send({ id: record.id, custom_object_name: record.objectName, data: record.data });
+      return res.status(200).send({
+        id: record.id,
+        custom_object_name: record.objectName,
+        data: record.data,
+        is_deleted: record.metadata.isDeleted,
+        last_modified_at: record.metadata.lastModifiedAt,
+      });
     }
   );
 
