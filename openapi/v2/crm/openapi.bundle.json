@@ -3975,12 +3975,21 @@
           "data": {
             "type": "object",
             "additionalProperties": true
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "required": [
           "id",
           "custom_object_name",
-          "data"
+          "data",
+          "is_deleted",
+          "last_modified_at"
         ],
         "example": {
           "id": "001Fn00023f8oYYIA0",
@@ -3988,7 +3997,9 @@
           "data": {
             "Name": "Acme Corp",
             "Description": "We create the best embedded integration platforms."
-          }
+          },
+          "is_deleted": false,
+          "last_modified_at": "2021-01-01T00:00:00Z"
         }
       },
       "standard_object_record": {
@@ -4003,12 +4014,21 @@
           "data": {
             "type": "object",
             "additionalProperties": true
+          },
+          "is_deleted": {
+            "type": "boolean"
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time"
           }
         },
         "required": [
           "id",
           "object_name",
-          "data"
+          "data",
+          "is_deleted",
+          "last_modified_at"
         ],
         "example": {
           "id": "001Fn00023f8oYYIA0",
@@ -4016,7 +4036,9 @@
           "data": {
             "Name": "Acme Corp",
             "Description": "We create the best embedded integration platforms."
-          }
+          },
+          "is_deleted": false,
+          "last_modified_at": "2021-01-01T00:00:00Z"
         }
       },
       "simple_custom_object_schema": {

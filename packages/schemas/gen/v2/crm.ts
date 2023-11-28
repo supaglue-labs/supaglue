@@ -1249,7 +1249,9 @@ export interface components {
      *   "data": {
      *     "Name": "Acme Corp",
      *     "Description": "We create the best embedded integration platforms."
-     *   }
+     *   },
+     *   "is_deleted": false,
+     *   "last_modified_at": "2021-01-01T00:00:00Z"
      * }
      */
     custom_object_record: {
@@ -1258,6 +1260,9 @@ export interface components {
       data: {
         [key: string]: unknown;
       };
+      is_deleted: boolean;
+      /** Format: date-time */
+      last_modified_at: Date;
     };
     /**
      * @example {
@@ -1266,7 +1271,9 @@ export interface components {
      *   "data": {
      *     "Name": "Acme Corp",
      *     "Description": "We create the best embedded integration platforms."
-     *   }
+     *   },
+     *   "is_deleted": false,
+     *   "last_modified_at": "2021-01-01T00:00:00Z"
      * }
      */
     standard_object_record: {
@@ -1275,6 +1282,9 @@ export interface components {
       data: {
         [key: string]: unknown;
       };
+      is_deleted: boolean;
+      /** Format: date-time */
+      last_modified_at: Date;
     };
     simple_custom_object_schema: {
       /** @example ticket */

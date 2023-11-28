@@ -2,9 +2,9 @@ import type {
   ConnectionSafeAny,
   CreatedObjectRecord,
   FullObjectRecord,
-  ObjectRecord,
   ObjectRecordData,
   ObjectRecordUpsertData,
+  ObjectRecordWithMetadata,
 } from '@supaglue/types';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
@@ -182,12 +182,13 @@ export class ObjectRecordService {
     connection: ConnectionSafeAny,
     objectName: string,
     recordId: string
-  ): Promise<ObjectRecord> {
-    const { id, rawData } = await this.#getStandardFullObjectRecord(connection, objectName, recordId);
+  ): Promise<ObjectRecordWithMetadata> {
+    const { id, rawData, metadata } = await this.#getStandardFullObjectRecord(connection, objectName, recordId);
     return {
       id,
       objectName,
       data: rawData,
+      metadata,
     };
   }
 
@@ -195,12 +196,13 @@ export class ObjectRecordService {
     connection: ConnectionSafeAny,
     objectName: string,
     recordId: string
-  ): Promise<ObjectRecord> {
-    const { id, rawData } = await this.#getCustomFullObjectRecord(connection, objectName, recordId);
+  ): Promise<ObjectRecordWithMetadata> {
+    const { id, rawData, metadata } = await this.#getCustomFullObjectRecord(connection, objectName, recordId);
     return {
       id,
       objectName,
       data: rawData,
+      metadata,
     };
   }
 
@@ -276,13 +278,16 @@ function mapObjectToSchema(data: ObjectRecordData, fieldMappingConfig: FieldMapp
     case 'inherit_all_fields':
       return data;
     case 'defined': {
-      const coreFields = fieldMappingConfig.coreFieldMappings.reduce((acc, { schemaField, mappedField }) => {
-        const value = data[mappedField];
-        if (value) {
-          return { ...acc, [schemaField]: value };
-        }
-        return acc;
-      }, {} as Record<string, unknown>);
+      const coreFields = fieldMappingConfig.coreFieldMappings.reduce(
+        (acc, { schemaField, mappedField }) => {
+          const value = data[mappedField];
+          if (value) {
+            return { ...acc, [schemaField]: value };
+          }
+          return acc;
+        },
+        {} as Record<string, unknown>
+      );
 
       const additionalFields = fieldMappingConfig.additionalFieldMappings.reduce(
         (acc, { schemaField, mappedField }) => {
