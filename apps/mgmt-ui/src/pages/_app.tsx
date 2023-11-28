@@ -18,6 +18,19 @@ import type { SupaglueProps } from './applications/[applicationId]';
 
 LicenseInfo.setLicenseKey(MUI_LICENSE_KEY!);
 
+function getApiHost() {
+  let apiHost = '';
+  if (process.env.FRONTEND_URL) {
+    apiHost = `${process.env.FRONTEND_URL}/ingest`;
+  } else if (window.location.port === '3000') {
+    apiHost = `http://${window.location.hostname}:3000/ingest`;
+  } else {
+    apiHost = `https://${window.location.hostname}/ingest`;
+  }
+
+  return apiHost;
+}
+
 // Check that PostHog is client-side (used to handle Next.js SSR)
 if (typeof window !== 'undefined') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_API_KEY!, {
@@ -27,11 +40,7 @@ if (typeof window !== 'undefined') {
         posthog.debug();
       }
     },
-    api_host: process.env.FRONTEND_URL
-      ? `${process.env.FRONTEND_URL}/ingest`
-      : window.location.port === '3000'
-      ? `http://${window.location.hostname}:3000/ingest`
-      : `https://${window.location.hostname}/ingest`,
+    api_host: getApiHost(),
   });
 }
 
