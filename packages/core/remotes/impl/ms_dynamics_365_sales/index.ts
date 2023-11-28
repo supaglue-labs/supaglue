@@ -862,14 +862,14 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     if (isErrnoException(err) && err.cause) {
       switch ((err.cause as any).code) {
         case 'ENOTFOUND':
-          return new SGConnectionNoLongerAuthenticatedError((err.cause as any).message as string, err.cause as Error);
+          return new SGConnectionNoLongerAuthenticatedError(err.message, err.cause as Error);
         case 'ECONNREFUSED':
           return new BadGatewayError(`Could not connect to remote CRM`, err.cause as Error);
         default:
-          return err;
+          return new InternalServerError(err.message, err); // err may not be serializable, so we don't return it
       }
     }
-    return err;
+    return new InternalServerError('Unknown error', err as Error); // err may not be serializable, so we don't return it
   }
 }
 
