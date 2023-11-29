@@ -7,10 +7,10 @@
 
 import type {
   CreateAccountRequest,
-  CreateAccountSuccessfulResponse,
-  GetAccountSuccessfulResponse,
-  ListAccountsSuccessfulResponse,
-  UpdateAccountSuccessfulResponse,
+  CreateAccountResponse,
+  GetAccountResponse,
+  ListAccountsResponse,
+  UpdateAccountResponse,
 } from '@supaglue/schemas/v2/engagement';
 
 describe('account', () => {
@@ -25,7 +25,7 @@ describe('account', () => {
 
   describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
-      const response = await apiClient.post<CreateAccountSuccessfulResponse>(
+      const response = await apiClient.post<CreateAccountResponse>(
         '/engagement/v2/accounts',
         { record: testAccount },
         {
@@ -44,7 +44,7 @@ describe('account', () => {
       if (providerName === 'apollo') {
         return;
       }
-      const getResponse = await apiClient.get<GetAccountSuccessfulResponse>(
+      const getResponse = await apiClient.get<GetAccountResponse>(
         `/engagement/v2/accounts/${response.data.record?.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -56,7 +56,7 @@ describe('account', () => {
       expect(getResponse.data.name).toEqual(testAccount.name);
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListAccountsSuccessfulResponse>(
+      const cachedReadResponse = await apiClient.get<ListAccountsResponse>(
         `/engagement/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,
@@ -72,7 +72,7 @@ describe('account', () => {
     }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
-      const response = await apiClient.post<CreateAccountSuccessfulResponse>(
+      const response = await apiClient.post<CreateAccountResponse>(
         '/engagement/v2/accounts',
         { record: testAccount },
         {
@@ -87,7 +87,7 @@ describe('account', () => {
         objectName: 'account',
       });
 
-      const updateResponse = await apiClient.patch<UpdateAccountSuccessfulResponse>(
+      const updateResponse = await apiClient.patch<UpdateAccountResponse>(
         `/engagement/v2/accounts/${response.data.record?.id}`,
         {
           record: {
@@ -105,7 +105,7 @@ describe('account', () => {
       if (providerName === 'apollo') {
         return;
       }
-      const getResponse = await apiClient.get<GetAccountSuccessfulResponse>(
+      const getResponse = await apiClient.get<GetAccountResponse>(
         `/engagement/v2/accounts/${response.data.record?.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -117,7 +117,7 @@ describe('account', () => {
       expect(getResponse.data.domain).toEqual(testAccount.domain);
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListAccountsSuccessfulResponse>(
+      const cachedReadResponse = await apiClient.get<ListAccountsResponse>(
         `/engagement/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,

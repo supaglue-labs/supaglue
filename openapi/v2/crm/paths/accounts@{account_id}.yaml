@@ -9,7 +9,7 @@ get:
     - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
     - $ref: ../components/parameters/query/associations_to_fetch.yaml
   responses:
-    '200':
+    200:
       description: Account
       content:
         application/json:
@@ -46,20 +46,6 @@ get:
                 created_at: '2023-02-27T00:00:00Z'
                 updated_at: '2023-02-27T00:00:00Z'
                 website: https://supaglue.com/
-    '400':
-      $ref: ../../../common/components/responses/badRequest.yaml
-    '401':
-      $ref: ../../../common/components/responses/unauthorized.yaml
-    '403':
-      $ref: ../../../common/components/responses/forbidden.yaml
-    '404':
-      $ref: ../../../common/components/responses/notFound.yaml
-    '499':
-      $ref: ../../../common/components/responses/remoteProviderError.yaml
-    '500':
-      $ref: ../../../common/components/responses/internalServerError.yaml
-    '501':
-      $ref: ../../../common/components/responses/notImplimented.yaml
 patch:
   operationId: updateAccount
   summary: Update account
@@ -80,33 +66,17 @@ patch:
           required:
             - record
   responses:
-    '200':
+    200:
       description: Account updated
       content:
         application/json:
           schema:
             type: object
             properties:
+              errors:
+                $ref: ../../../common/components/schemas/errors.yaml
               warnings:
                 $ref: ../../../common/components/schemas/warnings.yaml
-    '400':
-      $ref: ../../../common/components/responses/badRequest.yaml
-    '401':
-      $ref: ../../../common/components/responses/unauthorized.yaml
-    '403':
-      $ref: ../../../common/components/responses/forbidden.yaml
-    '404':
-      $ref: ../../../common/components/responses/notFound.yaml
-    '409':
-      $ref: ../../../common/components/responses/conflict.yaml
-    '422':
-      $ref: ../../../common/components/responses/unprocessableEntity.yaml
-    '499':
-      $ref: ../../../common/components/responses/remoteProviderError.yaml
-    '500':
-      $ref: ../../../common/components/responses/internalServerError.yaml
-    '501':
-      $ref: ../../../common/components/responses/notImplimented.yaml
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

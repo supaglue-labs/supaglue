@@ -1,5 +1,4 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmContact } from '@supaglue/core/mappers/crm';
 import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
@@ -175,7 +174,7 @@ export default function init(app: Router): void {
   );
 
   router.delete('/:contact_id', () => {
-    throw new NotImplementedError();
+    throw new Error('Not implemented');
   });
 
   app.use('/contacts', router);

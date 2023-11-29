@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { NotImplementedError } from '@supaglue/core/errors';
+import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysMailbox } from '@supaglue/core/mappers/engagement';
 import type {
   GetMailboxPathParams,
@@ -42,7 +42,7 @@ export default function init(app: Router): void {
       res: Response<ListMailboxesResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new NotImplementedError('Uncached reads not yet implemented for mailboxes.');
+        throw new BadRequestError('Uncached reads not yet implemented for mailboxes.');
       }
       const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const { pagination, records } = await managedDataService.getEngagementMailboxRecords(

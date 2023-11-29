@@ -52,7 +52,7 @@ export default function init(app: Router): void {
           name: form.name,
           created_at: form.createdAt,
           updated_at: form.updatedAt,
-          raw_data: req.query?.include_raw_data?.toString() === 'true' ? form.rawData : undefined,
+          raw_data: req.query.include_raw_data === 'true' ? form.rawData : undefined,
         })),
       });
     }
@@ -75,7 +75,7 @@ export default function init(app: Router): void {
           data_format: field.dataFormat,
           data_options: field.dataOptions,
           validation_message: field.validationMessage,
-          raw_data: req.query?.include_raw_data?.toString() === 'true' ? field.rawData : undefined,
+          raw_data: req.query.include_raw_data === 'true' ? field.rawData : undefined,
         })),
       });
     }

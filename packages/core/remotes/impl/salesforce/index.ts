@@ -1635,7 +1635,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     // errors from Oauth library
     if (error.title === 'ERROR_HTTP_503') {
-      return new ServiceUnavailableError(error.message, { cause: error });
+      return new ServiceUnavailableError(error.message, error);
     }
 
     // https://developer.salesforce.com/docs/atlas.en-us.210.0.object_reference.meta/object_reference/sforce_api_calls_concepts_core_data_objects.htm#i1421192
@@ -1652,26 +1652,26 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'REQUIRED_FIELD_MISSING':
       case 'STRING_TOO_LONG':
       case 'TOO_MANY_ENUM_VALUE':
-        return new BadRequestError(inferredTitle, { cause: error, origin: 'remote-provider' });
+        return new BadRequestError(inferredTitle, error);
       case 'INVALID_ID_FIELD':
       case 'INVALID_LOCATOR':
       case 'INVALID_CROSS_REFERENCE_KEY':
       case 'ERROR_HTTP_404':
       case 'NOT_FOUND':
-        return new NotFoundError(inferredTitle, { cause: error, origin: 'remote-provider' });
+        return new NotFoundError(inferredTitle, error);
       case 'CLIENT_NOT_ACCESSIBLE_FOR_USER':
       case 'INSUFFICIENT_ACCESS':
       case 'sf:INSUFFICIENT_ACCESS': // SOAP api returns this
       case 'ERROR_HTTP_403':
       case 'API_DISABLED_FOR_ORG':
-        return new ForbiddenError(inferredTitle, { cause: error, origin: 'remote-provider' });
+        return new ForbiddenError(inferredTitle, error);
       case 'ERROR_HTTP_401':
-        return new UnauthorizedError(inferredTitle, { cause: error, origin: 'remote-provider' });
+        return new UnauthorizedError(inferredTitle, error);
       case 'NOT_MODIFIED':
       case 'ERROR_HTTP_304':
-        return new NotModifiedError(inferredTitle, { cause: error, origin: 'remote-provider' });
+        return new NotModifiedError(inferredTitle, error);
       case 'ERROR_HTTP_503':
-        return new BadGatewayError('Salesforce API is temporarily unavailable', { cause: error });
+        return new BadGatewayError('Salesforce API is temporarily unavailable', error);
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       case 'ALL_OR_NONE_OPERATION_ROLLED_BACK':
@@ -1834,7 +1834,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'WEBLINK_SIZE_LIMIT_EXCEEDED':
       case 'WEBLINK_URL_INVALID':
       case 'WRONG_CONTROLLER_TYPE':
-        return new RemoteProviderError(inferredTitle, { cause: error });
+        return new RemoteProviderError(inferredTitle, error);
       default:
         return error;
     }

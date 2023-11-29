@@ -183,48 +183,27 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
     }
 
     const responseError = err.response?.data?.errors?.[0];
-    const status = err.response?.status;
 
     // from https://developers.marketo.com/rest-api/error-codes/#response_level_error_codes
     switch (responseError?.code) {
       case '601':
       case '602':
-        return new UnauthorizedError(responseError?.message ?? err.message, {
-          cause: err,
-          origin: 'remote-provider',
-          status,
-        });
+        return new UnauthorizedError(responseError?.message ?? err.message, err);
       case '603':
-        return new ForbiddenError(responseError?.message ?? err.message, {
-          cause: err,
-          origin: 'remote-provider',
-          status,
-        });
+        return new ForbiddenError(responseError?.message ?? err.message, err);
       case '604':
-        return new GatewayTimeoutError(responseError?.message ?? err.message, { cause: err, status });
+        return new GatewayTimeoutError(responseError?.message ?? err.message, err);
       case '606':
       case '607':
-        return new TooManyRequestsError(responseError?.message ?? err.message, {
-          cause: err,
-          origin: 'remote-provider',
-          status,
-        });
+        return new TooManyRequestsError(responseError?.message ?? err.message, err);
       case '608':
       case '713':
-        return new BadGatewayError(responseError?.message ?? err.message, { cause: err, status });
+        return new BadGatewayError(responseError?.message ?? err.message, err);
       case '609':
       case '701':
-        return new InternalServerError(responseError?.message ?? err.message, {
-          cause: err,
-          origin: 'remote-provider',
-          status,
-        });
+        return new InternalServerError(responseError?.message ?? err.message, err);
       case '610':
-        return new NotFoundError(responseError?.message ?? err.message, {
-          cause: err,
-          origin: 'remote-provider',
-          status,
-        });
+        return new NotFoundError(responseError?.message ?? err.message, err);
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       case '502':
@@ -245,17 +224,14 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
       case '714':
       case '718':
       case '719':
-        return new RemoteProviderError(responseError?.message ?? err.message, {
-          cause: err,
-          status,
-        });
+        return new RemoteProviderError(responseError?.message ?? err.message, err);
     }
 
     // TODO: map Record-Level errors
 
     // TODO: map HTTP-Level errors
 
-    return new InternalServerError(err.message, { cause: err, status });
+    return err;
   }
 }
 

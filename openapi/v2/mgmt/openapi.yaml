@@ -245,8 +245,6 @@ components:
       $ref: ./components/schemas/objects/entity_field_mapping.yaml
     connection_sync_config:
       $ref: ./components/schemas/objects/connection_sync_config.yaml
-    errors:
-      $ref: ../../common/components/schemas/errors.yaml
   parameters:
     cursor:
       $ref: ../../common/components/parameters/query/cursor.yaml
