@@ -6,7 +6,7 @@ import type {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type { PersonEnrichmentData } from '@supaglue/types/enrichment/person_enrichment_data';
-import { BadRequestError, NotImplementedError } from '../../../errors';
+import { BadRequestError } from '../../../errors';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEnrichmentRemoteClient } from '../../categories/enrichment/base';
 import type { LeadScoringAndFirmographicsResponse } from './mapper';
@@ -30,7 +30,7 @@ class SixsenseClient extends AbstractEnrichmentRemoteClient {
     // not implemented because the baseURL changes based on the type of API, e.g.
     // https://scribe.6sense.com, or
     // https://epsilon.6sense.com
-    throw new NotImplementedError();
+    throw new Error('Not implemented');
   }
 
   public override async enrichPerson(email: string): Promise<PersonEnrichmentData> {

@@ -496,12 +496,11 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
 
     // https://developers.salesloft.com/docs/platform/api-basics/request-response-format
     const errorTitle = err.response?.data?.error ?? err.response?.statusText;
-    const cause = err.response?.data;
-    const status = err.response?.status;
+    const errorCause = err.response?.data;
 
-    switch (status) {
+    switch (err.response?.status) {
       case 400:
-        return new InternalServerError(errorTitle, { cause, origin: 'remote-provider', status });
+        return new InternalServerError(errorTitle, errorCause);
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       // NOTE: `429` is omitted below since we process it differently for syncs
@@ -554,7 +553,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       case 449:
       case 450:
       case 451:
-        return new RemoteProviderError(errorTitle, { cause, status });
+        return new RemoteProviderError(errorTitle, errorCause);
       default:
         return err;
     }

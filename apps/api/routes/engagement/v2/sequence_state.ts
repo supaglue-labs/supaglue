@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { NotImplementedError } from '@supaglue/core/errors';
+import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysSequenceState } from '@supaglue/core/mappers/engagement';
 import type {
   BatchCreateSequenceStatePathParams,
@@ -67,7 +67,7 @@ export default function init(app: Router): void {
       res: Response<ListSequenceStatesResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new NotImplementedError('Uncached reads not yet implemented for sequence states.');
+        throw new BadRequestError('Uncached reads not yet implemented for sequence states.');
       }
       const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const { pagination, records } = await managedDataService.getEngagementSequenceStateRecords(
@@ -120,7 +120,7 @@ export default function init(app: Router): void {
       res: Response<SearchSequenceStatesResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() === 'true') {
-        throw new NotImplementedError('Cached search not yet implemented for engagement contacts.');
+        throw new BadRequestError('Cached search not yet implemented for engagement contacts.');
       }
       const { pagination, records } = await engagementCommonObjectService.search(
         'sequence_state',

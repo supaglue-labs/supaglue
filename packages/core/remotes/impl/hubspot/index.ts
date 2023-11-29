@@ -2481,7 +2481,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const response = await this.#client.crm.associations.v4.schema.definitionsApi.getAll(sourceObject, targetObject);
     const created = response.results.find((result) => result.label === label);
     if (!created) {
-      throw new InternalServerError(`Unable to create association schema`, { origin: 'remote-provider' });
+      throw new InternalServerError(`Unable to created association schema`);
     }
     return {
       id: created.typeId.toString(),
@@ -2528,8 +2528,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       throw new InternalServerError(
         `Error creating association: ${
           (createResponse as BatchResponseLabelsBetweenObjectPairWithErrors).errors?.[0].message ?? 'Unknown Error'
-        }`,
-        { origin: 'remote-provider' }
+        }`
       );
     }
 
@@ -2734,35 +2733,35 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
     let error = err as any;
     let message = error.body?.message;
-    let { code: status } = error;
+    let { code } = error;
     if (isAxiosError(err)) {
       message = err.response?.data.message;
-      status = err.response?.status;
+      code = err.response?.status;
       error = err.response?.data;
     }
 
-    switch (status) {
+    switch (code) {
       case 400:
         if (
           message === 'one or more associations are not valid' ||
           message.includes('Some required properties were not set')
         ) {
-          return new BadRequestError(message, { cause: error, origin: 'remote-provider', status });
+          return new BadRequestError(message, error);
         }
         if (message.includes('missing or invalid refresh token')) {
-          return new SGConnectionNoLongerAuthenticatedError(message, status, error);
+          return new SGConnectionNoLongerAuthenticatedError(message, error);
         }
-        return new InternalServerError(message, { cause: error, origin: 'remote-provider', status });
+        return new InternalServerError(message, error);
       case 401:
-        return new UnauthorizedError(message, { cause: error, origin: 'remote-provider', status });
+        return new UnauthorizedError(message, error);
       case 403:
-        return new ForbiddenError(message, { cause: error, origin: 'remote-provider', status });
+        return new ForbiddenError(message, error);
       case 404:
-        return new NotFoundError(message, { cause: error, origin: 'remote-provider', status });
+        return new NotFoundError(message, error);
       case 409:
-        return new ConflictError(message, { cause: error, origin: 'remote-provider', status });
+        return new ConflictError(message, error);
       case 429:
-        return new TooManyRequestsError(message, { cause: error, origin: 'remote-provider', status });
+        return new TooManyRequestsError(message, error);
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       case 402:
@@ -2811,7 +2810,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       case 449:
       case 450:
       case 451:
-        return new RemoteProviderError(message, { cause: error, status });
+        return new RemoteProviderError(message, error);
       default:
         return error;
     }

@@ -8,11 +8,11 @@
 import { capitalizeString } from '@supaglue/core/remotes/utils/string';
 import type {
   CreateContactRequest,
-  CreateContactSuccessfulResponse,
-  GetContactSuccessfulResponse,
-  ListContactsSuccessfulResponse,
-  SearchContactsSuccessfulResponse,
-  UpdateContactSuccessfulResponse,
+  CreateContactResponse,
+  GetContactResponse,
+  ListContactsResponse,
+  SearchContactsResponse,
+  UpdateContactResponse,
 } from '@supaglue/schemas/v2/engagement';
 
 jest.retryTimes(3);
@@ -35,7 +35,7 @@ describe('contact', () => {
 
   describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
-      const response = await apiClient.post<CreateContactSuccessfulResponse>(
+      const response = await apiClient.post<CreateContactResponse>(
         '/engagement/v2/contacts',
         { record: testContact },
         {
@@ -50,7 +50,7 @@ describe('contact', () => {
         objectName: 'contact',
       });
 
-      const getResponse = await apiClient.get<GetContactSuccessfulResponse>(
+      const getResponse = await apiClient.get<GetContactResponse>(
         `/engagement/v2/contacts/${response.data.record?.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -83,7 +83,7 @@ describe('contact', () => {
       expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListContactsSuccessfulResponse>(
+      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
         `/engagement/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,
@@ -104,7 +104,7 @@ describe('contact', () => {
     }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
-      const response = await apiClient.post<CreateContactSuccessfulResponse>(
+      const response = await apiClient.post<CreateContactResponse>(
         '/engagement/v2/contacts',
         { record: testContact },
         {
@@ -119,7 +119,7 @@ describe('contact', () => {
         objectName: 'contact',
       });
 
-      const updateResponse = await apiClient.patch<UpdateContactSuccessfulResponse>(
+      const updateResponse = await apiClient.patch<UpdateContactResponse>(
         `/engagement/v2/contacts/${response.data.record?.id}`,
         {
           record: {
@@ -134,7 +134,7 @@ describe('contact', () => {
 
       expect(updateResponse.status).toEqual(200);
 
-      const getResponse = await apiClient.get<GetContactSuccessfulResponse>(
+      const getResponse = await apiClient.get<GetContactResponse>(
         `/engagement/v2/contacts/${response.data.record?.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -162,7 +162,7 @@ describe('contact', () => {
       expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListContactsSuccessfulResponse>(
+      const cachedReadResponse = await apiClient.get<ListContactsResponse>(
         `/engagement/v2/contacts?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,
@@ -183,7 +183,7 @@ describe('contact', () => {
       ['salesloft', 'outreach'].includes(providerName),
       `Test that POST followed by SEARCH has correct data`,
       async () => {
-        const response = await apiClient.post<CreateContactSuccessfulResponse>(
+        const response = await apiClient.post<CreateContactResponse>(
           '/engagement/v2/contacts',
           { record: testContact },
           {
@@ -202,7 +202,7 @@ describe('contact', () => {
           await new Promise((resolve) => setTimeout(resolve, 10_000));
         }
 
-        const searchResponse = await apiClient.post<SearchContactsSuccessfulResponse>(
+        const searchResponse = await apiClient.post<SearchContactsResponse>(
           `/engagement/v2/contacts/_search`,
           {
             filter: {

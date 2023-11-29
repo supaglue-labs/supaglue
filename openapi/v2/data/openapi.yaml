@@ -34,17 +34,17 @@ paths:
   # Salesforce
   #
   '/salesforce/contacts':
-    $ref: paths/salesforce@contacts.yaml
+    $ref: paths/salesforce/contacts.yaml
   '/salesforce/accounts':
-    $ref: paths/salesforce@accounts.yaml
+    $ref: paths/salesforce/accounts.yaml
 
   #
   # Hubspot
   #
   '/hubspot/contacts':
-    $ref: paths/hubspot@contacts.yaml
+    $ref: paths/hubspot/contacts.yaml
   '/hubspot/companies':
-    $ref: paths/hubspot@companies.yaml
+    $ref: paths/hubspot/companies.yaml
 components:
   securitySchemes:
     x-api-key:
