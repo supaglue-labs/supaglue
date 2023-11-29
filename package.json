@@ -13,7 +13,7 @@
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "test:integration": "turbo run test:integration",
-    "tsc:watch": "turbo run --concurrency 12 tsc:watch",
+    "typecheck": "turbo typecheck",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "generate": "turbo run generate",
@@ -21,7 +21,6 @@
     "prisma-studio": "yarn workspace @supaglue/db prisma studio"
   },
   "lint-staged": {
-    "**/*.{ts,tsx}": "tsc-files --noEmit",
     "**/*.{ts,tsx,js}": [
       "eslint",
       "prettier --write"
@@ -50,7 +49,6 @@
     "prettier-plugin-organize-imports": "^3.2.4",
     "prettier-plugin-prisma": "^5.0.0",
     "ts-jest": "^29.1.1",
-    "tsc-files": "^1.1.3",
     "tsx": "^3.12.3",
     "turbo": "^1.10.16",
     "typescript": "^4.9.5"

@@ -21,7 +21,7 @@
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
     "generate": "prisma generate",
-    "tsc:watch": "tsc --noEmit --watch"
+    "typecheck": "tsc --noEmit"
   },
   "files": [
     "dist"

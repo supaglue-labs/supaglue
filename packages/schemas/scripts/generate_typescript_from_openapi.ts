@@ -9,7 +9,7 @@ const outputPath = process.argv[3];
 void (async () => {
   const schema = await fs.readFile(path.join(process.cwd(), openapiPath), 'utf8'); // must be OpenAPI JSON
   const output = await openapiTS(JSON.parse(schema), {
-    transform(schemaObject, metadata): string | void {
+    transform(schemaObject: any, metadata: any): string | void {
       if ('format' in schemaObject && schemaObject.format === 'date-time') {
         if ('nullable' in schemaObject && schemaObject.nullable) {
           return 'Date | null';

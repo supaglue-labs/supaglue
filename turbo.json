@@ -51,9 +51,9 @@
       "cache": false,
       "persistent": true
     },
-    "tsc:watch": {
-      "cache": false,
-      "persistent": true
+    "typecheck": {
+      "outputMode": "errors-only",
+      "inputs": ["**/*.{ts,tsx}"]
     },
     "generate": {
       "outputMode": "errors-only"

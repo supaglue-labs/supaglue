@@ -6,6 +6,8 @@
  */
 
 import Link from '@docusaurus/Link';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore  not sure why, but typescript complains about this import
 import { findFirstSidebarItemLink, useDocById } from '@docusaurus/theme-common/internal';
 import { translate } from '@docusaurus/Translate';
 import clsx from 'clsx';
@@ -87,7 +89,7 @@ function CardCategory({ item }: { item: PropSidebarItemCategory }): JSX.Element 
       href={href}
       icon="🗃️"
       title={item.label}
-      category={item.category}
+      category={(item as any).category}
       description={
         item.description ??
         translate(
@@ -107,7 +109,7 @@ function CardCategory({ item }: { item: PropSidebarItemCategory }): JSX.Element 
 function CardLink({ item }: { item: PropSidebarItemLink }): JSX.Element {
   const icon: ReactNode = item.customProps ? (
     item.customProps.icon ? (
-      <img src={item.customProps.icon} alt={`${item.label} icon`} width="20" height="20" />
+      <img src={item.customProps.icon as string} alt={`${item.label} icon`} width="20" height="20" />
     ) : null
   ) : null;
   const doc = useDocById(item.docId ?? undefined);
@@ -117,7 +119,7 @@ function CardLink({ item }: { item: PropSidebarItemLink }): JSX.Element {
       href={item.href}
       icon={icon ? icon : '📄'}
       title={item.label}
-      category={category}
+      category={category as string}
       description={item.description ?? doc?.description}
     />
   );
