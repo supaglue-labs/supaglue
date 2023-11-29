@@ -5,7 +5,7 @@ set -euo pipefail
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [ -z "${1-}" ]; then
-  echo "usage: $0 <version> [--skip_tests]"
+  echo "usage: $0 <version> [--skip-tests]"
   exit 1
 fi
 
@@ -15,7 +15,7 @@ VERSION=$1
 SKIP_TESTS=false
 
 # Check for the --skip_tests flag
-if [ "${2-}" == "--skip_tests" ]; then
+if [ "${2-}" == "--skip-tests" ]; then
   SKIP_TESTS="true"
 fi
 
@@ -74,3 +74,5 @@ gh pr create --fill --web
 
 echo "Done!"
 echo "Please review the changes and merge the pull request, then move on to running ./scripts/release.sh"
+
+notify_prepare_release $VERSION

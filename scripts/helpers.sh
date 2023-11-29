@@ -1,7 +1,17 @@
 #!/bin/bash
 
+eval $(op signin --account supaglue.1password.com)
+slackBotToken=$(op read op://engineering/allyyad6wammk6c3yilymrkbsy/credential)
+
+notify_prepare_release() {
+    curl -XPOST https://slack.com/api/chat.postMessage -H 'content-type: application/json' -H "Authorization: Bearer $slackBotToken" --data "{\"channel\":\"product-development\",\"text\":\"Prepping release $1 (Step 1/3)\"}"
+}
+
+notify_release() {
+    curl -XPOST https://slack.com/api/chat.postMessage -H 'content-type: application/json' -H "Authorization: Bearer $slackBotToken" --data "{\"channel\":\"product-development\",\"text\":\"Pushing builds for release $1 (Step 2/3)\"}"
+}
+
 check_checkly_checks() {
-    eval $(op signin --account supaglue.1password.com)
     CHECKLY_API_KEY=$(op read op://engineering/2zhaab3p357nz7jtp5efssb6ce/credential)
     CHECKLY_ACCOUNT_ID=$(op read op://engineering/2zhaab3p357nz7jtp5efssb6ce/username)
 

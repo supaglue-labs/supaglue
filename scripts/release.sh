@@ -54,3 +54,5 @@ docker buildx imagetools create supaglue/sync-worker:"$RELEASE_SHA" --tag supagl
 
 git tag v"$VERSION"
 git push origin --tags
+
+notify_release $VERSION
