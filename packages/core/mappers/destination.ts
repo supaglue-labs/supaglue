@@ -5,6 +5,7 @@ import type {
   DestinationUnsafeAny,
   PostgresConfigUnsafe,
   RedshiftConfigUnsafe,
+  S3ConfigUnsafe,
   SnowflakeConfigUnsafe,
 } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils';
@@ -21,6 +22,15 @@ export const fromDestinationModelToUnsafe = async (model: DestinationModel): Pro
   const decryptedConfig = JSON.parse(await decrypt(model.encryptedConfig));
 
   switch (model.type) {
+    case 's3':
+      return {
+        ...baseParams,
+        type: 's3',
+        config: {
+          ...decryptedConfig,
+          credentials: camelcaseKeys(decryptedConfig.credentials),
+        },
+      };
     case 'bigquery':
       return {
         ...baseParams,
@@ -100,6 +110,15 @@ export const fromDestinationModelToSafe = async (model: DestinationModel): Promi
       return {
         ...baseParams,
         type: 'redshift',
+        config: safeConfig,
+      };
+    }
+    case 's3': {
+      const config = camelcaseKeys(decryptedConfig) as S3ConfigUnsafe;
+      const { secretAccessKey: _, ...safeConfig } = config;
+      return {
+        ...baseParams,
+        type: 's3',
         config: safeConfig,
       };
     }

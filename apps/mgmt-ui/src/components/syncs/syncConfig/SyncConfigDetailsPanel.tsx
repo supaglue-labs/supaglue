@@ -135,7 +135,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
             fullSyncEveryNIncrementals: fullSyncEveryNIncrementals ?? undefined,
             autoStartOnConnection,
           },
-          commonObjects: commonObjects.map((object) => ({ object }) as CommonObjectConfig),
+          commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
           standardObjects: standardObjects.map((object) => ({ object })),
           customObjects: customObjects.map((object) => ({ object })),
           entities: entityIds.map((entityId) => ({ entityId })),
@@ -167,7 +167,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
           strategy,
           autoStartOnConnection,
         },
-        commonObjects: commonObjects.map((object) => ({ object }) as CommonObjectConfig),
+        commonObjects: commonObjects.map((object) => ({ object } as CommonObjectConfig)),
         standardObjects: standardObjects.map((object) => ({ object })),
         customObjects: customObjects.map((object) => ({ object })),
         entities: entityIds.map((entityId) => ({ entityId })),
@@ -484,7 +484,9 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                     <TextField
                       {...params}
                       label="Custom objects"
-                      helperText={`Custom objects in ${selectedProvider?.name}. (Note: names are case-sensitive. Press enter or comma to add multiple fields. ${
+                      helperText={`Custom objects in ${
+                        selectedProvider?.name
+                      }. (Note: names are case-sensitive. Press enter or comma to add multiple fields. ${
                         selectedProvider?.name === 'salesforce' ? 'For Salesforce, these should all end with __c.' : ''
                       })`}
                     />

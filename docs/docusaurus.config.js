@@ -293,6 +293,14 @@ const config = {
                 to: '/destinations/bigquery',
               },
               {
+                label: 'Snowflake',
+                to: '/destinations/snowflake',
+              },
+              {
+                label: 'Redshift',
+                to: '/destinations/redshift',
+              },
+              {
                 label: 'Postgres',
                 to: '/destinations/postgres',
               },

@@ -2699,6 +2699,47 @@
               "config",
               "version"
             ]
+          },
+          {
+            "type": "object",
+            "title": "s3",
+            "properties": {
+              "id": {
+                "type": "string",
+                "example": "e888cedf-e9d0-42c5-9485-2d72984faef2"
+              },
+              "application_id": {
+                "type": "string",
+                "example": "9572d08b-f19f-48cc-a992-1eb7031d3f6a"
+              },
+              "name": {
+                "type": "string",
+                "example": "My S3 Destination"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "s3"
+                ],
+                "example": "s3"
+              },
+              "config": {
+                "$ref": "#/components/schemas/s3_config_safe"
+              },
+              "version": {
+                "type": "number",
+                "example": 1,
+                "description": "A monotonically increasing version number of the destination configuration"
+              }
+            },
+            "required": [
+              "id",
+              "application_id",
+              "name",
+              "type",
+              "config",
+              "version"
+            ]
           }
         ]
       },
@@ -2863,6 +2904,28 @@
           "s3_key_id",
           "s3_bucket_name",
           "s3_bucket_region"
+        ]
+      },
+      "s3_config_safe": {
+        "type": "object",
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "example": "s3://my-bucket-name"
+          },
+          "region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "access_key_id": {
+            "type": "string",
+            "example": "AKIDFIAKFISDKFSI"
+          }
+        },
+        "required": [
+          "bucket",
+          "region",
+          "access_key_id"
         ]
       },
       "postgres_config_at_least_safe": {
@@ -3033,6 +3096,33 @@
           "s3_bucket_name",
           "s3_bucket_region",
           "s3_access_key"
+        ]
+      },
+      "s3_config_at_least_safe": {
+        "type": "object",
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "example": "s3://my-bucket-name"
+          },
+          "region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "access_key_id": {
+            "type": "string",
+            "example": "AKIDFIAKFISDKFSI"
+          },
+          "secret_access_key": {
+            "type": "string",
+            "example": "ASDFKSFSFKSDKFSK"
+          }
+        },
+        "required": [
+          "bucket",
+          "region",
+          "access_key_id",
+          "secret_access_key"
         ]
       },
       "postgres_config_unsafe": {
@@ -3232,6 +3322,33 @@
           "s3_bucket_name",
           "s3_bucket_region",
           "s3_access_key"
+        ]
+      },
+      "s3_config_unsafe": {
+        "type": "object",
+        "properties": {
+          "bucket": {
+            "type": "string",
+            "example": "s3://my-bucket-name"
+          },
+          "region": {
+            "type": "string",
+            "example": "us-west-2"
+          },
+          "access_key_id": {
+            "type": "string",
+            "example": "AKIDFIAKFISDKFSI"
+          },
+          "secret_access_key": {
+            "type": "string",
+            "example": "ASDFKSFSFKSDKFSK"
+          }
+        },
+        "required": [
+          "bucket",
+          "region",
+          "access_key_id",
+          "secret_access_key"
         ]
       },
       "schema": {

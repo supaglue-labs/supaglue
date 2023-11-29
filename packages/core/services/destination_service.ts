@@ -186,6 +186,7 @@ export class DestinationService {
       case 'bigquery':
       case 'snowflake':
       case 'redshift':
+      case 's3':
         success = true;
         break;
       default:
@@ -304,6 +305,14 @@ function mergeDestinationConfig(
       return {
         ...params.config,
         s3AccessKey: params.config.s3AccessKey ?? existingDestination.config.s3AccessKey,
+      };
+    case 's3':
+      if (params.type !== 's3') {
+        throw new BadRequestError('cannot change destination type');
+      }
+      return {
+        ...params.config,
+        secretAccessKey: params.config.secretAccessKey ?? existingDestination.config.secretAccessKey,
       };
     case 'supaglue':
       throw new BadRequestError('cannot update supaglue managed destination');
