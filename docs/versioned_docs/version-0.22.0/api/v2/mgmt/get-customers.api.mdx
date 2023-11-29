@@ -1,0 +1,40 @@
+---
+id: get-customers
+title: "List customers"
+description: "Get a list of customers"
+sidebar_label: "List customers"
+hide_title: true
+hide_table_of_contents: true
+api: eJyFVG1P2zAQ/iuW9zVpS4d4qaYJhiaEBtI0hqYJELjOtTFLbGM7HVGV/767JG3dTkAqNc69PPf2+JbcWHAiKKMvMj7hcwhnlQ+mBOd5woOYez655RvZfcI9yMqpUKNiyV9SYVX6B+jrvkFtBl46ZQkR8c4hMMEK5QMzMyYjaAfeGu0B8Zd8PBrRa9s3TkQaHUAHMhLWFkq2KQ+fPFkuuZc5lIJOobaAvsI5UaOfClD6SG6mTyADKqyjwoPq4keYDyqL7H1wSs/RHl5EaQsSZUcSph9ns/RoejhL92fiMJ0eZZAe7R+Pj8ezAykOjnmDKffpvwtYm8ql69aklVbPFaRRSikiIKAWJbyNdFWfmdIKXbMLLckFm6KKt32os0KGk7KWne8A37xpaELPlXKQEQF2GtQnswqwXSySIKjQgntFUR5WWoSlJ+ElhNz0fKNhiJDjxzDmhwe3oBORrHJYBM9DsH4yHCLhBr6yYl5UMFBmWM7LMFyM+S73rnsbdvr9gjcRca+JLd3gI/puuGPVN6hXNU4iG+QTAecgMixmNx6GYWjFgmGiKMxflsECCqKZb2VSgsdT3ifUENrMUGAqtMMYDcZ7g70R37TwSmgxx3R1aN2S1cDIr09wVeh6HkhSI/3Jukk00WSni1vKZreWD/ggiYIzWSVJdoe/X1CgMVAxVMV2ZgxDVvTRkmTAfpuKSaFZ5dEhV761Qc+y9VqvAqbwYs+7DeSZ0BnD+jS0Mf2AorapfBG+bRu7+XFJwsfHxzv9DiF6KyrOGh8wcNSzS1pJMd+26l9uFs4bK6znS4CXMLSFUG2otsvLntK3XMabM8c0SLhcTrGeG1c0DYnxurt2fyZ8IZwSUxo8btNkxTS6Ay1H+SmSyNKVWQga+OT/bUhEX1+v868/0VZUlEvM747M/YHQVypdR9gx8bvw9N8kr5h/ovngzfm8Nu80rzqs71FnTf27x/XwDx21Ps4=
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>List customers</h1>
+
+<MethodEndpoint method={"get"} path={"/customers"}></MethodEndpoint>
+
+
+
+Get a list of customers
+
+## Request
+
+<div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Customers
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"application_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"your-customers-unique-application-id"}}></SchemaItem><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"MyCompany Inc"}}></SchemaItem><SchemaItem collapsible={false} name={"email"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"contact@mycompany.com"}}></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"[\n  {\n    \"application_id\": \"d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69\",\n    \"customer_id\": \"your-customers-unique-application-id\",\n    \"name\": \"MyCompany Inc\",\n    \"email\": \"contact@mycompany.com\"\n  }\n]"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
