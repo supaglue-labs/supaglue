@@ -511,6 +511,7 @@ export const fromDescribeTypeToPropertyType = (describeType: string): PropertyTy
     case 'reference':
     case 'url':
     case 'string':
+    case 'email':
       return 'text';
     case 'textarea':
       return 'textarea';
