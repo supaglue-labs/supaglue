@@ -1,5 +1,10 @@
 import { HUBSPOT_STANDARD_OBJECT_TYPES, SALESFORCE_OBJECTS } from '@supaglue/utils';
-import { GONG_STANDARD_OBJECTS, INTERCOM_STANDARD_OBJECTS, LINEAR_STANDARD_OBJECTS } from '@supaglue/utils/constants';
+import {
+  GONG_STANDARD_OBJECTS,
+  INTERCOM_STANDARD_OBJECTS,
+  LINEAR_STANDARD_OBJECTS,
+  MS_DYNAMICS_365_SALES_STANDARD_OBJECTS,
+} from '@supaglue/utils/constants';
 import { capitalizeString } from './capitalizeString';
 
 export const getStandardObjectOptions = (providerName?: string): string[] => {
@@ -9,6 +14,9 @@ export const getStandardObjectOptions = (providerName?: string): string[] => {
     }
     case 'salesforce': {
       return SALESFORCE_OBJECTS as unknown as string[];
+    }
+    case 'ms_dynamics_365_sales': {
+      return MS_DYNAMICS_365_SALES_STANDARD_OBJECTS as unknown as string[];
     }
     case 'gong': {
       return GONG_STANDARD_OBJECTS as unknown as string[];
