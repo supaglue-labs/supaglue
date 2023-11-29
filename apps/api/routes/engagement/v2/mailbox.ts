@@ -25,12 +25,13 @@ export default function init(app: Router): void {
       req: Request<GetMailboxPathParams, GetMailboxResponse, GetMailboxRequest, GetMailboxQueryParams>,
       res: Response<GetMailboxResponse>
     ) => {
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const { id: connectionId } = req.customerConnection;
       const mailbox = await engagementCommonObjectService.get('mailbox', connectionId, req.params.mailbox_id);
       const snakecasedKeysMailbox = toSnakecasedKeysMailbox(mailbox);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysMailbox;
-      return res.status(200).send(req.query?.include_raw_data ? snakecasedKeysMailbox : rest);
+      return res.status(200).send(includeRawData ? snakecasedKeysMailbox : rest);
     }
   );
 
@@ -43,6 +44,7 @@ export default function init(app: Router): void {
       if (req.query?.read_from_cache?.toString() !== 'true') {
         throw new BadRequestError('Uncached reads not yet implemented for mailboxes.');
       }
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const { pagination, records } = await managedDataService.getEngagementMailboxRecords(
         req.supaglueApplication.id,
         req.customerConnection.providerName,
@@ -55,7 +57,7 @@ export default function init(app: Router): void {
         pagination,
         records: records.map((record) => ({
           ...record,
-          raw_data: req.query?.include_raw_data ? record.raw_data : undefined,
+          raw_data: includeRawData ? record.raw_data : undefined,
           _supaglue_application_id: undefined,
           _supaglue_customer_id: undefined,
           _supaglue_provider_name: undefined,

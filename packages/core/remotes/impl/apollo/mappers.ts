@@ -151,6 +151,7 @@ export const toApolloAccountCreateParams = (params: AccountCreateParams): Record
   return {
     name: params.name,
     domain: params.domain,
+    typed_custom_fields: params.customFields,
   };
 };
 
@@ -175,7 +176,7 @@ export const toApolloContactCreateParams = (params: ContactCreateParams): Record
     corporate_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'work')?.phoneNumber,
     home_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'home')?.phoneNumber,
     other_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'other')?.phoneNumber,
-    ...params.customFields,
+    typed_custom_fields: params.customFields,
   };
 };
 export const toApolloContactUpdateParams = (params: ContactUpdateParams): Record<string, any> => {
@@ -192,7 +193,7 @@ export const toApolloContactUpdateParams = (params: ContactUpdateParams): Record
     home_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'home')?.phoneNumber,
     other_phone: params.phoneNumbers?.find((p) => p.phoneNumberType === 'other')?.phoneNumber,
     account_id: params.accountId,
-    ...params.customFields,
+    typed_custom_fields: params.customFields,
   };
 };
 

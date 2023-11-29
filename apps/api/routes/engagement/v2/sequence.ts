@@ -32,12 +32,13 @@ export default function init(app: Router): void {
       req: Request<GetSequencePathParams, GetSequenceResponse, GetSequenceRequest>,
       res: Response<GetSequenceResponse>
     ) => {
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const { id: connectionId } = req.customerConnection;
       const sequence = await engagementCommonObjectService.get('sequence', connectionId, req.params.sequence_id);
       const snakecasedKeysSequence = toSnakecasedKeysSequence(sequence);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysSequence;
-      return res.status(200).send(req.query?.include_raw_data ? snakecasedKeysSequence : rest);
+      return res.status(200).send(includeRawData ? snakecasedKeysSequence : rest);
     }
   );
 
@@ -50,6 +51,7 @@ export default function init(app: Router): void {
       if (req.query?.read_from_cache?.toString() !== 'true') {
         throw new BadRequestError('Uncached reads not yet implemented for sequences.');
       }
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const { pagination, records } = await managedDataService.getEngagementSequenceRecords(
         req.supaglueApplication.id,
         req.customerConnection.providerName,
@@ -62,7 +64,7 @@ export default function init(app: Router): void {
         pagination,
         records: records.map((record) => ({
           ...record,
-          raw_data: req.query?.include_raw_data ? record.raw_data : undefined,
+          raw_data: includeRawData ? record.raw_data : undefined,
           _supaglue_application_id: undefined,
           _supaglue_customer_id: undefined,
           _supaglue_provider_name: undefined,

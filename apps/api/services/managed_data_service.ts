@@ -47,6 +47,57 @@ export class ManagedDataService {
     return await this.#pgPool.connect();
   }
 
+  async #getRecord<T extends Record<string, unknown>>(
+    applicationId: string,
+    category: ProviderCategory,
+    providerName: ProviderName,
+    customerId: string,
+    /**
+     * @param `objectName` is the provider-specific name and is case-sensitive.
+     */
+    objectName: string,
+    objectType: ObjectType,
+    id: string
+  ): Promise<T | null> {
+    const sync = await this.#syncService.findByAppCustomerProviderNameObjectTypeAndObject(
+      applicationId,
+      customerId,
+      providerName,
+      objectType,
+      objectName
+    );
+    if (!sync) {
+      throw new BadRequestError(
+        `No sync found for ${objectName} for customer ${customerId}. Please ensure you're syncing the right object type (standard or common) from your provider.`
+      );
+    }
+    const destination = await this.#destinationService.getDestinationSafeBySyncConfigId(sync.syncConfigId);
+    if (destination?.type !== 'supaglue') {
+      throw new BadRequestError(`You must set up a Supaglue Managed Destination before you can use this feature.`);
+    }
+    const schema = getSchemaName(applicationId);
+    const table =
+      objectType === 'common'
+        ? getCommonObjectTableName(category, objectName as CommonObjectType)
+        : getObjectTableName(providerName, objectName);
+    const qualifiedTable = `${schema}.${table}`;
+    const client = await this.#getClient();
+    try {
+      const result = await client.query<T>(
+        getByIdSql(qualifiedTable, applicationId, customerId, providerName, objectType, id)
+      );
+      if (!result.rows.length) {
+        return null;
+      }
+      return {
+        ...result.rows[0],
+        // Hoist the unified data up to top level
+        ...((result.rows[0] as Record<string, unknown>)['_supaglue_unified_data'] ?? {}),
+      };
+    } finally {
+      client.release();
+    }
+  }
   async #getRecords<T extends Record<string, unknown>>(
     applicationId: string,
     category: ProviderCategory,
@@ -102,7 +153,16 @@ export class ManagedDataService {
       const { total } = rows[0];
       // We fetch `pageSize + 1` records so we know if we need to return a `next` pagination.
       const result = await client.query<T>(
-        getSql(qualifiedTable, applicationId, customerId, providerName, objectType, pageSize + 1, cursor, modifiedAfter)
+        getListSql(
+          qualifiedTable,
+          applicationId,
+          customerId,
+          providerName,
+          objectType,
+          pageSize + 1,
+          cursor,
+          modifiedAfter
+        )
       );
       const records = result.rows.map(({ _supaglue_unified_data, ...row }) => ({
         ...row,
@@ -433,7 +493,24 @@ const getCountSql = (
   return sql;
 };
 
-const getSql = (
+const getByIdSql = (
+  qualifiedTable: string,
+  applicationId: string,
+  customerId: string,
+  providerName: string,
+  objectType: ObjectType,
+  id: string
+) => {
+  const idCol = objectType === 'common' ? 'id' : '_supaglue_id';
+  const sql = `SELECT * FROM ${qualifiedTable}
+    WHERE _supaglue_application_id = '${applicationId}'
+    AND _supaglue_customer_id = '${customerId}'
+    AND _supaglue_provider_name = '${providerName}'
+    AND ${idCol} = '${id}'`;
+  return sql;
+};
+
+const getListSql = (
   qualifiedTable: string,
   applicationId: string,
   customerId: string,

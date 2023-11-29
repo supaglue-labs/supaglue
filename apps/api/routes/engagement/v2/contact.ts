@@ -38,11 +38,12 @@ export default function init(app: Router): void {
       res: Response<GetContactResponse>
     ) => {
       const { id: connectionId } = req.customerConnection;
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const contact = await engagementCommonObjectService.get('contact', connectionId, req.params.contact_id);
       const snakecasedKeysContact = toSnakecasedKeysEngagementContact(contact);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysContact;
-      return res.status(200).send(req.query?.include_raw_data ? snakecasedKeysContact : rest);
+      return res.status(200).send(includeRawData ? snakecasedKeysContact : rest);
     }
   );
 

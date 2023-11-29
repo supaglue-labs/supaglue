@@ -33,12 +33,13 @@ export default function init(app: Router): void {
       req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest, GetAccountQueryParams>,
       res: Response<GetAccountResponse>
     ) => {
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       const { id: connectionId } = req.customerConnection;
       const account = await engagementCommonObjectService.get('account', connectionId, req.params.account_id);
       const snakecasedKeysAccount = toSnakecasedKeysEngagementAccount(account);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysAccount;
-      return res.status(200).send(req.query?.include_raw_data ? snakecasedKeysAccount : rest);
+      return res.status(200).send(includeRawData ? snakecasedKeysAccount : rest);
     }
   );
 
@@ -48,6 +49,7 @@ export default function init(app: Router): void {
       req: Request<ListAccountsPathParams, ListAccountsResponse, ListAccountsRequest, ListAccountsQueryParams>,
       res: Response<ListAccountsResponse>
     ) => {
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       if (req.query?.read_from_cache?.toString() !== 'true') {
         throw new BadRequestError('Uncached reads not yet implemented for accounts.');
       }
@@ -63,7 +65,7 @@ export default function init(app: Router): void {
         pagination,
         records: records.map((record) => ({
           ...record,
-          raw_data: req.query?.include_raw_data ? record.raw_data : undefined,
+          raw_data: includeRawData ? record.raw_data : undefined,
           _supaglue_application_id: undefined,
           _supaglue_customer_id: undefined,
           _supaglue_provider_name: undefined,
