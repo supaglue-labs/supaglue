@@ -520,7 +520,7 @@ export interface components {
      *   }
      * }
      */
-    destination: OneOf<[{
+    destination: {
       /** @example d455d20b-f6dc-4bc3-ab14-b4f21c4b4835 */
       id: string;
       /** @example 726fb798-d854-4c59-9a23-57e3e2f73eae */
@@ -538,7 +538,7 @@ export interface components {
        * @example 1
        */
       version: number;
-    }, {
+    } | {
       /** @example d455d20b-f6dc-4bc3-ab14-b4f21c4b4835 */
       id: string;
       /** @example 726fb798-d854-4c59-9a23-57e3e2f73eae */
@@ -553,7 +553,7 @@ export interface components {
        * @example 1
        */
       version: number;
-    }, {
+    } | {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
@@ -571,7 +571,7 @@ export interface components {
        * @example 1
        */
       version: number;
-    }, {
+    } | {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
@@ -589,7 +589,7 @@ export interface components {
        * @example 1
        */
       version: number;
-    }, {
+    } | {
       /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
       id: string;
       /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
@@ -607,7 +607,25 @@ export interface components {
        * @example 1
        */
       version: number;
-    }]>;
+    } | {
+      /** @example e888cedf-e9d0-42c5-9485-2d72984faef2 */
+      id: string;
+      /** @example 9572d08b-f19f-48cc-a992-1eb7031d3f6a */
+      application_id: string;
+      /** @example My S3 Destination */
+      name: string;
+      /**
+       * @example s3
+       * @enum {string}
+       */
+      type: "s3";
+      config: components["schemas"]["s3_config_safe"];
+      /**
+       * @description A monotonically increasing version number of the destination configuration
+       * @example 1
+       */
+      version: number;
+    };
     postgres_config_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
       host: string;
@@ -668,6 +686,14 @@ export interface components {
       s3_bucket_name: string;
       /** @example us-west-2 */
       s3_bucket_region: string;
+    };
+    s3_config_safe: {
+      /** @example s3://my-bucket-name */
+      bucket: string;
+      /** @example us-west-2 */
+      region: string;
+      /** @example AKIDFIAKFISDKFSI */
+      access_key_id: string;
     };
     postgres_config_at_least_safe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -732,6 +758,16 @@ export interface components {
       s3_bucket_region: string;
       /** @example ASDFKSFSFKSDKFSK */
       s3_access_key: string;
+    };
+    s3_config_at_least_safe: {
+      /** @example s3://my-bucket-name */
+      bucket: string;
+      /** @example us-west-2 */
+      region: string;
+      /** @example AKIDFIAKFISDKFSI */
+      access_key_id: string;
+      /** @example ASDFKSFSFKSDKFSK */
+      secret_access_key: string;
     };
     postgres_config_unsafe: {
       /** @example production-db-new.cluster-cdhnnutnlctj.us-west-2.rds.amazonaws.com */
@@ -809,6 +845,16 @@ export interface components {
       s3_bucket_region: string;
       /** @example ASDFKSFSFKSDKFSK */
       s3_access_key: string;
+    };
+    s3_config_unsafe: {
+      /** @example s3://my-bucket-name */
+      bucket: string;
+      /** @example us-west-2 */
+      region: string;
+      /** @example AKIDFIAKFISDKFSI */
+      access_key_id: string;
+      /** @example ASDFKSFSFKSDKFSK */
+      secret_access_key: string;
     };
     /** @deprecated */
     schema: {

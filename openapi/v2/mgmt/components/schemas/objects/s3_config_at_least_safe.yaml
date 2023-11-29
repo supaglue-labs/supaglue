@@ -1,0 +1,19 @@
+type: object
+properties:
+  bucket:
+    type: string
+    example: s3://my-bucket-name
+  region:
+    type: string
+    example: us-west-2
+  access_key_id:
+    type: string
+    example: AKIDFIAKFISDKFSI
+  secret_access_key:
+    type: string
+    example: ASDFKSFSFKSDKFSK
+required:
+  - bucket
+  - region
+  - access_key_id
+  - secret_access_key

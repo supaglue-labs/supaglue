@@ -1,6 +1,6 @@
-export type DestinationType = 'postgres' | 'bigquery' | 'snowflake' | 'redshift' | 'supaglue';
+export type DestinationType = 'postgres' | 'bigquery' | 'snowflake' | 'redshift' | 'supaglue' | 's3';
 
-export type NonSupaglueDestinationType = 'postgres' | 'bigquery' | 'snowflake' | 'redshift';
+export type NonSupaglueDestinationType = 'postgres' | 'bigquery' | 'snowflake' | 'redshift' | 's3';
 
 type BaseDestinationCreateParams = {
   applicationId: string;
@@ -16,13 +16,15 @@ export type DestinationConfigUnsafeAny =
   | DestinationConfigUnsafe<'postgres'>
   | DestinationConfigUnsafe<'bigquery'>
   | DestinationConfigUnsafe<'snowflake'>
-  | DestinationConfigUnsafe<'redshift'>;
+  | DestinationConfigUnsafe<'redshift'>
+  | DestinationConfigUnsafe<'s3'>;
 
 export type DestinationConfigUnsafe<T extends NonSupaglueDestinationType> = {
   postgres: PostgresConfigUnsafe;
   bigquery: BigQueryConfigUnsafe;
   snowflake: SnowflakeConfigUnsafe;
   redshift: RedshiftConfigUnsafe;
+  s3: S3ConfigUnsafe;
 }[T];
 
 export type DestinationConfigAtLeastSafe<T extends NonSupaglueDestinationType> = {
@@ -30,6 +32,7 @@ export type DestinationConfigAtLeastSafe<T extends NonSupaglueDestinationType> =
   bigquery: BigQueryConfigAtLeastSafe;
   snowflake: SnowflakeConfigAtLeastSafe;
   redshift: RedshiftConfigAtLeastSafe;
+  s3: S3ConfigAtLeastSafe;
 }[T];
 
 export type DestinationConfigSafe<T extends NonSupaglueDestinationType> = {
@@ -37,6 +40,7 @@ export type DestinationConfigSafe<T extends NonSupaglueDestinationType> = {
   bigquery: BigQueryConfigSafeOnly;
   snowflake: SnowflakeConfigSafeOnly;
   redshift: RedshiftConfigSafeOnly;
+  s3: S3ConfigSafeOnly;
 }[T];
 
 export type DestinationCreateParams<T extends NonSupaglueDestinationType> = BaseDestinationCreateParams & {
@@ -93,6 +97,9 @@ export type PostgresConfigUnsafeOnly = {
   serverName?: string;
 };
 
+export type S3ConfigUnsafe = S3ConfigSafeOnly & S3ConfigUnsafeOnly;
+export type S3ConfigAtLeastSafe = S3ConfigSafeOnly & Partial<S3ConfigUnsafeOnly>;
+
 export type RedshiftConfigUnsafe = RedshiftConfigSafeOnly & RedshiftConfigUnsafeOnly;
 export type RedshiftConfigAtLeastSafe = RedshiftConfigSafeOnly & Partial<RedshiftConfigUnsafeOnly>;
 
@@ -101,6 +108,23 @@ export type SnowflakeConfigAtLeastSafe = SnowflakeConfigSafeOnly & Partial<Snowf
 
 export type BigQueryConfigUnsafe = BigQueryConfigSafeOnly & BigQueryConfigUnsafeOnly;
 export type BigQueryConfigAtLeastSafe = BigQueryConfigSafeOnly & Partial<BigQueryConfigUnsafeOnly>;
+
+export type S3ConfigSafeOnly = {
+  bucket: string; // combination of bucket name + bucket path
+  region: string;
+  accessKeyId: string;
+
+  // unsupported
+  filePattern?: string;
+  endpoint?: string;
+  pathFormat?: string;
+  format?: string;
+  compressionCodec?: string;
+};
+
+export type S3ConfigUnsafeOnly = {
+  secretAccessKey: string;
+};
 
 export type RedshiftConfigSafeOnly = {
   host: string;
@@ -151,24 +175,28 @@ export type DestinationUnsafeAny =
   | DestinationUnsafe<'bigquery'>
   | DestinationUnsafe<'snowflake'>
   | DestinationUnsafe<'redshift'>
+  | DestinationUnsafe<'s3'>
   | SupaglueDestination;
 export type DestinationSafeAny =
   | DestinationSafe<'postgres'>
   | DestinationSafe<'bigquery'>
   | DestinationSafe<'snowflake'>
   | DestinationSafe<'redshift'>
+  | DestinationSafe<'s3'>
   | SupaglueDestination;
 export type DestinationCreateParamsAny =
   | DestinationCreateParams<'postgres'>
   | DestinationCreateParams<'bigquery'>
   | DestinationCreateParams<'snowflake'>
   | DestinationCreateParams<'redshift'>
+  | DestinationCreateParams<'s3'>
   | SupaglueDestinationCreateParams;
 export type DestinationUpdateParamsAny =
   | DestinationUpdateParams<'postgres'>
   | DestinationUpdateParams<'bigquery'>
   | DestinationUpdateParams<'snowflake'>
   | DestinationUpdateParams<'redshift'>
+  | DestinationUpdateParams<'s3'>
   | SupaglueDestinationUpdateParams;
 
 export type DestinationTestParams<T extends NonSupaglueDestinationType> =
@@ -182,6 +210,7 @@ export type DestinationTestParamsAny =
   | DestinationTestParams<'bigquery'>
   | DestinationTestParams<'snowflake'>
   | DestinationTestParams<'redshift'>
+  | DestinationTestParams<'s3'>
   | SupaglueDestinationCreateParams
   | SupaglueDestinationUpdateParams;
 

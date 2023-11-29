@@ -16,14 +16,14 @@ const ICON_SIZE = 35;
 export type DestinationCardInfo = {
   icon?: React.ReactNode;
   name: string;
-  type: 'postgres' | 'bigquery' | 'snowflake' | 'redshift' | 'supaglue';
+  type: 'postgres' | 'bigquery' | 'snowflake' | 'redshift' | 'supaglue' | 's3';
   classType: 'analytical' | 'application';
   status: string;
   description: string;
 };
 
 export type AnalyticalDestinationCardInfo = DestinationCardInfo & {
-  type: 'bigquery' | 'snowflake' | 'redshift';
+  type: 'bigquery' | 'snowflake' | 'redshift' | 's3';
 };
 
 export const postgresDestinationCardInfo: DestinationCardInfo = {
@@ -62,6 +62,15 @@ export const redshiftDestinationCardInfo: DestinationCardInfo = {
   description: 'Configure your Redshift destination.',
 };
 
+export const s3DestinationCardInfo: DestinationCardInfo = {
+  icon: <Image alt="s3" src={RedshiftQueryIcon} width={ICON_SIZE} height={ICON_SIZE} />,
+  name: 'S3',
+  type: 's3',
+  classType: 'analytical',
+  status: '',
+  description: 'Configure your S3 destination.',
+};
+
 export const supaglueDestinationCardInfo: DestinationCardInfo = {
   icon: <Image alt="supaglue" src={SupaglueIcon} width={ICON_SIZE} height={ICON_SIZE} />,
   name: 'Supaglue',
@@ -77,6 +86,7 @@ export const destinationCardsInfo: DestinationCardInfo[] = [
   bigQueryDestinationCardInfo,
   snowflakeDestinationCardInfo,
   redshiftDestinationCardInfo,
+  s3DestinationCardInfo,
 ];
 
 export default function DestinationTabPanelContainer() {
