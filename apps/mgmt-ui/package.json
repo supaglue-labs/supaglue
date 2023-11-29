@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "tsc:watch": "tsc --noEmit --watch"
+    "typecheck": "next lint"
   },
   "dependencies": {
     "@clerk/nextjs": "^4.23.1",

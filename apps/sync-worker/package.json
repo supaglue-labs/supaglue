@@ -29,10 +29,9 @@
     "build": "tsc -p tsconfig.build.json",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
-    "tsc:watch": "tsc --noEmit --watch"
+    "typecheck": "tsc --noEmit"
   },
   "lint-staged": {
-    "**/*.{ts,tsx}": "tsc-files --noEmit async-local-storage.d.ts",
     "**/*.{ts,tsx,js}": [
       "eslint",
       "prettier --write"

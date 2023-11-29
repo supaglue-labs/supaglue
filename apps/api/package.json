@@ -54,11 +54,10 @@
     "lint": "run -T eslint",
     "prepare": "ts-patch install -s",
     "init-temporal": "tsx ./init_scripts/init_temporal.ts",
-    "tsc:watch": "tsc --noEmit --watch",
+    "typecheck": "tsc --noEmit",
     "test:integration": "SUPAGLUE_LOG_LEVEL=debug jest --selectProjects api --group=integration"
   },
   "lint-staged": {
-    "**/*.{ts,tsx}": "tsc-files --noEmit types/express.d.ts setupTests.ts",
     "**/*.{ts,tsx,js}": [
       "eslint",
       "prettier --write"

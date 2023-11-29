@@ -15,7 +15,7 @@
     "clean": "rm -rf ./dist && rm -rf tsconfig.tsbuildinfo",
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
-    "tsc:watch": "tsc --noEmit --watch"
+    "typecheck": "tsc --noEmit"
   },
   "files": [
     "dist"

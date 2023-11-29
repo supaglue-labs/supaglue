@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node18/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "moduleResolution": "node16",
+    "resolveJsonModule": true,
+    "sourceMap": true
+  },
+  "include": ["./**/*.ts"]
+}

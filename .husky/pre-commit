@@ -3,4 +3,5 @@
 
 yarn turbo run lint-staged "--filter=[HEAD^1]"
 yarn generate
-yarn test --output-logs=errors-only "--filter=[HEAD^1]"
+yarn typecheck "--filter=...[HEAD^1]"
+yarn test --output-logs=errors-only "--filter=...[HEAD^1]"

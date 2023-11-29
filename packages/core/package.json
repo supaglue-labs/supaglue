@@ -62,7 +62,7 @@
     "lint-staged": "run -T lint-staged --no-stash --quiet",
     "lint": "run -T eslint",
     "test": "SUPAGLUE_LOG_LEVEL=debug jest --selectProjects @supaglue/core --group=unit",
-    "tsc:watch": "tsc --noEmit --watch",
+    "typecheck": "tsc --noEmit",
     "codegen": "yarn download && yarn generate",
     "download": "concurrently 'npm:download:*'",
     "generate": "concurrently 'npm:generate:*'",
