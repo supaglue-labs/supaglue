@@ -1,4 +1,5 @@
 import AccountMenu from '@/components/AccountMenu';
+import { Banner } from '@/components/Banner';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
@@ -23,6 +24,7 @@ export default function Header(props: HeaderProps & SupaglueProps) {
   return (
     <React.Fragment>
       <AppBar color="primary" position="sticky" elevation={0}>
+        <Banner />
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
             <Grid sx={{ display: { sm: 'none', xs: 'block' } }} item>
