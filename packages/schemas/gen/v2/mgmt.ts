@@ -1739,6 +1739,91 @@ export interface components {
           table: string;
         }]>[];
     };
+    errors: ({
+        /**
+         * @description A unique identifier for the instance of the error. Provide this to support when contacting Supaglue.
+         * @example 9366efb4-8fb1-4a28-bfb0-8d6f9cc6b5c5
+         */
+        id: string;
+        /**
+         * @description A detailed description of the error.
+         * @example Property values were not valid: [{"isValid":false,"message":"Property \"__about_us\" does not exist","error":"PROPERTY_DOESNT_EXIST","name":"__about_us","localizedErrorMessage":"Property \"__about_us\" does not exist"}]
+         */
+        detail: string;
+        /**
+         * @deprecated
+         * @description The Supaglue error code associated with the error.
+         * @example MISSING_REQUIRED_FIELD
+         */
+        problem_type: string;
+        /**
+         * @description A brief description of the error. The schema and type of message will vary by Provider.
+         * @example Property values were not valid
+         */
+        title: string;
+        /**
+         * @description The Supaglue error code associated with the error.
+         * @example MISSING_REQUIRED_FIELD
+         */
+        code: string;
+        /**
+         * @description The HTTP status code associated with the error.
+         * @example 400
+         */
+        status: string;
+        /** @description Additional metadata about the error. */
+        meta: {
+          /**
+           * @description The cause of the error. Usually the underlying error from the remote Provider.
+           * @example {
+           *   "code": 400,
+           *   "body": {
+           *     "status": "error",
+           *     "message": "Property values were not valid: [{\"isValid\":false,\"message\":\"Property \\\"__about_us\\\" does not exist\",\"error\":\"PROPERTY_DOESNT_EXIST\",\"name\":\"__about_us\",\"localizedErrorMessage\":\"Property \\\"__about_us\\\" does not exist\"}]",
+           *     "correlationId": "ac94252c-90b5-45d2-ad1d-9a9f7651d7d2",
+           *     "category": "VALIDATION_ERROR"
+           *   },
+           *   "headers": {
+           *     "access-control-allow-credentials": "false",
+           *     "cf-cache-status": "DYNAMIC",
+           *     "cf-ray": "8053d17b9dae9664-SJC",
+           *     "connection": "close",
+           *     "content-length": "361",
+           *     "content-type": "application/json;charset=utf-8",
+           *     "date": "Mon, 11 Sep 2023 23:51:22 GMT",
+           *     "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
+           *     "report-to": "{\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+           *     "server": "cloudflare",
+           *     "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+           *     "vary": "origin, Accept-Encoding",
+           *     "x-content-type-options": "nosniff",
+           *     "x-envoy-upstream-service-time": "91",
+           *     "x-evy-trace-listener": "listener_https",
+           *     "x-evy-trace-route-configuration": "listener_https/all",
+           *     "x-evy-trace-route-service-name": "envoyset-translator",
+           *     "x-evy-trace-served-by-pod": "iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2",
+           *     "x-evy-trace-virtual-host": "all",
+           *     "x-hubspot-correlation-id": "ac94252c-90b5-45d2-ad1d-9a9f7651d7d2",
+           *     "x-hubspot-ratelimit-interval-milliseconds": "10000",
+           *     "x-hubspot-ratelimit-max": "100",
+           *     "x-hubspot-ratelimit-remaining": "99",
+           *     "x-hubspot-ratelimit-secondly": "10",
+           *     "x-hubspot-ratelimit-secondly-remaining": "9",
+           *     "x-request-id": "ac94252c-90b5-45d2-ad1d-9a9f7651d7d2",
+           *     "x-trace": "2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"
+           *   }
+           * }
+           */
+          cause?: Record<string, never>;
+          /**
+           * @description The origin of the error.
+           * @example remote-provider
+           * @enum {string}
+           */
+          origin: "remote-provider" | "supaglue";
+          [key: string]: unknown;
+        };
+      })[];
   };
   responses: never;
   parameters: {
@@ -1796,6 +1881,12 @@ export interface operations {
           "application/json": components["schemas"]["simple_customer"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Upsert customer */
@@ -1812,6 +1903,14 @@ export interface operations {
           "application/json": components["schemas"]["customer"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Get customer */
@@ -1829,6 +1928,12 @@ export interface operations {
           "application/json": components["schemas"]["simple_customer"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Delete customer */
@@ -1846,6 +1951,14 @@ export interface operations {
           "application/json": components["schemas"]["simple_customer"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -1860,6 +1973,12 @@ export interface operations {
           "application/json": components["schemas"]["destination"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Create destination */
@@ -1876,6 +1995,14 @@ export interface operations {
           "application/json": components["schemas"]["destination"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Get destination */
@@ -1892,6 +2019,12 @@ export interface operations {
           "application/json": components["schemas"]["destination"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Update destination */
@@ -1913,6 +2046,14 @@ export interface operations {
           "application/json": components["schemas"]["destination"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -1927,6 +2068,12 @@ export interface operations {
           "application/json": components["schemas"]["magic_link"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Create magic link */
@@ -1943,6 +2090,14 @@ export interface operations {
           "application/json": components["schemas"]["magic_link"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Delete magic link */
@@ -1958,6 +2113,14 @@ export interface operations {
       204: {
         content: never;
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -1978,6 +2141,12 @@ export interface operations {
           "application/json": components["schemas"]["object_field_mappings"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2003,6 +2172,14 @@ export interface operations {
           "application/json": components["schemas"]["object_field_mappings"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2023,6 +2200,12 @@ export interface operations {
           "application/json": components["schemas"]["merged_entity_mapping"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2050,6 +2233,14 @@ export interface operations {
       200: {
         content: never;
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2072,6 +2263,14 @@ export interface operations {
       204: {
         content: never;
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2087,6 +2286,12 @@ export interface operations {
           "application/json": components["schemas"]["schema"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2106,6 +2311,28 @@ export interface operations {
           "application/json": components["schemas"]["schema"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      /** @description Conflict */
+      409: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+          };
+        };
+      };
+      /** @description Unprocessable entity */
+      422: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+          };
+        };
+      };
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2126,6 +2353,12 @@ export interface operations {
           "application/json": components["schemas"]["schema"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2151,6 +2384,14 @@ export interface operations {
           "application/json": components["schemas"]["schema"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2171,6 +2412,14 @@ export interface operations {
           "application/json": components["schemas"]["schema"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2186,6 +2435,12 @@ export interface operations {
           "application/json": components["schemas"]["entity"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2205,6 +2460,14 @@ export interface operations {
           "application/json": components["schemas"]["entity"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2224,6 +2487,13 @@ export interface operations {
           "application/json": components["schemas"]["entity"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      499: paths["/connection_sync_configs"]["get"]["responses"]["499"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2248,6 +2518,14 @@ export interface operations {
           "application/json": components["schemas"]["entity"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2267,6 +2545,14 @@ export interface operations {
           "application/json": components["schemas"]["entity"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2281,6 +2567,12 @@ export interface operations {
           "application/json": components["schemas"]["provider"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Create provider */
@@ -2297,6 +2589,14 @@ export interface operations {
           "application/json": components["schemas"]["provider"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Get provider */
@@ -2313,6 +2613,12 @@ export interface operations {
           "application/json": components["schemas"]["provider"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Update provider */
@@ -2334,6 +2640,14 @@ export interface operations {
           "application/json": components["schemas"]["provider"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Delete provider */
@@ -2350,6 +2664,14 @@ export interface operations {
           "application/json": components["schemas"]["provider"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2364,6 +2686,12 @@ export interface operations {
           "application/json": components["schemas"]["sync_config"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Create Sync Config */
@@ -2380,6 +2708,14 @@ export interface operations {
           "application/json": components["schemas"]["sync_config"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Get Sync Config */
@@ -2397,6 +2733,12 @@ export interface operations {
           "application/json": components["schemas"]["sync_config"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2428,6 +2770,14 @@ export interface operations {
           "application/json": components["schemas"]["sync_config"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2454,6 +2804,14 @@ export interface operations {
           "application/json": components["schemas"]["sync_config"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Get connection sync config */
@@ -2471,6 +2829,20 @@ export interface operations {
           "application/json": components["schemas"]["connection_sync_config"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      /** @description Remote provider error */
+      499: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+          };
+        };
+      };
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2496,6 +2868,14 @@ export interface operations {
           "application/json": components["schemas"]["connection_sync_config"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Delete connection sync config */
@@ -2511,6 +2891,14 @@ export interface operations {
       204: {
         content: never;
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2530,6 +2918,14 @@ export interface operations {
           "application/json": components["schemas"]["connection"][];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2617,6 +3013,14 @@ export interface operations {
           "application/json": components["schemas"]["connection"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2661,6 +3065,15 @@ export interface operations {
           };
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      499: paths["/connection_sync_configs"]["get"]["responses"]["499"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Get connection */
@@ -2678,6 +3091,12 @@ export interface operations {
           "application/json": components["schemas"]["connection"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Delete connection */
@@ -2693,6 +3112,14 @@ export interface operations {
       204: {
         content: never;
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2770,6 +3197,54 @@ export interface operations {
           };
         };
       };
+      /** @description Bad request */
+      400: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+          };
+        };
+      };
+      /** @description Unauthorized */
+      401: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+          };
+        };
+      };
+      /** @description Forbidden */
+      403: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+          };
+        };
+      };
+      /** @description Not found */
+      404: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+          };
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+          };
+        };
+      };
+      /** @description Not implemented */
+      501: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+          };
+        };
+      };
     };
   };
   /** Pause sync */
@@ -2819,6 +3294,14 @@ export interface operations {
           "application/json": components["schemas"]["sync"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Resume sync */
@@ -2859,6 +3342,14 @@ export interface operations {
           "application/json": components["schemas"]["sync"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /** Trigger sync */
@@ -2914,6 +3405,14 @@ export interface operations {
           "application/json": components["schemas"]["sync"];
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      409: paths["/schemas"]["post"]["responses"]["409"];
+      422: paths["/schemas"]["post"]["responses"]["422"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**
@@ -2982,6 +3481,12 @@ export interface operations {
           };
         };
       };
+      400: paths["/syncs"]["get"]["responses"]["400"];
+      401: paths["/syncs"]["get"]["responses"]["401"];
+      403: paths["/syncs"]["get"]["responses"]["403"];
+      404: paths["/syncs"]["get"]["responses"]["404"];
+      500: paths["/syncs"]["get"]["responses"]["500"];
+      501: paths["/syncs"]["get"]["responses"]["501"];
     };
   };
   /**

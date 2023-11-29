@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError } from '@supaglue/core/errors';
+import { NotImplementedError } from '@supaglue/core/errors';
 import type {
   CreateStandardObjectRecordPathParams,
   CreateStandardObjectRecordRequest,
@@ -36,7 +36,7 @@ export default function init(app: Router): void {
       res: Response<ListStandardObjectRecordsResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new BadRequestError('Uncached reads not supported for standard object list reads.');
+        throw new NotImplementedError('Uncached reads not supported for standard object list reads.');
       }
       const { pagination, records } = await managedDataService.getStandardRecords(
         req.supaglueApplication.id,

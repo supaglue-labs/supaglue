@@ -1791,22 +1791,23 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     // Outreach references jsonapi: https://jsonapi.org/format/#error-objects
     const jsonError = err.response?.data?.errors?.[0];
     const cause = err.response?.data;
+    const status = err.response?.status;
 
-    switch (err.response?.status) {
+    switch (status) {
       case 400:
-        return new InternalServerError(jsonError?.title, cause);
+        return new InternalServerError(jsonError?.title, { cause, origin: 'remote-provider', status });
       case 401:
-        return new UnauthorizedError(jsonError?.title, cause);
+        return new UnauthorizedError(jsonError?.title, { cause, origin: 'remote-provider', status });
       case 403:
-        return new ForbiddenError(jsonError?.title, cause);
+        return new ForbiddenError(jsonError?.title, { cause, origin: 'remote-provider', status });
       case 404:
-        return new NotFoundError(jsonError?.title, cause);
+        return new NotFoundError(jsonError?.title, { cause, origin: 'remote-provider', status });
       case 409:
-        return new ConflictError(jsonError?.title, cause);
+        return new ConflictError(jsonError?.title, { cause, origin: 'remote-provider', status });
       case 422:
-        return new UnprocessableEntityError(jsonError?.title, cause);
+        return new UnprocessableEntityError(jsonError?.title, { cause, origin: 'remote-provider', status });
       case 429:
-        return new TooManyRequestsError(jsonError?.title, cause);
+        return new TooManyRequestsError(jsonError?.title, { cause, origin: 'remote-provider', status });
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       case 402:
@@ -1854,7 +1855,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 449:
       case 450:
       case 451:
-        return new RemoteProviderError(jsonError?.title, cause);
+        return new RemoteProviderError(jsonError?.title, { cause, status });
       default:
         return err;
     }

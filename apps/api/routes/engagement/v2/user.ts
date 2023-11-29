@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError } from '@supaglue/core/errors';
+import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysEngagementUser } from '@supaglue/core/mappers/engagement';
 import type {
   GetUserPathParams,
@@ -41,7 +41,7 @@ export default function init(app: Router): void {
       res: Response<ListUsersResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new BadRequestError('Uncached reads not yet implemented for users.');
+        throw new NotImplementedError('Uncached reads not yet implemented for users.');
       }
       const { pagination, records } = await managedDataService.getEngagementUserRecords(
         req.supaglueApplication.id,

@@ -43,6 +43,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -78,6 +96,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       }
@@ -104,6 +146,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -128,6 +188,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -185,6 +269,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -220,6 +322,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       }
@@ -246,6 +372,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -276,6 +420,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -316,6 +484,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -351,6 +537,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       }
@@ -370,6 +580,30 @@
         "responses": {
           "204": {
             "description": "Magic Link deleted"
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -412,6 +646,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -458,6 +710,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -497,6 +773,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -531,6 +825,30 @@
         "responses": {
           "200": {
             "description": "Entity Mapping"
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -549,6 +867,30 @@
         "responses": {
           "204": {
             "description": "Entity Mapping"
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -597,6 +939,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -633,6 +993,54 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unprocessable entity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       }
@@ -660,6 +1068,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -669,6 +1095,11 @@
         "summary": "Update schema",
         "tags": [
           "Schemas"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
         ],
         "parameters": [],
         "requestBody": {
@@ -691,6 +1122,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -716,6 +1171,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -758,6 +1237,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -794,6 +1291,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       }
@@ -821,6 +1342,27 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "499": {
+            "$ref": "#/paths/~1connection_sync_configs/get/responses/499"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -852,6 +1394,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -877,6 +1443,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -917,6 +1507,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -952,6 +1560,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       }
@@ -978,6 +1610,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -986,6 +1636,11 @@
         "summary": "Update provider",
         "tags": [
           "Providers"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
         ],
         "parameters": [],
         "requestBody": {
@@ -1008,6 +1663,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1032,6 +1711,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1072,6 +1775,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1107,6 +1828,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       }
@@ -1133,6 +1878,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1174,6 +1937,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1210,6 +1997,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1248,6 +2059,39 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "499": {
+            "description": "Remote provider error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1284,6 +2128,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1301,6 +2169,30 @@
         "responses": {
           "204": {
             "description": "Connection Sync Config"
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1339,6 +2231,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1505,6 +2421,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1523,7 +2463,7 @@
       "get": {
         "operationId": "getProviderUserId",
         "summary": "Get logged in User ID and details",
-        "description": "This endpoint returns the ID of the logged in (common schema) User and details.\n\nThe common schema User ID maps to the following 3rd-party provider object IDs:\n\n| Provider  | Remote object ID  | \n| --------- | ----------------- | \n| Hubspot   | V3 Owner          | \n| Dynamics  | Azure System User | \n| Intercom  | Admin             |\n",
+        "description": "This endpoint returns the ID of the logged in (common schema) User and details.\n\nThe common schema User ID maps to the following 3rd-party provider object IDs:\n\n| Provider  | Remote object ID  |\n| --------- | ----------------- |\n| Hubspot   | V3 Owner          |\n| Dynamics  | Azure System User |\n| Intercom  | Admin             |\n",
         "tags": [
           "Connections"
         ],
@@ -1597,6 +2537,33 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "499": {
+            "$ref": "#/paths/~1connection_sync_configs/get/responses/499"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1633,6 +2600,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1650,6 +2635,30 @@
         "responses": {
           "204": {
             "description": "An empty body is returned on successful deletion."
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -1826,6 +2835,96 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "Not implemented",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1925,6 +3024,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -2018,6 +3141,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -2136,6 +3283,30 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "409": {
+            "$ref": "#/paths/~1schemas/post/responses/409"
+          },
+          "422": {
+            "$ref": "#/paths/~1schemas/post/responses/422"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       },
@@ -2283,6 +3454,24 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/paths/~1syncs/get/responses/400"
+          },
+          "401": {
+            "$ref": "#/paths/~1syncs/get/responses/401"
+          },
+          "403": {
+            "$ref": "#/paths/~1syncs/get/responses/403"
+          },
+          "404": {
+            "$ref": "#/paths/~1syncs/get/responses/404"
+          },
+          "500": {
+            "$ref": "#/paths/~1syncs/get/responses/500"
+          },
+          "501": {
+            "$ref": "#/paths/~1syncs/get/responses/501"
           }
         }
       }
@@ -5671,6 +6860,165 @@
               ]
             }
           }
+        }
+      },
+      "errors": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "A unique identifier for the instance of the error. Provide this to support when contacting Supaglue.",
+              "example": "9366efb4-8fb1-4a28-bfb0-8d6f9cc6b5c5"
+            },
+            "detail": {
+              "type": "string",
+              "description": "A detailed description of the error.",
+              "example": "Property values were not valid: [{\"isValid\":false,\"message\":\"Property \\\"__about_us\\\" does not exist\",\"error\":\"PROPERTY_DOESNT_EXIST\",\"name\":\"__about_us\",\"localizedErrorMessage\":\"Property \\\"__about_us\\\" does not exist\"}]"
+            },
+            "problem_type": {
+              "type": "string",
+              "description": "The Supaglue error code associated with the error.",
+              "example": "MISSING_REQUIRED_FIELD",
+              "deprecated": true
+            },
+            "title": {
+              "type": "string",
+              "description": "A brief description of the error. The schema and type of message will vary by Provider.",
+              "example": "Property values were not valid\n"
+            },
+            "code": {
+              "type": "string",
+              "description": "The Supaglue error code associated with the error.",
+              "example": "MISSING_REQUIRED_FIELD"
+            },
+            "status": {
+              "type": "string",
+              "description": "The HTTP status code associated with the error.",
+              "example": "400"
+            },
+            "meta": {
+              "type": "object",
+              "description": "Additional metadata about the error.",
+              "properties": {
+                "cause": {
+                  "type": "object",
+                  "description": "The cause of the error. Usually the underlying error from the remote Provider.",
+                  "example": {
+                    "code": 400,
+                    "body": {
+                      "status": "error",
+                      "message": "Property values were not valid: [{\"isValid\":false,\"message\":\"Property \\\"__about_us\\\" does not exist\",\"error\":\"PROPERTY_DOESNT_EXIST\",\"name\":\"__about_us\",\"localizedErrorMessage\":\"Property \\\"__about_us\\\" does not exist\"}]",
+                      "correlationId": "ac94252c-90b5-45d2-ad1d-9a9f7651d7d2",
+                      "category": "VALIDATION_ERROR"
+                    },
+                    "headers": {
+                      "access-control-allow-credentials": "false",
+                      "cf-cache-status": "DYNAMIC",
+                      "cf-ray": "8053d17b9dae9664-SJC",
+                      "connection": "close",
+                      "content-length": "361",
+                      "content-type": "application/json;charset=utf-8",
+                      "date": "Mon, 11 Sep 2023 23:51:22 GMT",
+                      "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
+                      "report-to": "{\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+                      "server": "cloudflare",
+                      "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+                      "vary": "origin, Accept-Encoding",
+                      "x-content-type-options": "nosniff",
+                      "x-envoy-upstream-service-time": "91",
+                      "x-evy-trace-listener": "listener_https",
+                      "x-evy-trace-route-configuration": "listener_https/all",
+                      "x-evy-trace-route-service-name": "envoyset-translator",
+                      "x-evy-trace-served-by-pod": "iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2",
+                      "x-evy-trace-virtual-host": "all",
+                      "x-hubspot-correlation-id": "ac94252c-90b5-45d2-ad1d-9a9f7651d7d2",
+                      "x-hubspot-ratelimit-interval-milliseconds": "10000",
+                      "x-hubspot-ratelimit-max": "100",
+                      "x-hubspot-ratelimit-remaining": "99",
+                      "x-hubspot-ratelimit-secondly": "10",
+                      "x-hubspot-ratelimit-secondly-remaining": "9",
+                      "x-request-id": "ac94252c-90b5-45d2-ad1d-9a9f7651d7d2",
+                      "x-trace": "2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"
+                    }
+                  }
+                },
+                "origin": {
+                  "type": "string",
+                  "enum": [
+                    "remote-provider",
+                    "supaglue"
+                  ],
+                  "description": "The origin of the error.",
+                  "example": "remote-provider"
+                }
+              },
+              "required": [
+                "origin"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "required": [
+            "id",
+            "detail",
+            "problem_type",
+            "title",
+            "code",
+            "status",
+            "meta"
+          ],
+          "example": [
+            {
+              "meta": {
+                "cause": {
+                  "code": 400,
+                  "body": {
+                    "status": "error",
+                    "message": "Property values were not valid: [{\"isValid\":false,\"message\":\"Property \\\"__about_us\\\" does not exist\",\"error\":\"PROPERTY_DOESNT_EXIST\",\"name\":\"__about_us\",\"localizedErrorMessage\":\"Property \\\"__about_us\\\" does not exist\"}]",
+                    "correlationId": "ac94252c-90b5-45d2-ad1d-9a9f7651d7d2",
+                    "category": "VALIDATION_ERROR"
+                  },
+                  "headers": {
+                    "access-control-allow-credentials": "false",
+                    "cf-cache-status": "DYNAMIC",
+                    "cf-ray": "8053d17b9dae9664-SJC",
+                    "connection": "close",
+                    "content-length": "361",
+                    "content-type": "application/json;charset=utf-8",
+                    "date": "Mon, 11 Sep 2023 23:51:22 GMT",
+                    "nel": "{\"success_fraction\":0.01,\"report_to\":\"cf-nel\",\"max_age\":604800}",
+                    "report-to": "{\"endpoints\":[{\"url\":\"https://a.nel.cloudflare.com/report/v3?s=FgwuXObO%2Fz6ahUJKsxjDLaXTWjooJ8tB0w4%2B%2BKaulGStx0FGkn1PoJoOx2KrFMfihzNdfAqikq7CmgbdlmwKB8hkmp3eTb68qpg10LXFlRgiSqRhbWM7yYSfo8CXmPBc\"}],\"group\":\"cf-nel\",\"max_age\":604800}",
+                    "server": "cloudflare",
+                    "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+                    "vary": "origin, Accept-Encoding",
+                    "x-content-type-options": "nosniff",
+                    "x-envoy-upstream-service-time": "91",
+                    "x-evy-trace-listener": "listener_https",
+                    "x-evy-trace-route-configuration": "listener_https/all",
+                    "x-evy-trace-route-service-name": "envoyset-translator",
+                    "x-evy-trace-served-by-pod": "iad02/hubapi-td/envoy-proxy-6c94986c56-9xsh2",
+                    "x-evy-trace-virtual-host": "all",
+                    "x-hubspot-correlation-id": "ac94252c-90b5-45d2-ad1d-9a9f7651d7d2",
+                    "x-hubspot-ratelimit-interval-milliseconds": "10000",
+                    "x-hubspot-ratelimit-max": "100",
+                    "x-hubspot-ratelimit-remaining": "99",
+                    "x-hubspot-ratelimit-secondly": "10",
+                    "x-hubspot-ratelimit-secondly-remaining": "9",
+                    "x-request-id": "ac94252c-90b5-45d2-ad1d-9a9f7651d7d2",
+                    "x-trace": "2B1B4386362759B6A4C34802AD168B803DDC1BE770000000000000000000"
+                  }
+                }
+              },
+              "detail": "Property values were not valid: [{\"isValid\":false,\"message\":\"Property \\\"__about_us\\\" does not exist\",\"error\":\"PROPERTY_DOESNT_EXIST\",\"name\":\"__about_us\",\"localizedErrorMessage\":\"Property \\\"__about_us\\\" does not exist\"}]",
+              "problem_type": "MISSING_REQUIRED_FIELD",
+              "title": "Property values were not valid\n",
+              "code": "MISSING_REQUIRED_FIELD",
+              "status": "400",
+              "id": "9366efb4-8fb1-4a28-bfb0-8d6f9cc6b5c5"
+            }
+          ]
         }
       }
     },
