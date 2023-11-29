@@ -242,7 +242,9 @@ describe('Conversion functions', () => {
       email: 'john.doe@example.com',
       present_raw_address: '123 Main St, Sample City, Sample State, 12345, Sample Country',
       account_id: '123',
-      field1: 'value1',
+      typed_custom_fields: {
+        field1: 'value1',
+      },
     };
 
     expect(toApolloContactCreateParams(params)).toEqual(expected);
@@ -284,7 +286,9 @@ describe('Conversion functions', () => {
       home_phone: '987654321',
       mobile_phone: '1112223333',
       account_id: '123',
-      field1: 'value1',
+      typed_custom_fields: {
+        field1: 'value1',
+      },
     };
 
     expect(toApolloContactUpdateParams(params)).toEqual(expected);
