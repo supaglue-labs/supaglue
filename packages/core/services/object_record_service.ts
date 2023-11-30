@@ -150,29 +150,12 @@ export class ObjectRecordService {
     standardOrCustomObject: StandardOrCustomObject,
     recordId: string
   ): Promise<FullObjectRecord> {
-    let fieldMappingConfig = null;
-    if (standardOrCustomObject.type === 'standard') {
-      fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(
-        connection.id,
-        'standard',
-        standardOrCustomObject.name
-      );
-    }
     const remoteClient = await this.#remoteService.getRemoteClient(connection.id);
-    const fields =
-      !fieldMappingConfig || fieldMappingConfig?.type === 'inherit_all_fields'
-        ? (await remoteClient.listProperties(standardOrCustomObject)).map((p) => p.id)
-        : [
-            ...new Set([
-              ...fieldMappingConfig.coreFieldMappings.map((m) => m.mappedField),
-              ...fieldMappingConfig.additionalFieldMappings.map((m) => m.mappedField),
-            ]),
-          ];
+    const fields = (await remoteClient.listProperties(standardOrCustomObject)).map((p) => p.id);
     const record = await remoteClient.getObjectRecord(standardOrCustomObject, recordId, fields);
     return {
       id: recordId,
       objectName: standardOrCustomObject.name,
-      mappedProperties: fieldMappingConfig ? mapObjectToSchema(record.data, fieldMappingConfig) : record.data,
       rawData: record.data,
       metadata: record.metadata,
     };

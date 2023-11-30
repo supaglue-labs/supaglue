@@ -182,13 +182,16 @@ function mapObjectToEntityFields(data: EntityRecordData, fieldMappingConfig: Fie
     case 'inherit_all_fields':
       return data;
     case 'defined': {
-      const coreFields = fieldMappingConfig.coreFieldMappings.reduce((acc, { schemaField, mappedField }) => {
-        const value = data[mappedField];
-        if (value) {
-          return { ...acc, [schemaField]: value };
-        }
-        return acc;
-      }, {} as Record<string, unknown>);
+      const coreFields = fieldMappingConfig.coreFieldMappings.reduce(
+        (acc, { schemaField, mappedField }) => {
+          const value = data[mappedField];
+          if (value) {
+            return { ...acc, [schemaField]: value };
+          }
+          return acc;
+        },
+        {} as Record<string, unknown>
+      );
 
       const additionalFields = fieldMappingConfig.additionalFieldMappings.reduce(
         (acc, { schemaField, mappedField }) => {

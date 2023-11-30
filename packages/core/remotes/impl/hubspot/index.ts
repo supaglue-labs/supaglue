@@ -1264,7 +1264,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     return {
       id: response.data.id,
       objectName: object.name,
-      data: response.data.properties,
+      data: response.data,
       metadata: getMetadataFromRecord(response.data),
     };
   }

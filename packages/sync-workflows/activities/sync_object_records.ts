@@ -56,19 +56,16 @@ export function createSyncObjectRecords(
     if (connection.providerName === 'hubspot') {
       switch (objectType) {
         case 'common':
-          associationsToFetch = syncConfig.config.commonObjects?.find(
-            (config) => config.object === object
-          )?.associationsToFetch;
+          associationsToFetch = syncConfig.config.commonObjects?.find((config) => config.object === object)
+            ?.associationsToFetch;
           break;
         case 'standard':
-          associationsToFetch = syncConfig.config.standardObjects?.find(
-            (config) => config.object === object
-          )?.associationsToFetch;
+          associationsToFetch = syncConfig.config.standardObjects?.find((config) => config.object === object)
+            ?.associationsToFetch;
           break;
         case 'custom':
-          associationsToFetch = syncConfig.config.customObjects?.find(
-            (config) => config.object === object
-          )?.associationsToFetch;
+          associationsToFetch = syncConfig.config.customObjects?.find((config) => config.object === object)
+            ?.associationsToFetch;
           break;
         default:
           break;
