@@ -1,4 +1,5 @@
 import type { PaginationInternalParams, PaginationParams, ProviderName } from '@supaglue/types';
+import base64url from 'base64url';
 import { BadRequestError } from '../errors';
 
 export const DEFAULT_PAGE_SIZE = 10;
@@ -48,14 +49,14 @@ export type Cursor = {
 };
 
 export const encodeCursor = (cursorParams: Cursor): string => {
-  return encodeURIComponent(Buffer.from(JSON.stringify(cursorParams), 'binary').toString('base64'));
+  return base64url(JSON.stringify(cursorParams));
 };
 
 export const decodeCursor = (encoded?: string): Cursor | undefined => {
   if (!encoded) {
     return;
   }
-  return JSON.parse(Buffer.from(encoded, 'base64').toString('binary'));
+  return JSON.parse(base64url.decode(encoded));
 };
 
 export const toPaginationInternalParams = (paginationParams: PaginationParams): PaginationInternalParams => {
