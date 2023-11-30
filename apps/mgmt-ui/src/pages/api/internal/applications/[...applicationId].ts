@@ -1,8 +1,7 @@
 import { getHeaders } from '@/utils/headers';
-import { getOrgId } from '@/utils/org';
 import type { Application } from '@supaglue/types';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { API_HOST, SG_INTERNAL_TOKEN } from '../..';
+import { API_HOST } from '../..';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Application | object>) {
   switch (req.method) {
@@ -36,10 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     case 'DELETE': {
       const result = await fetch(`${API_HOST}/internal/applications/${req.query.applicationId}`, {
         method: 'DELETE',
-        headers: {
-          'x-sg-internal-token': SG_INTERNAL_TOKEN,
-          'x-org-id': getOrgId(req),
-        },
+        headers: await getHeaders(req),
       });
 
       if (!result.ok) {
