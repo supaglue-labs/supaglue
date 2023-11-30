@@ -5,7 +5,7 @@ set -euo pipefail
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 if [ -z "${1-}" ]; then
-  echo "usage: $0 [--skip_tests]"
+  echo "usage: $0 [--skip-tests]"
   exit 1
 fi
 
@@ -13,7 +13,7 @@ fi
 SKIP_TESTS=false
 
 # Check for the --skip_tests flag
-if [ "${1-}" == "--skip_tests" ]; then
+if [ "${1-}" == "--skip-tests" ]; then
   SKIP_TESTS="true"
 fi
 
