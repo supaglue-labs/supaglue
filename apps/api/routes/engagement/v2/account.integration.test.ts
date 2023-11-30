@@ -73,13 +73,19 @@ describe('account', () => {
     }, 120_000);
 
     test('Test that 2 identical upserts only creates 1 record', async () => {
-      const response = await apiClient.post<UpsertAccountResponse>('/engagement/v2/accounts', {
-        record: testAccount,
-        upsert_on: {
-          name: testAccount.name,
-          domain: providerName === 'apollo' ? undefined : testAccount.domain,
+      const response = await apiClient.post<UpsertAccountResponse>(
+        '/engagement/v2/accounts/_upsert',
+        {
+          record: testAccount,
+          upsert_on: {
+            name: testAccount.name,
+            domain: providerName === 'apollo' ? undefined : testAccount.domain,
+          },
         },
-      });
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
       expect(response.status).toEqual(201);
       expect(response.data.record?.id).toBeTruthy();
       addedObjects.push({
@@ -88,13 +94,19 @@ describe('account', () => {
         objectName: 'account',
       });
 
-      const response2 = await apiClient.post<UpsertAccountResponse>('/engagement/v2/accounts', {
-        record: testAccount,
-        upsert_on: {
-          name: testAccount.name,
-          domain: providerName === 'apollo' ? undefined : testAccount.domain,
+      const response2 = await apiClient.post<UpsertAccountResponse>(
+        '/engagement/v2/accounts/_upsert',
+        {
+          record: testAccount,
+          upsert_on: {
+            name: testAccount.name,
+            domain: providerName === 'apollo' ? undefined : testAccount.domain,
+          },
         },
-      });
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
       expect(response2.status).toEqual(201);
       expect(response2.data.record?.id).toBeTruthy();
       expect(response2.data.record?.id).toEqual(response.data.record?.id);
