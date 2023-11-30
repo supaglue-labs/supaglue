@@ -64,7 +64,7 @@ Supaglue supports the following Common Objects:
 | `phone_numbers[].phone_number_type`    | primary OR mobile or fax          | primary OR mobile or fax          | mobile OR primary OR fax       | primary OR other                        |
 | `email_addresses[].email_address`      | `Email`                           | `work_email` OR `email`           | `emailAddress`                 | `emailaddress{1,2}`                     |
 | `email_addresses[].email_address_type` | primary                           | primary OR work                   | primary OR work                | primary OR other                        |
-| `lifecycle_stage`                      | N/A                               | `id`                              | N/A                            | N/A                                     |
+| `lifecycle_stage`                      | N/A                               | `lifecyclestage`                              | N/A                            | N/A                                     |
 | `last_modified_at`                     | `LastActivityDate`                | `notes_last_updated`              | `delete_time` OR `update_time` | `modifiedon`                            |
 | `created_at`                           | `CreatedDate`                     | `createdAt`                       | `add_time`                     | `overridencreatedon` OR `createdon`     |
 | `updated_at`                           | `SystemModstamp`                  | `updatedAt`                       | `update_time`                  | `modifiedon`                            |
