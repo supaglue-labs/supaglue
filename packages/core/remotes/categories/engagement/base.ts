@@ -10,6 +10,9 @@ export type CreateCommonObjectRecordResponse<T extends EngagementCommonObjectTyp
   record?: EngagementCommonObjectTypeMap<T>['object'];
 };
 
+export type UpsertCommonObjectRecordResponse<T extends EngagementCommonObjectType> =
+  CreateCommonObjectRecordResponse<T>;
+
 export type UpdateCommonObjectRecordResponse<T extends EngagementCommonObjectType> =
   CreateCommonObjectRecordResponse<T>;
 
@@ -27,6 +30,10 @@ export interface EngagementRemoteClient extends RemoteClient {
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
   ): Promise<CreateCommonObjectRecordResponse<T>>;
+  upsertCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<UpsertCommonObjectRecordResponse<T>>;
   updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
@@ -69,6 +76,12 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
   ): Promise<CreateCommonObjectRecordResponse<T>> {
+    throw new NotImplementedError();
+  }
+  public async upsertCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<UpsertCommonObjectRecordResponse<T>> {
     throw new NotImplementedError();
   }
   public async updateCommonObjectRecord<T extends EngagementCommonObjectType>(

@@ -15,6 +15,7 @@ export type Mailbox = BaseEngagementModel & CoreMailbox;
 export type RemoteMailboxTypes = {
   object: Mailbox;
   createParams: never;
+  upsertParams: never;
   updateParams: never;
   searchParams: never;
 };

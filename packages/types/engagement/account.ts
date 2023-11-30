@@ -22,9 +22,18 @@ export type AccountUpdateParams = AccountCreateParams & {
   id: string;
 };
 
+export type AccountUpsertParams = {
+  record: AccountCreateParams;
+  upsertOn: {
+    name?: string;
+    domain?: string;
+  };
+};
+
 export type RemoteAccountTypes = {
   object: Account;
   createParams: AccountCreateParams;
+  upsertParams: AccountUpsertParams;
   updateParams: AccountUpdateParams;
   searchParams: never;
 };

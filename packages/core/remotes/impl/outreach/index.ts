@@ -11,6 +11,7 @@ import type {
 import type {
   AccountCreateParams,
   AccountUpdateParams,
+  AccountUpsertParams,
   Contact,
   ContactCreateParams,
   ContactSearchParams,
@@ -43,6 +44,7 @@ import {
 import type { PaginatedSupaglueRecords } from '../../../lib';
 import { decodeCursor, encodeCursor, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
+import type { UpsertCommonObjectRecordResponse } from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
 import {
@@ -1489,6 +1491,53 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         getNextCursorFromPage: (response) => response.links?.next,
       },
     ]);
+  }
+
+  public override async upsertCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<UpsertCommonObjectRecordResponse<T>> {
+    // TODO: figure out why type assertion is required here
+    switch (commonObjectType) {
+      case 'account':
+        return { id: await this.upsertAccount(params as AccountUpsertParams) };
+      case 'sequence_state':
+      case 'contact':
+      case 'sequence':
+      case 'sequence_step':
+      case 'mailbox':
+      case 'user':
+        throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async upsertAccount(params: AccountUpsertParams): Promise<string> {
+    const { domain, name } = params.upsertOn;
+
+    if (!domain && !name) {
+      throw new BadRequestError('Must specify at least one upsertOn field');
+    }
+    await this.maybeRefreshAccessToken();
+    const searchParams: Record<string, unknown> = DEFAULT_LIST_PARAMS;
+    if (name) {
+      searchParams['filter[name]'] = name;
+    }
+    if (domain) {
+      searchParams['filter[domain]'] = domain;
+    }
+    const response = await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/accounts`, {
+      params: searchParams,
+      headers: this.getAuthHeadersForPassthroughRequest(),
+    });
+    if (response.data.data.length > 1) {
+      throw new BadRequestError('More than one account found for upsertOn fields');
+    }
+    if (response.data.data.length) {
+      return this.updateAccount({ ...params.record, id: response.data.data[0].id.toString() });
+    }
+    return this.createAccount(params.record);
   }
 
   public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(

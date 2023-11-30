@@ -11,6 +11,7 @@ import type {
   GetAccountResponse,
   ListAccountsResponse,
   UpdateAccountResponse,
+  UpsertAccountResponse,
 } from '@supaglue/schemas/v2/engagement';
 
 describe('account', () => {
@@ -69,6 +70,34 @@ describe('account', () => {
       expect(found).toBeTruthy();
       expect(found?.name).toEqual(testAccount.name);
       expect(found?.domain).toEqual(testAccount.domain);
+    }, 120_000);
+
+    test('Test that 2 identical upserts only creates 1 record', async () => {
+      const response = await apiClient.post<UpsertAccountResponse>('/engagement/v2/accounts', {
+        record: testAccount,
+        upsert_on: {
+          name: testAccount.name,
+          domain: providerName === 'apollo' ? undefined : testAccount.domain,
+        },
+      });
+      expect(response.status).toEqual(201);
+      expect(response.data.record?.id).toBeTruthy();
+      addedObjects.push({
+        id: response.data.record?.id as string,
+        providerName,
+        objectName: 'account',
+      });
+
+      const response2 = await apiClient.post<UpsertAccountResponse>('/engagement/v2/accounts', {
+        record: testAccount,
+        upsert_on: {
+          name: testAccount.name,
+          domain: providerName === 'apollo' ? undefined : testAccount.domain,
+        },
+      });
+      expect(response2.status).toEqual(201);
+      expect(response2.data.record?.id).toBeTruthy();
+      expect(response2.data.record?.id).toEqual(response.data.record?.id);
     }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
