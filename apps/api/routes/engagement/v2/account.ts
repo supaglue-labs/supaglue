@@ -90,6 +90,21 @@ export default function init(app: Router): void {
     }
   );
 
+  router.post(
+    '/_upsert',
+    async (
+      req: Request<CreateAccountPathParams, CreateAccountResponse, CreateAccountRequest>,
+      res: Response<CreateAccountResponse>
+    ) => {
+      const id = await engagementCommonObjectService.create(
+        'account',
+        req.customerConnection,
+        camelcaseKeysSansCustomFields(req.body.record)
+      );
+      return res.status(201).send({ record: { id } });
+    }
+  );
+
   router.patch<string, UpdateAccountPathParams, UpdateAccountResponse, UpdateAccountRequest, UpdateAccountQueryParams>(
     '/:account_id',
     async (

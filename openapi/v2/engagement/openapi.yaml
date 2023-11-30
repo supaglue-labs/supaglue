@@ -29,6 +29,8 @@ paths:
     $ref: paths/accounts.yaml
   '/accounts/{account_id}':
     $ref: paths/accounts@{account_id}.yaml
+  '/accounts/_upsert':
+    $ref: paths/accounts@upsert.yaml
   '/contacts':
     $ref: paths/contacts.yaml
   '/contacts/_search':

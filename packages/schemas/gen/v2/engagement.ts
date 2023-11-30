@@ -47,6 +47,20 @@ export interface paths {
       };
     };
   };
+  "/accounts/_upsert": {
+    /**
+     * Upsert account
+     * @description Upsert an account. If the account matching the given criteria does not exist, it will be created. If the account does exist, it will be updated.
+     * Only supported for Salesforce, Hubspot, and Pipedrive.
+     */
+    post: operations["upsertAccount"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/contacts": {
     /** List contacts */
     get: operations["listContacts"];
@@ -1005,6 +1019,45 @@ export interface operations {
         content: {
           "application/json": {
             errors?: components["schemas"]["errors"];
+            warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Upsert account
+   * @description Upsert an account. If the account matching the given criteria does not exist, it will be created. If the account does exist, it will be updated.
+   * Only supported for Salesforce, Hubspot, and Pipedrive.
+   */
+  upsertAccount: {
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          record: components["schemas"]["create_account"];
+          /** @description The criteria to upsert on. If both name and domain are specified, it would perform an AND operation. If more than one account is found that matches, then an error will be thrown. */
+          upsert_on: {
+            /** @description The name of the account to upsert on. Supported for all providers. */
+            name?: string;
+            /** @description The domain of the account to upsert on. Only supported for Outreach and Salesloft. */
+            domain?: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Account upserted */
+      201: {
+        content: {
+          "application/json": {
+            errors?: components["schemas"]["errors"];
+            record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
           };
         };
