@@ -6338,6 +6338,7 @@ __metadata:
     "@types/uuid": ^9.0.1
     async-retry: ^1.3.3
     axios: ^1.6.0
+    base64url: ^3.0.1
     concurrently: ^8.2.2
     csv-parse: ^5.3.5
     csv-stringify: ^6.3.0
