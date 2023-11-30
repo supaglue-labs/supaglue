@@ -9,6 +9,7 @@ import type {
 import type {
   Account,
   AccountCreateParams,
+  AccountUpsertParams,
   Contact,
   ContactCreateParams,
   ContactSearchParams,
@@ -31,6 +32,11 @@ import {
 import type { PaginatedSupaglueRecords } from '../../../lib';
 import { decodeCursor, encodeCursor, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
+import type {
+  CreateCommonObjectRecordResponse,
+  UpdateCommonObjectRecordResponse,
+  UpsertCommonObjectRecordResponse,
+} from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
 import {
@@ -344,10 +350,57 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     return response.data.data.cadence.id.toString();
   }
 
+  public override async upsertCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<UpsertCommonObjectRecordResponse<T>> {
+    // TODO: figure out why type assertion is required here
+    switch (commonObjectType) {
+      case 'account':
+        return await this.upsertAccount(params as AccountUpsertParams);
+      case 'sequence_state':
+      case 'contact':
+      case 'sequence':
+      case 'sequence_step':
+      case 'mailbox':
+      case 'user':
+        throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async upsertAccount(params: AccountUpsertParams): Promise<Promise<{ id: string }>> {
+    const { domain, name } = params.upsertOn;
+
+    if (!domain && !name) {
+      throw new BadRequestError('Must specify at least one upsertOn field');
+    }
+    await this.maybeRefreshAccessToken();
+    const searchParams: Record<string, unknown> = DEFAULT_LIST_PARAMS;
+    if (name) {
+      searchParams.name = [name];
+    }
+    if (domain) {
+      searchParams.domain = domain;
+    }
+    const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/accounts`, {
+      params: searchParams,
+      headers: this.#headers,
+    });
+    if (response.data.data.length > 1) {
+      throw new BadRequestError('More than one account found for upsertOn fields');
+    }
+    if (response.data.data.length) {
+      return this.updateCommonObjectRecord('account', { ...params.record, id: response.data.data[0].id.toString() });
+    }
+    return this.createCommonObjectRecord('account', params.record);
+  }
+
   public override async createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
-  ): Promise<{ id: string; record?: EngagementCommonObjectTypeMap<T>['object'] }> {
+  ): Promise<CreateCommonObjectRecordResponse<T>> {
     switch (commonObjectType) {
       case 'sequence_state':
         return {
@@ -379,7 +432,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
-  ): Promise<{ id: string; record?: EngagementCommonObjectTypeMap<T>['object'] }> {
+  ): Promise<UpdateCommonObjectRecordResponse<T>> {
     switch (commonObjectType) {
       case 'account':
         return {

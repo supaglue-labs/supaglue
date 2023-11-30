@@ -52,6 +52,7 @@ type PatchSequenceStep = EngagementV2['paths']['/sequences/{sequence_id}/sequenc
 export type RemoteSequenceStepTypes = {
   object: SequenceStep;
   createParams: SequenceStepCreateParams;
+  upsertParams: never;
   /** Start of a new pattern to stop unnecessary camelCasing... */
   updateParams: PatchSequenceStep['parameters']['path'] &
     PatchSequenceStep['requestBody']['content']['application/json']['record'];

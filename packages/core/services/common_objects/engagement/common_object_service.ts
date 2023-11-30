@@ -103,6 +103,39 @@ export class EngagementCommonObjectService {
     return res.id;
   }
 
+  public async upsert<T extends EngagementCommonObjectType>(
+    type: T,
+    connection: ConnectionSafeAny,
+    params: EngagementCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<string> {
+    const [remoteClient, providerName] = await this.#remoteService.getEngagementRemoteClient(connection.id);
+
+    const end = remoteDuration.startTimer({ operation: 'upsert', remote_name: providerName });
+
+    const res = await remoteClient.upsertCommonObjectRecord(type, params);
+
+    end();
+
+    const shouldCacheInvalidate = await this.#shouldPerformCacheInvalidation(connection, type);
+    if (!shouldCacheInvalidate) {
+      return res.id;
+    }
+
+    // If the associated provider has a destination, do cache invalidation
+    const [writer, destinationType] = await this.#destinationService.getWriterByProviderId(connection.providerId);
+    if (writer) {
+      // TODO: we should move this logic into each individual provider instead of checking apollo here
+      const record =
+        connection.providerName === 'apollo' ? res.record : await remoteClient.getCommonObjectRecord(type, res.id);
+      if (record) {
+        const end = remoteDuration.startTimer({ operation: 'create', remote_name: destinationType! });
+        await writer.upsertCommonObjectRecord<'engagement', T>(connection, type, record);
+        end();
+      }
+    }
+    return res.id;
+  }
+
   public async search<T extends EngagementCommonObjectType>(
     objectName: T,
     connection: ConnectionSafeAny,

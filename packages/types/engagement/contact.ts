@@ -46,6 +46,7 @@ export type ContactSearchParams = BaseSearchParams & {
 export type RemoteContactTypes = {
   object: Contact;
   createParams: ContactCreateParams;
+  upsertParams: never;
   updateParams: ContactUpdateParams;
   searchParams: ContactSearchParams;
 };

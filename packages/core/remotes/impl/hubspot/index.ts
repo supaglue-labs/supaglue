@@ -2319,9 +2319,8 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     }
     await this.maybeRefreshAccessToken();
     const schemas = await this.#client.crm.schemas.coreApi.getAll();
-    const schemaId = schemas.results.find(
-      (schema) => schema.name === nameOrId || schema.objectTypeId === nameOrId
-    )?.objectTypeId;
+    const schemaId = schemas.results.find((schema) => schema.name === nameOrId || schema.objectTypeId === nameOrId)
+      ?.objectTypeId;
     if (!schemaId) {
       throw new NotFoundError(`Could not find custom object schema with name or id ${nameOrId}`);
     }
@@ -2864,7 +2863,7 @@ const retryWhenRateLimited = async <Args extends any[], Return>(
 function filterForUpdatedAfter<
   R extends {
     results: { updatedAt?: Date }[];
-  }
+  },
 >(response: R, updatedAfter?: Date): R {
   return {
     ...response,
@@ -2885,7 +2884,7 @@ function filterForUpdatedAfter<
 function filterForUpdatedAfterISOString<
   R extends {
     results: { updatedAt?: string }[];
-  }
+  },
 >(response: R, updatedAfter?: Date): R {
   return {
     ...response,
@@ -2906,7 +2905,7 @@ function filterForUpdatedAfterISOString<
 function filterForArchivedAfterISOString<
   R extends {
     results: { archivedAt?: string }[];
-  }
+  },
 >(response: R, archivedAfter?: Date): R {
   return {
     ...response,
@@ -2958,27 +2957,30 @@ function flattenAssociations(
     | undefined,
   associatedCustomObjectSchemas: HubSpotCustomSchema[]
 ): Record<string, string[]> {
-  return Object.entries(associations ?? {}).reduce((acc, [associatedObjectTypeKey, { results }]) => {
-    const dedupedIds = [...new Set(results.map(({ id }) => id))];
-    // If associatedObjectType is for a standard object, it will be pluralized, and we should use the singular form
-    if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectTypeKey)) {
-      if (!(associatedObjectTypeKey in hubspotStandardObjectPluralizedToType)) {
-        throw new Error(`Couldn't find matching standard object type for ${associatedObjectTypeKey}`);
+  return Object.entries(associations ?? {}).reduce(
+    (acc, [associatedObjectTypeKey, { results }]) => {
+      const dedupedIds = [...new Set(results.map(({ id }) => id))];
+      // If associatedObjectType is for a standard object, it will be pluralized, and we should use the singular form
+      if (HUBSPOT_STANDARD_OBJECT_TYPES_PLURALIZED.includes(associatedObjectTypeKey)) {
+        if (!(associatedObjectTypeKey in hubspotStandardObjectPluralizedToType)) {
+          throw new Error(`Couldn't find matching standard object type for ${associatedObjectTypeKey}`);
+        }
+        const standardObjectType = hubspotStandardObjectPluralizedToType[associatedObjectTypeKey];
+        acc[standardObjectType] = dedupedIds;
+        return acc;
       }
-      const standardObjectType = hubspotStandardObjectPluralizedToType[associatedObjectTypeKey];
-      acc[standardObjectType] = dedupedIds;
-      return acc;
-    }
 
-    const matchingCustomObjectSchema = associatedCustomObjectSchemas.find(
-      (schema) => schema.fullyQualifiedName === associatedObjectTypeKey
-    );
-    if (!matchingCustomObjectSchema) {
-      throw new Error(`Couldn't find matching custom object schema for ${associatedObjectTypeKey}`);
-    }
-    acc[matchingCustomObjectSchema.name] = dedupedIds;
-    return acc;
-  }, {} as Record<string, string[]>);
+      const matchingCustomObjectSchema = associatedCustomObjectSchemas.find(
+        (schema) => schema.fullyQualifiedName === associatedObjectTypeKey
+      );
+      if (!matchingCustomObjectSchema) {
+        throw new Error(`Couldn't find matching custom object schema for ${associatedObjectTypeKey}`);
+      }
+      acc[matchingCustomObjectSchema.name] = dedupedIds;
+      return acc;
+    },
+    {} as Record<string, string[]>
+  );
 }
 
 function shouldFetchAllAssociations(applicationId: string): boolean {

@@ -8,6 +8,7 @@ import type {
 import type {
   AccountCreateParams,
   AccountUpdateParams,
+  AccountUpsertParams,
   Contact,
   ContactCreateParams,
   ContactSearchParams,
@@ -34,6 +35,7 @@ import type { ConnectorAuthConfig } from '../../base';
 import type {
   CreateCommonObjectRecordResponse,
   UpdateCommonObjectRecordResponse,
+  UpsertCommonObjectRecordResponse,
 } from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
 import { paginator } from '../../utils/paginator';
@@ -515,6 +517,36 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     }
   }
 
+  async upsertAccount(params: AccountUpsertParams): Promise<UpsertCommonObjectRecordResponse<'account'>> {
+    if (params.upsertOn.domain) {
+      throw new BadRequestError('Domain is not supported when upserting an account in Apollo');
+    }
+    if (!params.upsertOn.name) {
+      throw new BadRequestError('Name is required when upserting an account in Apollo');
+    }
+    // search account
+    const response = await axios.post<ApolloPaginatedAccounts>(
+      `${this.#baseURL}/v1/accounts/search`,
+      {
+        q_organization_name: params.upsertOn.name,
+        api_key: this.#apiKey,
+        per_page: MAX_PAGE_SIZE,
+      },
+      {
+        headers: this.#headers,
+      }
+    );
+    console.log(`response.data: `, response.data);
+
+    if (response.data.accounts.length > 1) {
+      throw new BadRequestError('More than one account found for upsert query');
+    }
+    if (response.data.accounts.length) {
+      return this.updateAccount({ ...params.record, id: response.data.accounts[0].id });
+    }
+    return await this.createAccount(params.record);
+  }
+
   async createAccount(params: AccountCreateParams): Promise<CreateCommonObjectRecordResponse<'account'>> {
     const response = await axios.post<{ account: Record<string, any> }>(
       `${this.#baseURL}/v1/accounts`,
@@ -725,6 +757,26 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         return (await this.createSequenceStep(
           params as SequenceStepCreateParams
         )) as CreateCommonObjectRecordResponse<T>;
+      case 'mailbox':
+      case 'user':
+        throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  public override async upsertCommonObjectRecord<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['upsertParams']
+  ): Promise<UpsertCommonObjectRecordResponse<T>> {
+    // TODO: figure out why type assertion is required here
+    switch (commonObjectType) {
+      case 'account':
+        return (await this.upsertAccount(params as AccountUpsertParams)) as UpsertCommonObjectRecordResponse<T>;
+      case 'sequence_state':
+      case 'contact':
+      case 'sequence':
+      case 'sequence_step':
       case 'mailbox':
       case 'user':
         throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);

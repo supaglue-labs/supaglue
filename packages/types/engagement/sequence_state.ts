@@ -35,6 +35,7 @@ export type SequenceStateSearchParams = BaseSearchParams & {
 export type RemoteSequenceStateTypes = {
   object: SequenceState;
   createParams: SequenceStateCreateParams;
+  upsertParams: never;
   updateParams: never;
   searchParams: SequenceStateSearchParams;
 };

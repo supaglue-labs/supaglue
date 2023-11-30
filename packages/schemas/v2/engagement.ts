@@ -6,6 +6,12 @@ export type CreateAccountRequest = operations['createAccount']['requestBody']['c
 export type CreateAccountResponse =
   operations['createAccount']['responses'][keyof operations['createAccount']['responses']]['content']['application/json'];
 
+export type UpsertAccountPathParams = never;
+export type UpsertAccountQueryParams = never;
+export type UpsertAccountRequest = operations['upsertAccount']['requestBody']['content']['application/json'];
+export type UpsertAccountResponse =
+  operations['upsertAccount']['responses'][keyof operations['createAccount']['responses']]['content']['application/json'];
+
 export type ListAccountsPathParams = never;
 export type ListAccountsQueryParams = Required<operations['listAccounts']>['parameters']['query'];
 export type ListAccountsRequest = never;

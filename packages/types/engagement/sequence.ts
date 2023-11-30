@@ -22,6 +22,7 @@ export type Sequence = BaseEngagementModel & CoreSequence;
 export type RemoteSequenceTypes = {
   object: Sequence;
   createParams: SequenceCreateParams;
+  upsertParams: never;
   updateParams: never;
   searchParams: never;
 };
