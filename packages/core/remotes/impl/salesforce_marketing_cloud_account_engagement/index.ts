@@ -11,7 +11,9 @@ import type {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type { SubmitFormData, SubmitFormResult } from '@supaglue/types/marketing_automation/submit_form';
+import pluralize from 'pluralize';
 import simpleOauth2 from 'simple-oauth2';
+import { BadRequestError } from '../../../errors';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractMarketingAutomationRemoteClient } from '../../categories/marketing_automation/base';
 import { fromPardotFormHandlerFieldToFormField, fromPardotFormHandlerToFormMetadata } from './mappers';
@@ -147,7 +149,10 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
 
   public override async marketingAutomationGetFormFields(id: string) {
     await this.#refreshAccessToken();
+    return await this.marketingAutomationGetFormFieldsInternal(id);
+  }
 
+  private async marketingAutomationGetFormFieldsInternal(id: string) {
     const url = `${
       this.baseUrl
     }/api/v5/objects/form-handler-fields?formHandlerId=${id}&fields=${FORM_HANDLER_FIELD_FIELDS.join(',')}`;
@@ -167,6 +172,20 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
     formData: SubmitFormData
   ): Promise<SubmitFormResult> {
     await this.#refreshAccessToken();
+
+    // do some basic validation
+    // we do this ourselves because the API doesn't tell you what required fields are missing
+    const requiredFields = (await this.marketingAutomationGetFormFieldsInternal(formId))
+      .filter((field) => field.required)
+      .map((field) => field.name);
+
+    const missingRequiredFields = requiredFields.filter((field) => !formData[field]);
+
+    if (missingRequiredFields.length > 0) {
+      throw new BadRequestError(
+        `Missing required ${pluralize('field', missingRequiredFields.length)}: ${missingRequiredFields.join(', ')}`
+      );
+    }
 
     // get the form submit url
     const response = await axios.get<{ embedCode: string }>(
@@ -193,11 +212,18 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
         maxRedirects: 0, // we want the response, not the redirect
       });
     } catch (err: unknown) {
-      if (err instanceof AxiosError) {
-        // only throw if it's not a 302
-        if (err.response?.status !== 302) {
-          throw err;
+      if (err instanceof AxiosError && err.response?.status === 302) {
+        const errorMessage = new URL(err.response.headers.location).searchParams.get('errorMessage');
+        if (errorMessage) {
+          if (errorMessage.includes('This field is required')) {
+            // it doesn't actually tell you what field is missing, so we can't tell the user
+            throw new BadRequestError('Missing required field(s)');
+          } else {
+            throw new Error(errorMessage);
+          }
         }
+      } else {
+        throw err;
       }
     }
 
