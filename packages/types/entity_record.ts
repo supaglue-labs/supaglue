@@ -1,4 +1,9 @@
-import type { BaseFullRecord, ObjectRecordUpsertData, PropertiesWithAdditionalFields } from './object_record';
+import type {
+  BaseFullRecord,
+  ObjectRecordData,
+  ObjectRecordUpsertData,
+  PropertiesWithAdditionalFields,
+} from './object_record';
 
 /**
  * @deprecated
@@ -40,4 +45,5 @@ export type EntityRecord = {
  */
 export type FullEntityRecord = BaseFullRecord & {
   entity: SimpleEntity;
+  mappedProperties: ObjectRecordData;
 };

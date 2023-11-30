@@ -10,7 +10,7 @@ export type ListedObjectRecordRawDataOnly<D = Record<string, unknown>> = {
 
 export type ListedObjectRecord<
   D extends Record<string, unknown> = Record<string, unknown>,
-  P extends Record<string, unknown> = Record<string, unknown>
+  P extends Record<string, unknown> = Record<string, unknown>,
 > = ListedObjectRecordRawDataOnly<D> & {
   // rawProperties should only have properties
   // - in salesforce, this is easy
@@ -72,7 +72,6 @@ export type ObjectMetadata = {
 
 export type BaseFullRecord = {
   id: string;
-  mappedProperties: ObjectRecordData;
   rawData: Record<string, unknown>;
   metadata: ObjectMetadata;
 };

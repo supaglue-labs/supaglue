@@ -536,7 +536,6 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         headers: this.#headers,
       }
     );
-    console.log(`response.data: `, response.data);
 
     if (response.data.accounts.length > 1) {
       throw new BadRequestError('More than one account found for upsert query');
