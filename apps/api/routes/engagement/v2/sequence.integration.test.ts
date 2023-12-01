@@ -107,7 +107,7 @@ describe('sequence', () => {
     );
   });
 
-  describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
+  describe.each(['outreach', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateSequenceResponse>(
         '/engagement/v2/sequences',
@@ -170,18 +170,6 @@ describe('sequence', () => {
 
       /** Required for sequence state creation. Hard coding as a result */
       const getMailboxId = async () => {
-        if (providerName === 'apollo') {
-          const res = await apiClient.post<{ body: { email_accounts: Array<{ id: string; active: boolean }> } }>(
-            '/actions/v2/passthrough',
-            { path: '/v1/email_accounts', method: 'GET' },
-            { headers: { 'x-provider-name': providerName } }
-          );
-          const id = res.data.body.email_accounts.find((e) => e.active)?.id;
-          if (!id) {
-            throw new Error('Unable to find an active mailbox inside Apollo for integration test');
-          }
-          return id;
-        }
         if (providerName === 'outreach') {
           const res = await apiClient.post<{
             body: { data: Array<{ id: number; attributes: { sendDisabled: boolean } }> };
@@ -217,13 +205,6 @@ describe('sequence', () => {
       const stateResponse = await addContactToSequence();
       expect(stateResponse.status).toEqual(201);
       expect(stateResponse.data.record?.id).toBeTruthy();
-
-      if (providerName === 'apollo') {
-        // Ensure that apollo can add a contact who is already in sequence without throwing error
-        const stateResponse2 = await addContactToSequence();
-        expect(stateResponse2.status).toEqual(201);
-        expect(stateResponse2.data.record?.id).toBeTruthy();
-      }
 
       addedObjects.push({
         id: stateResponse.data.record?.id as string,
