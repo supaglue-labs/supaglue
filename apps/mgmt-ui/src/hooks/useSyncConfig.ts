@@ -1,11 +1,11 @@
-import type { GetSyncConfigResponse } from '@supaglue/schemas/v2/mgmt';
+import type { GetSyncConfigSuccessfulResponse } from '@supaglue/schemas/v2/mgmt';
 import type { SyncConfigDTO } from '@supaglue/types';
 import type { CommonObjectConfig } from '@supaglue/types/sync_object_config';
 import { camelcaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useSyncConfig(syncConfigId: string) {
-  const { data, isLoading, error, ...rest } = useSWRWithApplication<GetSyncConfigResponse>(
+  const { data, isLoading, error, ...rest } = useSWRWithApplication<GetSyncConfigSuccessfulResponse>(
     `/api/internal/sync-configs/${syncConfigId}`
   );
 
@@ -17,7 +17,7 @@ export function useSyncConfig(syncConfigId: string) {
   };
 }
 
-export const toSyncConfig = (response: GetSyncConfigResponse): SyncConfigDTO => {
+export const toSyncConfig = (response: GetSyncConfigSuccessfulResponse): SyncConfigDTO => {
   const camelcased = camelcaseKeys(response);
   return {
     ...camelcased,

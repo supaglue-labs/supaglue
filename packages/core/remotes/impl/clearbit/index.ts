@@ -6,7 +6,7 @@ import type {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type { PersonEnrichmentData } from '@supaglue/types/enrichment/person_enrichment_data';
-import { BadRequestError } from '../../../errors';
+import { BadRequestError, NotImplementedError } from '../../../errors';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractEnrichmentRemoteClient } from '../../categories/enrichment/base';
 import type { CombinedAPIResponse } from './mapper';
@@ -30,7 +30,7 @@ class ClearbitClient extends AbstractEnrichmentRemoteClient {
     // not implemented because the baseURL changes based on the type of API, e.g.
     // https://person.clearbit.com, or
     // https://discovery.clearbit.com
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 
   public override async enrichPerson(email: string): Promise<PersonEnrichmentData> {

@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysEngagementAccount } from '@supaglue/core/mappers/engagement';
 import type {
   CreateAccountPathParams,
@@ -133,7 +134,7 @@ export default function init(app: Router): void {
   );
 
   router.delete('/:account_id', () => {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   });
 
   app.use('/accounts', router);

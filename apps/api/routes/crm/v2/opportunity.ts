@@ -1,5 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmOpportunity } from '@supaglue/core/mappers/crm';
 import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
@@ -134,7 +135,7 @@ export default function init(app: Router): void {
   );
 
   router.delete('/:opportunity_id', () => {
-    throw new Error('Not implemented');
+    throw new NotImplementedError('Not implemented');
   });
 
   app.use('/opportunities', router);
