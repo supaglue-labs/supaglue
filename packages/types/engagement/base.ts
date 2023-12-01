@@ -19,3 +19,5 @@ export type BaseSearchParams = {
   cursor?: string;
   pageSize?: number;
 };
+
+export type EngagementListParams = { cursor?: string; pageSize?: number; modifiedAfter?: Date };

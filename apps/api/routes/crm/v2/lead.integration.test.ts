@@ -6,15 +6,15 @@
  */
 
 import type {
-  CreateContactResponse,
+  CreateContactSuccessfulResponse,
   CreateLeadRequest,
-  CreateLeadResponse,
-  GetLeadResponse,
-  ListLeadsResponse,
-  SearchLeadsResponse,
-  UpdateLeadResponse,
+  CreateLeadSuccessfulResponse,
+  GetLeadSuccessfulResponse,
+  ListLeadsSuccessfulResponse,
+  SearchLeadsSuccessfulResponse,
+  UpdateLeadSuccessfulResponse,
   UpsertLeadRequest,
-  UpsertLeadResponse,
+  UpsertLeadSuccessfulResponse,
 } from '@supaglue/schemas/v2/crm';
 
 jest.retryTimes(3);
@@ -36,7 +36,7 @@ describe('lead', () => {
       // pipedrive needs a contact to convert to a lead first
       let convertedContactId = undefined;
       if (providerName === 'pipedrive') {
-        const contactResponse = await apiClient.post<CreateContactResponse>(
+        const contactResponse = await apiClient.post<CreateContactSuccessfulResponse>(
           '/crm/v2/contacts',
           { record: { first_name: 'first', last_name: 'last' } },
           {
@@ -53,7 +53,7 @@ describe('lead', () => {
         });
       }
 
-      const response = await apiClient.post<CreateLeadResponse>(
+      const response = await apiClient.post<CreateLeadSuccessfulResponse>(
         '/crm/v2/leads',
         { record: { ...testLead, converted_contact_id: convertedContactId } },
         {
@@ -68,7 +68,7 @@ describe('lead', () => {
         objectName: 'lead',
       });
 
-      const getResponse = await apiClient.get<GetLeadResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
+      const getResponse = await apiClient.get<GetLeadSuccessfulResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
         headers: { 'x-provider-name': providerName },
       });
 
@@ -83,7 +83,7 @@ describe('lead', () => {
       expect(getResponse.data.title).toEqual(testLead.title);
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListLeadsResponse>(
+      const cachedReadResponse = await apiClient.get<ListLeadsSuccessfulResponse>(
         `/crm/v2/leads?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -105,7 +105,7 @@ describe('lead', () => {
       // pipedrive needs a contact to convert to a lead first
       let convertedContactId = undefined;
       if (providerName === 'pipedrive') {
-        const contactResponse = await apiClient.post<CreateContactResponse>(
+        const contactResponse = await apiClient.post<CreateContactSuccessfulResponse>(
           '/crm/v2/contacts',
           { record: { first_name: 'first', last_name: 'last' } },
           {
@@ -122,7 +122,7 @@ describe('lead', () => {
         });
       }
 
-      const response = await apiClient.post<CreateLeadResponse>(
+      const response = await apiClient.post<CreateLeadSuccessfulResponse>(
         '/crm/v2/leads',
         { record: { ...testLead, converted_contact_id: convertedContactId } },
         {
@@ -137,7 +137,7 @@ describe('lead', () => {
         objectName: 'lead',
       });
 
-      const updateResponse = await apiClient.patch<UpdateLeadResponse>(
+      const updateResponse = await apiClient.patch<UpdateLeadSuccessfulResponse>(
         `/crm/v2/leads/${response.data.record?.id}`,
         {
           record: {
@@ -158,7 +158,7 @@ describe('lead', () => {
         await new Promise((resolve) => setTimeout(resolve, 12000));
       }
 
-      const getResponse = await apiClient.get<GetLeadResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
+      const getResponse = await apiClient.get<GetLeadSuccessfulResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
         headers: { 'x-provider-name': providerName },
       });
       expect(getResponse.data.id).toEqual(response.data.record?.id);
@@ -171,7 +171,7 @@ describe('lead', () => {
       expect(getResponse.data.title).toEqual('new title');
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListLeadsResponse>(
+      const cachedReadResponse = await apiClient.get<ListLeadsSuccessfulResponse>(
         `/crm/v2/leads?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -195,7 +195,7 @@ describe('lead', () => {
       `Test that POST followed by SEARCH has correct data`,
       async () => {
         const email = `me+${Math.random()}@example.com`;
-        const response = await apiClient.post<CreateLeadResponse>(
+        const response = await apiClient.post<CreateLeadSuccessfulResponse>(
           '/crm/v2/leads',
           { record: { ...testLead, email_addresses: [{ email_address: email, email_address_type: 'primary' }] } },
           {
@@ -210,7 +210,7 @@ describe('lead', () => {
           objectName: 'lead',
         });
 
-        const searchResponse = await apiClient.post<SearchLeadsResponse>(
+        const searchResponse = await apiClient.post<SearchLeadsSuccessfulResponse>(
           `/crm/v2/leads/_search`,
           {
             filter: {
@@ -238,7 +238,7 @@ describe('lead', () => {
           upsert_on: { key: 'email', values: [email] },
           record: { ...testLead, email_addresses: [{ email_address: email, email_address_type: 'primary' }] },
         };
-        const response = await apiClient.post<UpsertLeadResponse>('/crm/v2/leads/_upsert', testLeadUpsert, {
+        const response = await apiClient.post<UpsertLeadSuccessfulResponse>('/crm/v2/leads/_upsert', testLeadUpsert, {
           headers: { 'x-provider-name': providerName },
         });
 
@@ -250,9 +250,12 @@ describe('lead', () => {
           objectName: 'lead',
         });
 
-        const getResponse = await apiClient.get<GetLeadResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
-          headers: { 'x-provider-name': providerName },
-        });
+        const getResponse = await apiClient.get<GetLeadSuccessfulResponse>(
+          `/crm/v2/leads/${response.data.record?.id}`,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
         expect(getResponse.data.id).toEqual(response.data.record?.id);
         expect(getResponse.data.first_name).toEqual(testLead.first_name);
         expect(getResponse.data.last_name).toEqual(testLead.last_name);
@@ -260,7 +263,7 @@ describe('lead', () => {
         expect(getResponse.data.title).toEqual(testLead.title);
 
         // test that the db was updated
-        const cachedReadResponse = await apiClient.get<ListLeadsResponse>(
+        const cachedReadResponse = await apiClient.get<ListLeadsSuccessfulResponse>(
           `/crm/v2/leads?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
           {
             headers: { 'x-provider-name': providerName },
@@ -281,15 +284,18 @@ describe('lead', () => {
             last_name: 'lead',
           },
         };
-        const response2 = await apiClient.post<UpsertLeadResponse>('/crm/v2/leads/_upsert', testLeadUpsert2, {
+        const response2 = await apiClient.post<UpsertLeadSuccessfulResponse>('/crm/v2/leads/_upsert', testLeadUpsert2, {
           headers: { 'x-provider-name': providerName },
         });
         expect(response2.status).toEqual(200);
         expect(response2.data.record?.id).toEqual(response.data.record?.id);
 
-        const getResponse2 = await apiClient.get<GetLeadResponse>(`/crm/v2/leads/${response.data.record?.id}`, {
-          headers: { 'x-provider-name': providerName },
-        });
+        const getResponse2 = await apiClient.get<GetLeadSuccessfulResponse>(
+          `/crm/v2/leads/${response.data.record?.id}`,
+          {
+            headers: { 'x-provider-name': providerName },
+          }
+        );
         expect(getResponse2.data.id).toEqual(response.data.record?.id);
         expect(getResponse2.data.first_name).toEqual('updated');
         expect(getResponse2.data.last_name).toEqual('lead');
@@ -297,7 +303,7 @@ describe('lead', () => {
         expect(getResponse2.data.title).toEqual(testLead.title);
 
         // test that the db was updated
-        const cachedReadResponse2 = await apiClient.get<ListLeadsResponse>(
+        const cachedReadResponse2 = await apiClient.get<ListLeadsSuccessfulResponse>(
           `/crm/v2/leads?read_from_cache=true&modified_after=${encodeURIComponent(testStartTime.toISOString())}`,
           {
             headers: { 'x-provider-name': providerName },

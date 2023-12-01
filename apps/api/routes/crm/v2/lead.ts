@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmLead } from '@supaglue/core/mappers/crm';
 import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
@@ -164,7 +165,7 @@ export default function init(app: Router): void {
   );
 
   router.delete('/:lead_id', () => {
-    throw new Error('Not implemented');
+    throw new NotImplementedError('Not implemented');
   });
 
   app.use('/leads', router);

@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError } from '@supaglue/core/errors';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysEngagementContact } from '@supaglue/core/mappers/engagement';
 import type {
   CreateContactPathParams,
@@ -53,10 +53,21 @@ export default function init(app: Router): void {
       req: Request<ListContactsPathParams, ListContactsResponse, ListContactsRequest, ListContactsQueryParams>,
       res: Response<ListContactsResponse>
     ) => {
-      if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new BadRequestError('Uncached reads not yet implemented for contacts.');
-      }
       const includeRawData = req.query?.include_raw_data?.toString() === 'true';
+      if (req.query?.read_from_cache?.toString() !== 'true') {
+        const { pagination, records } = await engagementCommonObjectService.list('contact', req.customerConnection, {
+          modifiedAfter: req.query?.modified_after,
+          cursor: req.query?.cursor,
+          pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+        });
+        return res.status(200).send({
+          pagination,
+          records: records.map((record) => ({
+            ...toSnakecasedKeysEngagementContact(record),
+            raw_data: includeRawData ? record.rawData : undefined,
+          })),
+        });
+      }
       const { pagination, records } = await managedDataService.getEngagementContactRecords(
         req.supaglueApplication.id,
         req.customerConnection.providerName,
@@ -101,7 +112,7 @@ export default function init(app: Router): void {
       res: Response<SearchContactsResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() === 'true') {
-        throw new BadRequestError('Cached search not yet implemented for engagement contacts.');
+        throw new NotImplementedError('Cached search not yet implemented for engagement contacts.');
       }
       const { pagination, records } = await engagementCommonObjectService.search('contact', req.customerConnection, {
         filter: req.body.filter,
@@ -135,7 +146,7 @@ export default function init(app: Router): void {
   );
 
   router.delete('/:contact_id', () => {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   });
 
   app.use('/contacts', router);

@@ -9,12 +9,14 @@ import type {
 import type {
   Account,
   AccountCreateParams,
+  AccountSearchParams,
   AccountUpsertParams,
   Contact,
   ContactCreateParams,
   ContactSearchParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
+  EngagementListParams,
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
@@ -30,7 +32,13 @@ import {
   SGConnectionNoLongerAuthenticatedError,
 } from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
-import { decodeCursor, encodeCursor, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import {
+  decodeCursor,
+  DEFAULT_PAGE_SIZE,
+  encodeCursor,
+  REFRESH_TOKEN_THRESHOLD_MS,
+  retryWhenAxiosRateLimited,
+} from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
   CreateCommonObjectRecordResponse,
@@ -189,7 +197,8 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   #getListRecordsFetcher(
     endpoint: string,
     updatedAfter?: Date,
-    heartbeat?: () => void
+    heartbeat?: () => void,
+    pageSize = SALESLOFT_RECORD_LIMIT
   ): (next?: string) => Promise<SalesloftPaginatedRecords> {
     return async (next?: string) => {
       return await retryWhenAxiosRateLimited(
@@ -256,9 +265,9 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     return stepCountMapping;
   }
 
-  private async listSequences(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  private async streamSequences(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
     const stepCounts = await this.#getCadenceStepCounts(heartbeat);
-    return await this.#listRecords(
+    return await this.#streamRecords(
       '/v2/cadences',
       (data: any) => fromSalesloftCadenceToSequence(data, stepCounts[data.id?.toString()] ?? 0),
       updatedAfter,
@@ -266,7 +275,63 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     );
   }
 
+  public override async listCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.#listRecords(`/v2/people`, fromSalesloftPersonToContact, params);
+      case 'user':
+        return await this.#listRecords(`/v2/users`, (r: any) => fromSalesloftUserToUser(r), params);
+      case 'account':
+        return await this.#listRecords(`/v2/accounts`, fromSalesloftAccountToAccount, params);
+      case 'sequence_state':
+        return await this.#listRecords(
+          '/v2/cadence_memberships',
+          fromSalesloftCadenceMembershipToSequenceState,
+          params
+        );
+      case 'sequence': {
+        const stepCounts = await this.#getCadenceStepCounts();
+        return await this.#listRecords(
+          '/v2/cadences',
+          (data: any) => fromSalesloftCadenceToSequence(data, stepCounts[data.id?.toString()] ?? 0),
+          params
+        );
+      }
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported for salesloft`);
+    }
+  }
+
   async #listRecords<T>(
+    path: string,
+    mapper: (record: Record<string, any>) => T,
+    params: EngagementListParams
+  ): Promise<PaginatedSupaglueRecords<T>> {
+    const cursor = decodeCursor(params.cursor);
+    const records = await this.#getListRecordsFetcher(
+      `${this.#baseURL}${path}`,
+      params.modifiedAfter,
+      /* heartbeat */ undefined,
+      params.pageSize ?? DEFAULT_PAGE_SIZE
+    )(cursor?.id as string | undefined);
+    return {
+      records: records.data.map(mapper),
+      pagination: {
+        total_count: records.metadata.paging?.total_count,
+        previous: records.metadata.paging?.prev_page
+          ? encodeCursor({ id: records.metadata.paging?.prev_page, reverse: true })
+          : null,
+        next: records.metadata.paging?.next_page
+          ? encodeCursor({ id: records.metadata.paging?.next_page, reverse: false })
+          : null,
+      },
+    };
+  }
+
+  async #streamRecords<T>(
     path: string,
     mapper: (data: Record<string, any>) => T,
     updatedAfter?: Date,
@@ -297,17 +362,17 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.#listRecords(`/v2/people`, fromSalesloftPersonToContact, updatedAfter, heartbeat);
+        return await this.#streamRecords(`/v2/people`, fromSalesloftPersonToContact, updatedAfter, heartbeat);
       case 'user':
-        return await this.#listRecords(`/v2/users`, (r: any) => fromSalesloftUserToUser(r), updatedAfter, heartbeat);
+        return await this.#streamRecords(`/v2/users`, (r: any) => fromSalesloftUserToUser(r), updatedAfter, heartbeat);
       case 'account':
-        return await this.#listRecords(`/v2/accounts`, fromSalesloftAccountToAccount, updatedAfter, heartbeat);
+        return await this.#streamRecords(`/v2/accounts`, fromSalesloftAccountToAccount, updatedAfter, heartbeat);
       case 'sequence':
-        return await this.listSequences(updatedAfter, heartbeat);
+        return await this.streamSequences(updatedAfter, heartbeat);
       case 'mailbox':
         return Readable.from([]);
       case 'sequence_state':
-        return await this.#listRecords(
+        return await this.#streamRecords(
           '/v2/cadence_memberships',
           fromSalesloftCadenceMembershipToSequenceState,
           updatedAfter,
@@ -376,23 +441,19 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     if (!domain && !name) {
       throw new BadRequestError('Must specify at least one upsertOn field');
     }
-    await this.maybeRefreshAccessToken();
-    const searchParams: Record<string, unknown> = DEFAULT_LIST_PARAMS;
-    if (name) {
-      searchParams.name = [name];
-    }
-    if (domain) {
-      searchParams.domain = domain;
-    }
-    const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/accounts`, {
-      params: searchParams,
-      headers: this.#headers,
+
+    const searchResult = await this.#searchAccounts({
+      filter: {
+        domain: domain,
+        name: name,
+      },
     });
-    if (response.data.data.length > 1) {
+
+    if (searchResult.records.length > 1) {
       throw new BadRequestError('More than one account found for upsertOn fields');
     }
-    if (response.data.data.length) {
-      return this.updateCommonObjectRecord('account', { ...params.record, id: response.data.data[0].id.toString() });
+    if (searchResult.records.length) {
+      return this.updateCommonObjectRecord('account', { ...params.record, id: searchResult.records[0].id.toString() });
     }
     return this.createCommonObjectRecord('account', params.record);
   }
@@ -472,16 +533,48 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
         return await this.#searchContacts(params as ContactSearchParams);
       case 'sequence_state':
         return await this.#searchSequenceStates(params as SequenceStateSearchParams);
+      case 'account':
+        return await this.#searchAccounts(params as AccountSearchParams);
       case 'user':
       case 'mailbox':
       case 'sequence':
-      case 'account':
         throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Salesloft`);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
+  async #searchAccounts(params: AccountSearchParams): Promise<PaginatedSupaglueRecords<Account>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const page = cursor?.id as number | undefined;
+    const searchParams: Record<string, unknown> = { per_page: params.pageSize ?? SALESLOFT_RECORD_LIMIT, page };
+    if (params.filter.name) {
+      searchParams.name = [params.filter.name];
+    }
+    if (params.filter.domain) {
+      searchParams.domain = params.filter.domain;
+    }
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/accounts`, {
+        params: searchParams,
+        headers: this.getAuthHeadersForPassthroughRequest(),
+      });
+      const records = response.data.data.map(fromSalesloftAccountToAccount);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: response.data.metadata.paging?.prev_page
+            ? encodeCursor({ id: response.data.metadata.paging.prev_page, reverse: true })
+            : null,
+          next: response.data.metadata.paging?.next_page
+            ? encodeCursor({ id: response.data.metadata.paging.next_page, reverse: false })
+            : null,
+        },
+      };
+    });
+  }
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
     const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
     const page = cursor?.id as number | undefined;
@@ -549,11 +642,12 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
 
     // https://developers.salesloft.com/docs/platform/api-basics/request-response-format
     const errorTitle = err.response?.data?.error ?? err.response?.statusText;
-    const errorCause = err.response?.data;
+    const cause = err.response?.data;
+    const status = err.response?.status;
 
-    switch (err.response?.status) {
+    switch (status) {
       case 400:
-        return new InternalServerError(errorTitle, errorCause);
+        return new InternalServerError(errorTitle, { cause, origin: 'remote-provider', status });
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       // NOTE: `429` is omitted below since we process it differently for syncs
@@ -606,7 +700,7 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
       case 449:
       case 450:
       case 451:
-        return new RemoteProviderError(errorTitle, errorCause);
+        return new RemoteProviderError(errorTitle, { cause, status });
       default:
         return err;
     }

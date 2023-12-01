@@ -22,6 +22,18 @@ get:
                 notify_on_sync_error: true
                 notify_on_connection_success: true
                 notify_on_connection_error: true
+    '400':
+      $ref: ../../../common/components/responses/badRequest.yaml
+    '401':
+      $ref: ../../../common/components/responses/unauthorized.yaml
+    '403':
+      $ref: ../../../common/components/responses/forbidden.yaml
+    '404':
+      $ref: ../../../common/components/responses/notFound.yaml
+    '500':
+      $ref: ../../../common/components/responses/internalServerError.yaml
+    '501':
+      $ref: ../../../common/components/responses/notImplemented.yaml
 post:
   operationId: createWebhook
   summary: Create webhook (deprecated)
@@ -43,6 +55,22 @@ post:
         application/json:
           schema:
             $ref: ../components/schemas/objects/webhook.yaml
+    '400':
+      $ref: ../../../common/components/responses/badRequest.yaml
+    '401':
+      $ref: ../../../common/components/responses/unauthorized.yaml
+    '403':
+      $ref: ../../../common/components/responses/forbidden.yaml
+    '404':
+      $ref: ../../../common/components/responses/notFound.yaml
+    '409':
+      $ref: ../../../common/components/responses/conflict.yaml
+    '422':
+      $ref: ../../../common/components/responses/unprocessableEntity.yaml
+    '500':
+      $ref: ../../../common/components/responses/internalServerError.yaml
+    '501':
+      $ref: ../../../common/components/responses/notImplemented.yaml
 delete:
   operationId: deleteWebhook
   summary: Delete webhook (deprecated)
@@ -54,3 +82,19 @@ delete:
   responses:
     '200':
       description: Webhook deleted
+    '400':
+      $ref: ../../../common/components/responses/badRequest.yaml
+    '401':
+      $ref: ../../../common/components/responses/unauthorized.yaml
+    '403':
+      $ref: ../../../common/components/responses/forbidden.yaml
+    '404':
+      $ref: ../../../common/components/responses/notFound.yaml
+    '409':
+      $ref: ../../../common/components/responses/conflict.yaml
+    '422':
+      $ref: ../../../common/components/responses/unprocessableEntity.yaml
+    '500':
+      $ref: ../../../common/components/responses/internalServerError.yaml
+    '501':
+      $ref: ../../../common/components/responses/notImplemented.yaml
