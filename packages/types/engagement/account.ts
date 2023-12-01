@@ -1,6 +1,6 @@
 import type { CustomFields } from '.';
 import type { SnakecasedKeys } from '../snakecased_keys';
-import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
+import type { BaseEngagementModel, EngagementListParams, SnakecasedEngagementTenantFields } from './base';
 
 export type SnakecasedKeysEngagementAccount = SnakecasedKeys<Account>;
 export type SnakecasedKeysEngagementAccountWithTenant = SnakecasedKeysEngagementAccount &
@@ -32,6 +32,7 @@ export type AccountUpsertParams = {
 
 export type RemoteAccountTypes = {
   object: Account;
+  listParams: EngagementListParams;
   createParams: AccountCreateParams;
   upsertParams: AccountUpsertParams;
   updateParams: AccountUpdateParams;

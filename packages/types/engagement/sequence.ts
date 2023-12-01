@@ -1,5 +1,5 @@
 import type { SnakecasedKeys } from '../snakecased_keys';
-import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
+import type { BaseEngagementModel, EngagementListParams, SnakecasedEngagementTenantFields } from './base';
 import type { SequenceStep, SequenceStepCreateParams, SnakecasedKeysSequenceStep } from './sequence_step';
 
 export type SnakecasedKeysSequence = Omit<SnakecasedKeys<Sequence>, 'steps'> & { steps?: SnakecasedKeysSequenceStep[] };
@@ -21,6 +21,7 @@ export type Sequence = BaseEngagementModel & CoreSequence;
 
 export type RemoteSequenceTypes = {
   object: Sequence;
+  listParams: EngagementListParams;
   createParams: SequenceCreateParams;
   upsertParams: never;
   updateParams: never;

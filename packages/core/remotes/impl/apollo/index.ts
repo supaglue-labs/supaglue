@@ -271,7 +271,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #getAccountPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedAccounts> {
+  async #getAccountPage(page = 1, heartbeat?: () => void): Promise<ApolloPaginatedAccounts> {
     return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
@@ -295,9 +295,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listAccounts(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  async #streamAccounts(heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getAccountPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
+      await this.#getAccountPage(pageAsStr ? parseInt(pageAsStr) : undefined, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -315,7 +315,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  async #getContactPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedContacts> {
+  async #getContactPage(page = 1, heartbeat?: () => void): Promise<ApolloPaginatedContacts> {
     return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
@@ -341,9 +341,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listContacts(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  async #streamContacts(heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getContactPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
+      await this.#getContactPage(pageAsStr ? parseInt(pageAsStr) : undefined, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -361,7 +361,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  async #getUserPage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedUsers> {
+  async #getUserPage(page = 1, heartbeat?: () => void): Promise<ApolloPaginatedUsers> {
     return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
@@ -382,9 +382,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listUsers(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  async #streamUsers(heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getUserPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
+      await this.#getUserPage(pageAsStr ? parseInt(pageAsStr) : undefined, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -402,7 +402,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  async #getSequencePage(page = 1, updatedAfter?: Date, heartbeat?: () => void): Promise<ApolloPaginatedSequences> {
+  async #getSequencePage(page = 1, heartbeat?: () => void): Promise<ApolloPaginatedSequences> {
     return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
@@ -426,9 +426,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listSequences(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  async #streamSequences(heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getSequencePage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
+      await this.#getSequencePage(pageAsStr ? parseInt(pageAsStr) : undefined, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -446,7 +446,7 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     ]);
   }
 
-  async #listMailboxes(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  async #streamMailboxes(heartbeat?: () => void): Promise<Readable> {
     return await retryWhenAxiosApolloRateLimited(async () => {
       if (heartbeat) {
         heartbeat();
@@ -474,9 +474,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     });
   }
 
-  async #listSequenceStates(updatedAfter?: Date, heartbeat?: () => void): Promise<Readable> {
+  async #streamSequenceStates(heartbeat?: () => void): Promise<Readable> {
     const normalPageFetcher = async (pageAsStr?: string) =>
-      await this.#getContactPage(pageAsStr ? parseInt(pageAsStr) : undefined, updatedAfter, heartbeat);
+      await this.#getContactPage(pageAsStr ? parseInt(pageAsStr) : undefined, heartbeat);
     return await paginator([
       {
         pageFetcher: normalPageFetcher,
@@ -501,17 +501,17 @@ class ApolloClient extends AbstractEngagementRemoteClient {
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'account':
-        return await this.#listAccounts(updatedAfter, heartbeat);
+        return await this.#streamAccounts(heartbeat);
       case 'contact':
-        return await this.#listContacts(updatedAfter, heartbeat);
+        return await this.#streamContacts(heartbeat);
       case 'user':
-        return await this.#listUsers(updatedAfter, heartbeat);
+        return await this.#streamUsers(heartbeat);
       case 'sequence':
-        return await this.#listSequences(updatedAfter, heartbeat);
+        return await this.#streamSequences(heartbeat);
       case 'mailbox':
-        return await this.#listMailboxes(updatedAfter, heartbeat);
+        return await this.#streamMailboxes(heartbeat);
       case 'sequence_state':
-        return await this.#listSequenceStates(updatedAfter, heartbeat);
+        return await this.#streamSequenceStates(heartbeat);
       default:
         throw new BadRequestError(`Common object type ${commonObjectType} not supported for the Apollo API`);
     }

@@ -18,6 +18,8 @@ import type {
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
+  EngagementListParams,
+  Mailbox,
   Sequence,
   SequenceCreateParams,
   SequenceState,
@@ -27,6 +29,7 @@ import type {
   SequenceStepCreateParams,
   SequenceTemplateCreateParams,
   SequenceTemplateId,
+  User,
 } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
 import {
@@ -42,7 +45,13 @@ import {
   UnprocessableEntityError,
 } from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
-import { decodeCursor, encodeCursor, REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
+import {
+  decodeCursor,
+  DEFAULT_PAGE_SIZE,
+  encodeCursor,
+  REFRESH_TOKEN_THRESHOLD_MS,
+  retryWhenAxiosRateLimited,
+} from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import type { UpsertCommonObjectRecordResponse } from '../../categories/engagement/base';
 import { AbstractEngagementRemoteClient } from '../../categories/engagement/base';
@@ -69,10 +78,6 @@ import type { components, paths } from './outreach.openapi.gen';
 import { createOutreachClient } from './outreach.client';
 
 const OUTREACH_RECORD_LIMIT = 1000;
-
-const DEFAULT_LIST_PARAMS = {
-  'page[size]': OUTREACH_RECORD_LIMIT,
-};
 
 export type Outreach = components['schemas'];
 
@@ -1388,25 +1393,29 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   ): Promise<Readable> {
     switch (commonObjectType) {
       case 'contact':
-        return await this.#listRecords('/api/v2/prospects', fromOutreachProspectToContact, updatedAfter);
+        return await this.#streamRecords('/api/v2/prospects', fromOutreachProspectToContact, updatedAfter);
       case 'user':
-        return await this.#listRecords('/api/v2/users', (r: any) => fromOutreachUserToUser(r), updatedAfter);
+        return await this.#streamRecords('/api/v2/users', (r: any) => fromOutreachUserToUser(r), updatedAfter);
       case 'sequence':
-        return await this.#listRecords(
+        return await this.#streamRecords(
           '/api/v2/sequences',
           (r: any) => fromOutreachSequenceToSequence(r),
           updatedAfter
         );
       case 'mailbox':
-        return await this.#listRecords('/api/v2/mailboxes', (r: any) => fromOutreachMailboxToMailbox(r), updatedAfter);
+        return await this.#streamRecords(
+          '/api/v2/mailboxes',
+          (r: any) => fromOutreachMailboxToMailbox(r),
+          updatedAfter
+        );
       case 'sequence_state':
-        return await this.#listRecords(
+        return await this.#streamRecords(
           '/api/v2/sequenceStates',
           fromOutreachSequenceStateToSequenceState,
           updatedAfter
         );
       case 'account':
-        return await this.#listRecords('/api/v2/accounts', fromOutreachAccountToAccount, updatedAfter);
+        return await this.#streamRecords('/api/v2/accounts', fromOutreachAccountToAccount, updatedAfter);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
@@ -1450,7 +1459,11 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     }
   }
 
-  #getListRecordsFetcher(endpoint: string, updatedAfter?: Date): (link?: string) => Promise<OutreachPaginatedRecords> {
+  #getListRecordsFetcher(
+    endpoint: string,
+    updatedAfter?: Date,
+    pageSize = OUTREACH_RECORD_LIMIT
+  ): (link?: string) => Promise<OutreachPaginatedRecords> {
     return async (link?: string) => {
       return await retryWhenAxiosRateLimited(async () => {
         await this.maybeRefreshAccessToken();
@@ -1463,10 +1476,12 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         const response = await axios.get<OutreachPaginatedRecords>(endpoint, {
           params: updatedAfter
             ? {
-                ...DEFAULT_LIST_PARAMS,
+                'page[size]': pageSize,
                 ...getUpdatedAfterPathParam(updatedAfter),
               }
-            : DEFAULT_LIST_PARAMS,
+            : {
+                'page[size]': pageSize,
+              },
           headers: this.getAuthHeadersForPassthroughRequest(),
         });
         return response.data;
@@ -1474,7 +1489,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     };
   }
 
-  async #listRecords<T>(path: string, mapper: (record: OutreachRecord) => T, updatedAfter?: Date): Promise<Readable> {
+  async #streamRecords<T>(path: string, mapper: (record: OutreachRecord) => T, updatedAfter?: Date): Promise<Readable> {
     const normalPageFetcher = this.#getListRecordsFetcher(`${this.#baseURL}${path}`, updatedAfter);
     return await paginator([
       {
@@ -1520,7 +1535,9 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       throw new BadRequestError('Must specify at least one upsertOn field');
     }
     await this.maybeRefreshAccessToken();
-    const searchParams: Record<string, unknown> = DEFAULT_LIST_PARAMS;
+    const searchParams: Record<string, unknown> = {
+      'page[size]': DEFAULT_PAGE_SIZE,
+    };
     if (name) {
       searchParams['filter[name]'] = name;
     }
@@ -1742,6 +1759,61 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     return response.data.data.id.toString();
   }
 
+  public override async listCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: T,
+    params: EngagementCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    switch (commonObjectType) {
+      case 'contact':
+        return await this.#listRecords<Contact>('/api/v2/prospects', fromOutreachProspectToContact, params);
+      case 'user':
+        return await this.#listRecords<User>('/api/v2/prospects', (r: any) => fromOutreachUserToUser(r), params);
+      case 'sequence':
+        return await this.#listRecords<Sequence>(
+          '/api/v2/sequences',
+          (r: any) => fromOutreachSequenceToSequence(r),
+          params
+        );
+      case 'mailbox':
+        return await this.#listRecords<Mailbox>(
+          '/api/v2/mailboxes',
+          (r: any) => fromOutreachMailboxToMailbox(r),
+          params
+        );
+      case 'sequence_state':
+        return await this.#listRecords<SequenceState>(
+          '/api/v2/sequenceStates',
+          fromOutreachSequenceStateToSequenceState,
+          params
+        );
+      case 'account':
+        return await this.#listRecords('/api/v2/accounts', fromOutreachAccountToAccount, params);
+      default:
+        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+    }
+  }
+
+  async #listRecords<T>(
+    path: string,
+    mapper: (record: OutreachRecord) => T,
+    params: EngagementListParams
+  ): Promise<PaginatedSupaglueRecords<T>> {
+    const cursor = decodeCursor(params.cursor);
+    const records = await this.#getListRecordsFetcher(
+      `${this.#baseURL}${path}`,
+      params.modifiedAfter,
+      params.pageSize ?? DEFAULT_PAGE_SIZE
+    )(cursor?.id as string | undefined);
+    return {
+      records: records.data.map(mapper),
+      pagination: {
+        total_count: records.meta.count,
+        previous: records.links?.prev ? encodeCursor({ id: records.links?.prev, reverse: true }) : null,
+        next: records.links?.next ? encodeCursor({ id: records.links?.next, reverse: false }) : null,
+      },
+    };
+  }
+
   public override async searchCommonObjectRecords<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['searchParams']
@@ -1764,7 +1836,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
     const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
     const link = cursor?.id as string;
-    const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
+    const listParams: Record<string, unknown> = { 'page[size]': params.pageSize ?? DEFAULT_PAGE_SIZE };
     if (params.filter.emails) {
       // Note this is implemented as an OR, not an AND
       listParams['filter[emails]'] = params.filter.emails.join(',');
@@ -1794,7 +1866,9 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   async #searchSequenceStates(params: SequenceStateSearchParams): Promise<PaginatedSupaglueRecords<SequenceState>> {
     const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
     const link = cursor?.id as string;
-    const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
+    const listParams: Record<string, unknown> = {
+      'page[size]': params.pageSize ?? DEFAULT_PAGE_SIZE,
+    };
     // Note: if both are provided, it will be implemented as an AND.
     if (params.filter.contactId) {
       listParams['filter[prospect][id]'] = params.filter.contactId;
