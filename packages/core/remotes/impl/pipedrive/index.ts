@@ -1052,7 +1052,7 @@ export const authConfig: ConnectorAuthConfig = {
 function filterForUpdatedAfter<
   R extends {
     data: { update_time?: string }[] | null;
-  }
+  },
 >(response: R, updatedAfter?: Date): R {
   if (!response.data?.length) {
     return response;

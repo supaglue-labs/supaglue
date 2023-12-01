@@ -1,4 +1,4 @@
-import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from '.';
+import type { BaseEngagementModel, EngagementListParams, SnakecasedEngagementTenantFields } from '.';
 import type { SnakecasedKeys } from '../snakecased_keys';
 
 export type SnakecasedKeysEngagementUser = SnakecasedKeys<User>;
@@ -15,6 +15,7 @@ export type User = BaseEngagementModel & CoreUser;
 
 export type RemoteUserTypes = {
   object: User;
+  listParams: EngagementListParams;
   createParams: never;
   upsertParams: never;
   updateParams: never;

@@ -66,10 +66,25 @@ export default function init(app: Router): void {
       >,
       res: Response<ListSequenceStatesResponse>
     ) => {
-      if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new NotImplementedError('Uncached reads not yet implemented for sequence states.');
-      }
       const includeRawData = req.query?.include_raw_data?.toString() === 'true';
+      if (req.query?.read_from_cache?.toString() !== 'true') {
+        const { pagination, records } = await engagementCommonObjectService.list(
+          'sequence_state',
+          req.customerConnection,
+          {
+            modifiedAfter: req.query?.modified_after,
+            cursor: req.query?.cursor,
+            pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+          }
+        );
+        return res.status(200).send({
+          pagination,
+          records: records.map((record) => ({
+            ...toSnakecasedKeysSequenceState(record),
+            raw_data: includeRawData ? record.rawData : undefined,
+          })),
+        });
+      }
       const { pagination, records } = await managedDataService.getEngagementSequenceStateRecords(
         req.supaglueApplication.id,
         req.customerConnection.providerName,

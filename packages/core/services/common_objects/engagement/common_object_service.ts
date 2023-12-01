@@ -32,6 +32,20 @@ export class EngagementCommonObjectService {
     return obj;
   }
 
+  public async list<T extends EngagementCommonObjectType>(
+    objectName: T,
+    connection: ConnectionSafeAny,
+    params: EngagementCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    const [remoteClient, providerName] = await this.#remoteService.getEngagementRemoteClient(connection.id);
+
+    const end = remoteDuration.startTimer({ operation: 'get', remote_name: providerName });
+    const records = await remoteClient.listCommonObjectRecords(objectName, params);
+    end();
+
+    return records;
+  }
+
   public async batchCreate<T extends EngagementCommonObjectType>(
     type: T,
     connection: ConnectionSafeAny,

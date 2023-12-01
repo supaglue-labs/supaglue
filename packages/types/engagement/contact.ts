@@ -1,6 +1,11 @@
 import type { CustomFields } from '.';
 import type { SnakecasedKeys } from '../snakecased_keys';
-import type { BaseEngagementModel, BaseSearchParams, SnakecasedEngagementTenantFields } from './base';
+import type {
+  BaseEngagementModel,
+  BaseSearchParams,
+  EngagementListParams,
+  SnakecasedEngagementTenantFields,
+} from './base';
 import type { Address } from './common/address';
 import type { EmailAddress } from './common/email_address';
 import type { PhoneNumber } from './common/phone_number';
@@ -45,6 +50,7 @@ export type ContactSearchParams = BaseSearchParams & {
 
 export type RemoteContactTypes = {
   object: Contact;
+  listParams: EngagementListParams;
   createParams: ContactCreateParams;
   upsertParams: never;
   updateParams: ContactUpdateParams;
