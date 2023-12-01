@@ -51,7 +51,7 @@ export interface paths {
     /**
      * Upsert account
      * @description Upsert an account. If the account matching the given criteria does not exist, it will be created. If the account does exist, it will be updated.
-     * Only supported for Salesforce, Hubspot, and Pipedrive.
+     * Upsert by name is supported for Outreach, Salesloft, and Apollo. Upsert by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
      */
     post: operations["upsertAccount"];
     parameters: {
@@ -1028,7 +1028,7 @@ export interface operations {
   /**
    * Upsert account
    * @description Upsert an account. If the account matching the given criteria does not exist, it will be created. If the account does exist, it will be updated.
-   * Only supported for Salesforce, Hubspot, and Pipedrive.
+   * Upsert by name is supported for Outreach, Salesloft, and Apollo. Upsert by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
    */
   upsertAccount: {
     parameters: {
@@ -1043,7 +1043,7 @@ export interface operations {
           record: components["schemas"]["create_account"];
           /** @description The criteria to upsert on. If both name and domain are specified, it would perform an AND operation. If more than one account is found that matches, then an error will be thrown. */
           upsert_on: {
-            /** @description The name of the account to upsert on. Supported for all providers. */
+            /** @description The name of the account to upsert on. Supported for Outreach, Salesloft, and Apollo. */
             name?: string;
             /** @description The domain of the account to upsert on. Only supported for Outreach and Salesloft. */
             domain?: string;

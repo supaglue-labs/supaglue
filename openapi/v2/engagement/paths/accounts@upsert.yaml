@@ -3,7 +3,7 @@ post:
   summary: Upsert account
   description: |
     Upsert an account. If the account matching the given criteria does not exist, it will be created. If the account does exist, it will be updated.
-    Only supported for Salesforce, Hubspot, and Pipedrive.
+    Upsert by name is supported for Outreach, Salesloft, and Apollo. Upsert by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
   tags:
     - Accounts
   security:
@@ -24,7 +24,7 @@ post:
               properties:
                 name: 
                   type: string
-                  description: The name of the account to upsert on. Supported for all providers.
+                  description: The name of the account to upsert on. Supported for Outreach, Salesloft, and Apollo.
                 domain:
                   type: string
                   description: The domain of the account to upsert on. Only supported for Outreach and Salesloft.
