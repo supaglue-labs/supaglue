@@ -97,9 +97,9 @@ model SyncConfig {
   id            String      @id @default(uuid())
   applicationId String      @map("application_id")
   providerId    String      @map("provider_id")
-  provider      Provider    @relation(fields: [providerId], references: [id])
+  provider      Provider    @relation(fields: [providerId], references: [id], onDelete: Cascade)
   destinationId String      @map("destination_id")
-  destination   Destination @relation(fields: [destinationId], references: [id])
+  destination   Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
   config        Json
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @updatedAt @map("updated_at")

@@ -113,15 +113,16 @@ describe('custom_objects_records', () => {
       expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record!.id);
       expect(getResponse.data.custom_object_name).toEqual(fullObjectName);
+      const properties = (
+        providerName === 'hubspot' ? getResponse.data.data.properties : getResponse.data.data
+      ) as Record<string, unknown>;
       expect(
-        providerName === 'hubspot' || providerName === 'ms_dynamics_365_sales'
-          ? getResponse.data.data.name
-          : getResponse.data.data.Name
+        providerName === 'hubspot' || providerName === 'ms_dynamics_365_sales' ? properties.name : properties.Name
       ).toEqual(testCustomObjectRecord.name);
-      expect(getResponse.data.data.int__c?.toString()).toEqual(testCustomObjectRecord.int__c?.toString());
-      expect(getResponse.data.data.description__c).toEqual(testCustomObjectRecord.description__c);
-      expect(getResponse.data.data.double__c?.toString()).toEqual(testCustomObjectRecord.double__c?.toString());
-      expect(getResponse.data.data.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
+      expect(properties.int__c?.toString()).toEqual(testCustomObjectRecord.int__c?.toString());
+      expect(properties.description__c).toEqual(testCustomObjectRecord.description__c);
+      expect(properties.double__c?.toString()).toEqual(testCustomObjectRecord.double__c?.toString());
+      expect(properties.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
 
       // test that the db was updated
       const cachedReadResponse = await apiClient.get<ListCustomObjectRecordsResponse>(
@@ -136,11 +137,12 @@ describe('custom_objects_records', () => {
       const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
       expect(found).toBeTruthy();
       expect(found?.id).toEqual(response.data.record?.id);
-      const rawData = found?.data;
-      expect(rawData?.int__c?.toString()).toEqual(testCustomObjectRecord.int__c?.toString());
-      expect(rawData?.description__c).toEqual(testCustomObjectRecord.description__c);
-      expect(rawData?.double__c?.toString()).toEqual(testCustomObjectRecord.double__c?.toString());
-      expect(rawData?.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
+      const cachedProperties =
+        providerName === 'hubspot' ? (found?.data?.properties as Record<string, unknown>) : found?.data;
+      expect(cachedProperties?.int__c?.toString()).toEqual(testCustomObjectRecord.int__c?.toString());
+      expect(cachedProperties?.description__c).toEqual(testCustomObjectRecord.description__c);
+      expect(cachedProperties?.double__c?.toString()).toEqual(testCustomObjectRecord.double__c?.toString());
+      expect(cachedProperties?.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
     }, 120_000);
 
     test(`Test that POST followed by PATCH followed by GET has correct data and cache invalidates`, async () => {
@@ -194,15 +196,16 @@ describe('custom_objects_records', () => {
       expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record!.id);
       expect(getResponse.data.custom_object_name).toEqual(fullObjectName);
+      const properties = (
+        providerName === 'hubspot' ? getResponse.data.data.properties : getResponse.data.data
+      ) as Record<string, unknown>;
       expect(
-        providerName === 'hubspot' || providerName === 'ms_dynamics_365_sales'
-          ? getResponse.data.data.name
-          : getResponse.data.data.Name
+        providerName === 'hubspot' || providerName === 'ms_dynamics_365_sales' ? properties.name : properties.Name
       ).toEqual('updated');
-      expect(getResponse.data.data.int__c?.toString()).toEqual('2');
-      expect(getResponse.data.data.description__c).toEqual('updated_description');
-      expect(getResponse.data.data.double__c?.toString()).toEqual('0.2');
-      expect(getResponse.data.data.bool__c?.toString()).toEqual('false');
+      expect(properties.int__c?.toString()).toEqual('2');
+      expect(properties.description__c).toEqual('updated_description');
+      expect(properties.double__c?.toString()).toEqual('0.2');
+      expect(properties.bool__c?.toString()).toEqual('false');
 
       // test that the db was updated
       const cachedReadResponse = await apiClient.get<ListCustomObjectRecordsResponse>(
@@ -217,11 +220,12 @@ describe('custom_objects_records', () => {
       const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
       expect(found).toBeTruthy();
       expect(found?.id).toEqual(response.data.record?.id);
-      const rawData = found?.data;
-      expect(rawData?.int__c?.toString()).toEqual('2');
-      expect(rawData?.description__c).toEqual('updated_description');
-      expect(rawData?.double__c?.toString()).toEqual('0.2');
-      expect(rawData?.bool__c?.toString()).toEqual('false');
+      const cachedProperties =
+        providerName === 'hubspot' ? (found?.data?.properties as Record<string, unknown>) : found?.data;
+      expect(cachedProperties?.int__c?.toString()).toEqual('2');
+      expect(cachedProperties?.description__c).toEqual('updated_description');
+      expect(cachedProperties?.double__c?.toString()).toEqual('0.2');
+      expect(cachedProperties?.bool__c?.toString()).toEqual('false');
     }, 120_000);
 
     testIf(

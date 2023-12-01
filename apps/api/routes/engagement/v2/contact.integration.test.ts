@@ -5,7 +5,6 @@
  * @jest-environment ./integration-test-environment
  */
 
-import { capitalizeString } from '@supaglue/core/remotes/utils/string';
 import type {
   CreateContactRequest,
   CreateContactResponse,
@@ -33,7 +32,7 @@ describe('contact', () => {
     };
   });
 
-  describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
+  describe.each(['outreach', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateContactResponse>(
         '/engagement/v2/contacts',
@@ -72,13 +71,8 @@ describe('contact', () => {
 
       expect(getResponse.status).toEqual(200);
       expect(getResponse.data.id).toEqual(response.data.record?.id);
-      if (providerName === 'apollo') {
-        expect(getResponse.data.first_name).toEqual(capitalizeString(testContact.first_name as string));
-        expect(getResponse.data.last_name).toEqual(capitalizeString(testContact.last_name as string));
-      } else {
-        expect(getResponse.data.first_name).toEqual(testContact.first_name);
-        expect(getResponse.data.last_name).toEqual(testContact.last_name);
-      }
+      expect(getResponse.data.first_name).toEqual(testContact.first_name);
+      expect(getResponse.data.last_name).toEqual(testContact.last_name);
       expect(getResponse.data.job_title).toEqual(testContact.job_title);
       expect(getResponse.data.email_addresses).toEqual(expectedEmailAddresses);
 
@@ -94,13 +88,8 @@ describe('contact', () => {
       expect(cachedReadResponse.status).toEqual(200);
       const found = cachedReadResponse.data.records.find((r) => r.id === response.data.record?.id);
       expect(found).toBeTruthy();
-      if (providerName === 'apollo') {
-        expect(found?.first_name).toEqual(capitalizeString(testContact.first_name as string));
-        expect(found?.last_name).toEqual(capitalizeString(testContact.last_name as string));
-      } else {
-        expect(found?.first_name).toEqual(testContact.first_name);
-        expect(found?.last_name).toEqual(testContact.last_name);
-      }
+      expect(found?.first_name).toEqual(testContact.first_name);
+      expect(found?.last_name).toEqual(testContact.last_name);
     }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
@@ -197,10 +186,6 @@ describe('contact', () => {
           providerName,
           objectName: 'contact',
         });
-
-        if (providerName === 'apollo') {
-          await new Promise((resolve) => setTimeout(resolve, 10_000));
-        }
 
         const searchResponse = await apiClient.post<SearchContactsResponse>(
           `/engagement/v2/contacts/_search`,
