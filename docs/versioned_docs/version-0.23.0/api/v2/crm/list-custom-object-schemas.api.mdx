@@ -1,0 +1,50 @@
+---
+id: list-custom-object-schemas
+title: "List custom object schemas"
+description: "List custom object schemas"
+sidebar_label: "List custom object schemas"
+hide_title: true
+hide_table_of_contents: true
+api: eJzdVttu20YQ/ZXB9sUGdHH9KBRF3KRojSatYdktAluwV+RI2oTcZfYiW5D5753ZpSiKdtwi6FP5YIs7szNz5nKGW2EqtNIro89zMRGFcv5tcN6Uf8w/Yean2QpL6cRAeLl0YnIjXpLOBsJhFqzyG1LZisehrNTwM/LbrCZpji6zqmI35OQ9OYEs2gETDYFLlm71rZ6GqjLWT/j3E1xYs1Y5WqDnCRoZ5vDEwuH+gc5bEv4a5q4yHtLNj+ggPVE4lQW6hbEZ9oQQnaoKc6vWGE9+N9C9+mEK7zZalipzfSGlqZJWlujRupgJ0kNC/DhMcNEOVU5aitOwQknA6C2BF5Ot8JuK1Z23Si9FPRD4KMuq4LNys7fxvein9GqFsBPD+TvwK+khaPUlYLEBSqD2aqEIpu8qKg0bEyzIqipUFruALFv8EpRFagdvA9aDDoqqqcYwnnwTDtdm/kUQOw/QeOgFM+MTKqt26NjR6ckJ/zu0c6ZBWis3kBntpdIUQ8TNJh1InUMh51g4MAtI7Qypn7nP+Q5li6120jL+5Nj09jnG6IlT4bF0nfPU2NwRlkfMqxRwSmU/Q90EeZV9Rs9JS1H+s01HJkIh7et2r1q7VRGsLP6NthN13a3Bzd5Xa2bWV2kqF6NnavDKp8ortn2Xuu8uYblr8lnHZyBodFaGiWiJEaf0K3oZ07HMpZfjg8tcLod2vRu2YAtuR+8rNxmPiYJGLlRyWQQcKTPObDlenz5rummjAmcX56LuMFkkt5TgDp/t616p35AL3w7HTqc/Fr3mvDgH0gJvQBaFeYAc11hwOV08yzJ0aUxjQDVbWxh2zDiTjZPR6enoROxTe615unN4e/khXkttLDO/b7kWKJe5lIpTlZvMvWlzlJmSZIdJPBDWfSzf0QPn2luTh4zPmLP/woKUkcEwil1ojPuI4jsG8hpKGrE4WCP4aAJkUkNwdGelXNSkyw9UhGilDIVX1DkstfmQGNZvWp5w8KDoXEdfDJ/mFZfGbkYcy82fCh+IBsrS6GbHAHEPK86Odhg5C6Mu0HFVSE9q5TjdHDbbiVvomM1G3D9JF2sE15fvb/X9/f2tfr31GqU4gcb5UupOdb6+E/sdtN1T1P96kzZz5vHRc0FUTFzszm3DCzdixwvc8IfMQIO8oiSz0nY7p1Jd26Ku+ZhWoo0fJgOxllbJOU8QfaYMdhPLVJIrxwJiooUsHL5SgqPLhvqO4b9cwi+ijwz07GNiLXmqJ0Lwqv7mwPuL99UA+t8BByEkpTMissp3ZM+2KZNty/e//HxFujJwXbscmwi1+cGV2Yn0pmO7S77JPf/lYF5U/4HHltj7x1Y9Sb56oeXypM3JoLVX/w2j786m
+sidebar_class_name: "get api-method"
+info_path: api/v2/crm/unified-crm-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>List custom object schemas</h1>
+
+<MethodEndpoint method={"get"} path={"/metadata/custom_objects"}></MethodEndpoint>
+
+
+
+List custom object schemas
+
+Support:
+
+| Provider    | Supported |
+| ----------- | --------- |
+| Hubspot     | Yes       |
+| Salesforce  | Yes       | 
+| Pipedrive   | No        |
+| MS Dynamics | No        |
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+An array containing the names and labels of Custom Objects
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem","paddingBottom":".5rem"}}>Array [</div></li><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"ticket"}}></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>labels</strong><span className={"openapi-schema__name"}> object</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"singular"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"Ticket"}}></SchemaItem><SchemaItem collapsible={false} name={"plural"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"Tickets"}}></SchemaItem></div></details></SchemaItem><li><div style={{"fontSize":"var(--ifm-code-font-size)","opacity":"0.6","marginLeft":"-.5rem"}}>]</div></li></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"[\n  {\n    \"name\": \"ticket\",\n    \"labels\": {\n      \"singular\": \"Ticket\",\n      \"plural\": \"Tickets\"\n    }\n  }\n]"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

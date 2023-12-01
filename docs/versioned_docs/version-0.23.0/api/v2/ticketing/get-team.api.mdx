@@ -1,0 +1,45 @@
+---
+id: get-team
+title: "Get team"
+description: ":::note"
+sidebar_label: "Get team"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVttuGzcQ/RV2+2IB3l1VcQJjURRNmyAw2gfDsRsUkmFTuyOJ8S654UWyIOy/d4Z7081G4uah9YMskcOZM2dmDrkJVAmaW6HkRRYkwRzsNfAiOA0yMKkWJe3gepIkUlmYyOuFMGwG3DoNDL8qma8ZX3KR82mOK5JdalgKWDGrmIEcUstSZ6wqQJM1U06z99KCLrUwwMqcy4iNf1fScjR15vakQGdWJRZx/Gpcyee5gyhVxYDNlGaFosASvxYedjSRCG4iJ/IKEJQ0jEtGOTA1/UzRV8IumF0Am4slSCYyPIH5WT43QTIOyNQEt6eBgdRpYde4uAkeQ16K8AHo122FuyXXvACEbfy+xB9Ii5Bp7jK403x1l3HL0a8gur440Gv8YdIFFDxINoFdl3RgqlQOXAbVPsGfFoAYNbHWOGXolJFTpNuin4zNtCp8Jq90xhCQXbNSq6XIQEcYDB55UeYYxWoH1WkH8jFsCxCKrEW4AI7HjkE0Vgs5J4Sdw6BY9z5+OmiOa4TUbrOLdwiRYyWlQBawORCetGImwHjsnSG2ypqagZdlLlJfS/Ss4YsTGrIjWbS5hn7lRXkYnoPB1knhaBJtBNZEeBIM9eZdT2bJ7eLA/CshDUevz9Np+iZ8MxwNw7NXQx6en51DyPmMp1Oezc44BNSBGkyppAFDDkfDIf3bSwFRvau7MMV5QtrJZovf+LMhw80hsnpW8CBSgIJgRR2mTncf/2kgXe7nvc20T+cy55Zms+7wHtxLfOAkZ+wCE5nXCmX8XAdVtU31uAaJBFlh87Y4aFSRHY7sQjXCRtlRoZIgJhMTb5oyVtQ+oJftcDudU2dZW5okjlEIok6GhIqtSB/AYg7xcnTQRR8bQ/b28sJXrVWVj8R4TeqWtnSs4MofQIrRdXtrs9/nu/EwDEMrkg2e5woFA5aQUwmNX0tTMPXceUAVeZspCkzZ1j6G0WgUDYOewBtJ45qx6zZTOsxOGmEfNO2Fct23SJc46RAJOC5lKjU7Ao57u9TubB5I4n//zvkR/6hBtcpcSht0DX2CHA8CYSHeWzI9hR2jA4bsuAJHtHbI/laOpXhzOcRnKV+yRxcrbJ7Gl9BZuKv6JqKA478odYxZYKr1ZHvUXbDbk5ZwKkm0nV9cNrMW1+fD+rzpu3zgQ/wwvnLSM62MLbjsXWonoxLXJM3G1FmL2ZjlfNBbrFarqKyP+ZBt/Hil9IMpeQrdUli6KYpVrLA7fa9RcM/yb9z4HmY3V39O5P39/UR+zYA2ptRcDYStnv0Altkjr51NL5//gyb85odPrTgWHi1VX3hy/FxuGn0cewk1aJu0Fx0q2QL5o73NZoq1uNF5VdFy/dQh2cyEISpQbWc8N/AMqd/hsXM0C6+pxx5lS07SlARekpdci/ri+SbQJ1fNnTNgT8VvxVyut2O2uFouq1s0bfT8xRC+55vrGS733449kaf/Avj+O+tZAPvPvh0ItdFbvOZKu7V38OahundvgQ/vr9GWO+r17Ru4vm6bL1SZo/Xcvprr8PRJYI6a/0yihXf7L515vfPkge6mb7uZGqaq/gEa5cBz
+sidebar_class_name: "get api-method"
+info_path: api/v2/ticketing/unified-ticketing-api-preview
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get team</h1>
+
+<MethodEndpoint method={"get"} path={"/teams/{team_id}"}></MethodEndpoint>
+
+
+
+:::note
+This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+:::
+
+Returns an Team object with the given id.
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"team_id","in":"path","required":true,"schema":{"type":"string"},"example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean"},"description":"Whether to include raw data fetched from the 3rd party provider.","example":true}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+TeamData
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"Platform"}}></SchemaItem><SchemaItem collapsible={false} name={"decription"} required={false} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","nullable":true,"example":"Platform and Integrations Team"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"name\": \"Platform\",\n  \"decription\": \"Platform and Integrations Team\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      

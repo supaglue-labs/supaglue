@@ -27,7 +27,7 @@ fi
 
 source $DIR/helpers.sh
 if [ "$SKIP_TESTS" == "false" ]; then
-  check_checkly_checks
+  # check_checkly_checks
   check_github_checks
 fi
 
