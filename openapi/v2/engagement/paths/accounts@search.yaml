@@ -1,0 +1,54 @@
+post:
+  operationId: searchAccounts
+  summary: Search accounts
+  description: |
+    Search the provider for accounts matching the specified criteria.
+    Search by name is supported for Outreach, Salesloft, and Apollo. Search by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
+  tags:
+    - Accounts
+  security:
+    - x-api-key: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+    - $ref: ../../../common/components/parameters/query/read_from_cache.yaml
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            filter:
+              type: object
+              description: The criteria to upsert on. If both name and domain are specified, it would perform an AND operation. If more than one account is found that matches, then an error will be thrown.
+              properties:
+                name: 
+                  type: string
+                  description: The name of the account to upsert on. Supported for Outreach, Salesloft, and Apollo.
+                domain:
+                  type: string
+                  description: The domain of the account to upsert on. Only supported for Outreach and Salesloft.
+          required:
+            - filter
+  responses:
+    200:
+      description: Paginated accounts
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/account.yaml
+            required:
+              - pagination
+              - records
+parameters:
+  - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
+  - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

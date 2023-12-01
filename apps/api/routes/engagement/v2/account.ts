@@ -13,6 +13,10 @@ import type {
   ListAccountsQueryParams,
   ListAccountsRequest,
   ListAccountsResponse,
+  SearchAccountsPathParams,
+  SearchAccountsQueryParams,
+  SearchAccountsRequest,
+  SearchAccountsResponse,
   UpdateAccountPathParams,
   UpdateAccountQueryParams,
   UpdateAccountRequest,
@@ -100,6 +104,21 @@ export default function init(app: Router): void {
       res: Response<UpsertAccountResponse>
     ) => {
       const id = await engagementCommonObjectService.upsert(
+        'account',
+        req.customerConnection,
+        camelcaseKeysSansCustomFields(req.body)
+      );
+      return res.status(201).send({ record: { id } });
+    }
+  );
+
+  router.post(
+    '/_search',
+    async (
+      req: Request<SearchAccountsPathParams, SearchAccountsResponse, SearchAccountsRequest, SearchAccountsQueryParams>,
+      res: Response<SearchAccountsResponse>
+    ) => {
+      const id = await engagementCommonObjectService.search(
         'account',
         req.customerConnection,
         camelcaseKeysSansCustomFields(req.body)

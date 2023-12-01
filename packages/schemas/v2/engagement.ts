@@ -10,7 +10,13 @@ export type UpsertAccountPathParams = never;
 export type UpsertAccountQueryParams = never;
 export type UpsertAccountRequest = operations['upsertAccount']['requestBody']['content']['application/json'];
 export type UpsertAccountResponse =
-  operations['upsertAccount']['responses'][keyof operations['createAccount']['responses']]['content']['application/json'];
+  operations['upsertAccount']['responses'][keyof operations['upsertAccount']['responses']]['content']['application/json'];
+
+export type SearchAccountsPathParams = never;
+export type SearchAccountsQueryParams = Required<operations['searchAccounts']>['parameters']['query'];
+export type SearchAccountsRequest = operations['searchAccounts']['requestBody']['content']['application/json'];
+export type SearchAccountsResponse =
+  operations['searchAccounts']['responses'][keyof operations['searchAccounts']['responses']]['content']['application/json'];
 
 export type ListAccountsPathParams = never;
 export type ListAccountsQueryParams = Required<operations['listAccounts']>['parameters']['query'];

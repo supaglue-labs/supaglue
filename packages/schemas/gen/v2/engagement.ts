@@ -61,6 +61,20 @@ export interface paths {
       };
     };
   };
+  "/accounts/_search": {
+    /**
+     * Search accounts
+     * @description Search the provider for accounts matching the specified criteria.
+     * Search by name is supported for Outreach, Salesloft, and Apollo. Search by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
+     */
+    post: operations["searchAccounts"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
   "/contacts": {
     /** List contacts */
     get: operations["listContacts"];
@@ -1059,6 +1073,49 @@ export interface operations {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Search accounts
+   * @description Search the provider for accounts matching the specified criteria.
+   * Search by name is supported for Outreach, Salesloft, and Apollo. Search by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
+   */
+  searchAccounts: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description The criteria to upsert on. If both name and domain are specified, it would perform an AND operation. If more than one account is found that matches, then an error will be thrown. */
+          filter: {
+            /** @description The name of the account to upsert on. Supported for Outreach, Salesloft, and Apollo. */
+            name?: string;
+            /** @description The domain of the account to upsert on. Only supported for Outreach and Salesloft. */
+            domain?: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Paginated accounts */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: components["schemas"]["account"][];
           };
         };
       };

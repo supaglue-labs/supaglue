@@ -9,7 +9,9 @@ import type {
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type {
+  Account,
   AccountCreateParams,
+  AccountSearchParams,
   AccountUpdateParams,
   AccountUpsertParams,
   Contact,
@@ -1519,6 +1521,13 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     if (!domain && !name) {
       throw new BadRequestError('Must specify at least one upsertOn field');
     }
+
+    const searchResult = await this.#searchAccounts({
+      filter: {
+        domain: domain,
+        name: name,
+      },
+    });
     await this.maybeRefreshAccessToken();
     const searchParams: Record<string, unknown> = DEFAULT_LIST_PARAMS;
     if (name) {
@@ -1751,14 +1760,50 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         return await this.#searchContacts(params as ContactSearchParams);
       case 'sequence_state':
         return await this.#searchSequenceStates(params as SequenceStateSearchParams);
+      case 'account':
+        return await this.#searchAccounts(params as AccountSearchParams);
       case 'user':
       case 'mailbox':
       case 'sequence':
-      case 'account':
         throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Outreach`);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
+  }
+
+  async #searchAccounts(params: AccountSearchParams): Promise<PaginatedSupaglueRecords<Account>> {
+    if (!params.filter.name && !params.filter.domain) {
+      throw new BadRequestError('Must specify at least one filter field');
+    }
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const link = cursor?.id as string;
+    const listParams: Record<string, unknown> = { ...DEFAULT_LIST_PARAMS, 'page[size]': params.pageSize };
+    if (params.filter.name) {
+      listParams['filter[name]'] = params.filter.name;
+    }
+    if (params.filter.domain) {
+      listParams['filter[domain]'] = params.filter.domain;
+    }
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = link
+        ? await axios.get<OutreachPaginatedRecords>(link, {
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          })
+        : await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/accounts`, {
+            params: listParams,
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          });
+      const records = response.data.data.map(fromOutreachAccountToAccount);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: response.data.links?.prev ? encodeCursor({ id: response.data.links?.prev, reverse: true }) : null,
+          next: response.data.links?.next ? encodeCursor({ id: response.data.links?.next, reverse: false }) : null,
+        },
+      };
+    });
   }
 
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
