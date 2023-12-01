@@ -792,17 +792,19 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         // noop
       }
 
-      switch (err.status) {
+      const { status } = err;
+
+      switch (status) {
         case 400:
-          return new InternalServerError(err.statusText, cause);
+          return new InternalServerError(err.statusText, { cause, origin: 'remote-provider', status });
         case 401:
-          return new UnauthorizedError(err.statusText, cause);
+          return new UnauthorizedError(err.statusText, { cause, origin: 'remote-provider', status });
         case 403:
-          return new ForbiddenError(err.statusText, cause);
+          return new ForbiddenError(err.statusText, { cause, origin: 'remote-provider', status });
         case 404:
-          return new NotFoundError(err.statusText, cause);
+          return new NotFoundError(err.statusText, { cause, origin: 'remote-provider', status });
         case 304:
-          return new NotModifiedError(err.statusText, cause);
+          return new NotModifiedError(err.statusText, { cause, origin: 'remote-provider', status });
         // The following are unmapped to Supaglue errors, but we want to pass
         // them back as 4xx so they aren't 500 and developers can view error messages
         // NOTE: `429` is omitted below since we process it differently for syncs
@@ -853,18 +855,18 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
         case 449:
         case 450:
         case 451:
-          return new RemoteProviderError(err.statusText, cause);
+          return new RemoteProviderError(err.statusText, { cause, status });
         default:
-          return new InternalServerError(err.statusText, cause);
+          return new InternalServerError(err.statusText, { cause, origin: 'remote-provider', status });
       }
     }
 
     if (isErrnoException(err) && err.cause) {
       switch ((err.cause as any).code) {
         case 'ENOTFOUND':
-          return new SGConnectionNoLongerAuthenticatedError(err.message, err.cause as Error);
+          return new SGConnectionNoLongerAuthenticatedError(err.message, undefined, err.cause as Error);
         case 'ECONNREFUSED':
-          return new BadGatewayError(`Could not connect to remote CRM`, err.cause as Error);
+          return new BadGatewayError(`Could not connect to remote CRM`, { cause: err.cause });
         default:
           return new InternalServerError(err.message, err); // err may not be serializable, so we don't return it
       }

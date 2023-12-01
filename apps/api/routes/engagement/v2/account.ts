@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError } from '@supaglue/core/errors';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysEngagementAccount } from '@supaglue/core/mappers/engagement';
 import type {
   CreateAccountPathParams,
@@ -54,7 +54,18 @@ export default function init(app: Router): void {
     ) => {
       const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new BadRequestError('Uncached reads not yet implemented for accounts.');
+        const { pagination, records } = await engagementCommonObjectService.list('account', req.customerConnection, {
+          modifiedAfter: req.query?.modified_after,
+          cursor: req.query?.cursor,
+          pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+        });
+        return res.status(200).send({
+          pagination,
+          records: records.map((record) => ({
+            ...toSnakecasedKeysEngagementAccount(record),
+            raw_data: includeRawData ? record.rawData : undefined,
+          })),
+        });
       }
       const { pagination, records } = await managedDataService.getEngagementAccountRecords(
         req.supaglueApplication.id,
@@ -123,7 +134,7 @@ export default function init(app: Router): void {
   );
 
   router.delete('/:account_id', () => {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   });
 
   app.use('/accounts', router);

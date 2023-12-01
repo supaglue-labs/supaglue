@@ -36,6 +36,8 @@ components:
   schemas:
     enriched_company:
       $ref: ./components/schemas/objects/enriched_company.yaml
+    errors:
+      $ref: ../../common/components/schemas/errors.yaml
   parameters:
     x-customer-id:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml

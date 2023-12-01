@@ -26,6 +26,10 @@ export interface EngagementRemoteClient extends RemoteClient {
     commonObjectType: T,
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']>;
+  listCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: EngagementCommonObjectType,
+    params: EngagementCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>>;
   createCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
@@ -70,6 +74,12 @@ export abstract class AbstractEngagementRemoteClient extends AbstractRemoteClien
     commonObjectType: T,
     id: string
   ): Promise<EngagementCommonObjectTypeMap<T>['object']> {
+    throw new NotImplementedError();
+  }
+  listCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: EngagementCommonObjectType,
+    params: EngagementCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
     throw new NotImplementedError();
   }
   public async createCommonObjectRecord<T extends EngagementCommonObjectType>(

@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysSequenceState } from '@supaglue/core/mappers/engagement';
 import type {
   BatchCreateSequenceStatePathParams,
@@ -66,10 +66,25 @@ export default function init(app: Router): void {
       >,
       res: Response<ListSequenceStatesResponse>
     ) => {
-      if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new BadRequestError('Uncached reads not yet implemented for sequence states.');
-      }
       const includeRawData = req.query?.include_raw_data?.toString() === 'true';
+      if (req.query?.read_from_cache?.toString() !== 'true') {
+        const { pagination, records } = await engagementCommonObjectService.list(
+          'sequence_state',
+          req.customerConnection,
+          {
+            modifiedAfter: req.query?.modified_after,
+            cursor: req.query?.cursor,
+            pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+          }
+        );
+        return res.status(200).send({
+          pagination,
+          records: records.map((record) => ({
+            ...toSnakecasedKeysSequenceState(record),
+            raw_data: includeRawData ? record.rawData : undefined,
+          })),
+        });
+      }
       const { pagination, records } = await managedDataService.getEngagementSequenceStateRecords(
         req.supaglueApplication.id,
         req.customerConnection.providerName,
@@ -120,7 +135,7 @@ export default function init(app: Router): void {
       res: Response<SearchSequenceStatesResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() === 'true') {
-        throw new BadRequestError('Cached search not yet implemented for engagement contacts.');
+        throw new NotImplementedError('Cached search not yet implemented for engagement contacts.');
       }
       const { pagination, records } = await engagementCommonObjectService.search(
         'sequence_state',

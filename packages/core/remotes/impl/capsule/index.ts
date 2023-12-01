@@ -1,4 +1,5 @@
 import type { ConnectionUnsafe, Provider } from '@supaglue/types';
+import { NotImplementedError } from '../../../errors';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractCrmRemoteClient } from '../../categories/crm/base';
 
@@ -9,7 +10,7 @@ class CapsuleClient extends AbstractCrmRemoteClient {
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
-    throw new Error('Not implemented');
+    throw new NotImplementedError();
   }
 }
 

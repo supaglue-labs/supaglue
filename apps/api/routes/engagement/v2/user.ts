@@ -40,8 +40,20 @@ export default function init(app: Router): void {
       req: Request<ListUsersPathParams, ListUsersResponse, ListUsersRequest, ListUsersQueryParams>,
       res: Response<ListUsersResponse>
     ) => {
+      const includeRawData = req.query?.include_raw_data?.toString() === 'true';
       if (req.query?.read_from_cache?.toString() !== 'true') {
-        throw new BadRequestError('Uncached reads not yet implemented for users.');
+        const { pagination, records } = await engagementCommonObjectService.list('user', req.customerConnection, {
+          modifiedAfter: req.query?.modified_after,
+          cursor: req.query?.cursor,
+          pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+        });
+        return res.status(200).send({
+          pagination,
+          records: records.map((record) => ({
+            ...toSnakecasedKeysEngagementUser(record),
+            raw_data: includeRawData ? record.rawData : undefined,
+          })),
+        });
       }
       const { pagination, records } = await managedDataService.getEngagementUserRecords(
         req.supaglueApplication.id,
@@ -55,7 +67,7 @@ export default function init(app: Router): void {
         pagination,
         records: records.map((record) => ({
           ...record,
-          raw_data: req.query?.include_raw_data ? record.raw_data : undefined,
+          raw_data: includeRawData ? record.raw_data : undefined,
           _supaglue_application_id: undefined,
           _supaglue_customer_id: undefined,
           _supaglue_provider_name: undefined,

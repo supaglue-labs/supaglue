@@ -7,9 +7,9 @@
 
 import type {
   CreateCustomObjectSchemaRequest,
-  CreateCustomObjectSchemaResponse,
-  GetCustomObjectSchemaResponse,
-  ListCustomObjectSchemasResponse,
+  CreateCustomObjectSchemaSuccessfulResponse,
+  GetCustomObjectSchemaSuccessfulResponse,
+  ListCustomObjectSchemasSuccessfulResponse,
   UpdateCustomObjectSchemaPathParams,
 } from '@supaglue/schemas/v2/crm';
 
@@ -69,7 +69,7 @@ describe('custom_objects', () => {
   describe.each(['hubspot'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const fullObjectName = providerName === 'salesforce' ? `${testCustomObject.name}__c` : testCustomObject.name;
-      const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
+      const response = await apiClient.post<CreateCustomObjectSchemaSuccessfulResponse>(
         '/crm/v2/metadata/custom_objects',
         { object: testCustomObject },
         {
@@ -89,7 +89,7 @@ describe('custom_objects', () => {
         await new Promise((resolve) => setTimeout(resolve, 30_000));
       }
 
-      const getResponse = await apiClient.get<GetCustomObjectSchemaResponse>(
+      const getResponse = await apiClient.get<GetCustomObjectSchemaSuccessfulResponse>(
         `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -111,16 +111,19 @@ describe('custom_objects', () => {
         expect(getResponse.data.fields).toContainEqual(expect.objectContaining(field));
       });
 
-      const listResponse = await apiClient.get<ListCustomObjectSchemasResponse>('/crm/v2/metadata/custom_objects', {
-        headers: { 'x-provider-name': providerName },
-      });
+      const listResponse = await apiClient.get<ListCustomObjectSchemasSuccessfulResponse>(
+        '/crm/v2/metadata/custom_objects',
+        {
+          headers: { 'x-provider-name': providerName },
+        }
+      );
       expect(listResponse.status).toEqual(200);
       expect(listResponse.data).toContainEqual(expect.objectContaining({ name: fullObjectName }));
     }, 120_000);
 
     test(`Test updating a custom object`, async () => {
       const fullObjectName = providerName === 'salesforce' ? `${testCustomObject.name}__c` : testCustomObject.name;
-      const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
+      const response = await apiClient.post<CreateCustomObjectSchemaSuccessfulResponse>(
         '/crm/v2/metadata/custom_objects',
         { object: testCustomObject },
         {
@@ -206,7 +209,7 @@ describe('custom_objects', () => {
         await new Promise((resolve) => setTimeout(resolve, 60_000));
       }
 
-      const getResponse = await apiClient.get<GetCustomObjectSchemaResponse>(
+      const getResponse = await apiClient.get<GetCustomObjectSchemaSuccessfulResponse>(
         `/crm/v2/metadata/custom_objects/${testCustomObject.name}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -234,7 +237,7 @@ describe('custom_objects', () => {
   test(`Hubspot BadRequest /`, async () => {
     const providerName = 'hubspot';
     const fullObjectName = testCustomObject.name;
-    const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
+    const response = await apiClient.post<CreateCustomObjectSchemaSuccessfulResponse>(
       '/crm/v2/metadata/custom_objects',
       { object: testCustomObject },
       {
@@ -298,7 +301,7 @@ describe('custom_objects', () => {
 
   test(`Salesforce BadRequest /`, async () => {
     const providerName = 'salesforce';
-    const response = await apiClient.post<CreateCustomObjectSchemaResponse>(
+    const response = await apiClient.post<CreateCustomObjectSchemaSuccessfulResponse>(
       '/crm/v2/metadata/custom_objects',
       {
         object: {

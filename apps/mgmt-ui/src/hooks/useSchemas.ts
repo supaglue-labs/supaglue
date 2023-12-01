@@ -1,10 +1,11 @@
-import type { GetSchemasResponse } from '@supaglue/schemas/v2/mgmt';
+import type { GetSchemasSuccessfulResponse } from '@supaglue/schemas/v2/mgmt';
 import type { Schema } from '@supaglue/types';
 import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useSchemas() {
-  const { data, isLoading, error, ...rest } = useSWRWithApplication<GetSchemasResponse>('/api/internal/schemas');
+  const { data, isLoading, error, ...rest } =
+    useSWRWithApplication<GetSchemasSuccessfulResponse>('/api/internal/schemas');
 
   return {
     schemas: data ? data.map(camelcaseKeys) : undefined,
@@ -14,6 +15,6 @@ export function useSchemas() {
   };
 }
 
-export const toGetSchemasResponse = (schemas: Schema[]): GetSchemasResponse => {
+export const toGetSchemasResponse = (schemas: Schema[]): GetSchemasSuccessfulResponse => {
   return schemas.map(snakecaseKeys);
 };
