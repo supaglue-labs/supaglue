@@ -1569,7 +1569,80 @@ export interface components {
       custom_object_id: string;
     };
   };
-  responses: never;
+  responses: {
+    /** @description Bad request */
+    badRequest: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Conflict */
+    conflict: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Forbidden */
+    forbidden: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Internal server error */
+    internalServerError: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Not found */
+    notFound: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Not implemented */
+    notImplemented: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Remote provider error */
+    remoteProviderError: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Unauthorized */
+    unauthorized: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Unprocessable entity */
+    unprocessableEntity: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+  };
   parameters: {
     /**
      * @description Whether to include data that was deleted in providers.
@@ -1707,13 +1780,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Create account */
@@ -1741,15 +1814,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -1790,15 +1863,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Get account */
@@ -1823,13 +1896,13 @@ export interface operations {
           "application/json": components["schemas"]["account"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Update account */
@@ -1859,15 +1932,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** List contacts */
@@ -1896,13 +1969,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Create contact */
@@ -1941,15 +2014,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2000,15 +2073,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2049,15 +2122,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Get contact */
@@ -2083,13 +2156,13 @@ export interface operations {
           "application/json": components["schemas"]["contact"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Update contact */
@@ -2120,15 +2193,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** List leads */
@@ -2156,62 +2229,13 @@ export interface operations {
           };
         };
       };
-      /** @description Bad request */
-      400: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Forbidden */
-      403: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Not found */
-      404: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Remote provider error */
-      499: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Not implemented */
-      501: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Create lead */
@@ -2250,15 +2274,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2299,15 +2323,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2357,15 +2381,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Get lead */
@@ -2420,15 +2444,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** List opportunities */
@@ -2457,13 +2481,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Create opportunity */
@@ -2503,15 +2527,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Get opportunity */
@@ -2537,13 +2561,13 @@ export interface operations {
           "application/json": components["schemas"]["opportunity"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** Update opportunity */
@@ -2575,15 +2599,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** List users */
@@ -2611,29 +2635,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      /** @description Conflict */
-      409: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Unprocessable entity */
-      422: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2667,15 +2677,15 @@ export interface operations {
           "application/json": components["schemas"]["user"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2718,13 +2728,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2767,15 +2777,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2813,13 +2823,13 @@ export interface operations {
           "application/json": components["schemas"]["custom_object_record"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2867,15 +2877,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2918,13 +2928,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -2967,15 +2977,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3013,13 +3023,13 @@ export interface operations {
           "application/json": components["schemas"]["standard_object_record"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3067,15 +3077,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3112,13 +3122,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3156,15 +3166,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3200,13 +3210,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3246,15 +3256,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3284,13 +3294,13 @@ export interface operations {
           "application/json": components["schemas"]["simple_custom_object_schema"][];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3332,15 +3342,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3370,13 +3380,13 @@ export interface operations {
           "application/json": string[];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** List properties */
@@ -3400,13 +3410,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3436,15 +3446,15 @@ export interface operations {
           "application/json": components["schemas"]["property_unified"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3473,13 +3483,13 @@ export interface operations {
           "application/json": components["schemas"]["property_unified"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3513,15 +3523,15 @@ export interface operations {
           "application/json": components["schemas"]["property_unified"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3556,15 +3566,15 @@ export interface operations {
           "application/json": components["schemas"]["property_unified"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3597,13 +3607,13 @@ export interface operations {
           "application/json": components["schemas"]["custom_object_schema"];
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3645,15 +3655,15 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      409: paths["/users"]["get"]["responses"]["409"];
-      422: paths["/users"]["get"]["responses"]["422"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      409: components["responses"]["conflict"];
+      422: components["responses"]["unprocessableEntity"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /** List lists */
@@ -3679,13 +3689,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
   /**
@@ -3723,13 +3733,13 @@ export interface operations {
           };
         };
       };
-      400: paths["/leads"]["get"]["responses"]["400"];
-      401: paths["/leads"]["get"]["responses"]["401"];
-      403: paths["/leads"]["get"]["responses"]["403"];
-      404: paths["/leads"]["get"]["responses"]["404"];
-      499: paths["/leads"]["get"]["responses"]["499"];
-      500: paths["/leads"]["get"]["responses"]["500"];
-      501: paths["/leads"]["get"]["responses"]["501"];
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
 }
