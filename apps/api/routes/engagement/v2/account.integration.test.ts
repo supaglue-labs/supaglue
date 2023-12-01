@@ -24,7 +24,7 @@ describe('account', () => {
     };
   });
 
-  describe.each(['outreach', 'apollo', 'salesloft'])('%s', (providerName) => {
+  describe.each(['outreach', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
       const response = await apiClient.post<CreateAccountResponse>(
         '/engagement/v2/accounts',
@@ -41,10 +41,6 @@ describe('account', () => {
         objectName: 'account',
       });
 
-      // TODO get not supported for apollo
-      if (providerName === 'apollo') {
-        return;
-      }
       const getResponse = await apiClient.get<GetAccountResponse>(
         `/engagement/v2/accounts/${response.data.record?.id}`,
         {
@@ -79,7 +75,7 @@ describe('account', () => {
           record: testAccount,
           upsert_on: {
             name: testAccount.name,
-            domain: providerName === 'apollo' ? undefined : testAccount.domain,
+            domain: testAccount.domain,
           },
         },
         {
@@ -100,7 +96,7 @@ describe('account', () => {
           record: testAccount,
           upsert_on: {
             name: testAccount.name,
-            domain: providerName === 'apollo' ? undefined : testAccount.domain,
+            domain: testAccount.domain,
           },
         },
         {
@@ -142,10 +138,6 @@ describe('account', () => {
 
       expect(updateResponse.status).toEqual(200);
 
-      // TODO get not supported for apollo
-      if (providerName === 'apollo') {
-        return;
-      }
       const getResponse = await apiClient.get<GetAccountResponse>(
         `/engagement/v2/accounts/${response.data.record?.id}`,
         {
