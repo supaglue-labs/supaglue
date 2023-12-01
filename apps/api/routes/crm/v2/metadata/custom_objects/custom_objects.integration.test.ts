@@ -294,7 +294,7 @@ describe('custom_objects', () => {
           code: 'BAD_REQUEST',
           detail:
             'Cannot delete fields from custom object schema in hubspot. Fields to delete: bool__c, double__c, int__c',
-          id: '19c5953c-f0db-488f-9d4d-fbc488f2ebba',
+          id: expect.any(String),
           meta: {
             origin: 'supaglue',
           },
@@ -340,7 +340,7 @@ describe('custom_objects', () => {
         {
           code: 'BAD_REQUEST',
           detail: 'Custom object field key names must end with __c',
-          id: 'd8428475-02cc-47b5-9870-b0fe73671693',
+          id: expect.any(String),
           meta: {
             origin: 'supaglue',
           },
