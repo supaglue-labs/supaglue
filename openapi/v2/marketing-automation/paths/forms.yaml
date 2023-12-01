@@ -6,7 +6,7 @@ get:
   security:
     - x-api-key: []
   responses:
-    200:
+    '200':
       description: List of forms and their metadata
       content:
         application/json:
@@ -19,6 +19,20 @@ get:
                   $ref: ../components/schemas/form_metadata.yaml
             required:
               - forms
+    '400':
+      $ref: ../../../common/components/responses/badRequest.yaml
+    '401':
+      $ref: ../../../common/components/responses/unauthorized.yaml
+    '403':
+      $ref: ../../../common/components/responses/forbidden.yaml
+    '404':
+      $ref: ../../../common/components/responses/notFound.yaml
+    '499':
+      $ref: ../../../common/components/responses/remoteProviderError.yaml
+    '500':
+      $ref: ../../../common/components/responses/internalServerError.yaml
+    '501':
+      $ref: ../../../common/components/responses/notImplemented.yaml
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

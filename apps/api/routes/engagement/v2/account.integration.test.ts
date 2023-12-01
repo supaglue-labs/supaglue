@@ -7,11 +7,11 @@
 
 import type {
   CreateAccountRequest,
-  CreateAccountResponse,
-  GetAccountResponse,
-  ListAccountsResponse,
-  UpdateAccountResponse,
-  UpsertAccountResponse,
+  CreateAccountSuccessfulResponse,
+  GetAccountSuccessfulResponse,
+  ListAccountsSuccessfulResponse,
+  UpdateAccountSuccessfulResponse,
+  UpsertAccountSuccessfulResponse,
 } from '@supaglue/schemas/v2/engagement';
 
 describe('account', () => {
@@ -26,7 +26,7 @@ describe('account', () => {
 
   describe.each(['outreach', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
-      const response = await apiClient.post<CreateAccountResponse>(
+      const response = await apiClient.post<CreateAccountSuccessfulResponse>(
         '/engagement/v2/accounts',
         { record: testAccount },
         {
@@ -41,7 +41,7 @@ describe('account', () => {
         objectName: 'account',
       });
 
-      const getResponse = await apiClient.get<GetAccountResponse>(
+      const getResponse = await apiClient.get<GetAccountSuccessfulResponse>(
         `/engagement/v2/accounts/${response.data.record?.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -53,7 +53,7 @@ describe('account', () => {
       expect(getResponse.data.name).toEqual(testAccount.name);
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListAccountsResponse>(
+      const cachedReadResponse = await apiClient.get<ListAccountsSuccessfulResponse>(
         `/engagement/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,
@@ -69,7 +69,7 @@ describe('account', () => {
     }, 120_000);
 
     test('Test that 2 identical upserts only creates 1 record', async () => {
-      const response = await apiClient.post<UpsertAccountResponse>(
+      const response = await apiClient.post<UpsertAccountSuccessfulResponse>(
         '/engagement/v2/accounts/_upsert',
         {
           record: testAccount,
@@ -90,7 +90,7 @@ describe('account', () => {
         objectName: 'account',
       });
 
-      const response2 = await apiClient.post<UpsertAccountResponse>(
+      const response2 = await apiClient.post<UpsertAccountSuccessfulResponse>(
         '/engagement/v2/accounts/_upsert',
         {
           record: testAccount,
@@ -109,7 +109,7 @@ describe('account', () => {
     }, 120_000);
 
     test('Test that POST followed by PATCH followed by GET has correct data and cache invalidates', async () => {
-      const response = await apiClient.post<CreateAccountResponse>(
+      const response = await apiClient.post<CreateAccountSuccessfulResponse>(
         '/engagement/v2/accounts',
         { record: testAccount },
         {
@@ -124,7 +124,7 @@ describe('account', () => {
         objectName: 'account',
       });
 
-      const updateResponse = await apiClient.patch<UpdateAccountResponse>(
+      const updateResponse = await apiClient.patch<UpdateAccountSuccessfulResponse>(
         `/engagement/v2/accounts/${response.data.record?.id}`,
         {
           record: {
@@ -138,7 +138,7 @@ describe('account', () => {
 
       expect(updateResponse.status).toEqual(200);
 
-      const getResponse = await apiClient.get<GetAccountResponse>(
+      const getResponse = await apiClient.get<GetAccountSuccessfulResponse>(
         `/engagement/v2/accounts/${response.data.record?.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -150,7 +150,7 @@ describe('account', () => {
       expect(getResponse.data.domain).toEqual(testAccount.domain);
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListAccountsResponse>(
+      const cachedReadResponse = await apiClient.get<ListAccountsSuccessfulResponse>(
         `/engagement/v2/accounts?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,

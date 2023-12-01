@@ -46,6 +46,8 @@ components:
       $ref: ./components/schemas/form_field.yaml
     form_data_option:
       $ref: ./components/schemas/form_data_option.yaml
+    errors:
+      $ref: ../../common/components/schemas/errors.yaml
   parameters:
     x-customer-id:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml
@@ -53,3 +55,22 @@ components:
       $ref: ../../common/components/parameters/header/x-provider-name.yaml
     include_raw_data:
       $ref: ../../common/components/parameters/query/include_raw_data.yaml
+  responses:
+    badRequest:
+      $ref: ../../common/components/responses/badRequest.yaml
+    conflict:
+      $ref: ../../common/components/responses/conflict.yaml
+    forbidden:
+      $ref: ../../common/components/responses/forbidden.yaml
+    internalServerError:
+      $ref: ../../common/components/responses/internalServerError.yaml
+    notFound:
+      $ref: ../../common/components/responses/notFound.yaml
+    notImplemented:
+      $ref: ../../common/components/responses/notImplemented.yaml
+    remoteProviderError:
+      $ref: ../../common/components/responses/remoteProviderError.yaml
+    unauthorized:
+      $ref: ../../common/components/responses/unauthorized.yaml
+    unprocessableEntity:
+      $ref: ../../common/components/responses/unprocessableEntity.yaml
