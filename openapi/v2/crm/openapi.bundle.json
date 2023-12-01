@@ -68,31 +68,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -154,25 +154,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -263,31 +263,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -374,25 +374,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -443,31 +443,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -551,31 +551,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -637,25 +637,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -750,31 +750,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -864,31 +864,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -933,25 +933,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1013,31 +1013,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1119,31 +1119,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1202,109 +1202,25 @@
             }
           },
           "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "description": "Remote provider error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "description": "Not implemented",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1394,31 +1310,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1510,31 +1426,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1637,31 +1553,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1744,31 +1660,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1830,25 +1746,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1912,25 +1828,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -1984,31 +1900,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2086,55 +2002,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "description": "Conflict",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "description": "Unprocessable entity",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2177,31 +2069,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2275,31 +2167,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2356,25 +2248,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2441,31 +2333,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2493,25 +2385,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2589,31 +2481,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2670,25 +2562,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2755,31 +2647,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2807,25 +2699,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2910,25 +2802,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -2975,31 +2867,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3063,25 +2955,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3128,31 +3020,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3194,25 +3086,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3275,31 +3167,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3341,25 +3233,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3407,25 +3299,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3463,31 +3355,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3534,25 +3426,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3590,31 +3482,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3682,31 +3574,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3754,25 +3646,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3823,31 +3715,31 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "409": {
-            "$ref": "#/paths/~1users/get/responses/409"
+            "$ref": "#/components/responses/conflict"
           },
           "422": {
-            "$ref": "#/paths/~1users/get/responses/422"
+            "$ref": "#/components/responses/unprocessableEntity"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3913,25 +3805,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -3995,25 +3887,25 @@
             }
           },
           "400": {
-            "$ref": "#/paths/~1leads/get/responses/400"
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "$ref": "#/paths/~1leads/get/responses/401"
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "$ref": "#/paths/~1leads/get/responses/403"
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "$ref": "#/paths/~1leads/get/responses/404"
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "$ref": "#/paths/~1leads/get/responses/499"
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "$ref": "#/paths/~1leads/get/responses/500"
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "$ref": "#/paths/~1leads/get/responses/501"
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -6043,6 +5935,143 @@
           }
         },
         "description": "List of associated objects to attempt to fetch associations for. Only relevant for hubspot and when `read_from_cache` is false.\n"
+      }
+    },
+    "responses": {
+      "badRequest": {
+        "description": "Bad request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "internalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "notFound": {
+        "description": "Not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "notImplemented": {
+        "description": "Not implemented",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "remoteProviderError": {
+        "description": "Remote provider error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "unprocessableEntity": {
+        "description": "Unprocessable entity",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

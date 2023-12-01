@@ -49,109 +49,25 @@
             }
           },
           "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/badRequest"
           },
           "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/unauthorized"
           },
           "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/forbidden"
           },
           "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/notFound"
           },
           "499": {
-            "description": "Remote provider error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/remoteProviderError"
           },
           "500": {
-            "description": "Internal server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/internalServerError"
           },
           "501": {
-            "description": "Not implemented",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "errors": {
-                      "$ref": "#/components/schemas/errors"
-                    }
-                  }
-                }
-              }
-            }
+            "$ref": "#/components/responses/notImplemented"
           }
         }
       },
@@ -407,6 +323,143 @@
         "example": "salesforce",
         "description": "The provider name",
         "required": true
+      }
+    },
+    "responses": {
+      "badRequest": {
+        "description": "Bad request",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "forbidden": {
+        "description": "Forbidden",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "internalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "notFound": {
+        "description": "Not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "notImplemented": {
+        "description": "Not implemented",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "remoteProviderError": {
+        "description": "Remote provider error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
+      },
+      "unprocessableEntity": {
+        "description": "Unprocessable entity",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "errors": {
+                  "$ref": "#/components/schemas/errors"
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

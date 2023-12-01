@@ -122,7 +122,80 @@ export interface components {
         };
       })[];
   };
-  responses: never;
+  responses: {
+    /** @description Bad request */
+    badRequest: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Conflict */
+    conflict: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Forbidden */
+    forbidden: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Internal server error */
+    internalServerError: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Not found */
+    notFound: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Not implemented */
+    notImplemented: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Remote provider error */
+    remoteProviderError: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Unauthorized */
+    unauthorized: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+    /** @description Unprocessable entity */
+    unprocessableEntity: {
+      content: {
+        "application/json": {
+          errors?: components["schemas"]["errors"];
+        };
+      };
+    };
+  };
   parameters: {
     /**
      * @description The customer ID that uniquely identifies the customer in your application
@@ -166,62 +239,13 @@ export interface operations {
           };
         };
       };
-      /** @description Bad request */
-      400: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Unauthorized */
-      401: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Forbidden */
-      403: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Not found */
-      404: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Remote provider error */
-      499: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Internal server error */
-      500: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
-      /** @description Not implemented */
-      501: {
-        content: {
-          "application/json": {
-            errors?: components["schemas"]["errors"];
-          };
-        };
-      };
+      400: components["responses"]["badRequest"];
+      401: components["responses"]["unauthorized"];
+      403: components["responses"]["forbidden"];
+      404: components["responses"]["notFound"];
+      499: components["responses"]["remoteProviderError"];
+      500: components["responses"]["internalServerError"];
+      501: components["responses"]["notImplemented"];
     };
   };
 }
