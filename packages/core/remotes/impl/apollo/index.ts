@@ -6,6 +6,7 @@ import type {
   SendPassthroughRequestResponse,
 } from '@supaglue/types';
 import type {
+  Account,
   AccountCreateParams,
   AccountUpdateParams,
   AccountUpsertParams,
@@ -15,12 +16,14 @@ import type {
   ContactUpdateParams,
   EngagementCommonObjectType,
   EngagementCommonObjectTypeMap,
+  Mailbox,
   Sequence,
   SequenceCreateParams,
   SequenceState,
   SequenceStateCreateParams,
   SequenceStateSearchParams,
   SequenceStepCreateParams,
+  User,
 } from '@supaglue/types/engagement';
 import { Readable } from 'stream';
 import {
@@ -30,6 +33,7 @@ import {
   SGConnectionNoLongerAuthenticatedError,
 } from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
+import { decodeCursor, DEFAULT_PAGE_SIZE, encodeCursor } from '../../../lib';
 import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
@@ -515,6 +519,141 @@ class ApolloClient extends AbstractEngagementRemoteClient {
       default:
         throw new BadRequestError(`Common object type ${commonObjectType} not supported for the Apollo API`);
     }
+  }
+
+  public override async listCommonObjectRecords<T extends EngagementCommonObjectType>(
+    commonObjectType: EngagementCommonObjectType,
+    params: EngagementCommonObjectTypeMap<T>['listParams']
+  ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
+    if (params.modifiedAfter) {
+      throw new BadRequestError('Modified after is not supported when listing common objects in Apollo');
+    }
+    const cursor = decodeCursor(params.cursor);
+    switch (commonObjectType) {
+      case 'account':
+        return await this.#listAccounts(cursor?.id as number, params.pageSize);
+      case 'contact':
+        return await this.#listContacts(cursor?.id as number, params.pageSize);
+      case 'user':
+        return await this.#listUsers(cursor?.id as number, params.pageSize);
+      case 'sequence':
+        return await this.#listSequences(cursor?.id as number, params.pageSize);
+      case 'mailbox':
+        return await this.#listMailboxes();
+      case 'sequence_state':
+        throw new BadRequestError(
+          `Uncached list operation not supported for common object ${commonObjectType} in Apollo. List contacts instead.`
+        );
+      default:
+        throw new BadRequestError(`Common object type ${commonObjectType} not supported for the Apollo API`);
+    }
+  }
+
+  async #listAccounts(page = 1, perPage = DEFAULT_PAGE_SIZE): Promise<PaginatedSupaglueRecords<Account>> {
+    const response = await axios.post<ApolloPaginatedAccounts>(
+      `${this.#baseURL}/v1/accounts/search`,
+      {
+        api_key: this.#apiKey,
+        page,
+        per_page: perPage,
+      },
+      {
+        headers: this.#headers,
+      }
+    );
+    const records = response.data.accounts.map(fromApolloAccountToAccount);
+    return {
+      records,
+      pagination: {
+        total_count: response.data.pagination.total_entries,
+        previous: page === 1 ? null : encodeCursor({ id: page - 1, reverse: true }),
+        next: response.data.pagination.total_pages > page ? encodeCursor({ id: page + 1, reverse: false }) : null,
+      },
+    };
+  }
+
+  async #listContacts(page = 1, perPage = DEFAULT_PAGE_SIZE): Promise<PaginatedSupaglueRecords<Contact>> {
+    const response = await axios.post<ApolloPaginatedContacts>(
+      `${this.#baseURL}/v1/contacts/search`,
+      {
+        api_key: this.#apiKey,
+        page,
+        per_page: perPage,
+      },
+      {
+        headers: this.#headers,
+      }
+    );
+    const records = response.data.contacts.map(fromApolloContactToContact);
+    return {
+      records,
+      pagination: {
+        total_count: response.data.pagination.total_entries,
+        previous: page === 1 ? null : encodeCursor({ id: page - 1, reverse: true }),
+        next: response.data.pagination.total_pages > page ? encodeCursor({ id: page + 1, reverse: false }) : null,
+      },
+    };
+  }
+
+  async #listUsers(page = 1, perPage = DEFAULT_PAGE_SIZE): Promise<PaginatedSupaglueRecords<User>> {
+    const response = await axios.get<ApolloPaginatedUsers>(`${this.#baseURL}/v1/users/search`, {
+      params: {
+        api_key: this.#apiKey,
+        page,
+        per_page: perPage,
+      },
+      headers: this.#headers,
+    });
+    const records = response.data.users.map(fromApolloUserToUser);
+    return {
+      records,
+      pagination: {
+        total_count: response.data.pagination.total_entries,
+        previous: page === 1 ? null : encodeCursor({ id: page - 1, reverse: true }),
+        next: response.data.pagination.total_pages > page ? encodeCursor({ id: page + 1, reverse: false }) : null,
+      },
+    };
+  }
+
+  async #listSequences(page = 1, perPage = DEFAULT_PAGE_SIZE): Promise<PaginatedSupaglueRecords<Sequence>> {
+    const response = await axios.post<ApolloPaginatedSequences>(
+      `${this.#baseURL}/v1/emailer_campaigns/search`,
+      {
+        api_key: this.#apiKey,
+        page,
+        per_page: perPage,
+      },
+      {
+        headers: this.#headers,
+      }
+    );
+    const records = response.data.emailer_campaigns.map((r: any) => fromApolloEmailerCampaignToSequence(r));
+    return {
+      records,
+      pagination: {
+        total_count: response.data.pagination.total_entries,
+        previous: page === 1 ? null : encodeCursor({ id: page - 1, reverse: true }),
+        next: response.data.pagination.total_pages > page ? encodeCursor({ id: page + 1, reverse: false }) : null,
+      },
+    };
+  }
+
+  async #listMailboxes(): Promise<PaginatedSupaglueRecords<Mailbox>> {
+    const response = await axios.get<{ email_accounts: Record<string, any>[] }>(`${this.#baseURL}/v1/email_accounts`, {
+      headers: this.#headers,
+      params: {
+        api_key: this.#apiKey,
+      },
+    });
+    const records = response.data.email_accounts.map(fromApolloEmailAccountsToMailbox);
+    return {
+      records,
+      pagination: {
+        total_count: records.length,
+        previous: null,
+        next: null,
+      },
+    };
   }
 
   async upsertAccount(params: AccountUpsertParams): Promise<UpsertCommonObjectRecordResponse<'account'>> {
