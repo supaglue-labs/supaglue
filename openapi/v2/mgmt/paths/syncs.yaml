@@ -1,10 +1,10 @@
 get:
-  operationId: getSyncs
+  operationId: listSyncs
   tags:
     - Syncs
   security:
     - x-api-key: []
-  summary: Get Syncs
+  summary: List Syncs
   description: >-
     Get a list of Syncs.
   parameters:

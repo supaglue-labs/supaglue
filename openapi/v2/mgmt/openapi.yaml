@@ -115,6 +115,8 @@ components:
     x-api-key:
       $ref: ../../common/components/securitySchemes/x-api-key.yaml
   schemas:
+    related_sync_states:
+      $ref: './components/schemas/objects/related_sync_states.yaml'
     pagination:
       $ref: ../../common/components/schemas/pagination.yaml
     customer:
