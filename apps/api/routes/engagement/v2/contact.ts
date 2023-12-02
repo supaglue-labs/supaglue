@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { NotImplementedError } from '@supaglue/core/errors';
+import { BadRequestError } from '@supaglue/core/errors';
 import { toSnakecasedKeysEngagementContact } from '@supaglue/core/mappers/engagement';
 import type {
   CreateContactPathParams,
@@ -112,7 +112,7 @@ export default function init(app: Router): void {
       res: Response<SearchContactsResponse>
     ) => {
       if (req.query?.read_from_cache?.toString() === 'true') {
-        throw new NotImplementedError('Cached search not yet implemented for engagement contacts.');
+        throw new BadRequestError('Cached search not yet implemented for engagement contacts.');
       }
       const { pagination, records } = await engagementCommonObjectService.search('contact', req.customerConnection, {
         filter: req.body.filter,
@@ -146,7 +146,7 @@ export default function init(app: Router): void {
   );
 
   router.delete('/:contact_id', () => {
-    throw new NotImplementedError();
+    throw new Error('Not implemented');
   });
 
   app.use('/contacts', router);

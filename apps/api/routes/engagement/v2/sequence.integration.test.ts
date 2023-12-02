@@ -7,15 +7,15 @@
 
 import type {
   CreateContactRequest,
-  CreateContactSuccessfulResponse,
+  CreateContactResponse,
   CreateSequenceRequest,
+  CreateSequenceResponse,
   CreateSequenceStateRequest,
-  CreateSequenceStateSuccessfulResponse,
-  CreateSequenceSuccessfulResponse,
-  GetSequenceSuccessfulResponse,
-  ListSequencesSuccessfulResponse,
+  CreateSequenceStateResponse,
+  GetSequenceResponse,
+  ListSequencesResponse,
   SearchSequenceStatesRequest,
-  SearchSequenceStatesSuccessfulResponse,
+  SearchSequenceStatesResponse,
 } from '@supaglue/schemas/v2/engagement';
 
 jest.retryTimes(3);
@@ -102,12 +102,14 @@ describe('sequence', () => {
 
     expect(res.response.status).toEqual(400);
     // Our API spec is wrong and should specify 400 return code with ability to have errors
-    expect(res.error?.errors?.[0].title).toMatch('Salesloft only supports intervals in whole days');
+    expect((res.error as typeof res.data)?.errors?.[0].title).toMatch(
+      'Salesloft only supports intervals in whole days'
+    );
   });
 
   describe.each(['outreach', 'salesloft'])('%s', (providerName) => {
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
-      const response = await apiClient.post<CreateSequenceSuccessfulResponse>(
+      const response = await apiClient.post<CreateSequenceResponse>(
         '/engagement/v2/sequences',
         { record: testSequence },
         {
@@ -121,7 +123,7 @@ describe('sequence', () => {
         providerName,
         objectName: 'sequence',
       });
-      const getResponse = await apiClient.get<GetSequenceSuccessfulResponse>(
+      const getResponse = await apiClient.get<GetSequenceResponse>(
         `/engagement/v2/sequences/${response.data.record?.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -152,7 +154,7 @@ describe('sequence', () => {
         expect(step?.template?.subject).toEqual('modified subject');
       }
 
-      const contactRes = await apiClient.post<CreateContactSuccessfulResponse>(
+      const contactRes = await apiClient.post<CreateContactResponse>(
         '/engagement/v2/contacts',
         { record: getTestContact() },
         { headers: { 'x-provider-name': providerName } }
@@ -188,7 +190,7 @@ describe('sequence', () => {
       const mailboxId = await getMailboxId();
 
       const addContactToSequence = async () => {
-        return apiClient.post<CreateSequenceStateSuccessfulResponse>(
+        return apiClient.post<CreateSequenceStateResponse>(
           '/engagement/v2/sequence_states',
           {
             record: {
@@ -211,7 +213,7 @@ describe('sequence', () => {
       });
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListSequencesSuccessfulResponse>(
+      const cachedReadResponse = await apiClient.get<ListSequencesResponse>(
         `/engagement/v2/sequences?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,
@@ -226,7 +228,7 @@ describe('sequence', () => {
 
       // Test that you can search sequence state by contact ID
       const searchSequenceStates = async () => {
-        return await apiClient.post<SearchSequenceStatesSuccessfulResponse>(
+        return await apiClient.post<SearchSequenceStatesResponse>(
           '/engagement/v2/sequence_states/_search',
           {
             filter: {

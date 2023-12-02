@@ -28,35 +28,19 @@ patch:
           required:
             - record
   responses:
-    '200':
+    '201':
       description: Custom Object Record created
       content:
         application/json:
           schema:
             type: object
             properties:
+              errors:
+                $ref: ../../../../common/components/schemas/errors.yaml
               record:
                 $ref: ../../../../common/components/schemas/created_model.yaml
               warnings:
                 $ref: ../../../../common/components/schemas/warnings.yaml
-    '400':
-      $ref: ../../../../common/components/responses/badRequest.yaml
-    '401':
-      $ref: ../../../../common/components/responses/unauthorized.yaml
-    '403':
-      $ref: ../../../../common/components/responses/forbidden.yaml
-    '404':
-      $ref: ../../../../common/components/responses/notFound.yaml
-    '409':
-      $ref: ../../../../common/components/responses/conflict.yaml
-    '422':
-      $ref: ../../../../common/components/responses/unprocessableEntity.yaml
-    '499':
-      $ref: ../../../../common/components/responses/remoteProviderError.yaml
-    '500':
-      $ref: ../../../../common/components/responses/internalServerError.yaml
-    '501':
-      $ref: ../../../../common/components/responses/notImplemented.yaml
 get:
   operationId: getCustomObjectRecord
   summary: Get custom object record
@@ -76,26 +60,12 @@ get:
     | Pipedrive   | No        |
     | MS Dynamics | No        |
   responses:
-    '200':
+    200:
       description: Custom Object Record
       content:
         application/json:
           schema:
             $ref: ../../components/schemas/objects/custom_object_record.yaml
-    '400':
-      $ref: ../../../../common/components/responses/badRequest.yaml
-    '401':
-      $ref: ../../../../common/components/responses/unauthorized.yaml
-    '403':
-      $ref: ../../../../common/components/responses/forbidden.yaml
-    '404':
-      $ref: ../../../../common/components/responses/notFound.yaml
-    '499':
-      $ref: ../../../../common/components/responses/remoteProviderError.yaml
-    '500':
-      $ref: ../../../../common/components/responses/internalServerError.yaml
-    '501':
-      $ref: ../../../../common/components/responses/notImplemented.yaml
 parameters:
   - $ref: ../../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../../common/components/parameters/header/x-provider-name.yaml

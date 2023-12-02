@@ -34,17 +34,17 @@ paths:
   # Salesforce
   #
   '/salesforce/contacts':
-    $ref: paths/salesforce@contacts.yaml
+    $ref: paths/salesforce/contacts.yaml
   '/salesforce/accounts':
-    $ref: paths/salesforce@accounts.yaml
+    $ref: paths/salesforce/accounts.yaml
 
   #
   # Hubspot
   #
   '/hubspot/contacts':
-    $ref: paths/hubspot@contacts.yaml
+    $ref: paths/hubspot/contacts.yaml
   '/hubspot/companies':
-    $ref: paths/hubspot@companies.yaml
+    $ref: paths/hubspot/companies.yaml
 components:
   securitySchemes:
     x-api-key:
@@ -94,22 +94,3 @@ components:
       $ref: ../../common/components/parameters/query/page_size.yaml
     cursor:
       $ref: ../../common/components/parameters/query/cursor.yaml
-  responses:
-    badRequest:
-      $ref: ../../common/components/responses/badRequest.yaml
-    conflict:
-      $ref: ../../common/components/responses/conflict.yaml
-    forbidden:
-      $ref: ../../common/components/responses/forbidden.yaml
-    internalServerError:
-      $ref: ../../common/components/responses/internalServerError.yaml
-    notFound:
-      $ref: ../../common/components/responses/notFound.yaml
-    notImplemented:
-      $ref: ../../common/components/responses/notImplemented.yaml
-    remoteProviderError:
-      $ref: ../../common/components/responses/remoteProviderError.yaml
-    unauthorized:
-      $ref: ../../common/components/responses/unauthorized.yaml
-    unprocessableEntity:
-      $ref: ../../common/components/responses/unprocessableEntity.yaml

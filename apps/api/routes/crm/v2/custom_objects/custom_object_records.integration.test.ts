@@ -6,11 +6,10 @@
  */
 
 import type {
-  CreateCustomObjectRecordFailureResponse,
-  CreateCustomObjectRecordSuccessfulResponse,
-  GetCustomObjectRecordSuccessfulResponse,
-  ListCustomObjectRecordsSuccessfulResponse,
-  UpdateCustomObjectRecordSuccessfulResponse,
+  CreateCustomObjectRecordResponse,
+  GetCustomObjectRecordResponse,
+  ListCustomObjectRecordsResponse,
+  UpdateCustomObjectRecordResponse,
 } from '@supaglue/schemas/v2/crm';
 
 jest.retryTimes(3);
@@ -89,7 +88,7 @@ describe('custom_objects_records', () => {
     });
 
     test(`Test that POST followed by GET has correct data and properly cache invalidates`, async () => {
-      const response = await apiClient.post<CreateCustomObjectRecordSuccessfulResponse>(
+      const response = await apiClient.post<CreateCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records`,
         { record: testCustomObjectRecord },
         {
@@ -104,7 +103,7 @@ describe('custom_objects_records', () => {
         providerName,
         objectName: providerName === 'ms_dynamics_365_sales' ? `cr50e_${fullObjectName}` : fullObjectName,
       });
-      const getResponse = await apiClient.get<GetCustomObjectRecordSuccessfulResponse>(
+      const getResponse = await apiClient.get<GetCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records/${response.data.record!.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -126,7 +125,7 @@ describe('custom_objects_records', () => {
       expect(properties.bool__c?.toString()).toEqual(testCustomObjectRecord.bool__c?.toString());
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListCustomObjectRecordsSuccessfulResponse>(
+      const cachedReadResponse = await apiClient.get<ListCustomObjectRecordsResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,
@@ -147,7 +146,7 @@ describe('custom_objects_records', () => {
     }, 120_000);
 
     test(`Test that POST followed by PATCH followed by GET has correct data and cache invalidates`, async () => {
-      const response = await apiClient.post<CreateCustomObjectRecordSuccessfulResponse>(
+      const response = await apiClient.post<CreateCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records`,
         { record: testCustomObjectRecord },
         {
@@ -171,7 +170,7 @@ describe('custom_objects_records', () => {
         bool__c: false,
       };
 
-      const updateResponse = await apiClient.patch<UpdateCustomObjectRecordSuccessfulResponse>(
+      const updateResponse = await apiClient.patch<UpdateCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records/${response.data.record!.id}`,
         {
           record: updatedCustomObjectRecord,
@@ -187,7 +186,7 @@ describe('custom_objects_records', () => {
       if (providerName === 'hubspot') {
         await new Promise((resolve) => setTimeout(resolve, 12000));
       }
-      const getResponse = await apiClient.get<GetCustomObjectRecordSuccessfulResponse>(
+      const getResponse = await apiClient.get<GetCustomObjectRecordResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records/${response.data.record!.id}`,
         {
           headers: { 'x-provider-name': providerName },
@@ -209,7 +208,7 @@ describe('custom_objects_records', () => {
       expect(properties.bool__c?.toString()).toEqual('false');
 
       // test that the db was updated
-      const cachedReadResponse = await apiClient.get<ListCustomObjectRecordsSuccessfulResponse>(
+      const cachedReadResponse = await apiClient.get<ListCustomObjectRecordsResponse>(
         `/crm/v2/custom_objects/${fullObjectName}/records?read_from_cache=true&modified_after=${encodeURIComponent(
           testStartTime.toISOString()
         )}`,
@@ -234,7 +233,7 @@ describe('custom_objects_records', () => {
       providerName !== 'ms_dynamics_365_sales',
       `Test that Bad Requests have useful errors`,
       async () => {
-        const response = await apiClient.post<CreateCustomObjectRecordFailureResponse>(
+        const response = await apiClient.post<CreateCustomObjectRecordResponse>(
           `/crm/v2/custom_objects/${fullObjectName}/records`,
           // This will fail because description__c is required
           { record: { ...testCustomObjectRecord, description__c: undefined } },

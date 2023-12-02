@@ -148,22 +148,3 @@ components:
       $ref: ../../common/components/parameters/header/x-customer-id.yaml
     x-provider-name:
       $ref: ../../common/components/parameters/header/x-provider-name.yaml
-  responses:
-    badRequest:
-      $ref: ../../common/components/responses/badRequest.yaml
-    conflict:
-      $ref: ../../common/components/responses/conflict.yaml
-    forbidden:
-      $ref: ../../common/components/responses/forbidden.yaml
-    internalServerError:
-      $ref: ../../common/components/responses/internalServerError.yaml
-    notFound:
-      $ref: ../../common/components/responses/notFound.yaml
-    notImplemented:
-      $ref: ../../common/components/responses/notImplemented.yaml
-    remoteProviderError:
-      $ref: ../../common/components/responses/remoteProviderError.yaml
-    unauthorized:
-      $ref: ../../common/components/responses/unauthorized.yaml
-    unprocessableEntity:
-      $ref: ../../common/components/responses/unprocessableEntity.yaml

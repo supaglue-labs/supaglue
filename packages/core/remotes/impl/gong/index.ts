@@ -2,7 +2,7 @@ import axios from '@supaglue/core/remotes/sg_axios';
 import type { ConnectionUnsafe, EngagementOauthProvider, ListedObjectRecord, Provider } from '@supaglue/types';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
 import { Readable } from 'stream';
-import { BadRequestError, SGConnectionNoLongerAuthenticatedError } from '../../../errors';
+import { SGConnectionNoLongerAuthenticatedError } from '../../../errors';
 import { REFRESH_TOKEN_THRESHOLD_MS, retryWhenAxiosRateLimited } from '../../../lib';
 import type { ConnectorAuthConfig } from '../../base';
 import { AbstractNoCategoryRemoteClient } from '../../categories/no_category/base';
@@ -193,7 +193,7 @@ class GongClient extends AbstractNoCategoryRemoteClient {
         );
       }
       default:
-        throw new BadRequestError(`Unsupported object: ${object}`);
+        throw new Error(`Unsupported object: ${object}`);
     }
   }
 

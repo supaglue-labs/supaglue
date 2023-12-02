@@ -7,32 +7,18 @@ get:
   security:
     - x-api-key: []
   responses:
-    '200':
+    200:
       description: Schema
       content:
         application/json:
           schema:
             $ref: ../components/schemas/objects/schema.yaml
-    '400':
-      $ref: ../../../common/components/responses/badRequest.yaml
-    '401':
-      $ref: ../../../common/components/responses/unauthorized.yaml
-    '403':
-      $ref: ../../../common/components/responses/forbidden.yaml
-    '404':
-      $ref: ../../../common/components/responses/notFound.yaml
-    '500':
-      $ref: ../../../common/components/responses/internalServerError.yaml
-    '501':
-      $ref: ../../../common/components/responses/notImplemented.yaml
 put:
   deprecated: true
   operationId: updateSchema
   summary: Update schema
   tags:
     - Schemas
-  security:
-    - x-api-key: []
   parameters: []
   requestBody:
     required: true
@@ -41,28 +27,12 @@ put:
         schema:
           $ref: ../components/schemas/create_update_schema.yaml
   responses:
-    '200':
+    200:
       description: Schema
       content:
         application/json:
           schema:
             $ref: ../components/schemas/objects/schema.yaml
-    '400':
-      $ref: ../../../common/components/responses/badRequest.yaml
-    '401':
-      $ref: ../../../common/components/responses/unauthorized.yaml
-    '403':
-      $ref: ../../../common/components/responses/forbidden.yaml
-    '404':
-      $ref: ../../../common/components/responses/notFound.yaml
-    '409':
-      $ref: ../../../common/components/responses/conflict.yaml
-    '422':
-      $ref: ../../../common/components/responses/unprocessableEntity.yaml
-    '500':
-      $ref: ../../../common/components/responses/internalServerError.yaml
-    '501':
-      $ref: ../../../common/components/responses/notImplemented.yaml
 delete:
   deprecated: true
   operationId: deleteSchema
@@ -72,28 +42,12 @@ delete:
   security:
     - x-api-key: []
   responses:
-    '204':
+    204:
       description: Schema
       content:
         application/json:
           schema:
             $ref: ../components/schemas/objects/schema.yaml
-    '400':
-      $ref: ../../../common/components/responses/badRequest.yaml
-    '401':
-      $ref: ../../../common/components/responses/unauthorized.yaml
-    '403':
-      $ref: ../../../common/components/responses/forbidden.yaml
-    '404':
-      $ref: ../../../common/components/responses/notFound.yaml
-    '409':
-      $ref: ../../../common/components/responses/conflict.yaml
-    '422':
-      $ref: ../../../common/components/responses/unprocessableEntity.yaml
-    '500':
-      $ref: ../../../common/components/responses/internalServerError.yaml
-    '501':
-      $ref: ../../../common/components/responses/notImplemented.yaml
 parameters:
   - name: schema_id
     in: path
