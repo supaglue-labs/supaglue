@@ -49,25 +49,109 @@
             }
           },
           "400": {
-            "$ref": "#/components/responses/badRequest"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
           },
           "401": {
-            "$ref": "#/components/responses/unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
           },
           "403": {
-            "$ref": "#/components/responses/forbidden"
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
           },
           "404": {
-            "$ref": "#/components/responses/notFound"
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
           },
           "499": {
-            "$ref": "#/components/responses/remoteProviderError"
+            "description": "Remote provider error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
           },
           "500": {
-            "$ref": "#/components/responses/internalServerError"
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
           },
           "501": {
-            "$ref": "#/components/responses/notImplemented"
+            "description": "Not implemented",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "errors": {
+                      "$ref": "#/components/schemas/errors"
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -323,143 +407,6 @@
         "example": "salesforce",
         "description": "The provider name",
         "required": true
-      }
-    },
-    "responses": {
-      "badRequest": {
-        "description": "Bad request",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "$ref": "#/components/schemas/errors"
-                }
-              }
-            }
-          }
-        }
-      },
-      "conflict": {
-        "description": "Conflict",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "$ref": "#/components/schemas/errors"
-                }
-              }
-            }
-          }
-        }
-      },
-      "forbidden": {
-        "description": "Forbidden",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "$ref": "#/components/schemas/errors"
-                }
-              }
-            }
-          }
-        }
-      },
-      "internalServerError": {
-        "description": "Internal server error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "$ref": "#/components/schemas/errors"
-                }
-              }
-            }
-          }
-        }
-      },
-      "notFound": {
-        "description": "Not found",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "$ref": "#/components/schemas/errors"
-                }
-              }
-            }
-          }
-        }
-      },
-      "notImplemented": {
-        "description": "Not implemented",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "$ref": "#/components/schemas/errors"
-                }
-              }
-            }
-          }
-        }
-      },
-      "remoteProviderError": {
-        "description": "Remote provider error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "$ref": "#/components/schemas/errors"
-                }
-              }
-            }
-          }
-        }
-      },
-      "unauthorized": {
-        "description": "Unauthorized",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "$ref": "#/components/schemas/errors"
-                }
-              }
-            }
-          }
-        }
-      },
-      "unprocessableEntity": {
-        "description": "Unprocessable entity",
-        "content": {
-          "application/json": {
-            "schema": {
-              "type": "object",
-              "properties": {
-                "errors": {
-                  "$ref": "#/components/schemas/errors"
-                }
-              }
-            }
-          }
-        }
       }
     }
   }
