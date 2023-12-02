@@ -18,6 +18,12 @@ export type UpsertAccountSuccessfulResponse =
   operations['upsertAccount']['responses']['201']['content']['application/json'];
 export type UpsertAccountFailureResponse = Exclude<UpsertAccountResponse, UpsertAccountSuccessfulResponse>;
 
+export type SearchAccountsPathParams = never;
+export type SearchAccountsQueryParams = Required<operations['searchAccounts']>['parameters']['query'];
+export type SearchAccountsRequest = operations['searchAccounts']['requestBody']['content']['application/json'];
+export type SearchAccountsResponse =
+  operations['searchAccounts']['responses'][keyof operations['searchAccounts']['responses']]['content']['application/json'];
+
 export type ListAccountsPathParams = never;
 export type ListAccountsQueryParams = Required<operations['listAccounts']>['parameters']['query'];
 export type ListAccountsRequest = never;

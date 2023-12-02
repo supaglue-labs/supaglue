@@ -8,6 +8,7 @@ import type {
 import type {
   Account,
   AccountCreateParams,
+  AccountSearchParams,
   AccountUpdateParams,
   AccountUpsertParams,
   Contact,
@@ -205,14 +206,46 @@ class ApolloClient extends AbstractEngagementRemoteClient {
         return await this.#searchContacts(params as ContactSearchParams);
       case 'sequence_state':
         return await this.#searchSequenceStates(params as SequenceStateSearchParams);
+      case 'account':
+        return await this.#searchAccounts(params as AccountSearchParams);
       case 'user':
       case 'mailbox':
       case 'sequence':
-      case 'account':
         throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
+  }
+
+  async #searchAccounts(params: AccountSearchParams): Promise<PaginatedSupaglueRecords<Account>> {
+    if (params.filter.domain) {
+      throw new BadRequestError('Domain is not supported when upserting an account in Apollo');
+    }
+    if (!params.filter.name) {
+      throw new BadRequestError('Name is required when upserting an account in Apollo');
+    }
+    return await retryWhenAxiosApolloRateLimited(async () => {
+      const response = await axios.post<ApolloPaginatedAccounts>(
+        `${this.#baseURL}/v1/accounts/search`,
+        {
+          q_organization_name: params.filter.name,
+          api_key: this.#apiKey,
+          per_page: MAX_PAGE_SIZE,
+        },
+        {
+          headers: this.#headers,
+        }
+      );
+      const records = response.data.accounts.map(fromApolloAccountToAccount);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: null,
+          next: null,
+        },
+      };
+    });
   }
 
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {

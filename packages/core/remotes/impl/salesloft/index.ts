@@ -9,6 +9,7 @@ import type {
 import type {
   Account,
   AccountCreateParams,
+  AccountSearchParams,
   AccountUpsertParams,
   Contact,
   ContactCreateParams,
@@ -440,23 +441,19 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
     if (!domain && !name) {
       throw new BadRequestError('Must specify at least one upsertOn field');
     }
-    await this.maybeRefreshAccessToken();
-    const searchParams: Record<string, unknown> = DEFAULT_LIST_PARAMS;
-    if (name) {
-      searchParams.name = [name];
-    }
-    if (domain) {
-      searchParams.domain = domain;
-    }
-    const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/accounts`, {
-      params: searchParams,
-      headers: this.#headers,
+
+    const searchResult = await this.#searchAccounts({
+      filter: {
+        domain: domain,
+        name: name,
+      },
     });
-    if (response.data.data.length > 1) {
+
+    if (searchResult.records.length > 1) {
       throw new BadRequestError('More than one account found for upsertOn fields');
     }
-    if (response.data.data.length) {
-      return this.updateCommonObjectRecord('account', { ...params.record, id: response.data.data[0].id.toString() });
+    if (searchResult.records.length) {
+      return this.updateCommonObjectRecord('account', { ...params.record, id: searchResult.records[0].id.toString() });
     }
     return this.createCommonObjectRecord('account', params.record);
   }
@@ -536,16 +533,48 @@ class SalesloftClient extends AbstractEngagementRemoteClient {
         return await this.#searchContacts(params as ContactSearchParams);
       case 'sequence_state':
         return await this.#searchSequenceStates(params as SequenceStateSearchParams);
+      case 'account':
+        return await this.#searchAccounts(params as AccountSearchParams);
       case 'user':
       case 'mailbox':
       case 'sequence':
-      case 'account':
         throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Salesloft`);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
+  async #searchAccounts(params: AccountSearchParams): Promise<PaginatedSupaglueRecords<Account>> {
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const page = cursor?.id as number | undefined;
+    const searchParams: Record<string, unknown> = { per_page: params.pageSize ?? SALESLOFT_RECORD_LIMIT, page };
+    if (params.filter.name) {
+      searchParams.name = [params.filter.name];
+    }
+    if (params.filter.domain) {
+      searchParams.domain = params.filter.domain;
+    }
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = await axios.get<SalesloftPaginatedRecords>(`${this.#baseURL}/v2/accounts`, {
+        params: searchParams,
+        headers: this.getAuthHeadersForPassthroughRequest(),
+      });
+      const records = response.data.data.map(fromSalesloftAccountToAccount);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: response.data.metadata.paging?.prev_page
+            ? encodeCursor({ id: response.data.metadata.paging.prev_page, reverse: true })
+            : null,
+          next: response.data.metadata.paging?.next_page
+            ? encodeCursor({ id: response.data.metadata.paging.next_page, reverse: false })
+            : null,
+        },
+      };
+    });
+  }
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
     const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
     const page = cursor?.id as number | undefined;

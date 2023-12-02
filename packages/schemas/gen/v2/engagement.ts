@@ -51,9 +51,23 @@ export interface paths {
     /**
      * Upsert account
      * @description Upsert an account. If the account matching the given criteria does not exist, it will be created. If the account does exist, it will be updated.
-     * Only supported for Salesforce, Hubspot, and Pipedrive.
+     * Upsert by name is supported for Outreach, Salesloft, and Apollo. Upsert by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
      */
     post: operations["upsertAccount"];
+    parameters: {
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+  };
+  "/accounts/_search": {
+    /**
+     * Search accounts
+     * @description Search the provider for accounts matching the specified criteria.
+     * Search by name is supported for Outreach, Salesloft, and Apollo. Search by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
+     */
+    post: operations["searchAccounts"];
     parameters: {
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -1200,7 +1214,7 @@ export interface operations {
   /**
    * Upsert account
    * @description Upsert an account. If the account matching the given criteria does not exist, it will be created. If the account does exist, it will be updated.
-   * Only supported for Salesforce, Hubspot, and Pipedrive.
+   * Upsert by name is supported for Outreach, Salesloft, and Apollo. Upsert by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
    */
   upsertAccount: {
     parameters: {
@@ -1215,7 +1229,7 @@ export interface operations {
           record: components["schemas"]["create_account"];
           /** @description The criteria to upsert on. If both name and domain are specified, it would perform an AND operation. If more than one account is found that matches, then an error will be thrown. */
           upsert_on: {
-            /** @description The name of the account to upsert on. Supported for all providers. */
+            /** @description The name of the account to upsert on. Supported for Outreach, Salesloft, and Apollo. */
             name?: string;
             /** @description The domain of the account to upsert on. Only supported for Outreach and Salesloft. */
             domain?: string;
@@ -1231,6 +1245,49 @@ export interface operations {
             errors?: components["schemas"]["errors"];
             record?: components["schemas"]["created_record"];
             warnings?: components["schemas"]["warnings"];
+          };
+        };
+      };
+    };
+  };
+  /**
+   * Search accounts
+   * @description Search the provider for accounts matching the specified criteria.
+   * Search by name is supported for Outreach, Salesloft, and Apollo. Search by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
+   */
+  searchAccounts: {
+    parameters: {
+      query?: {
+        include_raw_data?: components["parameters"]["include_raw_data"];
+        page_size?: components["parameters"]["page_size"];
+        cursor?: components["parameters"]["cursor"];
+        read_from_cache?: components["parameters"]["read_from_cache"];
+      };
+      header: {
+        "x-customer-id": components["parameters"]["x-customer-id"];
+        "x-provider-name": components["parameters"]["x-provider-name"];
+      };
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** @description The criteria to upsert on. If both name and domain are specified, it would perform an AND operation. If more than one account is found that matches, then an error will be thrown. */
+          filter: {
+            /** @description The name of the account to upsert on. Supported for Outreach, Salesloft, and Apollo. */
+            name?: string;
+            /** @description The domain of the account to upsert on. Only supported for Outreach and Salesloft. */
+            domain?: string;
+          };
+        };
+      };
+    };
+    responses: {
+      /** @description Paginated accounts */
+      200: {
+        content: {
+          "application/json": {
+            pagination: components["schemas"]["pagination"];
+            records: components["schemas"]["account"][];
           };
         };
       };

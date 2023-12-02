@@ -1,14 +1,18 @@
 post:
-  operationId: upsertAccount
-  summary: Upsert account
+  operationId: searchAccounts
+  summary: Search accounts
   description: |
-    Upsert an account. If the account matching the given criteria does not exist, it will be created. If the account does exist, it will be updated.
-    Upsert by name is supported for Outreach, Salesloft, and Apollo. Upsert by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
+    Search the provider for accounts matching the specified criteria.
+    Search by name is supported for Outreach, Salesloft, and Apollo. Search by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
   tags:
     - Accounts
   security:
     - x-api-key: []
-  parameters: []
+  parameters:
+    - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
+    - $ref: ../../../common/components/parameters/query/page_size.yaml
+    - $ref: ../../../common/components/parameters/query/cursor.yaml
+    - $ref: ../../../common/components/parameters/query/read_from_cache.yaml
   requestBody:
     required: true
     content:
@@ -16,9 +20,7 @@ post:
         schema:
           type: object
           properties:
-            record:
-              $ref: ../components/schemas/create_update_account.yaml
-            upsert_on:
+            filter:
               type: object
               description: The criteria to upsert on. If both name and domain are specified, it would perform an AND operation. If more than one account is found that matches, then an error will be thrown.
               properties:
@@ -29,22 +31,24 @@ post:
                   type: string
                   description: The domain of the account to upsert on. Only supported for Outreach and Salesloft.
           required:
-            - record
-            - upsert_on
+            - filter
   responses:
-    '201':
-      description: Account upserted
+    200:
+      description: Paginated accounts
       content:
         application/json:
           schema:
             type: object
             properties:
-              errors:
-                $ref: ../../../common/components/schemas/errors.yaml
-              record:
-                $ref: ../../../common/components/schemas/created_model.yaml
-              warnings:
-                $ref: ../../../common/components/schemas/warnings.yaml
+              pagination:
+                $ref: ../../../common/components/schemas/pagination.yaml
+              records:
+                type: array
+                items:
+                  $ref: ../components/schemas/objects/account.yaml
+            required:
+              - pagination
+              - records
 parameters:
   - $ref: ../../../common/components/parameters/header/x-customer-id.yaml
   - $ref: ../../../common/components/parameters/header/x-provider-name.yaml

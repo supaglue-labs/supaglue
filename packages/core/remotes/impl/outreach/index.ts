@@ -9,7 +9,9 @@ import type {
   StandardOrCustomObjectDef,
 } from '@supaglue/types';
 import type {
+  Account,
   AccountCreateParams,
+  AccountSearchParams,
   AccountUpdateParams,
   AccountUpsertParams,
   Contact,
@@ -1534,25 +1536,19 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     if (!domain && !name) {
       throw new BadRequestError('Must specify at least one upsertOn field');
     }
-    await this.maybeRefreshAccessToken();
-    const searchParams: Record<string, unknown> = {
-      'page[size]': DEFAULT_PAGE_SIZE,
-    };
-    if (name) {
-      searchParams['filter[name]'] = name;
-    }
-    if (domain) {
-      searchParams['filter[domain]'] = domain;
-    }
-    const response = await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/accounts`, {
-      params: searchParams,
-      headers: this.getAuthHeadersForPassthroughRequest(),
+
+    const searchResult = await this.#searchAccounts({
+      filter: {
+        domain: domain,
+        name: name,
+      },
     });
-    if (response.data.data.length > 1) {
+
+    if (searchResult.records.length > 1) {
       throw new BadRequestError('More than one account found for upsertOn fields');
     }
-    if (response.data.data.length) {
-      return this.updateAccount({ ...params.record, id: response.data.data[0].id.toString() });
+    if (searchResult.records.length) {
+      return this.updateAccount({ ...params.record, id: searchResult.records[0].id.toString() });
     }
     return this.createAccount(params.record);
   }
@@ -1823,14 +1819,50 @@ class OutreachClient extends AbstractEngagementRemoteClient {
         return await this.#searchContacts(params as ContactSearchParams);
       case 'sequence_state':
         return await this.#searchSequenceStates(params as SequenceStateSearchParams);
+      case 'account':
+        return await this.#searchAccounts(params as AccountSearchParams);
       case 'user':
       case 'mailbox':
       case 'sequence':
-      case 'account':
         throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Outreach`);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
+  }
+
+  async #searchAccounts(params: AccountSearchParams): Promise<PaginatedSupaglueRecords<Account>> {
+    if (!params.filter.name && !params.filter.domain) {
+      throw new BadRequestError('Must specify at least one filter field');
+    }
+    const cursor = params.cursor ? decodeCursor(params.cursor) : undefined;
+    const link = cursor?.id as string;
+    const listParams: Record<string, unknown> = { 'page[size]': params.pageSize };
+    if (params.filter.name) {
+      listParams['filter[name]'] = params.filter.name;
+    }
+    if (params.filter.domain) {
+      listParams['filter[domain]'] = params.filter.domain;
+    }
+    return await retryWhenAxiosRateLimited(async () => {
+      await this.maybeRefreshAccessToken();
+      const response = link
+        ? await axios.get<OutreachPaginatedRecords>(link, {
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          })
+        : await axios.get<OutreachPaginatedRecords>(`${this.#baseURL}/api/v2/accounts`, {
+            params: listParams,
+            headers: this.getAuthHeadersForPassthroughRequest(),
+          });
+      const records = response.data.data.map(fromOutreachAccountToAccount);
+      return {
+        records,
+        pagination: {
+          total_count: records.length,
+          previous: response.data.links?.prev ? encodeCursor({ id: response.data.links?.prev, reverse: true }) : null,
+          next: response.data.links?.next ? encodeCursor({ id: response.data.links?.next, reverse: false }) : null,
+        },
+      };
+    });
   }
 
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
