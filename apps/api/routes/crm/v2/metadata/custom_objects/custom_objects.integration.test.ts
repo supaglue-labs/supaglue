@@ -291,17 +291,9 @@ describe('custom_objects', () => {
     expect(updateResponse.data).toEqual({
       errors: [
         {
-          code: 'BAD_REQUEST',
-          detail:
-            'Cannot delete fields from custom object schema in hubspot. Fields to delete: bool__c, double__c, int__c',
-          id: '19c5953c-f0db-488f-9d4d-fbc488f2ebba',
-          meta: {
-            origin: 'supaglue',
-          },
-          problem_type: 'BAD_REQUEST',
-          status: '400',
           title:
             'Cannot delete fields from custom object schema in hubspot. Fields to delete: bool__c, double__c, int__c',
+          problem_type: 'BAD_REQUEST_ERROR',
         },
       ],
     });
@@ -338,15 +330,8 @@ describe('custom_objects', () => {
     expect(response.data).toEqual({
       errors: [
         {
-          code: 'BAD_REQUEST',
-          detail: 'Custom object field key names must end with __c',
-          id: 'd8428475-02cc-47b5-9870-b0fe73671693',
-          meta: {
-            origin: 'supaglue',
-          },
-          problem_type: 'BAD_REQUEST',
-          status: '400',
           title: 'Custom object field key names must end with __c',
+          problem_type: 'BAD_REQUEST_ERROR',
         },
       ],
     });
