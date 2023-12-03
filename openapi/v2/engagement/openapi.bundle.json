@@ -190,6 +190,99 @@
         }
       ]
     },
+    "/accounts/_search": {
+      "post": {
+        "operationId": "searchAccounts",
+        "summary": "Search accounts",
+        "description": "Search accounts by name and/or domain. If both are specified, it will perform an AND operation.\nSupport:\n\n| Provider  | Search By               |\n| --------- | ----------------------- |\n| Apollo    | name only               |\n| Salesloft | name, domain            |\n| Outreach  | name, domain            |\n\nNote: only `read_from_cache=false` is supported at the moment.\n",
+        "tags": [
+          "Accounts"
+        ],
+        "security": [
+          {
+            "x-api-key": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/include_raw_data"
+          },
+          {
+            "$ref": "#/components/parameters/page_size"
+          },
+          {
+            "$ref": "#/components/parameters/cursor"
+          },
+          {
+            "$ref": "#/components/parameters/read_from_cache"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "object",
+                    "description": "The criteria to upsert on. If both name and domain are specified, it would perform an AND operation. If more than one account is found that matches, then an error will be thrown.",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "The name of the account to upsert on. Supported for Outreach, Salesloft, and Apollo."
+                      },
+                      "domain": {
+                        "type": "string",
+                        "description": "The domain of the account to upsert on. Only supported for Outreach and Salesloft."
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "filter"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Paginated accounts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "pagination": {
+                      "$ref": "#/components/schemas/pagination"
+                    },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/account"
+                      }
+                    }
+                  },
+                  "required": [
+                    "pagination",
+                    "records"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/x-customer-id"
+        },
+        {
+          "$ref": "#/components/parameters/x-provider-name"
+        }
+      ]
+    },
     "/accounts/{account_id}": {
       "get": {
         "operationId": "getAccount",
@@ -415,99 +508,6 @@
                       "$ref": "#/components/schemas/warnings"
                     }
                   }
-                }
-              }
-            }
-          }
-        }
-      },
-      "parameters": [
-        {
-          "$ref": "#/components/parameters/x-customer-id"
-        },
-        {
-          "$ref": "#/components/parameters/x-provider-name"
-        }
-      ]
-    },
-    "/accounts/_search": {
-      "post": {
-        "operationId": "searchAccounts",
-        "summary": "Search accounts",
-        "description": "Search the provider for accounts matching the specified criteria.\nSearch by name is supported for Outreach, Salesloft, and Apollo. Search by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.\n",
-        "tags": [
-          "Accounts"
-        ],
-        "security": [
-          {
-            "x-api-key": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/page_size"
-          },
-          {
-            "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/read_from_cache"
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "filter": {
-                    "type": "object",
-                    "description": "The criteria to upsert on. If both name and domain are specified, it would perform an AND operation. If more than one account is found that matches, then an error will be thrown.",
-                    "properties": {
-                      "name": {
-                        "type": "string",
-                        "description": "The name of the account to upsert on. Supported for Outreach, Salesloft, and Apollo."
-                      },
-                      "domain": {
-                        "type": "string",
-                        "description": "The domain of the account to upsert on. Only supported for Outreach and Salesloft."
-                      }
-                    }
-                  }
-                },
-                "required": [
-                  "filter"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Paginated accounts",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "pagination": {
-                      "$ref": "#/components/schemas/pagination"
-                    },
-                    "records": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/account"
-                      }
-                    }
-                  },
-                  "required": [
-                    "pagination",
-                    "records"
-                  ]
                 }
               }
             }
@@ -2208,6 +2208,10 @@
   },
   "tags": [
     {
+      "name": "Accounts",
+      "description": "The `Account` Common Object represents a \"company\" or \"account\" in Engagements."
+    },
+    {
       "name": "Contacts",
       "description": "The `Contact` Common Object represents a \"contact\" in Engagements."
     },
@@ -2217,7 +2221,7 @@
     },
     {
       "name": "Sequence States",
-      "description": "The `Sequence State` Common Object represents the state of a contact in a sequence."
+      "description": "The `Sequence State` Common Object represents the state of a contact in a sequence, commonly known as a \"sequence membership\"."
     },
     {
       "name": "Users",
@@ -2225,11 +2229,7 @@
     },
     {
       "name": "Mailboxes",
-      "description": "The `Mailbox` Common Object is used to represent email mailbox, used within the application for sending and syncing emails"
-    },
-    {
-      "name": "Accounts",
-      "description": "The `Account` Common Object represents a \"company\" or \"account\" in Engagements."
+      "description": "The `Mailbox` Common Object is used to represent email mailbox, used within the application for sending and syncing emails."
     }
   ],
   "components": {
