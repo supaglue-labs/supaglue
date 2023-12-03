@@ -27,12 +27,12 @@ servers:
 paths:
   '/accounts':
     $ref: paths/accounts.yaml
+  '/accounts/_search':
+    $ref: paths/accounts@search.yaml
   '/accounts/{account_id}':
     $ref: paths/accounts@{account_id}.yaml
   '/accounts/_upsert':
     $ref: paths/accounts@upsert.yaml
-  '/accounts/_search':
-    $ref: paths/accounts@search.yaml
   '/contacts':
     $ref: paths/contacts.yaml
   '/contacts/_search':
@@ -64,18 +64,18 @@ paths:
   '/sequence_states/{sequence_state_id}':
     $ref: paths/sequence_states@{sequence_state_id}.yaml
 tags:
+  - name: Accounts
+    description: The `Account` Common Object represents a "company" or "account" in Engagements.
   - name: Contacts
     description: The `Contact` Common Object represents a "contact" in Engagements.
   - name: Sequences
     description: The `Sequence` Common Object represents a "sequence" in Engagements.
   - name: Sequence States
-    description: The `Sequence State` Common Object represents the state of a contact in a sequence.
+    description: The `Sequence State` Common Object represents the state of a contact in a sequence, commonly known as a "sequence membership".
   - name: Users
     description: The `User` Common Object represents a "user" in Engagements.
   - name: Mailboxes
-    description: The `Mailbox` Common Object is used to represent email mailbox, used within the application for sending and syncing emails
-  - name: Accounts
-    description: The `Account` Common Object represents a "company" or "account" in Engagements.
+    description: The `Mailbox` Common Object is used to represent email mailbox, used within the application for sending and syncing emails.
 components:
   securitySchemes:
     x-api-key:
