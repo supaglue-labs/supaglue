@@ -469,13 +469,14 @@ const sidebars = {
     },
 
     // section
-    {
-      type: 'html',
-      value: sidebarHeader('Provider API'),
-    },
+    // {
+    //   type: 'html',
+    //   value: sidebarHeader('Provider API'),
+    // },
     {
       type: 'category',
       label: 'Data Listing API',
+      className: 'hidden',
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       items: require('./docs/api/v2/data/sidebar.js'),

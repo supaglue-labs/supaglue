@@ -215,16 +215,8 @@ const config = {
                 to: '/providers/intercom',
               },
               {
-                label: 'LinkedIn',
-                to: '/providers/linkedin',
-              },
-              {
                 label: 'Marketo',
                 to: '/providers/marketo',
-              },
-              {
-                label: 'Messenger',
-                to: '/providers/messenger',
               },
             ],
           },
@@ -266,10 +258,6 @@ const config = {
               {
                 label: 'Microsoft Teams',
                 to: '/providers/teams',
-              },
-              {
-                label: 'Whatsapp',
-                to: '/providers/whatsapp',
               },
               {
                 label: 'Zendesk',
