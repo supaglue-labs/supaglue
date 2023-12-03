@@ -33,6 +33,8 @@ put:
     :::
   tags:
     - SyncConfigs
+  security:
+    - x-api-key: []
   parameters:
     - name: force_delete_syncs
       in: query
