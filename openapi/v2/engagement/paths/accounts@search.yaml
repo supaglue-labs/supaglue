@@ -2,8 +2,16 @@ post:
   operationId: searchAccounts
   summary: Search accounts
   description: |
-    Search the provider for accounts matching the specified criteria.
-    Search by name is supported for Outreach, Salesloft, and Apollo. Search by domain is supported for Outreach and Salesloft. If both are specified, it will perform an AND operation.
+    Search accounts by name and/or domain. If both are specified, it will perform an AND operation.
+    Support:
+
+    | Provider  | Search By               |
+    | --------- | ----------------------- |
+    | Apollo    | name only               |
+    | Salesloft | name, domain            |
+    | Outreach  | name, domain            |
+
+    Note: only `read_from_cache=false` is supported at the moment.
   tags:
     - Accounts
   security:
