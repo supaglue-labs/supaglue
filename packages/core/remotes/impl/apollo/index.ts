@@ -1025,6 +1025,9 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (error.message === 'Request failed with status code 401') {
       return new SGConnectionNoLongerAuthenticatedError(error.message, error);
     }
+    if (error.message === 'Request failed with status code 403') {
+      return new SGConnectionNoLongerAuthenticatedError(error.message, error);
+    }
 
     return error;
   }
