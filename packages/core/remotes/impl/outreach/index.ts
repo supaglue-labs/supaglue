@@ -1,4 +1,4 @@
-import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
+import axios, { AxiosError, isAxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   EngagementOauthProvider,
@@ -1612,14 +1612,31 @@ class OutreachClient extends AbstractEngagementRemoteClient {
 
   async createSequenceState(params: SequenceStateCreateParams): Promise<string> {
     await this.maybeRefreshAccessToken();
-    const response = await axios.post<{ data: OutreachRecord }>(
-      `${this.#baseURL}/api/v2/sequenceStates`,
-      toOutreachSequenceStateCreateParams(params),
-      {
-        headers: this.getAuthHeadersForPassthroughRequest(),
+    try {
+      const response = await axios.post<{ data: OutreachRecord }>(
+        `${this.#baseURL}/api/v2/sequenceStates`,
+        toOutreachSequenceStateCreateParams(params),
+        {
+          headers: this.getAuthHeadersForPassthroughRequest(),
+        }
+      );
+      return response.data.data.id.toString();
+    } catch (e) {
+      if (
+        isAxiosError(e) &&
+        e.response?.status === 422 &&
+        e.response?.data?.errors?.[0]?.code === 'has already been in this sequence'
+      ) {
+        const sequenceStates = await this.#searchSequenceStates({
+          filter: {
+            sequenceId: params.sequenceId,
+            contactId: params.contactId,
+          },
+        });
+        return sequenceStates.records[0].id.toString();
       }
-    );
-    return response.data.data.id.toString();
+      throw e;
+    }
   }
 
   async createSequence(params: SequenceCreateParams): Promise<string> {
