@@ -5,5 +5,6 @@ export * from './logger';
 export * from './pagination';
 export * from './postgres';
 export * from './ratelimit';
+export * from './sync';
 export * from './util';
 export * from './webhook';
