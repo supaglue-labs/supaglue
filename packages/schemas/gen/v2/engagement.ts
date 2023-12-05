@@ -251,7 +251,7 @@ export interface paths {
     get: operations["listSequenceStates"];
     /**
      * Create sequence state
-     * @description In other words, adding a contact to sequence. If the contact is already in the sequence, it will return the id of the existing sequence state.
+     * @description Add a contact to a sequence. If the contact is already in the sequence, it will return the id of the existing sequence state.
      */
     post: operations["createSequenceState"];
     parameters: {
@@ -1887,7 +1887,7 @@ export interface operations {
   };
   /**
    * Create sequence state
-   * @description In other words, adding a contact to sequence. If the contact is already in the sequence, it will return the id of the existing sequence state.
+   * @description Add a contact to a sequence. If the contact is already in the sequence, it will return the id of the existing sequence state.
    */
   createSequenceState: {
     parameters: {
