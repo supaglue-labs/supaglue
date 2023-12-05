@@ -312,11 +312,6 @@ export interface operations {
            * }
            */
           formFields: {
-            /**
-             * @description the email address of the lead
-             * @example me@supaglue.com
-             */
-            email: string;
             [key: string]: unknown;
           };
         };

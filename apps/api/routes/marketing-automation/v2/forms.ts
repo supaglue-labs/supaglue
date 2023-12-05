@@ -1,4 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
+import { BadRequestError } from '@supaglue/core/errors';
 import type {
   GetFormFieldsPathParams,
   GetFormFieldsQueryParams,
@@ -29,6 +30,10 @@ export default function init(app: Router): void {
       res: Response<SubmitFormResponse>
     ) => {
       const { id: connectionId } = req.customerConnection;
+      const { formFields } = req.body;
+      if (!formFields.email && !formFields.Email) {
+        throw new BadRequestError('`Email` or `email` is required in `formFields`');
+      }
       const data = await marketingAutomationCommonObjectService.submitForm(
         connectionId,
         req.params.form_id,
