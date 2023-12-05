@@ -1530,6 +1530,13 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const salesforceObjectType = capitalizeString(objectType);
     const propertiesToFetch = await this.getCommonPropertiesToFetch(objectType, fieldMappingConfig);
 
+    // use the jsforce client to issue a query and parse the generated SOQL
+    // Note: we use this instead of writing it ourselves b/c the fromClause varies widely
+    // based on dynamics vs static lists
+    const listDescription = await this.#client.sobject(salesforceObjectType).listview(listId).describe();
+    const queryRemainder = (listDescription as any).query.split(' FROM ')[1];
+    const [fromClause] = queryRemainder.split(' ORDER BY ');
+
     let cursor: Cursor | undefined;
     let pageSize = MAX_SALESFORCE_REST_API_PAGE_SIZE;
 
@@ -1549,11 +1556,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       },
     ] = await Promise.all([
       this.#client.query(
-        `SELECT ${propertiesToFetch.join(', ')} FROM ${salesforceObjectType} ${
+        `SELECT ${propertiesToFetch.join(', ')} FROM ${fromClause} ${
           cursor?.id ? `WHERE Id > '${cursor.id}'` : ''
         } ORDER BY Id ${pageSize ? `LIMIT ${pageSize}` : ''}`
       ),
-      this.#client.query(`SELECT COUNT() FROM ${salesforceObjectType}`),
+      this.#client.query(`SELECT COUNT() FROM ${fromClause}`),
       this.#client.query(`SELECT FIELDS(STANDARD) FROM ListView WHERE Id = '${listId}'`),
     ]);
     if (listMetadata.SobjectType !== salesforceObjectType) {
