@@ -48,6 +48,13 @@ export type FullThenIncrementalSync = FullThenIncrementalObjectSync | FullThenIn
 export type FullOnlySync = FullOnlyObjectSync | FullOnlyEntitySync;
 export type Sync = ObjectSync | EntitySync;
 
+export type ObjectSyncDTO = Sync & {
+  type: 'object';
+  // External Id
+  customerId: string;
+  providerName: string;
+};
+
 export type SyncDTO = Sync & {
   // External Id
   customerId: string;
@@ -95,3 +102,11 @@ export type SyncFilter = {
   // eslint-disable-next-line @typescript-eslint/ban-types
   | {}
 );
+
+export type RelatedSyncStates = {
+  strategyType: 'full only' | 'full then incremental';
+  finished: boolean;
+  object: string;
+  objectType: 'common' | 'standard' | 'custom';
+  syncedRecordsUpToWatermark: number;
+};

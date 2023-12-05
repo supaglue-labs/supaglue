@@ -217,7 +217,7 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
         if (errorMessage) {
           if (errorMessage.includes('This field is required')) {
             // it doesn't actually tell you what field is missing, so we can't tell the user
-            throw new BadRequestError('Missing required field(s)');
+            throw new BadRequestError('Missing required field(s)', { origin: 'remote-provider', cause: errorMessage });
           } else {
             throw new Error(errorMessage);
           }

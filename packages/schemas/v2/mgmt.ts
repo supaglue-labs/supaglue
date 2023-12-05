@@ -327,11 +327,11 @@ export type DeleteConnectionSyncConfigFailureResponse = Exclude<
 >;
 
 export type GetSyncsPathParams = never;
-export type GetSyncsQueryParams = Required<operations['getSyncs']>['parameters']['query'];
+export type GetSyncsQueryParams = Required<operations['listSyncs']>['parameters']['query'];
 export type GetSyncsRequest = never;
 export type GetSyncsResponse =
-  operations['getSyncs']['responses'][keyof operations['getSyncs']['responses']]['content']['application/json'];
-export type GetSyncsSuccessfulResponse = operations['getSyncs']['responses']['200']['content']['application/json'];
+  operations['listSyncs']['responses'][keyof operations['listSyncs']['responses']]['content']['application/json'];
+export type GetSyncsSuccessfulResponse = operations['listSyncs']['responses']['200']['content']['application/json'];
 export type GetSyncsFailureResponse = Exclude<GetSyncsResponse, GetSyncsSuccessfulResponse>;
 
 export type PauseSyncPathParams = never;
@@ -360,12 +360,12 @@ export type TriggerSyncSuccessfulResponse =
 export type TriggerSyncFailureResponse = Exclude<TriggerSyncResponse, TriggerSyncSuccessfulResponse>;
 
 export type GetSyncRunsPathParams = never;
-export type GetSyncRunsQueryParams = Required<operations['getSyncRuns']>['parameters']['query'];
+export type GetSyncRunsQueryParams = Required<operations['listSyncRuns']>['parameters']['query'];
 export type GetSyncRunsRequest = never;
 export type GetSyncRunsResponse =
-  operations['getSyncRuns']['responses'][keyof operations['getSyncRuns']['responses']]['content']['application/json'];
+  operations['listSyncRuns']['responses'][keyof operations['listSyncRuns']['responses']]['content']['application/json'];
 export type GetSyncRunsSuccessfulResponse =
-  operations['getSyncRuns']['responses']['200']['content']['application/json'];
+  operations['listSyncRuns']['responses']['200']['content']['application/json'];
 export type GetSyncRunsFailureResponse = Exclude<GetSyncRunsResponse, GetSyncRunsSuccessfulResponse>;
 
 export type GetEntitiesPathParams = never;

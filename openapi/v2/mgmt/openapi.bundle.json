@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.23.0",
+    "version": "0.24.0",
     "title": "Management API",
     "contact": {
       "name": "Supaglue",
@@ -2697,7 +2697,7 @@
     },
     "/syncs": {
       "get": {
-        "operationId": "getSyncs",
+        "operationId": "listSyncs",
         "tags": [
           "Syncs"
         ],
@@ -2706,7 +2706,7 @@
             "x-api-key": []
           }
         ],
-        "summary": "Get Syncs",
+        "summary": "List Syncs",
         "description": "Get a list of Syncs.",
         "parameters": [
           {
@@ -3218,7 +3218,7 @@
     },
     "/sync-runs": {
       "get": {
-        "operationId": "getSyncRuns",
+        "operationId": "listSyncRuns",
         "tags": [
           "SyncRuns"
         ],
@@ -3227,7 +3227,7 @@
             "x-api-key": []
           }
         ],
-        "summary": "Get SyncRuns",
+        "summary": "List SyncRuns",
         "description": "Get a list of SyncRuns.",
         "parameters": [
           {
@@ -3442,6 +3442,30 @@
       }
     },
     "schemas": {
+      "related_sync_states": {
+        "type": "object",
+        "properties": {
+          "object": {
+            "type": "string"
+          },
+          "object_type": {
+            "type": "string"
+          },
+          "finished": {
+            "type": "boolean",
+            "example": true,
+            "description": "A point-in-time snapshot of whether the sync has finished. Use this to help you process your transformations in the correct order. E.g. you may want to wait for Accounts to finish before processing Contacts.\n\n**Note:** If syncs take longer than your specified sync frequency in your SyncConfig, you may never see finished transition be true. Please ensure that your sync frequencies are longer than sync durations.\n"
+          },
+          "strategy_type": {
+            "type": "string"
+          },
+          "synced_records_up_to_watermark": {
+            "type": "number",
+            "example": 1701725470926,
+            "description": "The high-water mark (epoch) for Supaglue syncs for this object, scoped by provider and customer. Records before this watermark have been synced. \n\n**Note:** In some situations, you may need Supaglue's high-water mark state to process your transformations.\n"
+          }
+        }
+      },
       "pagination": {
         "type": "object",
         "properties": {
@@ -5297,7 +5321,7 @@
         "oneOf": [
           {
             "type": "object",
-            "title": "Data model: Objects",
+            "title": "Data model: Common Schema",
             "properties": {
               "id": {
                 "type": "string",
@@ -5313,16 +5337,14 @@
               "object_type": {
                 "type": "string",
                 "enum": [
-                  "common",
-                  "standard",
-                  "custom"
+                  "common"
                 ],
                 "example": "standard"
               },
               "object": {
                 "type": "string",
                 "example": "contact",
-                "description": "The Provider's object name (case sensitive)"
+                "description": "Supaglue's object name"
               },
               "connection_id": {
                 "type": "string",
@@ -5349,7 +5371,7 @@
           },
           {
             "type": "object",
-            "title": "Data model: Common Schema",
+            "title": "Data model: Objects",
             "properties": {
               "id": {
                 "type": "string",
@@ -5365,14 +5387,16 @@
               "object_type": {
                 "type": "string",
                 "enum": [
-                  "common"
+                  "common",
+                  "standard",
+                  "custom"
                 ],
                 "example": "standard"
               },
               "object": {
                 "type": "string",
                 "example": "contact",
-                "description": "Supaglue's object name"
+                "description": "The Provider's object name (case sensitive)"
               },
               "connection_id": {
                 "type": "string",
@@ -5490,6 +5514,13 @@
               "customer_id": {
                 "type": "string",
                 "example": "my-customer-1"
+              },
+              "related_sync_states": {
+                "type": "object",
+                "description": "Sync state information related to all customer syncs. This is only returned if there is a customer context, e.g. filtering by `customer_id` or in a webhook event.\n",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/related_sync_states"
+                }
               }
             },
             "required": [
@@ -5542,6 +5573,12 @@
               "customer_id": {
                 "type": "string",
                 "example": "my-customer-1"
+              },
+              "related_sync_states": {
+                "type": "object",
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/related_sync_states"
+                }
               }
             },
             "required": [
@@ -7200,9 +7237,16 @@
                       "object": {
                         "type": "string",
                         "example": "contact"
+                      },
+                      "related_sync_states": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "$ref": "#/components/schemas/related_sync_states"
+                        }
                       }
                     },
                     "required": [
+                      "related_sync_states",
                       "webhook_event_type",
                       "run_id",
                       "connection_id",
@@ -8107,9 +8151,16 @@
                       "object": {
                         "type": "string",
                         "example": "contact"
+                      },
+                      "related_sync_states": {
+                        "type": "object",
+                        "additionalProperties": {
+                          "$ref": "#/components/schemas/related_sync_states"
+                        }
                       }
                     },
                     "required": [
+                      "related_sync_states",
                       "webhook_event_type",
                       "run_id",
                       "connection_id",
