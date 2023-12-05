@@ -3,7 +3,6 @@ import { createSyncConfig, updateSyncConfig } from '@/client';
 import { ConfirmationModal } from '@/components/modals';
 import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
-import { SwitchWithLabel } from '@/components/SwitchWithLabel';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
@@ -15,8 +14,7 @@ import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getDestinationName } from '@/utils/destination';
 import { getStandardObjectOptions } from '@/utils/provider';
 import { entitiesEnabled } from '@/utils/schema';
-import { ExpandLess, ExpandMore } from '@mui/icons-material';
-import { Autocomplete, Breadcrumbs, Button, Chip, FormHelperText, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import type {
   CommonObjectType,
@@ -29,11 +27,12 @@ import type {
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_SYNCABLE_COMMON_OBJECTS } from '@supaglue/types/engagement';
 import type { SyncStrategyType } from '@supaglue/types/sync';
-import type { SyncStrategyConfig as SyncStrategyConfigType } from '@supaglue/types/sync_config';
-import type { CommonObjectConfig, CustomObjectConfig, StandardObjectConfig } from '@supaglue/types/sync_object_config';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import type { SyncConfigOverrides } from './SyncConfigOverridesSection';
+import { SyncConfigOverridesSection } from './SyncConfigOverridesSection';
+import { SyncStrategyConfigSection } from './SyncStrategyConfigSection';
 
 const ONE_HOUR_SECONDS = 60 * 60;
 
@@ -78,7 +77,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [entityIds, setEntityIds] = useState<string[]>([]);
   const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
   const [numSyncsToBeDeleted, setNumSyncsToBeDeleted] = useState<number>(0);
-  const [overrides, setOverrides] = useState<Overrides>({});
+  const [overrides, setOverrides] = useState<SyncConfigOverrides>({});
   const router = useRouter();
 
   const isFormValid = destinationName && providerName && isSyncPeriodSecsValid(syncPeriodSecs);
@@ -101,9 +100,9 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
     setCustomObjects(syncConfig?.config?.customObjects?.map((o) => o.object) ?? []);
     setEntityIds(syncConfig?.config?.entities?.map((entity) => entity.entityId) ?? []);
     setOverrides({
-      common: syncConfig?.config?.commonObjects,
-      standard: syncConfig?.config?.standardObjects,
-      custom: syncConfig?.config?.customObjects,
+      common: syncConfig?.config?.commonObjects?.filter((o) => o.syncStrategyOverride || o.associationsToFetch),
+      standard: syncConfig?.config?.standardObjects?.filter((o) => o.syncStrategyOverride || o.associationsToFetch),
+      custom: syncConfig?.config?.customObjects?.filter((o) => o.syncStrategyOverride || o.associationsToFetch),
     });
   }, [syncConfig?.id]);
 
@@ -316,7 +315,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
               ]}
             />
           </Stack>
-          <SyncStrategyConfig
+          <SyncStrategyConfigSection
             syncPeriodSecs={syncPeriodSecs}
             setSyncPeriodSecs={setSyncPeriodSecs}
             strategy={strategy}
@@ -470,7 +469,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   />
                 </Stack>
               )}
-              <ExpandableObjectOverrides
+              <SyncConfigOverridesSection
                 providerName={providerName}
                 commonObjects={commonObjects}
                 standardObjects={standardObjects}
@@ -528,373 +527,3 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
     </div>
   );
 }
-
-type Overrides = {
-  common?: CommonObjectConfig[];
-  standard?: StandardObjectConfig[];
-  custom?: CustomObjectConfig[];
-};
-
-type ExpandableObjectOverridesProps = {
-  providerName?: string;
-  commonObjects: CommonObjectType[];
-  standardObjects: string[];
-  customObjects: string[];
-  overrides: Overrides;
-  defaultConfig: SyncStrategyConfigType;
-  setOverrides: (overrides: Overrides) => void;
-};
-
-type SelectedObject = {
-  type: 'common' | 'standard' | 'custom';
-  name: string;
-};
-
-const ExpandableObjectOverrides = ({
-  providerName,
-  commonObjects,
-  standardObjects,
-  customObjects,
-  overrides,
-  setOverrides,
-  defaultConfig,
-}: ExpandableObjectOverridesProps) => {
-  const [expanded, setExpanded] = useState(false);
-  const [selectedObject, setSelectedObject] = useState<SelectedObject | undefined>();
-
-  const getSelectedObjectValue = (selectedObject?: SelectedObject) =>
-    selectedObject ? `${selectedObject.type}:${selectedObject.name}` : '';
-  const groupedOptions = [
-    commonObjects.length
-      ? {
-          header: 'Common Objects',
-          options: commonObjects.map((obj) => ({ value: `common:${obj}`, displayValue: obj })),
-        }
-      : [],
-    standardObjects.length
-      ? {
-          header: 'Standard Objects',
-          options: standardObjects.map((obj) => ({ value: `standard:${obj}`, displayValue: obj })),
-        }
-      : [],
-    customObjects.length
-      ? {
-          header: 'Custom Objects',
-          options: customObjects.map((obj) => ({ value: `custom:${obj}`, displayValue: obj })),
-        }
-      : [],
-  ].flat();
-
-  const override = selectedObject
-    ? overrides[selectedObject.type]?.find((o) => o.object === selectedObject?.name)
-    : undefined;
-
-  const syncPeriodSecs = override?.syncStrategyOverride?.periodMs
-    ? override?.syncStrategyOverride?.periodMs / 1000
-    : defaultConfig.periodMs / 1000;
-
-  const strategy = override?.syncStrategyOverride?.strategy ?? defaultConfig.strategy;
-
-  const fullSyncEveryNIncrementals =
-    override?.syncStrategyOverride?.fullSyncEveryNIncrementals ?? defaultConfig.fullSyncEveryNIncrementals;
-
-  const autoStartOnConnection =
-    override?.syncStrategyOverride?.autoStartOnConnection ?? defaultConfig.autoStartOnConnection ?? true;
-
-  const associationsToFetch = override?.associationsToFetch ?? [];
-
-  const setSyncPeriodSecs = (value: number | undefined): void => {
-    if (!selectedObject) {
-      return;
-    }
-    setOverrides({
-      ...overrides,
-      [selectedObject.type]: [
-        ...(overrides[selectedObject.type] ?? []).filter((o) => o.object !== selectedObject.name),
-        {
-          object: selectedObject.name,
-          syncStrategyOverride: {
-            ...(override?.syncStrategyOverride ?? {}),
-            periodMs: value ? value * 1000 : undefined,
-          },
-        },
-      ],
-    });
-  };
-
-  const setStrategy = (value: SyncStrategyType): void => {
-    if (!selectedObject) {
-      return;
-    }
-    setOverrides({
-      ...overrides,
-      [selectedObject.type]: [
-        ...(overrides[selectedObject.type] ?? []).filter((o) => o.object !== selectedObject.name),
-        {
-          object: selectedObject.name,
-          syncStrategyOverride: {
-            ...(override?.syncStrategyOverride ?? {}),
-            strategy: value,
-          },
-        },
-      ],
-    });
-  };
-
-  const setFullSyncEveryNIncrementals = (value: number | undefined): void => {
-    if (!selectedObject) {
-      return;
-    }
-    setOverrides({
-      ...overrides,
-      [selectedObject.type]: [
-        ...(overrides[selectedObject.type] ?? []).filter((o) => o.object !== selectedObject.name),
-        {
-          object: selectedObject.name,
-          syncStrategyOverride: {
-            ...(override?.syncStrategyOverride ?? {}),
-            fullSyncEveryNIncrementals: value,
-          },
-        },
-      ],
-    });
-  };
-
-  const setAutoStartOnConnection = (value: boolean): void => {
-    if (!selectedObject) {
-      return;
-    }
-    setOverrides({
-      ...overrides,
-      [selectedObject.type]: [
-        ...(overrides[selectedObject.type] ?? []).filter((o) => o.object !== selectedObject.name),
-        {
-          object: selectedObject.name,
-          syncStrategyOverride: {
-            ...(override?.syncStrategyOverride ?? {}),
-            autoStartOnConnection: value,
-          },
-        },
-      ],
-    });
-  };
-
-  const setAssociationsToFetch = (value: string[]): void => {
-    if (!selectedObject) {
-      return;
-    }
-    setOverrides({
-      ...overrides,
-      [selectedObject.type]: [
-        ...(overrides[selectedObject.type] ?? []).filter((o) => o.object !== selectedObject.name),
-        {
-          object: selectedObject.name,
-          associationsToFetch: value,
-        },
-      ],
-    });
-  };
-
-  return (
-    <div className="bg-sky-50 rounded-xl">
-      <Button className="flex flex-row justify-start gap-2" variant="text" onClick={() => setExpanded(!expanded)}>
-        {expanded ? <ExpandLess /> : <ExpandMore />}
-        <span>Object overrides</span>
-      </Button>
-      {expanded && (
-        <div className="p-4 rounded-xl">
-          <Stack className="gap-2">
-            <Typography variant="subtitle1">Select Object</Typography>
-            <Select
-              name="Object"
-              onChange={(value) => {
-                if (!value) {
-                  return;
-                }
-                const [type, name] = value.split(':');
-                setSelectedObject({ type: type as 'common' | 'standard' | 'custom', name });
-              }}
-              value={getSelectedObjectValue(selectedObject)}
-              groupedOptions={groupedOptions}
-              isGrouped
-            />
-          </Stack>
-          {selectedObject && (
-            <>
-              <SyncStrategyConfig
-                key={getSelectedObjectValue(selectedObject)}
-                syncPeriodSecs={syncPeriodSecs}
-                setSyncPeriodSecs={setSyncPeriodSecs}
-                strategy={strategy}
-                setStrategy={setStrategy}
-                fullSyncEveryNIncrementals={fullSyncEveryNIncrementals}
-                setFullSyncEveryNIncrementals={setFullSyncEveryNIncrementals}
-                autoStartOnConnection={autoStartOnConnection}
-                setAutoStartOnConnection={setAutoStartOnConnection}
-                isLoading={false}
-              />
-              {providerName === 'hubspot' && (
-                <AssociationsToFetch
-                  associationsToFetch={associationsToFetch}
-                  setAssociationsToFetch={setAssociationsToFetch}
-                  options={[...commonObjects, ...standardObjects, ...customObjects]}
-                />
-              )}
-            </>
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-type AssociationsToFetchProps = {
-  associationsToFetch: string[];
-  setAssociationsToFetch: (value: string[]) => void;
-  options: string[];
-};
-
-const AssociationsToFetch = ({ associationsToFetch, setAssociationsToFetch, options }: AssociationsToFetchProps) => {
-  const [inputValue, setInputValue] = useState<string>('');
-
-  return (
-    <Stack className="gap-2">
-      <Typography variant="subtitle1">Associations to Fetch</Typography>
-      <Autocomplete
-        size="small"
-        multiple
-        id="standard-objects"
-        options={options}
-        value={associationsToFetch}
-        inputValue={inputValue}
-        autoSelect
-        freeSolo
-        renderTags={(value: readonly string[], getTagProps) =>
-          value.map((option: string, index: number) => (
-            <Chip variant="outlined" label={option} {...getTagProps({ index })} />
-          ))
-        }
-        onInputChange={(event, newInputValue) => {
-          if (newInputValue.endsWith(',')) {
-            const newObject = newInputValue.slice(0, -1).trim();
-            if (newObject) {
-              setAssociationsToFetch([...associationsToFetch, newObject]);
-            }
-            setInputValue('');
-            return;
-          }
-          setInputValue(newInputValue);
-        }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            label="Associations to Fetch"
-            helperText={`List of associated object types to fetch. (Note: names are case-sensitive. Press enter or comma to add multiple fields.)`}
-          />
-        )}
-        onChange={(event: any, value: string[]) => {
-          setAssociationsToFetch(value.map((v) => v.trim()));
-        }}
-      />
-    </Stack>
-  );
-};
-
-type SyncStrategyConfigProps = {
-  syncPeriodSecs: number | undefined;
-  setSyncPeriodSecs: (value: number | undefined) => void;
-  strategy: SyncStrategyType;
-  setStrategy: (value: SyncStrategyType) => void;
-  fullSyncEveryNIncrementals: number | undefined;
-  setFullSyncEveryNIncrementals: (value: number | undefined) => void;
-  autoStartOnConnection: boolean;
-  setAutoStartOnConnection: (value: boolean) => void;
-  isLoading: boolean;
-};
-
-const SyncStrategyConfig = ({
-  syncPeriodSecs,
-  setSyncPeriodSecs,
-  strategy,
-  setStrategy,
-  fullSyncEveryNIncrementals,
-  setFullSyncEveryNIncrementals,
-  autoStartOnConnection,
-  setAutoStartOnConnection,
-  isLoading,
-}: SyncStrategyConfigProps) => {
-  return (
-    <>
-      <Stack className="gap-2">
-        <Typography variant="subtitle1">Sync frequency</Typography>
-        <TextField
-          value={syncPeriodSecs}
-          size="small"
-          label="Sync every (in seconds)"
-          variant="outlined"
-          type="number"
-          helperText="Value needs to be 60 seconds or greater."
-          error={syncPeriodSecs === undefined || !isSyncPeriodSecsValid(syncPeriodSecs)}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            let value: number | undefined = parseInt(event.target.value, 10);
-            if (Number.isNaN(value)) {
-              value = undefined;
-            }
-            setSyncPeriodSecs(value);
-          }}
-        />
-      </Stack>
-      <Stack className="gap-2">
-        <Typography variant="subtitle1">Sync Strategy</Typography>
-        <Select
-          name="Sync Strategy"
-          disabled={isLoading}
-          onChange={(value) => setStrategy(value as SyncStrategyType)}
-          value={strategy}
-          options={[
-            {
-              value: 'full then incremental',
-              displayValue: 'Incremental',
-            },
-            {
-              value: 'full only',
-              displayValue: 'Full',
-            },
-          ]}
-        />
-        <FormHelperText sx={{ marginY: 0, marginLeft: '14px' }}>
-          For Incremental: we will use this strategy when available for the provider and object otherwise we will use
-          full sync. Please refer to provider docs for more details.
-        </FormHelperText>
-        {strategy === 'full then incremental' && (
-          <>
-            <Typography variant="subtitle1">Incremental with a periodic full sync</Typography>
-            <TextField
-              value={fullSyncEveryNIncrementals}
-              size="small"
-              label="Incremental with a periodic full sync"
-              variant="outlined"
-              type="number"
-              helperText="Enter the number of successful incremental syncs before running a full sync. (All values < 1 will be taken to mean 'never'.)"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                let value: number | undefined = parseInt(event.target.value, 10);
-                if (Number.isNaN(value) || value < 1) {
-                  value = undefined;
-                }
-                setFullSyncEveryNIncrementals(value);
-              }}
-            />
-          </>
-        )}
-      </Stack>
-      <Stack className="gap-2">
-        <SwitchWithLabel
-          label="Start Sync on Connection"
-          isLoading={isLoading}
-          checked={autoStartOnConnection}
-          onToggle={setAutoStartOnConnection}
-        />
-      </Stack>
-    </>
-  );
-};
