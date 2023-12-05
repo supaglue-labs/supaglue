@@ -5291,6 +5291,11 @@
                   ],
                   "description": "The origin of the error.",
                   "example": "remote-provider"
+                },
+                "application_name": {
+                  "type": "string",
+                  "description": "The name of the application that generated the error.",
+                  "example": "MyCompany Production"
                 }
               },
               "required": [

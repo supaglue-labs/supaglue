@@ -484,6 +484,11 @@ export interface components {
            * @enum {string}
            */
           origin: "remote-provider" | "supaglue";
+          /**
+           * @description The name of the application that generated the error.
+           * @example MyCompany Production
+           */
+          application_name?: string;
           [key: string]: unknown;
         };
       })[];
