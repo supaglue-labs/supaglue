@@ -44,16 +44,6 @@
                       "firstName": "George",
                       "lastName": "Xing"
                     },
-                    "properties": {
-                      "email": {
-                        "type": "string",
-                        "description": "the email address of the lead",
-                        "example": "me@supaglue.com"
-                      }
-                    },
-                    "required": [
-                      "email"
-                    ],
                     "additionalProperties": true
                   }
                 },
