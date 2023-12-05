@@ -17,10 +17,4 @@ export type StandardObjectConfig = {
   associationsToFetch?: string[];
 };
 
-export type CustomObjectConfig = {
-  object: string;
-  syncStrategyOverride?: SyncStrategyConfig;
-  // If empty or unspecified, no associations will be fetched.
-  // Only relevant for Hubspot.
-  associationsToFetch?: string[];
-};
+export type CustomObjectConfig = StandardObjectConfig;

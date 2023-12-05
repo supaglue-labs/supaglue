@@ -3,7 +3,6 @@ import { createSyncConfig, updateSyncConfig } from '@/client';
 import { ConfirmationModal } from '@/components/modals';
 import Select from '@/components/Select';
 import Spinner from '@/components/Spinner';
-import { SwitchWithLabel } from '@/components/SwitchWithLabel';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
 import { useDestinations } from '@/hooks/useDestinations';
@@ -15,22 +14,25 @@ import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import { getDestinationName } from '@/utils/destination';
 import { getStandardObjectOptions } from '@/utils/provider';
 import { entitiesEnabled } from '@/utils/schema';
-import { Autocomplete, Breadcrumbs, Button, Chip, FormHelperText, Stack, TextField, Typography } from '@mui/material';
+import { Autocomplete, Breadcrumbs, Button, Chip, Stack, TextField, Typography } from '@mui/material';
 import Card from '@mui/material/Card';
 import type {
   CommonObjectType,
   ProviderCategory,
   ProviderName,
   SyncConfigCreateParams,
+  SyncConfigData,
   SyncConfigDTO,
 } from '@supaglue/types';
 import { CRM_COMMON_OBJECT_TYPES } from '@supaglue/types/crm';
 import { ENGAGEMENT_SYNCABLE_COMMON_OBJECTS } from '@supaglue/types/engagement';
 import type { SyncStrategyType } from '@supaglue/types/sync';
-import type { CommonObjectConfig } from '@supaglue/types/sync_object_config';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import type { SyncConfigOverrides } from './SyncConfigOverridesSection';
+import { SyncConfigOverridesSection } from './SyncConfigOverridesSection';
+import { SyncStrategyConfigSection } from './SyncStrategyConfigSection';
 
 const ONE_HOUR_SECONDS = 60 * 60;
 
@@ -75,6 +77,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   const [entityIds, setEntityIds] = useState<string[]>([]);
   const [autoStartOnConnection, setAutoStartOnConnection] = useState<boolean>(true);
   const [numSyncsToBeDeleted, setNumSyncsToBeDeleted] = useState<number>(0);
+  const [overrides, setOverrides] = useState<SyncConfigOverrides>({});
   const router = useRouter();
 
   const isFormValid = destinationName && providerName && isSyncPeriodSecsValid(syncPeriodSecs);
@@ -96,6 +99,11 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
     setStandardObjects(syncConfig?.config?.standardObjects?.map((o) => o.object) ?? []);
     setCustomObjects(syncConfig?.config?.customObjects?.map((o) => o.object) ?? []);
     setEntityIds(syncConfig?.config?.entities?.map((entity) => entity.entityId) ?? []);
+    setOverrides({
+      common: syncConfig?.config?.commonObjects?.filter((o) => o.syncStrategyOverride || o.associationsToFetch),
+      standard: syncConfig?.config?.standardObjects?.filter((o) => o.syncStrategyOverride || o.associationsToFetch),
+      custom: syncConfig?.config?.customObjects?.filter((o) => o.syncStrategyOverride || o.associationsToFetch),
+    });
   }, [syncConfig?.id]);
 
   if (isLoading || isLoadingProviders || isLoadingDestinations || isLoadingEntities || isLoadingLekkoConfigs) {
@@ -103,6 +111,25 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
   }
 
   const formTitle = syncConfig ? 'Edit Sync Config' : 'New Sync Config';
+
+  const populateSyncConfigData = (): SyncConfigData => {
+    return {
+      ...syncConfig?.config,
+      defaultConfig: {
+        ...syncConfig?.config.defaultConfig,
+        periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
+        strategy,
+        fullSyncEveryNIncrementals: fullSyncEveryNIncrementals ?? undefined,
+        autoStartOnConnection,
+      },
+      commonObjects: commonObjects.map((object) => overrides.common?.find((o) => o.object === object) ?? { object }),
+      standardObjects: standardObjects.map(
+        (object) => overrides.standard?.find((o) => o.object === object) ?? { object }
+      ),
+      customObjects: customObjects.map((object) => overrides.custom?.find((o) => o.object === object) ?? { object }),
+      entities: entityIds.map((entityId) => ({ entityId })),
+    };
+  };
 
   const createOrUpdateSyncConfig = async (forceDeleteSyncs = false): Promise<SyncConfigDTO | undefined> => {
     if (!destinationName || !providerName) {
@@ -126,20 +153,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
     if (syncConfig) {
       const newSyncConfig: SyncConfigDTO = {
         ...syncConfig,
-        config: {
-          ...syncConfig.config,
-          defaultConfig: {
-            ...syncConfig.config.defaultConfig,
-            periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
-            strategy,
-            fullSyncEveryNIncrementals: fullSyncEveryNIncrementals ?? undefined,
-            autoStartOnConnection,
-          },
-          commonObjects: commonObjects.map((object) => ({ object }) as CommonObjectConfig),
-          standardObjects: standardObjects.map((object) => ({ object })),
-          customObjects: customObjects.map((object) => ({ object })),
-          entities: entityIds.map((entityId) => ({ entityId })),
-        },
+        config: populateSyncConfigData(),
       };
       const response = await updateSyncConfig(activeApplicationId, newSyncConfig, forceDeleteSyncs);
       if (!response.ok) {
@@ -161,17 +175,7 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
       applicationId: activeApplicationId,
       destinationName,
       providerName: providerName as ProviderName,
-      config: {
-        defaultConfig: {
-          periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
-          strategy,
-          autoStartOnConnection,
-        },
-        commonObjects: commonObjects.map((object) => ({ object }) as CommonObjectConfig),
-        standardObjects: standardObjects.map((object) => ({ object })),
-        customObjects: customObjects.map((object) => ({ object })),
-        entities: entityIds.map((entityId) => ({ entityId })),
-      },
+      config: populateSyncConfigData(),
     };
     const response = await createSyncConfig(activeApplicationId, newSyncConfig);
     if (!response.ok) {
@@ -311,76 +315,17 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
               ]}
             />
           </Stack>
-          <Stack className="gap-2">
-            <Typography variant="subtitle1">Sync frequency</Typography>
-            <TextField
-              value={syncPeriodSecs}
-              size="small"
-              label="Sync every (in seconds)"
-              variant="outlined"
-              type="number"
-              helperText="Value needs to be 60 seconds or greater."
-              error={syncPeriodSecs === undefined || !isSyncPeriodSecsValid(syncPeriodSecs)}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                let value: number | undefined = parseInt(event.target.value, 10);
-                if (Number.isNaN(value)) {
-                  value = undefined;
-                }
-                setSyncPeriodSecs(value);
-              }}
-            />
-          </Stack>
-          <Stack className="gap-2">
-            <Typography variant="subtitle1">Sync Strategy</Typography>
-            <Select
-              name="Sync Strategy"
-              disabled={isLoadingDestinations}
-              onChange={(value) => setStrategy(value as SyncStrategyType)}
-              value={strategy}
-              options={[
-                {
-                  value: 'full then incremental',
-                  displayValue: 'Incremental',
-                },
-                {
-                  value: 'full only',
-                  displayValue: 'Full',
-                },
-              ]}
-            />
-            <FormHelperText sx={{ marginY: 0, marginLeft: '14px' }}>
-              For Incremental: we will use this strategy when available for the provider and object otherwise we will
-              use full sync. Please refer to provider docs for more details.
-            </FormHelperText>
-            {strategy === 'full then incremental' && (
-              <>
-                <Typography variant="subtitle1">Incremental with a periodic full sync</Typography>
-                <TextField
-                  value={fullSyncEveryNIncrementals}
-                  size="small"
-                  label="Incremental with a periodic full sync"
-                  variant="outlined"
-                  type="number"
-                  helperText="Enter the number of successful incremental syncs before running a full sync. (All values < 1 will be taken to mean 'never'.)"
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                    let value: number | undefined = parseInt(event.target.value, 10);
-                    if (Number.isNaN(value) || value < 1) {
-                      value = undefined;
-                    }
-                    setFullSyncEveryNIncrementals(value);
-                  }}
-                />
-              </>
-            )}
-          </Stack>
-          <Stack className="gap-2">
-            <SwitchWithLabel
-              label="Start Sync on Connection"
-              isLoading={isLoading}
-              checked={autoStartOnConnection}
-              onToggle={setAutoStartOnConnection}
-            />
-          </Stack>
+          <SyncStrategyConfigSection
+            syncPeriodSecs={syncPeriodSecs}
+            setSyncPeriodSecs={setSyncPeriodSecs}
+            strategy={strategy}
+            setStrategy={setStrategy}
+            fullSyncEveryNIncrementals={fullSyncEveryNIncrementals}
+            setFullSyncEveryNIncrementals={setFullSyncEveryNIncrementals}
+            autoStartOnConnection={autoStartOnConnection}
+            setAutoStartOnConnection={setAutoStartOnConnection}
+            isLoading={isLoading || isLoadingDestinations}
+          />
           {selectedProvider && (
             <>
               <Stack className="gap-2">
@@ -524,6 +469,21 @@ function SyncConfigDetailsPanelImpl({ syncConfigId }: SyncConfigDetailsPanelImpl
                   />
                 </Stack>
               )}
+              <SyncConfigOverridesSection
+                providerName={providerName}
+                commonObjects={commonObjects}
+                standardObjects={standardObjects}
+                customObjects={customObjects}
+                overrides={overrides}
+                defaultConfig={{
+                  ...syncConfig?.config.defaultConfig,
+                  periodMs: syncPeriodSecs ? syncPeriodSecs * 1000 : ONE_HOUR_SECONDS,
+                  strategy,
+                  fullSyncEveryNIncrementals: fullSyncEveryNIncrementals ?? undefined,
+                  autoStartOnConnection,
+                }}
+                setOverrides={setOverrides}
+              />
             </>
           )}
           <Stack direction="row" className="gap-2 justify-between">
