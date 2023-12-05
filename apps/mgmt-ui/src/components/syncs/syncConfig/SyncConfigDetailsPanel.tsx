@@ -696,13 +696,13 @@ const ExpandableObjectOverrides = ({
   };
 
   return (
-    <>
+    <div className="bg-sky-50 rounded-xl">
       <Button className="flex flex-row justify-start gap-2" variant="text" onClick={() => setExpanded(!expanded)}>
         {expanded ? <ExpandLess /> : <ExpandMore />}
         <span>Object overrides</span>
       </Button>
       {expanded && (
-        <>
+        <div className="p-4 rounded-xl">
           <Stack className="gap-2">
             <Typography variant="subtitle1">Select Object</Typography>
             <Select
@@ -742,9 +742,9 @@ const ExpandableObjectOverrides = ({
               )}
             </>
           )}
-        </>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 
