@@ -297,6 +297,7 @@ describe('custom_objects', () => {
           id: expect.any(String),
           meta: {
             origin: 'supaglue',
+            application_name: expect.any(String),
           },
           problem_type: 'BAD_REQUEST',
           status: '400',
@@ -343,6 +344,7 @@ describe('custom_objects', () => {
           id: expect.any(String),
           meta: {
             origin: 'supaglue',
+            application_name: expect.any(String),
           },
           problem_type: 'BAD_REQUEST',
           status: '400',
