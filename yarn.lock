@@ -6382,9 +6382,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@supaglue/sdk@workspace:*, @supaglue/sdk@workspace:^, @supaglue/sdk@workspace:packages/schemas":
+"@supaglue/sdk@workspace:*, @supaglue/sdk@workspace:^, @supaglue/sdk@workspace:packages/sdk":
   version: 0.0.0-use.local
-  resolution: "@supaglue/sdk@workspace:packages/schemas"
+  resolution: "@supaglue/sdk@workspace:packages/sdk"
   dependencies:
     global-agent: ^3.0.0
     openapi-fetch: 0.8.1
