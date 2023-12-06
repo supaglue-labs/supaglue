@@ -76,6 +76,19 @@ export class ProviderService {
     return fromProviderModel<T>(provider);
   }
 
+  public async findByHubspotAppId(hubspotAppId: string): Promise<OauthProvider | undefined> {
+    const provider = await this.#prisma.provider.findFirst({
+      where: {
+        name: 'hubspot',
+        hubspotAppId,
+      },
+    });
+    if (!provider) {
+      return;
+    }
+    return fromProviderModel<OauthProvider>(provider);
+  }
+
   public async list(applicationId: string): Promise<Provider[]> {
     const providers = await this.#prisma.provider.findMany({ where: { applicationId } });
     return Promise.all(providers.map((provider) => fromProviderModel(provider)));
