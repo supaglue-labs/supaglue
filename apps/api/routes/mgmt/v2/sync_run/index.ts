@@ -6,7 +6,7 @@ import type {
   GetSyncRunsQueryParams,
   GetSyncRunsRequest,
   GetSyncRunsResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/sdk/v2/mgmt';
 import type { SyncRunStatus, SyncRunTimestampFilter } from '@supaglue/types/sync_run';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import { Router, type Request, type Response } from 'express';

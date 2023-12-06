@@ -11,7 +11,7 @@ import type {
   ListUsersQueryParams,
   ListUsersRequest,
   ListUsersResponse,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

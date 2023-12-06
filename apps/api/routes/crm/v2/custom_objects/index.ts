@@ -15,7 +15,7 @@ import type {
   UpdateCustomObjectRecordPathParams,
   UpdateCustomObjectRecordRequest,
   UpdateCustomObjectRecordResponse,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 

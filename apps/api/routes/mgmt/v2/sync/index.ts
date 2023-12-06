@@ -19,7 +19,7 @@ import type {
   TriggerSyncQueryParams,
   TriggerSyncRequest,
   TriggerSyncResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/sdk/v2/mgmt';
 import type { ObjectSyncDTO } from '@supaglue/types/sync';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

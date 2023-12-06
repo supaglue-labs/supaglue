@@ -1,4 +1,4 @@
-import type { GetSyncConfigsSuccessfulResponse } from '@supaglue/schemas/v2/mgmt';
+import type { GetSyncConfigsSuccessfulResponse } from '@supaglue/sdk/v2/mgmt';
 import type { SyncConfigDTO } from '@supaglue/types';
 import { snakecaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';

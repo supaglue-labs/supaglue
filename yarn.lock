@@ -6324,7 +6324,7 @@ __metadata:
     "@hubspot/api-client": 9.1.0
     "@linear/sdk": ^7.0.1
     "@supaglue/db": "workspace:*"
-    "@supaglue/schemas": "workspace:*"
+    "@supaglue/sdk": "workspace:*"
     "@supaglue/types": "workspace:^"
     "@supaglue/utils": "workspace:*"
     "@temporalio/proto": ^1.8.6
@@ -6382,9 +6382,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@supaglue/schemas@workspace:*, @supaglue/schemas@workspace:^, @supaglue/schemas@workspace:packages/schemas":
+"@supaglue/sdk@workspace:*, @supaglue/sdk@workspace:^, @supaglue/sdk@workspace:packages/schemas":
   version: 0.0.0-use.local
-  resolution: "@supaglue/schemas@workspace:packages/schemas"
+  resolution: "@supaglue/sdk@workspace:packages/schemas"
   dependencies:
     global-agent: ^3.0.0
     openapi-fetch: 0.8.1
@@ -6417,7 +6417,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/types@workspace:packages/types"
   dependencies:
-    "@supaglue/schemas": "workspace:*"
+    "@supaglue/sdk": "workspace:*"
     "@tsconfig/node18": ^1.0.1
     typescript: ^4.9.5
   languageName: unknown
@@ -8504,7 +8504,7 @@ __metadata:
     "@hapi/boom": ^10.0.1
     "@supaglue/core": "workspace:*"
     "@supaglue/db": "workspace:*"
-    "@supaglue/schemas": "workspace:*"
+    "@supaglue/sdk": "workspace:*"
     "@supaglue/sync-workflows": "workspace:*"
     "@supaglue/utils": "workspace:*"
     "@swc/core": ^1.3.96
@@ -17136,7 +17136,7 @@ __metadata:
     "@mui/x-date-pickers": ^6.0.0
     "@mui/x-license-pro": ^6.10.2
     "@sentry/nextjs": ^7.77.0
-    "@supaglue/schemas": "workspace:^"
+    "@supaglue/sdk": "workspace:^"
     "@supaglue/types": "workspace:^"
     "@supaglue/utils": "workspace:^"
     "@types/luxon": ^3

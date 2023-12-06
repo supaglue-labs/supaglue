@@ -24,7 +24,7 @@ import type {
   UpsertContactPathParams,
   UpsertContactRequest,
   UpsertContactResponse,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';

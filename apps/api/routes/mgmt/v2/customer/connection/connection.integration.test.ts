@@ -9,7 +9,7 @@ import type {
   GetConnectionsFailureResponse,
   GetConnectionsSuccessfulResponse,
   GetConnectionSuccessfulResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/sdk/v2/mgmt';
 
 const { CUSTOMER_ID } = process.env;
 

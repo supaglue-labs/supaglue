@@ -1,4 +1,4 @@
-import type { GetSchemasSuccessfulResponse } from '@supaglue/schemas/v2/mgmt';
+import type { GetSchemasSuccessfulResponse } from '@supaglue/sdk/v2/mgmt';
 import type { Schema } from '@supaglue/types';
 import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';

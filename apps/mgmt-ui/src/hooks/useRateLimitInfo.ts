@@ -1,4 +1,4 @@
-import type { GetRateLimitInfoResponse } from '@supaglue/schemas/v2/mgmt';
+import type { GetRateLimitInfoResponse } from '@supaglue/sdk/v2/mgmt';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useRateLimitInfo(customerId: string, providerName: string) {

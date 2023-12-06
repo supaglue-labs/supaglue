@@ -5,7 +5,7 @@ import type {
   ListPropertiesDeprecatedQueryParams,
   ListPropertiesDeprecatedRequest,
   ListPropertiesDeprecatedResponse,
-} from '@supaglue/schemas/v2/metadata';
+} from '@supaglue/sdk/v2/metadata';
 import { snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

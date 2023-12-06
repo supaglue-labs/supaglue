@@ -11,7 +11,7 @@
     "@hubspot/api-client": "9.1.0",
     "@linear/sdk": "^7.0.1",
     "@supaglue/db": "workspace:*",
-    "@supaglue/schemas": "workspace:*",
+    "@supaglue/sdk": "workspace:*",
     "@supaglue/types": "workspace:^",
     "@supaglue/utils": "workspace:*",
     "@temporalio/proto": "^1.8.6",

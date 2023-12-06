@@ -11,7 +11,7 @@ import type {
   GetCustomObjectRecordSuccessfulResponse,
   ListCustomObjectRecordsSuccessfulResponse,
   UpdateCustomObjectRecordSuccessfulResponse,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 
 jest.retryTimes(3);
 

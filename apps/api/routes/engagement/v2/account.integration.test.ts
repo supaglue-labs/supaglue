@@ -12,7 +12,7 @@ import type {
   ListAccountsSuccessfulResponse,
   UpdateAccountSuccessfulResponse,
   UpsertAccountSuccessfulResponse,
-} from '@supaglue/schemas/v2/engagement';
+} from '@supaglue/sdk/v2/engagement';
 
 describe('account', () => {
   let testAccount: CreateAccountRequest['record'];

@@ -10,7 +10,7 @@ import type {
   ListMailboxesQueryParams,
   ListMailboxesRequest,
   ListMailboxesResponse,
-} from '@supaglue/schemas/v2/engagement';
+} from '@supaglue/sdk/v2/engagement';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 

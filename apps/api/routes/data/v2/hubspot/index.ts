@@ -9,7 +9,7 @@ import type {
   ListHubspotContactsQueryParams,
   ListHubspotContactsRequest,
   ListHubspotContactsResponse,
-} from '@supaglue/schemas/v2/data';
+} from '@supaglue/sdk/v2/data';
 import type { NextFunction, Request, Response } from 'express';
 import { Router } from 'express';
 

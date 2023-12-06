@@ -1,5 +1,5 @@
 import { getApplicationIdScopedHeaders } from '@/utils/headers';
-import type { UpdateSchemaResponse } from '@supaglue/schemas/v2/mgmt';
+import type { UpdateSchemaResponse } from '@supaglue/sdk/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 

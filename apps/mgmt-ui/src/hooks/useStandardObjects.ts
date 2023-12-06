@@ -1,4 +1,4 @@
-import type { ListStandardObjectsSuccessfulResponse } from '@supaglue/schemas/v2/metadata';
+import type { ListStandardObjectsSuccessfulResponse } from '@supaglue/sdk/v2/metadata';
 import { useSWRWithApplication } from './useSWRWithApplication';
 
 export function useStandardObjects(customerId: string, providerName: string) {

@@ -16,7 +16,7 @@ import type {
   ListSequencesQueryParams,
   ListSequencesRequest,
   ListSequencesResponse,
-} from '@supaglue/schemas/v2/engagement';
+} from '@supaglue/sdk/v2/engagement';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

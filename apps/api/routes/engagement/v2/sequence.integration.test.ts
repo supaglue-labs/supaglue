@@ -16,7 +16,7 @@ import type {
   ListSequencesSuccessfulResponse,
   SearchSequenceStatesRequest,
   SearchSequenceStatesSuccessfulResponse,
-} from '@supaglue/schemas/v2/engagement';
+} from '@supaglue/sdk/v2/engagement';
 
 jest.retryTimes(3);
 

@@ -20,7 +20,7 @@ import type {
   UpsertAccountPathParams,
   UpsertAccountRequest,
   UpsertAccountResponse,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';

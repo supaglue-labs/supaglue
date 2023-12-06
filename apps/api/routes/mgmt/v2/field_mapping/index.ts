@@ -9,7 +9,7 @@ import type {
   UpdateObjectFieldMappingsPathParams,
   UpdateObjectFieldMappingsRequest,
   UpdateObjectFieldMappingsResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/sdk/v2/mgmt';
 import type { ObjectFieldMappingInfo, ProviderObject, Schema, SchemaMappingsConfigForObject } from '@supaglue/types';
 import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
