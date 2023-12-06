@@ -34,12 +34,12 @@ export type ProviderName =
 export type CategoryOfProviderName<T extends ProviderName> = T extends CRMProviderName
   ? CRMProviderCategory
   : T extends EngagementProviderName
-  ? EngagementProviderCategory
-  : T extends EnrichmentProviderName
-  ? EnrichmentProviderCategory
-  : T extends MarketingAutomationProviderName
-  ? MarketingAutomationProviderCategory
-  : 'no_category';
+    ? EngagementProviderCategory
+    : T extends EnrichmentProviderName
+      ? EnrichmentProviderCategory
+      : T extends MarketingAutomationProviderName
+        ? MarketingAutomationProviderCategory
+        : 'no_category';
 
 export type CommonObjectForCategory<T extends ProviderCategory> = {
   crm: CRMCommonObjectType;

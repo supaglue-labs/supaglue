@@ -5,7 +5,7 @@ import type { ConnectionService } from '.';
 import { NotFoundError } from '../errors';
 import { getCustomerIdPk } from '../lib';
 import { getPaginationParams, getPaginationResult } from '../lib/pagination';
-import { fromSyncModel, fromSyncModelWithConnection } from '../mappers/sync';
+import { fromSyncModel, fromSyncModelWithConnectionAndSyncConfig } from '../mappers/sync';
 
 export class SyncService {
   #prisma: PrismaClient;
@@ -34,6 +34,7 @@ export class SyncService {
       where: whereClause,
       include: {
         connection: true,
+        syncConfig: true,
       },
       orderBy: [
         {
@@ -57,7 +58,7 @@ export class SyncService {
 
     const [models, count] = await Promise.all([modelsPromise, countPromise]);
 
-    const results = models.map(fromSyncModelWithConnection);
+    const results = models.map(fromSyncModelWithConnectionAndSyncConfig);
 
     return {
       ...getPaginationResult<string>(page_size, cursor, results),

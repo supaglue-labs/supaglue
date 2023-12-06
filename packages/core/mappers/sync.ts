@@ -1,4 +1,4 @@
-import type { Connection as ConnectionModel, Sync as SyncModel } from '@supaglue/db';
+import type { Connection as ConnectionModel, Sync as SyncModel, SyncConfig as SyncConfigModel } from '@supaglue/db';
 import type { ObjectType, Sync, SyncDTO, SyncState, SyncStrategyType } from '@supaglue/types/sync';
 import { parseCustomerIdPk } from '../lib';
 
@@ -48,7 +48,9 @@ export const fromSyncModel = (model: SyncModel): Sync => {
   throw new Error('incorrectly configured sync');
 };
 
-export const fromSyncModelWithConnection = (model: SyncModel & { connection: ConnectionModel }): SyncDTO => {
+export const fromSyncModelWithConnectionAndSyncConfig = (
+  model: SyncModel & { connection: ConnectionModel; syncConfig: SyncConfigModel }
+): SyncDTO => {
   const sync = fromSyncModel(model);
 
   const { connection } = model;
