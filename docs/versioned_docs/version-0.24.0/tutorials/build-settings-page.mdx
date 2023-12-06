@@ -33,7 +33,7 @@ A **SyncRun** is an execution of a Sync. Triggering a Sync creates a SyncRun and
 
 ### Show sync run stats
 
-You can use the [SyncRuns Management API](../api/v2/mgmt/get-sync-runs) to get the latest SyncRun for a Sync. The response will include the SyncRun's status, the number of records synced, and other metadata about the SyncRun.
+You can use the [SyncRuns Management API](../api/v2/mgmt/list-sync-runs) to list the latest SyncRun for a Sync. The response will include the SyncRun's status, the number of records synced, and other metadata about the SyncRun.
 
 Below we use a Nextjs [Server Component](https://nextjs.org/docs/getting-started/react-essentials#server-components) to fetch the latest SyncRun for a Sync and display the status and number of records synced for an object, `contact`.
 
