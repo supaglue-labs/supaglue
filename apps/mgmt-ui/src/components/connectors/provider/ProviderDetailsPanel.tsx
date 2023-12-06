@@ -11,8 +11,10 @@ import type { SchemasWhitelist } from '@/utils/lekko';
 import { getStandardObjectOptions, PROVIDER_CARDS_INFO } from '@/utils/provider';
 import providerToIcon from '@/utils/providerToIcon';
 import { schemasEnabled } from '@/utils/schema';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   Autocomplete,
   Box,
@@ -24,6 +26,7 @@ import {
   Stack,
   Switch,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import Card from '@mui/material/Card';
@@ -96,6 +99,8 @@ export default function ProviderDetailsPanel({
   const [clientId, setClientId] = useState<string>('');
   const [clientSecret, setClientSecret] = useState<string>('');
   const [oauthScopes, setOauthScopes] = useState<string>('');
+  const [developerAppId, setDeveloperAppId] = useState<string>('');
+  const [developerToken, setDeveloperToken] = useState<string | undefined>();
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [useManagedOauth, setUseManagedOauth] = useState<boolean>(shouldAllowManagedOauth);
   const [commonObjects, setCommonObjects] = useState<ProviderObject[]>([]);
@@ -123,6 +128,8 @@ export default function ProviderDetailsPanel({
       setUseManagedOauth(
         provider?.id ? Boolean(provider?.config?.useManagedOauth) && shouldAllowManagedOauth : shouldAllowManagedOauth
       );
+      setDeveloperAppId(provider?.config?.providerAppId ?? '');
+      setDeveloperToken(provider?.config?.oauth?.credentials?.developerToken ?? '');
     }
 
     setCommonObjects(
@@ -138,12 +145,13 @@ export default function ProviderDetailsPanel({
         config: isOauthProvider(provider)
           ? {
               ...provider.config,
-              providerAppId: '', // TODO: add input field for this
+              providerAppId: developerAppId,
               oauth: {
                 ...provider.config.oauth,
                 credentials: {
                   oauthClientId: clientId,
                   oauthClientSecret: clientSecret,
+                  developerToken,
                 },
                 oauthScopes: oauthScopes.split(','),
               },
@@ -168,12 +176,13 @@ export default function ProviderDetailsPanel({
       name: providerName,
       config: isOauth
         ? {
-            providerAppId: '', // TODO: add input field for this
+            providerAppId: developerAppId,
             useManagedOauth,
             oauth: {
               credentials: {
                 oauthClientId: clientId,
                 oauthClientSecret: clientSecret,
+                developerToken,
               },
               oauthScopes: oauthScopes.split(','),
             },
@@ -280,6 +289,11 @@ export default function ProviderDetailsPanel({
                   setOauthScopes(event.target.value);
                 }}
                 helperText="Comma separated values (without spaces)."
+              />
+            )}
+            {providerName === 'hubspot' && (
+              <WebhookConfig
+                {...{ useManagedOauth, developerAppId, developerToken, setDeveloperAppId, setDeveloperToken }}
               />
             )}
           </Stack>
@@ -460,6 +474,62 @@ const SchemaToObjectMapping = ({
           );
         })}
       </Stack>
+    </>
+  );
+};
+
+type WebhookConfigProps = {
+  useManagedOauth: boolean;
+  developerAppId: string;
+  setDeveloperAppId: (developerAppId: string) => void;
+  developerToken: string | undefined;
+  setDeveloperToken: (developerToken: string) => void;
+};
+
+const WebhookConfig = ({
+  useManagedOauth,
+  developerAppId,
+  setDeveloperAppId,
+  developerToken,
+  setDeveloperToken,
+}: WebhookConfigProps) => {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <>
+      <Button className="flex flex-row justify-start gap-2" variant="text" onClick={() => setExpanded(!expanded)}>
+        {expanded ? <ExpandLess /> : <ExpandMore />}
+        <span>Webhook Config (optional)</span>
+        <Tooltip title="Fill this out if you would like Supaglue to subscribe to Hubspot webhooks for Association changes.">
+          <InfoOutlinedIcon sx={{ color: 'rgba(0, 0, 0, 0.6);' }} />
+        </Tooltip>
+      </Button>
+      {expanded && (
+        <>
+          <TextField
+            disabled={useManagedOauth}
+            value={developerAppId}
+            size="small"
+            label="Hubspot App Id"
+            variant="outlined"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setDeveloperAppId(event.target.value);
+            }}
+            helperText="Hubspot App ID"
+          />
+          <TextField
+            disabled={useManagedOauth}
+            value={developerToken}
+            size="small"
+            label="Hubspot Developer Token"
+            variant="outlined"
+            type="password"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              setDeveloperToken(event.target.value);
+            }}
+            helperText="Hubspot Developer Token"
+          />
+        </>
+      )}
     </>
   );
 };

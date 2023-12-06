@@ -1,3 +1,4 @@
+import { Client as HubspotClient } from '@hubspot/api-client';
 import type { PrismaClient } from '@supaglue/db';
 import type {
   AddObjectToProviderParams,
@@ -100,6 +101,12 @@ export class ProviderService {
     if (provider.entityMappings) {
       validateEntityMappings(provider.entityMappings);
     }
+    if (provider.name === 'hubspot' && provider.config.providerAppId) {
+      await this.validateHubspotWebhookConfig(
+        provider.config.providerAppId,
+        provider.config.oauth.credentials.developerToken
+      );
+    }
 
     const createdProvider = await this.#prisma.provider.create({
       data: await toProviderModel(provider),
@@ -170,6 +177,13 @@ export class ProviderService {
       validateEntityMappings(provider.entityMappings);
     }
 
+    if (provider.name === 'hubspot' && provider.config.providerAppId) {
+      await this.validateHubspotWebhookConfig(
+        provider.config.providerAppId,
+        provider.config.oauth.credentials.developerToken
+      );
+    }
+
     const updatedProvider = await this.#prisma.provider.update({
       where: { id },
       data: await toProviderModel({
@@ -219,6 +233,32 @@ export class ProviderService {
     await this.#prisma.provider.deleteMany({
       where: { id, applicationId },
     });
+  }
+
+  private async validateHubspotWebhookConfig(appId: string, developerToken?: string): Promise<void> {
+    if (!developerToken) {
+      throw new BadRequestError('Provider config is missing developerToken');
+    }
+
+    const alreadyExists = await this.#prisma.provider.findFirst({
+      where: {
+        hubspotAppId: appId,
+      },
+    });
+    if (alreadyExists) {
+      throw new BadRequestError(`HubSpot App ID: ${appId} is already in use by another Application.`);
+    }
+
+    try {
+      const hubspotClient = new HubspotClient({ developerApiKey: developerToken });
+      await hubspotClient.webhooks.settingsApi.getAll(parseInt(appId));
+    } catch (e: any) {
+      // If no webhooks have been set up yet, it'll return a 404.
+      if (e.code === 404) {
+        return;
+      }
+      throw new BadRequestError(`Invalid HubSpot App ID or developer token`);
+    }
   }
 }
 

@@ -80,7 +80,7 @@ model Provider {
   authType       String       @map("auth_type") // [oauth2]
   category       String
   name           String
-  config         Json // {provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes}
+  config         Json // {provider_app_id, oauth_client_id, oauth_client_secret, oauth_scopes, developer_token (optional)}
   objects        Json?
   entityMappings Json?
   createdAt      DateTime     @default(now()) @map("created_at")
@@ -88,6 +88,8 @@ model Provider {
   connections    Connection[]
   syncConfig     SyncConfig?
   magicLinks     MagicLink[]
+  // For easy lookup on webhook events
+  hubspotAppId   String?      @map("_hubspot_app_id")
 
   @@unique([applicationId, name])
   @@map("providers")

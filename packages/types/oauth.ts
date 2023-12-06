@@ -11,6 +11,8 @@ export type OAuthConfigEncrypted = {
 export type OAuthCredentials = {
   oauthClientId: string;
   oauthClientSecret: string;
+  // Optional: Only needed for hubspot if wanting to subscribe to webhooks
+  developerToken?: string;
 };
 
 export type ManagedOauthArgs = {
