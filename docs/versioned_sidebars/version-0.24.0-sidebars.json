@@ -229,6 +229,11 @@
           "label": "Pagination"
         },
         {
+          "id": "tutorials/transformations/processing-order",
+          "type": "doc",
+          "label": "Processing order for objects"
+        },
+        {
           "id": "tutorials/transformations/common-schema",
           "type": "doc",
           "label": "Build a common schema"
@@ -750,8 +755,8 @@
           "items": [
             {
               "type": "doc",
-              "id": "api/v2/mgmt/get-sync-runs",
-              "label": "Get SyncRuns",
+              "id": "api/v2/mgmt/list-sync-runs",
+              "label": "List SyncRuns",
               "className": "api-method get"
             }
           ]
@@ -767,8 +772,8 @@
           "items": [
             {
               "type": "doc",
-              "id": "api/v2/mgmt/get-syncs",
-              "label": "Get Syncs",
+              "id": "api/v2/mgmt/list-syncs",
+              "label": "List Syncs",
               "className": "api-method get"
             },
             {
