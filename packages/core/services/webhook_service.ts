@@ -1,5 +1,5 @@
 import type { PrismaClient } from '@supaglue/db';
-import type { WebhookPayloads, WebhookType } from '@supaglue/schemas/v2/mgmt';
+import type { WebhookPayloads, WebhookType } from '@supaglue/sdk/v2/mgmt';
 import { Svix } from 'svix';
 import type { ApplicationService } from './application_service';
 

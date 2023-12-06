@@ -10,7 +10,7 @@ import type {
   UpsertEntityMappingPathParams,
   UpsertEntityMappingRequest,
   UpsertEntityMappingResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/sdk/v2/mgmt';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';

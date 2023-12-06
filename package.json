@@ -1,6 +1,7 @@
 {
   "name": "supaglue",
   "version": "0.24.0",
+  "description": "Unified API for product integrations",
   "packageManager": "yarn@3.4.1",
   "private": true,
   "workspaces": [

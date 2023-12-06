@@ -1,4 +1,4 @@
-import type { GetEntitiesSuccessfulResponse } from '@supaglue/schemas/v2/mgmt';
+import type { GetEntitiesSuccessfulResponse } from '@supaglue/sdk/v2/mgmt';
 import type { Entity } from '@supaglue/types/entity';
 import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import { useSWRWithApplication } from './useSWRWithApplication';

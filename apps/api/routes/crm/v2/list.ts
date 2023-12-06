@@ -14,7 +14,7 @@ import type {
   ListListsQueryParams,
   ListListsRequest,
   ListListsResponse,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 import type {
   SnakecasedKeysCrmAccount,
   SnakecasedKeysCrmContact,

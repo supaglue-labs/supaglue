@@ -2,7 +2,7 @@ import initRoutes from '@/routes';
 import { createTerminus } from '@godaddy/terminus';
 import { SGError } from '@supaglue/core/errors';
 import { expressScopeMiddleware, logger } from '@supaglue/core/lib';
-import type { ResponseErrors } from '@supaglue/schemas';
+import type { ResponseErrors } from '@supaglue/sdk';
 import cors from 'cors';
 import type { NextFunction, Request, Response } from 'express';
 import express from 'express';
@@ -18,7 +18,7 @@ const metricsApp = express();
 const port = process.env.SUPAGLUE_API_PORT ? parseInt(process.env.SUPAGLUE_API_PORT) : 8080;
 
 if (process.env.GLOBAL_AGENT_HTTP_PROXY) {
-  require('@supaglue/schemas/proxy.bootstrap');
+  require('@supaglue/sdk/proxy.bootstrap');
 }
 
 app.use(

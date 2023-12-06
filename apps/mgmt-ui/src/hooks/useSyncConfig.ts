@@ -1,4 +1,4 @@
-import type { GetSyncConfigSuccessfulResponse } from '@supaglue/schemas/v2/mgmt';
+import type { GetSyncConfigSuccessfulResponse } from '@supaglue/sdk/v2/mgmt';
 import type { SyncConfigDTO } from '@supaglue/types';
 import type { CommonObjectConfig } from '@supaglue/types/sync_object_config';
 import { camelcaseKeys } from '@supaglue/utils';

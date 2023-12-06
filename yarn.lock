@@ -6324,7 +6324,7 @@ __metadata:
     "@hubspot/api-client": 9.1.0
     "@linear/sdk": ^7.0.1
     "@supaglue/db": "workspace:*"
-    "@supaglue/schemas": "workspace:*"
+    "@supaglue/sdk": "workspace:*"
     "@supaglue/types": "workspace:^"
     "@supaglue/utils": "workspace:*"
     "@temporalio/proto": ^1.8.6
@@ -6382,14 +6382,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@supaglue/schemas@workspace:*, @supaglue/schemas@workspace:^, @supaglue/schemas@workspace:packages/schemas":
+"@supaglue/sdk@workspace:*, @supaglue/sdk@workspace:^, @supaglue/sdk@workspace:packages/sdk":
   version: 0.0.0-use.local
-  resolution: "@supaglue/schemas@workspace:packages/schemas"
+  resolution: "@supaglue/sdk@workspace:packages/sdk"
   dependencies:
     global-agent: ^3.0.0
     openapi-fetch: 0.8.1
     openapi-typescript: ^6.7.0
     tsx: ^3.12.3
+    typescript: ^5.3.2
     undici: ^5.27.2
   languageName: unknown
   linkType: soft
@@ -6416,7 +6417,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@supaglue/types@workspace:packages/types"
   dependencies:
-    "@supaglue/schemas": "workspace:*"
+    "@supaglue/sdk": "workspace:*"
     "@tsconfig/node18": ^1.0.1
     typescript: ^4.9.5
   languageName: unknown
@@ -8503,7 +8504,7 @@ __metadata:
     "@hapi/boom": ^10.0.1
     "@supaglue/core": "workspace:*"
     "@supaglue/db": "workspace:*"
-    "@supaglue/schemas": "workspace:*"
+    "@supaglue/sdk": "workspace:*"
     "@supaglue/sync-workflows": "workspace:*"
     "@supaglue/utils": "workspace:*"
     "@swc/core": ^1.3.96
@@ -17135,7 +17136,7 @@ __metadata:
     "@mui/x-date-pickers": ^6.0.0
     "@mui/x-license-pro": ^6.10.2
     "@sentry/nextjs": ^7.77.0
-    "@supaglue/schemas": "workspace:^"
+    "@supaglue/sdk": "workspace:^"
     "@supaglue/types": "workspace:^"
     "@supaglue/utils": "workspace:^"
     "@types/luxon": ^3
@@ -24150,6 +24151,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:^5.3.2":
+  version: 5.3.2
+  resolution: "typescript@npm:5.3.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: d92534dda639eb825db013203404c1fabca8ac630564283c9e7dc9e64fd9c9346c2de95ecebdf3e6e8c1c32941bca1cfe0da37877611feb9daf8feeaea58d230
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@4.9.5#~builtin<compat/typescript>, typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>, typescript@patch:typescript@^4.9.5#~builtin<compat/typescript>":
   version: 4.9.5
   resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=23ec76"
@@ -24157,6 +24168,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: ab417a2f398380c90a6cf5a5f74badd17866adf57f1165617d6a551f059c3ba0a3e4da0d147b3ac5681db9ac76a303c5876394b13b3de75fdd5b1eaa06181c9d
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^5.3.2#~builtin<compat/typescript>":
+  version: 5.3.2
+  resolution: "typescript@patch:typescript@npm%3A5.3.2#~builtin<compat/typescript>::version=5.3.2&hash=1f5320"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: c034461079fbfde3cb584ddee52afccb15b6e32a0ce186d0b2719968786f7ca73e1b07f71fac4163088790b16811c6ccf79680de190664ef66ff0ba9c1fe4a23
   languageName: node
   linkType: hard
 

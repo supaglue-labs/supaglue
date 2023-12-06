@@ -11,7 +11,7 @@ import type {
   GetCustomObjectSchemaSuccessfulResponse,
   ListCustomObjectSchemasSuccessfulResponse,
   UpdateCustomObjectSchemaPathParams,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 
 describe('custom_objects', () => {
   let testCustomObject: CreateCustomObjectSchemaRequest['object'];

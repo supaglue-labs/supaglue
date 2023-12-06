@@ -5,7 +5,7 @@
  * @jest-environment ./integration-test-environment
  */
 
-import type { UpsertCustomerRequest, UpsertCustomerSuccessfulResponse } from '@supaglue/schemas/v2/mgmt';
+import type { UpsertCustomerRequest, UpsertCustomerSuccessfulResponse } from '@supaglue/sdk/v2/mgmt';
 
 describe('customer', () => {
   it('upsert creates a new customer', async () => {

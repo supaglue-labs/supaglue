@@ -1,6 +1,6 @@
 import { maybeAddFilter } from '@/utils/filter';
 import { getApplicationIdScopedHeaders } from '@/utils/headers';
-import type { GetSyncRunsResponse } from '@supaglue/schemas/v2/mgmt';
+import type { GetSyncRunsResponse } from '@supaglue/sdk/v2/mgmt';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { API_HOST } from '../..';
 

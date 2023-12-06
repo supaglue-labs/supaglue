@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const axios = require('axios');
 const { TestEnvironment } = require('jest-environment-node');
-const { createSupaglueClient } = require('@supaglue/schemas');
+const { createSupaglueClient } = require('@supaglue/sdk');
 
 // For debugging
-require('@supaglue/schemas/proxy.bootstrap');
+require('@supaglue/sdk/proxy.bootstrap');
 
 const toHubspotPluralObjectName = {
   contact: 'contacts',

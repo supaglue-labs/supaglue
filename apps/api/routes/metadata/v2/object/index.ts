@@ -7,7 +7,7 @@ import type {
   ListStandardObjectsPathParams,
   ListStandardObjectsRequest,
   ListStandardObjectsResponse,
-} from '@supaglue/schemas/v2/metadata';
+} from '@supaglue/sdk/v2/metadata';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 

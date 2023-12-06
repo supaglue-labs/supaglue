@@ -15,7 +15,7 @@ import type {
   UpdateLeadSuccessfulResponse,
   UpsertLeadRequest,
   UpsertLeadSuccessfulResponse,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 
 jest.retryTimes(3);
 

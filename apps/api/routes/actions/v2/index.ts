@@ -6,7 +6,7 @@ import type {
   SendPassthroughRequestPathParams,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
-} from '@supaglue/schemas/v2/actions';
+} from '@supaglue/sdk/v2/actions';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 

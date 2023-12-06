@@ -1,4 +1,4 @@
-import type { EngagementV2 } from '@supaglue/schemas/v2/engagement';
+import type { EngagementV2 } from '@supaglue/sdk/v2/engagement';
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { BaseEngagementModel, SnakecasedEngagementTenantFields } from './base';
 

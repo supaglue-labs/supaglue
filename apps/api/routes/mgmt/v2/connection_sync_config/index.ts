@@ -11,7 +11,7 @@ import type {
   UpsertConnectionSyncConfigPathParams,
   UpsertConnectionSyncConfigRequest,
   UpsertConnectionSyncConfigResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/sdk/v2/mgmt';
 import { camelcaseKeys, snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

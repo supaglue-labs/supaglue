@@ -1,4 +1,4 @@
-import type { SupaglueClient } from '@supaglue/schemas';
+import type { SupaglueClient } from '@supaglue/sdk';
 import type { AxiosInstance } from 'axios';
 
 export type AddedObject = {

@@ -1,4 +1,4 @@
-import type { ListEntityMappingsSuccessfulResponse } from '@supaglue/schemas/v2/mgmt';
+import type { ListEntityMappingsSuccessfulResponse } from '@supaglue/sdk/v2/mgmt';
 import type { MergedEntityMapping } from '@supaglue/types/entity_mapping';
 import { snakecaseKeys } from '@supaglue/utils';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';

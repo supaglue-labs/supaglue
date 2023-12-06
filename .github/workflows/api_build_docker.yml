@@ -7,7 +7,7 @@ on:
       - apps/api/**
       - packages/core/**
       - packages/db/**
-      - packages/schemas/**
+      - packages/sdk/**
       - packages/sync-workflows/**
       - packages/types/**
       - packages/utils/**
@@ -18,7 +18,7 @@ on:
       - apps/api/**
       - packages/core/**
       - packages/db/**
-      - packages/schemas/**
+      - packages/sdk/**
       - packages/sync-workflows/**
       - packages/types/**
       - packages/utils/**

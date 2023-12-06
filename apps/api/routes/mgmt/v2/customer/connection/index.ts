@@ -21,7 +21,7 @@ import type {
   GetRateLimitInfoPathParams,
   GetRateLimitInfoRequest,
   GetRateLimitInfoResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/sdk/v2/mgmt';
 import { camelcaseKeys } from '@supaglue/utils';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';

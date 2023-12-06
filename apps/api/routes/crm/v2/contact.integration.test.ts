@@ -15,7 +15,7 @@ import type {
   UpdateContactSuccessfulResponse,
   UpsertContactRequest,
   UpsertContactSuccessfulResponse,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 
 jest.retryTimes(3);
 

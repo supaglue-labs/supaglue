@@ -20,7 +20,7 @@ import type {
   SearchSequenceStatesQueryParams,
   SearchSequenceStatesRequest,
   SearchSequenceStatesResponse,
-} from '@supaglue/schemas/v2/engagement';
+} from '@supaglue/sdk/v2/engagement';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

@@ -9,7 +9,7 @@ import type {
   GetMagicLinksPathParams,
   GetMagicLinksRequest,
   GetMagicLinksResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/sdk/v2/mgmt';
 import type { MagicLink } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';

@@ -8,7 +8,7 @@ import type {
   ListAssociationSchemasQueryParams,
   ListAssociationSchemasRequest,
   ListAssociationSchemasResponse,
-} from '@supaglue/schemas/v2/crm';
+} from '@supaglue/sdk/v2/crm';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

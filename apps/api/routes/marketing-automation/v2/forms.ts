@@ -13,7 +13,7 @@ import type {
   SubmitFormQueryParams,
   SubmitFormRequest,
   SubmitFormResponse,
-} from '@supaglue/schemas/v2/marketing-automation';
+} from '@supaglue/sdk/v2/marketing-automation';
 import { snakecaseKeys } from '@supaglue/utils';
 import type { Request, Response } from 'express';
 import { Router } from 'express';

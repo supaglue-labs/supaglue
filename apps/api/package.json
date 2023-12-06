@@ -8,7 +8,7 @@
     "@godaddy/terminus": "^4.11.2",
     "@supaglue/core": "workspace:*",
     "@supaglue/db": "workspace:*",
-    "@supaglue/schemas": "workspace:*",
+    "@supaglue/sdk": "workspace:*",
     "@supaglue/sync-workflows": "workspace:*",
     "@supaglue/utils": "workspace:*",
     "@temporalio/activity": "^1.8.6",

@@ -17,7 +17,7 @@ import type {
   UpdateSyncConfigQueryParams,
   UpdateSyncConfigRequest,
   UpdateSyncConfigResponse,
-} from '@supaglue/schemas/v2/mgmt';
+} from '@supaglue/sdk/v2/mgmt';
 import type { CommonObjectType } from '@supaglue/types';
 import { camelcaseKeys } from '@supaglue/utils/camelcase';
 import { snakecaseKeys } from '@supaglue/utils/snakecase';

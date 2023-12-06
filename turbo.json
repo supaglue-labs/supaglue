@@ -8,8 +8,8 @@
     "@supaglue/db#build": {
       "dependsOn": ["@supaglue/db#generate"]
     },
-    "@supaglue/schemas#build": {
-      "dependsOn": ["@supaglue/schemas#generate"]
+    "@supaglue/sdk#build": {
+      "dependsOn": ["@supaglue/sdk#generate"]
     },
     "docs#generate": {
       "dependsOn": ["//#bundle-openapi"],
@@ -63,7 +63,7 @@
       "outputs": ["openapi/**/openapi.bundle.json"],
       "outputMode": "errors-only"
     },
-    "@supaglue/schemas#generate": {
+    "@supaglue/sdk#generate": {
       "dependsOn": ["//#bundle-openapi"],
       "inputs": ["../../openapi/**/*.yaml"],
       "outputs": ["gen/**"],
