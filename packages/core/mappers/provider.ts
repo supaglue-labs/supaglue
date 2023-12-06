@@ -29,6 +29,9 @@ export const hideManagedOauthConfig = (providerConfig: Provider): Provider => {
           oauthClientSecret: providerConfig.config.useManagedOauth
             ? ''
             : providerConfig.config.oauth.credentials.oauthClientSecret,
+          developerToken: providerConfig.config.useManagedOauth
+            ? ''
+            : providerConfig.config.oauth.credentials.developerToken,
         },
       },
     },
@@ -115,5 +118,6 @@ export const toProviderModel = async (params: ProviderCreateParams) => {
     },
     objects,
     entityMappings,
+    hubspotAppId: config.providerAppId ?? null,
   };
 };

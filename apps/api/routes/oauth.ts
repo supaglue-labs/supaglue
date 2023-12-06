@@ -322,15 +322,15 @@ export default function init(app: Router): void {
               },
             }
           : providerName === 'salesforce_marketing_cloud_account_engagement'
-          ? {
-              ...basePayload,
-              providerName,
-              credentials: {
-                ...basePayload.credentials,
-                businessUnitId,
-              },
-            }
-          : { ...basePayload, providerName };
+            ? {
+                ...basePayload,
+                providerName,
+                credentials: {
+                  ...basePayload.credentials,
+                  businessUnitId,
+                },
+              }
+            : { ...basePayload, providerName };
 
       try {
         await connectionAndSyncService.create(payload as ConnectionCreateParamsAny, {
