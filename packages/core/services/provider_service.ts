@@ -15,6 +15,7 @@ import type {
 import type { ProviderEntityMapping } from '@supaglue/types/entity_mapping';
 import { BadRequestError, NotFoundError } from '../errors';
 import { validateEntityOrSchemaFieldName } from '../lib/entity';
+import { createWebhookTargetIfNoneExists, deleteWebhookTargetIfExists } from '../lib/hubspot_webhook';
 import {
   fromCreateParamsToSyncConfigModel,
   fromProviderModel,
@@ -119,6 +120,10 @@ export class ProviderService {
         provider.config.providerAppId,
         provider.config.oauth.credentials.developerToken
       );
+      await createWebhookTargetIfNoneExists(
+        provider.config.oauth.credentials.developerToken!,
+        parseInt(provider.config.providerAppId)
+      );
     }
 
     const createdProvider = await this.#prisma.provider.create({
@@ -195,6 +200,10 @@ export class ProviderService {
         provider.config.providerAppId,
         provider.config.oauth.credentials.developerToken
       );
+      await createWebhookTargetIfNoneExists(
+        provider.config.oauth.credentials.developerToken!,
+        parseInt(provider.config.providerAppId)
+      );
     }
 
     const updatedProvider = await this.#prisma.provider.update({
@@ -230,6 +239,7 @@ export class ProviderService {
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
+    const provider = await this.getByIdAndApplicationId(id, applicationId);
     const syncConfigs = await this.#prisma.syncConfig.findMany({
       where: { providerId: id },
     });
@@ -246,6 +256,18 @@ export class ProviderService {
     await this.#prisma.provider.deleteMany({
       where: { id, applicationId },
     });
+
+    if (provider.name === 'hubspot' && provider.hubspotAppId) {
+      try {
+        await deleteWebhookTargetIfExists(
+          provider.config.oauth.credentials.developerToken!,
+          parseInt(provider.hubspotAppId)
+        );
+      } catch (e: any) {
+        // eslint-disable-next-line no-console
+        console.warn(`Failed to delete webhook target for HubSpot App ID: ${provider.hubspotAppId}`, e);
+      }
+    }
   }
 }
 

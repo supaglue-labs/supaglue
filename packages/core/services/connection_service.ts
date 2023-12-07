@@ -634,13 +634,11 @@ export class ConnectionService {
     const schema = schemaId ? await this.#schemaService.getById(schemaId) : undefined;
     let customerFieldMapping: SchemaMappingsConfigObjectFieldMapping[] | undefined = undefined;
     if (objectType === 'common') {
-      customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find(
-        (o) => o.object === objectName
-      )?.fieldMappings;
+      customerFieldMapping = connection.schemaMappingsConfig?.commonObjects?.find((o) => o.object === objectName)
+        ?.fieldMappings;
     } else if (objectType === 'standard') {
-      customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find(
-        (o) => o.object === objectName
-      )?.fieldMappings;
+      customerFieldMapping = connection.schemaMappingsConfig?.standardObjects?.find((o) => o.object === objectName)
+        ?.fieldMappings;
     }
     return createFieldMappingConfig(schema?.config, customerFieldMapping);
   }

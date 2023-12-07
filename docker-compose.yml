@@ -24,7 +24,8 @@ x-common-env: &common-env
   CLERK_JWKS_URL: ${CLERK_JWKS_URL:-https://witty-eft-29.clerk.accounts.dev/.well-known/jwks.json}
   # For debugging only
   GLOBAL_AGENT_HTTP_PROXY: ${GLOBAL_AGENT_HTTP_PROXY}
-  NODE_TLS_REJECT_UNAUTHORIZED: 0 # For https debugging proxy to work.... 
+  NODE_TLS_REJECT_UNAUTHORIZED: 0 # For https debugging proxy to work....
+  HUBSPOT_WEBHOOK_TARGET_URL:
 
 x-fe-api-common-env: &fe-api-common-env
   SUPAGLUE_INTERNAL_TOKEN: some-internal-token

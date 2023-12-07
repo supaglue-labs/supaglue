@@ -90,7 +90,7 @@ function createCoreDependencyContainer(): CoreDependencyContainer {
   const applicationService = new ApplicationService(prisma);
   const sgUserService = new SgUserService();
   const providerService = new ProviderService(prisma);
-  const syncConfigService = new SyncConfigService(prisma);
+  const syncConfigService = new SyncConfigService(prisma, providerService);
   const schemaService = new SchemaService(prisma);
   const entityService = new EntityService(prisma);
   const customerService = new CustomerService(prisma);

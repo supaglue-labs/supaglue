@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { NotFoundError } from '@supaglue/core/errors';
+import { BadRequestError, NotFoundError } from '@supaglue/core/errors';
 import * as crypto from 'crypto';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
@@ -33,6 +33,10 @@ export default function init(app: Router): void {
     }
 
     const validated = validateHubSpotSignatureV3(req, provider.config.oauth.credentials.oauthClientSecret);
+    if (!validated) {
+      throw new BadRequestError('Invalid HubSpot signature');
+    }
+    // TODO: Implement dirty flagging of record
     return res.status(200).end();
   });
 

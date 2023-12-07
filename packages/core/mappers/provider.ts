@@ -47,6 +47,7 @@ export async function fromProviderModel<T extends Provider = Provider>({
   config,
   objects,
   entityMappings,
+  hubspotAppId,
 }: ProviderModel): Promise<T> {
   return {
     id,
@@ -62,6 +63,7 @@ export async function fromProviderModel<T extends Provider = Provider>({
         : undefined,
     objects: objects ?? undefined,
     entityMappings: entityMappings ?? undefined,
+    hubspotAppId,
   } as T;
 }
 
