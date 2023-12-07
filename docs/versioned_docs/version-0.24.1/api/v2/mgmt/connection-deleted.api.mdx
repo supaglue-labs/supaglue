@@ -1,0 +1,40 @@
+---
+id: connection-deleted
+title: "Customer connection deleted"
+description: "Notification of the deletion of a connection for a customer"
+sidebar_label: "Customer connection deleted"
+hide_title: true
+hide_table_of_contents: true
+api: eJzlVllT20gQ/isq7Ssy8onhKZssD9SeZSqV2kpSojXTtidIM9o5DITSf9/ukQ/kAMv7woM1oz6/rw89phKdsKrxyuj0Iv3DeLVUAviYmGXi15hIrHB3hkQYrVHE89JYvgjOmxptepKaBm1UvZJk6yD5C1tASRL3GW5Q+8w/NNgTGci9jIeVSy8+p5+wXBtzm1yyhku/nqQW/wno/HsjH9KLR9b29IofoWmqbdin3xyn8pjiPdRNhfx415kqovPiNeeHy0JxErMyhxKW8yw/m8lsMsez7FzIZbYcjsRsjvMZjkpW24LQKeE4F2V5Ps6mZT7NJsP5LCtnErMhCDHM8+H47HxKSo01GyV3SlOYyBLELBvDdJZNQJ5nc4Bxhmfl2TLPS8xHE/YEHlfGPnACtn5qRUPNaTmo0BE1AlNGzIWKEEqvP374cHl9nbYnqRNrrIFh2QJhym+UcmeKGPQK3Uug7XWct0qvSAd1qJmtZ9AkxvYcPPe+/QHuZ8zvDbyJifaIitcMvoml9oim1wy+icH2KYWvwBm5Rb2CFdZc5HywSqy3hxrsLXWlXhUQKN1Y+XStTbG33oc/2vPKd6edTPtD/bwc0jqUrjHsvFdijWpQWrXh5++oaZ7cFg6rioN0hXwgs0q4YjybFlGPxcya4owRCWioQlnXBG8RxJoeVyY6hsZUldn5q8ySfSvqeSsM61ZKI/DcERX9lopfzxxqh3uATC/a4oCaqEyQBTFtAhV3D2dXgbjto3dIfYdgH7X20Gkv47drwZP0crH4c5F+bdtupClLzUACzzTccYf0y7tfm08K65jVfXjks/NK6RBOsc9Hec4//UWwQB+spvFObxPnwQeXeJMoLXnMIi0G8N12AA/JHbjEokCqApm4IAQ6twxVRQXWMo40ph3Z5bH+mN4iD6/eJjhJN1CFl8YEUVGjX5s4WjcdSQ34NR23kDFraDdoOw/BVkya9427OD2FRg1caGBFHgbKnNar2p9uRqTTT/l6K5P8/NdVdOpQBKv8wzUPzA6r+4ysZTGDPdF08ysy5tsBfJDhauVAEGTcj31/5CYhKYYVqM7vaNFusOIJHKGGiGLEOAZEQPJmWxx24OX/c8EdmvG57ab00jAiXAwdzvlgNBnkT3r3d9Dbbo/IRkw8iNi8Wx+7WuD2rUFxOUkj3Lt9HXUTqF9ovZftMd0/0V9ypb01MkT8v9D/J6xIGJlvJrofWUIuAx/idB8kf5uQCNBJcNx/ykUZ0qyj1v5DLOERueo+xFwCWj75ZnMD9hpDeQ8uVlbycfEbX97c3HzR/9EzWykqxn8B3hJ2AQ==
+sidebar_class_name: "event api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Customer connection deleted</h1>
+
+<MethodEndpoint method={"event"} path={"webhook"}></MethodEndpoint>
+
+
+
+Notification of the deletion of a connection for a customer
+
+## Request
+
+<MimeTabs className={"openapi-tabs__mime"}><TabItem label={"application/json"} value={"application/json-schema"}><details style={{}} className={"openapi-markdown__details mime"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-mime"}><h3 className={"openapi-markdown__details-summary-header-body"}>Body</h3></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"webhook_event_type"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`connection.deleted`]"} schema={{"type":"string","enum":["connection.deleted"],"example":"connection.deleted"}}></SchemaItem><SchemaItem collapsible={false} name={"connection_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"6b0abaf8-076d-48e7-9cdf-f12c68e86e2b"}}></SchemaItem><SchemaItem collapsible={false} name={"customer_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"e30cbb93-5b05-4186-b6de-1acc10013795"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_id"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"5a4dbac6-3a56-4ad9-8aa3-e7b7f00be024"}}></SchemaItem><SchemaItem collapsible={false} name={"category"} required={true} schemaName={"category"} qualifierMessage={"**Possible values:** [`crm`, `engagement`, `enrichment`, `marketing_automation`, `no_category`]"} schema={{"type":"string","enum":["crm","engagement","enrichment","marketing_automation","no_category"],"example":"crm","title":"category"}}></SchemaItem><SchemaItem collapsible={false} name={"provider_name"} required={true} schemaName={"provider_name"} qualifierMessage={"**Possible values:** [`hubspot`, `salesforce`, `pipedrive`, `zendesk_sell`, `ms_dynamics_365_sales`, `zoho_crm`, `capsule`, `outreach`, `gong`, `apollo`, `salesloft`, `intercom`, `linear`, `clearbit`, `6sense`, `marketo`, `salesforce_marketing_cloud_account_engagement`, `slack`]"} schema={{"type":"string","enum":["hubspot","salesforce","pipedrive","zendesk_sell","ms_dynamics_365_sales","zoho_crm","capsule","outreach","gong","apollo","salesloft","intercom","linear","clearbit","6sense","marketo","salesforce_marketing_cloud_account_engagement","slack"],"example":"hubspot","title":"provider_name"}}></SchemaItem><SchemaItem collapsible={false} name={"result"} required={true} schemaName={"string"} qualifierMessage={"**Possible values:** [`SUCCESS`, `ERROR`]"} schema={{"type":"string","enum":["SUCCESS","ERROR"]}}></SchemaItem></ul></details></TabItem></MimeTabs><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Return a 200 status to indicate that the data was received successfully
+
+</div><div></div></TabItem></ApiTabs></div></div>
+      
