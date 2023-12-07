@@ -1,0 +1,7 @@
+{
+  "name": "@supaglue/api",
+  "packageManager": "yarn@3.4.1",
+  "dependencies": {
+    "fets": "^0.6.7"
+  }
+}
