@@ -3,6 +3,9 @@ post:
   summary: Search contacts
   description: |
     Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
+    :::danger
+    For apollo, each unique email incurs a separate API call towards the ratelimit.
+    :::
   tags:
     - Contacts
   security:
