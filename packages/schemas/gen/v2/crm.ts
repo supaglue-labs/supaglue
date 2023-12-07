@@ -1055,15 +1055,15 @@ export interface components {
      * <table>
      *   <thead>
      *     <tr>
-     *     <th>Field</th>
-     *     <th>Hubspot (type-fieldType)</th>
-     *     <th>Salesforce</th>
-     *     <th>Pipedrive</th>
+     *       <th>Type</th>
+     *       <th>Hubspot (type-fieldType)</th>
+     *       <th>Salesforce</th>
+     *       <th>Pipedrive</th>
      *     </tr>
      *   </thead>
      *   <tbody>
      *     <tr>
-     *      <td>text</td>
+     *       <td>text</td>
      *       <td>string-text</td>
      *       <td>Text</td>
      *       <td>varchar_auto</td>
@@ -1105,17 +1105,23 @@ export interface components {
      *       <td>date</td>
      *     </tr>
      *     <tr>
-     *     <td>boolean</td>
+     *       <td>boolean</td>
      *       <td>bool-booleancheckbox</td>
      *       <td>Checkbox</td>
      *       <td>enum</td>
+     *     </tr>
+     *     <tr>
+     *       <td>url</td>
+     *       <td>string-text</td>
+     *       <td>Url</td>
+     *       <td>varchar_auto</td>
      *     </tr>
      *   </tbody>
      *   </table>
      *
      * @enum {string}
      */
-    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "other";
+    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "url" | "other";
     picklist_option: {
       /** @example Option 1 */
       label: string;
@@ -3446,7 +3452,7 @@ export interface operations {
     };
     responses: {
       /** @description Create a property */
-      200: {
+      201: {
         content: {
           "application/json": components["schemas"]["property_unified"];
         };

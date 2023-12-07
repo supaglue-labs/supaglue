@@ -298,11 +298,12 @@ export interface paths {
      *
      * The common schema User ID maps to the following 3rd-party provider object IDs:
      *
-     * | Provider  | Remote object ID  |
-     * | --------- | ----------------- |
-     * | Hubspot   | V3 Owner          |
-     * | Dynamics  | Azure System User |
-     * | Intercom  | Admin             |
+     * | Provider   | Remote object ID  |
+     * | ---------- | ----------------- |
+     * | Salesforce | User              |
+     * | Hubspot    | V3 Owner          |
+     * | Dynamics   | Azure System User |
+     * | Intercom   | Admin             |
      */
     get: operations["getProviderUserId"];
     parameters: {
@@ -3114,11 +3115,12 @@ export interface operations {
    *
    * The common schema User ID maps to the following 3rd-party provider object IDs:
    *
-   * | Provider  | Remote object ID  |
-   * | --------- | ----------------- |
-   * | Hubspot   | V3 Owner          |
-   * | Dynamics  | Azure System User |
-   * | Intercom  | Admin             |
+   * | Provider   | Remote object ID  |
+   * | ---------- | ----------------- |
+   * | Salesforce | User              |
+   * | Hubspot    | V3 Owner          |
+   * | Dynamics   | Azure System User |
+   * | Intercom   | Admin             |
    */
   getProviderUserId: {
     parameters: {

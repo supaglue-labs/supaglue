@@ -18,6 +18,7 @@ export type PropertyType =
   | 'date'
   | 'datetime'
   | 'boolean'
+  | 'url'
   | 'other';
 
 export type PicklistOption = {

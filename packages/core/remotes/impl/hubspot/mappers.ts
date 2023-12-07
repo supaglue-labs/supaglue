@@ -624,24 +624,36 @@ export const toRawDetails = (property: HubspotProperty): Record<string, unknown>
 export const getHubspotOptions = (
   property: PropertyUnified | CreatePropertyParams | UpdatePropertyParams
 ): OptionInput[] | undefined => {
-  // TODO: Support picklist
-  if (property.type !== 'boolean') {
-    return;
+  switch (property.type) {
+    case 'picklist':
+    case 'multipicklist': {
+      return property.options?.map((option, idx) => ({
+        label: option.label,
+        value: option.value,
+        description: option.description,
+        hidden: option.hidden ?? false,
+        displayOrder: idx + 1,
+      }));
+    }
+    case 'boolean': {
+      return [
+        {
+          label: 'Yes',
+          value: 'true',
+          displayOrder: 1,
+          hidden: false,
+        },
+        {
+          label: 'No',
+          value: 'false',
+          displayOrder: 2,
+          hidden: false,
+        },
+      ];
+    }
+    default:
+      return;
   }
-  return [
-    {
-      label: 'Yes',
-      value: 'true',
-      displayOrder: 1,
-      hidden: false,
-    },
-    {
-      label: 'No',
-      value: 'false',
-      displayOrder: 2,
-      hidden: false,
-    },
-  ];
 };
 
 export const toHubspotCreatePropertyParams = (params: CreatePropertyParams): HubspotPropertyCreate => {

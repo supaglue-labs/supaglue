@@ -49,7 +49,7 @@ post:
         schema:
           $ref: ../../components/schemas/create_property.yaml
   responses:
-    '200':
+    '201':
       description: Create a property
       content:
         application/json:
