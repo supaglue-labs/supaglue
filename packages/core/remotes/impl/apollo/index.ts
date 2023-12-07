@@ -35,7 +35,7 @@ import {
 } from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
 import { decodeCursor, DEFAULT_PAGE_SIZE, encodeCursor } from '../../../lib';
-import { retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
+import { handleUserFacingApolloRateLimiting, retryWhenAxiosApolloRateLimited } from '../../../lib/apollo_ratelimit';
 import type { ConnectorAuthConfig } from '../../base';
 import type {
   CreateCommonObjectRecordResponse,
@@ -201,20 +201,22 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['searchParams']
   ): Promise<PaginatedSupaglueRecords<EngagementCommonObjectTypeMap<T>['object']>> {
-    switch (commonObjectType) {
-      case 'contact':
-        return await this.#searchContacts(params as ContactSearchParams);
-      case 'sequence_state':
-        return await this.#searchSequenceStates(params as SequenceStateSearchParams);
-      case 'account':
-        return await this.#searchAccounts(params as AccountSearchParams);
-      case 'user':
-      case 'mailbox':
-      case 'sequence':
-        throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
-      default:
-        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
-    }
+    return await handleUserFacingApolloRateLimiting(async () => {
+      switch (commonObjectType) {
+        case 'contact':
+          return await this.#searchContacts(params as ContactSearchParams);
+        case 'sequence_state':
+          return await this.#searchSequenceStates(params as SequenceStateSearchParams);
+        case 'account':
+          return await this.#searchAccounts(params as AccountSearchParams);
+        case 'user':
+        case 'mailbox':
+        case 'sequence':
+          throw new BadRequestError(`Search operation not supported for common object ${commonObjectType} in Apollo`);
+        default:
+          throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+      }
+    });
   }
 
   async #searchAccounts(params: AccountSearchParams): Promise<PaginatedSupaglueRecords<Account>> {
@@ -224,58 +226,62 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (!params.filter.name) {
       throw new BadRequestError('Name is required when upserting an account in Apollo');
     }
-    return await retryWhenAxiosApolloRateLimited(async () => {
-      const response = await axios.post<ApolloPaginatedAccounts>(
-        `${this.#baseURL}/v1/accounts/search`,
-        {
-          q_organization_name: params.filter.name,
-          api_key: this.#apiKey,
-          per_page: MAX_PAGE_SIZE,
-        },
-        {
-          headers: this.#headers,
-        }
-      );
-      const records = response.data.accounts.map(fromApolloAccountToAccount);
-      return {
-        records,
-        pagination: {
-          total_count: records.length,
-          previous: null,
-          next: null,
-        },
-      };
-    });
+    const response = await axios.post<ApolloPaginatedAccounts>(
+      `${this.#baseURL}/v1/accounts/search`,
+      {
+        q_organization_name: params.filter.name,
+        api_key: this.#apiKey,
+        per_page: MAX_PAGE_SIZE,
+      },
+      {
+        headers: this.#headers,
+      }
+    );
+    const records = response.data.accounts.map(fromApolloAccountToAccount);
+    return {
+      records,
+      pagination: {
+        total_count: records.length,
+        previous: null,
+        next: null,
+      },
+    };
   }
 
   async #searchContacts(params: ContactSearchParams): Promise<PaginatedSupaglueRecords<Contact>> {
     if (!params.filter.emails.length) {
       throw new BadRequestError('At least 1 email must be provided when searching contacts');
     }
-    if (params.filter.emails.length > 1) {
-      throw new BadRequestError('Only 1 email can be provided when searching contacts in Apollo');
+
+    const dedupedEmails = Array.from(new Set(params.filter.emails));
+
+    const contacts = await Promise.all(dedupedEmails.map((email) => this.#searchContactImpl(email)));
+    const filtered = contacts.filter((c) => c !== null) as Contact[];
+    return {
+      records: filtered,
+      pagination: {
+        total_count: filtered.length,
+        previous: null,
+        next: null,
+      },
+    };
+  }
+
+  async #searchContactImpl(email: string): Promise<Contact | null> {
+    const response = await axios.post<ApolloPaginatedContacts>(
+      `${this.#baseURL}/v1/contacts/search`,
+      {
+        api_key: this.#apiKey,
+        q_keywords: email,
+      },
+      {
+        headers: this.#headers,
+      }
+    );
+    if (!response.data.contacts.length) {
+      return null;
     }
-    return await retryWhenAxiosApolloRateLimited(async () => {
-      const response = await axios.post<ApolloPaginatedContacts>(
-        `${this.#baseURL}/v1/contacts/search`,
-        {
-          api_key: this.#apiKey,
-          q_keywords: params.filter.emails[0],
-        },
-        {
-          headers: this.#headers,
-        }
-      );
-      const records = response.data.contacts.map(fromApolloContactToContact);
-      return {
-        records,
-        pagination: {
-          total_count: records.length,
-          previous: null,
-          next: null,
-        },
-      };
-    });
+    return fromApolloContactToContact(response.data.contacts[0]);
   }
 
   async #searchSequenceStates(params: SequenceStateSearchParams): Promise<PaginatedSupaglueRecords<SequenceState>> {
@@ -285,27 +291,25 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (params.filter.sequenceId) {
       throw new BadRequestError('Sequence ID is not supported for searching sequence states in Apollo');
     }
-    return await retryWhenAxiosApolloRateLimited(async () => {
-      // This uses a private API.
-      const response = await axios.get<{ contact: Record<string, unknown> }>(
-        `${this.#baseURL}/v1/contacts/${params.filter.contactId}`,
-        {
-          headers: this.#headers,
-          params: {
-            api_key: this.#apiKey,
-          },
-        }
-      );
-      const records = fromApolloContactToSequenceStates(response.data.contact);
-      return {
-        records,
-        pagination: {
-          total_count: records.length,
-          previous: null,
-          next: null,
+    // This uses a private API.
+    const response = await axios.get<{ contact: Record<string, unknown> }>(
+      `${this.#baseURL}/v1/contacts/${params.filter.contactId}`,
+      {
+        headers: this.#headers,
+        params: {
+          api_key: this.#apiKey,
         },
-      };
-    });
+      }
+    );
+    const records = fromApolloContactToSequenceStates(response.data.contact);
+    return {
+      records,
+      pagination: {
+        total_count: records.length,
+        previous: null,
+        next: null,
+      },
+    };
   }
 
   async #getAccountPage(page = 1, heartbeat?: () => void): Promise<ApolloPaginatedAccounts> {
@@ -561,25 +565,27 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     if (params.modifiedAfter) {
       throw new BadRequestError('Modified after is not supported when listing common objects in Apollo');
     }
-    const cursor = decodeCursor(params.cursor);
-    switch (commonObjectType) {
-      case 'account':
-        return await this.#listAccounts(cursor?.id as number, params.pageSize);
-      case 'contact':
-        return await this.#listContacts(cursor?.id as number, params.pageSize);
-      case 'user':
-        return await this.#listUsers(cursor?.id as number, params.pageSize);
-      case 'sequence':
-        return await this.#listSequences(cursor?.id as number, params.pageSize);
-      case 'mailbox':
-        return await this.#listMailboxes();
-      case 'sequence_state':
-        throw new BadRequestError(
-          `Uncached list operation not supported for common object ${commonObjectType} in Apollo. List contacts instead.`
-        );
-      default:
-        throw new BadRequestError(`Common object type ${commonObjectType} not supported for the Apollo API`);
-    }
+    return await handleUserFacingApolloRateLimiting(async () => {
+      const cursor = decodeCursor(params.cursor);
+      switch (commonObjectType) {
+        case 'account':
+          return await this.#listAccounts(cursor?.id as number, params.pageSize);
+        case 'contact':
+          return await this.#listContacts(cursor?.id as number, params.pageSize);
+        case 'user':
+          return await this.#listUsers(cursor?.id as number, params.pageSize);
+        case 'sequence':
+          return await this.#listSequences(cursor?.id as number, params.pageSize);
+        case 'mailbox':
+          return await this.#listMailboxes();
+        case 'sequence_state':
+          throw new BadRequestError(
+            `Uncached list operation not supported for common object ${commonObjectType} in Apollo. List contacts instead.`
+          );
+        default:
+          throw new BadRequestError(`Common object type ${commonObjectType} not supported for the Apollo API`);
+      }
+    });
   }
 
   async #listAccounts(page = 1, perPage = DEFAULT_PAGE_SIZE): Promise<PaginatedSupaglueRecords<Account>> {
@@ -912,84 +918,90 @@ class ApolloClient extends AbstractEngagementRemoteClient {
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['createParams']
   ): Promise<CreateCommonObjectRecordResponse<T>> {
-    // TODO: figure out why type assertion is required here
-    switch (commonObjectType) {
-      case 'sequence_state':
-        return (await this.createSequenceState(
-          params as SequenceStateCreateParams
-        )) as CreateCommonObjectRecordResponse<T>;
-      case 'contact':
-        return (await this.createContact(params as ContactCreateParams)) as CreateCommonObjectRecordResponse<T>;
-      case 'account':
-        return (await this.createAccount(params as AccountCreateParams)) as CreateCommonObjectRecordResponse<T>;
-      case 'sequence':
-        return (await this.createSequence(params as SequenceCreateParams)) as CreateCommonObjectRecordResponse<T>;
-      case 'sequence_step':
-        return (await this.createSequenceStep(
-          params as SequenceStepCreateParams
-        )) as CreateCommonObjectRecordResponse<T>;
-      case 'mailbox':
-      case 'user':
-        throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
-      default:
-        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
-    }
+    return await handleUserFacingApolloRateLimiting(async () => {
+      // TODO: figure out why type assertion is required here
+      switch (commonObjectType) {
+        case 'sequence_state':
+          return (await this.createSequenceState(
+            params as SequenceStateCreateParams
+          )) as CreateCommonObjectRecordResponse<T>;
+        case 'contact':
+          return (await this.createContact(params as ContactCreateParams)) as CreateCommonObjectRecordResponse<T>;
+        case 'account':
+          return (await this.createAccount(params as AccountCreateParams)) as CreateCommonObjectRecordResponse<T>;
+        case 'sequence':
+          return (await this.createSequence(params as SequenceCreateParams)) as CreateCommonObjectRecordResponse<T>;
+        case 'sequence_step':
+          return (await this.createSequenceStep(
+            params as SequenceStepCreateParams
+          )) as CreateCommonObjectRecordResponse<T>;
+        case 'mailbox':
+        case 'user':
+          throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
+        default:
+          throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+      }
+    });
   }
 
   public override async upsertCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['upsertParams']
   ): Promise<UpsertCommonObjectRecordResponse<T>> {
-    // TODO: figure out why type assertion is required here
-    switch (commonObjectType) {
-      case 'account':
-        return (await this.upsertAccount(params as AccountUpsertParams)) as UpsertCommonObjectRecordResponse<T>;
-      case 'sequence_state':
-      case 'contact':
-      case 'sequence':
-      case 'sequence_step':
-      case 'mailbox':
-      case 'user':
-        throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
-      default:
-        throw new BadRequestError(`Common object ${commonObjectType} not supported`);
-    }
+    return await handleUserFacingApolloRateLimiting(async () => {
+      // TODO: figure out why type assertion is required here
+      switch (commonObjectType) {
+        case 'account':
+          return (await this.upsertAccount(params as AccountUpsertParams)) as UpsertCommonObjectRecordResponse<T>;
+        case 'sequence_state':
+        case 'contact':
+        case 'sequence':
+        case 'sequence_step':
+        case 'mailbox':
+        case 'user':
+          throw new BadRequestError(`Create operation not supported for ${commonObjectType} object`);
+        default:
+          throw new BadRequestError(`Common object ${commonObjectType} not supported`);
+      }
+    });
   }
 
   public override async updateCommonObjectRecord<T extends EngagementCommonObjectType>(
     commonObjectType: T,
     params: EngagementCommonObjectTypeMap<T>['updateParams']
   ): Promise<UpdateCommonObjectRecordResponse<T>> {
-    // TODO: figure out why type assertion is required here
-    switch (commonObjectType) {
-      case 'account':
-        return (await this.updateAccount(params as AccountUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
-      case 'contact':
-        return (await this.updateContact(params as ContactUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
-      case 'sequence_step': {
-        const p = params as EngagementCommonObjectTypeMap<'sequence_step'>['updateParams'];
-        const { touch, template } = await this.#api
-          .GET('/v1/emailer_campaigns/{id}', { params: { path: { id: p.sequence_id } } })
-          .then((r) => {
-            const touch = r.data.emailer_touches?.find((t) => t.emailer_step_id === p.sequence_step_id);
-            const template = r.data.emailer_templates?.find((t) => t.id === touch?.emailer_template_id);
-            return { touch, template };
+    return await handleUserFacingApolloRateLimiting(async () => {
+      // TODO: figure out why type assertion is required here
+      switch (commonObjectType) {
+        case 'account':
+          return (await this.updateAccount(params as AccountUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
+        case 'contact':
+          return (await this.updateContact(params as ContactUpdateParams)) as UpdateCommonObjectRecordResponse<T>;
+        case 'sequence_step': {
+          const p = params as EngagementCommonObjectTypeMap<'sequence_step'>['updateParams'];
+          const { touch, template } = await this.#api
+            .GET('/v1/emailer_campaigns/{id}', { params: { path: { id: p.sequence_id } } })
+            .then((r) => {
+              const touch = r.data.emailer_touches?.find((t) => t.emailer_step_id === p.sequence_step_id);
+              const template = r.data.emailer_templates?.find((t) => t.id === touch?.emailer_template_id);
+              return { touch, template };
+            });
+          if (!touch || !template) {
+            throw new NotFoundError(`Unable to find sequence step touch/template ${p.sequence_step_id} in Apollo`);
+          }
+          await this.#api.PUT('/v1/emailer_touches/{id}', {
+            params: { path: { id: touch.id } },
+            body: {
+              id: touch.id,
+              emailer_template: { id: template.id, body_html: p.template?.body, subject: p.template?.subject },
+            },
           });
-        if (!touch || !template) {
-          throw new NotFoundError(`Unable to find sequence step touch/template ${p.sequence_step_id} in Apollo`);
+          return { id: p.sequence_step_id };
         }
-        await this.#api.PUT('/v1/emailer_touches/{id}', {
-          params: { path: { id: touch.id } },
-          body: {
-            id: touch.id,
-            emailer_template: { id: template.id, body_html: p.template?.body, subject: p.template?.subject },
-          },
-        });
-        return { id: p.sequence_step_id };
+        default:
+          throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
       }
-      default:
-        throw new BadRequestError(`Update not supported for common object ${commonObjectType}`);
-    }
+    });
   }
 
   async updateAccount(params: AccountUpdateParams): Promise<UpdateCommonObjectRecordResponse<'account'>> {

@@ -23,3 +23,38 @@ export const relativeDateFromISOString = (timestamp?: string | null): string => 
   }
   return description || '-';
 };
+
+export function millisToHumanReadable(millis: number): string {
+  const seconds = Math.floor((millis / 1000) % 60);
+  const minutes = Math.floor((millis / (1000 * 60)) % 60);
+  const hours = Math.floor((millis / (1000 * 60 * 60)) % 24);
+  const days = Math.floor(millis / (1000 * 60 * 60 * 24));
+
+  let humanReadable = '';
+
+  // Add days if any
+  if (days > 0) {
+    humanReadable += `${days} day${days > 1 ? 's' : ''}, `;
+  }
+
+  // Add hours if any
+  if (hours > 0) {
+    humanReadable += `${hours} hour${hours > 1 ? 's' : ''}, `;
+  }
+
+  // Add minutes if any
+  if (minutes > 0) {
+    humanReadable += `${minutes} minute${minutes > 1 ? 's' : ''}, `;
+  }
+
+  // Add seconds
+  if (seconds > 0) {
+    humanReadable += `${seconds} second${seconds > 1 || seconds === 0 ? 's' : ''}`;
+  }
+
+  if (humanReadable.endsWith(', ')) {
+    humanReadable = humanReadable.slice(0, -2);
+  }
+
+  return humanReadable;
+}

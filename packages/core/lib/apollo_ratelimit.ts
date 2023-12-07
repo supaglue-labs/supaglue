@@ -53,3 +53,22 @@ export const retryWhenAxiosApolloRateLimited = async <Args extends any[], Return
     minTimeout: 2_000,
   });
 };
+
+export const handleUserFacingApolloRateLimiting = async <Args extends any[], Return>(
+  operation: (...operationParameters: Args) => Return,
+  ...parameters: Args
+): Promise<Return> => {
+  try {
+    return await operation(...parameters);
+  } catch (e: any) {
+    if (isAxiosRateLimited(e) && isApolloDailyHourlyRateLimited(e)) {
+      throw new TooManyRequestsError('Encountered Apollo hourly or daily rate limiting', { cause: e });
+    }
+
+    if (isAxiosRateLimited(e)) {
+      throw new TooManyRequestsError('Encountered Apollo rate limiting', { cause: e });
+    }
+
+    throw e;
+  }
+};

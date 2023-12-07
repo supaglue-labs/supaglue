@@ -102,6 +102,9 @@ export interface paths {
     /**
      * Search contacts
      * @description Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
+     * :::danger
+     * For apollo, each unique email incurs a separate API call towards the ratelimit.
+     * :::
      */
     post: operations["searchContacts"];
     parameters: {
@@ -1420,6 +1423,9 @@ export interface operations {
   /**
    * Search contacts
    * @description Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.
+   * :::danger
+   * For apollo, each unique email incurs a separate API call towards the ratelimit.
+   * :::
    */
   searchContacts: {
     parameters: {

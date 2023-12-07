@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.24.0",
+    "version": "0.24.1",
     "title": "Unified Engagement API",
     "contact": {
       "name": "Supaglue",
@@ -721,7 +721,7 @@
       "post": {
         "operationId": "searchContacts",
         "summary": "Search contacts",
-        "description": "Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.\n",
+        "description": "Search contacts by email. Note: only `read_from_cache=false` is supported at the moment.\n:::danger\nFor apollo, each unique email incurs a separate API call towards the ratelimit.\n:::\n",
         "tags": [
           "Contacts"
         ],
