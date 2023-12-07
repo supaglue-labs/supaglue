@@ -498,6 +498,7 @@ WHERE s.connection_id = '${connection.id}'`);
     });
   }
 
+  // @todo: move this to a shared package. encapsulate supaglue concepts into classes
   #getSyncStrategyConfig(syncConfig: SyncConfig, sync: Sync): SyncStrategyConfig {
     if (sync.type === 'entity') {
       return syncConfig.config.defaultConfig;

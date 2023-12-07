@@ -1,4 +1,6 @@
 import type { PaginationInternalParams } from './common';
+import type { SnakecasedKeys } from './snakecased_keys';
+import type { SyncConfig } from './sync_config';
 
 export type ObjectType = 'common' | 'standard' | 'custom';
 
@@ -47,6 +49,7 @@ export type EntitySync = FullThenIncrementalEntitySync | FullOnlyEntitySync;
 export type FullThenIncrementalSync = FullThenIncrementalObjectSync | FullThenIncrementalEntitySync;
 export type FullOnlySync = FullOnlyObjectSync | FullOnlyEntitySync;
 export type Sync = ObjectSync | EntitySync;
+export type SnakecasedSync = SnakecasedKeys<Sync>;
 
 export type ObjectSyncDTO = Sync & {
   type: 'object';
@@ -59,6 +62,14 @@ export type SyncDTO = Sync & {
   // External Id
   customerId: string;
   providerName: string;
+};
+
+export type SyncAndSyncConfigDTO = Sync & {
+  // External Id
+  customerId: string;
+  providerName: string;
+
+  syncConfig: SyncConfig; // Note: using SyncConfig b/c it's not easy to pass around the resolved providerName and destinationName. @todo: encapsulate Supaglue concepts into classes
 };
 
 export type FullOnlySyncStateCreatedPhase = {

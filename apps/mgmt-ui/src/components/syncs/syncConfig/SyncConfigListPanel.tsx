@@ -9,6 +9,7 @@ import { useProviders } from '@/hooks/useProviders';
 import { toGetSyncConfigsResponse, useSyncConfigs } from '@/hooks/useSyncConfigs';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import getIcon from '@/utils/companyToIcon';
+import { millisToHumanReadable } from '@/utils/datetime';
 import { getDestinationName } from '@/utils/destination';
 import providerToIcon from '@/utils/providerToIcon';
 import { PeopleAltOutlined } from '@mui/icons-material';
@@ -106,7 +107,11 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
       headerName: 'Frequency',
       width: 100,
       renderCell: (params) => {
-        return <span className="whitespace-normal">{params.row.frequency}</span>;
+        return (
+          <span className="whitespace-normal" title={params.row.objects}>
+            {params.row.frequency}
+          </span>
+        );
       },
     },
     {
@@ -114,7 +119,11 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
       headerName: 'Objects',
       width: 150,
       renderCell: (params) => {
-        return <span className="whitespace-normal">{params.row.objects}</span>;
+        return (
+          <span className="whitespace-normal" title={params.row.objects}>
+            {params.row.objects}
+          </span>
+        );
       },
     },
     {
@@ -210,41 +219,6 @@ export default function SyncConfigListPanel(props: SupaglueProps) {
       />
     </div>
   );
-}
-
-function millisToHumanReadable(millis: number): string {
-  const seconds = Math.floor((millis / 1000) % 60);
-  const minutes = Math.floor((millis / (1000 * 60)) % 60);
-  const hours = Math.floor((millis / (1000 * 60 * 60)) % 24);
-  const days = Math.floor(millis / (1000 * 60 * 60 * 24));
-
-  let humanReadable = '';
-
-  // Add days if any
-  if (days > 0) {
-    humanReadable += `${days} day${days > 1 ? 's' : ''}, `;
-  }
-
-  // Add hours if any
-  if (hours > 0) {
-    humanReadable += `${hours} hour${hours > 1 ? 's' : ''}, `;
-  }
-
-  // Add minutes if any
-  if (minutes > 0) {
-    humanReadable += `${minutes} minute${minutes > 1 ? 's' : ''}, `;
-  }
-
-  // Add seconds
-  if (seconds > 0) {
-    humanReadable += `${seconds} second${seconds > 1 || seconds === 0 ? 's' : ''}`;
-  }
-
-  if (humanReadable.endsWith(', ')) {
-    humanReadable = humanReadable.slice(0, -2);
-  }
-
-  return humanReadable;
 }
 
 function getObjectsString(syncConfig: SyncConfigDTO): string {

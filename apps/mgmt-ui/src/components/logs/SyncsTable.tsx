@@ -1,9 +1,10 @@
 import { pauseSync, resumeSync, triggerSync } from '@/client';
 import { useNotification } from '@/context/notification';
 import { useActiveApplicationId } from '@/hooks/useActiveApplicationId';
-import { useEntities } from '@/hooks/useEntities';
 import { SYNCS_PAGE_SIZE } from '@/hooks/useSyncs';
+import { millisToHumanReadable } from '@/utils/datetime';
 import type { SyncFilterBy, SyncFilterParams } from '@/utils/filter';
+import { getFriendlySyncStrategyType, getSyncStrategyConfigAndHubspotAssociationsToFetch } from '@/utils/syncConfig';
 import { Button, Stack } from '@mui/material';
 import Switch from '@mui/material/Switch';
 import type { GridColDef } from '@mui/x-data-grid-pro';
@@ -35,8 +36,6 @@ export default function SyncsTable(props: SyncsTableProps) {
   const applicationId = useActiveApplicationId();
   const { addNotification } = useNotification();
 
-  const { entities = [] } = useEntities();
-
   const columns: GridColDef[] = [
     {
       field: 'customerId',
@@ -54,7 +53,6 @@ export default function SyncsTable(props: SyncsTableProps) {
       filterable: true,
       filterOperators: equalOperatorOnly,
     },
-    { field: 'type', headerName: 'Type', width: 100, sortable: false, filterable: false },
     {
       field: 'objectType',
       headerName: 'Object Type',
@@ -72,21 +70,85 @@ export default function SyncsTable(props: SyncsTableProps) {
       filterOperators: equalOperatorOnly,
     },
     {
-      field: 'entityId',
-      headerName: 'EntityId',
-      valueGetter: (params) =>
-        params.row.entityId
-          ? entities.find((entity) => entity.id === params.row.entityId)?.name ?? params.row.entityId
-          : '',
+      field: '_frequency',
+      headerName: 'Frequency',
       width: 120,
       sortable: false,
       filterable: true,
       filterOperators: equalOperatorOnly,
+      renderCell: (params) => {
+        const sync = params.row;
+        const { syncConfig } = params.row;
+        const activeSyncStrategy = getSyncStrategyConfigAndHubspotAssociationsToFetch(syncConfig, sync);
+        const friendlyPeriodMs = millisToHumanReadable(activeSyncStrategy.periodMs);
+        return (
+          <span className="text-ellipsis overflow-hidden" title={friendlyPeriodMs}>
+            {friendlyPeriodMs}
+          </span>
+        );
+      },
+    },
+    {
+      field: '_strategy',
+      headerName: 'Strategy',
+      width: 140,
+      sortable: false,
+      filterable: true,
+      filterOperators: equalOperatorOnly,
+      renderCell: (params) => {
+        const sync = params.row;
+        const { syncConfig } = params.row;
+        const activeSyncStrategy = getSyncStrategyConfigAndHubspotAssociationsToFetch(syncConfig, sync);
+        return <span>{getFriendlySyncStrategyType(activeSyncStrategy.strategy) || 'incremental'}</span>;
+      },
+    },
+    {
+      field: '_periodicFull',
+      headerName: 'Periodic Full',
+      width: 140,
+      sortable: false,
+      filterable: true,
+      filterOperators: equalOperatorOnly,
+      renderCell: (params) => {
+        const sync = params.row;
+        const { syncConfig } = params.row;
+        const activeSyncStrategy = getSyncStrategyConfigAndHubspotAssociationsToFetch(syncConfig, sync);
+
+        if (activeSyncStrategy.fullSyncEveryNIncrementals !== undefined) {
+          return <span>every {activeSyncStrategy.fullSyncEveryNIncrementals} incremental</span>;
+        }
+
+        return <span>none</span>;
+      },
+    },
+    {
+      field: '_associationsToFetch',
+      headerName: 'Fetched Associations',
+      width: 120,
+      sortable: false,
+      filterable: true,
+      filterOperators: equalOperatorOnly,
+      renderCell: (params) => {
+        const sync = params.row;
+        const { syncConfig } = params.row;
+        const activeSyncStrategy = getSyncStrategyConfigAndHubspotAssociationsToFetch(syncConfig, sync);
+
+        if (activeSyncStrategy.associationsToFetch !== undefined) {
+          const csvAssociationsToFetch = activeSyncStrategy.associationsToFetch.join(',');
+          return (
+            <span className="text-ellipsis overflow-hidden" title={csvAssociationsToFetch}>
+              {csvAssociationsToFetch}
+            </span>
+          );
+        }
+
+        return <span>default</span>;
+      },
     },
     {
       field: 'active',
       headerName: 'Active?',
-      width: 120,
+      width: 80,
       sortable: false,
       filterable: false,
       renderCell: (params) => {
