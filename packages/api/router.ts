@@ -1,38 +1,26 @@
-import { createRouter, Response } from 'fets';
-import { createServer } from 'node:http';
+import { initTRPC } from '@trpc/server';
+import { createHTTPServer } from '@trpc/server/adapters/standalone';
+import { renderTrpcPanel } from 'trpc-panel';
 
-export const router = createRouter({
-  swaggerUI: {
-    endpoint: '/api/docs',
-  },
-  openAPI: {
-    openapi: '3.1.0', // This is wrong...
-    endpoint: '/api/openapi.json',
-  },
-}).route({
-  method: 'GET',
-  path: '/api/greetings',
-  schemas: {
-    responses: {
-      200: {
-        type: 'object',
-        properties: {
-          message: {
-            type: 'string',
-            nullable: true, // can only be openapi 3.0.
-          },
-        },
-        additionalProperties: false,
-      },
-      // Adding components and such is still a whole bunch of work!
-    },
-  },
-  handler: () => Response.json({ message: 'Hello World!' }),
+/**
+ * Initialization of tRPC backend
+ * Should be done only once per backend!
+ */
+const t = initTRPC.create();
+
+export const appRouter = t.router({
+  hello: t.procedure.query(() => 'world'),
 });
 
 if (require.main === module) {
-  createServer(router).listen(3000, () => {
-    // eslint-disable-next-line no-console
-    console.log('Swagger UI is available at http://localhost:3000/api/docs');
-  });
+  createHTTPServer({
+    router: appRouter,
+    middleware(req, res, next) {
+      if (req.url === '/_panel') {
+        res.end(renderTrpcPanel(appRouter, { url: 'http://localhost:3000' }));
+        return;
+      }
+      next();
+    },
+  }).listen(3000);
 }
