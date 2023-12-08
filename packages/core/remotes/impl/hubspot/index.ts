@@ -115,6 +115,10 @@ import {
   toPropertyUnified,
 } from './mappers';
 
+export const HUBSPOT_INSTANCE_URL_PREFIX = 'https://app.hubspot.com/contacts/';
+
+export const SUPAGLUE_ASSOCIATIONS_TIMESTAMP_PROPERTY_NAME = 'supaglue_associations_timestamp';
+
 const HUBSPOT_RECORD_LIMIT = 100; // remote API limit
 const HUBSPOT_SEARCH_RESULTS_LIMIT = 10000;
 
@@ -2722,6 +2726,57 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         previous: null,
       },
     };
+  }
+
+  public async dirtyRecordForAssociations(
+    standardObjectType: 'contact' | 'company' | 'deal',
+    recordId: string
+  ): Promise<void> {
+    await this.maybeRefreshAccessToken();
+    try {
+      await this.#dirtyRecordForAssociationsImpl(standardObjectType, recordId);
+    } catch (e: any) {
+      if (e.code === 400 && e.body?.message?.includes('PROPERTY_DOESNT_EXIST')) {
+        await this.createProperty(standardObjectType, {
+          name: SUPAGLUE_ASSOCIATIONS_TIMESTAMP_PROPERTY_NAME,
+          label: 'Associations Last Updated Timestamp',
+          type: 'datetime',
+          isRequired: false,
+        });
+        await this.#dirtyRecordForAssociationsImpl(standardObjectType, recordId);
+        return;
+      }
+      throw e;
+    }
+  }
+
+  async #dirtyRecordForAssociationsImpl(
+    standardObjectType: 'contact' | 'company' | 'deal',
+    recordId: string
+  ): Promise<void> {
+    await this.maybeRefreshAccessToken();
+    const payload = {
+      properties: {
+        [SUPAGLUE_ASSOCIATIONS_TIMESTAMP_PROPERTY_NAME]: new Date().toISOString(),
+      },
+    };
+    switch (standardObjectType) {
+      case 'contact': {
+        await this.#client.crm.contacts.basicApi.update(recordId, payload);
+        return;
+      }
+      case 'company': {
+        await this.#client.crm.companies.basicApi.update(recordId, payload);
+        return;
+      }
+      case 'deal': {
+        await this.#client.crm.deals.basicApi.update(recordId, payload);
+        return;
+      }
+      default: {
+        throw new Error(`Unsupported object type ${standardObjectType}`);
+      }
+    }
   }
 
   public override async handleErr(err: unknown): Promise<unknown> {
