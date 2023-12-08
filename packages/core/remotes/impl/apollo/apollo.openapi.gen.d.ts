@@ -143,6 +143,9 @@ export interface components {
     };
     contact: {
       id: string;
+      first_name: string;
+      last_name: string;
+      email: string;
       emailer_campaign_ids?: string[];
       contact_campaign_statuses: {
           id: string;

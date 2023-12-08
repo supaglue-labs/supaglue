@@ -32,7 +32,8 @@ if (require.main === module) {
   // trpc server
   createHTTPServer({
     router: appRouter,
-    createContext: () => ({ headers: { 'x-api-key': '', 'x-customer-id': '', 'x-provider-name': '' } }),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    createContext: ({ req }) => ({ headers: req.headers as any }),
     middleware(req, res, next) {
       if (req.url === '/_panel') {
         res.end(renderTrpcPanel(appRouter, { url: 'http://localhost:3000' }));
@@ -47,7 +48,8 @@ if (require.main === module) {
     .createServer(
       createOpenApiHttpHandler({
         router: appRouter,
-        createContext: () => ({ headers: { 'x-api-key': '', 'x-customer-id': '', 'x-provider-name': '' } }),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        createContext: ({ req }) => ({ headers: req.headers as any }),
       })
     )
     .listen(3001);

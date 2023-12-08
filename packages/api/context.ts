@@ -54,7 +54,7 @@ export const remoteProcedure = authedProcedure.use(async ({ next, ctx }) => {
   }
 
   const conn = await prisma.connection.findFirst({
-    where: { customerId: { equals: customerId }, providerName: { equals: providerName } },
+    where: { customerId: { equals: `${ctx.applicationId}:${customerId}` }, providerName: { equals: providerName } },
   });
   if (!conn) {
     throw new TRPCError({

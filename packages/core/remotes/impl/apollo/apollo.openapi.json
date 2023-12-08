@@ -927,6 +927,15 @@
           "id": {
             "type": "string"
           },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
           "emailer_campaign_ids": {
             "type": "array",
             "items": {
@@ -952,7 +961,7 @@
             }
           }
         },
-        "required": ["id", "contact_campaign_statuses"]
+        "required": ["id", "first_name", "last_name", "email", "contact_campaign_statuses"]
       },
       "email_account": {
         "type": "object",
