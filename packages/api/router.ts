@@ -1,18 +1,35 @@
-import { initTRPC } from '@trpc/server';
 import { createHTTPServer } from '@trpc/server/adapters/standalone';
+import { createOpenApiHttpHandler, generateOpenApiDocument } from '@usevenice/trpc-openapi';
+import http from 'http';
 import { renderTrpcPanel } from 'trpc-panel';
+import { z } from 'zod';
+import { t } from './meta';
+import { engagementRouter } from './routers/engagement';
 
-/**
- * Initialization of tRPC backend
- * Should be done only once per backend!
- */
-const t = initTRPC.create();
+export const metaRouter = t.router({
+  hello: t.procedure
+    .meta({ openapi: { method: 'GET', path: '/hello' } })
+    .input(z.void())
+    .output(z.string())
+    .query(() => 'world'),
+  getOpenApiSpec: t.procedure
+    .meta({ openapi: { method: 'GET', path: '/openapi.json' } })
+    .input(z.void())
+    .output(z.unknown())
+    .query(() => openApiSpec),
+});
 
-export const appRouter = t.router({
-  hello: t.procedure.query(() => 'world'),
+export const appRouter = t.mergeRouters(t.router({ engagement: engagementRouter }), metaRouter);
+
+export const openApiSpec = generateOpenApiDocument(appRouter, {
+  title: 'Supaglue OpenAPI',
+  openApiVersion: '3.1.0',
+  version: '0.0.1',
+  baseUrl: 'http://localhost:3000',
 });
 
 if (require.main === module) {
+  // trpc server
   createHTTPServer({
     router: appRouter,
     middleware(req, res, next) {
@@ -23,4 +40,7 @@ if (require.main === module) {
       next();
     },
   }).listen(3000);
+
+  // openapi server
+  http.createServer(createOpenApiHttpHandler({ router: appRouter })).listen(3001);
 }
