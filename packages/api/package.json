@@ -4,6 +4,7 @@
   "dependencies": {
     "@supaglue/core": "workspace:*",
     "@supaglue/db": "workspace:*",
+    "@t3-oss/env-core": "^0.7.1",
     "@trpc/server": "^10.44.1",
     "@usevenice/trpc-openapi": "^1.3.8",
     "trpc-panel": "^1.3.4",

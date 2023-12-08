@@ -1,5 +1,4 @@
 import { TRPCError } from '@trpc/server';
-import type { MaybePromise } from '../context';
 import { remoteProcedure, t, z } from '../context';
 
 const schemas = {
@@ -25,9 +24,9 @@ const schemas = {
 
 export interface EngagementProvider {
   contacts: {
-    get: (id: string) => MaybePromise<z.infer<typeof schemas.contact>>;
+    get: (id: string) => Promise<z.infer<typeof schemas.contact>>;
   };
-  logCall: (input: z.infer<typeof schemas.logCallInput>) => MaybePromise<z.infer<typeof schemas.call>>;
+  logCall: (input: z.infer<typeof schemas.logCallInput>) => Promise<z.infer<typeof schemas.call>>;
 }
 
 export const engagementRouter = t.router({

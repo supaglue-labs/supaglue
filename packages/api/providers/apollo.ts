@@ -13,8 +13,8 @@ export const createApolloProvider = z
         get: (id) =>
           apollo.GET('/v1/contacts/{id}', { params: { path: { id } } }).then(({ data: { contact } }) => contact),
       },
-      logCall: (input) => {
-        console.log('Call ID:', input);
+      logCall: async (input) => {
+        console.log('log call input:', input);
         return { id: '1', note: 'test', contact_id: '1' };
       },
     } satisfies EngagementProvider;

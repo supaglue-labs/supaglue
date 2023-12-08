@@ -3,7 +3,7 @@ import { createOpenApiHttpHandler, generateOpenApiDocument } from '@usevenice/tr
 import http from 'http';
 import { renderTrpcPanel } from 'trpc-panel';
 import { z } from 'zod';
-import { t } from './context';
+import { createContext, t } from './context';
 import { engagementRouter } from './routers/engagement';
 
 export const metaRouter = t.router({
@@ -33,7 +33,7 @@ if (require.main === module) {
   createHTTPServer({
     router: appRouter,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    createContext: ({ req }) => ({ headers: req.headers as any }),
+    createContext: ({ req }) => createContext({ headers: req.headers }),
     middleware(req, res, next) {
       if (req.url === '/_panel') {
         res.end(renderTrpcPanel(appRouter, { url: 'http://localhost:3000' }));
@@ -49,7 +49,7 @@ if (require.main === module) {
       createOpenApiHttpHandler({
         router: appRouter,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        createContext: ({ req }) => ({ headers: req.headers as any }),
+        createContext: ({ req }) => createContext({ headers: req.headers }),
       })
     )
     .listen(3001);

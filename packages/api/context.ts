@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { cryptoHash, decrypt } from '@supaglue/core/lib';
 import prisma from '@supaglue/db';
+import { createEnv } from '@t3-oss/env-core';
 import { TRPCError, initTRPC } from '@trpc/server';
 import type { OpenApiMeta } from '@usevenice/trpc-openapi';
 import { z } from 'zod';
@@ -12,20 +13,33 @@ extendZodWithOpenApi(z);
 
 export { z };
 
-export function createContext(opts: {
-  headers: { 'x-api-key': string; 'x-customer-id': string; 'x-provider-name': string };
-}) {
-  return { ...opts, prisma };
+export const env = createEnv({
+  server: {
+    /** Reqruired for prisma */
+    SUPAGLUE_DATABASE_URL: z.string().url(),
+    /* Required for encryption & decryption */
+    SUPAGLUE_API_ENCRYPTION_SECRET: z.string().min(1),
+  },
+  runtimeEnv: process.env,
+});
+
+export function createContext(opts: { headers: unknown }) {
+  const headers = z
+    .object({
+      'x-api-key': z.string().optional(),
+      'x-customer-id': z.string().optional(),
+      'x-provider-name': z.string().optional(),
+    })
+    .parse(opts.headers);
+
+  return { headers, env, prisma };
 }
 
 /**
  * Initialization of tRPC backend
  * Should be done only once per backend!
  */
-export const t = initTRPC
-  .context<{ headers: { 'x-api-key': string; 'x-customer-id': string; 'x-provider-name': string } }>()
-  .meta<OpenApiMeta>()
-  .create();
+export const t = initTRPC.context<ReturnType<typeof createContext>>().meta<OpenApiMeta>().create();
 
 export const authedProcedure = t.procedure.use(async ({ next, ctx }) => {
   if (!ctx.headers['x-api-key']) {
@@ -76,6 +90,3 @@ export const remoteProcedure = authedProcedure.use(async ({ next, ctx }) => {
 
   return next({ ctx: { ...ctx, provider, providerName, customerId } });
 });
-export type RemoteProcedureContext = ReturnType<(typeof remoteProcedure)['query']>['_def']['_ctx_out'];
-
-export type MaybePromise<T> = T | Promise<T>;
