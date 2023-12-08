@@ -1,6 +1,11 @@
-import { t, z } from '../meta';
+import { TRPCError } from '@trpc/server';
+import type { MaybePromise } from '../meta';
+import { remoteProcedure, t, z } from '../meta';
 
 const schemas = {
+  logCallInput: z.object({
+    contact_id: z.string(),
+  }),
   call: z
     .object({
       id: z.string(),
@@ -10,13 +15,19 @@ const schemas = {
     .openapi({ ref: 'Call' }),
 };
 
+export interface EngagementProvider {
+  logCall: (input: z.infer<typeof schemas.logCallInput>) => MaybePromise<z.infer<typeof schemas.call>>;
+}
+
 export const engagementRouter = t.router({
-  logCall: t.procedure
-    .meta({ openapi: { method: 'POST', path: '/calls' } })
-    .input(z.object({ contactId: z.string() }))
+  logCall: remoteProcedure
+    .meta({ openapi: { method: 'POST', path: '/engagement/v2/calls' } })
+    .input(schemas.logCallInput)
     .output(z.object({ record: schemas.call }))
-    .mutation((input) => {
-      console.log('Call ID:', input);
-      return { record: { id: '1', note: 'test', contact_id: '1' } };
+    .mutation(async ({ input, ctx }) => {
+      if (!ctx.provider?.logCall) {
+        throw new TRPCError({ code: 'NOT_IMPLEMENTED' });
+      }
+      return { record: await ctx.provider?.logCall(input) };
     }),
 });
