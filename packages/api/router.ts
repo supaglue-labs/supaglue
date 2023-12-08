@@ -3,7 +3,7 @@ import { createOpenApiHttpHandler, generateOpenApiDocument } from '@usevenice/tr
 import http from 'http';
 import { renderTrpcPanel } from 'trpc-panel';
 import { z } from 'zod';
-import { t } from './meta';
+import { t } from './context';
 import { engagementRouter } from './routers/engagement';
 
 export const metaRouter = t.router({
