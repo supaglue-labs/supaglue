@@ -36,7 +36,7 @@ export default function init(app: Router): void {
         await handleWebhook(req);
         res.status(200).send();
       } catch (e: any) {
-        if (e.code === 400 || e.code === 401 || e.code === 403 || e.code === 404) {
+        if (e.status === 400 || e.status === 401 || e.status === 403 || e.status === 404) {
           // Don't retry
           return res.status(200).send();
         }
@@ -52,7 +52,6 @@ async function handleWebhook(req: Request<any, any, HubspotChangedAssociationWeb
   if (!req.body || !req.body.length) {
     return;
   }
-
   const { appId } = req.body[0];
 
   const provider = await providerService.findByHubspotAppId(appId.toString());
@@ -60,7 +59,7 @@ async function handleWebhook(req: Request<any, any, HubspotChangedAssociationWeb
     throw new BadRequestError(`Provider not found for appId: ${appId}`);
   }
 
-  const validated = validateHubSpotSignatureV3(req, provider.config.oauth.credentials.oauthClientSecret);
+  const validated = validateHubSpotSignatureV1(req, provider.config.oauth.credentials.oauthClientSecret);
   if (!validated) {
     throw new BadRequestError(`Invalid HubSpot signature`);
   }
@@ -125,7 +124,19 @@ async function handleWebhookPayloadsForPortalId(
   await Promise.all(allPromises);
 }
 
+// Implemented as described in https://developers.hubspot.com/docs/api/webhooks/validating-requests#validate-requests-using-the-v1-request-signature
+function validateHubSpotSignatureV1(req: Request, clientSecret: string): boolean {
+  const signature = req.headers['x-hubspot-signature'] as string;
+  const requestBody = JSON.stringify(req.body);
+  const sourceString = clientSecret + requestBody;
+  const hash = crypto.createHash('sha256').update(sourceString).digest('hex');
+
+  // Compare the hash with the signature
+  return hash === signature;
+}
+
 // Implemented as described in https://developers.hubspot.com/docs/api/webhooks/validating-requests#validate-the-v3-request-signature
+// TODO: For some reason this fails when the request is routed through hookdeck
 function validateHubSpotSignatureV3(req: Request, clientSecret: string): boolean {
   const signature = req.headers['x-hubspot-signature-v3'] as string;
   const requestUri = req.protocol + '://' + req.get('host') + req.originalUrl;
