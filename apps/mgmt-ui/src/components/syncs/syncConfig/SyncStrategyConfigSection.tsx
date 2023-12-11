@@ -69,9 +69,18 @@ export const SyncStrategyConfigSection = ({
         <Select
           name={isOverride ? 'Inherit from above' : 'Sync Strategy'}
           disabled={isLoading || disabled}
-          onChange={(value) => setStrategy(value as SyncStrategyType)}
+          onChange={(value) => {
+            if (value === strategy) {
+              return;
+            }
+            if (value === 'full only') {
+              setFullSyncEveryNIncrementals(undefined);
+            }
+            setStrategy(value as SyncStrategyType);
+          }}
           value={strategy ?? ''}
-          unselect
+          unselect={isOverride}
+          unselectValue={isOverride ? 'Inherit from above' : undefined}
           options={[
             {
               value: 'full then incremental',

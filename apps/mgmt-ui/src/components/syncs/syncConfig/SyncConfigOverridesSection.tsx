@@ -29,6 +29,15 @@ type SelectedObject = {
   name: string;
 };
 
+const getOverridesArray = (overrides: SyncConfigOverrides): SelectedObject[] => {
+  return [
+    ...(overrides?.common?.map((c) => ({ type: 'common', name: c.object })) ?? []),
+    ...(overrides?.standard?.map((s) => ({ type: 'standard', name: s.object })) ?? []),
+    ...(overrides?.custom?.map((c) => ({ type: 'custom', name: c.object })) ?? []),
+    { type: 'standard', name: 'Create new override' },
+  ] as SelectedObject[];
+};
+
 export const SyncConfigOverridesSection = ({
   providerName,
   commonObjects,
@@ -38,13 +47,8 @@ export const SyncConfigOverridesSection = ({
   setOverrides,
   defaultConfig,
 }: SyncConfigOverridesSectionProps) => {
-  const overridesArray: SelectedObject[] = [
-    ...(overrides?.common?.map((c) => ({ type: 'common', name: c.object })) ?? []),
-    ...(overrides?.standard?.map((s) => ({ type: 'standard', name: s.object })) ?? []),
-    ...(overrides?.custom?.map((c) => ({ type: 'custom', name: c.object })) ?? []),
-    { type: 'standard', name: 'Create new override' },
-  ] as SelectedObject[];
-  const [expanded, setExpanded] = useState(false);
+  const overridesArray = getOverridesArray(overrides);
+  const [expanded, setExpanded] = useState(overridesArray.length > 1);
   const [tab, setTab] = useState(0);
   const [selectedObject, setSelectedObject] = useState<SelectedObject | undefined>(
     overridesArray.length > 1 ? overridesArray[0] : undefined
@@ -217,8 +221,10 @@ export const SyncConfigOverridesSection = ({
       ...overrides,
       [selectedObject.type]: (overrides[selectedObject.type] ?? []).filter((o) => o.object !== selectedObject.name),
     });
-    setTab(0);
-    setSelectedObject(overridesArray.length > 1 ? overridesArray[0] : undefined);
+    const newOverridesArray = overridesArray.filter(
+      (o) => o.name !== selectedObject.name || o.type !== selectedObject.type
+    );
+    setSelectedObject(newOverridesArray.length > 1 ? newOverridesArray[0] : undefined);
   };
 
   const addEmptyOverride = (selectedObject: SelectedObject): void => {
@@ -268,8 +274,10 @@ export const SyncConfigOverridesSection = ({
           <Stack className="gap-2">
             <Typography variant="subtitle1">Select Object</Typography>
             <Select
+              key={selectedObject?.name}
               name="Select Object"
               disabled={!!selectedObject}
+              autoFocus={!selectedObject}
               onChange={(value) => {
                 if (!value) {
                   return;
