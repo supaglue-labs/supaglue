@@ -1,6 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { BadRequestError, NotFoundError } from '@supaglue/core/errors';
-import { HUBSPOT_INSTANCE_URL_PREFIX, newClient } from '@supaglue/core/remotes/impl/hubspot/index';
+import { HUBSPOT_INSTANCE_URL_PREFIX, newClient } from '@supaglue/core/remotes/impl/hubspot';
 import type { ConnectionUnsafe } from '@supaglue/types/connection';
 import type { OauthProvider } from '@supaglue/types/provider';
 import * as crypto from 'crypto';
@@ -38,6 +38,8 @@ export default function init(app: Router): void {
       } catch (e: any) {
         if (e.status === 400 || e.status === 401 || e.status === 403 || e.status === 404) {
           // Don't retry
+          // eslint-disable-next-line no-console
+          console.warn(`Ignoring webhook error: `, e);
           return res.status(200).send();
         }
         throw e;
@@ -90,7 +92,7 @@ function getObjectTypeFromPayload(payload: HubspotChangedAssociationWebhookPaylo
   if (payload.associationType.startsWith('DEAL')) {
     return 'deal';
   }
-  throw new Error(`Unexpected associationType: ${payload.associationType}`);
+  throw new BadRequestError(`Unexpected associationType: ${payload.associationType}`);
 }
 
 async function handleWebhookPayloadsForPortalId(
@@ -132,7 +134,7 @@ function validateHubSpotSignatureV1(req: Request, clientSecret: string): boolean
   const hash = crypto.createHash('sha256').update(sourceString).digest('hex');
 
   // Compare the hash with the signature
-  return hash === signature;
+  return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(signature));
 }
 
 // Implemented as described in https://developers.hubspot.com/docs/api/webhooks/validating-requests#validate-the-v3-request-signature
