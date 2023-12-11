@@ -1,0 +1,9 @@
+name: expand
+in: query
+schema:
+  type: array
+  items:
+    type: string
+    example: account
+description: |
+  If set, will hydrate any associated objects of the specified type.

@@ -741,6 +741,7 @@ export interface components {
     contact: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
       account_id: string | null;
+      account?: components["schemas"]["account"];
       /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
       owner_id: string | null;
       addresses: components["schemas"]["addresses"];
@@ -1693,6 +1694,8 @@ export interface components {
      * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
      */
     cursor?: string;
+    /** @description If set, will hydrate any associated objects of the specified type. */
+    expand?: string[];
     /**
      * @description Number of results to return per page. (Max: 100)
      * @example 100
@@ -1745,7 +1748,7 @@ export interface components {
      * @example MyCustomObject__c
      */
     object_name: string;
-    /** @description List of associated objects to attempt to fetch associations for. Only relevant for hubspot and when `read_from_cache` is false. */
+    /** @description List of any additional associated objects to attempt to fetch associations for (on top of the associations that are already part of the common model). Only relevant for hubspot and when `read_from_cache` is false. */
     associations_to_fetch?: string[];
   };
   requestBodies: never;
@@ -1957,6 +1960,7 @@ export interface operations {
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
+        expand?: components["parameters"]["expand"];
         associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
@@ -2143,6 +2147,7 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
+        expand?: components["parameters"]["expand"];
         associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {

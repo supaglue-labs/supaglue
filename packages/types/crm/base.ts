@@ -25,5 +25,11 @@ export type CrmListParams = {
   cursor?: string;
   pageSize?: number;
   modifiedAfter?: Date;
+  expand?: string[];
+  associationsToFetch?: string[];
+};
+
+export type CrmGetParams = {
+  expand?: string[];
   associationsToFetch?: string[];
 };

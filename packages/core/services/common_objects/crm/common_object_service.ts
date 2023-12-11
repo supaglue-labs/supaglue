@@ -38,13 +38,13 @@ export class CrmCommonObjectService {
     objectName: T,
     connection: ConnectionSafeAny,
     id: string,
-    associationsToFetch?: string[]
+    params: CRMCommonObjectTypeMap<T>['getParams'] = {}
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
     const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
 
     const end = remoteDuration.startTimer({ operation: 'get', remote_name: providerName });
-    const obj = await remoteClient.getCommonObjectRecord(objectName, id, fieldMappingConfig, associationsToFetch);
+    const obj = await remoteClient.getCommonObjectRecord(objectName, id, fieldMappingConfig, params);
     end();
 
     return obj;

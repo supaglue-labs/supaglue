@@ -31,6 +31,7 @@ import type {
   ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
+  CrmGetParams,
   Lead,
   LeadCreateParams,
   LeadSearchParams,
@@ -505,19 +506,20 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
-    fieldMappingConfig: FieldMappingConfig
+    fieldMappingConfig: FieldMappingConfig,
+    params: CRMCommonObjectTypeMap<T>['getParams']
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
       case 'account':
-        return this.getAccount(id, fieldMappingConfig);
+        return this.getAccount(id, fieldMappingConfig, params);
       case 'contact':
-        return this.getContact(id, fieldMappingConfig);
+        return this.getContact(id, fieldMappingConfig, params);
       case 'lead':
-        return this.getLead(id, fieldMappingConfig);
+        return this.getLead(id, fieldMappingConfig, params);
       case 'opportunity':
-        return this.getOpportunity(id, fieldMappingConfig);
+        return this.getOpportunity(id, fieldMappingConfig, params);
       case 'user':
-        return this.getUser(id, fieldMappingConfig);
+        return this.getUser(id, fieldMappingConfig, params);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -1282,7 +1284,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       }));
   }
 
-  public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
+  public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Account> {
     const account = await this.#client.retrieve('Account', id);
     return { ...fromSalesforceAccountToAccount(account), rawData: toMappedProperties(account, fieldMappingConfig) };
   }
@@ -1320,7 +1322,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
+  public async getContact(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Contact> {
     const contact = await this.#client.retrieve('Contact', id);
     return { ...fromSalesforceContactToContact(contact), rawData: toMappedProperties(contact, fieldMappingConfig) };
   }
@@ -1381,7 +1383,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
+  public async getOpportunity(
+    id: string,
+    fieldMappingConfig: FieldMappingConfig,
+    params: CrmGetParams
+  ): Promise<Opportunity> {
     const contact = await this.#client.retrieve('Opportunity', id);
     return {
       ...fromSalesforceOpportunityToOpportunity(contact),
@@ -1405,7 +1411,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getLead(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Lead> {
+  public async getLead(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Lead> {
     const lead = await this.#client.retrieve('Lead', id);
     return { ...fromSalesforceLeadToLead(lead), rawData: toMappedProperties(lead, fieldMappingConfig) };
   }
@@ -1466,7 +1472,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return response.id;
   }
 
-  public async getUser(id: string, fieldMappingConfig: FieldMappingConfig): Promise<User> {
+  public async getUser(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<User> {
     const user = await this.#client.retrieve('User', id);
     return { ...fromSalesforceUserToUser(user), rawData: toMappedProperties(user, fieldMappingConfig) };
   }

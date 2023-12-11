@@ -4,6 +4,8 @@ properties:
     type: string
     nullable: true
     example: fd089246-09b1-4e3b-a60a-7a76314bbcce 
+  account:
+    $ref: ./account.yaml
   owner_id:
     type: string
     nullable: true

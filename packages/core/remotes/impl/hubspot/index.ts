@@ -39,6 +39,7 @@ import type {
   ContactUpsertParams,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
+  CrmGetParams,
   CrmListParams,
   Lead,
   LeadCreateParams,
@@ -1135,17 +1136,17 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig,
-    associationsToFetch?: string[]
+    params: CRMCommonObjectTypeMap<T>['getParams']
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
       case 'account':
-        return this.getAccount(id, fieldMappingConfig, associationsToFetch);
+        return this.getAccount(id, fieldMappingConfig, params);
       case 'contact':
-        return this.getContact(id, fieldMappingConfig, associationsToFetch);
+        return this.getContact(id, fieldMappingConfig, params);
       case 'lead':
         throw new Error('Cannot get leads in HubSpot');
       case 'opportunity':
-        return this.getOpportunity(id, fieldMappingConfig, associationsToFetch);
+        return this.getOpportunity(id, fieldMappingConfig, params);
       case 'user':
         return this.getUser(id, fieldMappingConfig);
       default:
@@ -1555,14 +1556,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     };
   }
 
-  public async getAccount(
-    id: string,
-    fieldMappingConfig: FieldMappingConfig,
-    associationsToFetch?: string[]
-  ): Promise<Account> {
+  public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Account> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company', associationsToFetch);
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company', params.associationsToFetch);
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
@@ -1770,12 +1767,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public async getOpportunity(
     id: string,
     fieldMappingConfig: FieldMappingConfig,
-    associationsToFetch?: string[]
+    params: CrmGetParams
   ): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
     const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal', associationsToFetch);
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal', params.associationsToFetch);
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
@@ -1913,33 +1910,37 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     ]);
   }
 
-  public async getContact(
-    id: string,
-    fieldMappingConfig: FieldMappingConfig,
-    associationsToFetch?: string[]
-  ): Promise<Contact> {
+  public async getContact(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Contact> {
     const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
-      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact', associationsToFetch);
+      await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact', params.associationsToFetch);
 
     const associations = [
       ...associatedStandardObjectTypes,
       ...associatedCustomObjectSchemas.map((s) => s.objectTypeId),
     ];
-    const contact = await this.#client.crm.contacts.basicApi.getById(
+    const hubspotContact = await this.#client.crm.contacts.basicApi.getById(
       id,
       properties,
       /* propertiesWithHistory */ undefined,
       associations.length ? associations : undefined
     );
-    const flattenedAssociations = flattenAssociations(contact.associations, associatedCustomObjectSchemas);
-    return {
+    const flattenedAssociations = flattenAssociations(hubspotContact.associations, associatedCustomObjectSchemas);
+    const contact = {
       ...fromHubSpotContactToContact({
-        ...contact,
+        ...hubspotContact,
         associations: flattenedAssociations,
       } as unknown as RecordWithFlattenedAssociations),
-      rawData: { ...toMappedProperties(contact.properties, fieldMappingConfig), _associations: flattenedAssociations },
+      rawData: {
+        ...toMappedProperties(hubspotContact.properties, fieldMappingConfig),
+        _associations: flattenedAssociations,
+      },
     };
+    if (!params.expand?.includes('account') || !contact.accountId) {
+      return contact;
+    }
+    const account = await this.getAccount(contact.accountId, fieldMappingConfig, params);
+    return contact;
   }
 
   public async createContact(params: ContactCreateParams): Promise<string> {
