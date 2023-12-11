@@ -29,6 +29,7 @@ export type CRMProvider = BaseOauthProvider & {
   category: 'crm';
   name: CRMProviderName;
   objects?: ProviderObjects<'crm'>;
+  hubspotAppId?: string;
 };
 
 export type EngagementOauthProvider = BaseOauthProvider & {

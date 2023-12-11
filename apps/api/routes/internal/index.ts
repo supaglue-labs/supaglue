@@ -10,6 +10,7 @@ import customer from './customer';
 import destination from './destination';
 import entity from './entity';
 import entityMapping from './entity_mapping';
+import hubspot from './hubspot';
 import link from './link';
 import magicLink from './magic_link';
 import metadata from './metadata';
@@ -23,6 +24,10 @@ import system from './system';
 import _multitenantBackfill from './_multitenant_backfill';
 
 export default function init(app: Router): void {
+  const noMiddleware = Router();
+  hubspot(noMiddleware);
+  app.use('/internal', noMiddleware);
+
   // internal routes should require only internal middleware
   const internalRouter = Router();
   internalRouter.use(internalMiddleware);

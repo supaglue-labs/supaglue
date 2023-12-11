@@ -15,6 +15,7 @@ import type {
 import type { ProviderEntityMapping } from '@supaglue/types/entity_mapping';
 import { BadRequestError, NotFoundError } from '../errors';
 import { validateEntityOrSchemaFieldName } from '../lib/entity';
+import { createWebhookTargetIfNoneExists, deleteWebhookTargetIfExists } from '../lib/hubspot_webhook';
 import {
   fromCreateParamsToSyncConfigModel,
   fromProviderModel,
@@ -76,6 +77,19 @@ export class ProviderService {
     return fromProviderModel<T>(provider);
   }
 
+  public async findByHubspotAppId(hubspotAppId: string): Promise<OauthProvider | undefined> {
+    const provider = await this.#prisma.provider.findFirst({
+      where: {
+        name: 'hubspot',
+        hubspotAppId,
+      },
+    });
+    if (!provider) {
+      return;
+    }
+    return fromProviderModel<OauthProvider>(provider);
+  }
+
   public async list(applicationId: string): Promise<Provider[]> {
     const providers = await this.#prisma.provider.findMany({ where: { applicationId } });
     return Promise.all(providers.map((provider) => fromProviderModel(provider)));
@@ -102,9 +116,13 @@ export class ProviderService {
       validateEntityMappings(provider.entityMappings);
     }
     if (provider.name === 'hubspot' && provider.config.providerAppId) {
-      await this.validateHubspotWebhookConfig(
+      await this.#validateHubspotWebhookConfig(
         provider.config.providerAppId,
         provider.config.oauth.credentials.developerToken
+      );
+      await createWebhookTargetIfNoneExists(
+        provider.config.oauth.credentials.developerToken!,
+        parseInt(provider.config.providerAppId)
       );
     }
 
@@ -178,9 +196,13 @@ export class ProviderService {
     }
 
     if (provider.name === 'hubspot' && provider.config.providerAppId) {
-      await this.validateHubspotWebhookConfig(
+      await this.#validateHubspotWebhookConfig(
         provider.config.providerAppId,
         provider.config.oauth.credentials.developerToken
+      );
+      await createWebhookTargetIfNoneExists(
+        provider.config.oauth.credentials.developerToken!,
+        parseInt(provider.config.providerAppId)
       );
     }
 
@@ -217,6 +239,7 @@ export class ProviderService {
   }
 
   public async delete(id: string, applicationId: string): Promise<void> {
+    const provider = await this.getByIdAndApplicationId(id, applicationId);
     const syncConfigs = await this.#prisma.syncConfig.findMany({
       where: { providerId: id },
     });
@@ -233,9 +256,21 @@ export class ProviderService {
     await this.#prisma.provider.deleteMany({
       where: { id, applicationId },
     });
+
+    if (provider.name === 'hubspot' && provider.hubspotAppId) {
+      try {
+        await deleteWebhookTargetIfExists(
+          provider.config.oauth.credentials.developerToken!,
+          parseInt(provider.hubspotAppId)
+        );
+      } catch (e: any) {
+        // eslint-disable-next-line no-console
+        console.warn(`Failed to delete webhook target for HubSpot App ID: ${provider.hubspotAppId}`, e);
+      }
+    }
   }
 
-  private async validateHubspotWebhookConfig(appId: string, developerToken?: string): Promise<void> {
+  async #validateHubspotWebhookConfig(appId: string, developerToken?: string): Promise<void> {
     if (!developerToken) {
       throw new BadRequestError('Provider config is missing developerToken');
     }

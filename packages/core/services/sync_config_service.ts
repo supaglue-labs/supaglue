@@ -1,19 +1,26 @@
 import type { PrismaClient } from '@supaglue/db';
 import type {
+  CRMProvider,
+  Provider,
   ProviderName,
   SyncConfig,
   SyncConfigCreateParams,
+  SyncConfigData,
   SyncConfigDTO,
   SyncConfigUpdateParams,
 } from '@supaglue/types';
 import { BadRequestError, NotFoundError } from '../errors';
+import { deleteWebhookSubscriptions, updateWebhookSubscriptions } from '../lib/hubspot_webhook';
 import { fromCreateParamsToSyncConfigModel, fromSyncConfigDataModel, fromSyncConfigModel } from '../mappers';
+import type { ProviderService } from './provider_service';
 
 export class SyncConfigService {
   #prisma: PrismaClient;
+  #providerService: ProviderService;
 
-  constructor(prisma: PrismaClient) {
+  constructor(prisma: PrismaClient, providerService: ProviderService) {
     this.#prisma = prisma;
+    this.#providerService = providerService;
   }
 
   public async getByIds(ids: string[]): Promise<SyncConfig[]> {
@@ -127,19 +134,12 @@ export class SyncConfigService {
       throw new NotFoundError(`Destination with name ${syncConfig.destinationName} not found`);
     }
 
-    const provider = await this.#prisma.provider.findUnique({
-      where: {
-        applicationId_name: {
-          applicationId: syncConfig.applicationId,
-          name: syncConfig.providerName,
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-    if (!provider) {
-      throw new NotFoundError(`Provider with name ${syncConfig.providerName} not found`);
+    const provider = await this.#providerService.getByNameAndApplicationId(
+      syncConfig.providerName,
+      syncConfig.applicationId
+    );
+    if (syncConfig.providerName === 'hubspot' && (provider as CRMProvider).hubspotAppId) {
+      await this.#updateHubspotWebhookSubscriptions(provider, syncConfig.config);
     }
     // TODO:(SUP1-350): Backfill sync schedules for connections
     const createdSyncConfigModel = await this.#prisma.$transaction(async (tx) => {
@@ -185,7 +185,14 @@ export class SyncConfigService {
         },
       }),
     ]);
-    return fromSyncConfigModel(updatedSyncConfigModel);
+    const syncConfig = fromSyncConfigModel(updatedSyncConfigModel);
+
+    const provider = await this.#providerService.getById(syncConfig.providerId);
+
+    if (provider.name === 'hubspot' && provider.hubspotAppId) {
+      await this.#updateHubspotWebhookSubscriptions(provider, syncConfig.config);
+    }
+    return syncConfig;
   }
 
   async #diffAndCountAffectedSyncs(id: string, applicationId: string, params: SyncConfigUpdateParams): Promise<number> {
@@ -330,6 +337,9 @@ export class SyncConfigService {
         `Deleting this syncConfig will delete ~${syncs.length} syncs. If you are sure you want to do this, set force_delete_syncs to true.`
       );
     }
+
+    const syncConfig = await this.getByIdAndApplicationId(id, applicationId);
+
     await this.#prisma.$transaction([
       this.#prisma.syncChange.createMany({
         data: syncs.map((sync) => ({
@@ -350,6 +360,47 @@ export class SyncConfigService {
         },
       }),
     ]);
+
+    try {
+      const provider = await this.#providerService.getById(syncConfig.providerId);
+      if (provider.name === 'hubspot' && provider.hubspotAppId) {
+        await this.#deleteHubspotWebhookSubscriptions(provider);
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn(`Failed to delete hubspot webhooks for syncConfig ${id}`, e);
+    }
+  }
+
+  async #updateHubspotWebhookSubscriptions(provider: Provider, syncConfigData: SyncConfigData): Promise<void> {
+    if (provider.authType === 'oauth2' && provider.config.oauth.credentials.developerToken) {
+      const standardObjects = syncConfigData.standardObjects?.map((object) => object.object) ?? [];
+      const commonObjects = syncConfigData.commonObjects?.map((object) => object.object) ?? [];
+      const associationObjects: ('contact' | 'company' | 'deal')[] = [];
+      if (commonObjects.includes('contact') || standardObjects.includes('contact')) {
+        associationObjects.push('contact');
+      }
+      if (commonObjects.includes('account') || standardObjects.includes('company')) {
+        associationObjects.push('company');
+      }
+      if (commonObjects.includes('opportunity') || standardObjects.includes('deal')) {
+        associationObjects.push('deal');
+      }
+      await updateWebhookSubscriptions(
+        provider.config.oauth.credentials.developerToken,
+        parseInt(provider.config.providerAppId),
+        associationObjects
+      );
+    }
+  }
+
+  async #deleteHubspotWebhookSubscriptions(provider: Provider): Promise<void> {
+    if (provider.authType === 'oauth2' && provider.config.oauth.credentials.developerToken) {
+      await deleteWebhookSubscriptions(
+        provider.config.oauth.credentials.developerToken,
+        parseInt(provider.config.providerAppId)
+      );
+    }
   }
 }
 
