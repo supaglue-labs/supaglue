@@ -27,15 +27,15 @@ Supaglue uses the HubSpot V3 API.
 
 #### Supported CRM common objects:
 
-| Object  | Soft delete supported | Sync strategy           |
-| ------- | --------------------- | ----------------------- |
-| Company | Yes                   | Incremental             |
-| Contact | Yes                   | Incremental             |
-| Deal    | Yes                   | Incremental             |
-| User    | Yes                   | Incremental (in-memory) |
+| Common Object | Hubspot Object | Soft delete supported | Sync strategy           |
+| ------------- | -------------- | --------------------- | ----------------------- |
+| Account       | Company        | Yes                   | Incremental             |
+| Contact       | Contact        | Yes                   | Incremental             |
+| Opportunity   | Deal           | Yes                   | Incremental             |
+| User          | User           | Yes                   | Incremental (in-memory) |
 
 :::info
-Note: Supaglue does not sync association changes until the relevant object gets modified in the remote provider.
+Note: In order to sync associations incrementally between common objects, please set up the [Hubspot webhook configuration](#setup-webhook-configuration).
 :::
 
 #### Supported CRM standard objects:
@@ -57,11 +57,19 @@ Note: Supaglue does not sync association changes until the relevant object gets 
 | `postal_mail`   | Yes                   | Incremental   |
 | `task`          | Yes                   | Incremental   |
 
+:::info
+Note: Supaglue does not sync association changes for standard objects until the relevant object gets modified in the remote provider.
+:::
+
 #### Supported CRM custom objects:
 
 Use the internal names when configuring the `SyncConfig`. See [HubSpot's documentation](https://knowledge.hubspot.com/crm-setup/create-custom-objects) for more information. If you created the custom object through Supaglue's API, the internal name is equivalent to the `name` field.
 
 Syncs are Full or Incremental, and soft deletes are supported.
+
+:::info
+Note: Supaglue does not sync association changes for custom objects until the relevant object gets modified in the remote provider.
+:::
 
 #### Supported Marketing Automation common objects:
 
@@ -111,3 +119,11 @@ Creating custom objects via the HubSpot API is restricted to OAuth apps that are
 ### Fetch HubSpot Public App credentials
 
 1. Copy the Client ID, Client secret, and scopes (comma-separated), and paste them into the HubSpot configuration form in the management portal.
+
+### Setup Webhook Configuration
+
+You should set up the webhook configuration in Supaglue if you want to sync associations incrementally between common objects.
+To do so, copy the App ID and Hubspot Developer Token and past them into the Hubspot webhook configuration in the management portal.
+
+- You can get the App ID by navigating to your Hubspot application under "Apps" and going to the "Auth" tab.
+- You can get the Hubspot Developer Token by navigating to "Apps" and clicking on "Get Hubspot API Key".
