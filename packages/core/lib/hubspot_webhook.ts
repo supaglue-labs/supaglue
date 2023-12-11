@@ -51,15 +51,15 @@ const checkWebhookTargetExists = async (hubspotClient: HubspotClient, hubspotApp
     if (res.targetUrl === HUBSPOT_WEBHOOK_TARGET_URL) {
       return true;
     }
-    throw new BadRequestError(
-      `Your Hubspot Developer App already has an existing Webhook target URL. Please delete it first or use a different app.`
-    );
   } catch (e: any) {
     if (e.code === 404) {
       return false;
     }
     throw e;
   }
+  throw new BadRequestError(
+    `Your Hubspot Developer App already has an existing Webhook target URL. Please delete it first.`
+  );
 };
 
 export const createWebhookTargetIfNoneExists = async (developerApiKey: string, hubspotAppId: number) => {
