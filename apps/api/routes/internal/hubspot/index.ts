@@ -38,8 +38,7 @@ export default function init(app: Router): void {
       } catch (e: any) {
         if (e.status === 400 || e.status === 401 || e.status === 403 || e.status === 404) {
           // Don't retry
-          // eslint-disable-next-line no-console
-          console.warn(`Ignoring webhook error: `, e);
+          req.log.warn({ err: e }, `Ignoring webhook error`);
           return res.status(200).send();
         }
         throw e;
