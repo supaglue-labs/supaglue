@@ -872,7 +872,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         compositeRequest: fieldsToAddPermissionsFor
           .map((field) =>
             permissionSetIds.map((permissionSetId) => ({
-              referenceId: field,
+              referenceId: `${field}_${permissionSetId}`,
               method: 'POST',
               url: `/services/data/v${SALESFORCE_API_VERSION}/sobjects/FieldPermissions/`,
               body: {

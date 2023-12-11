@@ -38,6 +38,10 @@ post:
   summary: Create property
   description: |
     Creates a custom property in the provider and registers it in Supaglue.
+
+    :::note
+    This endpoint is only supported for Salesforce and Hubspot currently.
+    :::
   tags:
     - Properties
   security:

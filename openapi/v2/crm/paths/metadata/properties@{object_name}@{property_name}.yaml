@@ -37,6 +37,10 @@ patch:
     :::note
     This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
     :::
+
+    :::note
+    This endpoint is only supported for Salesforce and Hubspot currently.
+    :::
   tags:
     - Properties
   security:

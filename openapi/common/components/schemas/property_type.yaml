@@ -13,6 +13,14 @@ enum:
 description: |
   Type of the field.
 
+  :::note
+  `picklist` and `multipicklist` property types are currently only supported in Salesforce and Hubspot
+  :::
+
+  :::note
+  `url` property type currently is only natively supported in Salesforce.
+  :::
+
   Support:
 
   <table>
@@ -75,9 +83,9 @@ description: |
       </tr>
       <tr>
         <td>url</td>
-        <td>string-text</td>
+        <td>Not Supported</td>
         <td>Url</td>
-        <td>varchar_auto</td>
+        <td>Not Supported</td>
       </tr>
     </tbody>
     </table>
