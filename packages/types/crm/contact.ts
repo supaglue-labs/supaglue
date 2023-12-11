@@ -1,4 +1,5 @@
 import type {
+  Account,
   BaseCrmModel,
   BaseSearchParams,
   CrmGetParams,
@@ -23,6 +24,7 @@ type CoreContact = {
   lifecycleStage: LifecycleStage | null;
   ownerId: string | null;
   accountId: string | null;
+  account?: Account;
 };
 
 export type Contact = BaseCrmModel & CoreContact;

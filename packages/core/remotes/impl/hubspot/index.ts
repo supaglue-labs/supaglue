@@ -1940,7 +1940,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       return contact;
     }
     const account = await this.getAccount(contact.accountId, fieldMappingConfig, params);
-    return contact;
+    return {
+      ...contact,
+      account,
+    };
   }
 
   public async createContact(params: ContactCreateParams): Promise<string> {
