@@ -2,7 +2,7 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/issues/60924
 /// <reference lib="dom" />
 
-import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
+import axios, { isAxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   MarketingAutomationProvider,
@@ -212,7 +212,7 @@ class SalesforceMarketingCloudAccountEngagmentClient extends AbstractMarketingAu
         maxRedirects: 0, // we want the response, not the redirect
       });
     } catch (err: unknown) {
-      if (err instanceof AxiosError && err.response?.status === 302) {
+      if (isAxiosError(err) && err.response?.status === 302) {
         const errorMessage = new URL(err.response.headers.location).searchParams.get('errorMessage');
         if (errorMessage) {
           if (errorMessage.includes('This field is required')) {

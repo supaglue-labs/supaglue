@@ -1,4 +1,4 @@
-import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
+import axios, { isAxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   CRMProvider,
@@ -954,7 +954,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 
   public override async handleErr(err: unknown): Promise<unknown> {
-    if (!(err instanceof AxiosError)) {
+    if (!isAxiosError(err)) {
       return err;
     }
 
