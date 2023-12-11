@@ -667,36 +667,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return property;
   }
 
-  private async setPermissionsForProperty(objectName: string, propertyId: string, propertyName: string) {
-    const user = await this.getUserIdAndDetails();
-    const profileIds = (await this.#client.query(`SELECT ProfileId FROM User WHERE Id='${user.userId}'`)).records.map(
-      (record) => record.ProfileId
-    );
-
-    const [standardUserId] = (
-      await this.#client.query(`SELECT Id FROM Profile WHERE Name = 'Standard User'`)
-    ).records.map((record) => record.Id);
-    const profileIdsToGrantPermissionsTo = [...profileIds, standardUserId];
-    const permissionSetIds = (
-      await this.#client.query(
-        `SELECT Id FROM PermissionSet WHERE ProfileId IN ('${profileIdsToGrantPermissionsTo.join("','")}')`
-      )
-    ).records.map((record) => record.Id);
-    const permissionRecords = permissionSetIds.map((profileId) => ({
-      ParentId: profileId,
-      SobjectType: objectName,
-      Field: `${objectName}.${propertyName}`,
-      PermissionsEdit: true,
-      PermissionsRead: true,
-    }));
-
-    const result = await this.#client.create('FieldPermissions', permissionRecords);
-
-    if (!result[0].success) {
-      throw result[0].errors[0];
-    }
-  }
-
   public override async createProperty(objectName: string, params: CreatePropertyParams): Promise<PropertyUnified> {
     const propertyName = params.name.endsWith('__c') ? params.name : `${params.name}__c`;
     const createParams = toSalesforceCustomFieldCreateParamsForToolingAPI(
@@ -711,7 +681,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       throw result.errors[0];
     }
 
-    await this.setPermissionsForProperty(objectName, result.id, propertyName);
+    await this.updateFieldPermissions(objectName, [propertyName]);
 
     return { ...params, id: params.name };
   }
@@ -826,7 +796,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     const nonRequiredFields = nonPrimaryFields.filter((field) => !field.isRequired);
 
-    await this.updateFieldPermissions(objectName, nonRequiredFields);
+    await this.updateFieldPermissions(
+      objectName,
+      nonRequiredFields.map((field) => field.id)
+    );
 
     if (result.success) {
       throw new Error(
@@ -843,7 +816,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return objectName;
   }
 
-  private async updateFieldPermissions(objectName: string, nonPrimaryFields: PropertyUnified[]): Promise<void> {
+  private async updateFieldPermissions(objectName: string, nonPrimaryFields: string[]): Promise<void> {
     // After custom fields are created, they're not automatically visible. We need to
     // set the field-level security to Visible for profiles.
     // Instead of updating all profiles, we'll just update it for the profile for the user
@@ -864,23 +837,30 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       fields: ['ProfileId'],
     });
 
-    // Get the first permission set
-    // TODO: Is this the right thing to do? How do we know the first one is the best one?
-    const result = await this.#client.query(`SELECT Id FROM PermissionSet WHERE ProfileId='${user.ProfileId}' LIMIT 1`);
-    if (!result.records.length) {
-      throw new Error(`Could not find permission set for profile ${user.ProfileId}`);
-    }
+    // Get the Id for the standard user profile
+    const [standardUserId] = (
+      await this.#client.query(`SELECT Id FROM Profile WHERE Name = 'Standard User'`)
+    ).records.map((record) => record.Id);
 
-    const permissionSetId = result.records[0].Id;
+    const profileIdsToGrantPermissionsTo = [user.ProfileId, standardUserId];
+
+    // Get the permission set ids
+    const permissionSetIds = (
+      await this.#client.query(
+        `SELECT Id FROM PermissionSet WHERE ProfileId IN ('${profileIdsToGrantPermissionsTo.join("','")}')`
+      )
+    ).records.map((record) => record.Id);
 
     // Figure out which fields already have permissions
     // TODO: Paginate
     const { records: existingFieldPermissions } = await this.#client.query(
-      `SELECT Field FROM FieldPermissions WHERE SobjectType='${objectName}' AND ParentId='${permissionSetId}'`
+      `SELECT Field FROM FieldPermissions WHERE SobjectType='${objectName}' AND ParentId IN ('${permissionSetIds.join(
+        "','"
+      )}')`
     );
     const existingFieldPermissionFieldNames = existingFieldPermissions.map((fieldPermission) => fieldPermission.Field);
     const fieldsToAddPermissionsFor = nonPrimaryFields.filter(
-      (field) => !existingFieldPermissionFieldNames.includes(`${objectName}.${field.id}`)
+      (field) => !existingFieldPermissionFieldNames.includes(`${objectName}.${field}`)
     );
 
     const { compositeResponse } = await this.#client.requestPost<{ compositeResponse: { httpStatusCode: number }[] }>(
@@ -889,18 +869,22 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         // We're doing this for all fields, not just the added ones, in case the previous
         // call to this endpoint succeeded creating additional fields but failed to
         // add permissions for them.
-        compositeRequest: fieldsToAddPermissionsFor.map((field) => ({
-          referenceId: field.id,
-          method: 'POST',
-          url: `/services/data/v${SALESFORCE_API_VERSION}/sobjects/FieldPermissions/`,
-          body: {
-            ParentId: permissionSetId,
-            SobjectType: objectName,
-            Field: `${objectName}.${field.id}`,
-            PermissionsEdit: true,
-            PermissionsRead: true,
-          },
-        })),
+        compositeRequest: fieldsToAddPermissionsFor
+          .map((field) =>
+            permissionSetIds.map((permissionSetId) => ({
+              referenceId: field,
+              method: 'POST',
+              url: `/services/data/v${SALESFORCE_API_VERSION}/sobjects/FieldPermissions/`,
+              body: {
+                ParentId: permissionSetId,
+                SobjectType: objectName,
+                Field: `${objectName}.${field}`,
+                PermissionsEdit: true,
+                PermissionsRead: true,
+              },
+            }))
+          )
+          .flat(),
       }
     );
     // if not 2xx
@@ -1009,7 +993,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     // Update permissions for updated/added fields
     if (addedFields.length || updatedFields.length) {
       const nonRequiredFields = [...addedFields, ...updatedFields].filter((field) => !field.isRequired);
-      await this.updateFieldPermissions(objectName, nonRequiredFields);
+      await this.updateFieldPermissions(
+        objectName,
+        nonRequiredFields.map((field) => field.id)
+      );
     }
   }
 
