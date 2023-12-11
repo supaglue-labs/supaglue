@@ -78,6 +78,22 @@ export class ConnectionService {
     return connections.map(fromConnectionModelToConnectionSafe);
   }
 
+  public async findUnsafeByProviderIdAndInstanceUrl(
+    providerId: string,
+    instanceUrl: string
+  ): Promise<ConnectionUnsafeAny | undefined> {
+    const connection = await this.#prisma.connection.findFirst({
+      where: {
+        providerId,
+        instanceUrl,
+      },
+    });
+    if (!connection) {
+      return;
+    }
+    return fromConnectionModelToConnectionUnsafe(connection);
+  }
+
   public async listAllSafe(): Promise<ConnectionSafeAny[]> {
     const connections = await this.#prisma.connection.findMany();
     return connections.map(fromConnectionModelToConnectionSafe);

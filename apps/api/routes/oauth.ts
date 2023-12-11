@@ -4,6 +4,7 @@ import { Client as HubspotClient } from '@hubspot/api-client';
 import { BadRequestError, InternalServerError } from '@supaglue/core/errors';
 import { logger } from '@supaglue/core/lib/logger';
 import { getConnectorAuthConfig } from '@supaglue/core/remotes';
+import { HUBSPOT_INSTANCE_URL_PREFIX } from '@supaglue/core/remotes/impl/hubspot/index';
 import type {
   ConnectionCreateParamsAny,
   ConnectionUpsertParamsAny,
@@ -274,7 +275,7 @@ export default function init(app: Router): void {
         const accessToken = tokenWrapper.token['access_token'] as string;
         const hubspotClient = new HubspotClient({ accessToken: tokenWrapper.token['access_token'] as string });
         const { hubId } = await hubspotClient.oauth.accessTokensApi.get(accessToken);
-        instanceUrl = `https://app.hubspot.com/contacts/${hubId.toString()}`;
+        instanceUrl = `${HUBSPOT_INSTANCE_URL_PREFIX}${hubId.toString()}`;
       }
 
       if (providerName === 'pipedrive') {
