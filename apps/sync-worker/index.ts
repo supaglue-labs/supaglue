@@ -11,8 +11,8 @@ const TEMPORAL_ADDRESS =
   process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
     ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:${process.env.SUPAGLUE_TEMPORAL_PORT}`
     : process.env.SUPAGLUE_TEMPORAL_HOST
-    ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:7233`
-    : 'temporal';
+      ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:7233`
+      : 'temporal';
 
 async function run() {
   // pino expects errors to be placed under the `err` key. We're doing mapping here
@@ -53,7 +53,6 @@ async function run() {
         },
       },
     },
-    shutdownSignals: [], // we want to handle shutdown ourselves,
   });
 
   const connection = await NativeConnection.connect({
@@ -89,16 +88,6 @@ async function run() {
     // more resource efficient, will be the default in 1.9.0. See https://typescript.temporal.io/api/interfaces/worker.WorkerOptions#reusev8context
     reuseV8Context: true,
   });
-
-  const handle = () => {
-    worker.shutdown();
-    process.exit(0);
-  };
-
-  process.on('SIGINT', handle);
-  process.on('SIGTERM', handle);
-  process.on('SIGQUIT', handle);
-  process.on('SIGUSR2', handle);
 
   await worker.run();
 }
