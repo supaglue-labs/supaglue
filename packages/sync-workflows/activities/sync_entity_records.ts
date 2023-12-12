@@ -71,7 +71,7 @@ export function createSyncEntityRecords(
           return await writer.writeEntityRecords(
             connection,
             entity.name,
-            toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
+            toMappedPropertiesReadable(stream, fieldMappingConfig),
             heartbeat,
             /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
           );
@@ -81,7 +81,7 @@ export function createSyncEntityRecords(
           return await writer.writeEntityRecords(
             connection,
             entity.name,
-            toHeartbeatingReadable(toMappedPropertiesReadable(stream, fieldMappingConfig)),
+            toMappedPropertiesReadable(stream, fieldMappingConfig),
             heartbeat,
             /* diffAndDeleteRecords */ shouldDeleteRecords(!updatedAfterMs, connection.providerName)
           );
@@ -114,29 +114,6 @@ export function createSyncEntityRecords(
       clearInterval(heartbeating);
     }
   };
-}
-
-function toHeartbeatingReadable(readable: Readable): Readable {
-  // TODO: While this ensures rescheduling of this activity if the process dies,
-  // it does not ensure that we stop the stream processing.
-  // We need to include a timeout here to clean up the pipeline when we
-  // exceed the heartbeat timeout.
-  return pipeline(
-    readable,
-    new Transform({
-      objectMode: true,
-      transform: (chunk, encoding, callback) => {
-        Context.current().heartbeat();
-        try {
-          callback(null, chunk);
-        } catch (e: any) {
-          return callback(e);
-        }
-      },
-    }),
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    () => {}
-  );
 }
 
 function toMappedPropertiesReadable(readable: Readable, fieldMappingConfig: FieldMappingConfig): Readable {

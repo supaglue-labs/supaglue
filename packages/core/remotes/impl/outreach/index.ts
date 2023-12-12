@@ -38,6 +38,7 @@ import {
   BadRequestError,
   ConflictError,
   ForbiddenError,
+  GatewayTimeoutError,
   InternalServerError,
   NotFoundError,
   RemoteProviderError,
@@ -1964,22 +1965,53 @@ class OutreachClient extends AbstractEngagementRemoteClient {
     const jsonError = err.response?.data?.errors?.[0];
     const cause = err.response?.data;
     const status = err.response?.status;
+    const errorMessage = jsonError?.title ?? err.cause?.message ?? err.message;
 
     switch (status) {
       case 400:
-        return new InternalServerError(jsonError?.title, { cause, origin: 'remote-provider', status });
+        return new InternalServerError(errorMessage, {
+          cause,
+          origin: 'remote-provider',
+          status,
+        });
       case 401:
-        return new UnauthorizedError(jsonError?.title, { cause, origin: 'remote-provider', status });
+        return new UnauthorizedError(errorMessage, {
+          cause,
+          origin: 'remote-provider',
+          status,
+        });
       case 403:
-        return new ForbiddenError(jsonError?.title, { cause, origin: 'remote-provider', status });
+        return new ForbiddenError(errorMessage, {
+          cause,
+          origin: 'remote-provider',
+          status,
+        });
       case 404:
-        return new NotFoundError(jsonError?.title, { cause, origin: 'remote-provider', status });
+        return new NotFoundError(errorMessage, {
+          cause,
+          origin: 'remote-provider',
+          status,
+        });
       case 409:
-        return new ConflictError(jsonError?.title, { cause, origin: 'remote-provider', status });
+        return new ConflictError(errorMessage, {
+          cause,
+          origin: 'remote-provider',
+          status,
+        });
       case 422:
-        return new UnprocessableEntityError(jsonError?.title, { cause, origin: 'remote-provider', status });
+        return new UnprocessableEntityError(errorMessage, {
+          cause,
+          origin: 'remote-provider',
+          status,
+        });
       case 429:
-        return new TooManyRequestsError(jsonError?.title, { cause, origin: 'remote-provider', status });
+        return new TooManyRequestsError(errorMessage, {
+          cause,
+          origin: 'remote-provider',
+          status,
+        });
+      case 504:
+        return new GatewayTimeoutError(errorMessage, { cause, status });
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       case 402:
@@ -2027,7 +2059,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
       case 449:
       case 450:
       case 451:
-        return new RemoteProviderError(jsonError?.title, { cause, status });
+        return new RemoteProviderError(errorMessage, { cause, status });
       default:
         return err;
     }
