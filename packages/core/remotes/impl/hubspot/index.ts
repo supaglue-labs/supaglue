@@ -966,14 +966,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     includeRawData: boolean,
     allFieldMappingConfigs: AllCrmFieldMappingConfigs
   ): Promise<Record<string, Account>> {
-    const propertiesToFetch = await this.listPropertiesForRawObjectName('company');
+    const propertiesToFetch = await this.getCommonObjectPropertyIdsToFetch('company', allFieldMappingConfigs.account);
 
     const response = await axios.post<HubSpotAPIV3ListResponse>(
       `${this.baseUrl}/crm/v3/objects/companies/batch/read`,
-
       {
         inputs: ids.map((id) => ({ id })),
-        properties: propertiesToFetch.length ? propertiesToFetch.join(',') : undefined,
+        properties: propertiesToFetch,
       },
       {
         headers: {
@@ -1289,10 +1288,6 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     allFieldMappingConfigs: AllCrmFieldMappingConfigs,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
-    // TODO: Implement expand for lists
-    if (params.expand?.length) {
-      throw new BadRequestError('Expand is not yet supported for list operations');
-    }
     switch (commonObjectType) {
       case 'contact':
         return await this.listContacts(params, allFieldMappingConfigs);
