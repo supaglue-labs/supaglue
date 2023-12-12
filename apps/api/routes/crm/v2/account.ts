@@ -24,7 +24,7 @@ import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { crmCommonObjectService, managedDataService, connectionService } = getDependencyContainer();
+const { crmCommonObjectService, managedDataService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
