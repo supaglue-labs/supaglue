@@ -1,10 +1,12 @@
 import type { Account, SnakecasedKeysCrmAccount } from '@supaglue/types/crm';
 import { toSnakecasedKeysAddress } from './address';
 import { toSnakecasedKeysPhoneNumber } from './phone_number';
+import { toSnakecasedKeysCrmUser } from './user';
 
 export const toSnakecasedKeysCrmAccount = (account: Account): SnakecasedKeysCrmAccount => {
   return {
     owner_id: account.ownerId,
+    owner: account.owner ? toSnakecasedKeysCrmUser(account.owner) : undefined,
     last_modified_at: account.lastModifiedAt,
     id: account.id,
     name: account.name,

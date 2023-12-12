@@ -1,0 +1,7 @@
+name: expand
+in: query
+schema:
+  type: string
+  example: account,owner
+description: |
+  Comma-delimited list of associated object types to expand. Only supported for Hubspot and Salesforce common objects.

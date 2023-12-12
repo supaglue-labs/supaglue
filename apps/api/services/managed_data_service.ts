@@ -282,15 +282,31 @@ export class ManagedDataService {
     );
   }
 
+  async #mappedCrmRecords<T extends { raw_data?: Record<string, unknown> }>(
+    records: T[],
+    includeRawData: boolean
+  ): Promise<T[]> {
+    return records.map((record) => ({
+      ...record,
+      raw_data: includeRawData ? record.raw_data : undefined,
+      _supaglue_application_id: undefined,
+      _supaglue_customer_id: undefined,
+      _supaglue_provider_name: undefined,
+      _supaglue_emitted_at: undefined,
+    }));
+  }
+
   public async getCrmAccountRecords(
     applicationId: string,
     providerName: ProviderName,
     customerId: string,
+    connectionId: string,
     cursorStr?: string,
     modifiedAfter?: string,
-    pageSize = DEFAULT_PAGE_SIZE
+    pageSize = DEFAULT_PAGE_SIZE,
+    includeRawData = false
   ): Promise<PaginatedSupaglueRecords<SnakecasedKeysCrmAccount>> {
-    return await this.#getRecords<SnakecasedKeysCrmAccount>(
+    const { pagination, records } = await this.#getRecords<SnakecasedKeysCrmAccount>(
       applicationId,
       'crm',
       providerName,
@@ -301,17 +317,23 @@ export class ManagedDataService {
       modifiedAfter,
       pageSize
     );
+    return {
+      pagination,
+      records: await this.#mappedCrmRecords(records, includeRawData),
+    };
   }
 
   public async getCrmContactRecords(
     applicationId: string,
     providerName: ProviderName,
+    connectionId: string,
     customerId: string,
     cursorStr?: string,
     modifiedAfter?: string,
-    pageSize = DEFAULT_PAGE_SIZE
+    pageSize = DEFAULT_PAGE_SIZE,
+    includeRawData = false
   ): Promise<PaginatedSupaglueRecords<SnakecasedKeysCrmContact>> {
-    return await this.#getRecords<SnakecasedKeysCrmContact>(
+    const { pagination, records } = await this.#getRecords<SnakecasedKeysCrmContact>(
       applicationId,
       'crm',
       providerName,
@@ -322,20 +344,26 @@ export class ManagedDataService {
       modifiedAfter,
       pageSize
     );
+    return {
+      pagination,
+      records: await this.#mappedCrmRecords(records, includeRawData),
+    };
   }
 
   public async getCrmLeadRecords(
     applicationId: string,
     providerName: ProviderName,
+    connectionId: string,
     customerId: string,
     cursorStr?: string,
     modifiedAfter?: string,
-    pageSize = DEFAULT_PAGE_SIZE
+    pageSize = DEFAULT_PAGE_SIZE,
+    includeRawData = false
   ): Promise<PaginatedSupaglueRecords<SnakecasedKeysCrmLead>> {
     if (providerName === 'hubspot') {
       throw new BadRequestError(`Provider ${providerName} does not support leads`);
     }
-    return await this.#getRecords<SnakecasedKeysCrmLead>(
+    const { pagination, records } = await this.#getRecords<SnakecasedKeysCrmLead>(
       applicationId,
       'crm',
       providerName,
@@ -346,17 +374,23 @@ export class ManagedDataService {
       modifiedAfter,
       pageSize
     );
+    return {
+      pagination,
+      records: await this.#mappedCrmRecords(records, includeRawData),
+    };
   }
 
   public async getCrmOpportunityRecords(
     applicationId: string,
     providerName: ProviderName,
+    connectionId: string,
     customerId: string,
     cursorStr?: string,
     modifiedAfter?: string,
-    pageSize = DEFAULT_PAGE_SIZE
+    pageSize = DEFAULT_PAGE_SIZE,
+    includeRawData = false
   ): Promise<PaginatedSupaglueRecords<SnakecasedKeysCrmOpportunity>> {
-    return await this.#getRecords<SnakecasedKeysCrmOpportunity>(
+    const { pagination, records } = await this.#getRecords<SnakecasedKeysCrmOpportunity>(
       applicationId,
       'crm',
       providerName,
@@ -367,17 +401,23 @@ export class ManagedDataService {
       modifiedAfter,
       pageSize
     );
+    return {
+      pagination,
+      records: await this.#mappedCrmRecords(records, includeRawData),
+    };
   }
 
   public async getCrmUserRecords(
     applicationId: string,
     providerName: ProviderName,
+    connectionId: string,
     customerId: string,
     cursorStr?: string,
     modifiedAfter?: string,
-    pageSize = DEFAULT_PAGE_SIZE
+    pageSize = DEFAULT_PAGE_SIZE,
+    includeRawData = false
   ): Promise<PaginatedSupaglueRecords<SnakecasedKeysCrmUser>> {
-    return await this.#getRecords<SnakecasedKeysCrmUser>(
+    const { pagination, records } = await this.#getRecords<SnakecasedKeysCrmUser>(
       applicationId,
       'crm',
       providerName,
@@ -388,6 +428,10 @@ export class ManagedDataService {
       modifiedAfter,
       pageSize
     );
+    return {
+      pagination,
+      records: await this.#mappedCrmRecords(records, includeRawData),
+    };
   }
 
   public async getCustomObjectRecords(

@@ -83,7 +83,11 @@ describe('ms_dynamics_365_sales/mappers', () => {
 
   describe('fromDynamicsAccountToRemoteAccount', () => {
     test('converts a DynamicsAccount to Account correctly', () => {
-      const result = fromDynamicsAccountToRemoteAccount(mockDynamicsAccount, mockDefinedFieldMappingConfig);
+      const result = fromDynamicsAccountToRemoteAccount(
+        mockDynamicsAccount,
+        mockDefinedFieldMappingConfig,
+        /* includeRawData */ true
+      );
 
       expect(result).toEqual({
         id: mockDynamicsAccount.accountid,
@@ -179,7 +183,11 @@ describe('ms_dynamics_365_sales/mappers', () => {
         rawData: mockDynamicsContact,
       };
 
-      const result = fromDynamicsContactToRemoteContact(mockDynamicsContact, mockInheritedFieldMappingConfig);
+      const result = fromDynamicsContactToRemoteContact(
+        mockDynamicsContact,
+        mockInheritedFieldMappingConfig,
+        /* includeRawData */ true
+      );
 
       expect(result).toEqual(expectedContact);
     });
@@ -258,7 +266,11 @@ describe('ms_dynamics_365_sales/mappers', () => {
         rawData: mockDynamicsContact,
       };
 
-      const result = fromDynamicsContactToRemoteContact(mockDynamicsContact, mockInheritedFieldMappingConfig);
+      const result = fromDynamicsContactToRemoteContact(
+        mockDynamicsContact,
+        mockInheritedFieldMappingConfig,
+        /* includeRawData */ true
+      );
 
       expect(result).toEqual(expectedContact);
     });
@@ -318,7 +330,8 @@ describe('ms_dynamics_365_sales/mappers', () => {
 
       const result = fromDynamicsOpportunityToRemoteOpportunity(
         mockDynamicsOpportunity,
-        mockInheritedFieldMappingConfig
+        mockInheritedFieldMappingConfig,
+        /* includeRawData */ true
       );
 
       expect(result).toEqual(expectedOpportunity);
@@ -378,7 +391,8 @@ describe('ms_dynamics_365_sales/mappers', () => {
 
       const result = fromDynamicsOpportunityToRemoteOpportunity(
         mockDynamicsOpportunity,
-        mockInheritedFieldMappingConfig
+        mockInheritedFieldMappingConfig,
+        /* includeRawData */ true
       );
 
       expect(result).toEqual(expectedOpportunity);
@@ -425,7 +439,11 @@ describe('ms_dynamics_365_sales/mappers', () => {
         _contactid_value: 'contact-1',
       };
 
-      const result = fromDynamicsLeadToRemoteLead(mockDynamicsLead, mockInheritedFieldMappingConfig);
+      const result = fromDynamicsLeadToRemoteLead(
+        mockDynamicsLead,
+        mockInheritedFieldMappingConfig,
+        /* includeRawData */ true
+      );
 
       const expectedLead: Lead = {
         id: '123',
@@ -501,7 +519,11 @@ describe('ms_dynamics_365_sales/mappers', () => {
         isdisabled: false,
       };
 
-      const result = fromDynamicsUserToRemoteUser(mockDynamicsUser, mockInheritedFieldMappingConfig);
+      const result = fromDynamicsUserToRemoteUser(
+        mockDynamicsUser,
+        mockInheritedFieldMappingConfig,
+        /* includeRawData */ true
+      );
 
       const expectedUser: User = {
         id: 'user123',
