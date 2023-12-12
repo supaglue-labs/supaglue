@@ -1,4 +1,3 @@
-import type { FieldMappingConfig } from '@/../../packages/types/field_mapping_config';
 import { BadRequestError } from '@supaglue/core/errors';
 import type { Cursor, PaginatedSupaglueRecords, SupaglueStandardRecord } from '@supaglue/core/lib';
 import {
@@ -33,6 +32,7 @@ import type {
   SnakecasedKeysSequence,
   SnakecasedKeysSequenceState,
 } from '@supaglue/types/engagement';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { ObjectType } from '@supaglue/types/sync';
 import type { Pool, PoolClient } from 'pg';
 

@@ -205,6 +205,9 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    if (params.expand?.length) {
+      throw new BadRequestError('Expand is not supported for Pipedrive');
+    }
     switch (commonObjectType) {
       case 'contact':
         return await this.listContacts(fieldMappingConfig, params);
@@ -624,6 +627,9 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['getParams']
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
+    if (params.expand?.length) {
+      throw new BadRequestError('Expand is not supported for Pipedrive');
+    }
     switch (commonObjectType) {
       case 'contact':
         return await this.getContact(id, fieldMappingConfig, params);

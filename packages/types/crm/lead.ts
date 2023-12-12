@@ -1,10 +1,13 @@
 import type {
+  Account,
   BaseCrmModel,
   BaseSearchParams,
+  Contact,
   CrmGetParams,
   CrmListParams,
   CustomFields,
   SnakecasedCrmTenantFields,
+  User,
 } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
@@ -24,8 +27,11 @@ type CoreLead = {
   phoneNumbers: PhoneNumber[];
   convertedDate: Date | null;
   convertedContactId: string | null;
+  convertedContact?: Contact;
   convertedAccountId: string | null;
+  convertedAccount?: Account;
   ownerId: string | null;
+  owner?: User;
 };
 
 export type Lead = BaseCrmModel & CoreLead;

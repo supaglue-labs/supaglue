@@ -6,6 +6,7 @@ import type {
   CrmListParams,
   CustomFields,
   SnakecasedCrmTenantFields,
+  User,
 } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
@@ -23,6 +24,7 @@ type CoreContact = {
   lastActivityAt: Date | null;
   lifecycleStage: LifecycleStage | null;
   ownerId: string | null;
+  owner?: User;
   accountId: string | null;
   account?: Account;
 };

@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { NotImplementedError } from '@supaglue/core/errors';
+import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmAccount } from '@supaglue/core/mappers/crm';
 import type {
   CreateAccountPathParams,
@@ -40,6 +40,7 @@ export default function init(app: Router): void {
       if (req.query?.read_from_cache?.toString() !== 'true') {
         const { pagination, records } = await crmCommonObjectService.list('account', req.customerConnection, {
           modifiedAfter: req.query?.modified_after,
+          expand: req.query?.expand,
           includeRawData,
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
@@ -49,6 +50,10 @@ export default function init(app: Router): void {
           pagination,
           records: records.map(toSnakecasedKeysCrmAccount),
         });
+      }
+      // TODO: Implement expand for uncached reads
+      if (req.query?.expand?.length) {
+        throw new BadRequestError('Expand is not yet supported for uncached reads');
       }
       return res
         .status(200)
@@ -75,6 +80,7 @@ export default function init(app: Router): void {
     ) => {
       const account = await crmCommonObjectService.get('account', req.customerConnection, req.params.account_id, {
         includeRawData: req.query?.include_raw_data?.toString() === 'true',
+        expand: req.query?.expand,
         associationsToFetch: req.query?.associations_to_fetch,
       });
       const snakecasedKeysAccount = toSnakecasedKeysCrmAccount(account);

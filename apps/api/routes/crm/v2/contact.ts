@@ -1,5 +1,5 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { NotImplementedError } from '@supaglue/core/errors';
+import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmContact } from '@supaglue/core/mappers/crm';
 import type {
   CreateContactPathParams,
@@ -56,6 +56,10 @@ export default function init(app: Router): void {
             raw_data: includeRawData ? record.rawData : undefined,
           })),
         });
+      }
+      // TODO: Implement expand for uncached reads
+      if (req.query?.expand?.length) {
+        throw new BadRequestError('Expand is not yet supported for uncached reads');
       }
       return res
         .status(200)

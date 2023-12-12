@@ -8,8 +8,8 @@ const TEMPORAL_ADDRESS =
   process.env.SUPAGLUE_TEMPORAL_HOST && process.env.SUPAGLUE_TEMPORAL_PORT
     ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:${process.env.SUPAGLUE_TEMPORAL_PORT}`
     : process.env.SUPAGLUE_TEMPORAL_HOST
-    ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:7233`
-    : 'temporal';
+      ? `${process.env.SUPAGLUE_TEMPORAL_HOST}:7233`
+      : 'temporal';
 
 type DependencyContainer = CoreDependencyContainer & {
   temporalClient: Client;
@@ -66,7 +66,7 @@ function createDependencyContainer(): DependencyContainer {
 
   const magicLinkService = new MagicLinkService(prisma, customerService, providerService, connectionAndSyncService);
 
-  const managedDataService = new ManagedDataService(syncService, destinationService);
+  const managedDataService = new ManagedDataService(syncService, destinationService, connectionService);
 
   return {
     ...coreDependencyContainer,

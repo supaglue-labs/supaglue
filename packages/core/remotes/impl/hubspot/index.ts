@@ -1208,6 +1208,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    // TODO: Implement expand for lists
+    if (params.expand?.length) {
+      throw new BadRequestError('Expand is not yet supported for list operations');
+    }
     switch (commonObjectType) {
       case 'contact':
         return await this.listContacts(params, fieldMappingConfig);
@@ -1573,7 +1577,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       associations.length ? associations : undefined
     );
     const flattenedAssociations = flattenAssociations(company.associations, associatedCustomObjectSchemas);
-    return {
+    const account = {
       ...fromHubSpotCompanyToAccount({
         ...company,
         associations: flattenedAssociations,
@@ -1582,6 +1586,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         ? { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: flattenedAssociations }
         : undefined,
     };
+    if (account.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
+      account.owner = await this.getUser(account.ownerId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+    return account;
   }
 
   public async createAccount(params: AccountCreateParams): Promise<string> {
@@ -1790,7 +1800,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       associations.length ? associations : undefined
     );
     const flattenedAssociations = flattenAssociations(deal.associations, associatedCustomObjectSchemas);
-    return {
+    const opportunity = {
       ...fromHubSpotDealToOpportunity(
         {
           ...deal,
@@ -1802,6 +1812,17 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         ? { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: flattenedAssociations }
         : undefined,
     };
+    if (opportunity.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
+      opportunity.owner = await this.getUser(opportunity.ownerId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+    if (opportunity.accountId && params.expand?.includes('account')) {
+      opportunity.account = await this.getAccount(opportunity.accountId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+    return opportunity;
   }
 
   public async createOpportunity(params: OpportunityCreateParams): Promise<string> {
@@ -1946,16 +1967,17 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           }
         : undefined,
     };
-    if (!params.expand?.includes('account') || !contact.accountId) {
-      return contact;
+    if (contact.accountId && params.expand?.includes('account')) {
+      contact.account = await this.getAccount(contact.accountId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
     }
-    const account = await this.getAccount(contact.accountId, fieldMappingConfig, {
-      includeRawData: params.includeRawData,
-    });
-    return {
-      ...contact,
-      account,
-    };
+    if (contact.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
+      contact.owner = await this.getUser(contact.ownerId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+    return contact;
   }
 
   public async createContact(params: ContactCreateParams): Promise<string> {

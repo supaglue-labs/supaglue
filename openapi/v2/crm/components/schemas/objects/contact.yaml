@@ -10,6 +10,8 @@ properties:
     type: string
     nullable: true
     example: 23e640fe-6105-4a11-a636-3aa6b6c6e762
+  owner:
+    $ref: ./user.yaml
   addresses:
     $ref: ./addresses.yaml
   email_addresses:

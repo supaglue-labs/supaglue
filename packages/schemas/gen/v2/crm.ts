@@ -698,6 +698,7 @@ export interface components {
       number_of_employees: number | null;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       owner_id: string | null;
+      owner?: components["schemas"]["user"];
       phone_numbers: components["schemas"]["phone_numbers"];
       lifecycle_stage: components["schemas"]["lifecycle_stage"];
       /** @example https://supaglue.com/ */
@@ -744,6 +745,7 @@ export interface components {
       account?: components["schemas"]["account"];
       /** @example 23e640fe-6105-4a11-a636-3aa6b6c6e762 */
       owner_id: string | null;
+      owner?: components["schemas"]["user"];
       addresses: components["schemas"]["addresses"];
       email_addresses: components["schemas"]["email_addresses"];
       /** @example George */
@@ -821,6 +823,7 @@ export interface components {
       lead_source: string | null;
       /** @example 62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2 */
       owner_id: string | null;
+      owner?: components["schemas"]["user"];
       phone_numbers: components["schemas"]["phone_numbers"];
       /** @example Co-Founder */
       title: string | null;
@@ -866,6 +869,7 @@ export interface components {
     opportunity: {
       /** @example fd089246-09b1-4e3b-a60a-7a76314bbcce */
       account_id: string | null;
+      account?: components["schemas"]["account"];
       /** @example 100000 */
       amount: number | null;
       /**
@@ -886,6 +890,7 @@ export interface components {
       name: string | null;
       /** @example d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69 */
       owner_id: string | null;
+      owner?: components["schemas"]["user"];
       pipeline: string | null;
       /** @example Closed Won */
       stage: string | null;
@@ -1771,6 +1776,7 @@ export interface operations {
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
+        expand?: components["parameters"]["expand"];
         associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
@@ -1887,6 +1893,7 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
+        expand?: components["parameters"]["expand"];
         associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
@@ -2222,6 +2229,7 @@ export interface operations {
         read_from_cache?: components["parameters"]["read_from_cache"];
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
+        expand?: components["parameters"]["expand"];
         cursor?: components["parameters"]["cursor"];
       };
       header: {
@@ -2407,6 +2415,7 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
+        expand?: components["parameters"]["expand"];
       };
       header: {
         "x-customer-id": components["parameters"]["x-customer-id"];
@@ -2474,6 +2483,7 @@ export interface operations {
         modified_after?: components["parameters"]["modified_after"];
         page_size?: components["parameters"]["page_size"];
         cursor?: components["parameters"]["cursor"];
+        expand?: components["parameters"]["expand"];
         associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {
@@ -2553,6 +2563,7 @@ export interface operations {
     parameters: {
       query?: {
         include_raw_data?: components["parameters"]["include_raw_data"];
+        expand?: components["parameters"]["expand"];
         associations_to_fetch?: components["parameters"]["associations_to_fetch"];
       };
       header: {

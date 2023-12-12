@@ -472,6 +472,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    // TODO: Implement expand for lists
+    if (params.expand?.length) {
+      throw new BadRequestError('Expand is not yet supported for list operations');
+    }
     const sobject = capitalizeString(commonObjectType);
     const propertiesToFetch = await this.getCommonPropertiesToFetch(commonObjectType, fieldMappingConfig);
     const limit = params.pageSize ?? DEFAULT_PAGE_SIZE;
@@ -1286,6 +1290,11 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Account> {
     const account = await this.#client.retrieve('Account', id);
+    if (account.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
+      account.owner = await this.getUser(account.ownerId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
     return {
       ...fromSalesforceAccountToAccount(account),
       rawData: params.includeRawData ? toMappedProperties(account, fieldMappingConfig) : undefined,
@@ -1326,10 +1335,21 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Contact> {
-    const contact = await this.#client.retrieve('Contact', id);
+    const sfContact = await this.#client.retrieve('Contact', id);
+    const contact = fromSalesforceContactToContact(sfContact);
+    if (contact.accountId && params.expand?.includes('account')) {
+      contact.account = await this.getAccount(contact.accountId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+    if (contact.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
+      contact.owner = await this.getUser(contact.ownerId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
     return {
-      ...fromSalesforceContactToContact(contact),
-      rawData: params.includeRawData ? toMappedProperties(contact, fieldMappingConfig) : undefined,
+      ...contact,
+      rawData: params.includeRawData ? toMappedProperties(sfContact, fieldMappingConfig) : undefined,
     };
   }
 
@@ -1394,10 +1414,22 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     fieldMappingConfig: FieldMappingConfig,
     params: CrmGetParams
   ): Promise<Opportunity> {
-    const contact = await this.#client.retrieve('Opportunity', id);
+    const sfOpportunity = await this.#client.retrieve('Opportunity', id);
+    const opportunity = fromSalesforceOpportunityToOpportunity(sfOpportunity);
+    if (opportunity.accountId && params.expand?.includes('account')) {
+      opportunity.account = await this.getAccount(opportunity.accountId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+    if (opportunity.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
+      opportunity.owner = await this.getUser(opportunity.ownerId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+
     return {
-      ...fromSalesforceOpportunityToOpportunity(contact),
-      rawData: params.includeRawData ? toMappedProperties(contact, fieldMappingConfig) : undefined,
+      ...opportunity,
+      rawData: params.includeRawData ? toMappedProperties(opportunity, fieldMappingConfig) : undefined,
     };
   }
 
@@ -1418,7 +1450,24 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   }
 
   public async getLead(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Lead> {
-    const lead = await this.#client.retrieve('Lead', id);
+    const sfLead = await this.#client.retrieve('Lead', id);
+    const lead = fromSalesforceLeadToLead(sfLead);
+    if (lead.convertedAccountId && params.expand?.includes('account')) {
+      lead.convertedAccount = await this.getAccount(lead.convertedAccountId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+    if (lead.convertedContactId && params.expand?.includes('contact')) {
+      lead.convertedContact = await this.getContact(lead.convertedContactId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+    if (lead.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
+      lead.owner = await this.getUser(lead.ownerId, fieldMappingConfig, {
+        includeRawData: params.includeRawData,
+      });
+    }
+
     return {
       ...fromSalesforceLeadToLead(lead),
       rawData: params.includeRawData ? toMappedProperties(lead, fieldMappingConfig) : undefined,

@@ -37,6 +37,7 @@ import simpleOauth2 from 'simple-oauth2';
 import { Readable } from 'stream';
 import {
   BadGatewayError,
+  BadRequestError,
   ForbiddenError,
   InternalServerError,
   NotFoundError,
@@ -357,6 +358,9 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
+    if (params.expand?.length) {
+      throw new BadRequestError('Expand is not supported for MS Dynamics 365 Sales');
+    }
     switch (commonObjectType) {
       case 'contact':
         return await this.listContacts(fieldMappingConfig, params);
@@ -379,6 +383,9 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['getParams']
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
+    if (params.expand?.length) {
+      throw new BadRequestError('Expand is not supported for MS Dynamics 365 Sales');
+    }
     switch (commonObjectType) {
       case 'account':
         return await this.getAccount(id, fieldMappingConfig, params);
