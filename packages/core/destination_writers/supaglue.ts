@@ -25,6 +25,10 @@ import { BaseDestinationWriter } from './base';
 import type { ObjectType } from './postgres_impl';
 import { kCustomObject, PostgresDestinationWriterImpl } from './postgres_impl';
 
+const clientErrorListener = (err: Error) => {
+  logger.error({ err }, 'Postgres client error');
+};
+
 async function createPartitionIfNotExists(
   client: PoolClient,
   schema: string,
@@ -50,7 +54,9 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     this.#pgPool = getPgPool(process.env.SUPAGLUE_MANAGED_DATABASE_URL!);
   }
   async #getClient(): Promise<PoolClient> {
-    return await this.#pgPool.connect();
+    const client = await this.#pgPool.connect();
+    client.on('error', clientErrorListener);
+    return client;
   }
 
   async #setupCommonObjectTable(
@@ -93,24 +99,29 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     const table = getCommonObjectTableName(connection.category, commonObjectType as CommonObjectType);
     const client = await this.#getClient();
 
-    return await this.#writerImpl.upsertCommonObjectRecordImpl(
-      client,
-      connection,
-      commonObjectType,
-      record,
-      schema,
-      table,
-      async () => {
-        await this.#setupCommonObjectTable(
-          client,
-          schema,
-          table,
-          connection.category,
-          commonObjectType as CommonObjectType,
-          connection.customerId
-        );
-      }
-    );
+    try {
+      return await this.#writerImpl.upsertCommonObjectRecordImpl(
+        client,
+        connection,
+        commonObjectType,
+        record,
+        schema,
+        table,
+        async () => {
+          await this.#setupCommonObjectTable(
+            client,
+            schema,
+            table,
+            connection.category,
+            commonObjectType as CommonObjectType,
+            connection.customerId
+          );
+        }
+      );
+    } finally {
+      client.removeListener('error', clientErrorListener);
+      client.release();
+    }
   }
 
   public override async writeCommonObjectRecords(
@@ -126,27 +137,32 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
 
     const client = await this.#getClient();
 
-    return await this.#writerImpl.writeCommonObjectRecordsImpl(
-      client,
-      connection,
-      commonObjectType,
-      inputStream,
-      heartbeat,
-      diffAndDeleteRecords,
-      schema,
-      table,
-      async () => {
-        await this.#setupCommonObjectTable(
-          client,
-          schema,
-          table,
-          category,
-          commonObjectType,
-          customerId,
-          /* alsoCreateTempTable */ true
-        );
-      }
-    );
+    try {
+      return await this.#writerImpl.writeCommonObjectRecordsImpl(
+        client,
+        connection,
+        commonObjectType,
+        inputStream,
+        heartbeat,
+        diffAndDeleteRecords,
+        schema,
+        table,
+        async () => {
+          await this.#setupCommonObjectTable(
+            client,
+            schema,
+            table,
+            category,
+            commonObjectType,
+            customerId,
+            /* alsoCreateTempTable */ true
+          );
+        }
+      );
+    } finally {
+      client.removeListener('error', clientErrorListener);
+      client.release();
+    }
   }
 
   public override async writeObjectRecords(
@@ -204,16 +220,21 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     const schema = getSchemaName(connection.applicationId);
     const client = await this.#getClient();
 
-    return await this.#writerImpl.upsertRecordImpl(
-      client,
-      connection,
-      schema,
-      table,
-      record,
-      async () =>
-        await this.#setupStandardOrCustomObjectTable(client, schema, table, connection.customerId, false, objectType),
-      objectType
-    );
+    try {
+      return await this.#writerImpl.upsertRecordImpl(
+        client,
+        connection,
+        schema,
+        table,
+        record,
+        async () =>
+          await this.#setupStandardOrCustomObjectTable(client, schema, table, connection.customerId, false, objectType),
+        objectType
+      );
+    } finally {
+      client.removeListener('error', clientErrorListener);
+      client.release();
+    }
   }
 
   public override async writeEntityRecords(
@@ -283,27 +304,32 @@ export class SupaglueDestinationWriter extends BaseDestinationWriter {
     const schema = getSchemaName(connection.applicationId);
     const client = await this.#getClient();
 
-    return await this.#writerImpl.writeRecordsImpl(
-      client,
-      connection,
-      schema,
-      table,
-      inputStream,
-      heartbeat,
-      childLogger,
-      diffAndDeleteRecords,
-      async () => {
-        await this.#setupStandardOrCustomObjectTable(
-          client,
-          schema,
-          table,
-          connection.customerId,
-          /* alsoCreateTempTable */ true,
-          objectType
-        );
-      },
-      objectType
-    );
+    try {
+      return await this.#writerImpl.writeRecordsImpl(
+        client,
+        connection,
+        schema,
+        table,
+        inputStream,
+        heartbeat,
+        childLogger,
+        diffAndDeleteRecords,
+        async () => {
+          await this.#setupStandardOrCustomObjectTable(
+            client,
+            schema,
+            table,
+            connection.customerId,
+            /* alsoCreateTempTable */ true,
+            objectType
+          );
+        },
+        objectType
+      );
+    } finally {
+      client.removeListener('error', clientErrorListener);
+      client.release();
+    }
   }
 }
 
