@@ -6,4 +6,4 @@ schema:
     type: string
     example: account
 description: |
-  If set, will hydrate any associated objects of the specified type.
+  If set, will hydrate any associated objects of the specified type. Only supported for Hubspot and Salesforce.

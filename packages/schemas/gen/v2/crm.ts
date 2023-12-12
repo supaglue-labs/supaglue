@@ -1699,7 +1699,7 @@ export interface components {
      * @example cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw
      */
     cursor?: string;
-    /** @description If set, will hydrate any associated objects of the specified type. */
+    /** @description If set, will hydrate any associated objects of the specified type. Only supported for Hubspot and Salesforce. */
     expand?: string[];
     /**
      * @description Number of results to return per page. (Max: 100)

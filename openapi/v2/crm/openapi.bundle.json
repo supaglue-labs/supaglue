@@ -5917,7 +5917,7 @@
             "example": "account"
           }
         },
-        "description": "If set, will hydrate any associated objects of the specified type.\n"
+        "description": "If set, will hydrate any associated objects of the specified type. Only supported for Hubspot and Salesforce.\n"
       },
       "remote_provider_page_size": {
         "name": "page_size",

@@ -12,8 +12,6 @@ import {
   MAX_PAGE_SIZE,
 } from '@supaglue/core/lib';
 import { getCategoryForProvider } from '@supaglue/core/remotes';
-import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
-import type { ConnectionService } from '@supaglue/core/services/connection_service';
 import type { DestinationService } from '@supaglue/core/services/destination_service';
 import type { SyncService } from '@supaglue/core/services/sync_service';
 import type { CommonObjectType, ProviderCategory, ProviderName } from '@supaglue/types';
@@ -32,7 +30,6 @@ import type {
   SnakecasedKeysSequence,
   SnakecasedKeysSequenceState,
 } from '@supaglue/types/engagement';
-import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { ObjectType } from '@supaglue/types/sync';
 import type { Pool, PoolClient } from 'pg';
 
@@ -40,11 +37,9 @@ export class ManagedDataService {
   #pgPool: Pool;
   #syncService: SyncService;
   #destinationService: DestinationService;
-  #connectionService: ConnectionService;
-  constructor(syncService: SyncService, destinationService: DestinationService, connectionService: ConnectionService) {
+  constructor(syncService: SyncService, destinationService: DestinationService) {
     this.#syncService = syncService;
     this.#destinationService = destinationService;
-    this.#connectionService = connectionService;
     this.#pgPool = getPgPool(process.env.SUPAGLUE_MANAGED_DATABASE_URL!);
   }
 
@@ -279,17 +274,11 @@ export class ManagedDataService {
 
   async #mappedCrmRecords<T extends { raw_data?: Record<string, unknown> }>(
     records: T[],
-    connectionId: string,
     includeRawData: boolean
   ): Promise<T[]> {
-    let fieldMappingConfig: FieldMappingConfig | undefined = undefined;
-    if (includeRawData) {
-      fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connectionId, 'common', 'user');
-    }
     return records.map((record) => ({
       ...record,
-      raw_data:
-        includeRawData && fieldMappingConfig ? toMappedProperties(record.raw_data, fieldMappingConfig) : undefined,
+      raw_data: includeRawData ? record.raw_data : undefined,
       _supaglue_application_id: undefined,
       _supaglue_customer_id: undefined,
       _supaglue_provider_name: undefined,
@@ -320,7 +309,7 @@ export class ManagedDataService {
     );
     return {
       pagination,
-      records: await this.#mappedCrmRecords(records, connectionId, includeRawData),
+      records: await this.#mappedCrmRecords(records, includeRawData),
     };
   }
 
@@ -347,7 +336,7 @@ export class ManagedDataService {
     );
     return {
       pagination,
-      records: await this.#mappedCrmRecords(records, connectionId, includeRawData),
+      records: await this.#mappedCrmRecords(records, includeRawData),
     };
   }
 
@@ -377,7 +366,7 @@ export class ManagedDataService {
     );
     return {
       pagination,
-      records: await this.#mappedCrmRecords(records, connectionId, includeRawData),
+      records: await this.#mappedCrmRecords(records, includeRawData),
     };
   }
 
@@ -404,7 +393,7 @@ export class ManagedDataService {
     );
     return {
       pagination,
-      records: await this.#mappedCrmRecords(records, connectionId, includeRawData),
+      records: await this.#mappedCrmRecords(records, includeRawData),
     };
   }
 
@@ -431,7 +420,7 @@ export class ManagedDataService {
     );
     return {
       pagination,
-      records: await this.#mappedCrmRecords(records, connectionId, includeRawData),
+      records: await this.#mappedCrmRecords(records, includeRawData),
     };
   }
 

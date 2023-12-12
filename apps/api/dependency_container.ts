@@ -66,7 +66,7 @@ function createDependencyContainer(): DependencyContainer {
 
   const magicLinkService = new MagicLinkService(prisma, customerService, providerService, connectionAndSyncService);
 
-  const managedDataService = new ManagedDataService(syncService, destinationService, connectionService);
+  const managedDataService = new ManagedDataService(syncService, destinationService);
 
   return {
     ...coreDependencyContainer,
