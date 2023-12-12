@@ -1,9 +1,13 @@
 import type { Opportunity, SnakecasedKeysCrmOpportunity } from '@supaglue/types/crm';
+import { toSnakecasedKeysCrmAccount } from './account';
+import { toSnakecasedKeysCrmUser } from './user';
 
 export const toSnakecasedKeysCrmOpportunity = (opportunity: Opportunity): SnakecasedKeysCrmOpportunity => {
   return {
     owner_id: opportunity.ownerId,
+    owner: opportunity.owner ? toSnakecasedKeysCrmUser(opportunity.owner) : undefined,
     account_id: opportunity.accountId,
+    account: opportunity.account ? toSnakecasedKeysCrmAccount(opportunity.account) : undefined,
     last_modified_at: opportunity.lastModifiedAt,
     id: opportunity.id,
     name: opportunity.name,
