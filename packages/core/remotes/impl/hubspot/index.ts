@@ -89,6 +89,7 @@ import {
   encodeCursor,
   intersection,
   logger,
+  MAX_PAGE_SIZE,
   REFRESH_TOKEN_THRESHOLD_MS,
   retryWhenAxiosRateLimited,
 } from '../../../lib';
@@ -960,6 +961,86 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     };
   }
 
+  async #fetchAssociatedAccountsByIds(
+    ids: string[],
+    includeRawData: boolean,
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs
+  ): Promise<Record<string, Account>> {
+    const propertiesToFetch = await this.listPropertiesForRawObjectName('company');
+
+    const response = await axios.post<HubSpotAPIV3ListResponse>(
+      `${this.baseUrl}/crm/v3/objects/companies/batch/read`,
+
+      {
+        inputs: ids.map((id) => ({ id })),
+        properties: propertiesToFetch.length ? propertiesToFetch.join(',') : undefined,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${this.#config.accessToken}`,
+        },
+      }
+    );
+    const ret: Record<string, Account> = {};
+    for (const result of response.data.results) {
+      const commonObject = fromHubSpotCompanyToAccount({ ...result, associations: undefined });
+      ret[result.id] = {
+        ...commonObject,
+        rawData: includeRawData
+          ? {
+              ...toMappedProperties(result.properties, allFieldMappingConfigs.account),
+              _associations: undefined,
+            }
+          : undefined,
+      };
+    }
+    return ret;
+  }
+
+  async #fetchAssociatedUsersByIds(
+    ids: string[],
+    includeRawData: boolean,
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs
+  ): Promise<Record<string, User>> {
+    // We assume that all users fit in 1 page
+    const allUsers = await this.listUsers({ includeRawData, pageSize: MAX_PAGE_SIZE }, allFieldMappingConfigs);
+    const ret: Record<string, User> = {};
+    for (const user of allUsers.records) {
+      if (ids.includes(user.id)) {
+        ret[user.id] = user;
+      }
+    }
+    return ret;
+  }
+
+  async #expandAccount(
+    records: Contact[] | Opportunity[],
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    includeRawData = false
+  ): Promise<void> {
+    const accountIds = records.map((record) => record.accountId).filter((id) => !!id) as string[];
+    const idsToAccounts = await this.#fetchAssociatedAccountsByIds(accountIds, includeRawData, allFieldMappingConfigs);
+    records.forEach((record) => {
+      if (record.accountId) {
+        record.account = idsToAccounts[record.accountId];
+      }
+    });
+  }
+
+  async #expandOwners(
+    records: Contact[] | Account[] | Opportunity[],
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    includeRawData = false
+  ): Promise<void> {
+    const ownerIds = records.map((record) => record.ownerId).filter((id) => !!id) as string[];
+    const idsToOwners = await this.#fetchAssociatedUsersByIds(ownerIds, includeRawData, allFieldMappingConfigs);
+    records.forEach((record) => {
+      if (record.ownerId) {
+        record.owner = idsToOwners[record.ownerId];
+      }
+    });
+  }
+
   async #fetchPageOfFullRecords(
     objectType: string,
     propertiesToFetch: string[],
@@ -1559,6 +1640,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           : undefined,
       };
     });
+    // Hydrate expansions
+    if (params.expand?.includes('owner') || params.expand?.includes('user')) {
+      await this.#expandOwners(records, allFieldMappingConfigs, params.includeRawData);
+    }
     return {
       pagination: {
         previous: null,
@@ -1784,6 +1869,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           : undefined,
       };
     });
+    // Hydrate expansions
+    if (params.expand?.includes('account')) {
+      await this.#expandAccount(records, allFieldMappingConfigs, params.includeRawData);
+    }
+    if (params.expand?.includes('owner') || params.expand?.includes('user')) {
+      await this.#expandOwners(records, allFieldMappingConfigs, params.includeRawData);
+    }
     return {
       pagination: {
         previous: null,
@@ -2064,6 +2156,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
           : undefined,
       };
     });
+    // Hydrate expansions
+    if (params.expand?.includes('account')) {
+      await this.#expandAccount(records, allFieldMappingConfigs, params.includeRawData);
+    }
+    if (params.expand?.includes('owner') || params.expand?.includes('user')) {
+      await this.#expandOwners(records, allFieldMappingConfigs, params.includeRawData);
+    }
     return {
       pagination: {
         previous: null,
