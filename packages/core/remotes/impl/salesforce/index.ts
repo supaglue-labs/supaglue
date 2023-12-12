@@ -1760,6 +1760,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'sf:INSUFFICIENT_ACCESS': // SOAP api returns this
       case 'ERROR_HTTP_403':
       case 'API_DISABLED_FOR_ORG':
+      case 'API_CURRENTLY_DISABLED':
         return new ForbiddenError(inferredTitle, { cause: error, origin: 'remote-provider' });
       case 'ERROR_HTTP_401':
         return new UnauthorizedError(inferredTitle, { cause: error, origin: 'remote-provider' });
