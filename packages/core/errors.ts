@@ -214,6 +214,6 @@ export class SGTerminalTooManyRequestsError extends SGSyncWorkerError {
 // Throw this when you want run_object_sync to pause after the current execution
 export class SGConnectionNoLongerAuthenticatedError extends SGSyncWorkerError {
   constructor(message: string, status?: number, cause?: Error) {
-    super(message, status, 'SG_CONNECTION_NO_LONGER_AUTHENTICATED_ERROR', cause);
+    super(message, status ?? 401, 'SG_CONNECTION_NO_LONGER_AUTHENTICATED_ERROR', cause);
   }
 }
