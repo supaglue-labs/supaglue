@@ -1,7 +1,7 @@
 import type { ProviderCategory } from '@supaglue/types/common';
 import { ActivityFailure, ApplicationFailure, proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
-import { ForbiddenError, UnauthorizedError } from '@supaglue/core/errors';
+import { ForbiddenError, PaymentRequiredError, UnauthorizedError } from '@supaglue/core/errors';
 import { generateRelatedObjectSyncStates } from '@supaglue/core/lib/sync';
 import type { FullThenIncrementalSync, Sync } from '@supaglue/types/sync';
 import type { createActivities } from '../activities/index';
@@ -63,8 +63,10 @@ function getPauseReasonIfShouldPause(err: any): string | undefined {
   if (err instanceof ForbiddenError || err.cause?.type === 'ForbiddenError') {
     return `Forbidden: ${err.cause?.message ?? err.message}`;
   }
-  if (err.cause?.failure?.message.startsWith('No entity mapping found for entity')) {
-    return err.cause.failure.message;
+  if (err instanceof PaymentRequiredError || err.cause?.type === 'PaymentRequiredError') {
+    if (err.cause?.failure?.message.startsWith('No entity mapping found for entity')) {
+      return `Payment Required: ${err.cause?.message ?? err.message}`;
+    }
   }
   if (err.cause?.failure?.message.startsWith('Additional field mappings are not allowed')) {
     return `Customer attempted to add additional field mappings for entity where additional field mappings are not allowed`;
