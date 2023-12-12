@@ -34,6 +34,7 @@ import type {
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
   CrmGetParams,
+  CrmListParams,
   Lead,
   LeadCreateParams,
   LeadSearchParams,
@@ -476,10 +477,6 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     allFieldMappingConfigs: AllCrmFieldMappingConfigs,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
-    // TODO: Implement expand for lists
-    if (params.expand?.length) {
-      throw new BadRequestError('Expand is not yet supported for list operations');
-    }
     const sobject = capitalizeString(commonObjectType);
     const fieldMappingConfig = allFieldMappingConfigs[commonObjectType];
     const propertiesToFetch = await this.getCommonPropertiesToFetch(commonObjectType, fieldMappingConfig);
@@ -502,6 +499,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     });
     const response = await this.#client.query(soql);
     const records = response.records.map(mapper);
+    await this.#maybeExpandAll(commonObjectType, records, allFieldMappingConfigs, params);
     return {
       pagination: {
         next: records.length === response.totalSize ? encodeCursor({ id: limit + offset, reverse: false }) : null,
@@ -510,6 +508,147 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       },
       records,
     };
+  }
+
+  async #maybeExpandAll<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    records: CRMCommonObjectTypeMap<T>['object'][],
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    params: CrmListParams
+  ): Promise<void> {
+    switch (commonObjectType) {
+      case 'account':
+        await this.#maybeExpandOwners(records as Account[], allFieldMappingConfigs, params);
+        break;
+      case 'contact':
+        await this.#maybeExpandOwners(records as Contact[], allFieldMappingConfigs, params);
+        await this.#maybeExpandAccounts(records as Contact[], allFieldMappingConfigs, params);
+        break;
+      case 'lead':
+        await this.#maybeExpandOwners(records as Lead[], allFieldMappingConfigs, params);
+        await this.#maybeExpandConvertedAccounts(records as Lead[], allFieldMappingConfigs, params);
+        await this.#maybeExpandConvertedContacts(records as Lead[], allFieldMappingConfigs, params);
+        break;
+      case 'opportunity':
+        await this.#maybeExpandOwners(records as Opportunity[], allFieldMappingConfigs, params);
+        await this.#maybeExpandAccounts(records as Contact[], allFieldMappingConfigs, params);
+        break;
+    }
+  }
+
+  async #maybeExpandOwners(
+    records: Contact[] | Account[] | Lead[] | Opportunity[],
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    params: CrmListParams
+  ): Promise<void> {
+    if (!params.expand?.includes('owner') && !params.expand?.includes('user')) {
+      return;
+    }
+    const ownerIds = records.map((record) => record.ownerId).filter((id) => !!id) as string[];
+    const idsToOwners = await this.#listAssociatedObjectsHelper(
+      'user',
+      allFieldMappingConfigs,
+      ownerIds,
+      params.includeRawData
+    );
+    records.forEach((record) => {
+      if (record.ownerId) {
+        record.owner = idsToOwners[record.ownerId];
+      }
+    });
+  }
+
+  async #maybeExpandAccounts(
+    records: Contact[] | Opportunity[],
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    params: CrmListParams
+  ): Promise<void> {
+    if (!params.expand?.includes('account')) {
+      return;
+    }
+    const accountIds = records.map((record) => record.accountId).filter((id) => !!id) as string[];
+    const idsToAccounts = await this.#listAssociatedObjectsHelper(
+      'account',
+      allFieldMappingConfigs,
+      accountIds,
+      params.includeRawData
+    );
+    records.forEach((record) => {
+      if (record.accountId) {
+        record.account = idsToAccounts[record.accountId];
+      }
+    });
+  }
+
+  async #maybeExpandConvertedAccounts(
+    records: Lead[],
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    params: CrmListParams
+  ): Promise<void> {
+    if (!params.expand?.includes('account')) {
+      return;
+    }
+    const convertedAccountIds = records.map((record) => record.convertedAccountId).filter((id) => !!id) as string[];
+    const idsToAccounts = await this.#listAssociatedObjectsHelper(
+      'account',
+      allFieldMappingConfigs,
+      convertedAccountIds,
+      params.includeRawData
+    );
+    records.forEach((record) => {
+      if (record.convertedAccountId) {
+        record.convertedAccount = idsToAccounts[record.convertedAccountId];
+      }
+    });
+  }
+
+  async #maybeExpandConvertedContacts(
+    records: Lead[],
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    params: CrmListParams
+  ): Promise<void> {
+    if (!params.expand?.includes('contact')) {
+      return;
+    }
+    const convertedContactIds = records.map((record) => record.convertedContactId).filter((id) => !!id) as string[];
+    const idsToContacts = await this.#listAssociatedObjectsHelper(
+      'contact',
+      allFieldMappingConfigs,
+      convertedContactIds,
+      params.includeRawData
+    );
+    records.forEach((record) => {
+      if (record.convertedContactId) {
+        record.convertedContact = idsToContacts[record.convertedContactId];
+      }
+    });
+  }
+
+  async #listAssociatedObjectsHelper<T extends CRMCommonObjectType>(
+    commonObjectType: T,
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    ids: string[],
+    includeRawData?: boolean
+  ): Promise<Record<string, CRMCommonObjectTypeMap<T>['object']>> {
+    const sobject = capitalizeString(commonObjectType);
+    const fieldMappingConfig = allFieldMappingConfigs[commonObjectType];
+    const propertiesToFetch = await this.getCommonPropertiesToFetch(commonObjectType, fieldMappingConfig);
+    const soql = `SELECT ${propertiesToFetch.join(',')}
+    FROM ${sobject}
+    WHERE Id IN ('${ids.join("','")}')`;
+
+    const mapper = (record: Record<string, unknown>) => ({
+      ...getMapperForCommonObjectType(commonObjectType)(record),
+      rawData: includeRawData ? toMappedProperties(record, fieldMappingConfig) : undefined,
+    });
+    const response = await this.#client.query(soql);
+    return response.records.reduce(
+      (acc, record) => {
+        acc[record.Id as string] = mapper(record);
+        return acc;
+      },
+      {} as Record<string, CRMCommonObjectTypeMap<T>['object']>
+    );
   }
 
   public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
