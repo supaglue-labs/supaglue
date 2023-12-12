@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmContact } from '@supaglue/core/mappers/crm';
-import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
   CreateContactPathParams,
   CreateContactRequest,
@@ -25,7 +24,6 @@ import type {
   UpsertContactRequest,
   UpsertContactResponse,
 } from '@supaglue/schemas/v2/crm';
-import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
@@ -47,6 +45,8 @@ export default function init(app: Router): void {
           modifiedAfter: req.query?.modified_after,
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+          includeRawData,
+          expand: req.query?.expand,
           associationsToFetch: req.query?.associations_to_fetch,
         });
         return res.status(200).send({
@@ -57,34 +57,20 @@ export default function init(app: Router): void {
           })),
         });
       }
-      const { pagination, records } = await managedDataService.getCrmContactRecords(
-        req.supaglueApplication.id,
-        req.customerConnection.providerName,
-        req.customerId,
-        req.query?.cursor,
-        req.query?.modified_after as unknown as string | undefined,
-        req.query?.page_size ? parseInt(req.query.page_size) : undefined
-      );
-      let fieldMappingConfig: FieldMappingConfig | undefined = undefined;
-      if (includeRawData) {
-        fieldMappingConfig = await connectionService.getFieldMappingConfig(
-          req.customerConnection.id,
-          'common',
-          'contact'
+      return res
+        .status(200)
+        .send(
+          await managedDataService.getCrmContactRecords(
+            req.supaglueApplication.id,
+            req.customerConnection.providerName,
+            req.customerConnection.id,
+            req.customerId,
+            req.query?.cursor,
+            req.query?.modified_after as unknown as string | undefined,
+            req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+            includeRawData
+          )
         );
-      }
-      return res.status(200).send({
-        pagination,
-        records: records.map((record) => ({
-          ...record,
-          raw_data:
-            includeRawData && fieldMappingConfig ? toMappedProperties(record.raw_data, fieldMappingConfig) : undefined,
-          _supaglue_application_id: undefined,
-          _supaglue_customer_id: undefined,
-          _supaglue_provider_name: undefined,
-          _supaglue_emitted_at: undefined,
-        })),
-      });
     }
   );
 
@@ -94,12 +80,11 @@ export default function init(app: Router): void {
       req: Request<GetContactPathParams, GetContactResponse, GetContactRequest, GetContactQueryParams>,
       res: Response<GetContactResponse>
     ) => {
-      const contact = await crmCommonObjectService.get(
-        'contact',
-        req.customerConnection,
-        req.params.contact_id,
-        req.query?.associations_to_fetch
-      );
+      const contact = await crmCommonObjectService.get('contact', req.customerConnection, req.params.contact_id, {
+        includeRawData: req.query?.include_raw_data?.toString() === 'true',
+        expand: req.query?.expand,
+        associationsToFetch: req.query?.associations_to_fetch,
+      });
       const snakecasedKeysContact = toSnakecasedKeysCrmContact(contact);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysContact;
@@ -143,6 +128,7 @@ export default function init(app: Router): void {
       res: Response<SearchContactsResponse>
     ) => {
       const { pagination, records } = await crmCommonObjectService.search('contact', req.customerConnection, {
+        includeRawData: req.query?.include_raw_data?.toString() === 'true',
         filter: req.body.filter,
         cursor: req.query?.cursor,
         pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,

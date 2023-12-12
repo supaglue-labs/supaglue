@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { BadRequestError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmUser } from '@supaglue/core/mappers/crm';
-import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
   GetUserPathParams,
   GetUserQueryParams,
@@ -12,11 +11,10 @@ import type {
   ListUsersRequest,
   ListUsersResponse,
 } from '@supaglue/schemas/v2/crm';
-import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { managedDataService, connectionService, crmCommonObjectService } = getDependencyContainer();
+const { managedDataService, crmCommonObjectService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -27,11 +25,10 @@ export default function init(app: Router): void {
       req: Request<GetUserPathParams, GetUserResponse, GetUserRequest, GetUserQueryParams>,
       res: Response<GetUserResponse>
     ) => {
-      const user = await crmCommonObjectService.get('user', req.customerConnection, req.params.user_id);
-      const snakecasedKeysUser = toSnakecasedKeysCrmUser(user);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { raw_data, ...rest } = snakecasedKeysUser;
-      return res.status(200).send(req.query?.include_raw_data?.toString() === 'true' ? snakecasedKeysUser : rest);
+      const user = await crmCommonObjectService.get('user', req.customerConnection, req.params.user_id, {
+        includeRawData: req.query?.include_raw_data?.toString() === 'true',
+      });
+      return res.status(200).send(toSnakecasedKeysCrmUser(user));
     }
   );
 
@@ -47,40 +44,28 @@ export default function init(app: Router): void {
         const { pagination, records } = await crmCommonObjectService.list('user', req.customerConnection, {
           modifiedAfter: req.query?.modified_after,
           cursor: req.query?.cursor,
+          includeRawData,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
         });
         return res.status(200).send({
           pagination,
-          records: records.map((record) => ({
-            ...toSnakecasedKeysCrmUser(record),
-            raw_data: includeRawData ? record.rawData : undefined,
-          })),
+          records: records.map(toSnakecasedKeysCrmUser),
         });
       }
-      const { pagination, records } = await managedDataService.getCrmUserRecords(
-        req.supaglueApplication.id,
-        req.customerConnection.providerName,
-        req.customerId,
-        req.query?.cursor,
-        req.query?.modified_after as unknown as string | undefined,
-        req.query?.page_size ? parseInt(req.query.page_size) : undefined
-      );
-      let fieldMappingConfig: FieldMappingConfig | undefined = undefined;
-      if (includeRawData) {
-        fieldMappingConfig = await connectionService.getFieldMappingConfig(req.customerConnection.id, 'common', 'user');
-      }
-      return res.status(200).send({
-        pagination,
-        records: records.map((record) => ({
-          ...record,
-          raw_data:
-            includeRawData && fieldMappingConfig ? toMappedProperties(record.raw_data, fieldMappingConfig) : undefined,
-          _supaglue_application_id: undefined,
-          _supaglue_customer_id: undefined,
-          _supaglue_provider_name: undefined,
-          _supaglue_emitted_at: undefined,
-        })),
-      });
+      return res
+        .status(200)
+        .send(
+          await managedDataService.getCrmUserRecords(
+            req.supaglueApplication.id,
+            req.customerConnection.providerName,
+            req.customerConnection.id,
+            req.customerId,
+            req.query?.cursor,
+            req.query?.modified_after as unknown as string | undefined,
+            req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+            includeRawData
+          )
+        );
     }
   );
 

@@ -489,7 +489,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     const mapper = (record: Record<string, unknown>) => ({
       ...getMapperForCommonObjectType(commonObjectType)(record),
-      rawData: toMappedProperties(record, fieldMappingConfig),
+      rawData: params.includeRawData ? toMappedProperties(record, fieldMappingConfig) : undefined,
     });
     const response = await this.#client.query(soql);
     const records = response.records.map(mapper);
@@ -1286,7 +1286,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Account> {
     const account = await this.#client.retrieve('Account', id);
-    return { ...fromSalesforceAccountToAccount(account), rawData: toMappedProperties(account, fieldMappingConfig) };
+    return {
+      ...fromSalesforceAccountToAccount(account),
+      rawData: params.includeRawData ? toMappedProperties(account, fieldMappingConfig) : undefined,
+    };
   }
 
   public async createAccount(params: AccountCreateParams): Promise<string> {
@@ -1324,7 +1327,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getContact(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Contact> {
     const contact = await this.#client.retrieve('Contact', id);
-    return { ...fromSalesforceContactToContact(contact), rawData: toMappedProperties(contact, fieldMappingConfig) };
+    return {
+      ...fromSalesforceContactToContact(contact),
+      rawData: params.includeRawData ? toMappedProperties(contact, fieldMappingConfig) : undefined,
+    };
   }
 
   public async createContact(params: ContactCreateParams): Promise<string> {
@@ -1362,7 +1368,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const response = await this.#client.query(soql);
     const records = response.records.map((record) => ({
       ...fromSalesforceContactToContact(record),
-      rawData: toMappedProperties(record, fieldMappingConfig),
+      rawData: params.includeRawData ? toMappedProperties(record, fieldMappingConfig) : undefined,
     }));
     return {
       pagination: {
@@ -1391,7 +1397,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const contact = await this.#client.retrieve('Opportunity', id);
     return {
       ...fromSalesforceOpportunityToOpportunity(contact),
-      rawData: toMappedProperties(contact, fieldMappingConfig),
+      rawData: params.includeRawData ? toMappedProperties(contact, fieldMappingConfig) : undefined,
     };
   }
 
@@ -1413,7 +1419,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getLead(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Lead> {
     const lead = await this.#client.retrieve('Lead', id);
-    return { ...fromSalesforceLeadToLead(lead), rawData: toMappedProperties(lead, fieldMappingConfig) };
+    return {
+      ...fromSalesforceLeadToLead(lead),
+      rawData: params.includeRawData ? toMappedProperties(lead, fieldMappingConfig) : undefined,
+    };
   }
 
   public async createLead(params: LeadCreateParams): Promise<string> {
@@ -1451,7 +1460,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     const response = await this.#client.query(soql);
     const records = response.records.map((record) => ({
       ...fromSalesforceLeadToLead(record),
-      rawData: toMappedProperties(record, fieldMappingConfig),
+      rawData: params.includeRawData ? toMappedProperties(record, fieldMappingConfig) : undefined,
     }));
     return {
       pagination: {
@@ -1474,7 +1483,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
   public async getUser(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<User> {
     const user = await this.#client.retrieve('User', id);
-    return { ...fromSalesforceUserToUser(user), rawData: toMappedProperties(user, fieldMappingConfig) };
+    return {
+      ...fromSalesforceUserToUser(user),
+      rawData: params.includeRawData ? toMappedProperties(user, fieldMappingConfig) : undefined,
+    };
   }
 
   public override async listLists(

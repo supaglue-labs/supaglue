@@ -1,7 +1,6 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmAccount } from '@supaglue/core/mappers/crm';
-import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
   CreateAccountPathParams,
   CreateAccountRequest,
@@ -21,7 +20,6 @@ import type {
   UpsertAccountRequest,
   UpsertAccountResponse,
 } from '@supaglue/schemas/v2/crm';
-import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
@@ -42,46 +40,30 @@ export default function init(app: Router): void {
       if (req.query?.read_from_cache?.toString() !== 'true') {
         const { pagination, records } = await crmCommonObjectService.list('account', req.customerConnection, {
           modifiedAfter: req.query?.modified_after,
+          includeRawData,
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
           associationsToFetch: req.query?.associations_to_fetch,
         });
         return res.status(200).send({
           pagination,
-          records: records.map((record) => ({
-            ...toSnakecasedKeysCrmAccount(record),
-            raw_data: includeRawData ? record.rawData : undefined,
-          })),
+          records: records.map(toSnakecasedKeysCrmAccount),
         });
       }
-      const { pagination, records } = await managedDataService.getCrmAccountRecords(
-        req.supaglueApplication.id,
-        req.customerConnection.providerName,
-        req.customerId,
-        req.query?.cursor,
-        req.query?.modified_after as unknown as string | undefined,
-        req.query?.page_size ? parseInt(req.query.page_size) : undefined
-      );
-      let fieldMappingConfig: FieldMappingConfig | undefined = undefined;
-      if (includeRawData) {
-        fieldMappingConfig = await connectionService.getFieldMappingConfig(
-          req.customerConnection.id,
-          'common',
-          'account'
+      return res
+        .status(200)
+        .send(
+          await managedDataService.getCrmAccountRecords(
+            req.supaglueApplication.id,
+            req.customerConnection.providerName,
+            req.customerConnection.id,
+            req.customerId,
+            req.query?.cursor,
+            req.query?.modified_after as unknown as string | undefined,
+            req.query?.page_size ? parseInt(req.query.page_size) : undefined,
+            includeRawData
+          )
         );
-      }
-      return res.status(200).send({
-        pagination,
-        records: records.map((record) => ({
-          ...record,
-          raw_data:
-            includeRawData && fieldMappingConfig ? toMappedProperties(record.raw_data, fieldMappingConfig) : undefined,
-          _supaglue_application_id: undefined,
-          _supaglue_customer_id: undefined,
-          _supaglue_provider_name: undefined,
-          _supaglue_emitted_at: undefined,
-        })),
-      });
     }
   );
 
@@ -91,12 +73,10 @@ export default function init(app: Router): void {
       req: Request<GetAccountPathParams, GetAccountResponse, GetAccountRequest, GetAccountQueryParams>,
       res: Response<GetAccountResponse>
     ) => {
-      const account = await crmCommonObjectService.get(
-        'account',
-        req.customerConnection,
-        req.params.account_id,
-        req.query?.associations_to_fetch
-      );
+      const account = await crmCommonObjectService.get('account', req.customerConnection, req.params.account_id, {
+        includeRawData: req.query?.include_raw_data?.toString() === 'true',
+        associationsToFetch: req.query?.associations_to_fetch,
+      });
       const snakecasedKeysAccount = toSnakecasedKeysCrmAccount(account);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { raw_data, ...rest } = snakecasedKeysAccount;

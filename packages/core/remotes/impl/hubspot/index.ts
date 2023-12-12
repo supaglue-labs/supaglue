@@ -1148,7 +1148,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       case 'opportunity':
         return this.getOpportunity(id, fieldMappingConfig, params);
       case 'user':
-        return this.getUser(id, fieldMappingConfig);
+        return this.getUser(id, fieldMappingConfig, params);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -1540,10 +1540,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const records = normalized.results.map((result) => {
       return {
         ...fromHubSpotCompanyToAccount(result.rawData),
-        rawData: {
-          ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
-          _associations: result.rawData.associations,
-        },
+        rawData: params.includeRawData
+          ? {
+              ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+              _associations: result.rawData.associations,
+            }
+          : undefined,
       };
     });
     return {
@@ -1576,7 +1578,9 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         ...company,
         associations: flattenedAssociations,
       } as unknown as RecordWithFlattenedAssociations),
-      rawData: { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: flattenedAssociations },
+      rawData: params.includeRawData
+        ? { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: flattenedAssociations }
+        : undefined,
     };
   }
 
@@ -1748,10 +1752,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const records = normalized.results.map((result) => {
       return {
         ...fromHubSpotDealToOpportunity(result.rawData, pipelineStageMapping),
-        rawData: {
-          ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
-          _associations: result.rawData.associations,
-        },
+        rawData: params.includeRawData
+          ? {
+              ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+              _associations: result.rawData.associations,
+            }
+          : undefined,
       };
     });
     return {
@@ -1792,7 +1798,9 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         } as unknown as RecordWithFlattenedAssociations,
         pipelineStageMapping
       ),
-      rawData: { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: flattenedAssociations },
+      rawData: params.includeRawData
+        ? { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: flattenedAssociations }
+        : undefined,
     };
   }
 
@@ -1931,15 +1939,19 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         ...hubspotContact,
         associations: flattenedAssociations,
       } as unknown as RecordWithFlattenedAssociations),
-      rawData: {
-        ...toMappedProperties(hubspotContact.properties, fieldMappingConfig),
-        _associations: flattenedAssociations,
-      },
+      rawData: params.includeRawData
+        ? {
+            ...toMappedProperties(hubspotContact.properties, fieldMappingConfig),
+            _associations: flattenedAssociations,
+          }
+        : undefined,
     };
     if (!params.expand?.includes('account') || !contact.accountId) {
       return contact;
     }
-    const account = await this.getAccount(contact.accountId, fieldMappingConfig, params);
+    const account = await this.getAccount(contact.accountId, fieldMappingConfig, {
+      includeRawData: params.includeRawData,
+    });
     return {
       ...contact,
       account,
@@ -2001,10 +2013,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const records = normalized.results.map((result) => {
       return {
         ...fromHubSpotContactToContact(result.rawData),
-        rawData: {
-          ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
-          _associations: result.rawData.associations,
-        },
+        rawData: params.includeRawData
+          ? {
+              ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+              _associations: result.rawData.associations,
+            }
+          : undefined,
       };
     });
     return {
@@ -2050,10 +2064,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const records = normalized.results.map((result) => {
       return {
         ...fromHubSpotContactToContact(result.rawData),
-        rawData: {
-          ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
-          _associations: result.rawData.associations,
-        },
+        rawData: params.includeRawData
+          ? {
+              ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+              _associations: result.rawData.associations,
+            }
+          : undefined,
       };
     });
     return {
@@ -2148,9 +2164,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     throw new BadRequestError('Not supported');
   }
 
-  public async getUser(id: string, fieldMappingConfig: FieldMappingConfig): Promise<User> {
+  public async getUser(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<User> {
     const owner = await this.#client.crm.owners.ownersApi.getById(parseInt(id));
-    return { ...fromHubspotOwnerToUser(owner), rawData: toMappedProperties(owner, fieldMappingConfig) };
+    return {
+      ...fromHubspotOwnerToUser(owner),
+      rawData: params.includeRawData ? toMappedProperties(owner, fieldMappingConfig) : undefined,
+    };
   }
 
   public async listUsers(
@@ -2168,7 +2187,9 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     const records = response.results.map((result) => {
       return {
         ...fromHubspotOwnerToUser(result),
-        rawData: toMappedProperties(fromHubspotOwnerToUser(result).rawData, fieldMappingConfig),
+        rawData: params.includeRawData
+          ? toMappedProperties(fromHubspotOwnerToUser(result).rawData, fieldMappingConfig)
+          : undefined,
       };
     });
     return {
