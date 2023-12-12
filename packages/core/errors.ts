@@ -116,6 +116,19 @@ export class UnauthorizedError extends HTTPError {
   }
 }
 
+export class PaymentRequiredError extends HTTPError {
+  httpCode = 402;
+  constructor(message?: string, { detail, status, cause, origin }: Omit<Partial<ErrorParams>, 'code'> = {}) {
+    super(message ?? 'Payment required', {
+      detail,
+      status: status ?? 402,
+      code: 'PAYMENT_REQUIRED_ERROR',
+      origin,
+      cause,
+    });
+  }
+}
+
 export class ForbiddenError extends HTTPError {
   httpCode = 403;
   constructor(message?: string, { detail, status, cause, origin }: Omit<Partial<ErrorParams>, 'code'> = {}) {

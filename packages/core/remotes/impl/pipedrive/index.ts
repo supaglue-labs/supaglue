@@ -35,6 +35,7 @@ import {
   ForbiddenError,
   InternalServerError,
   NotFoundError,
+  PaymentRequiredError,
   RemoteProviderError,
   SGConnectionNoLongerAuthenticatedError,
   TooManyRequestsError,
@@ -971,6 +972,8 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         return new InternalServerError(jsonErrorMessage, { cause, origin: 'remote-provider', status });
       case 401:
         return new UnauthorizedError(jsonErrorMessage, { cause, origin: 'remote-provider', status });
+      case 402:
+        return new PaymentRequiredError(jsonErrorMessage, { cause, origin: 'remote-provider', status });
       case 403:
         return new ForbiddenError(jsonErrorMessage, { cause, origin: 'remote-provider', status });
       case 404:
@@ -979,7 +982,6 @@ class PipedriveClient extends AbstractCrmRemoteClient {
         return new TooManyRequestsError(jsonErrorMessage, { cause, origin: 'remote-provider', status });
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
-      case 402:
       case 405:
       case 406:
       case 407:
