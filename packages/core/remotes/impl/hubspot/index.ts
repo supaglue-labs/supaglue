@@ -61,7 +61,7 @@ import type {
   SimpleCustomObjectSchemaDeprecated,
 } from '@supaglue/types/custom_object';
 import type { FieldsToFetch } from '@supaglue/types/fields_to_fetch';
-import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { AllCrmFieldMappingConfigs, FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { FormField } from '@supaglue/types/marketing_automation/form_field';
 import type { FormMetadata } from '@supaglue/types/marketing_automation/form_metadata';
 import type { SubmitFormData, SubmitFormResult } from '@supaglue/types/marketing_automation/submit_form';
@@ -1135,20 +1135,20 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
   public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
-    fieldMappingConfig: FieldMappingConfig,
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
     params: CRMCommonObjectTypeMap<T>['getParams']
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     switch (commonObjectType) {
       case 'account':
-        return this.getAccount(id, fieldMappingConfig, params);
+        return this.getAccount(id, allFieldMappingConfigs, params);
       case 'contact':
-        return this.getContact(id, fieldMappingConfig, params);
+        return this.getContact(id, allFieldMappingConfigs, params);
       case 'lead':
         throw new Error('Cannot get leads in HubSpot');
       case 'opportunity':
-        return this.getOpportunity(id, fieldMappingConfig, params);
+        return this.getOpportunity(id, allFieldMappingConfigs, params);
       case 'user':
-        return this.getUser(id, fieldMappingConfig, params);
+        return this.getUser(id, allFieldMappingConfigs, params);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -1205,7 +1205,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public override async listCommonObjectRecords<T extends 'account' | 'contact' | 'lead' | 'opportunity' | 'user'>(
     commonObjectType: CRMCommonObjectType,
-    fieldMappingConfig: FieldMappingConfig,
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
     // TODO: Implement expand for lists
@@ -1214,15 +1214,15 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     }
     switch (commonObjectType) {
       case 'contact':
-        return await this.listContacts(params, fieldMappingConfig);
+        return await this.listContacts(params, allFieldMappingConfigs);
       case 'lead':
-        return await this.listLeads(params, fieldMappingConfig);
+        return await this.listLeads(params, allFieldMappingConfigs);
       case 'account':
-        return await this.listAccounts(params, fieldMappingConfig);
+        return await this.listAccounts(params, allFieldMappingConfigs);
       case 'opportunity':
-        return await this.listOpportunities(params, fieldMappingConfig);
+        return await this.listOpportunities(params, allFieldMappingConfigs);
       case 'user':
-        return await this.listUsers(params, fieldMappingConfig);
+        return await this.listUsers(params, allFieldMappingConfigs);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -1521,10 +1521,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async listAccounts(
     params: CrmListParams,
-    fieldMappingConfig: FieldMappingConfig
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs
   ): Promise<PaginatedSupaglueRecords<Account>> {
     await this.maybeRefreshAccessToken();
-    const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertyIdsToFetch('company', allFieldMappingConfigs.account);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company', params.associationsToFetch);
     const response = params.modifiedAfter
@@ -1553,7 +1553,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         ...fromHubSpotCompanyToAccount(result.rawData),
         rawData: params.includeRawData
           ? {
-              ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+              ...toMappedProperties(result.rawData.properties, allFieldMappingConfigs.account),
               _associations: result.rawData.associations,
             }
           : undefined,
@@ -1569,8 +1569,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     };
   }
 
-  public async getAccount(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Account> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('company', fieldMappingConfig);
+  public async getAccount(
+    id: string,
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    params: CrmGetParams
+  ): Promise<Account> {
+    const properties = await this.getCommonObjectPropertyIdsToFetch('company', allFieldMappingConfigs.account);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('company', params.associationsToFetch);
     const associations = [
@@ -1590,11 +1594,14 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         associations: flattenedAssociations,
       } as unknown as RecordWithFlattenedAssociations),
       rawData: params.includeRawData
-        ? { ...toMappedProperties(company.properties, fieldMappingConfig), _associations: flattenedAssociations }
+        ? {
+            ...toMappedProperties(company.properties, allFieldMappingConfigs.account),
+            _associations: flattenedAssociations,
+          }
         : undefined,
     };
     if (account.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
-      account.owner = await this.getUser(account.ownerId, fieldMappingConfig, {
+      account.owner = await this.getUser(account.ownerId, allFieldMappingConfigs, {
         includeRawData: params.includeRawData,
       });
     }
@@ -1738,11 +1745,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async listOpportunities(
     params: CrmListParams,
-    fieldMappingConfig: FieldMappingConfig
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs
   ): Promise<PaginatedSupaglueRecords<Opportunity>> {
     await this.maybeRefreshAccessToken();
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertyIdsToFetch('deal', allFieldMappingConfigs.opportunity);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal', params.associationsToFetch);
     const response = params.modifiedAfter
@@ -1771,7 +1778,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         ...fromHubSpotDealToOpportunity(result.rawData, pipelineStageMapping),
         rawData: params.includeRawData
           ? {
-              ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+              ...toMappedProperties(result.rawData.properties, allFieldMappingConfigs.opportunity),
               _associations: result.rawData.associations,
             }
           : undefined,
@@ -1789,11 +1796,11 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async getOpportunity(
     id: string,
-    fieldMappingConfig: FieldMappingConfig,
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
     params: CrmGetParams
   ): Promise<Opportunity> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
-    const properties = await this.getCommonObjectPropertyIdsToFetch('deal', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertyIdsToFetch('deal', allFieldMappingConfigs.opportunity);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('deal', params.associationsToFetch);
     const associations = [
@@ -1816,16 +1823,19 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         pipelineStageMapping
       ),
       rawData: params.includeRawData
-        ? { ...toMappedProperties(deal.properties, fieldMappingConfig), _associations: flattenedAssociations }
+        ? {
+            ...toMappedProperties(deal.properties, allFieldMappingConfigs.opportunity),
+            _associations: flattenedAssociations,
+          }
         : undefined,
     };
     if (opportunity.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
-      opportunity.owner = await this.getUser(opportunity.ownerId, fieldMappingConfig, {
+      opportunity.owner = await this.getUser(opportunity.ownerId, allFieldMappingConfigs, {
         includeRawData: params.includeRawData,
       });
     }
     if (opportunity.accountId && params.expand?.includes('account')) {
-      opportunity.account = await this.getAccount(opportunity.accountId, fieldMappingConfig, {
+      opportunity.account = await this.getAccount(opportunity.accountId, allFieldMappingConfigs, {
         includeRawData: params.includeRawData,
       });
     }
@@ -1946,8 +1956,12 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     ]);
   }
 
-  public async getContact(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Contact> {
-    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
+  public async getContact(
+    id: string,
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    params: CrmGetParams
+  ): Promise<Contact> {
+    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', allFieldMappingConfigs.contact);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact', params.associationsToFetch);
 
@@ -1969,18 +1983,18 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       } as unknown as RecordWithFlattenedAssociations),
       rawData: params.includeRawData
         ? {
-            ...toMappedProperties(hubspotContact.properties, fieldMappingConfig),
+            ...toMappedProperties(hubspotContact.properties, allFieldMappingConfigs.contact),
             _associations: flattenedAssociations,
           }
         : undefined,
     };
     if (contact.accountId && params.expand?.includes('account')) {
-      contact.account = await this.getAccount(contact.accountId, fieldMappingConfig, {
+      contact.account = await this.getAccount(contact.accountId, allFieldMappingConfigs, {
         includeRawData: params.includeRawData,
       });
     }
     if (contact.ownerId && (params.expand?.includes('user') || params.expand?.includes('owner'))) {
-      contact.owner = await this.getUser(contact.ownerId, fieldMappingConfig, {
+      contact.owner = await this.getUser(contact.ownerId, allFieldMappingConfigs, {
         includeRawData: params.includeRawData,
       });
     }
@@ -2012,10 +2026,10 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async listContacts(
     params: CrmListParams,
-    fieldMappingConfig: FieldMappingConfig
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs
   ): Promise<PaginatedSupaglueRecords<Contact>> {
     await this.maybeRefreshAccessToken();
-    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', fieldMappingConfig);
+    const properties = await this.getCommonObjectPropertyIdsToFetch('contact', allFieldMappingConfigs.contact);
     const { standardObjectTypes: associatedStandardObjectTypes, customObjectSchemas: associatedCustomObjectSchemas } =
       await this.#getAssociatedObjectTypesForObjectTypeFeatureFlagged('contact', params.associationsToFetch);
     const response = params.modifiedAfter
@@ -2044,7 +2058,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
         ...fromHubSpotContactToContact(result.rawData),
         rawData: params.includeRawData
           ? {
-              ...toMappedProperties(result.rawData.properties, fieldMappingConfig),
+              ...toMappedProperties(result.rawData.properties, allFieldMappingConfigs.contact),
               _associations: result.rawData.associations,
             }
           : undefined,
@@ -2165,7 +2179,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
 
   public async listLeads(
     params: CrmListParams,
-    fieldMappingConfig: FieldMappingConfig
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs
   ): Promise<PaginatedSupaglueRecords<Lead>> {
     throw new BadRequestError('Listing leads is not supported for hubspot');
   }
@@ -2193,17 +2207,21 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     throw new BadRequestError('Not supported');
   }
 
-  public async getUser(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<User> {
+  public async getUser(
+    id: string,
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    params: CrmGetParams
+  ): Promise<User> {
     const owner = await this.#client.crm.owners.ownersApi.getById(parseInt(id));
     return {
       ...fromHubspotOwnerToUser(owner),
-      rawData: params.includeRawData ? toMappedProperties(owner, fieldMappingConfig) : undefined,
+      rawData: params.includeRawData ? toMappedProperties(owner, allFieldMappingConfigs.user) : undefined,
     };
   }
 
   public async listUsers(
     params: CrmListParams,
-    fieldMappingConfig: FieldMappingConfig
+    allFieldMappingConfigs: AllCrmFieldMappingConfigs
   ): Promise<PaginatedSupaglueRecords<User>> {
     let response = await this.#listUsersFull(
       /* archived */ false,
@@ -2217,7 +2235,7 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
       return {
         ...fromHubspotOwnerToUser(result),
         rawData: params.includeRawData
-          ? toMappedProperties(fromHubspotOwnerToUser(result).rawData, fieldMappingConfig)
+          ? toMappedProperties(fromHubspotOwnerToUser(result).rawData, allFieldMappingConfigs.user)
           : undefined,
       };
     });

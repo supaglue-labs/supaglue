@@ -1,3 +1,5 @@
+import type { CRMCommonObjectType } from './crm/index';
+
 export type FieldMapping = {
   schemaField: string;
   mappedField: string;
@@ -14,3 +16,5 @@ export type DefinedFieldMappingConfig = {
 };
 
 export type FieldMappingConfig = InheritedFieldMappingConfig | DefinedFieldMappingConfig;
+
+export type AllCrmFieldMappingConfigs = Record<CRMCommonObjectType, FieldMappingConfig>;

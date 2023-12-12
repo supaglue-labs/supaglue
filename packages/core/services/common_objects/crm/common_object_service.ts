@@ -41,10 +41,10 @@ export class CrmCommonObjectService {
     params: CRMCommonObjectTypeMap<T>['getParams'] = {}
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
-    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
+    const allFieldMappings = await this.#connectionService.getAllCrmCommonFieldMappingConfigs(connection.id);
 
     const end = remoteDuration.startTimer({ operation: 'get', remote_name: providerName });
-    const obj = await remoteClient.getCommonObjectRecord(objectName, id, fieldMappingConfig, params);
+    const obj = await remoteClient.getCommonObjectRecord(objectName, id, allFieldMappings, params);
     end();
 
     return obj;
@@ -56,10 +56,10 @@ export class CrmCommonObjectService {
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
     const [remoteClient, providerName] = await this.#remoteService.getCrmRemoteClient(connection.id);
-    const fieldMappingConfig = await this.#connectionService.getFieldMappingConfig(connection.id, 'common', objectName);
+    const allFieldMappings = await this.#connectionService.getAllCrmCommonFieldMappingConfigs(connection.id);
 
     const end = remoteDuration.startTimer({ operation: 'get', remote_name: providerName });
-    const records = await remoteClient.listCommonObjectRecords(objectName, fieldMappingConfig, params);
+    const records = await remoteClient.listCommonObjectRecords(objectName, allFieldMappings, params);
     end();
 
     return records;
