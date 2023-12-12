@@ -577,33 +577,27 @@ export const toHubspotTypeAndFieldType = (
   propertyType: PropertyType
 ): { type: PropertyUpdateTypeEnum; fieldType: PropertyUpdateFieldTypeEnum } => {
   switch (propertyType) {
-    case 'text': {
+    case 'text':
       return { type: 'string', fieldType: 'text' };
-    }
-    case 'textarea': {
+    case 'textarea':
       return { type: 'string', fieldType: 'textarea' };
-    }
-    case 'number': {
+    case 'number':
       return { type: 'number', fieldType: 'number' };
-    }
-    case 'picklist': {
+    case 'picklist':
       return { type: 'enumeration', fieldType: 'select' };
-    }
-    case 'multipicklist': {
+    case 'multipicklist':
       return { type: 'enumeration', fieldType: 'checkbox' };
-    }
-    case 'date': {
+    case 'date':
       return { type: 'date', fieldType: 'date' };
-    }
-    case 'datetime': {
+    case 'datetime':
       return {
         type: 'datetime',
         fieldType: 'date',
       };
-    }
-    case 'boolean': {
+    case 'boolean':
       return { type: 'bool', fieldType: 'booleancheckbox' };
-    }
+    case 'url':
+      throw new BadRequestError('url type is unsupported');
     default:
       return { type: 'string', fieldType: 'text' };
   }
@@ -624,24 +618,36 @@ export const toRawDetails = (property: HubspotProperty): Record<string, unknown>
 export const getHubspotOptions = (
   property: PropertyUnified | CreatePropertyParams | UpdatePropertyParams
 ): OptionInput[] | undefined => {
-  // TODO: Support picklist
-  if (property.type !== 'boolean') {
-    return;
+  switch (property.type) {
+    case 'picklist':
+    case 'multipicklist': {
+      return property.options?.map((option, idx) => ({
+        label: option.label,
+        value: option.value,
+        description: option.description,
+        hidden: option.hidden ?? false,
+        displayOrder: idx + 1,
+      }));
+    }
+    case 'boolean': {
+      return [
+        {
+          label: 'Yes',
+          value: 'true',
+          displayOrder: 1,
+          hidden: false,
+        },
+        {
+          label: 'No',
+          value: 'false',
+          displayOrder: 2,
+          hidden: false,
+        },
+      ];
+    }
+    default:
+      return;
   }
-  return [
-    {
-      label: 'Yes',
-      value: 'true',
-      displayOrder: 1,
-      hidden: false,
-    },
-    {
-      label: 'No',
-      value: 'false',
-      displayOrder: 2,
-      hidden: false,
-    },
-  ];
 };
 
 export const toHubspotCreatePropertyParams = (params: CreatePropertyParams): HubspotPropertyCreate => {

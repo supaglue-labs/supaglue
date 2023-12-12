@@ -216,13 +216,13 @@ export const fromPipedriveUserToUser = (user: PipedriveRecord): User => {
 export const fromPipedriveEmailsToEmailAddresses = (emails: { label: string; value: string }[]): EmailAddress[] => {
   return emails
     .filter(({ label }) => label === 'work' || label === 'primary')
-    .map((email) => ({ emailAddress: email.value, emailAddressType: email.label } as EmailAddress));
+    .map((email) => ({ emailAddress: email.value, emailAddressType: email.label }) as EmailAddress);
 };
 
 export const fromPipedrivePhonesToPhoneNumbers = (phoneNumbers: { label: string; value: string }[]): PhoneNumber[] => {
   return phoneNumbers
     .filter(({ label }) => label === 'mobile' || label === 'primary' || label === 'fax')
-    .map((phoneNumber) => ({ phoneNumber: phoneNumber.value, phoneNumberType: phoneNumber.label } as PhoneNumber));
+    .map((phoneNumber) => ({ phoneNumber: phoneNumber.value, phoneNumberType: phoneNumber.label }) as PhoneNumber);
 };
 
 export const fromPipedriveOrganizationToAddresses = (organization: PipedriveRecord): Address[] => {

@@ -4,6 +4,7 @@
 
 import type {
   ConnectionUnsafe,
+  CreatePropertyParams,
   CRMProvider,
   ListedObjectRecord,
   ObjectRecordUpsertData,
@@ -13,6 +14,7 @@ import type {
   PropertyUnified,
   Provider,
   RateLimitInfo,
+  RemoteUserIdAndDetails,
   SendPassthroughRequestRequest,
   SendPassthroughRequestResponse,
   StandardOrCustomObjectDef,
@@ -62,6 +64,7 @@ import { pipeline, Readable, Transform } from 'stream';
 import {
   BadGatewayError,
   BadRequestError,
+  ConflictError,
   ForbiddenError,
   NotFoundError,
   NotModifiedError,
@@ -100,6 +103,7 @@ import {
   toSalesforceContactCreateParams,
   toSalesforceContactUpdateParams,
   toSalesforceCustomFieldCreateParams,
+  toSalesforceCustomFieldCreateParamsForToolingAPI,
   toSalesforceCustomObjectCreateParams,
   toSalesforceLeadCreateParams,
   toSalesforceLeadUpdateParams,
@@ -627,7 +631,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
     const response = await this.#client.create(objectName, data);
     if (!response.success) {
-      throw new Error(`Failed to create Salesforce ${objectName}`);
+      throw response.errors[0];
     }
     return response.id;
   }
@@ -646,8 +650,69 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       ...data,
     });
     if (!response.success) {
-      throw new Error(`Failed to update Salesforce ${objectName}: ${JSON.stringify(response)}`);
+      throw response.errors[0];
     }
+  }
+
+  public override async getProperty(objectName: string, propertyName: string): Promise<PropertyUnified> {
+    const propertyIdToFind = propertyName.endsWith('__c') ? propertyName : `${propertyName}__c`;
+    const property = await this.listPropertiesUnified(objectName).then((properties) =>
+      properties.find((property) => property.id === propertyIdToFind)
+    );
+
+    if (!property) {
+      throw new NotFoundError(`Could not find property ${propertyName} on object ${objectName}`);
+    }
+
+    return property;
+  }
+
+  public override async createProperty(objectName: string, params: CreatePropertyParams): Promise<PropertyUnified> {
+    const propertyName = params.name.endsWith('__c') ? params.name : `${params.name}__c`;
+    const createParams = toSalesforceCustomFieldCreateParamsForToolingAPI(
+      capitalizeString(objectName),
+      { ...params, id: propertyName },
+      /* prefixed */ true
+    );
+
+    const result = await this.#client.tooling.create('CustomField', createParams);
+
+    if (!result.success) {
+      throw result.errors[0];
+    }
+
+    await this.updateFieldPermissions(objectName, [propertyName]);
+
+    return { ...params, id: params.name };
+  }
+
+  public override async updateProperty(
+    objectName: string,
+    propertyName: string,
+    params: Partial<Omit<PropertyUnified, 'id' | 'customName' | 'rawDetails'>>
+  ): Promise<PropertyUnified> {
+    const fieldId = (
+      await this.#client.tooling.query(`SELECT Id FROM CustomField WHERE DeveloperName='${propertyName}'`)
+    ).records[0]?.Id;
+
+    if (!fieldId) {
+      throw new NotFoundError(`Could not find custom property ${propertyName} on object ${objectName}`, {
+        detail: `Could not find custom property ${propertyName} on object ${objectName}. Only custom properties can be updated.`,
+      });
+    }
+
+    const property = await this.getProperty(objectName, propertyName);
+
+    const result = await this.#client.tooling.update('CustomField', {
+      Id: fieldId,
+      ...toSalesforceCustomFieldCreateParamsForToolingAPI(objectName, { ...property, ...params }, /* prefixed */ true),
+    });
+
+    if (!result.success) {
+      throw result.errors[0];
+    }
+
+    return { ...property, ...params };
   }
 
   protected override getAuthHeadersForPassthroughRequest(): Record<string, string> {
@@ -731,7 +796,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
 
     const nonRequiredFields = nonPrimaryFields.filter((field) => !field.isRequired);
 
-    await this.updateFieldPermissions(objectName, nonRequiredFields);
+    await this.updateFieldPermissions(
+      objectName,
+      nonRequiredFields.map((field) => field.id)
+    );
 
     if (result.success) {
       throw new Error(
@@ -748,7 +816,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     return objectName;
   }
 
-  private async updateFieldPermissions(objectName: string, nonPrimaryFields: PropertyUnified[]): Promise<void> {
+  private async updateFieldPermissions(objectName: string, nonPrimaryFields: string[]): Promise<void> {
     // After custom fields are created, they're not automatically visible. We need to
     // set the field-level security to Visible for profiles.
     // Instead of updating all profiles, we'll just update it for the profile for the user
@@ -769,23 +837,30 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       fields: ['ProfileId'],
     });
 
-    // Get the first permission set
-    // TODO: Is this the right thing to do? How do we know the first one is the best one?
-    const result = await this.#client.query(`SELECT Id FROM PermissionSet WHERE ProfileId='${user.ProfileId}' LIMIT 1`);
-    if (!result.records.length) {
-      throw new Error(`Could not find permission set for profile ${user.ProfileId}`);
-    }
+    // Get the Id for the standard user profile
+    const [standardUserId] = (
+      await this.#client.query(`SELECT Id FROM Profile WHERE Name = 'Standard User'`)
+    ).records.map((record) => record.Id);
 
-    const permissionSetId = result.records[0].Id;
+    const profileIdsToGrantPermissionsTo = [user.ProfileId, standardUserId];
+
+    // Get the permission set ids
+    const permissionSetIds = (
+      await this.#client.query(
+        `SELECT Id FROM PermissionSet WHERE ProfileId IN ('${profileIdsToGrantPermissionsTo.join("','")}')`
+      )
+    ).records.map((record) => record.Id);
 
     // Figure out which fields already have permissions
     // TODO: Paginate
     const { records: existingFieldPermissions } = await this.#client.query(
-      `SELECT Field FROM FieldPermissions WHERE SobjectType='${objectName}' AND ParentId='${permissionSetId}'`
+      `SELECT Field FROM FieldPermissions WHERE SobjectType='${objectName}' AND ParentId IN ('${permissionSetIds.join(
+        "','"
+      )}')`
     );
     const existingFieldPermissionFieldNames = existingFieldPermissions.map((fieldPermission) => fieldPermission.Field);
     const fieldsToAddPermissionsFor = nonPrimaryFields.filter(
-      (field) => !existingFieldPermissionFieldNames.includes(`${objectName}.${field.id}`)
+      (field) => !existingFieldPermissionFieldNames.includes(`${objectName}.${field}`)
     );
 
     const { compositeResponse } = await this.#client.requestPost<{ compositeResponse: { httpStatusCode: number }[] }>(
@@ -794,18 +869,22 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         // We're doing this for all fields, not just the added ones, in case the previous
         // call to this endpoint succeeded creating additional fields but failed to
         // add permissions for them.
-        compositeRequest: fieldsToAddPermissionsFor.map((field) => ({
-          referenceId: field.id,
-          method: 'POST',
-          url: `/services/data/v${SALESFORCE_API_VERSION}/sobjects/FieldPermissions/`,
-          body: {
-            ParentId: permissionSetId,
-            SobjectType: objectName,
-            Field: `${objectName}.${field.id}`,
-            PermissionsEdit: true,
-            PermissionsRead: true,
-          },
-        })),
+        compositeRequest: fieldsToAddPermissionsFor
+          .map((field) =>
+            permissionSetIds.map((permissionSetId) => ({
+              referenceId: `${field}_${permissionSetId}`,
+              method: 'POST',
+              url: `/services/data/v${SALESFORCE_API_VERSION}/sobjects/FieldPermissions/`,
+              body: {
+                ParentId: permissionSetId,
+                SobjectType: objectName,
+                Field: `${objectName}.${field}`,
+                PermissionsEdit: true,
+                PermissionsRead: true,
+              },
+            }))
+          )
+          .flat(),
       }
     );
     // if not 2xx
@@ -869,7 +948,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         toSalesforceCustomObjectCreateParams(objectName, params.labels, params.description, primaryField!, [])
       );
       if (!updateObjectResult.success) {
-        throw new Error(`Failed to update custom object: ${JSON.stringify(updateObjectResult, null, 2)}`);
+        throw updateObjectResult.errors[0];
       }
     }
 
@@ -914,7 +993,10 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     // Update permissions for updated/added fields
     if (addedFields.length || updatedFields.length) {
       const nonRequiredFields = [...addedFields, ...updatedFields].filter((field) => !field.isRequired);
-      await this.updateFieldPermissions(objectName, nonRequiredFields);
+      await this.updateFieldPermissions(
+        objectName,
+        nonRequiredFields.map((field) => field.id)
+      );
     }
   }
 
@@ -1273,8 +1355,8 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   private async getSObjectProperties(sobject: string): Promise<Property[]> {
     const response = await this.#client.describe(sobject);
     return response.fields
-      .filter((field: { type: string }) => !COMPOUND_TYPES.includes(field.type))
-      .map((field: { name: string; type: string; label: string }) => ({
+      .filter((field) => !COMPOUND_TYPES.includes(field.type))
+      .map((field) => ({
         id: field.name,
         label: field.label,
         type: field.type,
@@ -1290,7 +1372,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public async createAccount(params: AccountCreateParams): Promise<string> {
     const response = await this.#client.create('Account', toSalesforceAccountCreateParams(params));
     if (!response.success) {
-      throw new Error('Failed to create Salesforce account');
+      throw response.errors[0];
     }
     return response.id;
   }
@@ -1315,7 +1397,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public async updateAccount(params: AccountUpdateParams): Promise<string> {
     const response = await this.#client.update('Account', toSalesforceAccountUpdateParams(params));
     if (!response.success) {
-      throw new Error('Failed to update Salesforce account');
+      throw response.errors[0];
     }
     return response.id;
   }
@@ -1328,7 +1410,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public async createContact(params: ContactCreateParams): Promise<string> {
     const response = await this.#client.create('Contact', toSalesforceContactCreateParams(params));
     if (!response.success) {
-      throw new Error('Failed to create Salesforce contact');
+      throw response.errors[0];
     }
     return response.id;
   }
@@ -1376,7 +1458,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public async updateContact(params: ContactUpdateParams): Promise<string> {
     const response = await this.#client.update('Contact', toSalesforceContactUpdateParams(params));
     if (!response.success) {
-      throw new Error('Failed to update Salesforce contact');
+      throw response.errors[0];
     }
     return response.id;
   }
@@ -1392,7 +1474,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public async createOpportunity(params: OpportunityCreateParams): Promise<string> {
     const response = await this.#client.create('Opportunity', toSalesforceOpportunityCreateParams(params));
     if (!response.success) {
-      throw new Error('Failed to create Salesforce opportunity');
+      throw response.errors[0];
     }
     return response.id;
   }
@@ -1400,7 +1482,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public async updateOpportunity(params: OpportunityUpdateParams): Promise<string> {
     const response = await this.#client.update('Opportunity', toSalesforceOpportunityUpdateParams(params));
     if (!response.success) {
-      throw new Error('Failed to update Salesforce opportunity');
+      throw response.errors[0];
     }
     return response.id;
   }
@@ -1413,7 +1495,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public async createLead(params: LeadCreateParams): Promise<string> {
     const response = await this.#client.create('Lead', toSalesforceLeadCreateParams(params));
     if (!response.success) {
-      throw new Error('Failed to create Salesforce lead');
+      throw response.errors[0];
     }
     return response.id;
   }
@@ -1461,7 +1543,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
   public async updateLead(params: LeadUpdateParams): Promise<string> {
     const response = await this.#client.update('Lead', toSalesforceLeadUpdateParams(params));
     if (!response.success) {
-      throw new Error('Failed to update Salesforce lead');
+      throw response.errors[0];
     }
     return response.id;
   }
@@ -1625,6 +1707,12 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     };
   }
 
+  public override async getUserIdAndDetails(): Promise<RemoteUserIdAndDetails> {
+    const rawDetails = await this.#client.identity();
+    const userId = rawDetails.user_id;
+    return { userId, rawDetails };
+  }
+
   public override async handleErr(err: unknown): Promise<unknown> {
     const error = err as any;
 
@@ -1646,7 +1734,8 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
     }
 
     // https://developer.salesforce.com/docs/atlas.en-us.210.0.object_reference.meta/object_reference/sforce_api_calls_concepts_core_data_objects.htm#i1421192
-    switch (error.errorCode) {
+    // REST API errors have errorCode, while SOAP API errors have statusCode
+    switch (error.errorCode || error.statusCode) {
       case 'DUPLICATE_VALUE':
       case 'ERROR_HTTP_400':
       case 'INVALID_FIELD':
@@ -1679,6 +1768,9 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
         return new NotModifiedError(inferredTitle, { cause: error, origin: 'remote-provider' });
       case 'ERROR_HTTP_503':
         return new BadGatewayError('Salesforce API is temporarily unavailable', { cause: error });
+      case 'DUPLICATE_DEVELOPER_NAME':
+      case 'DUPLICATE_CUSTOM_ENTITY_DEFINITION':
+        return new ConflictError(inferredTitle, { cause: error, origin: 'remote-provider' });
       // The following are unmapped to Supaglue errors, but we want to pass
       // them back as 4xx so they aren't 500 and developers can view error messages
       case 'ALL_OR_NONE_OPERATION_ROLLED_BACK':
@@ -1718,9 +1810,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'DELETE_FAILED':
       case 'DEPENDENCY_EXISTS':
       case 'DUPLICATE_CASE_SOLUTION':
-      case 'DUPLICATE_CUSTOM_ENTITY_DEFINITION':
       case 'DUPLICATE_CUSTOM_TAB_MOTIF':
-      case 'DUPLICATE_DEVELOPER_NAME':
       case 'DUPLICATES_DETECTED':
       case 'DUPLICATE_EXTERNAL_ID':
       case 'DUPLICATE_MASTER_LABEL':
