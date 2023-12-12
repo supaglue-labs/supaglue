@@ -1,7 +1,7 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "version": "0.24.1",
+    "version": "0.25.1",
     "title": "Management API",
     "contact": {
       "name": "Supaglue",
@@ -2432,7 +2432,7 @@
       "get": {
         "operationId": "getProviderUserId",
         "summary": "Get logged in User ID and details",
-        "description": "This endpoint returns the ID of the logged in (common schema) User and details.\n\nThe common schema User ID maps to the following 3rd-party provider object IDs:\n\n| Provider  | Remote object ID  |\n| --------- | ----------------- |\n| Hubspot   | V3 Owner          |\n| Dynamics  | Azure System User |\n| Intercom  | Admin             |\n",
+        "description": "This endpoint returns the ID of the logged in (common schema) User and details.\n\nThe common schema User ID maps to the following 3rd-party provider object IDs:\n\n| Provider   | Remote object ID  |\n| ---------- | ----------------- |\n| Salesforce | User              |\n| Hubspot    | V3 Owner          |\n| Dynamics   | Azure System User |\n| Intercom   | Admin             |\n",
         "tags": [
           "Connections"
         ],

@@ -137,7 +137,7 @@ app.use((err: unknown, req: Request, res: Response<{ errors: ResponseErrors }>, 
   return res.status(500).json({
     errors: [
       {
-        id: req.id.toString(),
+        id: req.id?.toString(),
         title: 'Internal Server Error',
         detail: (err as any).message ?? 'Internal Server Error',
         problem_type: 'INTERNAL_SERVER_ERROR',

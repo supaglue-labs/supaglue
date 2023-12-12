@@ -539,6 +539,10 @@ export interface paths {
     /**
      * Create property
      * @description Creates a custom property in the provider and registers it in Supaglue.
+     *
+     * :::note
+     * This endpoint is only supported for Salesforce and Hubspot currently.
+     * :::
      */
     post: operations["createProperty"];
     parameters: {
@@ -564,6 +568,10 @@ export interface paths {
      * Update property (preview)
      * @description :::note
      * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+     * :::
+     *
+     * :::note
+     * This endpoint is only supported for Salesforce and Hubspot currently.
      * :::
      */
     patch: operations["updateProperty"];
@@ -1056,20 +1064,28 @@ export interface components {
     /**
      * @description Type of the field.
      *
+     * :::note
+     * `picklist` and `multipicklist` property types are currently only supported in Salesforce and Hubspot
+     * :::
+     *
+     * :::note
+     * `url` property type currently is only natively supported in Salesforce.
+     * :::
+     *
      * Support:
      *
      * <table>
      *   <thead>
      *     <tr>
-     *     <th>Field</th>
-     *     <th>Hubspot (type-fieldType)</th>
-     *     <th>Salesforce</th>
-     *     <th>Pipedrive</th>
+     *       <th>Type</th>
+     *       <th>Hubspot (type-fieldType)</th>
+     *       <th>Salesforce</th>
+     *       <th>Pipedrive</th>
      *     </tr>
      *   </thead>
      *   <tbody>
      *     <tr>
-     *      <td>text</td>
+     *       <td>text</td>
      *       <td>string-text</td>
      *       <td>Text</td>
      *       <td>varchar_auto</td>
@@ -1111,17 +1127,23 @@ export interface components {
      *       <td>date</td>
      *     </tr>
      *     <tr>
-     *     <td>boolean</td>
+     *       <td>boolean</td>
      *       <td>bool-booleancheckbox</td>
      *       <td>Checkbox</td>
      *       <td>enum</td>
+     *     </tr>
+     *     <tr>
+     *       <td>url</td>
+     *       <td>Not Supported</td>
+     *       <td>Url</td>
+     *       <td>Not Supported</td>
      *     </tr>
      *   </tbody>
      *   </table>
      *
      * @enum {string}
      */
-    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "other";
+    property_type: "text" | "textarea" | "number" | "picklist" | "multipicklist" | "date" | "datetime" | "boolean" | "url" | "other";
     picklist_option: {
       /** @example Option 1 */
       label: string;
@@ -3443,6 +3465,10 @@ export interface operations {
   /**
    * Create property
    * @description Creates a custom property in the provider and registers it in Supaglue.
+   *
+   * :::note
+   * This endpoint is only supported for Salesforce and Hubspot currently.
+   * :::
    */
   createProperty: {
     parameters: {
@@ -3462,7 +3488,7 @@ export interface operations {
     };
     responses: {
       /** @description Create a property */
-      200: {
+      201: {
         content: {
           "application/json": components["schemas"]["property_unified"];
         };
@@ -3517,6 +3543,10 @@ export interface operations {
    * Update property (preview)
    * @description :::note
    * This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+   * :::
+   *
+   * :::note
+   * This endpoint is only supported for Salesforce and Hubspot currently.
    * :::
    */
   updateProperty: {

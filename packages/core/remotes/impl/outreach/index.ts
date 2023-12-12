@@ -1,4 +1,4 @@
-import axios, { AxiosError, isAxiosError } from '@supaglue/core/remotes/sg_axios';
+import axios, { isAxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   EngagementOauthProvider,
@@ -1955,7 +1955,7 @@ class OutreachClient extends AbstractEngagementRemoteClient {
   }
 
   public override async handleErr(err: unknown): Promise<unknown> {
-    if (!(err instanceof AxiosError)) {
+    if (!isAxiosError(err)) {
       return err;
     }
 

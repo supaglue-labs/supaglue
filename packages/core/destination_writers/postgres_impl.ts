@@ -112,8 +112,6 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     } catch (err) {
       childLogger.error({ err }, 'Error upserting common object record');
       throw err;
-    } finally {
-      client.release();
     }
   }
 
@@ -132,106 +130,105 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `temp_${table}`;
 
-    try {
-      await setup();
+    await setup();
 
-      const columns = getColumnsForCommonObject(category, commonObjectType);
-      const columnsToUpdate = columns.filter(
-        (c) =>
-          c !== '_supaglue_application_id' &&
-          c !== '_supaglue_provider_name' &&
-          c !== '_supaglue_customer_id' &&
-          c !== 'id'
-      );
+    const columns = getColumnsForCommonObject(category, commonObjectType);
+    const columnsToUpdate = columns.filter(
+      (c) =>
+        c !== '_supaglue_application_id' &&
+        c !== '_supaglue_provider_name' &&
+        c !== '_supaglue_customer_id' &&
+        c !== 'id'
+    );
 
-      // Output
-      const stream = client.query(
-        copyFrom(`COPY ${tempTable} (${columns.join(',')}) FROM STDIN WITH (DELIMITER ',', FORMAT CSV)`)
-      );
+    // Output
+    const stream = client.query(
+      copyFrom(`COPY ${tempTable} (${columns.join(',')}) FROM STDIN WITH (DELIMITER ',', FORMAT CSV)`)
+    );
 
-      // Input
-      const stringifier = stringify({
-        columns,
-        cast: {
-          boolean: (value: boolean) => value.toString(),
-          object: (value: object) => jsonStringifyWithoutNullChars(value),
-          date: (value: Date) => value.toISOString(),
-          string: (value: string) => stripNullCharsFromString(value),
-        },
-        quoted: true,
-      });
+    // Input
+    const stringifier = stringify({
+      columns,
+      cast: {
+        boolean: (value: boolean) => value.toString(),
+        object: (value: object) => jsonStringifyWithoutNullChars(value),
+        date: (value: Date) => value.toISOString(),
+        string: (value: string) => stripNullCharsFromString(value),
+      },
+      quoted: true,
+    });
 
-      const mapper = getSnakecasedKeysMapper(category, commonObjectType);
+    const mapper = getSnakecasedKeysMapper(category, commonObjectType);
 
-      // Keep track of stuff
-      let tempTableRowCount = 0;
-      let maxLastModifiedAt: Date | null = null;
+    // Keep track of stuff
+    let tempTableRowCount = 0;
+    let maxLastModifiedAt: Date | null = null;
 
-      childLogger.info('Importing common object records into temp table [IN PROGRESS]');
-      await pipeline(
-        inputStream,
-        new Transform({
-          objectMode: true,
-          transform: (chunk, encoding, callback) => {
-            try {
-              const { record, emittedAt } = chunk;
-              const unifiedData = mapper(record);
-              const mappedRecord = {
-                _supaglue_application_id: applicationId,
-                _supaglue_provider_name: providerName,
-                _supaglue_customer_id: customerId,
-                _supaglue_emitted_at: emittedAt,
-                _supaglue_unified_data: omit(unifiedData, ['raw_data']),
-                ...unifiedData,
-              };
+    childLogger.info('Importing common object records into temp table [IN PROGRESS]');
+    await pipeline(
+      inputStream,
+      new Transform({
+        objectMode: true,
+        transform: (chunk, encoding, callback) => {
+          try {
+            const { record, emittedAt } = chunk;
+            const unifiedData = mapper(record);
+            const mappedRecord = {
+              _supaglue_application_id: applicationId,
+              _supaglue_provider_name: providerName,
+              _supaglue_customer_id: customerId,
+              _supaglue_emitted_at: emittedAt,
+              _supaglue_unified_data: omit(unifiedData, ['raw_data']),
+              ...unifiedData,
+            };
 
-              ++tempTableRowCount;
+            ++tempTableRowCount;
 
-              // Update the max lastModifiedAt
-              const { lastModifiedAt } = record;
-              if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
-                maxLastModifiedAt = lastModifiedAt;
-              }
-
-              callback(null, mappedRecord);
-            } catch (e: any) {
-              return callback(e);
+            // Update the max lastModifiedAt
+            const { lastModifiedAt } = record;
+            if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
+              maxLastModifiedAt = lastModifiedAt;
             }
-          },
-        }),
-        stringifier,
-        stream
-      );
-      childLogger.info('Importing common object records into temp table [COMPLETED]');
 
-      // Copy from deduped temp table
-      const columnsToUpdateStr = columnsToUpdate.join(',');
-      const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
+            callback(null, mappedRecord);
+          } catch (e: any) {
+            return callback(e);
+          }
+        },
+      }),
+      stringifier,
+      stream
+    );
+    childLogger.info('Importing common object records into temp table [COMPLETED]');
 
-      // Paginate
-      const batchSize = 10000;
-      for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
-        childLogger.info({ offset }, 'Copying from deduped temp table to main table [IN PROGRESS]');
-        // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
-        // For example, hubspot will return the same record twice when querying for `archived: true` if
-        // the record was archived, restored, and archived again.
-        // TODO: This may have performance implications. We should look into this later.
-        // https://github.com/supaglue-labs/supaglue/issues/497
-        await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
+    // Copy from deduped temp table
+    const columnsToUpdateStr = columnsToUpdate.join(',');
+    const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
+
+    // Paginate
+    const batchSize = 10000;
+    for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
+      childLogger.info({ offset }, 'Copying from deduped temp table to main table [IN PROGRESS]');
+      // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
+      // For example, hubspot will return the same record twice when querying for `archived: true` if
+      // the record was archived, restored, and archived again.
+      // TODO: This may have performance implications. We should look into this later.
+      // https://github.com/supaglue-labs/supaglue/issues/497
+      await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
 SELECT DISTINCT ON (id) ${columns.join(
-          ','
-        )} FROM ${tempTable} ORDER BY id ASC, last_modified_at DESC OFFSET ${offset} LIMIT ${batchSize}
+        ','
+      )} FROM ${tempTable} ORDER BY id ASC, last_modified_at DESC OFFSET ${offset} LIMIT ${batchSize}
 ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, id)
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
-        childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
-        heartbeat();
-      }
+      childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
+      heartbeat();
+    }
 
-      childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
+    childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
-      if (diffAndDeleteRecords) {
-        childLogger.info('Marking rows as deleted [IN PROGRESS]');
-        await client.query(`
+    if (diffAndDeleteRecords) {
+      childLogger.info('Marking rows as deleted [IN PROGRESS]');
+      await client.query(`
         UPDATE ${qualifiedTable} AS destination
         SET is_deleted = TRUE
         WHERE
@@ -244,19 +241,16 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
             WHERE temp.id = destination.id
         );
         `);
-        childLogger.info('Marking rows as deleted [COMPLETED]');
-        heartbeat();
-      }
-
-      // We don't drop deduped temp table here because we're closing the connection here anyway.
-
-      return {
-        maxLastModifiedAt,
-        numRecords: tempTableRowCount, // TODO: not quite accurate (because there can be duplicates) but good enough
-      };
-    } finally {
-      client.release();
+      childLogger.info('Marking rows as deleted [COMPLETED]');
+      heartbeat();
     }
+
+    // We don't drop deduped temp table here because we're closing the connection here anyway.
+
+    return {
+      maxLastModifiedAt,
+      numRecords: tempTableRowCount, // TODO: not quite accurate (because there can be duplicates) but good enough
+    };
   }
 
   async upsertRecordImpl(
@@ -327,8 +321,6 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     } catch (err) {
       childLogger.error({ err }, 'Error upserting record');
       throw err;
-    } finally {
-      client.release();
     }
   }
 
@@ -348,125 +340,124 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`,
     const qualifiedTable = `"${schema}".${table}`;
     const tempTable = `"temp_${table}"`;
 
-    try {
-      await setup();
+    await setup();
 
-      // TODO: Make this type-safe
-      const columns = [
-        '_supaglue_application_id',
-        '_supaglue_provider_name',
-        '_supaglue_customer_id',
-        '_supaglue_id',
-        '_supaglue_emitted_at',
-        '_supaglue_last_modified_at',
-        '_supaglue_is_deleted',
-        '_supaglue_raw_data',
-        // This is used to support entities + schemas. We should write empty object otherwise (e.g. for managed destinations).
-        '_supaglue_mapped_data',
-        ...(objectType === 'custom' ? ['_supaglue_object_name'] : []),
-      ];
-      const columnsToUpdate = columns.filter(
-        (c) =>
-          c !== '_supaglue_application_id' &&
-          c !== '_supaglue_provider_name' &&
-          c !== '_supaglue_customer_id' &&
-          c !== '_supaglue_id' &&
-          c !== '_supaglue_object_name'
-      );
+    // TODO: Make this type-safe
+    const columns = [
+      '_supaglue_application_id',
+      '_supaglue_provider_name',
+      '_supaglue_customer_id',
+      '_supaglue_id',
+      '_supaglue_emitted_at',
+      '_supaglue_last_modified_at',
+      '_supaglue_is_deleted',
+      '_supaglue_raw_data',
+      // This is used to support entities + schemas. We should write empty object otherwise (e.g. for managed destinations).
+      '_supaglue_mapped_data',
+      ...(objectType === 'custom' ? ['_supaglue_object_name'] : []),
+    ];
+    const columnsToUpdate = columns.filter(
+      (c) =>
+        c !== '_supaglue_application_id' &&
+        c !== '_supaglue_provider_name' &&
+        c !== '_supaglue_customer_id' &&
+        c !== '_supaglue_id' &&
+        c !== '_supaglue_object_name'
+    );
 
-      // Output
-      const stream = client.query(
-        copyFrom(`COPY ${tempTable} (${columns.join(',')}) FROM STDIN WITH (DELIMITER ',', FORMAT CSV)`)
-      );
+    // Output
+    const stream = client.query(
+      copyFrom(`COPY ${tempTable} (${columns.join(',')}) FROM STDIN WITH (DELIMITER ',', FORMAT CSV)`)
+    );
 
-      // Input
-      const stringifier = stringify({
-        columns,
-        cast: {
-          boolean: (value: boolean) => value.toString(),
-          object: (value: object) => jsonStringifyWithoutNullChars(value),
-          date: (value: Date) => value.toISOString(),
-          string: (value: string) => stripNullCharsFromString(value),
-        },
-        quoted: true,
-      });
+    // Input
+    const stringifier = stringify({
+      columns,
+      cast: {
+        boolean: (value: boolean) => value.toString(),
+        object: (value: object) => jsonStringifyWithoutNullChars(value),
+        date: (value: Date) => value.toISOString(),
+        string: (value: string) => stripNullCharsFromString(value),
+      },
+      quoted: true,
+    });
 
-      // Keep track of stuff
-      let tempTableRowCount = 0;
-      let maxLastModifiedAt: Date | null = null;
+    // Keep track of stuff
+    let tempTableRowCount = 0;
+    let maxLastModifiedAt: Date | null = null;
 
-      childLogger.info('Importing raw records into temp table [IN PROGRESS]');
-      await pipeline(
-        inputStream,
-        new Transform({
-          objectMode: true,
-          transform: (record: MappedListedObjectRecord, encoding, callback) => {
-            try {
-              const mappedRecord = {
-                _supaglue_application_id: applicationId,
-                _supaglue_provider_name: providerName,
-                _supaglue_customer_id: customerId,
-                _supaglue_id: record.id,
-                _supaglue_emitted_at: record.emittedAt,
-                _supaglue_last_modified_at: record.lastModifiedAt,
-                _supaglue_is_deleted: record.isDeleted,
-                _supaglue_raw_data: record.rawData,
-                _supaglue_mapped_data: {},
-                _supaglue_object_name: objectName,
-              };
+    childLogger.info('Importing raw records into temp table [IN PROGRESS]');
+    await pipeline(
+      inputStream,
+      new Transform({
+        objectMode: true,
+        transform: (record: MappedListedObjectRecord, encoding, callback) => {
+          try {
+            const mappedRecord = {
+              _supaglue_application_id: applicationId,
+              _supaglue_provider_name: providerName,
+              _supaglue_customer_id: customerId,
+              _supaglue_id: record.id,
+              _supaglue_emitted_at: record.emittedAt,
+              _supaglue_last_modified_at: record.lastModifiedAt,
+              _supaglue_is_deleted: record.isDeleted,
+              _supaglue_raw_data: record.rawData,
+              _supaglue_mapped_data: {},
+              _supaglue_object_name: objectName,
+            };
 
-              ++tempTableRowCount;
+            ++tempTableRowCount;
 
-              // Update the max lastModifiedAt
-              const { lastModifiedAt } = record;
-              if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
-                maxLastModifiedAt = lastModifiedAt;
-              }
-
-              callback(null, mappedRecord);
-            } catch (e: any) {
-              return callback(e);
+            // Update the max lastModifiedAt
+            const { lastModifiedAt } = record;
+            if (lastModifiedAt && (!maxLastModifiedAt || lastModifiedAt > maxLastModifiedAt)) {
+              maxLastModifiedAt = lastModifiedAt;
             }
-          },
-        }),
-        stringifier,
-        stream
-      );
-      childLogger.info('Importing raw records into temp table [COMPLETED]');
 
-      heartbeat();
+            callback(null, mappedRecord);
+          } catch (e: any) {
+            return callback(e);
+          }
+        },
+      }),
+      stringifier,
+      stream
+    );
+    childLogger.info('Importing raw records into temp table [COMPLETED]');
 
-      // Copy from deduped temp table
-      const columnsToUpdateStr = columnsToUpdate.join(',');
-      const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
-      const maybeObjectNameColumn = objectType === 'custom' ? ', _supaglue_object_name' : '';
-      // Paginate
-      const batchSize = 10000;
-      for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
-        childLogger.info({ offset }, 'Copying from deduped temp table to main table [IN PROGRESS]');
-        // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
-        // For example, hubspot will return the same record twice when querying for `archived: true` if
-        // the record was archived, restored, and archived again.
-        // TODO: This may have performance implications. We should look into this later.
-        // https://github.com/supaglue-labs/supaglue/issues/497
-        const supaglueId = `_supaglue_id${maybeObjectNameColumn}`;
-        await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
+    heartbeat();
+
+    // Copy from deduped temp table
+    const columnsToUpdateStr = columnsToUpdate.join(',');
+    const excludedColumnsToUpdateStr = columnsToUpdate.map((column) => `EXCLUDED.${column}`).join(',');
+    const maybeObjectNameColumn = objectType === 'custom' ? ', _supaglue_object_name' : '';
+    // Paginate
+    const batchSize = 10000;
+    for (let offset = 0; offset < tempTableRowCount; offset += batchSize) {
+      childLogger.info({ offset }, 'Copying from deduped temp table to main table [IN PROGRESS]');
+      // IMPORTANT: we need to use DISTINCT ON because we may have multiple records with the same id
+      // For example, hubspot will return the same record twice when querying for `archived: true` if
+      // the record was archived, restored, and archived again.
+      // TODO: This may have performance implications. We should look into this later.
+      // https://github.com/supaglue-labs/supaglue/issues/497
+      const supaglueId = `_supaglue_id${maybeObjectNameColumn}`;
+      await client.query(`INSERT INTO ${qualifiedTable} (${columns.join(',')})
 SELECT DISTINCT ON (${supaglueId}) ${columns.join(
-          ','
-        )} FROM ${tempTable} ORDER BY ${supaglueId} ASC, _supaglue_last_modified_at DESC OFFSET ${offset} limit ${batchSize}
+        ','
+      )} FROM ${tempTable} ORDER BY ${supaglueId} ASC, _supaglue_last_modified_at DESC OFFSET ${offset} limit ${batchSize}
 ON CONFLICT (_supaglue_application_id, _supaglue_provider_name, _supaglue_customer_id, ${supaglueId})
 DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
-        childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
-        heartbeat();
-      }
+      childLogger.info({ offset }, 'Copying from deduped temp table to main table [COMPLETED]');
+      heartbeat();
+    }
 
-      childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
+    childLogger.info('Copying from deduped temp table to main table [COMPLETED]');
 
-      // TODO: Watch for sql-injection attack around custom object name.... we should probably use a better
-      // sql library so we are not templating raw SQL strings
-      if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
-        childLogger.info('Marking rows as deleted [IN PROGRESS]');
-        await client.query(`
+    // TODO: Watch for sql-injection attack around custom object name.... we should probably use a better
+    // sql library so we are not templating raw SQL strings
+    if (shouldDeleteRecords(diffAndDeleteRecords, providerName)) {
+      childLogger.info('Marking rows as deleted [IN PROGRESS]');
+      await client.query(`
           UPDATE ${qualifiedTable} AS destination
           SET _supaglue_is_deleted = TRUE
           WHERE
@@ -478,22 +469,19 @@ DO UPDATE SET (${columnsToUpdateStr}) = (${excludedColumnsToUpdateStr})`);
               SELECT 1
               FROM ${tempTable} AS temp
               WHERE temp._supaglue_id = destination._supaglue_id
-              
+
           );
         `);
-        childLogger.info('Marking rows as deleted [COMPLETED]');
-        heartbeat();
-      }
-
-      // We don't drop deduped temp table here because we're closing the connection here anyway.
-
-      return {
-        maxLastModifiedAt,
-        numRecords: tempTableRowCount, // TODO: not quite accurate (because there can be duplicates) but good enough
-      };
-    } finally {
-      client.release();
+      childLogger.info('Marking rows as deleted [COMPLETED]');
+      heartbeat();
     }
+
+    // We don't drop deduped temp table here because we're closing the connection here anyway.
+
+    return {
+      maxLastModifiedAt,
+      numRecords: tempTableRowCount, // TODO: not quite accurate (because there can be duplicates) but good enough
+    };
   }
 }
 

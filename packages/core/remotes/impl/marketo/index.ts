@@ -1,4 +1,4 @@
-import axios, { AxiosError } from '@supaglue/core/remotes/sg_axios';
+import axios, { AxiosError, isAxiosError } from '@supaglue/core/remotes/sg_axios';
 import type {
   ConnectionUnsafe,
   MarketoOauthConnectionCredentialsDecrypted,
@@ -178,7 +178,7 @@ class MarketoClient extends AbstractMarketingAutomationRemoteClient {
   }
 
   public override async handleErr(err: unknown): Promise<unknown> {
-    if (!(err instanceof AxiosError)) {
+    if (!isAxiosError(err)) {
       return err;
     }
 

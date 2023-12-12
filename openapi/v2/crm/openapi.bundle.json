@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "version": "0.24.1",
+    "version": "0.25.1",
     "title": "Unified CRM API",
     "contact": {
       "name": "Supaglue",
@@ -3348,7 +3348,7 @@
       "post": {
         "operationId": "createProperty",
         "summary": "Create property",
-        "description": "Creates a custom property in the provider and registers it in Supaglue.\n",
+        "description": "Creates a custom property in the provider and registers it in Supaglue.\n\n:::note\nThis endpoint is only supported for Salesforce and Hubspot currently.\n:::\n",
         "tags": [
           "Properties"
         ],
@@ -3368,7 +3368,7 @@
           }
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Create a property",
             "content": {
               "application/json": {
@@ -3475,7 +3475,7 @@
       "patch": {
         "operationId": "updateProperty",
         "summary": "Update property (preview)",
-        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n",
+        "description": ":::note\nThis feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.\n:::\n\n:::note\nThis endpoint is only supported for Salesforce and Hubspot currently.\n:::\n",
         "tags": [
           "Properties"
         ],
@@ -4810,9 +4810,10 @@
           "date",
           "datetime",
           "boolean",
+          "url",
           "other"
         ],
-        "description": "Type of the field.\n\nSupport:\n\n<table>\n  <thead>\n    <tr>\n    <th>Field</th>\n    <th>Hubspot (type-fieldType)</th>\n    <th>Salesforce</th>\n    <th>Pipedrive</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n     <td>text</td>\n      <td>string-text</td>\n      <td>Text</td>\n      <td>varchar_auto</td>\n    </tr>\n    <tr>\n      <td>textarea</td>\n      <td>string-textarea</td>\n      <td>Textarea</td>\n      <td>text</td>\n    </tr>\n    <tr>\n      <td>number</td>\n      <td>number-number</td>\n      <td>Int/Double (depending on scale)</td>\n      <td>double</td>\n    </tr>\n    <tr>\n      <td>picklist</td>\n      <td>enumeration-select</td>\n      <td>Picklist</td>\n      <td>enum</td>\n    </tr>\n    <tr>\n      <td>multipicklist</td>\n      <td>enumeration-checkbox</td>\n      <td>Multipicklist</td>\n      <td>set</td>\n    </tr>\n    <tr>\n      <td>date</td>\n      <td>date-date</td>\n      <td>Date</td>\n      <td>date</td>\n    </tr>\n    <tr>\n      <td>datetime</td>\n      <td>datetime-date</td>\n      <td>Datetime</td>\n      <td>date</td>\n    </tr>\n    <tr>\n    <td>boolean</td>\n      <td>bool-booleancheckbox</td>\n      <td>Checkbox</td>\n      <td>enum</td>\n    </tr>\n  </tbody>\n  </table>\n"
+        "description": "Type of the field.\n\n:::note\n`picklist` and `multipicklist` property types are currently only supported in Salesforce and Hubspot\n:::\n\n:::note\n`url` property type currently is only natively supported in Salesforce.\n:::\n\nSupport:\n\n<table>\n  <thead>\n    <tr>\n      <th>Type</th>\n      <th>Hubspot (type-fieldType)</th>\n      <th>Salesforce</th>\n      <th>Pipedrive</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>text</td>\n      <td>string-text</td>\n      <td>Text</td>\n      <td>varchar_auto</td>\n    </tr>\n    <tr>\n      <td>textarea</td>\n      <td>string-textarea</td>\n      <td>Textarea</td>\n      <td>text</td>\n    </tr>\n    <tr>\n      <td>number</td>\n      <td>number-number</td>\n      <td>Int/Double (depending on scale)</td>\n      <td>double</td>\n    </tr>\n    <tr>\n      <td>picklist</td>\n      <td>enumeration-select</td>\n      <td>Picklist</td>\n      <td>enum</td>\n    </tr>\n    <tr>\n      <td>multipicklist</td>\n      <td>enumeration-checkbox</td>\n      <td>Multipicklist</td>\n      <td>set</td>\n    </tr>\n    <tr>\n      <td>date</td>\n      <td>date-date</td>\n      <td>Date</td>\n      <td>date</td>\n    </tr>\n    <tr>\n      <td>datetime</td>\n      <td>datetime-date</td>\n      <td>Datetime</td>\n      <td>date</td>\n    </tr>\n    <tr>\n      <td>boolean</td>\n      <td>bool-booleancheckbox</td>\n      <td>Checkbox</td>\n      <td>enum</td>\n    </tr>\n    <tr>\n      <td>url</td>\n      <td>Not Supported</td>\n      <td>Url</td>\n      <td>Not Supported</td>\n    </tr>\n  </tbody>\n  </table>\n"
       },
       "picklist_option": {
         "type": "object",

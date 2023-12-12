@@ -21,14 +21,21 @@ import {
   keysOfSnakecasedSequenceStepWithTenant,
   keysOfSnakecasedSequenceWithTenant,
 } from '../keys/engagement';
+import { logger } from './logger';
 
 export const getPgPool = (connectionString: string): Pool => {
   const connectionConfig = parse(connectionString) as PoolConfig;
 
-  return new Pool({
+  const pool = new Pool({
     max: 5,
     ...connectionConfig,
   });
+
+  pool.on('error', (err) => {
+    logger.error({ err }, 'Postgres pool error');
+  });
+
+  return pool;
 };
 
 export function sanitizeForPostgres(tableName: string): string {

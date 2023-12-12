@@ -9,6 +9,7 @@ import {
   getPgPool,
   getSchemaName,
   isForward,
+  logger,
   MAX_PAGE_SIZE,
 } from '@supaglue/core/lib';
 import { getCategoryForProvider } from '@supaglue/core/remotes';
@@ -33,6 +34,10 @@ import type {
 import type { ObjectType } from '@supaglue/types/sync';
 import type { Pool, PoolClient } from 'pg';
 
+const clientErrorListener = (err: Error) => {
+  logger.error({ err }, 'Postgres client error');
+};
+
 export class ManagedDataService {
   #pgPool: Pool;
   #syncService: SyncService;
@@ -44,7 +49,11 @@ export class ManagedDataService {
   }
 
   async #getClient(): Promise<PoolClient> {
-    return await this.#pgPool.connect();
+    const client = await this.#pgPool.connect();
+
+    client.on('error', clientErrorListener);
+
+    return client;
   }
 
   async #getRecords<T extends Record<string, unknown>>(
@@ -117,6 +126,7 @@ export class ManagedDataService {
         cursor
       );
     } finally {
+      client.removeListener('error', clientErrorListener);
       client.release();
     }
   }

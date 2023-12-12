@@ -444,7 +444,7 @@ export type CreatePropertiesQueryParams = never;
 export type CreatePropertiesResponse =
   operations['createProperty']['responses'][keyof operations['createProperty']['responses']]['content']['application/json'];
 export type CreatePropertiesSuccessfulResponse =
-  operations['createProperty']['responses']['200']['content']['application/json'];
+  operations['createProperty']['responses']['201']['content']['application/json'];
 export type CreatePropertiesFailureResponse = Exclude<CreatePropertiesResponse, CreatePropertiesSuccessfulResponse>;
 
 export type UpdatePropertiesPathParams = Required<operations['updateProperty']>['parameters']['path'];

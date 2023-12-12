@@ -24,6 +24,10 @@ import { BaseDestinationWriter } from './base';
 import type { ObjectType } from './postgres_impl';
 import { kCustomObject, PostgresDestinationWriterImpl } from './postgres_impl';
 
+const clientErrorListener = (err: Error) => {
+  logger.error({ err }, 'Postgres client error');
+};
+
 export class PostgresDestinationWriter extends BaseDestinationWriter {
   readonly #destination: DestinationUnsafe<'postgres'>;
   #writerImpl: PostgresDestinationWriterImpl;
@@ -41,7 +45,16 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
       max: 20,
       ssl: getSsl(this.#destination.config),
     });
-    return await pool.connect();
+
+    pool.on('error', (err) => {
+      logger.error({ err }, 'Postgres pool error');
+    });
+
+    const client = await pool.connect();
+
+    client.on('error', clientErrorListener);
+
+    return client;
   }
 
   #getSchema(connectionSyncConfig?: ConnectionSyncConfig): string {
@@ -64,15 +77,20 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
 
     const client = await this.#getClient();
 
-    return await this.#writerImpl.upsertCommonObjectRecordImpl(
-      client,
-      connection,
-      commonObjectType,
-      record,
-      schema,
-      table,
-      async () => await this.#setupCommonObjectTable(client, schema, table, category, commonObjectType)
-    );
+    try {
+      return await this.#writerImpl.upsertCommonObjectRecordImpl(
+        client,
+        connection,
+        commonObjectType,
+        record,
+        schema,
+        table,
+        async () => await this.#setupCommonObjectTable(client, schema, table, category, commonObjectType)
+      );
+    } finally {
+      client.removeListener('error', clientErrorListener);
+      client.release();
+    }
   }
 
   public override async upsertCommonObjectRecord<P extends ProviderCategory, T extends CommonObjectTypeForCategory<P>>(
@@ -87,15 +105,20 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const schema = this.#getSchema(connectionSyncConfig);
     const table = getCommonObjectTableName(category, commonObjectType);
     const client = await this.#getClient();
-    return await this.#writerImpl.upsertCommonObjectRecordImpl(
-      client,
-      connection,
-      commonObjectType,
-      record,
-      schema,
-      table,
-      async () => this.#setupCommonObjectTable(client, schema, table, category, commonObjectType)
-    );
+    try {
+      return await this.#writerImpl.upsertCommonObjectRecordImpl(
+        client,
+        connection,
+        commonObjectType,
+        record,
+        schema,
+        table,
+        async () => this.#setupCommonObjectTable(client, schema, table, category, commonObjectType)
+      );
+    } finally {
+      client.removeListener('error', clientErrorListener);
+      client.release();
+    }
   }
 
   async #setupCommonObjectTable(
@@ -133,26 +156,32 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
     const schema = this.#getSchema(connectionSyncConfig);
     const table = getCommonObjectTableName(category, commonObjectType);
     const client = await this.#getClient();
-    return await this.#writerImpl.writeCommonObjectRecordsImpl(
-      client,
-      connection,
-      commonObjectType,
-      inputStream,
-      heartbeat,
-      diffAndDeleteRecords,
-      schema,
-      table,
-      async () => {
-        await this.#setupCommonObjectTable(
-          client,
-          schema,
-          table,
-          category,
-          commonObjectType,
-          /* alsoCreateTempTable */ true
-        );
-      }
-    );
+
+    try {
+      return await this.#writerImpl.writeCommonObjectRecordsImpl(
+        client,
+        connection,
+        commonObjectType,
+        inputStream,
+        heartbeat,
+        diffAndDeleteRecords,
+        schema,
+        table,
+        async () => {
+          await this.#setupCommonObjectTable(
+            client,
+            schema,
+            table,
+            category,
+            commonObjectType,
+            /* alsoCreateTempTable */ true
+          );
+        }
+      );
+    } finally {
+      client.removeListener('error', clientErrorListener);
+      client.release();
+    }
   }
 
   public override async writeObjectRecords(
@@ -272,16 +301,22 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   ): Promise<void> {
     const schema = this.#getSchema(connection.connectionSyncConfig);
     const client = await this.#getClient();
-    await this.#writerImpl.upsertRecordImpl(
-      client,
-      connection,
-      schema,
-      table,
-      record,
-      async () =>
-        await this.#setupObjectOrEntityTable(client, table, schema, /* alsoCreateTempTable */ false, objectType),
-      objectType
-    );
+
+    try {
+      await this.#writerImpl.upsertRecordImpl(
+        client,
+        connection,
+        schema,
+        table,
+        record,
+        async () =>
+          await this.#setupObjectOrEntityTable(client, table, schema, /* alsoCreateTempTable */ false, objectType),
+        objectType
+      );
+    } finally {
+      client.removeListener('error', clientErrorListener);
+      client.release();
+    }
   }
 
   async #writeRecords(
@@ -295,20 +330,26 @@ export class PostgresDestinationWriter extends BaseDestinationWriter {
   ): Promise<WriteObjectRecordsResult> {
     const schema = this.#getSchema(connection.connectionSyncConfig);
     const client = await this.#getClient();
-    return await this.#writerImpl.writeRecordsImpl(
-      client,
-      connection,
-      schema,
-      table,
-      inputStream,
-      heartbeat,
-      childLogger,
-      diffAndDeleteRecords,
-      async () => {
-        await this.#setupObjectOrEntityTable(client, table, schema, /* alsoCreateTempTable */ true, objectType);
-      },
-      objectType
-    );
+
+    try {
+      return await this.#writerImpl.writeRecordsImpl(
+        client,
+        connection,
+        schema,
+        table,
+        inputStream,
+        heartbeat,
+        childLogger,
+        diffAndDeleteRecords,
+        async () => {
+          await this.#setupObjectOrEntityTable(client, table, schema, /* alsoCreateTempTable */ true, objectType);
+        },
+        objectType
+      );
+    } finally {
+      client.removeListener('error', clientErrorListener);
+      client.release();
+    }
   }
 }
 

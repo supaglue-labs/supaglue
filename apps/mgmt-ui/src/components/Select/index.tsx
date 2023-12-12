@@ -32,7 +32,9 @@ export type SelectProps = {
   onChange?: (value: string) => void;
   // If set, will add a None option to unselect
   unselect?: boolean;
+  unselectValue?: React.ReactNode;
   disabled?: boolean;
+  autoFocus?: boolean;
 };
 
 export default function Select({
@@ -42,8 +44,10 @@ export default function Select({
   groupedOptions,
   onChange,
   unselect,
+  unselectValue,
   disabled,
   isGrouped,
+  autoFocus,
 }: SelectProps) {
   return (
     <Box sx={{ minWidth: 120 }}>
@@ -55,13 +59,10 @@ export default function Select({
           id={`select-${name}-id`}
           value={value}
           label={name}
+          autoFocus={autoFocus}
           onChange={onChange ? (event) => onChange(event.target.value) : undefined}
         >
-          {unselect && (
-            <MenuItem value="">
-              <em>None</em>
-            </MenuItem>
-          )}
+          {unselect && <MenuItem value="">{unselectValue ?? <em>None</em>}</MenuItem>}
           {!isGrouped &&
             options?.map((option, idx) => (
               <MenuItem key={idx} value={option.value}>

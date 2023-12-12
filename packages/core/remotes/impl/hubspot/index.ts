@@ -1385,6 +1385,13 @@ class HubSpotClient extends AbstractCrmRemoteClient implements MarketingAutomati
     if (params.groupName) {
       await this.#upsertPropertyGroup(objectTypeId, params.groupName);
     }
+
+    // get the type of the existing property since it's required for some updates
+    const { type: existingType } = await this.getProperty(objectName, propertyName);
+
+    if (!params.type) {
+      params.type = existingType;
+    }
     await retryWhenRateLimited(async () => {
       await this.maybeRefreshAccessToken();
       return await this.#client.crm.properties.coreApi.update(
