@@ -41,7 +41,7 @@ export default function init(app: Router): void {
     ) => {
       const lead = await crmCommonObjectService.get('lead', req.customerConnection, req.params.lead_id, {
         includeRawData: req.query?.include_raw_data?.toString() === 'true',
-        expand: req.query?.expand,
+        expand: req.query?.expand?.split(','),
       });
       return res.status(200).send(toSnakecasedKeysCrmLead(lead));
     }
@@ -59,7 +59,7 @@ export default function init(app: Router): void {
         const { pagination, records } = await crmCommonObjectService.list('lead', req.customerConnection, {
           modifiedAfter: req.query?.modified_after,
           includeRawData,
-          expand: req.query?.expand,
+          expand: req.query?.expand?.split(','),
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
         });

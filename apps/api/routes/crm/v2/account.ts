@@ -40,7 +40,7 @@ export default function init(app: Router): void {
       if (req.query?.read_from_cache?.toString() !== 'true') {
         const { pagination, records } = await crmCommonObjectService.list('account', req.customerConnection, {
           modifiedAfter: req.query?.modified_after,
-          expand: req.query?.expand,
+          expand: req.query?.expand?.split(','),
           includeRawData,
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
@@ -80,7 +80,7 @@ export default function init(app: Router): void {
     ) => {
       const account = await crmCommonObjectService.get('account', req.customerConnection, req.params.account_id, {
         includeRawData: req.query?.include_raw_data?.toString() === 'true',
-        expand: req.query?.expand,
+        expand: req.query?.expand?.split(','),
         associationsToFetch: req.query?.associations_to_fetch,
       });
       const snakecasedKeysAccount = toSnakecasedKeysCrmAccount(account);

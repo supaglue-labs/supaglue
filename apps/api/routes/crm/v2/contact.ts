@@ -46,7 +46,7 @@ export default function init(app: Router): void {
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
           includeRawData,
-          expand: req.query?.expand,
+          expand: req.query?.expand?.split(','),
           associationsToFetch: req.query?.associations_to_fetch,
         });
         return res.status(200).send({
@@ -86,7 +86,7 @@ export default function init(app: Router): void {
     ) => {
       const contact = await crmCommonObjectService.get('contact', req.customerConnection, req.params.contact_id, {
         includeRawData: req.query?.include_raw_data?.toString() === 'true',
-        expand: req.query?.expand,
+        expand: req.query?.expand?.split(','),
         associationsToFetch: req.query?.associations_to_fetch,
       });
       const snakecasedKeysContact = toSnakecasedKeysCrmContact(contact);

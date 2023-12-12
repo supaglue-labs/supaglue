@@ -39,7 +39,7 @@ export default function init(app: Router): void {
         req.params.opportunity_id,
         {
           includeRawData: req.query?.include_raw_data?.toString() === 'true',
-          expand: req.query?.expand,
+          expand: req.query?.expand?.split(','),
           associationsToFetch: req.query?.associations_to_fetch,
         }
       );
@@ -65,7 +65,7 @@ export default function init(app: Router): void {
           modifiedAfter: req.query?.modified_after,
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
-          expand: req.query?.expand,
+          expand: req.query?.expand?.split(','),
           includeRawData,
           associationsToFetch: req.query?.associations_to_fetch,
         });

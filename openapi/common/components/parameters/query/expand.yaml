@@ -1,9 +1,7 @@
 name: expand
 in: query
 schema:
-  type: array
-  items:
-    type: string
-    example: account
+  type: string
+  example: account,owner
 description: |
-  If set, will hydrate any associated objects of the specified type. Only supported for Hubspot and Salesforce.
+  Comma-delimited list of associated object types to expand. Only supported for Hubspot and Salesforce common objects.
