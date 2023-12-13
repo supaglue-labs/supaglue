@@ -62,7 +62,7 @@ export async function paginator<T>(
           response = await pageFetcher(cursor);
         } catch (e: any) {
           if (e.problemType === 'SG_TERMINAL_TOO_MANY_REQUESTS_ERROR') {
-            passThrough.destroy(e);
+            passThrough.emit('error', e);
             return;
           }
           throw e;
@@ -72,13 +72,13 @@ export async function paginator<T>(
         cursor = getNextCursorFromPage(response);
 
         readable.pipe(passThrough, { end: index === lastIndex && !cursor });
-        readable.on('error', (err) => passThrough.destroy(err));
+        readable.on('error', (err) => passThrough.emit('error', err));
 
         await new Promise((resolve) => readable.on('end', resolve));
       } while (cursor);
     }
   })().catch((err) => {
-    passThrough.destroy(err);
+    passThrough.emit('error', err);
   });
 
   return passThrough;
