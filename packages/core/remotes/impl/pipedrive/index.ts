@@ -29,7 +29,7 @@ import type {
   OpportunityUpdateParams,
   User,
 } from '@supaglue/types/crm';
-import type { AllCrmFieldMappingConfigs, FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { Readable } from 'stream';
 import {
   BadRequestError,
@@ -203,7 +203,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
 
   public override async listCommonObjectRecords<T extends 'account' | 'contact' | 'lead' | 'opportunity' | 'user'>(
     commonObjectType: CRMCommonObjectType,
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
     if (params.expand?.length) {
@@ -211,15 +211,15 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
     switch (commonObjectType) {
       case 'contact':
-        return await this.listContacts(allFieldMappingConfigs, params);
+        return await this.listContacts(fieldMappingConfig, params);
       case 'lead':
-        return await this.listLeads(allFieldMappingConfigs, params);
+        return await this.listLeads(fieldMappingConfig, params);
       case 'opportunity':
-        return await this.listOpportunities(allFieldMappingConfigs, params);
+        return await this.listOpportunities(fieldMappingConfig, params);
       case 'account':
-        return await this.listAccounts(allFieldMappingConfigs, params);
+        return await this.listAccounts(fieldMappingConfig, params);
       case 'user':
-        return await this.listUsers(allFieldMappingConfigs, params);
+        return await this.listUsers(fieldMappingConfig, params);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -259,7 +259,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 
   private async listContacts(
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<Contact>> {
     const normalPageFetcher = this.#getListRecordsFetcher(
@@ -284,7 +284,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     if (!response.data) {
       throw new Error('Unexpected response from Pipedrive');
     }
-    const records = response.data.map((result) => mapper(result, fields, allFieldMappingConfigs.contact));
+    const records = response.data.map((result) => mapper(result, fields, fieldMappingConfig));
     const nextCursor = response.additional_data.pagination?.next_start?.toString();
     return {
       records,
@@ -358,7 +358,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 
   private async listLeads(
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<Lead>> {
     const normalPageFetcher = this.#getListRecordsFetcher(
@@ -383,7 +383,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     if (!response.data) {
       throw new Error('Unexpected response from Pipedrive');
     }
-    const records = response.data.map((result) => mapper(result, fields, allFieldMappingConfigs.lead));
+    const records = response.data.map((result) => mapper(result, fields, fieldMappingConfig));
     const nextCursor = response.additional_data.pagination?.next_start?.toString();
     return {
       records,
@@ -459,7 +459,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 
   private async listOpportunities(
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<Opportunity>> {
     const pipelineStageMapping = await this.#getPipelineStageMapping();
@@ -485,7 +485,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     if (!response.data) {
       throw new Error('Unexpected response from Pipedrive');
     }
-    const records = response.data.map((result) => mapper(result, fields, allFieldMappingConfigs.opportunity));
+    const records = response.data.map((result) => mapper(result, fields, fieldMappingConfig));
     const nextCursor = response.additional_data.pagination?.next_start?.toString();
     return {
       records,
@@ -528,7 +528,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 
   private async listAccounts(
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<Account>> {
     const normalPageFetcher = this.#getListRecordsFetcher(
@@ -553,7 +553,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     if (!response.data) {
       throw new Error('Unexpected response from Pipedrive');
     }
-    const records = response.data.map((result) => mapper(result, fields, allFieldMappingConfigs.user));
+    const records = response.data.map((result) => mapper(result, fields, fieldMappingConfig));
     const nextCursor = response.additional_data.pagination?.next_start?.toString();
     return {
       records,
@@ -591,7 +591,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   }
 
   private async listUsers(
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<User>> {
     const normalPageFetcher = this.#getListRecordsFetcher(
@@ -611,7 +611,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     if (!response.data) {
       throw new Error('Unexpected response from Pipedrive');
     }
-    const records = response.data.map((result) => mapper(result, allFieldMappingConfigs.user));
+    const records = response.data.map((result) => mapper(result, fieldMappingConfig));
     const nextCursor = response.additional_data.pagination?.next_start?.toString();
     return {
       records,
@@ -625,7 +625,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
   public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['getParams']
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     if (params.expand?.length) {
@@ -633,25 +633,21 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     }
     switch (commonObjectType) {
       case 'contact':
-        return await this.getContact(id, allFieldMappingConfigs, params);
+        return await this.getContact(id, fieldMappingConfig, params);
       case 'lead':
-        return await this.getLead(id, allFieldMappingConfigs, params);
+        return await this.getLead(id, fieldMappingConfig, params);
       case 'opportunity':
-        return await this.getOpportunity(id, allFieldMappingConfigs, params);
+        return await this.getOpportunity(id, fieldMappingConfig, params);
       case 'account':
-        return await this.getAccount(id, allFieldMappingConfigs, params);
+        return await this.getAccount(id, fieldMappingConfig, params);
       case 'user':
-        return await this.getUser(id, allFieldMappingConfigs, params);
+        return await this.getUser(id, fieldMappingConfig, params);
       default:
         throw new BadRequestError(`Common object ${commonObjectType} not supported`);
     }
   }
 
-  async getContact(
-    id: string,
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
-    params: CrmGetParams
-  ): Promise<Contact> {
+  async getContact(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Contact> {
     await this.maybeRefreshAccessToken();
     const fields = await this.#getCustomFieldsForObject('person');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/persons/${id}`, {
@@ -660,11 +656,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     const contact = fromPipedrivePersonToContact(response.data.data, fields);
     return {
       ...contact,
-      rawData: params.includeRawData ? toMappedProperties(contact.rawData, allFieldMappingConfigs.contact) : undefined,
+      rawData: params.includeRawData ? toMappedProperties(contact.rawData, fieldMappingConfig) : undefined,
     };
   }
 
-  async getLead(id: string, allFieldMappingConfigs: AllCrmFieldMappingConfigs, params: CrmGetParams): Promise<Lead> {
+  async getLead(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Lead> {
     await this.maybeRefreshAccessToken();
     const fields = await this.#getCustomFieldsForObject('lead');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/leads/${id}`, {
@@ -673,15 +669,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     const lead = fromPipedriveLeadToLead(response.data.data, fields);
     return {
       ...lead,
-      rawData: params.includeRawData ? toMappedProperties(lead.rawData, allFieldMappingConfigs.lead) : undefined,
+      rawData: params.includeRawData ? toMappedProperties(lead.rawData, fieldMappingConfig) : undefined,
     };
   }
 
-  async getOpportunity(
-    id: string,
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
-    params: CrmGetParams
-  ): Promise<Opportunity> {
+  async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
     const fields = await this.#getCustomFieldsForObject('deal');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/deals/${id}`, {
@@ -691,17 +683,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     const opportunity = fromPipedriveDealToOpportunity(response.data.data, pipelineStageMapping, fields);
     return {
       ...opportunity,
-      rawData: params.includeRawData
-        ? toMappedProperties(opportunity.rawData, allFieldMappingConfigs.opportunity)
-        : undefined,
+      rawData: params.includeRawData ? toMappedProperties(opportunity.rawData, fieldMappingConfig) : undefined,
     };
   }
 
-  async getAccount(
-    id: string,
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
-    params: CrmGetParams
-  ): Promise<Account> {
+  async getAccount(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Account> {
     await this.maybeRefreshAccessToken();
     const fields = await this.#getCustomFieldsForObject('organization');
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/organizations/${id}`, {
@@ -710,11 +696,11 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     const account = fromPipedriveOrganizationToAccount(response.data.data, fields);
     return {
       ...account,
-      rawData: params.includeRawData ? toMappedProperties(account.rawData, allFieldMappingConfigs.account) : undefined,
+      rawData: params.includeRawData ? toMappedProperties(account.rawData, fieldMappingConfig) : undefined,
     };
   }
 
-  async getUser(id: string, allFieldMappingConfigs: AllCrmFieldMappingConfigs, params: CrmGetParams): Promise<User> {
+  async getUser(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<User> {
     await this.maybeRefreshAccessToken();
     const response = await axios.get<PipedriveRecord>(`${this.#credentials.instanceUrl}/api/v1/users/${id}`, {
       headers: this.#headers,
@@ -722,7 +708,7 @@ class PipedriveClient extends AbstractCrmRemoteClient {
     const user = fromPipedriveUserToUser(response.data.data);
     return {
       ...user,
-      rawData: params.includeRawData ? toMappedProperties(user.rawData, allFieldMappingConfigs.user) : undefined,
+      rawData: params.includeRawData ? toMappedProperties(user.rawData, fieldMappingConfig) : undefined,
     };
   }
 

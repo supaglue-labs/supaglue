@@ -9,7 +9,6 @@ import type {
   OauthConnectionCredentialsDecrypted,
   ObjectFieldMappingInfo,
   ObjectFieldMappingUpdateParams,
-  Provider,
   ProviderName,
   ProviderObject,
   Schema,
@@ -18,7 +17,7 @@ import type {
 } from '@supaglue/types';
 import type { CRMProviderName } from '@supaglue/types/crm';
 import type { ConnectionEntityMapping, MergedEntityMapping } from '@supaglue/types/entity_mapping';
-import type { AllCrmFieldMappingConfigs, FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { StandardOrCustomObject } from '@supaglue/types/standard_or_custom_object';
 import retry from 'async-retry';
 import type { ProviderService, SchemaService, WebhookService } from '.';
@@ -645,15 +644,6 @@ export class ConnectionService {
   ): Promise<FieldMappingConfig> {
     const connection = await this.getSafeById(connectionId);
     const provider = await this.#providerService.getById(connection.providerId);
-    return await this.#getFieldMappingConfigImpl(connection, provider, objectType, objectName);
-  }
-
-  async #getFieldMappingConfigImpl(
-    connection: ConnectionSafeAny,
-    provider: Provider,
-    objectType: 'common' | 'standard',
-    objectName: string
-  ): Promise<FieldMappingConfig> {
     const schemaId = (provider.objects?.[objectType] as ProviderObject[] | undefined)?.find(
       (o) => o.name === objectName
     )?.schemaId;
@@ -667,18 +657,6 @@ export class ConnectionService {
         ?.fieldMappings;
     }
     return createFieldMappingConfig(schema?.config, customerFieldMapping);
-  }
-
-  public async getAllCrmCommonFieldMappingConfigs(connectionId: string): Promise<AllCrmFieldMappingConfigs> {
-    const connection = await this.getSafeById(connectionId);
-    const provider = await this.#providerService.getById(connection.providerId);
-    return {
-      account: await this.#getFieldMappingConfigImpl(connection, provider, 'common', 'account'),
-      contact: await this.#getFieldMappingConfigImpl(connection, provider, 'common', 'contact'),
-      lead: await this.#getFieldMappingConfigImpl(connection, provider, 'common', 'lead'),
-      opportunity: await this.#getFieldMappingConfigImpl(connection, provider, 'common', 'opportunity'),
-      user: await this.#getFieldMappingConfigImpl(connection, provider, 'common', 'user'),
-    };
   }
 }
 

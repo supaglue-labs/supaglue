@@ -6,7 +6,7 @@ import type {
   ListCRMCommonObjectTypeMap,
   ListMetadata,
 } from '@supaglue/types/crm';
-import type { AllCrmFieldMappingConfigs, FieldMappingConfig } from '@supaglue/types/field_mapping_config';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { Readable } from 'stream';
 import { NotImplementedError } from '../../../errors';
 import type { PaginatedSupaglueRecords } from '../../../lib';
@@ -24,7 +24,7 @@ export interface CrmRemoteClient extends RemoteClient {
   getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['getParams']
   ): Promise<CRMCommonObjectTypeMap<T>['object']>;
   createCommonObjectRecord<T extends CRMCommonObjectType>(
@@ -46,7 +46,7 @@ export interface CrmRemoteClient extends RemoteClient {
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>>;
   listCommonObjectRecords<T extends CRMCommonObjectType>(
     commonObjectType: CRMCommonObjectType,
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>>;
 
@@ -80,7 +80,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
   public async getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['getParams']
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     throw new NotImplementedError();
@@ -114,7 +114,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
 
   listCommonObjectRecords<T extends CRMCommonObjectType>(
     commonObjectType: CRMCommonObjectType,
-    allFieldMappingConfigs: AllCrmFieldMappingConfigs,
+    fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
     throw new NotImplementedError();
