@@ -128,13 +128,13 @@ model Connection {
   providerName         String     @map("provider_name")
   status               String // available | added | authorized | callable
   credentials          Bytes // encrypted, {type, access_token, refresh_token, expires_at, raw}
-  customer             Customer   @relation(fields: [customerId], references: [id])
+  customer             Customer   @relation(fields: [customerId], references: [id], onDelete: Cascade)
   customerId           String     @map("customer_id")
   instanceUrl          String     @default("") @map("instance_url")
   createdAt            DateTime   @default(now()) @map("created_at")
   updatedAt            DateTime   @updatedAt @map("updated_at")
   replayIds            ReplayId[]
-  provider             Provider   @relation(fields: [providerId], references: [id])
+  provider             Provider   @relation(fields: [providerId], references: [id], onDelete: Cascade)
   providerId           String     @map("provider_id")
   schemaMappingsConfig Json?      @map("schema_mappings_config")
   entityMappings       Json?      @map("entity_mappings")
@@ -162,14 +162,14 @@ model Sync {
   object         String?
   // set `entityId` if type is `entity`
   entityId       String?    @map("entity_id")
-  entity         Entity?    @relation(fields: [entityId], references: [id])
+  entity         Entity?    @relation(fields: [entityId], references: [id], onDelete: Cascade)
   state          Json
   strategy       Json
   connectionId   String     @map("connection_id")
-  connection     Connection @relation(fields: [connectionId], references: [id])
+  connection     Connection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
   paused         Boolean    @default(false)
   syncConfigId   String     @map("sync_config_id")
-  syncConfig     SyncConfig @relation(fields: [syncConfigId], references: [id])
+  syncConfig     SyncConfig @relation(fields: [syncConfigId], references: [id], onDelete: Cascade)
   argsForNextRun Json?      @map("args_for_next_run")
   createdAt      DateTime   @default(now()) @map("created_at")
   updatedAt      DateTime   @updatedAt @map("updated_at")
@@ -209,7 +209,7 @@ model SyncRun {
 
 model ReplayId {
   connectionId String     @map("connection_id")
-  connection   Connection @relation(fields: [connectionId], references: [id])
+  connection   Connection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
   eventType    String     @map("event_type")
   replayId     String     @map("replay_id")
   createdAt    DateTime   @default(now()) @map("created_at")
