@@ -7,7 +7,6 @@ get:
     - x-api-key: []
   parameters:
     - $ref: ../../../common/components/parameters/query/include_raw_data.yaml
-    - $ref: ../../../common/components/parameters/query/expand.yaml
     - $ref: ../components/parameters/query/associations_to_fetch.yaml
   responses:
     200:

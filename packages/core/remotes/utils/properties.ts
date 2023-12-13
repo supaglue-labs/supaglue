@@ -2,10 +2,10 @@ import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import type { PropertiesWithAdditionalFields } from '@supaglue/types/object_record';
 
 export function toMappedProperties(
-  properties: Record<string, any> | undefined,
+  properties: Record<string, any>,
   fieldMappingConfig: FieldMappingConfig
-): PropertiesWithAdditionalFields | undefined {
-  if (!properties || fieldMappingConfig.type === 'inherit_all_fields') {
+): PropertiesWithAdditionalFields {
+  if (fieldMappingConfig.type === 'inherit_all_fields') {
     return properties;
   }
 

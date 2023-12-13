@@ -91,8 +91,7 @@ export type DynamicsAccount = {
 
 export const fromDynamicsAccountToRemoteAccount = (
   dynamicsAccount: DynamicsAccount,
-  fieldMappingConfig: FieldMappingConfig,
-  includeRawData: boolean
+  fieldMappingConfig: FieldMappingConfig
 ): Account => {
   const addresses: Address[] = [];
 
@@ -108,10 +107,10 @@ export const fromDynamicsAccountToRemoteAccount = (
       dynamicsAccount.address1_addresstypecode === 1
         ? 'billing'
         : dynamicsAccount.address1_addresstypecode === 2
-          ? 'shipping'
-          : dynamicsAccount.address1_addresstypecode === 3
-            ? 'primary'
-            : 'other';
+        ? 'shipping'
+        : dynamicsAccount.address1_addresstypecode === 3
+        ? 'primary'
+        : 'other';
     addresses.push({
       street1: dynamicsAccount.address1_line1,
       street2: dynamicsAccount.address1_line2,
@@ -135,10 +134,10 @@ export const fromDynamicsAccountToRemoteAccount = (
       dynamicsAccount.address1_addresstypecode === 1
         ? 'billing'
         : dynamicsAccount.address1_addresstypecode === 2
-          ? 'shipping'
-          : dynamicsAccount.address1_addresstypecode === 3
-            ? 'primary'
-            : 'other';
+        ? 'shipping'
+        : dynamicsAccount.address1_addresstypecode === 3
+        ? 'primary'
+        : 'other';
     addresses.push({
       street1: dynamicsAccount.address2_line1,
       street2: dynamicsAccount.address2_line2,
@@ -190,7 +189,7 @@ export const fromDynamicsAccountToRemoteAccount = (
     updatedAt: new Date(dynamicsAccount.modifiedon),
     lastModifiedAt: new Date(dynamicsAccount.modifiedon),
     isDeleted: false,
-    rawData: includeRawData ? toMappedProperties(dynamicsAccount, fieldMappingConfig) : undefined,
+    rawData: toMappedProperties(dynamicsAccount, fieldMappingConfig),
     name: dynamicsAccount.name,
     description: dynamicsAccount.description,
     ownerId: dynamicsAccount._ownerid_value,
@@ -241,8 +240,7 @@ export type DynamicsContact = {
 
 export const fromDynamicsContactToRemoteContact = (
   dynamicsContact: DynamicsContact,
-  fieldMappingConfig: FieldMappingConfig,
-  includeRawData: boolean
+  fieldMappingConfig: FieldMappingConfig
 ): Contact => {
   const addresses: Address[] = [];
 
@@ -258,10 +256,10 @@ export const fromDynamicsContactToRemoteContact = (
       dynamicsContact.address1_addresstypecode === 1
         ? 'billing'
         : dynamicsContact.address1_addresstypecode === 2
-          ? 'shipping'
-          : dynamicsContact.address1_addresstypecode === 3
-            ? 'primary'
-            : 'other';
+        ? 'shipping'
+        : dynamicsContact.address1_addresstypecode === 3
+        ? 'primary'
+        : 'other';
     addresses.push({
       street1: dynamicsContact.address1_line1,
       street2: dynamicsContact.address1_line2,
@@ -285,10 +283,10 @@ export const fromDynamicsContactToRemoteContact = (
       dynamicsContact.address1_addresstypecode === 1
         ? 'billing'
         : dynamicsContact.address1_addresstypecode === 2
-          ? 'shipping'
-          : dynamicsContact.address1_addresstypecode === 3
-            ? 'primary'
-            : 'other';
+        ? 'shipping'
+        : dynamicsContact.address1_addresstypecode === 3
+        ? 'primary'
+        : 'other';
     addresses.push({
       street1: dynamicsContact.address2_line1,
       street2: dynamicsContact.address2_line2,
@@ -363,7 +361,7 @@ export const fromDynamicsContactToRemoteContact = (
     updatedAt: new Date(dynamicsContact.modifiedon),
     lastModifiedAt: new Date(dynamicsContact.modifiedon),
     isDeleted: false,
-    rawData: includeRawData ? toMappedProperties(dynamicsContact, fieldMappingConfig) : undefined,
+    rawData: toMappedProperties(dynamicsContact, fieldMappingConfig),
   };
 };
 
@@ -388,8 +386,7 @@ export type DynamicsOpportunity = {
 
 export const fromDynamicsOpportunityToRemoteOpportunity = (
   dynamicsOpportunity: DynamicsOpportunity,
-  fieldMappingConfig: FieldMappingConfig,
-  includeRawData: boolean
+  fieldMappingConfig: FieldMappingConfig
 ): Opportunity => {
   const {
     opportunity_leadtoopportunitysalesprocess,
@@ -434,7 +431,7 @@ export const fromDynamicsOpportunityToRemoteOpportunity = (
     updatedAt: new Date(dynamicsOpportunity.modifiedon),
     isDeleted: false,
     lastModifiedAt: new Date(dynamicsOpportunity.modifiedon),
-    rawData: includeRawData ? toMappedProperties(rawData, fieldMappingConfig) : undefined,
+    rawData: toMappedProperties(rawData, fieldMappingConfig),
   };
 };
 
@@ -479,8 +476,7 @@ export type DynamicsLead = {
 
 export const fromDynamicsLeadToRemoteLead = (
   dynamicsLead: DynamicsLead,
-  fieldMappingConfig: FieldMappingConfig,
-  includeRawData: boolean
+  fieldMappingConfig: FieldMappingConfig
 ): Lead => {
   const leadSource = null;
 
@@ -497,10 +493,10 @@ export const fromDynamicsLeadToRemoteLead = (
       dynamicsLead.address1_addresstypecode === 1
         ? 'billing'
         : dynamicsLead.address1_addresstypecode === 2
-          ? 'shipping'
-          : dynamicsLead.address1_addresstypecode === 3
-            ? 'primary'
-            : 'other';
+        ? 'shipping'
+        : dynamicsLead.address1_addresstypecode === 3
+        ? 'primary'
+        : 'other';
     addresses.push({
       street1: dynamicsLead.address1_line1,
       street2: dynamicsLead.address1_line2,
@@ -524,10 +520,10 @@ export const fromDynamicsLeadToRemoteLead = (
       dynamicsLead.address2_addresstypecode === 1
         ? 'billing'
         : dynamicsLead.address2_addresstypecode === 2
-          ? 'shipping'
-          : dynamicsLead.address2_addresstypecode === 3
-            ? 'primary'
-            : 'other';
+        ? 'shipping'
+        : dynamicsLead.address2_addresstypecode === 3
+        ? 'primary'
+        : 'other';
     addresses.push({
       street1: dynamicsLead.address2_line1,
       street2: dynamicsLead.address2_line2,
@@ -605,7 +601,7 @@ export const fromDynamicsLeadToRemoteLead = (
     updatedAt: new Date(dynamicsLead.modifiedon),
     isDeleted: false,
     lastModifiedAt: new Date(dynamicsLead.modifiedon),
-    rawData: includeRawData ? toMappedProperties(dynamicsLead, fieldMappingConfig) : undefined,
+    rawData: toMappedProperties(dynamicsLead, fieldMappingConfig),
   };
 };
 
@@ -622,8 +618,7 @@ export type DynamicsUser = {
 
 export const fromDynamicsUserToRemoteUser = (
   dynamicsUser: DynamicsUser,
-  fieldMappingConfig: FieldMappingConfig,
-  includeRawData: boolean
+  fieldMappingConfig: FieldMappingConfig
 ): User => {
   return {
     id: dynamicsUser.systemuserid,
@@ -636,7 +631,7 @@ export const fromDynamicsUserToRemoteUser = (
       : new Date(dynamicsUser.createdon),
     updatedAt: new Date(dynamicsUser.modifiedon),
     lastModifiedAt: new Date(dynamicsUser.modifiedon),
-    rawData: includeRawData ? toMappedProperties(dynamicsUser, fieldMappingConfig) : undefined,
+    rawData: toMappedProperties(dynamicsUser, fieldMappingConfig),
   };
 };
 
@@ -753,10 +748,10 @@ export const toDynamicsAddresses = (addresses: Address[] | undefined, count: num
       address.addressType === 'billing'
         ? '1'
         : address.addressType === 'shipping'
-          ? '2'
-          : address.addressType === 'primary'
-            ? '3'
-            : null;
+        ? '2'
+        : address.addressType === 'primary'
+        ? '3'
+        : null;
     return {
       ...acc,
       [`address${index + 1}_line1`]: address.street1,

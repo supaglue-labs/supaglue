@@ -19,7 +19,6 @@ import type {
   Contact,
   CRMCommonObjectType,
   CRMCommonObjectTypeMap,
-  CrmGetParams,
   CrmListParams,
   Lead,
   Opportunity,
@@ -37,7 +36,6 @@ import simpleOauth2 from 'simple-oauth2';
 import { Readable } from 'stream';
 import {
   BadGatewayError,
-  BadRequestError,
   ForbiddenError,
   InternalServerError,
   NotFoundError,
@@ -358,9 +356,6 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     fieldMappingConfig: FieldMappingConfig,
     params: CRMCommonObjectTypeMap<T>['listParams']
   ): Promise<PaginatedSupaglueRecords<CRMCommonObjectTypeMap<T>['object']>> {
-    if (params.expand?.length) {
-      throw new BadRequestError('Expand is not supported for MS Dynamics 365 Sales');
-    }
     switch (commonObjectType) {
       case 'contact':
         return await this.listContacts(fieldMappingConfig, params);
@@ -380,23 +375,19 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
   public override async getCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
     id: string,
-    fieldMappingConfig: FieldMappingConfig,
-    params: CRMCommonObjectTypeMap<T>['getParams']
+    fieldMappingConfig: FieldMappingConfig
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
-    if (params.expand?.length) {
-      throw new BadRequestError('Expand is not supported for MS Dynamics 365 Sales');
-    }
     switch (commonObjectType) {
       case 'account':
-        return await this.getAccount(id, fieldMappingConfig, params);
+        return await this.getAccount(id, fieldMappingConfig);
       case 'contact':
-        return await this.getContact(id, fieldMappingConfig, params);
+        return await this.getContact(id, fieldMappingConfig);
       case 'lead':
-        return await this.getLead(id, fieldMappingConfig, params);
+        return await this.getLead(id, fieldMappingConfig);
       case 'opportunity':
-        return await this.getOpportunity(id, fieldMappingConfig, params);
+        return await this.getOpportunity(id, fieldMappingConfig);
       case 'user':
-        return await this.getUser(id, fieldMappingConfig, params);
+        return await this.getUser(id, fieldMappingConfig);
       default:
         throw new Error(`Unsupported common object type: ${commonObjectType}`);
     }
@@ -497,52 +488,43 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     return response[0]?.systemuserid;
   }
 
-  private async getAccount(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Account> {
+  private async getAccount(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Account> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsAccountToRemoteAccount(
       (await this.#odata.get('accounts').query({ $filter: `accountid eq '${id}'` }))[0],
-      fieldMappingConfig,
-      params.includeRawData ?? false
+      fieldMappingConfig
     );
   }
 
-  private async getContact(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Contact> {
+  private async getContact(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Contact> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsContactToRemoteContact(
       (await this.#odata.get('contacts').query({ $filter: `contactid eq '${id}'` }))[0],
-      fieldMappingConfig,
-      params.includeRawData ?? false
+      fieldMappingConfig
     );
   }
 
-  private async getLead(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<Lead> {
+  private async getLead(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Lead> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsLeadToRemoteLead(
       (await this.#odata.get('leads').query({ $filter: `leadid eq '${id}'` }))[0],
-      fieldMappingConfig,
-      params.includeRawData ?? false
+      fieldMappingConfig
     );
   }
 
-  private async getOpportunity(
-    id: string,
-    fieldMappingConfig: FieldMappingConfig,
-    params: CrmGetParams
-  ): Promise<Opportunity> {
+  private async getOpportunity(id: string, fieldMappingConfig: FieldMappingConfig): Promise<Opportunity> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsOpportunityToRemoteOpportunity(
       (await this.#odata.get('opportunities').query({ $filter: `opportunityid eq '${id}'` }))[0],
-      fieldMappingConfig,
-      params.includeRawData ?? false
+      fieldMappingConfig
     );
   }
 
-  private async getUser(id: string, fieldMappingConfig: FieldMappingConfig, params: CrmGetParams): Promise<User> {
+  private async getUser(id: string, fieldMappingConfig: FieldMappingConfig): Promise<User> {
     await this.maybeRefreshAccessToken();
     return fromDynamicsUserToRemoteUser(
       (await this.#odata.get('systemusers').query({ $filter: `systemuserid eq '${id}'` }))[0],
-      fieldMappingConfig,
-      params.includeRawData ?? false
+      fieldMappingConfig
     );
   }
 
@@ -637,7 +619,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<Account>> {
     return this.listImpl('account', fieldMappingConfig, params, (result) =>
-      fromDynamicsAccountToRemoteAccount(result, fieldMappingConfig, params.includeRawData ?? false)
+      fromDynamicsAccountToRemoteAccount(result, fieldMappingConfig)
     );
   }
 
@@ -646,7 +628,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<Contact>> {
     return this.listImpl('contact', fieldMappingConfig, params, (result) =>
-      fromDynamicsContactToRemoteContact(result, fieldMappingConfig, params.includeRawData ?? false)
+      fromDynamicsContactToRemoteContact(result, fieldMappingConfig)
     );
   }
 
@@ -655,7 +637,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<Lead>> {
     return this.listImpl('lead', fieldMappingConfig, params, (result) =>
-      fromDynamicsLeadToRemoteLead(result, fieldMappingConfig, params.includeRawData ?? false)
+      fromDynamicsLeadToRemoteLead(result, fieldMappingConfig)
     );
   }
 
@@ -664,7 +646,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<Opportunity>> {
     return this.listImpl('opportunity', fieldMappingConfig, params, (result) =>
-      fromDynamicsOpportunityToRemoteOpportunity(result, fieldMappingConfig, params.includeRawData ?? false)
+      fromDynamicsOpportunityToRemoteOpportunity(result, fieldMappingConfig)
     );
   }
 
@@ -673,7 +655,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
     params: CrmListParams
   ): Promise<PaginatedSupaglueRecords<User>> {
     return this.listImpl('user', fieldMappingConfig, params, (result) =>
-      fromDynamicsUserToRemoteUser(result, fieldMappingConfig, params.includeRawData ?? false)
+      fromDynamicsUserToRemoteUser(result, fieldMappingConfig)
     );
   }
 
@@ -691,7 +673,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.value.map((result: any) => ({
-              record: fromDynamicsAccountToRemoteAccount(result, fieldMappingConfig, /* includeRawData */ true),
+              record: fromDynamicsAccountToRemoteAccount(result, fieldMappingConfig),
               emittedAt,
             }))
           );
@@ -715,7 +697,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.value.map((result: any) => ({
-              record: fromDynamicsContactToRemoteContact(result, fieldMappingConfig, /* includeRawData */ true),
+              record: fromDynamicsContactToRemoteContact(result, fieldMappingConfig),
               emittedAt,
             }))
           );
@@ -745,7 +727,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.value.map((result: any) => ({
-              record: fromDynamicsOpportunityToRemoteOpportunity(result, fieldMappingConfig, /* includeRawData */ true),
+              record: fromDynamicsOpportunityToRemoteOpportunity(result, fieldMappingConfig),
               emittedAt,
             }))
           );
@@ -768,7 +750,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.value.map((result: any) => ({
-              record: fromDynamicsLeadToRemoteLead(result, fieldMappingConfig, /* includeRawData */ true),
+              record: fromDynamicsLeadToRemoteLead(result, fieldMappingConfig),
               emittedAt,
             }))
           );
@@ -791,7 +773,7 @@ class MsDynamics365Sales extends AbstractCrmRemoteClient {
           const emittedAt = new Date();
           return Readable.from(
             response.value.map((result: any) => ({
-              record: fromDynamicsUserToRemoteUser(result, fieldMappingConfig, /* includeRawData */ true),
+              record: fromDynamicsUserToRemoteUser(result, fieldMappingConfig),
               emittedAt,
             }))
           );

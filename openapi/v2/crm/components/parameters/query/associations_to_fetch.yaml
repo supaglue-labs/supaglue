@@ -6,4 +6,4 @@ schema:
     type: string
     example: contact
 description: |
-  List of any additional associated objects to attempt to fetch associations for (on top of the associations that are already part of the common model). Only relevant for hubspot and when `read_from_cache` is false.
+  List of associated objects to attempt to fetch associations for. Only relevant for hubspot and when `read_from_cache` is false.

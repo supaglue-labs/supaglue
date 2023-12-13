@@ -1,13 +1,4 @@
-import type {
-  Account,
-  BaseCrmModel,
-  BaseSearchParams,
-  CrmGetParams,
-  CrmListParams,
-  CustomFields,
-  SnakecasedCrmTenantFields,
-  User,
-} from '.';
+import type { BaseCrmModel, BaseSearchParams, CrmListParams, CustomFields, SnakecasedCrmTenantFields } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { Address, EmailAddress, LifecycleStage, PhoneNumber } from './common';
@@ -24,9 +15,7 @@ type CoreContact = {
   lastActivityAt: Date | null;
   lifecycleStage: LifecycleStage | null;
   ownerId: string | null;
-  owner?: User;
   accountId: string | null;
-  account?: Account;
 };
 
 export type Contact = BaseCrmModel & CoreContact;
@@ -65,5 +54,4 @@ export type RemoteContactTypes = {
   upsertParams: ContactUpsertParams;
   searchParams: ContactSearchParams;
   listParams: CrmListParams;
-  getParams: CrmGetParams;
 };

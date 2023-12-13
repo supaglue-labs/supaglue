@@ -12,27 +12,18 @@ export type BaseCrmModel = {
   updatedAt: Date | null;
   isDeleted: boolean;
   lastModifiedAt: Date;
-  rawData?: Record<string, any>;
+  rawData: Record<string, any>;
 };
 
 export type BaseSearchParams = {
-  includeRawData?: boolean;
   cursor?: string;
   pageSize?: number;
   associationsToFetch?: string[];
 };
 
 export type CrmListParams = {
-  includeRawData?: boolean;
   cursor?: string;
   pageSize?: number;
   modifiedAfter?: Date;
-  expand?: string[];
-  associationsToFetch?: string[];
-};
-
-export type CrmGetParams = {
-  includeRawData?: boolean;
-  expand?: string[];
   associationsToFetch?: string[];
 };

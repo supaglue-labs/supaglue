@@ -1,12 +1,4 @@
-import type {
-  Account,
-  BaseCrmModel,
-  CrmGetParams,
-  CrmListParams,
-  CustomFields,
-  SnakecasedCrmTenantFields,
-  User,
-} from '.';
+import type { BaseCrmModel, CrmListParams, CustomFields, SnakecasedCrmTenantFields } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 
@@ -26,9 +18,7 @@ type CoreOpportunity = {
   closeDate: Date | null;
   pipeline: string | null;
   accountId: string | null;
-  account?: Account;
   ownerId: string | null;
-  owner?: User;
 };
 
 export type Opportunity = BaseCrmModel & CoreOpportunity;
@@ -53,5 +43,4 @@ export type RemoteOpportunityTypes = {
   upsertParams: never;
   searchParams: never;
   listParams: CrmListParams;
-  getParams: CrmGetParams;
 };
