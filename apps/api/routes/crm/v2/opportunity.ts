@@ -1,7 +1,8 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { stringOrNullOrUndefinedToDate } from '@/lib/date';
-import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmOpportunity } from '@supaglue/core/mappers/crm';
+import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
   CreateOpportunityPathParams,
   CreateOpportunityRequest,
@@ -18,11 +19,12 @@ import type {
   UpdateOpportunityRequest,
   UpdateOpportunityResponse,
 } from '@supaglue/schemas/v2/crm';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { crmCommonObjectService, managedDataService } = getDependencyContainer();
+const { crmCommonObjectService, connectionService, managedDataService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -37,13 +39,14 @@ export default function init(app: Router): void {
         'opportunity',
         req.customerConnection,
         req.params.opportunity_id,
-        {
-          includeRawData: req.query?.include_raw_data?.toString() === 'true',
-          expand: req.query?.expand?.split(','),
-          associationsToFetch: req.query?.associations_to_fetch,
-        }
+        req.query?.associations_to_fetch
       );
-      return res.status(200).send(toSnakecasedKeysCrmOpportunity(opportunity));
+      const snakecasedKeysOpportunity = toSnakecasedKeysCrmOpportunity(opportunity);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { raw_data, ...rest } = snakecasedKeysOpportunity;
+      return res
+        .status(200)
+        .send(req.query?.include_raw_data?.toString() === 'true' ? snakecasedKeysOpportunity : rest);
     }
   );
 
@@ -65,34 +68,40 @@ export default function init(app: Router): void {
           modifiedAfter: req.query?.modified_after,
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
-          expand: req.query?.expand?.split(','),
-          includeRawData,
           associationsToFetch: req.query?.associations_to_fetch,
         });
         return res.status(200).send({
           pagination,
-          records: records.map(toSnakecasedKeysCrmOpportunity),
+          records: records.map((record) => ({
+            ...toSnakecasedKeysCrmOpportunity(record),
+            raw_data: includeRawData ? record.rawData : undefined,
+          })),
         });
       }
-      // TODO: Implement expand for uncached reads
-      if (req.query?.expand?.length) {
-        throw new BadRequestError('Expand is not yet supported for uncached reads');
+      const { pagination, records } = await managedDataService.getCrmOpportunityRecords(
+        req.supaglueApplication.id,
+        req.customerConnection.providerName,
+        req.customerId,
+        req.query?.cursor,
+        req.query?.modified_after as unknown as string | undefined,
+        req.query?.page_size ? parseInt(req.query.page_size) : undefined
+      );
+      let fieldMappingConfig: FieldMappingConfig | undefined = undefined;
+      if (includeRawData) {
+        fieldMappingConfig = await connectionService.getFieldMappingConfig(req.customerConnection.id, 'common', 'lead');
       }
-
-      return res
-        .status(200)
-        .send(
-          await managedDataService.getCrmOpportunityRecords(
-            req.supaglueApplication.id,
-            req.customerConnection.providerName,
-            req.customerConnection.id,
-            req.customerId,
-            req.query?.cursor,
-            req.query?.modified_after as unknown as string | undefined,
-            req.query?.page_size ? parseInt(req.query.page_size) : undefined,
-            includeRawData
-          )
-        );
+      return res.status(200).send({
+        pagination,
+        records: records.map((record) => ({
+          ...record,
+          raw_data:
+            includeRawData && fieldMappingConfig ? toMappedProperties(record.raw_data, fieldMappingConfig) : undefined,
+          _supaglue_application_id: undefined,
+          _supaglue_customer_id: undefined,
+          _supaglue_provider_name: undefined,
+          _supaglue_emitted_at: undefined,
+        })),
+      });
     }
   );
 

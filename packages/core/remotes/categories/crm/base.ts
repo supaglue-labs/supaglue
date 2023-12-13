@@ -25,7 +25,7 @@ export interface CrmRemoteClient extends RemoteClient {
     commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig,
-    params: CRMCommonObjectTypeMap<T>['getParams']
+    associationsToFetch?: string[]
   ): Promise<CRMCommonObjectTypeMap<T>['object']>;
   createCommonObjectRecord<T extends CRMCommonObjectType>(
     commonObjectType: T,
@@ -81,7 +81,7 @@ export abstract class AbstractCrmRemoteClient extends AbstractRemoteClient imple
     commonObjectType: T,
     id: string,
     fieldMappingConfig: FieldMappingConfig,
-    params: CRMCommonObjectTypeMap<T>['getParams']
+    associationsToFetch?: string[]
   ): Promise<CRMCommonObjectTypeMap<T>['object']> {
     throw new NotImplementedError();
   }

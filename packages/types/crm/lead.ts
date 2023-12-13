@@ -1,14 +1,4 @@
-import type {
-  Account,
-  BaseCrmModel,
-  BaseSearchParams,
-  Contact,
-  CrmGetParams,
-  CrmListParams,
-  CustomFields,
-  SnakecasedCrmTenantFields,
-  User,
-} from '.';
+import type { BaseCrmModel, BaseSearchParams, CrmListParams, CustomFields, SnakecasedCrmTenantFields } from '.';
 import type { EqualsFilter } from '../filter';
 import type { SnakecasedKeys } from '../snakecased_keys';
 import type { Address, EmailAddress, PhoneNumber } from './common/base';
@@ -27,11 +17,8 @@ type CoreLead = {
   phoneNumbers: PhoneNumber[];
   convertedDate: Date | null;
   convertedContactId: string | null;
-  convertedContact?: Contact;
   convertedAccountId: string | null;
-  convertedAccount?: Account;
   ownerId: string | null;
-  owner?: User;
 };
 
 export type Lead = BaseCrmModel & CoreLead;
@@ -70,5 +57,4 @@ export type RemoteLeadTypes = {
   upsertParams: LeadUpsertParams;
   searchParams: LeadSearchParams;
   listParams: CrmListParams;
-  getParams: CrmGetParams;
 };

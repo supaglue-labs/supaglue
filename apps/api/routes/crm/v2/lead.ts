@@ -1,6 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
-import { BadRequestError, NotImplementedError } from '@supaglue/core/errors';
+import { NotImplementedError } from '@supaglue/core/errors';
 import { toSnakecasedKeysCrmLead } from '@supaglue/core/mappers/crm';
+import { toMappedProperties } from '@supaglue/core/remotes/utils/properties';
 import type {
   CreateLeadPathParams,
   CreateLeadRequest,
@@ -24,11 +25,12 @@ import type {
   UpsertLeadRequest,
   UpsertLeadResponse,
 } from '@supaglue/schemas/v2/crm';
+import type { FieldMappingConfig } from '@supaglue/types/field_mapping_config';
 import { camelcaseKeys, camelcaseKeysSansCustomFields } from '@supaglue/utils/camelcase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
-const { crmCommonObjectService, managedDataService } = getDependencyContainer();
+const { crmCommonObjectService, managedDataService, connectionService } = getDependencyContainer();
 
 export default function init(app: Router): void {
   const router = Router();
@@ -39,11 +41,11 @@ export default function init(app: Router): void {
       req: Request<GetLeadPathParams, GetLeadResponse, GetLeadRequest, GetLeadQueryParams>,
       res: Response<GetLeadResponse>
     ) => {
-      const lead = await crmCommonObjectService.get('lead', req.customerConnection, req.params.lead_id, {
-        includeRawData: req.query?.include_raw_data?.toString() === 'true',
-        expand: req.query?.expand?.split(','),
-      });
-      return res.status(200).send(toSnakecasedKeysCrmLead(lead));
+      const lead = await crmCommonObjectService.get('lead', req.customerConnection, req.params.lead_id);
+      const snakecasedKeysLead = toSnakecasedKeysCrmLead(lead);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { raw_data, ...rest } = snakecasedKeysLead;
+      return res.status(200).send(req.query?.include_raw_data?.toString() === 'true' ? snakecasedKeysLead : rest);
     }
   );
 
@@ -58,34 +60,41 @@ export default function init(app: Router): void {
       if (req.query?.read_from_cache?.toString() !== 'true') {
         const { pagination, records } = await crmCommonObjectService.list('lead', req.customerConnection, {
           modifiedAfter: req.query?.modified_after,
-          includeRawData,
-          expand: req.query?.expand?.split(','),
           cursor: req.query?.cursor,
           pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
         });
         return res.status(200).send({
           pagination,
-          records: records.map(toSnakecasedKeysCrmLead),
+          records: records.map((record) => ({
+            ...toSnakecasedKeysCrmLead(record),
+            raw_data: includeRawData ? record.rawData : undefined,
+          })),
         });
       }
-      // TODO: Implement expand for uncached reads
-      if (req.query?.expand?.length) {
-        throw new BadRequestError('Expand is not yet supported for uncached reads');
+      const { pagination, records } = await managedDataService.getCrmLeadRecords(
+        req.supaglueApplication.id,
+        req.customerConnection.providerName,
+        req.customerId,
+        req.query?.cursor,
+        req.query?.modified_after as unknown as string | undefined,
+        req.query?.page_size ? parseInt(req.query.page_size) : undefined
+      );
+      let fieldMappingConfig: FieldMappingConfig | undefined = undefined;
+      if (includeRawData) {
+        fieldMappingConfig = await connectionService.getFieldMappingConfig(req.customerConnection.id, 'common', 'lead');
       }
-
-      return res
-        .status(200)
-        .send(
-          await managedDataService.getCrmLeadRecords(
-            req.supaglueApplication.id,
-            req.customerConnection.providerName,
-            req.customerId,
-            req.customerConnection.id,
-            req.query?.cursor,
-            req.query?.modified_after as unknown as string | undefined,
-            req.query?.page_size ? parseInt(req.query.page_size) : undefined
-          )
-        );
+      return res.status(200).send({
+        pagination,
+        records: records.map((record) => ({
+          ...record,
+          raw_data:
+            includeRawData && fieldMappingConfig ? toMappedProperties(record.raw_data, fieldMappingConfig) : undefined,
+          _supaglue_application_id: undefined,
+          _supaglue_customer_id: undefined,
+          _supaglue_provider_name: undefined,
+          _supaglue_emitted_at: undefined,
+        })),
+      });
     }
   );
 
@@ -142,11 +151,15 @@ export default function init(app: Router): void {
         filter: req.body.filter,
         cursor: req.query?.cursor,
         pageSize: req.query?.page_size ? parseInt(req.query.page_size) : undefined,
-        includeRawData: req.query?.include_raw_data?.toString() === 'true',
       });
       return res.status(200).send({
         pagination,
-        records: records.map(toSnakecasedKeysCrmLead),
+        records: records.map((record) => {
+          const snakecased = toSnakecasedKeysCrmLead(record);
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { raw_data, ...rest } = snakecased;
+          return req.query?.include_raw_data?.toString() === 'true' ? snakecased : rest;
+        }),
       });
     }
   );

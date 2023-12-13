@@ -124,9 +124,6 @@
             "$ref": "#/components/parameters/cursor"
           },
           {
-            "$ref": "#/components/parameters/expand"
-          },
-          {
             "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
@@ -318,9 +315,6 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
           },
           {
             "$ref": "#/components/parameters/associations_to_fetch"
@@ -611,9 +605,6 @@
           },
           {
             "$ref": "#/components/parameters/cursor"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
           },
           {
             "$ref": "#/components/parameters/associations_to_fetch"
@@ -927,9 +918,6 @@
             "$ref": "#/components/parameters/include_raw_data"
           },
           {
-            "$ref": "#/components/parameters/expand"
-          },
-          {
             "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
@@ -1182,9 +1170,6 @@
           },
           {
             "$ref": "#/components/parameters/page_size"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
           },
           {
             "$ref": "#/components/parameters/cursor"
@@ -1493,9 +1478,6 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
           }
         ],
         "responses": {
@@ -1734,9 +1716,6 @@
             "$ref": "#/components/parameters/cursor"
           },
           {
-            "$ref": "#/components/parameters/expand"
-          },
-          {
             "$ref": "#/components/parameters/associations_to_fetch"
           }
         ],
@@ -1813,9 +1792,6 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/include_raw_data"
-          },
-          {
-            "$ref": "#/components/parameters/expand"
           },
           {
             "$ref": "#/components/parameters/associations_to_fetch"
@@ -4053,9 +4029,6 @@
             "nullable": true,
             "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
           },
-          "owner": {
-            "$ref": "#/components/schemas/user"
-          },
           "phone_numbers": {
             "$ref": "#/components/schemas/phone_numbers"
           },
@@ -4162,16 +4135,10 @@
             "nullable": true,
             "example": "fd089246-09b1-4e3b-a60a-7a76314bbcce"
           },
-          "account": {
-            "$ref": "#/components/schemas/account"
-          },
           "owner_id": {
             "type": "string",
             "nullable": true,
             "example": "23e640fe-6105-4a11-a636-3aa6b6c6e762"
-          },
-          "owner": {
-            "$ref": "#/components/schemas/user"
           },
           "addresses": {
             "$ref": "#/components/schemas/addresses"
@@ -4349,9 +4316,6 @@
             "nullable": true,
             "example": "62e5e0f7-becd-4ae2-be82-8b4e1d5ed8a2"
           },
-          "owner": {
-            "$ref": "#/components/schemas/user"
-          },
           "phone_numbers": {
             "$ref": "#/components/schemas/phone_numbers"
           },
@@ -4461,9 +4425,6 @@
             "nullable": true,
             "example": "fd089246-09b1-4e3b-a60a-7a76314bbcce"
           },
-          "account": {
-            "$ref": "#/components/schemas/account"
-          },
           "amount": {
             "type": "integer",
             "nullable": true,
@@ -4499,9 +4460,6 @@
             "type": "string",
             "nullable": true,
             "example": "d8ceb3ff-8b7f-4fa7-b8de-849292f6ca69"
-          },
-          "owner": {
-            "$ref": "#/components/schemas/user"
           },
           "pipeline": {
             "type": "string",
@@ -5908,15 +5866,6 @@
         "example": "cD0yMDIxLTAxLTA2KzAzJTNBMjQlM0E1My40MzQzMjYlMkIwMCUzQTAw",
         "description": "The pagination cursor value"
       },
-      "expand": {
-        "name": "expand",
-        "in": "query",
-        "schema": {
-          "type": "string",
-          "example": "account,owner"
-        },
-        "description": "Comma-delimited list of associated object types to expand. Only supported for Hubspot and Salesforce common objects.\n"
-      },
       "remote_provider_page_size": {
         "name": "page_size",
         "in": "query",
@@ -5991,7 +5940,7 @@
             "example": "contact"
           }
         },
-        "description": "List of any additional associated objects to attempt to fetch associations for (on top of the associations that are already part of the common model). Only relevant for hubspot and when `read_from_cache` is false.\n"
+        "description": "List of associated objects to attempt to fetch associations for. Only relevant for hubspot and when `read_from_cache` is false.\n"
       }
     },
     "responses": {
