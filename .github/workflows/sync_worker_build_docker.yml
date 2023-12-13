@@ -30,6 +30,7 @@ jobs:
   build_and_push:
     name: Build and push Docker image
     uses: ./.github/workflows/docker_build_and_push.yml
+    if: github.event_name == 'push'
     with:
       workspace: sync-worker
       image-name: sync-worker
