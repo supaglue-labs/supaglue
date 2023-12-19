@@ -340,10 +340,10 @@ export interface paths {
   };
   "/syncs": {
     /**
-     * List Syncs
+     * Get Syncs
      * @description Get a list of Syncs.
      */
-    get: operations["listSyncs"];
+    get: operations["getSyncs"];
   };
   "/syncs/_pause": {
     /** Pause sync */
@@ -377,10 +377,10 @@ export interface paths {
   };
   "/sync-runs": {
     /**
-     * List SyncRuns
+     * Get SyncRuns
      * @description Get a list of SyncRuns.
      */
-    get: operations["listSyncRuns"];
+    get: operations["getSyncRuns"];
   };
 }
 
@@ -457,27 +457,6 @@ export interface webhooks {
 
 export interface components {
   schemas: {
-    related_sync_states: {
-      object?: string;
-      object_type?: string;
-      /**
-       * @description A point-in-time snapshot of whether the sync has finished. Use this to help you process your transformations in the correct order. E.g. you may want to wait for Accounts to finish before processing Contacts.
-       *
-       * **Note:** If syncs take longer than your specified sync frequency in your SyncConfig, you may never see finished transition be true. Please ensure that your sync frequencies are longer than sync durations.
-       *
-       * @example true
-       */
-      finished?: boolean;
-      strategy_type?: string;
-      /**
-       * @description The high-water mark (epoch) for Supaglue syncs for this object, scoped by provider and customer. Records before this watermark have been synced.
-       *
-       * **Note:** In some situations, you may need Supaglue's high-water mark state to process your transformations.
-       *
-       * @example 1701725470926
-       */
-      synced_records_up_to_watermark?: number;
-    };
     pagination: {
       /** @example eyJpZCI6IjQyNTc5ZjczLTg1MjQtNDU3MC05YjY3LWVjYmQ3MDJjNmIxNCIsInJldmVyc2UiOmZhbHNlfQ== */
       next: string | null;
@@ -1255,9 +1234,9 @@ export interface components {
        * @example standard
        * @enum {string}
        */
-      object_type: "common";
+      object_type: "common" | "standard" | "custom";
       /**
-       * @description Supaglue's object name
+       * @description The Provider's object name (case sensitive)
        * @example contact
        */
       object: string;
@@ -1279,9 +1258,9 @@ export interface components {
        * @example standard
        * @enum {string}
        */
-      object_type: "common" | "standard" | "custom";
+      object_type: "common";
       /**
-       * @description The Provider's object name (case sensitive)
+       * @description Supaglue's object name
        * @example contact
        */
       object: string;
@@ -1333,10 +1312,6 @@ export interface components {
       provider_name: string;
       /** @example my-customer-1 */
       customer_id: string;
-      /** @description Sync state information related to all customer syncs. This is only returned if there is a customer context, e.g. filtering by `customer_id` or in a webhook event. */
-      related_sync_states?: {
-        [key: string]: components["schemas"]["related_sync_states"];
-      };
     }, {
       /** @example 971cb76d-9558-42fe-8f3b-8a531c32bd5f */
       id: string;
@@ -1357,9 +1332,6 @@ export interface components {
       provider_name: string;
       /** @example my-customer-1 */
       customer_id: string;
-      related_sync_states?: {
-        [key: string]: components["schemas"]["related_sync_states"];
-      };
     }]>;
     sync_run: OneOf<[{
       /** @example 20eb4da3-6b38-4ec6-a82d-ecee59a9d6d9 */
@@ -3231,10 +3203,10 @@ export interface operations {
     };
   };
   /**
-   * List Syncs
+   * Get Syncs
    * @description Get a list of Syncs.
    */
-  listSyncs: {
+  getSyncs: {
     parameters: {
       query?: {
         /**
@@ -3461,10 +3433,10 @@ export interface operations {
     };
   };
   /**
-   * List SyncRuns
+   * Get SyncRuns
    * @description Get a list of SyncRuns.
    */
-  listSyncRuns: {
+  getSyncRuns: {
     parameters: {
       query?: {
         /**
@@ -3580,9 +3552,6 @@ export interface operations {
           object_type: "common" | "standard" | "custom";
           /** @example contact */
           object: string;
-          related_sync_states: {
-            [key: string]: components["schemas"]["related_sync_states"];
-          };
         }, {
           /**
            * @example sync.complete

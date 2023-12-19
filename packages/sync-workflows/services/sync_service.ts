@@ -40,43 +40,6 @@ export class SyncService {
     this.#webhookService = webhookService;
   }
 
-  /**
-   * Get all customer object syncs that are configured by the same SyncConfig.
-   *
-   * Inputs are {syncId, connectionId} because the lookup originates from run_object_sync
-   * which doesn't have an readily-accessible handle on SyncConfig or Customer.
-   */
-  public async getAllRelatedCustomerObjectSyncs(syncId: string, connectionId: string): Promise<ObjectSync[]> {
-    const sync = await this.#prisma.sync.findUnique({
-      where: {
-        id: syncId,
-      },
-    });
-
-    if (!sync) {
-      throw new Error('Sync not found');
-    }
-
-    const connection = await this.#connectionService.getSafeById(connectionId);
-
-    const { syncConfigId } = sync;
-    const { customerId } = connection;
-
-    const models = await this.#prisma.sync.findMany({
-      where: {
-        type: 'object',
-        syncConfigId,
-        connection: {
-          customer: {
-            externalIdentifier: customerId,
-          },
-        },
-      },
-    });
-
-    return models.map((model) => fromSyncModel(model) as ObjectSync);
-  }
-
   public async getSyncById(id: string): Promise<Sync> {
     const model = await this.#prisma.sync.findUniqueOrThrow({
       where: {

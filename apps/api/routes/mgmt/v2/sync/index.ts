@@ -1,7 +1,7 @@
 import { getDependencyContainer } from '@/dependency_container';
 import { connectionHeaderMiddleware } from '@/middleware/connection';
 import { BadRequestError } from '@supaglue/core/errors';
-import { generateRelatedObjectSyncStates, toPaginationInternalParams } from '@supaglue/core/lib';
+import { toPaginationInternalParams } from '@supaglue/core/lib';
 import type {
   GetSyncsPathParams,
   GetSyncsQueryParams,
@@ -20,8 +20,6 @@ import type {
   TriggerSyncRequest,
   TriggerSyncResponse,
 } from '@supaglue/schemas/v2/mgmt';
-import type { ObjectSyncDTO } from '@supaglue/types/sync';
-import { snakecaseKeys } from '@supaglue/utils/snakecase';
 import type { Request, Response } from 'express';
 import { Router } from 'express';
 
@@ -67,9 +65,7 @@ export default function init(app: Router) {
         providerName: req.query?.provider_name,
       });
 
-      const objectSyncs = results.filter((result) => result.type === 'object') as ObjectSyncDTO[];
-
-      const snakecaseResults = results.map((result) => {
+      const snakeCaseResults = results.map((result) => {
         const base = {
           id: result.id,
           connection_id: result.connectionId,
@@ -84,9 +80,6 @@ export default function init(app: Router) {
             type: 'object' as const,
             object_type: result.objectType,
             object: result.object,
-            related_sync_states: req.query?.customer_id
-              ? snakecaseKeys(generateRelatedObjectSyncStates(objectSyncs))
-              : {},
           };
         }
 
@@ -94,10 +87,9 @@ export default function init(app: Router) {
           ...base,
           type: 'entity' as const,
           entity_id: result.entityId,
-          related_sync_states: {}, // NOTE: not implementing for entity
         };
       });
-      return res.status(200).send({ next, previous, results: snakecaseResults, total_count: totalCount });
+      return res.status(200).send({ next, previous, results: snakeCaseResults, total_count: totalCount });
     }
   );
 

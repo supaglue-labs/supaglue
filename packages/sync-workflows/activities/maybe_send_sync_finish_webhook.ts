@@ -1,6 +1,5 @@
 import { maybeSendWebhookPayload } from '@supaglue/core/lib/webhook';
 import type { ConnectionService, ProviderService, WebhookService } from '@supaglue/core/services';
-import type { RelatedSyncStates } from '@supaglue/types/sync';
 import { snakecaseKeys } from '@supaglue/utils';
 import type { ApplicationService } from '../services';
 
@@ -10,16 +9,12 @@ export type MaybeSendSyncFinishWebhookArgs = {
   status: 'SYNC_SUCCESS' | 'SYNC_ERROR';
   numRecordsSynced: number;
   errorMessage?: string;
-
-  // Object only, not Entity
-  relatedSyncStates: Record<string, RelatedSyncStates>;
 } & (
   | {
       type: 'object';
       objectType: 'common' | 'standard' | 'custom';
       object: string;
     }
-  // @deprecated
   | {
       type: 'entity';
       entityId: string;

@@ -249,11 +249,6 @@ const sidebars = {
           label: 'Pagination',
         },
         {
-          id: 'tutorials/transformations/processing-order',
-          type: 'doc',
-          label: 'Processing order for objects',
-        },
-        {
           id: 'tutorials/transformations/common-schema',
           type: 'doc',
           label: 'Build a common schema',

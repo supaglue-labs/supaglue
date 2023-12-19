@@ -64,12 +64,7 @@ post:
                 object:
                   type: string
                   example: contact
-                related_sync_states:
-                  type: object
-                  additionalProperties:
-                    $ref: '../components/schemas/objects/related_sync_states.yaml'
               required:
-                - related_sync_states
                 - webhook_event_type
                 - run_id
                 - connection_id
