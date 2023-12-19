@@ -1,5 +1,6 @@
 import type { Readable } from 'stream';
 import { PassThrough } from 'stream';
+import { logger } from '../../lib/logger';
 
 type PaginatorImpl<T> = (cursor?: string) => Promise<T>;
 
@@ -62,7 +63,7 @@ export async function paginator<T>(
           response = await pageFetcher(cursor);
         } catch (e: any) {
           if (e.problemType === 'SG_TERMINAL_TOO_MANY_REQUESTS_ERROR') {
-            passThrough.emit('error', e);
+            passThrough.destroy(e);
             return;
           }
           throw e;
@@ -72,13 +73,17 @@ export async function paginator<T>(
         cursor = getNextCursorFromPage(response);
 
         readable.pipe(passThrough, { end: index === lastIndex && !cursor });
-        readable.on('error', (err) => passThrough.emit('error', err));
+        readable.on('error', (err) => passThrough.destroy(err));
 
         await new Promise((resolve) => readable.on('end', resolve));
       } while (cursor);
     }
   })().catch((err) => {
-    passThrough.emit('error', err);
+    passThrough.destroy(err);
+  });
+
+  passThrough.on('error', (err) => {
+    logger.error({ err }, 'Error in paginator stream');
   });
 
   return passThrough;
