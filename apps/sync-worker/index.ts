@@ -93,7 +93,6 @@ async function run() {
 }
 
 run().catch((err) => {
-  // eslint-disable-next-line no-console
-  console.error(err);
+  logger.error({ err }, 'Uncaught error in worker, exiting');
   process.exit(1);
 });
