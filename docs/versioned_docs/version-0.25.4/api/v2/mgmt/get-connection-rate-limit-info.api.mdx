@@ -1,0 +1,42 @@
+---
+id: get-connection-rate-limit-info
+title: "Get connection rate limit info"
+description: "Get rate limit info for a connection. This endpoint is only available for"
+sidebar_label: "Get connection rate limit info"
+hide_title: true
+hide_table_of_contents: true
+api: eJztVm1rHDcQ/iti+yWBy+3ZwYYcJSQtJZimEByHUmKzHkvjW8VaSZG0ZzvH/vfOaO/Ou/bFgX5wv8QGWys98/aMNDOrwnkMkLSzR6qYFwtMvztrUfLOMSR8rxudjuylKyaFwiiD9nxE0HeYBEmiMAwRmjDi0gUBQm41TMVJraNAq7zTlkBROGtuBSxBG7gwyBKnNoLBSCuJAqwS4J0xbqAmTk8t2U+wiMX8c3HnYSzOJkVE2QadbuloVdy8AK9fXCF/nXV0GjB6AiJJror92Yz/jQO5U3c/HrJJTiS0iaXAe6Nl5qr8Ell0VURZYwO8SrceSZm7+EK6SNAHZjbp3rCieG9/DMumBzDiDBcYCIc30HhDe3uz2azjsBrQVtvF4+hXa3DEVCXd4E70mI6TGgVDxTNtBXona0EMO6vicwFJXNeadhKBBmRda2NEtjIVR5ei0TGSa5P7MEo/iGi0okOSscpdT0exHe4d7O+9oix12euvrQ6oOOU9McOwKbVJJ5Yq2JbBig1VGVjl5JGK2rXhJ+9Pz7sjB8Iu2kEpzfGC+TBKwM/0PF16WMkGs+OQjz0EaDBhiLmoWmCKCtnG5BoMlVZkUzMrHlJdDH1KocXJw7IYU2DvSPdWG6V4qRVpy9//TR+RZNuGmajbC6rzzMVdM+F7pD2qoJe8/kZtCONVFdEY+mxipW7Jtpaxenl4UGU5hrnaVTI0XPzBx9awrGtTQJDs28Jlw32T2tgz7jLlGIgz6VjWaIvA10ga+n+R03QYkToR24ZwhcmNvK36TQqrksa1qgIpXWtThXYBC2y4CxHegLziLG9vxyD0TVbH1HbcBimbtVt3eOaFeZ4X5SalsVwNstuVg95brkbquvLBjeIWHJaby0IVl51Kycd5WVI3nsbWw8K0ONWubBZNKpf7D57XxzVGvP1wVHSDrv6RU9+XgUFv314E2vmTNiabW3WHWd+oGkHteM5kRhBKJCeA8ngtFC7RcNGJeU9KjDE/1OxQx9ooVDLMgfY6ZtP9g+nLAe9/gV1nKkv10wPIXLrW/m3i5KtLb5apUk7GN1uO+tszJnF02N0P5Rf6EUc2BafanLJT+v0bDYGRY+Egxp4JMtnyB/RD2j+uFRKsaCMJ8MDGGJJsspTY3AyRa2M/LcY8qY1HtFObXfkNYmZNfDp+z5vn5+en9gf3YY3i4LyLiQwPOONJUz42pI34WN3NbP/HjNpfy4Q3qfSGijKHlLO5Wj+6z9s6ytVmPi6qA318eL9GPnh6ZzzjxMRaV6sLIv5TMF3H219bDHkInhRLCJoDyc9T6chrKgWXYCI+Qt6z43UVfi6+F9jmEVp+bkvgez0vaJnf6KhfcOF/QtP3KuAZz4J9IWAOesxbeuM+DaQfDPijwvnujxMu+y3ncFh++lqzXrD2nZ4N61Jvnv8yKzvhv/L7ocL2egvvT74rsC1zPZo5OqNW/i8dnssy
+sidebar_class_name: "get api-method"
+info_path: api/v2/mgmt/management-api
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get connection rate limit info</h1>
+
+<MethodEndpoint method={"get"} path={"/customers/{customer_id}/connections/{provider_name}/_rate_limit_info"}></MethodEndpoint>
+
+
+
+Get rate limit info for a connection. This endpoint is only available for
+salesforce and apollo connections.
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"customer_id","in":"path","required":true,"schema":{"type":"string"}}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"provider_name","in":"path","required":true,"schema":{"type":"string","enum":["hubspot","salesforce","pipedrive","zendesk_sell","ms_dynamics_365_sales","zoho_crm","capsule","outreach","gong","apollo","salesloft","intercom","linear","clearbit","6sense","marketo","salesforce_marketing_cloud_account_engagement","slack"],"example":"hubspot","title":"provider_name"}}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+Connection rate limit info
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>daily</strong><span className={"openapi-schema__name"}> object</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"limit"} required={true} schemaName={"integer"} qualifierMessage={undefined} schema={{"type":"integer","example":1000}}></SchemaItem><SchemaItem collapsible={false} name={"remaining"} required={true} schemaName={"integer"} qualifierMessage={undefined} schema={{"type":"integer","example":900}}></SchemaItem><SchemaItem collapsible={false} name={"reset_time"} required={false} schemaName={"integer"} qualifierMessage={undefined} schema={{"type":"integer","description":"The time (in epoch seconds) at which the rate limit will reset. If missing, the rate limit is a sliding window.","example":1615219200}}></SchemaItem></div></details></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>hourly</strong><span className={"openapi-schema__name"}> object</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"limit"} required={true} schemaName={"integer"} qualifierMessage={undefined} schema={{"type":"integer","example":1000}}></SchemaItem><SchemaItem collapsible={false} name={"remaining"} required={true} schemaName={"integer"} qualifierMessage={undefined} schema={{"type":"integer","example":900}}></SchemaItem><SchemaItem collapsible={false} name={"reset_time"} required={false} schemaName={"integer"} qualifierMessage={undefined} schema={{"type":"integer","description":"The time (in epoch seconds) at which the rate limit will reset. If missing, the rate limit is a sliding window.","example":1615219200}}></SchemaItem></div></details></SchemaItem><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>other</strong><span className={"openapi-schema__name"}> object</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={true} className={"schemaItem"}><details style={{}} className={"openapi-markdown__details"}><summary style={{}}><span className={"openapi-schema__container"}><strong className={"openapi-schema__property"}>property name*</strong><span className={"openapi-schema__name"}> single_rate_limit_info</span></span></summary><div style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"limit"} required={true} schemaName={"integer"} qualifierMessage={undefined} schema={{"type":"integer","example":1000}}></SchemaItem><SchemaItem collapsible={false} name={"remaining"} required={true} schemaName={"integer"} qualifierMessage={undefined} schema={{"type":"integer","example":900}}></SchemaItem><SchemaItem collapsible={false} name={"reset_time"} required={false} schemaName={"integer"} qualifierMessage={undefined} schema={{"type":"integer","description":"The time (in epoch seconds) at which the rate limit will reset. If missing, the rate limit is a sliding window.","example":1615219200}}></SchemaItem></div></details></SchemaItem></div></details></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"daily\": {\n    \"limit\": 1000,\n    \"remaining\": 900,\n    \"reset_time\": 1615219200\n  },\n  \"hourly\": {\n    \"limit\": 1000,\n    \"remaining\": 900,\n    \"reset_time\": 1615219200\n  },\n  \"other\": {}\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
