@@ -1,10 +1,10 @@
 get:
-  operationId: listSyncRuns
+  operationId: getSyncRuns
   tags:
     - SyncRuns
   security:
     - x-api-key: []
-  summary: List SyncRuns
+  summary: Get SyncRuns
   description: >-
     Get a list of SyncRuns.
   parameters:

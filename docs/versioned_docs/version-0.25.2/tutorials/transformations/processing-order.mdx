@@ -4,7 +4,7 @@ import ThemedImage from '@theme/ThemedImage';
 
 In many transformation use cases, you may wish to process objects in a particular order, depending on your application's data model and decisions you made around referential integrity. For example, you may want to process parent objects, like Accounts, before dependent objects, like Contacts, if you have foreign keys from Contacts to Accounts.
 
-To help make this easier for you, Supaglue's [`sync.complete` webhook event](https://docs.supaglue.com/api/v2/mgmt/sync-complete) and [Management (Sync) API](https://docs.supaglue.com/api/v2/mgmt/list-syncs) provide information about whether related object Syncs have `finished` and their high-water mark.
+To help make this easier for you, Supaglue's [`sync.complete` webhook event](https://docs.supaglue.com/api/v2/mgmt/sync-complete) and [Management (Sync) API](https://docs.supaglue.com/api/v2/mgmt/get-syncs) provide information about whether related object Syncs have `finished` and their high-water mark.
 
 ## Related Sync States
 

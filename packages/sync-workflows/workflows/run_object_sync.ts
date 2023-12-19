@@ -2,7 +2,6 @@ import type { ProviderCategory } from '@supaglue/types/common';
 import { ActivityFailure, ApplicationFailure, proxyActivities } from '@temporalio/workflow';
 // Only import the activity types
 import { ForbiddenError, PaymentRequiredError, UnauthorizedError } from '@supaglue/core/errors';
-import { generateRelatedObjectSyncStates } from '@supaglue/core/lib/sync';
 import type { FullThenIncrementalSync, Sync } from '@supaglue/types/sync';
 import type { createActivities } from '../activities/index';
 
@@ -20,7 +19,6 @@ const { syncObjectRecords, syncEntityRecords } = proxyActivities<ReturnType<type
 
 const {
   getSync,
-  getAllRelatedCustomerObjectSyncs,
   pauseSync,
   updateSyncState,
   clearSyncArgsForNextRun,
@@ -81,8 +79,6 @@ function getPauseReasonIfShouldPause(err: any): string | undefined {
 
 export async function runObjectSync({ syncId, connectionId, category }: RunObjectSyncArgs): Promise<void> {
   const { sync, runId } = await getSync({ syncId });
-  const { syncs } = await getAllRelatedCustomerObjectSyncs({ syncId, connectionId });
-  const relatedSyncStates = sync.type === 'object' ? generateRelatedObjectSyncStates(syncs) : {}; // NOTE: not implementing for entity
 
   const strategy = await getSyncStrategy({ sync });
 
@@ -128,7 +124,6 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
         objectType: sync.objectType,
         object: sync.object,
         errorMessage,
-        relatedSyncStates: {},
       });
     } else {
       const {
@@ -144,7 +139,6 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
         entityId: sync.entityId,
         errorMessage,
         entityName,
-        relatedSyncStates: {},
       });
     }
 
@@ -171,7 +165,6 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
       type: 'object',
       objectType: sync.objectType,
       object: sync.object,
-      relatedSyncStates,
     });
   } else {
     const {
@@ -186,7 +179,6 @@ export async function runObjectSync({ syncId, connectionId, category }: RunObjec
       type: 'entity',
       entityId: sync.entityId,
       entityName,
-      relatedSyncStates,
     });
   }
 }
