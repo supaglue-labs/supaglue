@@ -19,7 +19,7 @@ export const fromMarketoFormFieldToFormField = (marketoFormField: MarketoFormFie
     name: marketoFormField.label,
     required: marketoFormField.required,
     dataFormat: marketoFormField.dataType,
-    dataOptions: marketoFormField.fieldMetaData?.values.map(({ label, value, isDefault }) => ({
+    dataOptions: marketoFormField.fieldMetaData?.values?.map(({ label, value, isDefault }) => ({
       label,
       value,
       isDefault,
