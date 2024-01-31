@@ -1,0 +1,45 @@
+---
+id: get-attachment
+title: "Get attachment"
+description: ":::note"
+sidebar_label: "Get attachment"
+hide_title: true
+hide_table_of_contents: true
+api: eJzVVltvIjcU/ivu9CVIGWAJZAmqqqbd1SpqH1a5dFUBImbmAE5mbK/tgSA0/73nzI3hErRN96HNAwH7XL7z+fM53nhKg+FOKHkTegNvDu7aOR4sYpDOO/dCsIERmvZxdzAYSOVgJO8XwrIZcJcYYPhVyWjN+JKLiE8jXJHss4GlgBVzilmIIHAsSKxTMRiyZiox7KN0YLQRFpiOuGyy4W9KYm7HEjs+izGYUwMHPP7FJprPowSagYobbKYMixUllvg1zsA3RxLBjeRI3gKCkpZxybaVMDV9Igwr4RbMLYDNxRIkEyH6YZWOz603GHpbB+uNzz0LQWKEW+PWxnvxuRb+M9CvcYq7mhseA5Zgs32JP5AiIYMoCWFi+GoScscxuiDqviZg1vjDBguIuTfYeG6tyWGqVARceuk+2V8WgEgNMVgEZRiUUVCk3mGckM2MirN6LkzIEJBbM23UUoRgmpgMXnisI8ziTALpeQXyxS8PwxdhiXABHN2OQbTOCDknhFVAL15vY7w7EMo9Qiq32c0HhMjxVKVAFlAoCE86MRNgM+yVIcpmTcLgWkciyM4VIxv4mggD4ZEqylr9bOVNdVgegUUZBXC0iDIDKzK8CoZX0plsKdXcLQ6cvhFYu9PrB9Pg0r9sd9p+96LN/X63Dz7nMx5MeTjrcvBIhwasVtKCpYCddpv+7RayxfYhV2SA94zuN1rWuG49WTLfHOLLbw86Ih3YLpzIk81EBJO8/v1S6pXcBQZA2oVyTZ1X6UTwDO60V/uqqr/7ev3nOYjERKejLZzTg1aLR9gcImojLf2+ezWlAAUZk9z5VJAnDRn8REcKNRZOpuvTDp3+tNd91+n5nf77md+96ob+1WUP/IugN724aAdX/LLvpWldIcMaqxVRtSr38O6CGZOHi3b1iAlSyoG9aqGKHk9HSdoceK2toW1tdlSc0h0Csyw7XEZyxqQlKrVoVn1ZqFYOFRloLTsHV+muMGTXn28y0Zat9Y6klqup1mArTnHld6C2WV350mb/su/mwzQMrah38ihS2DVhCRFp12ZrQQA2bz4ZoJSizRQlpmrzGO1mp9fseVtKHyT1rJDdl5WSMzsrJl2jOBqcXxSnAFwWTrKgiYZLoQrszkSjQ9yhdmfzYC7894fwj/jHbqQzKkwC2qC5/AUidATCQryXZGYUVow2GLKTkP7ygOwvlbAAR3mC+BzVS/YYYoXiKWIJE/q7o882KeHwTyodc8ZYat7SMtRVsvFZSTgdSbNeXwu5cFRXK/f3c3+7VXkjS/HD8DaRGdPKupjLbUiTyKbGNUl3Y5o4h9XY5byxtVitVk2du2Upy/ytlTLPVvMAqiVfJ1Ps0i2F6sy0Rskzln/lNtMwe7j9YyQfHx9H8lsuaGFK4iog1DT7CRzjrz4CN9vp8T+Q4hvfg3n3cfDiSAkiI6qYMXnfHNYarEWPwe78xw63QF7JbrOZ4hk9mChNaTl/B1I7DYUlcrAjz3hk4QTN3+EleLSirNcee7EuObWsgZe16iU3goD+Q9Bnt8VMa7DX8pdNXq7rOUtcu4ymY3Qouv2bgXzPZ+kJRvef11s6z/8F8P2n6EkA+y/jHQi50TUOQe1qewdPQTr96tXw6eM92vKE1F+fz/kwLr7QyRw91frgztPTJ4E5av4TtTSc/D9X5vnOqw7VO6DUNAkmTf8GLVwpnA==
+sidebar_class_name: "get api-method"
+info_path: api/v2/ticketing/unified-ticketing-api-preview
+custom_edit_url: null
+---
+
+import ApiTabs from "@theme/ApiTabs";
+import DiscriminatorTabs from "@theme/DiscriminatorTabs";
+import MethodEndpoint from "@theme/ApiExplorer/MethodEndpoint";
+import SecuritySchemes from "@theme/ApiExplorer/SecuritySchemes";
+import MimeTabs from "@theme/MimeTabs";
+import ParamsItem from "@theme/ParamsItem";
+import ResponseSamples from "@theme/ResponseSamples";
+import SchemaItem from "@theme/SchemaItem";
+import SchemaTabs from "@theme/SchemaTabs";
+import TabItem from "@theme/TabItem";
+
+<h1 className={"openapi__heading"}>Get attachment</h1>
+
+<MethodEndpoint method={"get"} path={"/attachments/{attachment_id}"}></MethodEndpoint>
+
+
+
+:::note
+This feature is only available in Preview to select customers on our Enterprise plan. [Contact us](mailto:team@supaglue.com) for more information.
+:::
+
+Returns an Attachment object with the given id.
+
+
+## Request
+
+<details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Path Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"attachment_id","in":"path","required":true,"schema":{"type":"string"},"example":"0258cbc6-6020-430a-848e-aafacbadf4ae"}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Query Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"include_raw_data","in":"query","schema":{"type":"boolean"},"description":"Whether to include raw data fetched from the 3rd party provider.","example":true}}></ParamsItem></ul></div></details><details style={{"marginBottom":"1rem"}} className={"openapi-markdown__details"} data-collapsed={false} open={true}><summary style={{}}><h3 className={"openapi-markdown__details-summary-header-params"}>Header Parameters</h3></summary><div><ul><ParamsItem className={"paramsItem"} param={{"name":"x-customer-id","in":"header","schema":{"type":"string"},"example":"my-customer-1","description":"The customer ID that uniquely identifies the customer in your application","required":true}}></ParamsItem><ParamsItem className={"paramsItem"} param={{"name":"x-provider-name","in":"header","schema":{"type":"string"},"example":"salesforce","description":"The provider name","required":true}}></ParamsItem></ul></div></details><div><div><ApiTabs><TabItem label={"200"} value={"200"}><div>
+
+attachmentData
+
+</div><div><MimeTabs className={"openapi-tabs__mime"} schemaType={"response"}><TabItem label={"application/json"} value={"application/json"}><SchemaTabs className={"openapi-tabs__schema"}><TabItem label={"Schema"} value={"Schema"}><details style={{}} className={"openapi-markdown__details response"} data-collapsed={false} open={true}><summary style={{}} className={"openapi-markdown__details-summary-response"}><strong>Schema</strong></summary><div style={{"textAlign":"left","marginLeft":"1rem"}}></div><ul style={{"marginLeft":"1rem"}}><SchemaItem collapsible={false} name={"file_name"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"Screenshot.png"}}></SchemaItem><SchemaItem collapsible={false} name={"ticket"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"0958cbc6-6040-430a-848e-aafacbadf4ae"}}></SchemaItem><SchemaItem collapsible={false} name={"file_url"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"http://alturl.com/p749b"}}></SchemaItem><SchemaItem collapsible={false} name={"content_type"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"jpeg"}}></SchemaItem><SchemaItem collapsible={false} name={"uploaded_by"} required={true} schemaName={"string"} qualifierMessage={undefined} schema={{"type":"string","example":"28b54125-287f-494d-965e-3c5b330c9a68"}}></SchemaItem></ul></details></TabItem><TabItem label={"Example (from schema)"} value={"Example (from schema)"}><ResponseSamples responseExample={"{\n  \"file_name\": \"Screenshot.png\",\n  \"ticket\": \"0958cbc6-6040-430a-848e-aafacbadf4ae\",\n  \"file_url\": \"http://alturl.com/p749b\",\n  \"content_type\": \"jpeg\",\n  \"uploaded_by\": \"28b54125-287f-494d-965e-3c5b330c9a68\"\n}"} language={"json"}></ResponseSamples></TabItem></SchemaTabs></TabItem></MimeTabs></div></TabItem></ApiTabs></div></div>
+      
