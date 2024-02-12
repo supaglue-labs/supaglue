@@ -1748,6 +1748,7 @@ ${modifiedAfter ? `WHERE SystemModstamp > ${modifiedAfter.toISOString()} ORDER B
       case 'REQUIRED_FIELD_MISSING':
       case 'STRING_TOO_LONG':
       case 'TOO_MANY_ENUM_VALUE':
+      case 'PICKLIST_INACTIVE_VALUES_EXCEEDED':
         return new BadRequestError(inferredTitle, { cause: error, origin: 'remote-provider' });
       case 'INVALID_ID_FIELD':
       case 'INVALID_LOCATOR':
