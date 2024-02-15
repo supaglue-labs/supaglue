@@ -1,6 +1,4 @@
 import AccountMenu from '@/components/AccountMenu';
-import { Banner } from '@/components/Banner';
-import { useActiveApplication } from '@/hooks/useActiveApplication';
 import type { SupaglueProps } from '@/pages/applications/[applicationId]';
 import MenuIcon from '@mui/icons-material/Menu';
 import AppBar from '@mui/material/AppBar';
@@ -21,12 +19,10 @@ interface HeaderProps {
 
 export default function Header(props: HeaderProps & SupaglueProps) {
   const { onDrawerToggle, title, tabs } = props;
-  const { activeApplication } = useActiveApplication();
 
   return (
     <React.Fragment>
       <AppBar color="primary" position="sticky" elevation={0}>
-        {activeApplication && !activeApplication.isPaid && <Banner />}
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
             <Grid sx={{ display: { sm: 'none', xs: 'block' } }} item>
