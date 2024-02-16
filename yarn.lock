@@ -6390,7 +6390,7 @@ __metadata:
     openapi-fetch: 0.8.1
     openapi-typescript: ^6.7.0
     tsx: ^3.12.3
-    undici: ^5.27.2
+    undici: ^5.28.3
   languageName: unknown
   linkType: soft
 
@@ -24192,6 +24192,15 @@ __metadata:
   dependencies:
     "@fastify/busboy": ^2.0.0
   checksum: 22bbdd763798700979986546d70072b67223189353d2a811efa9c6e44476161a0d1781ffe24115221f69a1b344b95d5926bd39a6eb760a2cd8804781cec0c5eb
+  languageName: node
+  linkType: hard
+
+"undici@npm:^5.28.3":
+  version: 5.28.3
+  resolution: "undici@npm:5.28.3"
+  dependencies:
+    "@fastify/busboy": ^2.0.0
+  checksum: fa1e65aff896c5e2ee23637b632e306f9e3a2b32a3dc0b23ea71e5555ad350bcc25713aea894b3dccc0b7dc2c5e92a5a58435ebc2033b731a5524506f573dfd2
   languageName: node
   linkType: hard
 
