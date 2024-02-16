@@ -71,6 +71,9 @@ export type ApolloContact = z.infer<typeof apolloContact>;
 export const apolloContact = z
   .object({
     id: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+    email: z.string(),
     emailer_campaign_ids: z.array(z.string()).optional(),
     contact_campaign_statuses: z.array(
       z
